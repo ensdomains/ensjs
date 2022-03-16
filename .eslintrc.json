@@ -1,0 +1,30 @@
+{
+    "root": true,
+    "extends": [
+      "airbnb",
+      "airbnb-typescript",
+      "prettier",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "prettier", "jest"],
+    "parser": "@typescript-eslint/parser",
+    "overrides": [
+      {
+        "files": ["**/*.spec.ts"],
+        "env": { "jest/globals": true },
+        "globals": {
+          "context": "readonly"
+        },
+        "plugins": ["jest"],
+        "extends": ["plugin:jest/recommended"]
+      }
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "rules": {
+      "no-console": "off",
+      "prettier/prettier": "error",
+      "import/prefer-default-export": "off"
+    }
+  }
