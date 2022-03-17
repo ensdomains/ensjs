@@ -1,14 +1,9 @@
 {
-  "name": "ensjs",
-  "version": "3.0.0",
-  "description": "ENS javascript library for contract interaction",
-  "main": "index.js",
-  "repository": "git@github.com:ensdomains/ensjs-v3.git",
-  "author": "TateB <yo@taytems.xyz>",
-  "license": "MIT",
-  "scripts": {
-    "start": "echo \"no start script yet\""
-  },
+  "name": "ensjs-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
@@ -18,8 +13,9 @@
     "eslint-config-airbnb-typescript": "^16.1.2",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "ethers": "^5.6.1",
     "prettier": "^2.6.0",
+    "ts-node": "^10.7.0",
     "typescript": "^4.6.2"
-  },
-  "packageManager": "yarn@3.2.0"
+  }
 }

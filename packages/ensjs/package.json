@@ -1,0 +1,19 @@
+{
+  "name": "@ensdomains/ensjs",
+  "version": "3.0.0",
+  "description": "ENS javascript library for contract interaction",
+  "main": "index.js",
+  "repository": "git@github.com:ensdomains/ensjs-v3.git",
+  "author": "TateB <yo@taytems.xyz>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node --files src/index.ts"
+  },
+  "packageManager": "yarn@3.2.0",
+  "dependencies": {
+    "@ensdomains/ens-contracts": "^0.0.11"
+  },
+  "peerDependencies": {
+    "ethers": "*"
+  }
+}
