@@ -48,9 +48,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/ens-test-env@workspace:packages/test-environment":
+"@ensdomains/ens-test-env@workspace:packages/ens-test-env":
   version: 0.0.0-use.local
-  resolution: "@ensdomains/ens-test-env@workspace:packages/test-environment"
+  resolution: "@ensdomains/ens-test-env@workspace:packages/ens-test-env"
   dependencies:
     ansi-colors: ^4.1.1
     cli-progress: ^3.10.0

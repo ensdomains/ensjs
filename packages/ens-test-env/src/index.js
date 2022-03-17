@@ -62,12 +62,15 @@ const data = () => {
 }
 
 const main = async () => {
+  // if config arg supplied, get config path as next arg
   const configArgInx = args.indexOf('--config') + 1
+  // if config arg, try load config
   if (configArgInx > 0) {
     try {
       config = (
         await import(path.join(process.env.PROJECT_CWD, args[configArgInx]))
       ).default
+      // if config loaded, remove config arg from args
       args.slice(configArgInx - 1, 2)
     } catch {
       console.log(`Config file ${args[configArgInx]} not found`)
@@ -78,9 +81,17 @@ const main = async () => {
       await import(path.join(process.env.PROJECT_CWD, 'ens-test-env.config.js'))
     ).default
   }
+  // if config doesn't have all data, throw error
   if (!config || !config.ganache || !config.graph) {
     console.log('No valid config found')
     return help()
+  }
+  // add default paths to config, and let them be replaced by specified vars
+  config.paths = {
+    archives: './archives',
+    data: './data',
+    deployments: './deployments',
+    ...(config.paths ? config.paths : {}),
   }
   switch (args[0]) {
     case 'help':

@@ -6,6 +6,7 @@ import 'dotenv/config'
 import fs from 'fs-extra'
 import got from 'got'
 import lz4 from 'lz4'
+import path from 'path'
 import progress from 'progress-stream'
 import { PassThrough, pipeline } from 'stream'
 import tar from 'tar-fs'
@@ -41,11 +42,9 @@ const progressBar = createProgressBar('Download', true)
 const extractProgressBar = createProgressBar('Extract', true)
 const compressProgressBar = createProgressBar('Compress', false)
 
-let BLOCK_HEIGHT, SUBGRAPH_ID, EPOCH_TIME, BASE_URL, NETWORK
+let BLOCK_HEIGHT, SUBGRAPH_ID, EPOCH_TIME, BASE_URL, NETWORK, localURL, outPath
 const fileName = `data_${BLOCK_HEIGHT}_${SUBGRAPH_ID}_${EPOCH_TIME}_${NETWORK}.archive`
 const URL = `${BASE_URL}/${fileName}.tar.lz4`
-const localURL = `${__dirname}/archives/${fileName}`
-const outPath = `${__dirname}/data`
 
 const streamPipeline = promisify(pipeline)
 const streamOpts = {
@@ -181,6 +180,8 @@ export const main = async (arg, config) => {
   EPOCH_TIME = config.graph.epochTime
   BASE_URL = config.graph.baseUrl
   NETWORK = config.ganache.network
+  localURL = path.resolve(__dirname, config.paths.archives, fileName)
+  outPath = path.resolve(__dirname, config.paths.data, fileName)
 
   const logTime = (message) =>
     console.log(`${message} ${(Date.now() - time) / 1000}s`)

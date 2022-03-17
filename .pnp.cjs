@@ -21,23 +21,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "reference": "workspace:."\
       },\
       {\
+        "name": "@ensdomains/ens-test-env",\
+        "reference": "workspace:packages/ens-test-env"\
+      },\
+      {\
         "name": "@ensdomains/ensjs",\
         "reference": "workspace:packages/ensjs"\
       },\
       {\
         "name": "@ensdomains/ens-adapter-apollo",\
         "reference": "workspace:packages/ensjs-adapter-apollo"\
-      },\
-      {\
-        "name": "@ensdomains/ens-test-env",\
-        "reference": "workspace:packages/test-environment"\
       }\
     ],\
     "enableTopLevelFallback": true,\
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
       ["@ensdomains/ens-adapter-apollo", ["workspace:packages/ensjs-adapter-apollo"]],\
-      ["@ensdomains/ens-test-env", ["workspace:packages/test-environment"]],\
+      ["@ensdomains/ens-test-env", ["workspace:packages/ens-test-env"]],\
       ["@ensdomains/ensjs", ["workspace:packages/ensjs"]],\
       ["ensjs-monorepo", ["workspace:."]]\
     ],\
@@ -64,7 +64,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "@ensdomains/ens-test-env",\
-        "workspace:packages/test-environment"\
+        "workspace:packages/ens-test-env"\
       ],\
       [\
         "@ensdomains/ensjs",\
@@ -2742,10 +2742,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@ensdomains/ens-test-env", [\
-        ["workspace:packages/test-environment", {\
-          "packageLocation": "./packages/test-environment/",\
+        ["workspace:packages/ens-test-env", {\
+          "packageLocation": "./packages/ens-test-env/",\
           "packageDependencies": [\
-            ["@ensdomains/ens-test-env", "workspace:packages/test-environment"],\
+            ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["ansi-colors", "npm:4.1.1"],\
             ["cli-progress", "npm:3.10.0"],\
             ["concurrently", "npm:7.0.0"],\
