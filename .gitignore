@@ -9,3 +9,5 @@
 .env
 
 dist/
+archives/
+data/

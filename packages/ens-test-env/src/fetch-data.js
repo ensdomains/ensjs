@@ -42,9 +42,16 @@ const progressBar = createProgressBar('Download', true)
 const extractProgressBar = createProgressBar('Extract', true)
 const compressProgressBar = createProgressBar('Compress', false)
 
-let BLOCK_HEIGHT, SUBGRAPH_ID, EPOCH_TIME, BASE_URL, NETWORK, localURL, outPath
-const fileName = `data_${BLOCK_HEIGHT}_${SUBGRAPH_ID}_${EPOCH_TIME}_${NETWORK}.archive`
-const URL = `${BASE_URL}/${fileName}.tar.lz4`
+let BLOCK_HEIGHT,
+  SUBGRAPH_ID,
+  EPOCH_TIME,
+  BASE_URL,
+  NETWORK,
+  localURL,
+  outPath,
+  archiveURL,
+  fileName,
+  URL
 
 const streamPipeline = promisify(pipeline)
 const streamOpts = {
@@ -123,7 +130,7 @@ async function decompressToOutput() {
 
 async function downloadFile() {
   return new Promise(async (resolve, reject) => {
-    if (!fs.existsSync(`${__dirname}/archives`)) await fs.mkdir('archives')
+    if (!fs.existsSync(archiveURL)) await fs.mkdir(archiveURL)
     if (fs.existsSync(outPath)) {
       console.log('Data directory exists')
       await exec(`rm -rf ${outPath}/*`).catch(() => {
@@ -131,6 +138,8 @@ async function downloadFile() {
         return exec(`sudo rm -rf ${outPath}/*`)
       })
     }
+
+    console.log(URL)
 
     const input = got.stream(URL)
     const progressStream = progress({})
@@ -180,8 +189,13 @@ export const main = async (arg, config) => {
   EPOCH_TIME = config.graph.epochTime
   BASE_URL = config.graph.baseUrl
   NETWORK = config.ganache.network
+
+  fileName = `data_${BLOCK_HEIGHT}_${SUBGRAPH_ID}_${EPOCH_TIME}_${NETWORK}.archive`
+  URL = `${BASE_URL}/${fileName}.tar.lz4`
+
   localURL = path.resolve(__dirname, config.paths.archives, fileName)
-  outPath = path.resolve(__dirname, config.paths.data, fileName)
+  outPath = path.resolve(__dirname, config.paths.data)
+  archiveURL = path.resolve(__dirname, config.paths.archives)
 
   const logTime = (message) =>
     console.log(`${message} ${(Date.now() - time) / 1000}s`)

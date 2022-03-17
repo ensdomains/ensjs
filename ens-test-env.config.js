@@ -15,6 +15,7 @@ module.exports = {
     epochTime: 1646894980,
     baseUrl: 'https://storage.googleapis.com/ens-manager-build-data',
     useSudo: false,
+    bypassLocalRpc: false,
   },
   scripts: [],
 }

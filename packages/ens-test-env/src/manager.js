@@ -51,15 +51,26 @@ export const main = (deployGraph, config) => {
   const inxsToFinishOnExit = []
 
   if (deployGraph) {
-    cmdsToRun.push({
-      command: 'docker-compose up',
-      name: 'graph-docker',
-      prefixColor: 'green.bold',
-      cwd: path.resolve('./'),
-    })
     if (config.graph.useSudo) {
       sudopref = 'sudo '
     }
+    cmdsToRun.push({
+      command: `${sudopref}docker-compose up -f ${
+        config.graph.composeFile
+          ? path.resolve(process.env.PROJECT_CWD, config.graph.composeFile)
+          : path.resolve(process.cwd(), 'docker-compose.yml')
+      }`,
+      name: 'graph-docker',
+      prefixColor: 'green.bold',
+      cwd: path.resolve('./'),
+      env: {
+        ...process.env,
+        NETWORK: config.ganache.network,
+        DOCKER_RPC_URL: !!config.graph.bypassLocalRpc
+          ? config.ganache.rpcUrl
+          : `http://host.docker.internal:${config.ganache.port}`,
+      },
+    })
   }
 
   config.scripts &&

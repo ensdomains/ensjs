@@ -34,7 +34,7 @@ const checkKnownArgs = (maxArgs, ...knownArgs) => {
     help()
     process.exit(1)
   }
-  if (args.length > maxArgs) {
+  if (args.length > maxArgs + 1) {
     console.log(`Too many arguments: ${args.join(', ')}`)
     help()
     process.exit(1)

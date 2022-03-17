@@ -13,6 +13,8 @@ module.exports = {
     epochTime: 0,
     baseUrl: '',
     useSudo: false,
+    bypassLocalRpc: false,
+    composeFile: './docker-compose.yml',
   },
   scripts: [
     {
