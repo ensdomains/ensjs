@@ -60,7 +60,7 @@ const deployContract = async (InputContract, args) => {
 }
 
 export default async (server) => {
-  const registryAddress = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+  const registryAddress = '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e'
 
   const address = server.provider.getInitialAccounts()
   const provider = new ethers.providers.Web3Provider(server.provider)
