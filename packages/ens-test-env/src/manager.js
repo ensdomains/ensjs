@@ -1,40 +1,52 @@
 import { execSync } from 'child_process'
 import concurrently from 'concurrently'
 import path from 'path'
+import waitOn from 'wait-on'
 
 let sudopref = ''
 let cleanupRunning = false
+let dockerComposeDir
+let dockerEnv
 
-function cleanup(error = false, deployGraph, commands) {
-  if (cleanupRunning) return
-  cleanupRunning = true
-  commands.forEach((cmd) => {
-    let children = wrapTry(execSync, `pgrep -f "${cmd.command}"`)
-    while (children) {
-      const child = children
-        .toString()
-        .split('\n')
-        .find((x) => parseInt(x))
+const killChildren = (cmdName, pid = 0, error) => {
+  let children = wrapTry(execSync, `pgrep -f "${cmdName}"`)
+  while (children) {
+    const child = children
+      .toString()
+      .split('\n')
+      .find((x) => parseInt(x))
 
-      if (child) {
-        const res = wrapTry(execSync, `pgrep -P ${child.trim()}`)
-        wrapTry(execSync, `${sudopref}kill -9 ${child.trim()}`)
-        if (res && !res.toString().includes('No such process')) {
-          children = res
-        } else {
-          children = null
-        }
+    if (child) {
+      const res = wrapTry(execSync, `pgrep -P ${child.trim()}`)
+      wrapTry(execSync, `${sudopref}kill -9 ${child.trim()}`)
+      if (res && !res.toString().includes('No such process')) {
+        children = res
       } else {
         children = null
       }
+    } else {
+      children = null
     }
-    wrapTry(execSync, `${sudopref}kill -2 ${cmd.pid}`)
-  })
+  }
+  if (pid) {
+    wrapTry(execSync, `${sudopref}kill -2 ${pid}`)
+  } else {
+    process.exit(error ? 1 : 0)
+  }
+}
+
+function cleanup(error = false, deployGraph, commands) {
+  console.log('RECEIEVED CLEANUP')
+  if (cleanupRunning) return
+  cleanupRunning = true
   if (deployGraph) {
-    execSync(`${sudopref}docker-compose down`, {
-      cwd: path.resolve('./'),
+    execSync(`${sudopref}docker-compose -f ${dockerComposeDir} down`, {
+      cwd: process.env.PROJECT_CWD,
+      env: { ...process.env, ...dockerEnv },
     })
   }
+  commands.forEach((cmd) => killChildren(cmd.command, cmd.pid, error))
+  killChildren('ens-test-env', 0, error)
   process.exit(error ? 1 : 0)
 }
 
@@ -46,7 +58,7 @@ function wrapTry(fn, ...args) {
   }
 }
 
-export const main = (deployGraph, config) => {
+export const main = async (deployGraph, config) => {
   const cmdsToRun = []
   const inxsToFinishOnExit = []
 
@@ -54,22 +66,23 @@ export const main = (deployGraph, config) => {
     if (config.graph.useSudo) {
       sudopref = 'sudo '
     }
+    inxsToFinishOnExit.push(0)
+    dockerComposeDir = config.graph.composeFile
+      ? path.resolve(process.env.PROJECT_CWD, config.graph.composeFile)
+      : path.resolve(process.cwd(), 'src', 'docker-compose.yml')
+    dockerEnv = {
+      NETWORK: config.ganache.network,
+      DOCKER_RPC_URL: !!config.graph.bypassLocalRpc
+        ? config.ganache.rpcUrl
+        : `http://host.docker.internal:${config.ganache.port}`,
+      DATA_FOLDER: path.resolve(process.env.PROJECT_CWD, config.paths.data),
+    }
     cmdsToRun.push({
-      command: `${sudopref}docker-compose up -f ${
-        config.graph.composeFile
-          ? path.resolve(process.env.PROJECT_CWD, config.graph.composeFile)
-          : path.resolve(process.cwd(), 'docker-compose.yml')
-      }`,
+      command: `${sudopref}docker-compose -f ${dockerComposeDir} up`,
       name: 'graph-docker',
       prefixColor: 'green.bold',
-      cwd: path.resolve('./'),
-      env: {
-        ...process.env,
-        NETWORK: config.ganache.network,
-        DOCKER_RPC_URL: !!config.graph.bypassLocalRpc
-          ? config.ganache.rpcUrl
-          : `http://host.docker.internal:${config.ganache.port}`,
-      },
+      cwd: process.env.PROJECT_CWD,
+      env: { ...process.env, ...dockerEnv },
     })
   }
 
@@ -81,6 +94,11 @@ export const main = (deployGraph, config) => {
       }
     })
 
+  if (!config.graph.bypassLocalRpc) {
+    await waitOn({
+      resources: ['tcp:' + config.ganache.port],
+    })
+  }
   if (cmdsToRun.length > 0) {
     const { commands } = concurrently(cmdsToRun, { prefix: 'name' })
 

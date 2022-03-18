@@ -41,7 +41,7 @@ const checkKnownArgs = (maxArgs, ...knownArgs) => {
   }
 }
 
-const start = () => {
+const start = async () => {
   checkKnownArgs(2, '--no-graph', '--no-reset', '--no-deploy')
   if (args.includes('--no-graph') && args.includes('--no-reset')) {
     console.log("Can't use --no-graph and --no-reset at the same time")
@@ -52,13 +52,17 @@ const start = () => {
     resetData: !args.includes('--no-reset'),
     deployContracts: !args.includes('--no-deploy'),
   }
+  if (opts.resetData) {
+    await fetchData('--load', config)
+  }
   ganache(opts.deployContracts, config)
   manager(opts.deployGraph, config)
 }
 
-const data = () => {
+const data = async () => {
   checkKnownArgs(1, '--load', '--compress')
-  fetchData(args[1], config)
+  await fetchData(args[1], config)
+  process.exit(0)
 }
 
 const main = async () => {

@@ -214,12 +214,12 @@ export const main = async (arg, config) => {
           logTime('Decompressed and copied in'),
         )
       }
-      break
+      return
     }
     case '--compress': {
       console.log('Compressing /data to archive...')
       await compressToArchive().then(() => logTime('Compressed archive in'))
-      break
+      return
     }
   }
 }

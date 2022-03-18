@@ -11,7 +11,8 @@
     "got": "^12.0.2",
     "lz4": "^0.6.5",
     "progress-stream": "^2.0.0",
-    "tar-fs": "^2.1.1"
+    "tar-fs": "^2.1.1",
+    "wait-on": "^6.0.1"
   },
   "bin": "./src/index.js"
 }
