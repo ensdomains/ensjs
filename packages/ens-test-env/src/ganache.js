@@ -30,17 +30,19 @@ export const main = async (deployContracts, config) => {
       const deployments = await fs.readdir(
         path.resolve(process.env.INIT_CWD, config.paths.deployments),
       )
-      return Promise.all(
-        deployments.map((deployment) =>
-          import(
+      for (let deployment of deployments) {
+        if (!deployment.includes('archive')) {
+          const imported = await import(
             path.resolve(
               process.env.INIT_CWD,
               config.paths.deployments,
               deployment,
             )
-          ).then((module) => module.default(server)),
-        ),
-      )
+          )
+          await imported.default(server)
+        }
+      }
+      return
     } catch {
       console.log('No deployments found, skipping...')
       return
