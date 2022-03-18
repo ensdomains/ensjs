@@ -62,13 +62,14 @@ export const main = async (deployContracts, config) => {
     },
   })
 
+  if (deployContracts) {
+    console.log('Running deployment scripts...')
+    await runDeployScripts(server)
+  }
+
   server.listen(config.ganache.port, config.ganache.host, (err) => {
     if (err) throw new Error(err.message)
 
     console.log('Ganache listening on port 8545')
-    if (deployContracts) {
-      console.log('Running deployment scripts...')
-      runDeployScripts(server)
-    }
   })
 }
