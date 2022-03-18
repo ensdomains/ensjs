@@ -1,7 +1,10 @@
 import { execSync } from 'child_process'
 import concurrently from 'concurrently'
 import path from 'path'
+import { URL as URLClass } from 'url'
 import waitOn from 'wait-on'
+
+const __dirname = new URLClass('.', import.meta.url).pathname
 
 let sudopref = ''
 let cleanupRunning = false
@@ -72,7 +75,7 @@ export const main = async (deployGraph, config) => {
     inxsToFinishOnExit.push(0)
     dockerComposeDir = config.graph.composeFile
       ? path.resolve(process.env.INIT_CWD, config.graph.composeFile)
-      : path.resolve(process.cwd(), 'src', 'docker-compose.yml')
+      : path.resolve(__dirname, './docker-compose.yml')
     dockerEnv = {
       NETWORK: config.ganache.network,
       DOCKER_RPC_URL: !!config.graph.bypassLocalRpc
