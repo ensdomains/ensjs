@@ -11,7 +11,17 @@
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
-    "@ensdomains/ens-contracts": "^0.0.11"
+    "@ensdomains/ens-contracts": "^0.0.11",
+    "ethers": "^5.6.1"
+  },
+  "devDependencies": {
+    "@ensdomains/buffer": "^0.0.13",
+    "@ensdomains/ens-test-env": "workspace:*",
+    "@openzeppelin/contracts": "^4.5.0",
+    "dotenv": "^16.0.0",
+    "ens-contracts-namewrapper": "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375",
+    "ens-contracts-universal": "github:ensdomains/ens-contracts#universal",
+    "solc": "^0.8.13"
   },
   "peerDependencies": {
     "ethers": "*"

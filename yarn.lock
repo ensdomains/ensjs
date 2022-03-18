@@ -48,7 +48,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/ens-test-env@workspace:packages/ens-test-env":
+"@ensdomains/ens-test-env@workspace:*, @ensdomains/ens-test-env@workspace:packages/ens-test-env":
   version: 0.0.0-use.local
   resolution: "@ensdomains/ens-test-env@workspace:packages/ens-test-env"
   dependencies:
@@ -72,7 +72,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@ensdomains/ensjs@workspace:packages/ensjs"
   dependencies:
+    "@ensdomains/buffer": ^0.0.13
     "@ensdomains/ens-contracts": ^0.0.11
+    "@ensdomains/ens-test-env": "workspace:*"
+    "@openzeppelin/contracts": ^4.5.0
+    dotenv: ^16.0.0
+    ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
+    ens-contracts-universal: "github:ensdomains/ens-contracts#universal"
+    ethers: ^5.6.1
+    solc: ^0.8.13
   peerDependencies:
     ethers: "*"
   languageName: unknown
@@ -676,7 +684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.1.0":
+"@openzeppelin/contracts@npm:^4.1.0, @openzeppelin/contracts@npm:^4.5.0":
   version: 4.5.0
   resolution: "@openzeppelin/contracts@npm:4.5.0"
   checksum: 1c9c5dff041905771d2a83ac29c64dbf0b48603de43f74a34fb1358813d7c7bf259efe2f64e2112b410c5cca7a0b41aaedd882368be5f01a6d50a3ee0740f962
@@ -2015,10 +2023,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"command-exists@npm:^1.2.8":
+  version: 1.2.9
+  resolution: "command-exists@npm:1.2.9"
+  checksum: 729ae3d88a2058c93c58840f30341b7f82688a573019535d198b57a4d8cb0135ced0ad7f52b591e5b28a90feb2c675080ce916e56254a0f7c15cb2395277cac3
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.15.0":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: ab8c07884e42c3a8dbc5dd9592c606176c7eb5c1ca5ff274bcf907039b2c41de3626f684ea75ccf4d361ba004bbaff1f577d5384c155f3871e456bdf27becf9e
+  languageName: node
+  linkType: hard
+
+"commander@npm:^8.1.0":
+  version: 8.3.0
+  resolution: "commander@npm:8.3.0"
+  checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
   languageName: node
   linkType: hard
 
@@ -2584,15 +2606,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ens-contracts@github:ensdomains/ens-contracts#universal":
-  version: 0.0.8
-  resolution: "ens-contracts@https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"
+"ens-contracts-namewrapper@github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375":
+  version: 0.0.9
+  resolution: "ens-contracts-namewrapper@https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
   dependencies:
     "@ensdomains/buffer": ^0.0.13
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: e9f58169ef4f73f235107ad327e69f51f5859c13b13499b1d4390afe322d8101746118f790c4231394848d569083f4b7729db90383c24ac36b47d6ae304cbac2
+  checksum: 2de96c77345d7e84a40033863a69324d6f57c1f7c42045f9d8e0e87955a7f54218ac1be9c11f1e7ee49513621bf684b1c3b19a4ed776e5089be3f632e22ff363
+  languageName: node
+  linkType: hard
+
+"ens-contracts-universal@github:ensdomains/ens-contracts#universal":
+  version: 0.0.8
+  resolution: "ens-contracts-universal@https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"
+  dependencies:
+    "@ensdomains/buffer": ^0.0.13
+    "@ensdomains/solsha1": 0.0.3
+    "@openzeppelin/contracts": ^4.1.0
+    dns-packet: ^5.3.0
+  checksum: 9256b1fbc08e64195769c0d2d74c0f6814f6c99c168f3b7ee69b95378afc7ed5fc4fafadf4231a56de5ef97d657438faa145e2a4dfbdbdf848562d64c274501c
   languageName: node
   linkType: hard
 
@@ -2602,8 +2636,6 @@ __metadata:
   dependencies:
     "@typescript-eslint/eslint-plugin": ^5.15.0
     "@typescript-eslint/parser": ^5.15.0
-    dotenv: ^16.0.0
-    ens-contracts: "github:ensdomains/ens-contracts#universal"
     eslint: ^8.11.0
     eslint-config-airbnb: ^19.0.4
     eslint-config-airbnb-base: ^15.0.0
@@ -2614,9 +2646,6 @@ __metadata:
     prettier: ^2.6.0
     ts-node: ^10.7.0
     typescript: ^4.6.2
-  dependenciesMeta:
-    ens-contracts@0.0.8:
-      unplugged: true
   languageName: unknown
   linkType: soft
 
@@ -3364,7 +3393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.7":
+"follow-redirects@npm:^1.12.1, follow-redirects@npm:^1.14.7":
   version: 1.14.9
   resolution: "follow-redirects@npm:1.14.9"
   peerDependenciesMeta:
@@ -4737,6 +4766,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"memorystream@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "memorystream@npm:0.3.1"
+  checksum: f18b42440d24d09516d01466c06adf797df7873f0d40aa7db02e5fb9ed83074e5e65412d0720901d7069363465f82dc4f8bcb44f0cde271567a61426ce6ca2e9
+  languageName: node
+  linkType: hard
+
 "merge-descriptors@npm:1.0.1":
   version: 1.0.1
   resolution: "merge-descriptors@npm:1.0.1"
@@ -5297,6 +5333,13 @@ __metadata:
     type-check: ^0.4.0
     word-wrap: ^1.2.3
   checksum: dbc6fa065604b24ea57d734261914e697bd73b69eff7f18e967e8912aa2a40a19a9f599a507fa805be6c13c24c4eae8c71306c239d517d42d4c041c942f508a0
+  languageName: node
+  linkType: hard
+
+"os-tmpdir@npm:~1.0.2":
+  version: 1.0.2
+  resolution: "os-tmpdir@npm:1.0.2"
+  checksum: 5666560f7b9f10182548bf7013883265be33620b1c1b4a4d405c25be2636f970c5488ff3e6c48de75b55d02bde037249fe5dbfbb4c0fb7714953d56aed062e6d
   languageName: node
   linkType: hard
 
@@ -5920,6 +5963,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^5.5.0":
+  version: 5.7.1
+  resolution: "semver@npm:5.7.1"
+  bin:
+    semver: ./bin/semver
+  checksum: 57fd0acfd0bac382ee87cd52cd0aaa5af086a7dc8d60379dfe65fea491fb2489b6016400813930ecd61fd0952dae75c115287a1b16c234b1550887117744dfaf
+  languageName: node
+  linkType: hard
+
 "semver@npm:^6.3.0":
   version: 6.3.0
   resolution: "semver@npm:6.3.0"
@@ -6110,6 +6162,23 @@ __metadata:
     ip: ^1.1.5
     smart-buffer: ^4.2.0
   checksum: dd9194293059d737759d5c69273850ad4149f448426249325c4bea0e340d1cf3d266c3b022694b0dcf5d31f759de23657244c481fc1e8322add80b7985c36b5e
+  languageName: node
+  linkType: hard
+
+"solc@npm:^0.8.13":
+  version: 0.8.13
+  resolution: "solc@npm:0.8.13"
+  dependencies:
+    command-exists: ^1.2.8
+    commander: ^8.1.0
+    follow-redirects: ^1.12.1
+    js-sha3: 0.8.0
+    memorystream: ^0.3.1
+    semver: ^5.5.0
+    tmp: 0.0.33
+  bin:
+    solcjs: solc.js
+  checksum: 210a012155a29017f2c6c56a7a0e1e46658b2da75fb99341677a69955b87d90e09810570461012ca89007288a2e9245d033a30d8f5baf599c7b60c0a30b119ba
   languageName: node
   linkType: hard
 
@@ -6406,6 +6475,15 @@ __metadata:
   version: 4.0.1
   resolution: "timed-out@npm:4.0.1"
   checksum: 98efc5d6fc0d2a329277bd4d34f65c1bf44d9ca2b14fd267495df92898f522e6f563c5e9e467c418e0836f5ca1f47a84ca3ee1de79b1cc6fe433834b7f02ec54
+  languageName: node
+  linkType: hard
+
+"tmp@npm:0.0.33":
+  version: 0.0.33
+  resolution: "tmp@npm:0.0.33"
+  dependencies:
+    os-tmpdir: ~1.0.2
+  checksum: 902d7aceb74453ea02abbf58c203f4a8fc1cead89b60b31e354f74ed5b3fb09ea817f94fb310f884a5d16987dd9fa5a735412a7c2dd088dd3d415aa819ae3a28
   languageName: node
   linkType: hard
 

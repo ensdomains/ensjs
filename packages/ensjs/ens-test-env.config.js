@@ -1,4 +1,4 @@
-require('dotenv').config({ path: process.env.PROJECT_CWD + '/.env' })
+require('dotenv').config({ path: process.env.INIT_CWD + '/.env' })
 
 module.exports = {
   ganache: {
