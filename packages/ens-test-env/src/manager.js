@@ -43,7 +43,7 @@ function cleanup(error = false, deployGraph, commands) {
     execSync(
       `${sudopref}docker-compose -f ${dockerComposeDir} -p ens-test-env down`,
       {
-        cwd: process.env.PROJECT_CWD,
+        cwd: process.env.INIT_CWD,
         env: { ...process.env, ...dockerEnv },
       },
     )
@@ -71,20 +71,20 @@ export const main = async (deployGraph, config) => {
     }
     inxsToFinishOnExit.push(0)
     dockerComposeDir = config.graph.composeFile
-      ? path.resolve(process.env.PROJECT_CWD, config.graph.composeFile)
+      ? path.resolve(process.env.INIT_CWD, config.graph.composeFile)
       : path.resolve(process.cwd(), 'src', 'docker-compose.yml')
     dockerEnv = {
       NETWORK: config.ganache.network,
       DOCKER_RPC_URL: !!config.graph.bypassLocalRpc
         ? config.ganache.rpcUrl
         : `http://host.docker.internal:${config.ganache.port}`,
-      DATA_FOLDER: path.resolve(process.env.PROJECT_CWD, config.paths.data),
+      DATA_FOLDER: path.resolve(process.env.INIT_CWD, config.paths.data),
     }
     cmdsToRun.push({
       command: `${sudopref}docker-compose -f ${dockerComposeDir} -p ens-test-env up`,
       name: 'graph-docker',
       prefixColor: 'green.bold',
-      cwd: process.env.PROJECT_CWD,
+      cwd: process.env.INIT_CWD,
       env: { ...process.env, ...dockerEnv },
     })
   }

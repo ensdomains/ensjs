@@ -72,7 +72,7 @@ const main = async () => {
   if (configArgInx > 0) {
     try {
       config = (
-        await import(path.join(process.env.PROJECT_CWD, args[configArgInx]))
+        await import(path.join(process.env.INIT_CWD, args[configArgInx]))
       ).default
       // if config loaded, remove config arg from args
       args.slice(configArgInx - 1, 2)
@@ -82,7 +82,7 @@ const main = async () => {
     }
   } else {
     config = (
-      await import(path.join(process.env.PROJECT_CWD, 'ens-test-env.config.js'))
+      await import(path.join(process.env.INIT_CWD, 'ens-test-env.config.js'))
     ).default
   }
   // if config doesn't have all data, throw error

@@ -13,7 +13,7 @@ import tar from 'tar-fs'
 import { promisify } from 'util'
 
 const exec = promisify(_exec)
-const __dirname = process.env.PROJECT_CWD
+const __dirname = process.env.INIT_CWD
 
 const createProgressBar = (name, hasSpeed) =>
   new cliProgress.SingleBar({

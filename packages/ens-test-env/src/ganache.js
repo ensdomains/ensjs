@@ -28,13 +28,13 @@ export const main = async (deployContracts, config) => {
   const runDeployScripts = async (server) => {
     try {
       const deployments = await fs.readdir(
-        path.resolve(process.env.PROJECT_CWD, config.paths.deployments),
+        path.resolve(process.env.INIT_CWD, config.paths.deployments),
       )
       return Promise.all(
         deployments.map((deployment) =>
           import(
             path.resolve(
-              process.env.PROJECT_CWD,
+              process.env.INIT_CWD,
               config.paths.deployments,
               deployment,
             )
