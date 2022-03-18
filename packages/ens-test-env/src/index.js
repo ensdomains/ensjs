@@ -52,7 +52,7 @@ const start = async () => {
     resetData: !args.includes('--no-reset'),
     deployContracts: !args.includes('--no-deploy'),
   }
-  if (opts.resetData) {
+  if (opts.resetData && opts.deployGraph) {
     await fetchData('--load', config)
   }
   ganache(opts.deployContracts, config)
