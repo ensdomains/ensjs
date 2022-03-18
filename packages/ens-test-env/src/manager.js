@@ -40,10 +40,13 @@ function cleanup(error = false, deployGraph, commands) {
   if (cleanupRunning) return
   cleanupRunning = true
   if (deployGraph) {
-    execSync(`${sudopref}docker-compose -f ${dockerComposeDir} down`, {
-      cwd: process.env.PROJECT_CWD,
-      env: { ...process.env, ...dockerEnv },
-    })
+    execSync(
+      `${sudopref}docker-compose -f ${dockerComposeDir} -p ens-test-env down`,
+      {
+        cwd: process.env.PROJECT_CWD,
+        env: { ...process.env, ...dockerEnv },
+      },
+    )
   }
   commands.forEach((cmd) => killChildren(cmd.command, cmd.pid, error))
   killChildren('ens-test-env', 0, error)
@@ -78,7 +81,7 @@ export const main = async (deployGraph, config) => {
       DATA_FOLDER: path.resolve(process.env.PROJECT_CWD, config.paths.data),
     }
     cmdsToRun.push({
-      command: `${sudopref}docker-compose -f ${dockerComposeDir} up`,
+      command: `${sudopref}docker-compose -f ${dockerComposeDir} -p ens-test-env up`,
       name: 'graph-docker',
       prefixColor: 'green.bold',
       cwd: process.env.PROJECT_CWD,
