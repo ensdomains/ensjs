@@ -116,15 +116,15 @@ const query = gql`
 //   console.log(ret, retRecords)
 // }
 
-const makeResolverData = async (functionName: string, ...args: any[]) =>
-  (await PublicResolver.populateTransaction[functionName](...args)).data
-const makeResolverDataWithNamehash = async (
+const makeResolverData = (functionName: string, ...args: any[]) =>
+  PublicResolver.interface.encodeFunctionData(functionName, args)
+const makeResolverDataWithNamehash = (
   functionName: string,
   name: string,
   ...args: any[]
-) => await makeResolverData(functionName, ethers.utils.namehash(name), ...args)
+) => makeResolverData(functionName, ethers.utils.namehash(name), ...args)
 
-const addCalls = async (
+const addCalls = (
   keyArray: string[],
   callArray: any[],
   type: string,
@@ -132,15 +132,10 @@ const addCalls = async (
   name: string,
   ...args: any[]
 ) =>
-  keyArray.forEach(async (item: string) =>
+  keyArray.forEach((item: string) =>
     callArray.push({
       key: item,
-      data: await makeResolverDataWithNamehash(
-        type + callArgs,
-        name,
-        item,
-        ...args,
-      ),
+      data: makeResolverDataWithNamehash(type + callArgs, name, item, ...args),
       type,
     }),
   )
@@ -154,20 +149,19 @@ const getProfile = async (name: string) => {
     ],
   } = await client.request(query, { name })
   let calls: any[] = []
-  await addCalls(texts, calls, 'text', '(bytes32,string)', name)
-  await addCalls(coinTypes, calls, 'addr', '(bytes32,uint256)', name)
+  addCalls(texts, calls, 'text', '(bytes32,string)', name)
+  addCalls(coinTypes, calls, 'addr', '(bytes32,uint256)', name)
   contentHash &&
     calls.push({
       key: 'contentHash',
-      data: await makeResolverDataWithNamehash('contenthash(bytes32)', name),
+      data: makeResolverDataWithNamehash('contenthash(bytes32)', name),
       type: 'contenthash',
     })
 
-  const data = (
-    await PublicResolver.populateTransaction['multicall(bytes[])'](
-      calls.map((call: any) => call.data),
-    )
-  ).data
+  const data = PublicResolver.interface.encodeFunctionData(
+    'multicall(bytes[])',
+    [calls.map((call: any) => call.data)],
+  )
 
   const resolver = await UniversalResolver.resolve(hexEncodeName(name), data)
   const [ret] = ethers.utils.defaultAbiCoder.decode(['bytes[]'], resolver)
