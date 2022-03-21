@@ -7,7 +7,7 @@
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node --files src/index.ts"
+    "start": "ts-node --files src/index.test.ts"
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
