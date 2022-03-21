@@ -12,9 +12,21 @@ const start = async () => {
   })
   await ENSInstance.setProvider(provider)
 
-  const response = await ENSInstance.getProfile('matoken.eth')
+  const response = await ENSInstance.getProfile('jefflau.eth')
 
   console.log(response)
+
+  const nameResponse = await ENSInstance.getName(
+    '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+  )
+
+  console.log(nameResponse)
+
+  const weirollTest = await ENSInstance.weirollTest(
+    '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+  )
+
+  console.log(weirollTest)
 }
 
 start()

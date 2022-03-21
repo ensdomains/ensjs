@@ -28,4 +28,5 @@ export default class ContractManager {
   public getUniversalResolver = this.generateContractGetter(
     './universalResolver',
   )
+  public getRegistry = this.generateContractGetter('./registry')
 }

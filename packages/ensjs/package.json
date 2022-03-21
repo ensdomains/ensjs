@@ -13,9 +13,10 @@
   "dependencies": {
     "@ensdomains/address-encoder": "^0.2.16",
     "@ensdomains/ens-contracts": "^0.0.11",
+    "@weiroll/weiroll.js": "^0.3.0",
     "dns-packet": "^5.3.1",
+    "ethcall": "^4.4.0",
     "ethers": "^5.6.1",
-    "ethers-multicall": "^0.2.2",
     "graphql": "^16.3.0",
     "graphql-request": "^4.1.0"
   },

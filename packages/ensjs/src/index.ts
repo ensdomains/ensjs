@@ -52,8 +52,12 @@ export class ENS {
     await this.gqlInstance.setUrl(this.graphURI)
     this.contracts = new ContractManager(this.provider)
     this.getProfile = this.generateFunction('./getProfile')
+    this.getName = this.generateFunction('./getName')
+    this.weirollTest = this.generateFunction('./weirollTest')
     return
   }
 
   public getProfile: any
+  public getName: any
+  public weirollTest: any
 }

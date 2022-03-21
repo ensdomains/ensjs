@@ -411,8 +411,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:5.15.0"\
       ],\
       [\
+        "@weiroll/weiroll.js",\
+        "npm:0.3.0"\
+      ],\
+      [\
         "abbrev",\
         "npm:1.1.1"\
+      ],\
+      [\
+        "abi-coder",\
+        "npm:2.1.0"\
       ],\
       [\
         "abstract-leveldown",\
@@ -1135,6 +1143,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:0.2.8"\
       ],\
       [\
+        "ethcall",\
+        "npm:4.4.0"\
+      ],\
+      [\
         "ethereum-bloom-filters",\
         "npm:1.0.10"\
       ],\
@@ -1161,10 +1173,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "ethers",\
         "npm:5.6.1"\
-      ],\
-      [\
-        "ethers-multicall",\
-        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2"\
       ],\
       [\
         "ethjs-unit",\
@@ -2921,12 +2929,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/ens-contracts", "npm:0.0.11"],\
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
+            ["@weiroll/weiroll.js", "npm:0.3.0"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
             ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"],\
+            ["ethcall", "npm:4.4.0"],\
             ["ethers", "npm:5.6.1"],\
-            ["ethers-multicall", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2"],\
             ["graphql", "npm:16.3.0"],\
             ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
             ["solc", "npm:0.8.13"],\
@@ -3929,6 +3938,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
+        ["npm:16.11.26", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-16.11.26-6163d95b7d-57757caaba.zip/node_modules/@types/node/",\
+          "packageDependencies": [\
+            ["@types/node", "npm:16.11.26"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:17.0.21", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-17.0.21-7d68eb6a13-89dcd2fe82.zip/node_modules/@types/node/",\
           "packageDependencies": [\
@@ -4173,11 +4189,33 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@weiroll/weiroll.js", [\
+        ["npm:0.3.0", {\
+          "packageLocation": "./.yarn/cache/@weiroll-weiroll.js-npm-0.3.0-ac4ce3ff37-571d94ed27.zip/node_modules/@weiroll/weiroll.js/",\
+          "packageDependencies": [\
+            ["@weiroll/weiroll.js", "npm:0.3.0"],\
+            ["ethers", "npm:5.6.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["abbrev", [\
         ["npm:1.1.1", {\
           "packageLocation": "./.yarn/cache/abbrev-npm-1.1.1-3659247eab-a4a97ec07d.zip/node_modules/abbrev/",\
           "packageDependencies": [\
             ["abbrev", "npm:1.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["abi-coder", [\
+        ["npm:2.1.0", {\
+          "packageLocation": "./.yarn/cache/abi-coder-npm-2.1.0-b841534168-c69623af53.zip/node_modules/abi-coder/",\
+          "packageDependencies": [\
+            ["abi-coder", "npm:2.1.0"],\
+            ["@ethersproject/abi", "npm:5.6.0"],\
+            ["@ethersproject/keccak256", "npm:5.6.0"],\
+            ["@ethersproject/strings", "npm:5.6.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6520,6 +6558,21 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["ethcall", [\
+        ["npm:4.4.0", {\
+          "packageLocation": "./.yarn/cache/ethcall-npm-4.4.0-cfc8f4a5ed-879838ed6b.zip/node_modules/ethcall/",\
+          "packageDependencies": [\
+            ["ethcall", "npm:4.4.0"],\
+            ["@ethersproject/abi", "npm:5.6.0"],\
+            ["@ethersproject/bytes", "npm:5.6.0"],\
+            ["@ethersproject/contracts", "npm:5.6.0"],\
+            ["@ethersproject/providers", "npm:5.6.1"],\
+            ["@types/node", "npm:16.11.26"],\
+            ["abi-coder", "npm:2.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["ethereum-bloom-filters", [\
         ["npm:1.0.10", {\
           "packageLocation": "./.yarn/cache/ethereum-bloom-filters-npm-1.0.10-5a486457fa-4019cc6f92.zip/node_modules/ethereum-bloom-filters/",\
@@ -6668,28 +6721,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ethersproject/wallet", "npm:5.6.0"],\
             ["@ethersproject/web", "npm:5.6.0"],\
             ["@ethersproject/wordlists", "npm:5.6.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ethers-multicall", [\
-        ["npm:0.2.2", {\
-          "packageLocation": "./.yarn/cache/ethers-multicall-npm-0.2.2-c25e2abc21-bd257e780b.zip/node_modules/ethers-multicall/",\
-          "packageDependencies": [\
-            ["ethers-multicall", "npm:0.2.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2", {\
-          "packageLocation": "./.yarn/__virtual__/ethers-multicall-virtual-2edd1965c0/0/cache/ethers-multicall-npm-0.2.2-c25e2abc21-bd257e780b.zip/node_modules/ethers-multicall/",\
-          "packageDependencies": [\
-            ["ethers-multicall", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2"],\
-            ["@types/ethers", null],\
-            ["ethers", "npm:5.6.1"]\
-          ],\
-          "packagePeers": [\
-            "@types/ethers",\
-            "ethers"\
           ],\
           "linkType": "HARD"\
         }]\
