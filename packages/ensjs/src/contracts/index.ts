@@ -1,35 +1,31 @@
-const generateContractGetter = (
-  path: string,
-  contractStore: any,
-  provider: any,
-) => {
-  return async (passedProvider: any) => {
-    const importedContract = (await import(path)).default
-    if (contractStore && !passedProvider) {
-      return importedContract
-    }
-    if (passedProvider) {
-      return importedContract(passedProvider)
-    }
-    contractStore = importedContract(provider)
-    return contractStore
-  }
-}
+import { ethers } from 'ethers'
 
-export default (provider: any) => {
-  let publicResolver: any
-  let universalResolver: any
+export default class ContractManager {
+  private provider: ethers.providers.Provider
 
-  return {
-    getPublicResolver: generateContractGetter(
-      './publicResolver',
-      publicResolver,
-      provider,
-    ),
-    getUniversalResolver: generateContractGetter(
-      './universalResolver',
-      universalResolver,
-      provider,
-    ),
+  constructor(provider: ethers.providers.Provider) {
+    this.provider = provider
   }
+
+  private generateContractGetter = (path: string) => {
+    let imported: any
+    let contract: any
+    return async (passedProvider: any) => {
+      if (!imported) {
+        imported = (await import(path)).default
+      }
+      if (passedProvider) {
+        return imported(passedProvider)
+      }
+      if (!contract) {
+        contract = imported(this.provider)
+      }
+      return contract
+    }
+  }
+
+  public getPublicResolver = this.generateContractGetter('./publicResolver')
+  public getUniversalResolver = this.generateContractGetter(
+    './universalResolver',
+  )
 }

@@ -1,37 +1,18 @@
-export default async (url: string | null) => {
-  let _client: any
-  let _gql: any
+export default class GqlManager {
+  public gql: any = () => null
+  public client?: any | null = null
 
-  if (url) {
-    const imported = await import('graphql-request')
-    _client = new imported.GraphQLClient(url)
-    _gql = imported.gql
-  } else {
-    _client = null
-    _gql = () => null
+  public setUrl = async (url: string | null) => {
+    if (url) {
+      const imported = await import('graphql-request')
+      this.client = new imported.GraphQLClient(url)
+      this.gql = imported.gql
+    } else {
+      this.client = null
+      this.gql = () => null
+    }
   }
 
-  return {
-    gql: _gql,
-    request(...args: any[]) {
-      if (_client) {
-        return _client.request(...args)
-      }
-      return null
-    },
-    setClient: async (url: string | null) => {
-      if (url) {
-        const imported = await import('graphql-request')
-        _client = new imported.GraphQLClient(url)
-        _gql = imported.gql
-      } else {
-        _client = null
-        _gql = () => null
-      }
-      return
-    },
-    getClient() {
-      return _client
-    },
-  }
+  public request = (...arg: any[]) =>
+    this.client ? this.client.request(...arg) : null
 }

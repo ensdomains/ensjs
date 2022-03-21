@@ -15,9 +15,7 @@ type ProfileResponse = {
 }
 
 const _getProfile = async (
-  _provider: ethers.providers.Provider,
-  _gql: any,
-  contracts: any,
+  { contracts }: { contracts: any },
   name: string,
   options: InternalProfileOptions,
 ) => {
@@ -151,9 +149,7 @@ type ProfileOptions = {
 }
 
 export default async (
-  provider: ethers.providers.Provider,
-  gqlInstance: any,
-  contracts: any,
+  { gqlInstance, contracts }: { gqlInstance: any; contracts: any },
   name: string,
   options?: ProfileOptions,
 ) => {
@@ -171,7 +167,7 @@ export default async (
       }
     }
   `
-  const client = gqlInstance.getClient()
+  const client = gqlInstance.client
 
   const wantedRecords: ProfileOptions = options || {
     contentHash: true,
@@ -197,9 +193,7 @@ export default async (
     })
   }
   return _getProfile(
-    provider,
-    gqlInstance,
-    contracts,
+    { contracts },
     name,
     wantedRecords as InternalProfileOptions,
   )

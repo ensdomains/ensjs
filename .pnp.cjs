@@ -1163,6 +1163,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:5.6.1"\
       ],\
       [\
+        "ethers-multicall",\
+        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2"\
+      ],\
+      [\
         "ethjs-unit",\
         "npm:0.1.6"\
       ],\
@@ -2922,6 +2926,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
             ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"],\
             ["ethers", "npm:5.6.1"],\
+            ["ethers-multicall", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2"],\
             ["graphql", "npm:16.3.0"],\
             ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
             ["solc", "npm:0.8.13"],\
@@ -6663,6 +6668,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ethersproject/wallet", "npm:5.6.0"],\
             ["@ethersproject/web", "npm:5.6.0"],\
             ["@ethersproject/wordlists", "npm:5.6.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["ethers-multicall", [\
+        ["npm:0.2.2", {\
+          "packageLocation": "./.yarn/cache/ethers-multicall-npm-0.2.2-c25e2abc21-bd257e780b.zip/node_modules/ethers-multicall/",\
+          "packageDependencies": [\
+            ["ethers-multicall", "npm:0.2.2"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2", {\
+          "packageLocation": "./.yarn/__virtual__/ethers-multicall-virtual-2edd1965c0/0/cache/ethers-multicall-npm-0.2.2-c25e2abc21-bd257e780b.zip/node_modules/ethers-multicall/",\
+          "packageDependencies": [\
+            ["ethers-multicall", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.2"],\
+            ["@types/ethers", null],\
+            ["ethers", "npm:5.6.1"]\
+          ],\
+          "packagePeers": [\
+            "@types/ethers",\
+            "ethers"\
           ],\
           "linkType": "HARD"\
         }]\

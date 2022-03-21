@@ -7,9 +7,12 @@ const start = async () => {
     'ropsten',
   )
 
-  const ENSInstance = await ENS(provider)
+  const ENSInstance = new ENS({
+    graphURI: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+  })
+  await ENSInstance.setProvider(provider)
 
-  const response = await ENSInstance.getProfile('jefflau.eth')
+  const response = await ENSInstance.getProfile('matoken.eth')
 
   console.log(response)
 }
