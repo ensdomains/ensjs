@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import ContractManager from './contracts'
-import GqlManager from './GqlManager'
+import GqlManager from './gqlManager'
 
 type ENSOptions = {
   graphURI?: string | null
