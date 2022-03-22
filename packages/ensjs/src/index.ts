@@ -1,10 +1,22 @@
 import { ethers } from 'ethers'
 import ContractManager from './contracts'
+import type getName from './getName'
+import type getProfile from './getProfile'
 import GqlManager from './GqlManager'
 
 type ENSOptions = {
   graphURI?: string | null
 }
+
+export type InternalENS = {
+  options?: ENSOptions
+  provider?: ethers.providers.Provider
+  graphURI?: string | null
+} & ENS
+
+type BoundFn<F> = F extends (this: InternalENS, ...args: infer P) => infer R
+  ? (...args: P) => R
+  : never
 
 const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
@@ -14,32 +26,20 @@ const graphURIEndpoints: Record<string, string> = {
 }
 
 export class ENS {
-  private options?: ENSOptions
-  private provider?: ethers.providers.Provider
-  private graphURI?: string | null
-  contracts?: any
+  protected options?: ENSOptions
+  protected provider?: ethers.providers.Provider
+  protected graphURI?: string | null
+  contracts?: ContractManager
   gqlInstance = new GqlManager()
 
   constructor(options?: ENSOptions) {
     this.options = options
   }
 
-  private generateFunction = (path: string, exportName = 'default') => {
-    let imported: any
-    return async (...args: any[]) => {
-      if (!imported) {
-        imported = (await import(path))[exportName]
-      }
-      return imported(
-        {
-          provider: this.provider,
-          gqlInstance: this.gqlInstance,
-          contracts: this.contracts,
-        },
-        ...args,
-      )
-    }
-  }
+  private generateFunction =
+    (path: string, exportName = 'default') =>
+    async (...args: any[]) =>
+      (await import(path))[exportName].bind(this)(...args)
 
   public setProvider = async (provider: ethers.providers.Provider) => {
     this.provider = provider
@@ -51,11 +51,10 @@ export class ENS {
     }
     await this.gqlInstance.setUrl(this.graphURI)
     this.contracts = new ContractManager(this.provider)
-    this.getProfile = this.generateFunction('./getProfile')
-    this.getName = this.generateFunction('./getName')
     return
   }
 
-  public getProfile: any
-  public getName: any
+  public getProfile: BoundFn<typeof getProfile> =
+    this.generateFunction('./getProfile')
+  public getName: BoundFn<typeof getName> = this.generateFunction('./getName')
 }

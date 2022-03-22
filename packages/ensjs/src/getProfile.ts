@@ -1,6 +1,6 @@
 import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import getName from './getName'
+import { InternalENS } from '.'
 import { hexEncodeName } from './utils/hexEncodedName'
 
 type InternalProfileOptions = {
@@ -57,12 +57,12 @@ const addCalls = (
   )
 
 const getDataForName = async (
-  { contracts }: { contracts: any },
+  ENS: InternalENS,
   name: string,
   options: InternalProfileOptions,
 ) => {
-  const publicResolver = await contracts.getPublicResolver()
-  const universalResolver = await contracts.getUniversalResolver()
+  const publicResolver = await ENS.contracts?.getPublicResolver()
+  const universalResolver = await ENS.contracts?.getUniversalResolver()
 
   let calls: any[] = []
   options.texts &&
@@ -130,11 +130,11 @@ const getDataForName = async (
 }
 
 const getDataForAddress = async (
-  { contracts }: { contracts: any },
+  ENS: InternalENS,
   address: string,
   options: InternalProfileOptions,
 ) => {
-  const universalResolver = await contracts.getUniversalResolver()
+  const universalResolver = await ENS.contracts?.getUniversalResolver()
 
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
 
@@ -289,11 +289,11 @@ const formatRecords = (
 }
 
 const graphFetch = async (
-  { gqlInstance }: { gqlInstance: any },
+  ENS: InternalENS,
   name: string,
   wantedRecords: ProfileOptions,
 ) => {
-  const query = gqlInstance.gql`
+  const query = ENS.gqlInstance.gql`
     query getRecords($name: String!) {
       domains(where: { name: $name }) {
         resolver {
@@ -308,7 +308,7 @@ const graphFetch = async (
     }
   `
 
-  const client = gqlInstance.client
+  const client = ENS.gqlInstance.client
 
   const {
     domains: [{ resolver: resolverResponse }],
@@ -331,7 +331,7 @@ type ProfileOptions = {
 }
 
 const getProfileFromAddress = async (
-  { gqlInstance, contracts }: { gqlInstance: any; contracts: any },
+  ENS: InternalENS,
   address: string,
   options?: ProfileOptions,
 ) => {
@@ -340,22 +340,18 @@ const getProfileFromAddress = async (
     (options && options.texts === true) ||
     options.coinTypes === true
   ) {
-    const name = await getName({ contracts }, address)
+    const name = await ENS.getName(address)
     if (!name.match) return { name, records: null, match: false }
     const wantedRecords = await graphFetch(
-      { gqlInstance },
+      ENS,
       name.name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records } = await getDataForName(
-      { contracts },
-      name.name,
-      wantedRecords,
-    )
+    const { records } = await getDataForName(ENS, name.name, wantedRecords)
     return { name: name.name, records, match: true }
   } else {
     return await getDataForAddress(
-      { contracts },
+      ENS,
       address,
       options as InternalProfileOptions,
     )
@@ -363,7 +359,7 @@ const getProfileFromAddress = async (
 }
 
 const getProfileFromName = async (
-  { gqlInstance, contracts }: { gqlInstance: any; contracts: any },
+  ENS: InternalENS,
   name: string,
   options?: ProfileOptions,
 ) => {
@@ -373,41 +369,25 @@ const getProfileFromName = async (
     options.coinTypes === true
   ) {
     const wantedRecords = await graphFetch(
-      { gqlInstance },
+      ENS,
       name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records, address } = await getDataForName(
-      { contracts },
-      name,
-      wantedRecords,
-    )
+    const { records, address } = await getDataForName(ENS, name, wantedRecords)
     return { address, records }
   } else {
-    return await getDataForName(
-      { contracts },
-      name,
-      options as InternalProfileOptions,
-    )
+    return await getDataForName(ENS, name, options as InternalProfileOptions)
   }
 }
 
-export default async (
-  { gqlInstance, contracts }: { gqlInstance: any; contracts: any },
+export default async function (
+  this: InternalENS,
   nameOrAddress: string,
   options?: ProfileOptions,
-) => {
+) {
   if (nameOrAddress.includes('.')) {
-    return getProfileFromName(
-      { gqlInstance, contracts },
-      nameOrAddress,
-      options,
-    )
+    return getProfileFromName(this, nameOrAddress, options)
   } else {
-    return getProfileFromAddress(
-      { gqlInstance, contracts },
-      nameOrAddress,
-      options,
-    )
+    return getProfileFromAddress(this, nameOrAddress, options)
   }
 }

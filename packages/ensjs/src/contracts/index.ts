@@ -10,7 +10,7 @@ export default class ContractManager {
   private generateContractGetter = (path: string) => {
     let imported: any
     let contract: any
-    return async (passedProvider: any) => {
+    return async (passedProvider?: any) => {
       if (!imported) {
         imported = (await import(path)).default
       }

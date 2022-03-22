@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
+import { InternalENS } from '.'
 import { hexEncodeName } from './utils/hexEncodedName'
 
-export default async ({ contracts }: { contracts: any }, address: string) => {
+export default async function (this: InternalENS, address: string) {
   const universalResolver: ethers.Contract =
-    await contracts.getUniversalResolver()
+    await this.contracts?.getUniversalResolver()
 
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
 
