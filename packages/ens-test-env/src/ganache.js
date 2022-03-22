@@ -43,7 +43,8 @@ export const main = async (deployContracts, config) => {
         }
       }
       return
-    } catch {
+    } catch (e) {
+      console.log(e)
       console.log('No deployments found, skipping...')
       return
     }

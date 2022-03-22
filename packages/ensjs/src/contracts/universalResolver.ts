@@ -7,6 +7,7 @@ const universalResolverABI = [
   'function registry() view returns (address)',
   'function resolve(bytes name, bytes data) view returns (bytes)',
   'function resolveCallback(bytes response, bytes extraData) view returns (bytes)',
+  'function reverse(bytes name, tuple(string sig, tuple(string dataType, bytes data)[] data)[] calls) view returns (string, bytes[])',
   'function supportsInterface(bytes4 interfaceId) view returns (bool)',
 ]
 

@@ -14,7 +14,7 @@ const start = async () => {
 
   const response = await ENSInstance.getProfile('jefflau.eth')
 
-  console.log(response)
+  console.log(response, response.records.texts, response.records.coinTypes)
 
   const nameResponse = await ENSInstance.getName(
     '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
@@ -22,11 +22,14 @@ const start = async () => {
 
   console.log(nameResponse)
 
-  const weirollTest = await ENSInstance.weirollTest(
+  const getProfileAddress = await ENSInstance.getProfile(
     '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
   )
-
-  console.log(weirollTest)
+  console.log(
+    getProfileAddress,
+    getProfileAddress.records.texts,
+    getProfileAddress.records.coinTypes,
+  )
 }
 
 start()

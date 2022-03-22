@@ -411,10 +411,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:5.15.0"\
       ],\
       [\
-        "@weiroll/weiroll.js",\
-        "npm:0.3.0"\
-      ],\
-      [\
         "abbrev",\
         "npm:1.1.1"\
       ],\
@@ -1028,7 +1024,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "ens-contracts-universal",\
-        "https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"\
+        "https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"\
       ],\
       [\
         "entities",\
@@ -2929,11 +2925,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/ens-contracts", "npm:0.0.11"],\
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
-            ["@weiroll/weiroll.js", "npm:0.3.0"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
-            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"],\
+            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"],\
             ["ethcall", "npm:4.4.0"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
@@ -4185,16 +4180,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/visitor-keys", "npm:5.15.0"],\
             ["@typescript-eslint/types", "npm:5.15.0"],\
             ["eslint-visitor-keys", "npm:3.3.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@weiroll/weiroll.js", [\
-        ["npm:0.3.0", {\
-          "packageLocation": "./.yarn/cache/@weiroll-weiroll.js-npm-0.3.0-ac4ce3ff37-571d94ed27.zip/node_modules/@weiroll/weiroll.js/",\
-          "packageDependencies": [\
-            ["@weiroll/weiroll.js", "npm:0.3.0"],\
-            ["ethers", "npm:5.6.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6014,10 +5999,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["ens-contracts-universal", [\
-        ["https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0", {\
-          "packageLocation": "./.yarn/cache/ens-contracts-universal-https-0d4521819c-9256b1fbc0.zip/node_modules/ens-contracts-universal/",\
+        ["https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141", {\
+          "packageLocation": "./.yarn/cache/ens-contracts-universal-https-464c1e6e8a-f483e68025.zip/node_modules/ens-contracts-universal/",\
           "packageDependencies": [\
-            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"],\
+            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"],\
             ["@ensdomains/buffer", "npm:0.0.13"],\
             ["@ensdomains/solsha1", "npm:0.0.3"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\

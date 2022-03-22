@@ -96,11 +96,10 @@ __metadata:
     "@ensdomains/ens-contracts": ^0.0.11
     "@ensdomains/ens-test-env": "workspace:*"
     "@openzeppelin/contracts": ^4.5.0
-    "@weiroll/weiroll.js": ^0.3.0
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
     ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
-    ens-contracts-universal: "github:ensdomains/ens-contracts#universal"
+    ens-contracts-universal: "github:ensdomains/ens-contracts#head=universal-reverse&commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"
     ethcall: ^4.4.0
     ethers: ^5.6.1
     graphql: ^16.3.0
@@ -1132,15 +1131,6 @@ __metadata:
     "@typescript-eslint/types": 5.15.0
     eslint-visitor-keys: ^3.0.0
   checksum: a3f231bf55794547680284aa23ba495efa1e52f864583fe53e1ff8b2c011db070ca48633eb8a333bfc93be0bdbb76ffa98e81bf032fd2737a5e0f0b1b81bbc22
-  languageName: node
-  linkType: hard
-
-"@weiroll/weiroll.js@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@weiroll/weiroll.js@npm:0.3.0"
-  dependencies:
-    ethers: ^5.3.1
-  checksum: 571d94ed27edb3433d4b4dcae20ee0489130adaf523f74aa54b2681bc601f6557bb5e9d15db626fef8524b43eee5119f46cac6118290fa936c63237d9bbdace5
   languageName: node
   linkType: hard
 
@@ -2709,15 +2699,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ens-contracts-universal@github:ensdomains/ens-contracts#universal":
+"ens-contracts-universal@github:ensdomains/ens-contracts#head=universal-reverse&commit=4ef1d1ed892933e0582894aec9d4b49fe1910141":
   version: 0.0.8
-  resolution: "ens-contracts-universal@https://github.com/ensdomains/ens-contracts.git#commit=5c27bec6bf0b86797c3482ada66152443de421a0"
+  resolution: "ens-contracts-universal@https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"
   dependencies:
     "@ensdomains/buffer": ^0.0.13
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: 9256b1fbc08e64195769c0d2d74c0f6814f6c99c168f3b7ee69b95378afc7ed5fc4fafadf4231a56de5ef97d657438faa145e2a4dfbdbdf848562d64c274501c
+  checksum: f483e68025cc2be957a98731ce8d31ecec30e35e9b92c073fd44852500cbcf6c9ebde9cb9b5300a0d9f4f7e3fd3cd1e033cdbff08cc18a5dfe8f689e8b3ff514
   languageName: node
   linkType: hard
 
@@ -3247,7 +3237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.3.1, ethers@npm:^5.6.1":
+"ethers@npm:^5.6.1":
   version: 5.6.1
   resolution: "ethers@npm:5.6.1"
   dependencies:
