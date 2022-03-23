@@ -59,6 +59,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:0.0.13"\
       ],\
       [\
+        "@ensdomains/content-hash",\
+        "npm:2.5.7"\
+      ],\
+      [\
         "@ensdomains/ens-adapter-apollo",\
         "workspace:packages/ensjs-adapter-apollo"\
       ],\
@@ -235,6 +239,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:2.0.3"\
       ],\
       [\
+        "@multiformats/base-x",\
+        "npm:4.0.1"\
+      ],\
+      [\
         "@nodelib/fs.scandir",\
         "npm:2.1.5"\
       ],\
@@ -409,6 +417,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "@typescript-eslint/visitor-keys",\
         "npm:5.15.0"\
+      ],\
+      [\
+        "@zxing/text-encoding",\
+        "npm:0.9.0"\
       ],\
       [\
         "abbrev",\
@@ -1663,6 +1675,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:17.6.0"\
       ],\
       [\
+        "js-base64",\
+        "npm:3.7.2"\
+      ],\
+      [\
         "js-crc",\
         "npm:0.2.0"\
       ],\
@@ -1912,11 +1928,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "multibase",\
-        "npm:0.6.1"\
+        "npm:4.0.6"\
       ],\
       [\
         "multicodec",\
-        "npm:1.0.4"\
+        "npm:3.2.1"\
+      ],\
+      [\
+        "multiformats",\
+        "npm:9.6.4"\
       ],\
       [\
         "multihashes",\
@@ -2531,6 +2551,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"\
       ],\
       [\
+        "uint8arrays",\
+        "npm:3.0.0"\
+      ],\
+      [\
         "ultron",\
         "npm:1.1.1"\
       ],\
@@ -2621,6 +2645,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "wait-on",\
         "npm:6.0.1"\
+      ],\
+      [\
+        "web-encoding",\
+        "npm:1.1.5"\
       ],\
       [\
         "web3",\
@@ -2873,6 +2901,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@ensdomains/content-hash", [\
+        ["npm:2.5.7", {\
+          "packageLocation": "./.yarn/cache/@ensdomains-content-hash-npm-2.5.7-1fba9be433-bbd8b884f9.zip/node_modules/@ensdomains/content-hash/",\
+          "packageDependencies": [\
+            ["@ensdomains/content-hash", "npm:2.5.7"],\
+            ["cids", "npm:1.1.9"],\
+            ["js-base64", "npm:3.7.2"],\
+            ["multicodec", "npm:3.2.1"],\
+            ["multihashes", "npm:2.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@ensdomains/ens-adapter-apollo", [\
         ["workspace:packages/ensjs-adapter-apollo", {\
           "packageLocation": "./packages/ensjs-adapter-apollo/",\
@@ -2922,6 +2963,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/ensjs", "workspace:packages/ensjs"],\
             ["@ensdomains/address-encoder", "npm:0.2.16"],\
             ["@ensdomains/buffer", "npm:0.0.13"],\
+            ["@ensdomains/content-hash", "npm:2.5.7"],\
             ["@ensdomains/ens-contracts", "npm:0.0.11"],\
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
@@ -3490,6 +3532,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@leichtgewicht-ip-codec-npm-2.0.3-536ebba640-5b6bee0481.zip/node_modules/@leichtgewicht/ip-codec/",\
           "packageDependencies": [\
             ["@leichtgewicht/ip-codec", "npm:2.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@multiformats/base-x", [\
+        ["npm:4.0.1", {\
+          "packageLocation": "./.yarn/cache/@multiformats-base-x-npm-4.0.1-a1a1c51d61-ecbf84bdd7.zip/node_modules/@multiformats/base-x/",\
+          "packageDependencies": [\
+            ["@multiformats/base-x", "npm:4.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4180,6 +4231,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/visitor-keys", "npm:5.15.0"],\
             ["@typescript-eslint/types", "npm:5.15.0"],\
             ["eslint-visitor-keys", "npm:3.3.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@zxing/text-encoding", [\
+        ["npm:0.9.0", {\
+          "packageLocation": "./.yarn/cache/@zxing-text-encoding-npm-0.9.0-8426ff59e9-c23b12aee7.zip/node_modules/@zxing/text-encoding/",\
+          "packageDependencies": [\
+            ["@zxing/text-encoding", "npm:0.9.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -5148,6 +5208,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["multibase", "npm:0.6.1"],\
             ["multicodec", "npm:1.0.4"],\
             ["multihashes", "npm:0.4.21"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:1.1.9", {\
+          "packageLocation": "./.yarn/cache/cids-npm-1.1.9-e64481d6ea-58ad9411b5.zip/node_modules/cids/",\
+          "packageDependencies": [\
+            ["cids", "npm:1.1.9"],\
+            ["multibase", "npm:4.0.6"],\
+            ["multicodec", "npm:3.2.1"],\
+            ["multihashes", "npm:4.0.3"],\
+            ["uint8arrays", "npm:3.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8176,6 +8247,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["js-base64", [\
+        ["npm:3.7.2", {\
+          "packageLocation": "./.yarn/cache/js-base64-npm-3.7.2-706fb77a0b-573f28e9a2.zip/node_modules/js-base64/",\
+          "packageDependencies": [\
+            ["js-base64", "npm:3.7.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["js-crc", [\
         ["npm:0.2.0", {\
           "packageLocation": "./.yarn/cache/js-crc-npm-0.2.0-a9111e3c97-3e307ae642.zip/node_modules/js-crc/",\
@@ -8924,6 +9004,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["buffer", "npm:5.7.1"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/multibase-npm-2.0.0-11c9736968-f5cc4cb5d5.zip/node_modules/multibase/",\
+          "packageDependencies": [\
+            ["multibase", "npm:2.0.0"],\
+            ["base-x", "npm:3.0.9"],\
+            ["buffer", "npm:5.7.1"],\
+            ["web-encoding", "npm:1.1.5"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:4.0.6", {\
+          "packageLocation": "./.yarn/cache/multibase-npm-4.0.6-e38a920e01-891ce47f50.zip/node_modules/multibase/",\
+          "packageDependencies": [\
+            ["multibase", "npm:4.0.6"],\
+            ["@multiformats/base-x", "npm:4.0.1"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["multicodec", [\
@@ -8943,6 +9041,24 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["varint", "npm:5.0.2"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:3.2.1", {\
+          "packageLocation": "./.yarn/cache/multicodec-npm-3.2.1-d41604b743-9b6d209c85.zip/node_modules/multicodec/",\
+          "packageDependencies": [\
+            ["multicodec", "npm:3.2.1"],\
+            ["uint8arrays", "npm:3.0.0"],\
+            ["varint", "npm:6.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["multiformats", [\
+        ["npm:9.6.4", {\
+          "packageLocation": "./.yarn/cache/multiformats-npm-9.6.4-7c156d895c-b3b8e48111.zip/node_modules/multiformats/",\
+          "packageDependencies": [\
+            ["multiformats", "npm:9.6.4"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["multihashes", [\
@@ -8952,6 +9068,27 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["multihashes", "npm:0.4.21"],\
             ["buffer", "npm:5.7.1"],\
             ["multibase", "npm:0.7.0"],\
+            ["varint", "npm:5.0.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/multihashes-npm-2.0.0-92370ce399-7999fc857e.zip/node_modules/multihashes/",\
+          "packageDependencies": [\
+            ["multihashes", "npm:2.0.0"],\
+            ["buffer", "npm:5.7.1"],\
+            ["multibase", "npm:2.0.0"],\
+            ["varint", "npm:5.0.2"],\
+            ["web-encoding", "npm:1.1.5"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:4.0.3", {\
+          "packageLocation": "./.yarn/cache/multihashes-npm-4.0.3-66c3bf1aca-57c978aa53.zip/node_modules/multihashes/",\
+          "packageDependencies": [\
+            ["multihashes", "npm:4.0.3"],\
+            ["multibase", "npm:4.0.6"],\
+            ["uint8arrays", "npm:3.0.0"],\
             ["varint", "npm:5.0.2"]\
           ],\
           "linkType": "HARD"\
@@ -10844,6 +10981,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["uint8arrays", [\
+        ["npm:3.0.0", {\
+          "packageLocation": "./.yarn/cache/uint8arrays-npm-3.0.0-8a9076adb2-58470e6871.zip/node_modules/uint8arrays/",\
+          "packageDependencies": [\
+            ["uint8arrays", "npm:3.0.0"],\
+            ["multiformats", "npm:9.6.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["ultron", [\
         ["npm:1.1.1", {\
           "packageLocation": "./.yarn/cache/ultron-npm-1.1.1-193641dfec-aa7b5ebb1b.zip/node_modules/ultron/",\
@@ -11090,6 +11237,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["varint", "npm:5.0.2"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:6.0.0", {\
+          "packageLocation": "./.yarn/cache/varint-npm-6.0.0-a638e8f225-7684113c9d.zip/node_modules/varint/",\
+          "packageDependencies": [\
+            ["varint", "npm:6.0.0"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["vary", [\
@@ -11123,6 +11277,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["lodash", "npm:4.17.21"],\
             ["minimist", "npm:1.2.5"],\
             ["rxjs", "npm:7.5.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["web-encoding", [\
+        ["npm:1.1.5", {\
+          "packageLocation": "./.yarn/cache/web-encoding-npm-1.1.5-d5a3c7dc3d-2234a2b122.zip/node_modules/web-encoding/",\
+          "packageDependencies": [\
+            ["web-encoding", "npm:1.1.5"],\
+            ["@zxing/text-encoding", "npm:0.9.0"],\
+            ["util", "npm:0.12.4"]\
           ],\
           "linkType": "HARD"\
         }]\

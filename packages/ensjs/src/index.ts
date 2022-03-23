@@ -5,6 +5,7 @@ import type getProfile from './getProfile'
 import type getResolver from './getResolver'
 import GqlManager from './GqlManager'
 import type setName from './setName'
+import setRecords from './setRecords'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -62,4 +63,6 @@ export class ENS {
   public getResolver: BoundFn<typeof getResolver> =
     this.generateFunction('./getResolver')
   public setName: BoundFn<typeof setName> = this.generateFunction('./setName')
+  public setRecords: BoundFn<typeof setRecords> =
+    this.generateFunction('./setRecords')
 }

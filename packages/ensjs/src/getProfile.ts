@@ -1,16 +1,17 @@
-import { formatsByCoinType } from '@ensdomains/address-encoder'
+import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
 import { InternalENS } from '.'
+import { decodeContenthash, DecodedContentHash } from './utils/contentHash'
 import { hexEncodeName } from './utils/hexEncodedName'
 
 type InternalProfileOptions = {
-  contentHash?: boolean | string
+  contentHash?: boolean | string | DecodedContentHash
   texts?: string[]
   coinTypes?: string[]
 }
 
 type ProfileResponse = {
-  contentHash?: string
+  contentHash?: string | DecodedContentHash
   texts?: string[]
   coinTypes?: string[]
 }
@@ -66,7 +67,7 @@ const getDataForName = async (
     })
   }
 
-  if (!calls.filter((x) => x.key === '60')) {
+  if (!calls.find((x) => x.key === '60')) {
     calls.push({
       key: '60',
       data: encodeData('addr(bytes32,uint256)', name, '60'),
@@ -127,7 +128,7 @@ const getDataForAddress = async (
         key: item,
         data: makeResolverData(
           type + callArgs,
-          callArgs.split(',')[0].replace(')', ''),
+          callArgs.split(',')[1].replace(')', ''),
           item,
         ),
         type,
@@ -146,7 +147,7 @@ const getDataForAddress = async (
     })
   }
 
-  if (!calls.filter((x) => x.key === '60')) {
+  if (!calls.find((x) => x.key === '60')) {
     calls.push({
       key: '60',
       data: makeResolverData('addr(bytes32,uint256)', 'uint256', '60'),
@@ -212,8 +213,11 @@ const formatRecords = (
             return null
           }
         case 'contenthash':
-          itemRet = { ...itemRet, value: decodedFromAbi }
-          break
+          try {
+            itemRet = { ...itemRet, value: decodeContenthash(decodedFromAbi) }
+          } catch {
+            return null
+          }
       }
       return itemRet
     })
@@ -223,13 +227,19 @@ const formatRecords = (
     .filter((x) => x !== null)
 
   let returnedResponse: {
-    contentHash?: string | null
+    contentHash?: string | null | DecodedContentHash
     coinTypes?: DataItem[]
     texts?: DataItem[]
   } = {}
 
-  if (typeof options.contentHash === 'string') {
-    if (ethers.utils.hexStripZeros(options.contentHash) === '0x') {
+  if (
+    typeof options.contentHash === 'string' ||
+    typeof options.contentHash === 'object'
+  ) {
+    if (
+      typeof options.contentHash === 'string' &&
+      ethers.utils.hexStripZeros(options.contentHash) === '0x'
+    ) {
       returnedResponse.contentHash = null
     } else {
       returnedResponse.contentHash = options.contentHash
@@ -279,14 +289,20 @@ const graphFetch = async (
     domains: [{ resolver: resolverResponse }],
   } = await client.request(query, { name })
 
+  let returnedRecords: ProfileResponse = {}
+
   Object.keys(wantedRecords).forEach((key: string) => {
     const data = wantedRecords[key as keyof ProfileOptions]
     if (typeof data === 'boolean' && data) {
-      wantedRecords[key as keyof ProfileOptions] = resolverResponse[key]
+      if (key === 'contentHash') {
+        returnedRecords[key] = decodeContenthash(resolverResponse.contentHash)
+      } else {
+        returnedRecords[key as keyof ProfileOptions] = resolverResponse[key]
+      }
     }
   })
 
-  return wantedRecords as ProfileResponse
+  return returnedRecords
 }
 
 type ProfileOptions = {
@@ -350,6 +366,16 @@ export default async function (
   nameOrAddress: string,
   options?: ProfileOptions,
 ) {
+  if (options && options.coinTypes && typeof options.coinTypes !== 'boolean') {
+    options.coinTypes = options.coinTypes.map((coin: string) => {
+      if (!isNaN(parseInt(coin))) {
+        return coin
+      } else {
+        return `${formatsByName[coin.toUpperCase()].coinType}`
+      }
+    })
+  }
+
   if (nameOrAddress.includes('.')) {
     return getProfileFromName(this, nameOrAddress, options)
   } else {

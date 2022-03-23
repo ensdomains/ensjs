@@ -15,7 +15,7 @@ const start = async () => {
   await ENSInstance.setProvider(provider)
 
   const _getProfile = async () => {
-    const response = await ENSInstance.getProfile('jefflau.eth')
+    const response = await ENSInstance.getProfile('matoken.eth')
 
     console.log(response, response.records?.texts, response.records?.coinTypes)
   }
@@ -50,6 +50,29 @@ const start = async () => {
     const name = await ENSInstance.getName(accounts[0])
     console.log(name)
   }
+
+  const _setRecords = async () => {
+    const setRecordsTx = await ENSInstance.setRecords('parthtejpal.eth', {
+      texts: [{ key: 'cool', value: 'swag' }],
+      coinTypes: [
+        { key: 'ETC', value: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE' },
+      ],
+    })
+    await setRecordsTx.wait()
+  }
+
+  const getProfileAddress = await ENSInstance.getProfile(
+    '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+    { texts: ['description'], coinTypes: ['ETC'] },
+  )
+  console.log(
+    getProfileAddress,
+    getProfileAddress?.records?.texts,
+    getProfileAddress?.records?.coinTypes,
+  )
+
+  // const profile = await ENSInstance.getProfile('parthtejpal.eth')
+  // console.log(profile?.records?.coinTypes)
 }
 
 start()

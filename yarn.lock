@@ -49,6 +49,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ensdomains/content-hash@npm:^2.5.7":
+  version: 2.5.7
+  resolution: "@ensdomains/content-hash@npm:2.5.7"
+  dependencies:
+    cids: ^1.1.5
+    js-base64: ^3.6.0
+    multicodec: ^3.2.0
+    multihashes: ^2.0.0
+  checksum: bbd8b884f9fa5ef10afacd4954d3d7bc5218b1a9d4fadf817f2d8323d99a17559812ee0f53b7dd7c2d8ca7252bebf880cd8c6da05c445bcbee07c6ccd2488396
+  languageName: node
+  linkType: hard
+
 "@ensdomains/ens-adapter-apollo@workspace:packages/ensjs-adapter-apollo":
   version: 0.0.0-use.local
   resolution: "@ensdomains/ens-adapter-apollo@workspace:packages/ensjs-adapter-apollo"
@@ -93,6 +105,7 @@ __metadata:
   dependencies:
     "@ensdomains/address-encoder": ^0.2.16
     "@ensdomains/buffer": ^0.0.13
+    "@ensdomains/content-hash": ^2.5.7
     "@ensdomains/ens-contracts": ^0.0.11
     "@ensdomains/ens-test-env": "workspace:*"
     "@openzeppelin/contracts": ^4.5.0
@@ -622,6 +635,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@multiformats/base-x@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@multiformats/base-x@npm:4.0.1"
+  checksum: ecbf84bdd7613fd795e4a41f20f3e8cc7df8bbee84690b7feed383d45a638ed228a80ff6f5c930373cbf24539f64857b66023ee3c1e914f6bac9995c76414a87
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1131,6 +1151,13 @@ __metadata:
     "@typescript-eslint/types": 5.15.0
     eslint-visitor-keys: ^3.0.0
   checksum: a3f231bf55794547680284aa23ba495efa1e52f864583fe53e1ff8b2c011db070ca48633eb8a333bfc93be0bdbb76ffa98e81bf032fd2737a5e0f0b1b81bbc22
+  languageName: node
+  linkType: hard
+
+"@zxing/text-encoding@npm:0.9.0":
+  version: 0.9.0
+  resolution: "@zxing/text-encoding@npm:0.9.0"
+  checksum: c23b12aee7639382e4949961304a1294776afaffa40f579e09ffecd0e5e68cf26ef3edd75009de46da8a536e571448755ca68b3e2ea707d53793c0edb2e2c34a
   languageName: node
   linkType: hard
 
@@ -1974,6 +2001,18 @@ __metadata:
     multicodec: ^1.0.0
     multihashes: ~0.4.15
   checksum: 54aa031bef76b08a2c934237696a4af2cfc8afb5d2727cb39ab69f6ac142ef312b9a0c6070dc2b4be0a43076d8961339d8bf85287773c647b3d1d25ce203f325
+  languageName: node
+  linkType: hard
+
+"cids@npm:^1.1.5":
+  version: 1.1.9
+  resolution: "cids@npm:1.1.9"
+  dependencies:
+    multibase: ^4.0.1
+    multicodec: ^3.0.1
+    multihashes: ^4.0.1
+    uint8arrays: ^3.0.0
+  checksum: 58ad9411b51c4f2d1568a3542578cf8c05028631ef8d9b0aa46db4ebbc812c4d7159216b310e333a81ff9f1b8e44c1c8ff3debdc0a8e9d83421af7f776677e41
   languageName: node
   linkType: hard
 
@@ -4550,6 +4589,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-base64@npm:^3.6.0":
+  version: 3.7.2
+  resolution: "js-base64@npm:3.7.2"
+  checksum: 573f28e9a27c3df60096d4d3f551bcb4fcb6d49161cf83396e9bad9b76f94736a70bb70b8808fe834dff2a388f76604ba09d6e153bbf181646e407720139fa5b
+  languageName: node
+  linkType: hard
+
 "js-crc@npm:^0.2.0":
   version: 0.2.0
   resolution: "js-crc@npm:0.2.0"
@@ -5218,6 +5264,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multibase@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "multibase@npm:2.0.0"
+  dependencies:
+    base-x: ^3.0.8
+    buffer: ^5.5.0
+    web-encoding: ^1.0.2
+  checksum: f5cc4cb5d51cf338cb084f9861016e6aaad8f5ad387180d8978de6d60beb91ea5cd45076f14a2f7a9fe5b36c713a4f6d4fec7565424d49bb28a18d81fe38e6ae
+  languageName: node
+  linkType: hard
+
+"multibase@npm:^4.0.1":
+  version: 4.0.6
+  resolution: "multibase@npm:4.0.6"
+  dependencies:
+    "@multiformats/base-x": ^4.0.1
+  checksum: 891ce47f509c6070d2306e7e00aef3ef41fbb50a848a1e1bec5e75ca63c5032015a436cf09e9e3939b5b2ca81e74804151eb410a388f10e9aabf7a2f5a35d272
+  languageName: node
+  linkType: hard
+
 "multibase@npm:~0.6.0":
   version: 0.6.1
   resolution: "multibase@npm:0.6.1"
@@ -5247,6 +5313,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multicodec@npm:^3.0.1, multicodec@npm:^3.2.0":
+  version: 3.2.1
+  resolution: "multicodec@npm:3.2.1"
+  dependencies:
+    uint8arrays: ^3.0.0
+    varint: ^6.0.0
+  checksum: 9b6d209c85e12ea3f66cad25671dd92b6be2eff1455669fbbd3c01a26e649c79f94b29f8228c0f9e4fdecb4137b6b6f0f4b0721fd2cb79ec74b1049c29101092
+  languageName: node
+  linkType: hard
+
+"multiformats@npm:^9.4.2":
+  version: 9.6.4
+  resolution: "multiformats@npm:9.6.4"
+  checksum: b3b8e481112379d6f3aace199a06e6974dfe3ed4e2100a0effe19fef936ba31704382356df6278a3922b5cb47fcfefe3e5bc54e5bebef35272e3503bad3c62ba
+  languageName: node
+  linkType: hard
+
 "multihashes@npm:^0.4.15, multihashes@npm:~0.4.15":
   version: 0.4.21
   resolution: "multihashes@npm:0.4.21"
@@ -5255,6 +5338,29 @@ __metadata:
     multibase: ^0.7.0
     varint: ^5.0.0
   checksum: 688731560cf7384e899dc75c0da51e426eb7d058c5ea5eb57b224720a1108deb8797f1cd7f45599344d512d2877de99dd6a7b7773a095812365dea4ffe6ebd4c
+  languageName: node
+  linkType: hard
+
+"multihashes@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "multihashes@npm:2.0.0"
+  dependencies:
+    buffer: ^5.6.0
+    multibase: ^2.0.0
+    varint: ^5.0.0
+    web-encoding: ^1.0.2
+  checksum: 7999fc857e1ba1af0f91361d32d59c64f39e3fef396dd1b42265d902aeb2130340e1f0662e3c7280d4f3bfedca3d32c93ae89e13fd834a1a5c5fd49c22d461e0
+  languageName: node
+  linkType: hard
+
+"multihashes@npm:^4.0.1":
+  version: 4.0.3
+  resolution: "multihashes@npm:4.0.3"
+  dependencies:
+    multibase: ^4.0.1
+    uint8arrays: ^3.0.0
+    varint: ^5.0.2
+  checksum: 57c978aa53f7144f8a146a486aa6aea96a73f21058f48ab80a8c5542854197aa63d33aae42b005bed1bbba9f70958b60f3287d90f1a47cf13e8ea7d75d6b8e34
   languageName: node
   linkType: hard
 
@@ -6882,6 +6988,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uint8arrays@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "uint8arrays@npm:3.0.0"
+  dependencies:
+    multiformats: ^9.4.2
+  checksum: 58470e687140e64a7fa08ab66b64777b75f105bf78180324448dc798436beacf0bd322cd2b58d20ca4cfa2e091f58e4b52d008e95f21d0ade16c1102b5d23ad3
+  languageName: node
+  linkType: hard
+
 "ultron@npm:~1.1.0":
   version: 1.1.1
   resolution: "ultron@npm:1.1.1"
@@ -7036,7 +7151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util@npm:^0.12.0":
+"util@npm:^0.12.0, util@npm:^0.12.3":
   version: 0.12.4
   resolution: "util@npm:0.12.4"
   dependencies:
@@ -7096,10 +7211,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"varint@npm:^5.0.0":
+"varint@npm:^5.0.0, varint@npm:^5.0.2":
   version: 5.0.2
   resolution: "varint@npm:5.0.2"
   checksum: e1a66bf9a6cea96d1f13259170d4d41b845833acf3a9df990ea1e760d279bd70d5b1f4c002a50197efd2168a2fd43eb0b808444600fd4d23651e8d42fe90eb05
+  languageName: node
+  linkType: hard
+
+"varint@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "varint@npm:6.0.0"
+  checksum: 7684113c9d497c01e40396e50169c502eb2176203219b96e1c5ac965a3e15b4892bd22b7e48d87148e10fffe638130516b6dbeedd0efde2b2d0395aa1772eea7
   languageName: node
   linkType: hard
 
@@ -7133,6 +7255,19 @@ __metadata:
   bin:
     wait-on: bin/wait-on
   checksum: e4d62aa4145d99fe34747ccf7506d4b4d6e60dd677c0eb18a51e316d38116ace2d194e4b22a9eb7b767b0282f39878ddcc4ae9440dcb0c005c9150668747cf5b
+  languageName: node
+  linkType: hard
+
+"web-encoding@npm:^1.0.2":
+  version: 1.1.5
+  resolution: "web-encoding@npm:1.1.5"
+  dependencies:
+    "@zxing/text-encoding": 0.9.0
+    util: ^0.12.3
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 2234a2b122f41006ce07859b3c0bf2e18f46144fda2907d5db0b571b76aa5c26977c646100ad9c00d2f8a4f6f2b848bc02147845d8c447ab365ec4eff376338d
   languageName: node
   linkType: hard
 
