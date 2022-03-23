@@ -1,9 +1,9 @@
-import { ENSRegistry } from '@ensdomains/ens-contracts'
+import { ReverseRegistrar } from '@ensdomains/ens-contracts'
 import { ethers } from 'ethers'
 
-const defaultAddress = '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e'
+const defaultAddress = '0x6F628b68b30Dc3c17f345c9dbBb1E483c2b7aE5c'
 
-const ABI = ENSRegistry
+const ABI = ReverseRegistrar
 
 export default (provider: ethers.providers.JsonRpcProvider, address?: string) =>
   new ethers.Contract(address || defaultAddress, ABI, provider)

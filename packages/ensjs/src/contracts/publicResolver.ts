@@ -1,8 +1,8 @@
 import { ethers } from 'ethers'
 
-const publicResolverAddress = '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC'
+const defaultAddress = '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC'
 
-const publicResolverABI = [
+const ABI = [
   'function ABI(bytes32 node, uint256 contentTypes) view returns (uint256, bytes)',
   'function addr(bytes32 node) view returns (address)',
   'function addr(bytes32 node, uint256 coinType) view returns (bytes)',
@@ -31,5 +31,5 @@ const publicResolverABI = [
   'function zonehash(bytes32 node) view returns (bytes)',
 ]
 
-export default (provider: any) =>
-  new ethers.Contract(publicResolverAddress, publicResolverABI, provider)
+export default (provider: ethers.providers.JsonRpcProvider, address?: string) =>
+  new ethers.Contract(address || defaultAddress, ABI, provider)

@@ -2,7 +2,9 @@ import { ethers } from 'ethers'
 import ContractManager from './contracts'
 import type getName from './getName'
 import type getProfile from './getProfile'
+import type getResolver from './getResolver'
 import GqlManager from './GqlManager'
+import type setName from './setName'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -27,7 +29,7 @@ const graphURIEndpoints: Record<string, string> = {
 
 export class ENS {
   protected options?: ENSOptions
-  protected provider?: ethers.providers.Provider
+  protected provider?: ethers.providers.JsonRpcProvider
   protected graphURI?: string | null
   contracts?: ContractManager
   gqlInstance = new GqlManager()
@@ -41,7 +43,7 @@ export class ENS {
     async (...args: any[]) =>
       (await import(path))[exportName].bind(this)(...args)
 
-  public setProvider = async (provider: ethers.providers.Provider) => {
+  public setProvider = async (provider: ethers.providers.JsonRpcProvider) => {
     this.provider = provider
     if (this.options && this.options.graphURI) {
       this.graphURI = this.options.graphURI
@@ -57,4 +59,7 @@ export class ENS {
   public getProfile: BoundFn<typeof getProfile> =
     this.generateFunction('./getProfile')
   public getName: BoundFn<typeof getName> = this.generateFunction('./getName')
+  public getResolver: BoundFn<typeof getResolver> =
+    this.generateFunction('./getResolver')
+  public setName: BoundFn<typeof setName> = this.generateFunction('./setName')
 }

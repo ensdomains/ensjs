@@ -10,12 +10,15 @@ export default class ContractManager {
   private generateContractGetter = (path: string) => {
     let imported: any
     let contract: ethers.Contract
-    return async (passedProvider?: any): Promise<ethers.Contract> => {
+    return async (
+      passedProvider?: any,
+      address?: string,
+    ): Promise<ethers.Contract> => {
       if (!imported) {
         imported = (await import(path)).default
       }
       if (passedProvider) {
-        return imported(passedProvider) as ethers.Contract
+        return imported(passedProvider, address) as ethers.Contract
       }
       if (!contract) {
         contract = imported(this.provider) as ethers.Contract
@@ -29,4 +32,5 @@ export default class ContractManager {
     './universalResolver',
   )
   public getRegistry = this.generateContractGetter('./registry')
+  public getReverseRegistrar = this.generateContractGetter('./reverseRegistrar')
 }

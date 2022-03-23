@@ -7,29 +7,49 @@ const start = async () => {
     'ropsten',
   )
 
+  const accounts = await provider.listAccounts()
+
   const ENSInstance = new ENS({
     graphURI: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
   })
   await ENSInstance.setProvider(provider)
 
-  const response = await ENSInstance.getProfile('jefflau.eth')
+  const _getProfile = async () => {
+    const response = await ENSInstance.getProfile('jefflau.eth')
 
-  console.log(response, response.records?.texts, response.records?.coinTypes)
+    console.log(response, response.records?.texts, response.records?.coinTypes)
+  }
 
-  const nameResponse = await ENSInstance.getName(
-    '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
-  )
+  const _getName = async () => {
+    const nameResponse = await ENSInstance.getName(
+      '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+    )
 
-  console.log(nameResponse)
+    console.log(nameResponse)
+  }
 
-  const getProfileAddress = await ENSInstance.getProfile(
-    '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
-  )
-  console.log(
-    getProfileAddress,
-    getProfileAddress?.records?.texts,
-    getProfileAddress?.records?.coinTypes,
-  )
+  const _getProfileAddress = async () => {
+    const getProfileAddress = await ENSInstance.getProfile(
+      '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+    )
+    console.log(
+      getProfileAddress,
+      getProfileAddress?.records?.texts,
+      getProfileAddress?.records?.coinTypes,
+    )
+  }
+
+  const _getResolver = async () => {
+    const getResolver = await ENSInstance.getResolver('jefflau.eth')
+    console.log(getResolver)
+  }
+
+  const _setName = async () => {
+    const setNameTx = await ENSInstance.setName('parthtejpal.eth')
+    await setNameTx.wait()
+    const name = await ENSInstance.getName(accounts[0])
+    console.log(name)
+  }
 }
 
 start()
