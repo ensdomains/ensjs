@@ -1,4 +1,4 @@
-import { InternalENS } from '.'
+import { ENSArgs } from '.'
 
 type ProfileOptions = {
   contentHash?: boolean
@@ -7,12 +7,12 @@ type ProfileOptions = {
 }
 
 export default async function (
-  this: InternalENS,
+  { getProfile }: ENSArgs<'getProfile'>,
   name: string,
   options?: ProfileOptions,
 ) {
   if (!name.includes('.')) {
     throw new Error('Input is not an ENS name')
   }
-  return await this.getProfile(name, options)
+  return await getProfile(name, options)
 }

@@ -65,6 +65,7 @@ const start = async () => {
     '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
     { texts: ['description'], coinTypes: ['ETC'] },
   )
+
   console.log(
     getProfileAddress,
     getProfileAddress?.records?.texts,

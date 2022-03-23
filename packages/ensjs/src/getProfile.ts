@@ -1,6 +1,6 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import { InternalENS } from '.'
+import { ENSArgs, InternalENS } from '.'
 import { decodeContenthash, DecodedContentHash } from './utils/contentHash'
 import { hexEncodeName } from './utils/hexEncodedName'
 
@@ -24,12 +24,12 @@ type DataItem = {
 }
 
 const getDataForName = async (
-  ENS: InternalENS,
+  { contracts }: Pick<InternalENS, 'contracts'>,
   name: string,
   options: InternalProfileOptions,
 ) => {
-  const publicResolver = await ENS.contracts?.getPublicResolver()
-  const universalResolver = await ENS.contracts?.getUniversalResolver()
+  const publicResolver = await contracts?.getPublicResolver()
+  const universalResolver = await contracts?.getUniversalResolver()
 
   let calls: any[] = []
 
@@ -96,11 +96,11 @@ const getDataForName = async (
 }
 
 const getDataForAddress = async (
-  ENS: InternalENS,
+  { contracts }: Pick<InternalENS, 'contracts'>,
   address: string,
   options: InternalProfileOptions,
 ) => {
-  const universalResolver = await ENS.contracts?.getUniversalResolver()
+  const universalResolver = await contracts?.getUniversalResolver()
 
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
 
@@ -264,11 +264,11 @@ const formatRecords = (
 }
 
 const graphFetch = async (
-  ENS: InternalENS,
+  { gqlInstance }: Pick<InternalENS, 'gqlInstance'>,
   name: string,
   wantedRecords: ProfileOptions,
 ) => {
-  const query = ENS.gqlInstance.gql`
+  const query = gqlInstance.gql`
     query getRecords($name: String!) {
       domains(where: { name: $name }) {
         resolver {
@@ -283,7 +283,7 @@ const graphFetch = async (
     }
   `
 
-  const client = ENS.gqlInstance.client
+  const client = gqlInstance.client
 
   const {
     domains: [{ resolver: resolverResponse }],
@@ -312,7 +312,11 @@ type ProfileOptions = {
 }
 
 const getProfileFromAddress = async (
-  ENS: InternalENS,
+  {
+    contracts,
+    gqlInstance,
+    getName,
+  }: ENSArgs<'contracts' | 'gqlInstance' | 'getName'>,
   address: string,
   options?: ProfileOptions,
 ) => {
@@ -321,18 +325,22 @@ const getProfileFromAddress = async (
     (options && options.texts === true) ||
     options.coinTypes === true
   ) {
-    const name = await ENS.getName(address)
+    const name = await getName(address)
     if (!name.match) return { name, records: null, match: false }
     const wantedRecords = await graphFetch(
-      ENS,
+      { gqlInstance },
       name.name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records } = await getDataForName(ENS, name.name, wantedRecords)
+    const { records } = await getDataForName(
+      { contracts },
+      name.name,
+      wantedRecords,
+    )
     return { name: name.name, records, match: true }
   } else {
     return await getDataForAddress(
-      ENS,
+      { contracts },
       address,
       options as InternalProfileOptions,
     )
@@ -340,7 +348,7 @@ const getProfileFromAddress = async (
 }
 
 const getProfileFromName = async (
-  ENS: InternalENS,
+  { contracts, gqlInstance }: ENSArgs<'contracts' | 'gqlInstance'>,
   name: string,
   options?: ProfileOptions,
 ) => {
@@ -350,19 +358,31 @@ const getProfileFromName = async (
     options.coinTypes === true
   ) {
     const wantedRecords = await graphFetch(
-      ENS,
+      { gqlInstance },
       name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records, address } = await getDataForName(ENS, name, wantedRecords)
+    const { records, address } = await getDataForName(
+      { contracts },
+      name,
+      wantedRecords,
+    )
     return { address, records }
   } else {
-    return await getDataForName(ENS, name, options as InternalProfileOptions)
+    return await getDataForName(
+      { contracts },
+      name,
+      options as InternalProfileOptions,
+    )
   }
 }
 
 export default async function (
-  this: InternalENS,
+  {
+    contracts,
+    gqlInstance,
+    getName,
+  }: ENSArgs<'contracts' | 'gqlInstance' | 'getName'>,
   nameOrAddress: string,
   options?: ProfileOptions,
 ) {
@@ -377,8 +397,16 @@ export default async function (
   }
 
   if (nameOrAddress.includes('.')) {
-    return getProfileFromName(this, nameOrAddress, options)
+    return getProfileFromName(
+      { contracts, gqlInstance },
+      nameOrAddress,
+      options,
+    )
   } else {
-    return getProfileFromAddress(this, nameOrAddress, options)
+    return getProfileFromAddress(
+      { contracts, gqlInstance, getName },
+      nameOrAddress,
+      options,
+    )
   }
 }

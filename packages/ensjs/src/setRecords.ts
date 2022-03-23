@@ -1,6 +1,6 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import { InternalENS } from '.'
+import { ENSArgs } from '.'
 import { encodeContenthash } from './utils/contentHash'
 
 type RecordItem = {
@@ -15,7 +15,11 @@ type RecordOptions = {
 }
 
 export default async function (
-  this: InternalENS,
+  {
+    contracts,
+    provider,
+    getResolver,
+  }: ENSArgs<'contracts' | 'provider' | 'getResolver'>,
   name: string,
   records: RecordOptions,
 ) {
@@ -23,21 +27,21 @@ export default async function (
     throw new Error('Input is not an ENS name')
   }
 
-  const resolverAddress = await this.getResolver(name)
+  const resolverAddress = await getResolver(name)
 
   if (!resolverAddress) {
     throw new Error('No resolver found for input address')
   }
 
-  const address = await this.provider?.getSigner().getAddress()
+  const address = await provider?.getSigner().getAddress()
 
   if (!address) {
     throw new Error('No signer found')
   }
 
   const resolver = (
-    await this.contracts?.getPublicResolver(this.provider, resolverAddress)
-  )?.connect(this.provider?.getSigner()!)
+    await contracts?.getPublicResolver(provider, resolverAddress)
+  )?.connect(provider?.getSigner()!)
   const namehash = ethers.utils.namehash(name)
 
   const calls: string[] = []

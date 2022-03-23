@@ -5,7 +5,7 @@ import type getProfile from './getProfile'
 import type getResolver from './getResolver'
 import GqlManager from './GqlManager'
 import type setName from './setName'
-import setRecords from './setRecords'
+import type setRecords from './setRecords'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -17,9 +17,17 @@ export type InternalENS = {
   graphURI?: string | null
 } & ENS
 
-type BoundFn<F> = F extends (this: InternalENS, ...args: infer P) => infer R
+export type ENSArgs<K extends keyof InternalENS> = {
+  [P in K]: InternalENS[P]
+}
+
+type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never
+
+type FirstArg<F> = F extends (x: infer A, ...args: any[]) => any ? A : never
+
+type FunctionDeps<F> = Extract<keyof FirstArg<F>, string>[]
 
 const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
@@ -39,10 +47,20 @@ export class ENS {
     this.options = options
   }
 
-  private generateFunction =
-    (path: string, exportName = 'default') =>
-    async (...args: any[]) =>
-      (await import(path))[exportName].bind(this)(...args)
+  private generateFunction = <F>(
+    path: string,
+    dependencies: FunctionDeps<F>,
+    exportName = 'default',
+  ): OmitFirstArg<F> =>
+    ((...args: any[]) =>
+      import(path).then((mod) =>
+        mod[exportName](
+          Object.fromEntries(
+            dependencies.map((dep) => [dep, this[dep as keyof InternalENS]]),
+          ),
+          ...args,
+        ),
+      )) as OmitFirstArg<F>
 
   public setProvider = async (provider: ethers.providers.JsonRpcProvider) => {
     this.provider = provider
@@ -57,12 +75,29 @@ export class ENS {
     return
   }
 
-  public getProfile: BoundFn<typeof getProfile> =
-    this.generateFunction('./getProfile')
-  public getName: BoundFn<typeof getName> = this.generateFunction('./getName')
-  public getResolver: BoundFn<typeof getResolver> =
-    this.generateFunction('./getResolver')
-  public setName: BoundFn<typeof setName> = this.generateFunction('./setName')
-  public setRecords: BoundFn<typeof setRecords> =
-    this.generateFunction('./setRecords')
+  public getProfile = this.generateFunction<typeof getProfile>('./getProfile', [
+    'contracts',
+    'gqlInstance',
+    'getName',
+  ])
+
+  public getName = this.generateFunction<typeof getName>('./getName', [
+    'contracts',
+  ])
+
+  public getResolver = this.generateFunction<typeof getResolver>(
+    './getResolver',
+    ['contracts'],
+  )
+
+  public setName = this.generateFunction<typeof setName>('./setName', [
+    'contracts',
+    'provider',
+  ])
+
+  public setRecords = this.generateFunction<typeof setRecords>('./setRecords', [
+    'contracts',
+    'provider',
+    'getResolver',
+  ])
 }

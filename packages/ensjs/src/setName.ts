@@ -1,15 +1,18 @@
-import { InternalENS } from '.'
+import { ENSArgs } from '.'
 
-export default async function (this: InternalENS, name: string) {
-  const address = await this.provider?.getSigner().getAddress()
+export default async function (
+  { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
+  name: string,
+) {
+  const address = await provider?.getSigner().getAddress()
 
   if (!address) {
     throw new Error('No signer found')
   }
 
-  const reverseRegistrar = (
-    await this.contracts?.getReverseRegistrar()
-  )?.connect(this.provider?.getSigner()!)
+  const reverseRegistrar = (await contracts?.getReverseRegistrar())?.connect(
+    provider?.getSigner()!,
+  )
 
   return reverseRegistrar?.setName(name)
 }
