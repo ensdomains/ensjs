@@ -9,18 +9,18 @@ export default class ContractManager {
 
   private generateContractGetter = (path: string) => {
     let imported: any
-    let contract: any
-    return async (passedProvider?: any) => {
+    let contract: ethers.Contract
+    return async (passedProvider?: any): Promise<ethers.Contract> => {
       if (!imported) {
         imported = (await import(path)).default
       }
       if (passedProvider) {
-        return imported(passedProvider)
+        return imported(passedProvider) as ethers.Contract
       }
       if (!contract) {
-        contract = imported(this.provider)
+        contract = imported(this.provider) as ethers.Contract
       }
-      return contract
+      return contract as ethers.Contract
     }
   }
 

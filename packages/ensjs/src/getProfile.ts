@@ -33,7 +33,7 @@ const getDataForName = async (
   let calls: any[] = []
 
   const encodeData = (sig: string, ...args: any[]) =>
-    publicResolver.interface.encodeFunctionData(sig, [...args])
+    publicResolver?.interface.encodeFunctionData(sig, [...args])
 
   const addCalls = (
     recordArray: string[],
@@ -74,12 +74,12 @@ const getDataForName = async (
     })
   }
 
-  const data = publicResolver.interface.encodeFunctionData(
+  const data = publicResolver?.interface.encodeFunctionData(
     'multicall(bytes[])',
     [calls.map((call: any) => call.data)],
   )
 
-  const resolver = await universalResolver.resolve(hexEncodeName(name), data)
+  const resolver = await universalResolver?.resolve(hexEncodeName(name), data)
   const [recordData] = ethers.utils.defaultAbiCoder.decode(
     ['bytes[]'],
     resolver,
@@ -154,7 +154,7 @@ const getDataForAddress = async (
     })
   }
 
-  const result = await universalResolver.reverse(
+  const result = await universalResolver?.reverse(
     hexEncodeName(reverseNode),
     calls.map((call: any) => call.data),
   )
