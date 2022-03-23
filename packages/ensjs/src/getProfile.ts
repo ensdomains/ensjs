@@ -22,40 +22,6 @@ type DataItem = {
   value: string
 }
 
-const makeResolverDataWithNamehash = (
-  publicResolver: ethers.Contract,
-  functionName: string,
-  name: string,
-  ...args: any[]
-) =>
-  publicResolver.interface.encodeFunctionData(functionName, [
-    ethers.utils.namehash(name),
-    ...args,
-  ])
-
-const addCalls = (
-  publicResolver: ethers.Contract,
-  keyArray: string[],
-  callArray: any[],
-  type: string,
-  callArgs: string,
-  name: string,
-  ...args: any[]
-) =>
-  keyArray.forEach((item: string) =>
-    callArray.push({
-      key: item,
-      data: makeResolverDataWithNamehash(
-        publicResolver,
-        type + callArgs,
-        name,
-        item,
-        ...args,
-      ),
-      type,
-    }),
-  )
-
 const getDataForName = async (
   ENS: InternalENS,
   name: string,
@@ -65,32 +31,37 @@ const getDataForName = async (
   const universalResolver = await ENS.contracts?.getUniversalResolver()
 
   let calls: any[] = []
-  options.texts &&
-    addCalls(
-      publicResolver,
-      options.texts,
-      calls,
-      'text',
-      '(bytes32,string)',
-      name,
+
+  const encodeData = (sig: string, ...args: any[]) =>
+    publicResolver.interface.encodeFunctionData(sig, [...args])
+
+  const addCalls = (
+    recordArray: string[],
+    recordType: string,
+    functionArgs: string,
+    name: string,
+    ...args: any[]
+  ) =>
+    recordArray.forEach((item: string) =>
+      calls.push({
+        key: item,
+        data: encodeData(
+          recordType + functionArgs,
+          ethers.utils.namehash(name),
+          item,
+          ...args,
+        ),
+        type: recordType,
+      }),
     )
+
+  options.texts && addCalls(options.texts, 'text', '(bytes32,string)', name)
   options.coinTypes &&
-    addCalls(
-      publicResolver,
-      options.coinTypes,
-      calls,
-      'addr',
-      '(bytes32,uint256)',
-      name,
-    )
+    addCalls(options.coinTypes, 'addr', '(bytes32,uint256)', name)
   if (typeof options.contentHash === 'boolean' && options.contentHash) {
     calls.push({
       key: 'contentHash',
-      data: makeResolverDataWithNamehash(
-        publicResolver,
-        'contenthash(bytes32)',
-        name,
-      ),
+      data: encodeData('contenthash(bytes32)', name),
       type: 'contenthash',
     })
   }
@@ -98,13 +69,7 @@ const getDataForName = async (
   if (!calls.filter((x) => x.key === '60')) {
     calls.push({
       key: '60',
-      data: makeResolverDataWithNamehash(
-        publicResolver,
-        'addr',
-        '(bytes32,uint256)',
-        name,
-        '60',
-      ),
+      data: encodeData('addr(bytes32,uint256)', name, '60'),
       type: 'addr',
     })
   }
