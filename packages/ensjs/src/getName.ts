@@ -11,20 +11,14 @@ export default async function (
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
 
   try {
-    const result = await universalResolver?.reverse(
-      hexEncodeName(reverseNode),
-      [
-        {
-          sig: 'addr(bytes32)',
-          data: [],
-        },
-      ],
+    const result = await universalResolver?.reverse(hexEncodeName(reverseNode))
+
+    const decoded = ethers.utils.defaultAbiCoder.decode(
+      ['bytes', 'address'],
+      result['1'],
     )
 
-    const [addr] = ethers.utils.defaultAbiCoder.decode(
-      ['address'],
-      result['1'][0],
-    )
+    const [addr] = ethers.utils.defaultAbiCoder.decode(['address'], decoded[0])
 
     return {
       name: result['0'],

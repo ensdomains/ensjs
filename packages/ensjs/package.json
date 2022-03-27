@@ -26,7 +26,7 @@
     "@openzeppelin/contracts": "^4.5.0",
     "dotenv": "^16.0.0",
     "ens-contracts-namewrapper": "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375",
-    "ens-contracts-universal": "github:ensdomains/ens-contracts#head=universal-reverse&commit=4ef1d1ed892933e0582894aec9d4b49fe1910141",
+    "ens-contracts-universal": "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7",
     "solc": "^0.8.13",
     "ts-node": "^10.7.0"
   },

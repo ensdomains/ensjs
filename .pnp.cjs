@@ -1036,7 +1036,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "ens-contracts-universal",\
-        "https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"\
+        "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"\
       ],\
       [\
         "entities",\
@@ -2970,7 +2970,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
-            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"],\
+            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"],\
             ["ethcall", "npm:4.4.0"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
@@ -6070,10 +6070,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["ens-contracts-universal", [\
-        ["https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141", {\
-          "packageLocation": "./.yarn/cache/ens-contracts-universal-https-464c1e6e8a-f483e68025.zip/node_modules/ens-contracts-universal/",\
+        ["https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7", {\
+          "packageLocation": "./.yarn/cache/ens-contracts-universal-https-fae6d2cd0c-3614e84b16.zip/node_modules/ens-contracts-universal/",\
           "packageDependencies": [\
-            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"],\
+            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"],\
             ["@ensdomains/buffer", "npm:0.0.13"],\
             ["@ensdomains/solsha1", "npm:0.0.3"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\

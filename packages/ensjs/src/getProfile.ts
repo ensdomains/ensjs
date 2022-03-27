@@ -22,14 +22,12 @@ type DataItem = {
   coin?: string
   value: string
 }
-
-const getDataForName = async (
+const makeMulticallData = async (
   { contracts }: Pick<InternalENS, 'contracts'>,
   name: string,
   options: InternalProfileOptions,
 ) => {
   const publicResolver = await contracts?.getPublicResolver()
-  const universalResolver = await contracts?.getUniversalResolver()
 
   let calls: any[] = []
 
@@ -62,7 +60,7 @@ const getDataForName = async (
   if (typeof options.contentHash === 'boolean' && options.contentHash) {
     calls.push({
       key: 'contentHash',
-      data: encodeData('contenthash(bytes32)', name),
+      data: encodeData('contenthash(bytes32)', ethers.utils.namehash(name)),
       type: 'contenthash',
     })
   }
@@ -70,7 +68,11 @@ const getDataForName = async (
   if (!calls.find((x) => x.key === '60')) {
     calls.push({
       key: '60',
-      data: encodeData('addr(bytes32,uint256)', name, '60'),
+      data: encodeData(
+        'addr(bytes32,uint256)',
+        ethers.utils.namehash(name),
+        '60',
+      ),
       type: 'addr',
     })
   }
@@ -80,11 +82,30 @@ const getDataForName = async (
     [calls.map((call: any) => call.data)],
   )
 
+  return { data, calls }
+}
+
+const makeHashIndexes = (data: string, name: string) =>
+  [...data.matchAll(ethers.utils.namehash(name).substring(2) as any)].map(
+    (x: any) => x.index / 2 - 1,
+  )
+
+const getDataForName = async (
+  { contracts }: Pick<InternalENS, 'contracts'>,
+  name: string,
+  options: InternalProfileOptions,
+) => {
+  const universalResolver = await contracts?.getUniversalResolver()
+
+  const { data, calls } = await makeMulticallData({ contracts }, name, options)
+
   const resolver = await universalResolver?.resolve(hexEncodeName(name), data)
   const [recordData] = ethers.utils.defaultAbiCoder.decode(
     ['bytes[]'],
-    resolver,
+    resolver['0'],
   )
+
+  console.log(resolver['1'])
 
   return {
     address: ethers.utils.defaultAbiCoder.decode(
@@ -92,6 +113,7 @@ const getDataForName = async (
       recordData[calls.findIndex((x) => x.key === '60')],
     )[0],
     records: formatRecords(recordData, calls, options),
+    resolverAddress: resolver['1'],
   }
 }
 
@@ -100,76 +122,50 @@ const getDataForAddress = async (
   address: string,
   options: InternalProfileOptions,
 ) => {
-  const universalResolver = await contracts?.getUniversalResolver()
+  const DNCOCURP = await contracts?.getDNCOCURP()
 
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
 
-  const makeResolverData = (sig: string, dataType?: string, data?: any) => ({
-    sig,
-    data:
-      dataType && data
-        ? [
-            {
-              dataType,
-              data: ethers.utils.defaultAbiCoder.encode([dataType], [data]),
-            },
-          ]
-        : [],
-  })
-
-  const addCalls = (
-    keyArray: string[],
-    callArray: any[],
-    type: string,
-    callArgs: string,
-  ) =>
-    keyArray.forEach((item: string) =>
-      callArray.push({
-        key: item,
-        data: makeResolverData(
-          type + callArgs,
-          callArgs.split(',')[1].replace(')', ''),
-          item,
-        ),
-        type,
-      }),
-    )
-
-  let calls: any[] = []
-  options.texts && addCalls(options.texts, calls, 'text', '(bytes32,string)')
-  options.coinTypes &&
-    addCalls(options.coinTypes, calls, 'addr', '(bytes32,uint256)')
-  if (typeof options.contentHash === 'boolean' && options.contentHash) {
-    calls.push({
-      key: 'contentHash',
-      data: makeResolverData('contenthash(bytes32)'),
-      type: 'contenthash',
-    })
-  }
-
-  if (!calls.find((x) => x.key === '60')) {
-    calls.push({
-      key: '60',
-      data: makeResolverData('addr(bytes32,uint256)', 'uint256', '60'),
-      type: 'addr',
-    })
-  }
-
-  const result = await universalResolver?.reverse(
-    hexEncodeName(reverseNode),
-    calls.map((call: any) => call.data),
+  const { data, calls } = await makeMulticallData(
+    { contracts },
+    reverseNode,
+    options,
   )
-  const name = result['0']
-  const data = result['1']
+
+  const result = await DNCOCURP?.reverse(hexEncodeName(reverseNode), [
+    {
+      target: '0x9e6c745CAEdA0AB8a7AD0f393ef90dcb7C70074A',
+      data: data,
+      dataType: 0,
+      locations: makeHashIndexes(data as string, reverseNode),
+    },
+  ])
+
+  const name = result.name
+  const URData = result.returnData[0]
+  const [URDecoded, resolverAddress] = ethers.utils.defaultAbiCoder.decode(
+    ['bytes', 'address'],
+    URData,
+  )
+  const [recordData] = ethers.utils.defaultAbiCoder.decode(
+    ['bytes[]'],
+    URDecoded,
+  )
+
   if (
     ethers.utils.defaultAbiCoder.decode(
       ['bytes'],
-      data[calls.findIndex((x) => x.key === '60')],
+      recordData[calls.findIndex((x) => x.key === '60')],
     )[0] !== address.toLowerCase()
   ) {
     return { name, records: null, match: false }
   }
-  return { name, records: formatRecords(data, calls, options), match: true }
+  return {
+    name,
+    records: formatRecords(recordData, calls, options),
+    match: true,
+    resolverAddress,
+  }
 }
 
 const formatRecords = (
@@ -239,6 +235,10 @@ const formatRecords = (
     if (
       typeof options.contentHash === 'string' &&
       ethers.utils.hexStripZeros(options.contentHash) === '0x'
+    ) {
+      returnedResponse.contentHash = null
+    } else if (
+      ethers.utils.hexStripZeros((options.contentHash as any).decoded) === '0x'
     ) {
       returnedResponse.contentHash = null
     } else {
@@ -362,12 +362,7 @@ const getProfileFromName = async (
       name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records, address } = await getDataForName(
-      { contracts },
-      name,
-      wantedRecords,
-    )
-    return { address, records }
+    return await getDataForName({ contracts }, name, wantedRecords)
   } else {
     return await getDataForName(
       { contracts },

@@ -112,7 +112,7 @@ __metadata:
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
     ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
-    ens-contracts-universal: "github:ensdomains/ens-contracts#head=universal-reverse&commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"
+    ens-contracts-universal: "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7"
     ethcall: ^4.4.0
     ethers: ^5.6.1
     graphql: ^16.3.0
@@ -2738,15 +2738,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ens-contracts-universal@github:ensdomains/ens-contracts#head=universal-reverse&commit=4ef1d1ed892933e0582894aec9d4b49fe1910141":
+"ens-contracts-universal@github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7":
   version: 0.0.8
-  resolution: "ens-contracts-universal@https://github.com/ensdomains/ens-contracts.git#commit=4ef1d1ed892933e0582894aec9d4b49fe1910141"
+  resolution: "ens-contracts-universal@https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"
   dependencies:
     "@ensdomains/buffer": ^0.0.13
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: f483e68025cc2be957a98731ce8d31ecec30e35e9b92c073fd44852500cbcf6c9ebde9cb9b5300a0d9f4f7e3fd3cd1e033cdbff08cc18a5dfe8f689e8b3ff514
+  checksum: 3614e84b1639927969b592a689621f759f1dbdcf963e68bdeb6d71000c3c9167e9feaa5d720634d48b59dcc1d305a38d0ac1af6cfc543fee40aee48018a5da73
   languageName: node
   linkType: hard
 

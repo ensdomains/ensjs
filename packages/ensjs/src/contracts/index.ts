@@ -33,4 +33,5 @@ export default class ContractManager {
   )
   public getRegistry = this.generateContractGetter('./registry')
   public getReverseRegistrar = this.generateContractGetter('./reverseRegistrar')
+  public getDNCOCURP = this.generateContractGetter('./DNCOCURP')
 }
