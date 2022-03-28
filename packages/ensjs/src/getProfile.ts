@@ -105,8 +105,6 @@ const getDataForName = async (
     resolver['0'],
   )
 
-  console.log(resolver['1'])
-
   return {
     address: ethers.utils.defaultAbiCoder.decode(
       ['bytes'],
@@ -122,6 +120,7 @@ const getDataForAddress = async (
   address: string,
   options: InternalProfileOptions,
 ) => {
+  const universalResolver = await contracts?.getUniversalResolver()
   const DNCOCURP = await contracts?.getDNCOCURP()
 
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
@@ -134,7 +133,7 @@ const getDataForAddress = async (
 
   const result = await DNCOCURP?.reverse(hexEncodeName(reverseNode), [
     {
-      target: '0x9e6c745CAEdA0AB8a7AD0f393ef90dcb7C70074A',
+      target: universalResolver?.address,
       data: data,
       dataType: 0,
       locations: makeHashIndexes(data as string, reverseNode),

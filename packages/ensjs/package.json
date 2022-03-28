@@ -24,6 +24,7 @@
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-test-env": "workspace:*",
     "@openzeppelin/contracts": "^4.5.0",
+    "@types/bn.js": "^5.1.0",
     "dotenv": "^16.0.0",
     "ens-contracts-namewrapper": "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375",
     "ens-contracts-universal": "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7",

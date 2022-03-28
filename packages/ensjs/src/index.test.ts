@@ -61,7 +61,9 @@ const start = async () => {
     await setRecordsTx.wait()
   }
 
-  await _getName()
+  const result = await ENSInstance.getFuses('parthtejpal.eth')
+
+  console.log(result)
 
   // const profile = await ENSInstance.getProfile('parthtejpal.eth')
   // console.log(profile?.records?.coinTypes)

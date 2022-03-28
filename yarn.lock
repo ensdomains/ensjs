@@ -109,6 +109,7 @@ __metadata:
     "@ensdomains/ens-contracts": ^0.0.11
     "@ensdomains/ens-test-env": "workspace:*"
     "@openzeppelin/contracts": ^4.5.0
+    "@types/bn.js": ^5.1.0
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
     ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"

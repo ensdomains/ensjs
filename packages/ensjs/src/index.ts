@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import ContractManager from './contracts'
+import type getFuses from './getFuses'
 import type getName from './getName'
 import type getProfile from './getProfile'
 import type getResolver from './getResolver'
@@ -89,6 +90,10 @@ export class ENS {
     './getResolver',
     ['contracts'],
   )
+
+  public getFuses = this.generateFunction<typeof getFuses>('./getFuses', [
+    'contracts',
+  ])
 
   public setName = this.generateFunction<typeof setName>('./setName', [
     'contracts',

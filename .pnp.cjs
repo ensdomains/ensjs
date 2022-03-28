@@ -348,7 +348,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "@types/bn.js",\
-        "npm:4.11.6"\
+        "npm:5.1.0"\
       ],\
       [\
         "@types/cacheable-request",\
@@ -2967,6 +2967,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/ens-contracts", "npm:0.0.11"],\
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
+            ["@types/bn.js", "npm:5.1.0"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
