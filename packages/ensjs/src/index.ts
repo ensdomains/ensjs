@@ -3,14 +3,14 @@ import ContractManager from './contracts'
 import type getFuses from './getFuses'
 import type getHistory from './getHistory'
 import type getName from './getName'
-import type getOwner from './getOwner'
+import type { getOwner } from './getOwner'
 import type getProfile from './getProfile'
 import type getResolver from './getResolver'
 import type { getAddr, getContentHash, getText } from './getSpecificRecord'
 import GqlManager from './GqlManager'
 import type setName from './setName'
 import type setRecords from './setRecords'
-import type setResolver from './setResolver'
+import type { setResolver, transfer } from './setters'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -121,9 +121,17 @@ export class ENS {
     'getText',
   )
 
-  public getOwner = this.generateFunction<typeof getOwner>('./getOwner', [
-    'contracts',
-  ])
+  public _getOwner = this.generateFunction<typeof getOwner>(
+    './getOwner',
+    ['contracts'],
+    '_getOwner',
+  )
+
+  public getOwner = this.generateFunction<typeof getOwner>(
+    './getOwner',
+    ['contracts'],
+    'getOwner',
+  )
 
   public setName = this.generateFunction<typeof setName>('./setName', [
     'contracts',
@@ -137,7 +145,14 @@ export class ENS {
   ])
 
   public setResolver = this.generateFunction<typeof setResolver>(
-    './setResolver',
+    './setters',
     ['contracts', 'provider'],
+    'setResolver',
+  )
+
+  public transfer = this.generateFunction<typeof transfer>(
+    './setters',
+    ['contracts', 'provider'],
+    'transfer',
   )
 }

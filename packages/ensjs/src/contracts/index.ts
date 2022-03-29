@@ -36,4 +36,5 @@ export default class ContractManager {
   public getDNCOCURP = this.generateContractGetter('./DNCOCURP')
   public getNameWrapper = this.generateContractGetter('./nameWrapper')
   public getBaseRegistrar = this.generateContractGetter('./baseRegistrar')
+  public getMulticall = this.generateContractGetter('./multicall')
 }

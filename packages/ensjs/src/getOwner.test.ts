@@ -14,7 +14,7 @@ const start = async () => {
   })
   await ENSInstance.setProvider(provider)
 
-  const owner = await ENSInstance.getOwner('test.parthtejpal.eth')
+  const owner = await ENSInstance.getOwner('parthtejpal.eth')
   console.log(owner)
 }
 

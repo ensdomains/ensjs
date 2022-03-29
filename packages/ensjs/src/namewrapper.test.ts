@@ -23,14 +23,11 @@ const start = async () => {
 
   const label = 'parthtejpal'
   const labelhash = ethers.utils.solidityKeccak256(['string'], [label])
+
+  console.log(accounts[0])
   const data = ethers.utils.defaultAbiCoder.encode(
     ['string', 'address', 'uint96', 'address'],
-    [
-      label,
-      accounts[0],
-      fuses.CANNOT_UNWRAP | fuses.CANNOT_TRANSFER,
-      PublicResolver?.address,
-    ],
+    [label, accounts[0], fuses.CANNOT_UNWRAP, PublicResolver?.address],
   )
 
   const tx = await BaseRegistrar[
