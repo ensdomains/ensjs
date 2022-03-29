@@ -3,6 +3,7 @@ import ContractManager from './contracts'
 import type getFuses from './getFuses'
 import type getHistory from './getHistory'
 import type getName from './getName'
+import type getOwner from './getOwner'
 import type getProfile from './getProfile'
 import type getResolver from './getResolver'
 import type { getAddr, getContentHash, getText } from './getSpecificRecord'
@@ -118,6 +119,10 @@ export class ENS {
     ['contracts'],
     'getText',
   )
+
+  public getOwner = this.generateFunction<typeof getOwner>('./getOwner', [
+    'contracts',
+  ])
 
   public setName = this.generateFunction<typeof setName>('./setName', [
     'contracts',
