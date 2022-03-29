@@ -16,6 +16,15 @@ const start = async () => {
 
   const contentHash = await ENSInstance.getContentHash('matoken.eth')
   console.log(contentHash)
+
+  const text = await ENSInstance.getText('jefflau.eth', 'description')
+  console.log(text)
+
+  const addrETC = await ENSInstance.getAddr('jefflau.eth', 'ETC')
+  console.log(addrETC)
+
+  const addrETH = await ENSInstance.getAddr('jefflau.eth')
+  console.log(addrETH)
 }
 
 start()

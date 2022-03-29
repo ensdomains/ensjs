@@ -1,11 +1,11 @@
 import { ethers } from 'ethers'
 import ContractManager from './contracts'
-import type getContentHash from './getContentHash'
 import type getFuses from './getFuses'
 import type getHistory from './getHistory'
 import type getName from './getName'
 import type getProfile from './getProfile'
 import type getResolver from './getResolver'
+import type { getAddr, getContentHash, getText } from './getSpecificRecord'
 import GqlManager from './GqlManager'
 import type setName from './setName'
 import type setRecords from './setRecords'
@@ -102,8 +102,21 @@ export class ENS {
   ])
 
   public getContentHash = this.generateFunction<typeof getContentHash>(
-    './getContentHash',
+    './getSpecificRecord',
     ['contracts'],
+    'getContentHash',
+  )
+
+  public getAddr = this.generateFunction<typeof getAddr>(
+    './getSpecificRecord',
+    ['contracts'],
+    'getAddr',
+  )
+
+  public getText = this.generateFunction<typeof getText>(
+    './getSpecificRecord',
+    ['contracts'],
+    'getText',
   )
 
   public setName = this.generateFunction<typeof setName>('./setName', [
