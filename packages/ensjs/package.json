@@ -7,7 +7,9 @@
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node --files src/index.test.ts"
+    "start": "ts-node --files src/index.test.ts",
+    "test:namewrapper": "ts-node --files src/namewrapper.test.ts",
+    "test:specific": "ts-node --files "
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
