@@ -10,6 +10,7 @@ import type { getAddr, getContentHash, getText } from './getSpecificRecord'
 import GqlManager from './GqlManager'
 import type setName from './setName'
 import type setRecords from './setRecords'
+import type setResolver from './setResolver'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -134,4 +135,9 @@ export class ENS {
     'provider',
     'getResolver',
   ])
+
+  public setResolver = this.generateFunction<typeof setResolver>(
+    './setResolver',
+    ['contracts', 'provider'],
+  )
 }
