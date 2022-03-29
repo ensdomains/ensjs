@@ -14,8 +14,14 @@ const start = async () => {
   })
   await ENSInstance.setProvider(provider)
 
-  const history = await ENSInstance.getHistory('parthtejpal.eth')
-  console.log(history)
+  // console.time('history')
+  // const history = await ENSInstance.getHistoryWithDetail('jefflau.eth')
+  // console.timeEnd('history')
+  const historyItem = await ENSInstance.getHistoryDetailForTransactionHash(
+    '0xb595c0e9921f1bab42819a61628cd4f9a27bcd7db92c6a691656434968a91f61',
+    0,
+  )
+  console.log(historyItem)
 }
 
 start()

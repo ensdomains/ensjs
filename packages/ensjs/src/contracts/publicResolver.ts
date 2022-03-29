@@ -3,6 +3,19 @@ import { ethers } from 'ethers'
 const defaultAddress = '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC'
 
 const ABI = [
+  'event ABIChanged(bytes32 indexed node, uint256 indexed contentType)',
+  'event AddrChanged(bytes32 indexed node, address a)',
+  'event AddressChanged(bytes32 indexed node, uint256 coinType, bytes newAddress)',
+  'event ApprovalForAll(address indexed owner, address indexed operator, bool approved)',
+  'event ContenthashChanged(bytes32 indexed node, bytes hash)',
+  'event DNSRecordChanged(bytes32 indexed node, bytes name, uint16 resource, bytes record)',
+  'event DNSRecordDeleted(bytes32 indexed node, bytes name, uint16 resource)',
+  'event DNSZoneCleared(bytes32 indexed node)',
+  'event DNSZonehashChanged(bytes32 indexed node, bytes lastzonehash, bytes zonehash)',
+  'event InterfaceChanged(bytes32 indexed node, bytes4 indexed interfaceID, address implementer)',
+  'event NameChanged(bytes32 indexed node, string name)',
+  'event PubkeyChanged(bytes32 indexed node, bytes32 x, bytes32 y)',
+  'event TextChanged(bytes32 indexed node, string indexed indexedKey, string key)',
   'function ABI(bytes32 node, uint256 contentTypes) view returns (uint256, bytes)',
   'function addr(bytes32 node) view returns (address)',
   'function addr(bytes32 node, uint256 coinType) view returns (bytes)',
