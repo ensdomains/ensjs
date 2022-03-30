@@ -2,18 +2,21 @@ import { ethers } from 'ethers'
 import { ENSArgs } from '.'
 import fuseEnums from './utils/fuses'
 
-export default async function (
-  { contracts }: ENSArgs<'contracts'>,
-  name: string,
-) {
-  const nameWrapper = await contracts?.getNameWrapper()
+const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
+  const nameWrapper = await contracts?.getNameWrapper()!
+  return {
+    to: nameWrapper.address,
+    data: nameWrapper.interface.encodeFunctionData('getFuses(bytes32)', [
+      ethers.utils.namehash(name),
+    ]),
+  }
+}
+
+const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
+  const nameWrapper = await contracts?.getNameWrapper()!
   try {
-    const {
-      fuses,
-      vulnerability,
-      vulnerableNode,
-    }: { fuses: ethers.BigNumber; vulnerability: any; vulnerableNode: any } =
-      await nameWrapper?.getFuses(ethers.utils.namehash(name))
+    const [fuses, vulnerability, vulnerableNode] =
+      nameWrapper.interface.decodeFunctionResult('getFuses(bytes32)', data)
 
     const result = Object.fromEntries(
       Object.keys(fuseEnums).map((fuseEnum) => [
@@ -26,4 +29,9 @@ export default async function (
   } catch {
     return null
   }
+}
+
+export default {
+  raw,
+  decode,
 }

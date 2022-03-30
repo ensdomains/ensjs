@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import type { batch, _batch } from './batch'
 import ContractManager from './contracts'
 import type getFuses from './getFuses'
 import type {
@@ -15,6 +16,7 @@ import GqlManager from './GqlManager'
 import type setName from './setName'
 import type setRecords from './setRecords'
 import type { setResolver, transfer } from './setters'
+import singleCall from './utils/singleCall'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -34,6 +36,14 @@ type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never
 
+type OmitFirstTwoArgs<F> = F extends (
+  x: any,
+  y: any,
+  ...args: infer P
+) => infer R
+  ? (...args: P) => R
+  : never
+
 type FirstArg<F> = F extends (x: infer A, ...args: any[]) => any ? A : never
 
 type FunctionDeps<F> = Extract<keyof FirstArg<F>, string>[]
@@ -45,7 +55,23 @@ const graphURIEndpoints: Record<string, string> = {
   5: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
 }
 
+export type RawFunction = {
+  raw: (...args: any[]) => Promise<{ to: string; data: string }>
+  decode: (...args: any[]) => Promise<any>
+}
+
+interface GeneratedRawFunction<F extends RawFunction>
+  extends Function,
+    RawFunction {
+  (...args: Parameters<OmitFirstArg<F['raw']>>): ReturnType<
+    OmitFirstTwoArgs<F['decode']>
+  >
+}
+
+export interface GenericGeneratedRawFunction extends Function, RawFunction {}
+
 export class ENS {
+  [x: string]: any
   protected options?: ENSOptions
   protected provider?: ethers.providers.JsonRpcProvider
   protected graphURI?: string | null
@@ -56,20 +82,63 @@ export class ENS {
     this.options = options
   }
 
+  private forwardDependenciesFromArray = <F>(dependencies: FunctionDeps<F>) =>
+    Object.fromEntries(
+      dependencies.map((dep) => [dep, this[dep as keyof InternalENS]]),
+    )
+
+  private importGenerator =
+    <F>(
+      path: string,
+      dependencies: FunctionDeps<F>,
+      exportName = 'default',
+      subFunc?: 'raw' | 'decode',
+    ) =>
+    (...args: any[]) =>
+      import(path).then((mod) =>
+        (subFunc ? mod[exportName][subFunc] : mod[exportName])(
+          this.forwardDependenciesFromArray<F>(dependencies),
+          ...args,
+        ),
+      )
+
   private generateFunction = <F>(
     path: string,
     dependencies: FunctionDeps<F>,
     exportName = 'default',
   ): OmitFirstArg<F> =>
-    ((...args: any[]) =>
-      import(path).then((mod) =>
-        mod[exportName](
-          Object.fromEntries(
-            dependencies.map((dep) => [dep, this[dep as keyof InternalENS]]),
-          ),
-          ...args,
-        ),
-      )) as OmitFirstArg<F>
+    this.importGenerator<F>(path, dependencies, exportName) as OmitFirstArg<F>
+
+  private generateRawFunction = <F extends RawFunction>(
+    path: string,
+    dependencies: FunctionDeps<F['raw']> | FunctionDeps<F['decode']>,
+    exportName = 'default',
+  ): GeneratedRawFunction<F> => {
+    const mainFunc = async function (this: ENS, ...args: any[]) {
+      const mod = await import(path)
+      return await singleCall(
+        this.provider!,
+        this.forwardDependenciesFromArray<
+          FunctionDeps<F['raw']> | FunctionDeps<F['decode']>
+        >(dependencies),
+        mod[exportName],
+        ...args,
+      )
+    }
+    mainFunc.raw = this.importGenerator<F['raw']>(
+      path,
+      dependencies,
+      exportName,
+      'raw',
+    )
+    mainFunc.decode = this.importGenerator<F['decode']>(
+      path,
+      dependencies,
+      exportName,
+      'decode',
+    ) as (data: any, ...args: any[]) => Promise<any>
+    return mainFunc as unknown as GeneratedRawFunction<F>
+  }
 
   public setProvider = async (provider: ethers.providers.JsonRpcProvider) => {
     this.provider = provider
@@ -84,22 +153,33 @@ export class ENS {
     return
   }
 
+  public batch = this.generateFunction<typeof batch>(
+    './batch',
+    ['contracts'],
+    'batch',
+  )
+  public _batch = this.generateFunction<typeof _batch>(
+    './batch',
+    ['contracts'],
+    '_batch',
+  )
+
   public getProfile = this.generateFunction<typeof getProfile>('./getProfile', [
     'contracts',
     'gqlInstance',
     'getName',
   ])
 
-  public getName = this.generateFunction<typeof getName>('./getName', [
+  public getName = this.generateRawFunction<typeof getName>('./getName', [
     'contracts',
   ])
 
-  public getResolver = this.generateFunction<typeof getResolver>(
+  public getResolver = this.generateRawFunction<typeof getResolver>(
     './getResolver',
     ['contracts'],
   )
 
-  public getFuses = this.generateFunction<typeof getFuses>('./getFuses', [
+  public getFuses = this.generateRawFunction<typeof getFuses>('./getFuses', [
     'contracts',
   ])
 

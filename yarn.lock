@@ -114,7 +114,6 @@ __metadata:
     dotenv: ^16.0.0
     ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
     ens-contracts-universal: "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7"
-    ethcall: ^4.4.0
     ethers: ^5.6.1
     graphql: ^16.3.0
     graphql-request: ^4.1.0
@@ -188,7 +187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:5.6.0, @ethersproject/abi@npm:^5.0.0, @ethersproject/abi@npm:^5.6.0":
+"@ethersproject/abi@npm:5.6.0, @ethersproject/abi@npm:^5.6.0":
   version: 5.6.0
   resolution: "@ethersproject/abi@npm:5.6.0"
   dependencies:
@@ -276,7 +275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/bytes@npm:5.6.0, @ethersproject/bytes@npm:^5.0.0, @ethersproject/bytes@npm:^5.0.4, @ethersproject/bytes@npm:^5.6.0":
+"@ethersproject/bytes@npm:5.6.0, @ethersproject/bytes@npm:^5.0.4, @ethersproject/bytes@npm:^5.6.0":
   version: 5.6.0
   resolution: "@ethersproject/bytes@npm:5.6.0"
   dependencies:
@@ -294,7 +293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/contracts@npm:5.6.0, @ethersproject/contracts@npm:^5.0.0":
+"@ethersproject/contracts@npm:5.6.0":
   version: 5.6.0
   resolution: "@ethersproject/contracts@npm:5.6.0"
   dependencies:
@@ -369,7 +368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/keccak256@npm:5.6.0, @ethersproject/keccak256@npm:^5.0.0, @ethersproject/keccak256@npm:^5.0.3, @ethersproject/keccak256@npm:^5.6.0":
+"@ethersproject/keccak256@npm:5.6.0, @ethersproject/keccak256@npm:^5.0.3, @ethersproject/keccak256@npm:^5.6.0":
   version: 5.6.0
   resolution: "@ethersproject/keccak256@npm:5.6.0"
   dependencies:
@@ -414,7 +413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/providers@npm:5.6.1, @ethersproject/providers@npm:^5.0.0":
+"@ethersproject/providers@npm:5.6.1":
   version: 5.6.1
   resolution: "@ethersproject/providers@npm:5.6.1"
   dependencies:
@@ -500,7 +499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/strings@npm:5.6.0, @ethersproject/strings@npm:^5.0.0, @ethersproject/strings@npm:^5.0.4, @ethersproject/strings@npm:^5.6.0":
+"@ethersproject/strings@npm:5.6.0, @ethersproject/strings@npm:^5.0.4, @ethersproject/strings@npm:^5.6.0":
   version: 5.6.0
   resolution: "@ethersproject/strings@npm:5.6.0"
   dependencies:
@@ -1004,13 +1003,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.0.0":
-  version: 16.11.26
-  resolution: "@types/node@npm:16.11.26"
-  checksum: 57757caaba3f0d95de82198cb276a1002c49b710108c932a1d02d7c91ff2fa57cfe2dd19fde60853b6dd90b0964b3cf35557981d2628e20aed6a909057aedfe6
-  languageName: node
-  linkType: hard
-
 "@types/pbkdf2@npm:^3.0.0":
   version: 3.1.0
   resolution: "@types/pbkdf2@npm:3.1.0"
@@ -1166,17 +1158,6 @@ __metadata:
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: a4a97ec07d7ea112c517036882b2ac22f3109b7b19077dc656316d07d308438aac28e4d9746dc4d84bf6b1e75b4a7b0a5f3cb30592419f128ca9a8cee3bcfa17
-  languageName: node
-  linkType: hard
-
-"abi-coder@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "abi-coder@npm:2.1.0"
-  dependencies:
-    "@ethersproject/abi": ^5.0.0
-    "@ethersproject/keccak256": ^5.0.0
-    "@ethersproject/strings": ^5.0.0
-  checksum: c69623af53256db8344b5305e1793ee910ed593049cdda5dc4131159991dfd150fcbe2d07704d83498342bdcfbc737d53ba38284d6994653c693b5ad4d1557bf
   languageName: node
   linkType: hard
 
@@ -3152,20 +3133,6 @@ __metadata:
     ws: ^3.0.0
     xhr-request-promise: ^0.1.2
   checksum: d1494fc0af372d46d1c9e7506cfbfa81b9073d98081cf4cbe518932f88bee40cf46a764590f1f8aba03d4a534fa2b1cd794fa2a4f235f656d82b8ab185b5cb9d
-  languageName: node
-  linkType: hard
-
-"ethcall@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "ethcall@npm:4.4.0"
-  dependencies:
-    "@ethersproject/abi": ^5.0.0
-    "@ethersproject/bytes": ^5.0.0
-    "@ethersproject/contracts": ^5.0.0
-    "@ethersproject/providers": ^5.0.0
-    "@types/node": ^16.0.0
-    abi-coder: ^2.1.0
-  checksum: 879838ed6b44cc2f5335cfd96bb5d045caf3c4b69b2f2cbab288fbb49b98795c8ea920500a287884b899cd10322cf61b096eb98f221202f6f7b3a33cb9cfcd20
   languageName: node
   linkType: hard
 

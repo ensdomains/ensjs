@@ -427,10 +427,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:1.1.1"\
       ],\
       [\
-        "abi-coder",\
-        "npm:2.1.0"\
-      ],\
-      [\
         "abstract-leveldown",\
         "npm:7.2.0"\
       ],\
@@ -1149,10 +1145,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "eth-lib",\
         "npm:0.2.8"\
-      ],\
-      [\
-        "ethcall",\
-        "npm:4.4.0"\
       ],\
       [\
         "ethereum-bloom-filters",\
@@ -2972,7 +2964,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["dotenv", "npm:16.0.0"],\
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
             ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"],\
-            ["ethcall", "npm:4.4.0"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
             ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
@@ -3985,13 +3976,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:16.11.26", {\
-          "packageLocation": "./.yarn/cache/@types-node-npm-16.11.26-6163d95b7d-57757caaba.zip/node_modules/@types/node/",\
-          "packageDependencies": [\
-            ["@types/node", "npm:16.11.26"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:17.0.21", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-17.0.21-7d68eb6a13-89dcd2fe82.zip/node_modules/@types/node/",\
           "packageDependencies": [\
@@ -4250,18 +4234,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/abbrev-npm-1.1.1-3659247eab-a4a97ec07d.zip/node_modules/abbrev/",\
           "packageDependencies": [\
             ["abbrev", "npm:1.1.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["abi-coder", [\
-        ["npm:2.1.0", {\
-          "packageLocation": "./.yarn/cache/abi-coder-npm-2.1.0-b841534168-c69623af53.zip/node_modules/abi-coder/",\
-          "packageDependencies": [\
-            ["abi-coder", "npm:2.1.0"],\
-            ["@ethersproject/abi", "npm:5.6.0"],\
-            ["@ethersproject/keccak256", "npm:5.6.0"],\
-            ["@ethersproject/strings", "npm:5.6.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6611,21 +6583,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["bn.js", "npm:4.12.0"],\
             ["elliptic", "npm:6.5.4"],\
             ["xhr-request-promise", "npm:0.1.3"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ethcall", [\
-        ["npm:4.4.0", {\
-          "packageLocation": "./.yarn/cache/ethcall-npm-4.4.0-cfc8f4a5ed-879838ed6b.zip/node_modules/ethcall/",\
-          "packageDependencies": [\
-            ["ethcall", "npm:4.4.0"],\
-            ["@ethersproject/abi", "npm:5.6.0"],\
-            ["@ethersproject/bytes", "npm:5.6.0"],\
-            ["@ethersproject/contracts", "npm:5.6.0"],\
-            ["@ethersproject/providers", "npm:5.6.1"],\
-            ["@types/node", "npm:16.11.26"],\
-            ["abi-coder", "npm:2.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\

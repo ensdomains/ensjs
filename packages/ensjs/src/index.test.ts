@@ -61,7 +61,7 @@ const start = async () => {
     await setRecordsTx.wait()
   }
 
-  const result = await ENSInstance.getFuses('parthtejpal.eth')
+  const result = await ENSInstance.getProfile('jefflau.eth')
 
   console.log(result)
 

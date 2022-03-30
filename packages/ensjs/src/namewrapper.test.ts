@@ -36,6 +36,8 @@ const start = async () => {
   console.log(tx)
   await tx.wait()
   console.log(tx)
+
+  const retrievedFuses = await ENSInstance.getFuses('parthtejpal.eth')
 }
 
 start()

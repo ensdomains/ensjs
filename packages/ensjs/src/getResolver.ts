@@ -2,12 +2,23 @@ import { ethers } from 'ethers'
 import { ENSArgs } from '.'
 import { hexEncodeName } from './utils/hexEncodedName'
 
-export default async function (
-  { contracts }: ENSArgs<'contracts'>,
-  name: string,
-) {
-  const universalResolver = await contracts?.getUniversalResolver()
-  const response = await universalResolver?.findResolver(hexEncodeName(name))
+const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
+  const universalResolver = await contracts?.getUniversalResolver()!
+  return {
+    to: universalResolver.address,
+    data: universalResolver.interface.encodeFunctionData(
+      'findResolver(bytes)',
+      [hexEncodeName(name)],
+    ),
+  }
+}
+
+const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
+  const universalResolver = await contracts?.getUniversalResolver()!
+  const response = universalResolver.interface.decodeFunctionResult(
+    'findResolver(bytes)',
+    data,
+  )
 
   if (
     !response ||
@@ -18,3 +29,5 @@ export default async function (
   }
   return response[0]
 }
+
+export default { raw, decode }
