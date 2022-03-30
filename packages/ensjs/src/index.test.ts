@@ -61,9 +61,12 @@ const start = async () => {
     await setRecordsTx.wait()
   }
 
-  const result = await ENSInstance.getProfile('jefflau.eth')
+  //const result = await ENSInstance.getProfile('jefflau.eth')
+  //const addr = await ENSInstance.batch([[ENSInstance.getAddr, 'jefflau.eth', 'BTC']])
+  const contenthash = await ENSInstance.batch([[ENSInstance.getContentHash, 'matoken.eth']])
+  console.log(contenthash)
 
-  console.log(result)
+  //console.log(result)
 
   // const profile = await ENSInstance.getProfile('parthtejpal.eth')
   // console.log(profile?.records?.coinTypes)
