@@ -1,5 +1,9 @@
 import { ethers } from 'ethers'
 import type { batch, _batch } from './batch'
+import type {
+  resolverMulticallWrapper,
+  universalWrapper,
+} from './batchWrappers'
 import ContractManager from './contracts'
 import type getFuses from './getFuses'
 import type {
@@ -11,7 +15,14 @@ import type getName from './getName'
 import type { getOwner } from './getOwner'
 import type getProfile from './getProfile'
 import type getResolver from './getResolver'
-import type { getAddr, getContentHash, getText } from './getSpecificRecord'
+import type {
+  getAddr,
+  getContentHash,
+  getText,
+  _getAddr,
+  _getContentHash,
+  _getText,
+} from './getSpecificRecord'
 import GqlManager from './GqlManager'
 import type setName from './setName'
 import type setRecords from './setRecords'
@@ -114,11 +125,12 @@ export class ENS {
     dependencies: FunctionDeps<F['raw']> | FunctionDeps<F['decode']>,
     exportName = 'default',
   ): GeneratedRawFunction<F> => {
-    const mainFunc = async function (this: ENS, ...args: any[]) {
+    const thisRef = this
+    const mainFunc = async function (...args: any[]) {
       const mod = await import(path)
       return await singleCall(
-        this.provider!,
-        this.forwardDependenciesFromArray<
+        thisRef.provider!,
+        thisRef.forwardDependenciesFromArray<
           FunctionDeps<F['raw']> | FunctionDeps<F['decode']>
         >(dependencies),
         mod[exportName],
@@ -168,6 +180,10 @@ export class ENS {
     'contracts',
     'gqlInstance',
     'getName',
+    'resolverMulticallWrapper',
+    '_getAddr',
+    '_getContentHash',
+    '_getText',
   ])
 
   public getName = this.generateRawFunction<typeof getName>('./getName', [
@@ -205,22 +221,40 @@ export class ENS {
     'getHistoryDetailForTransactionHash',
   )
 
-  public getContentHash = this.generateFunction<typeof getContentHash>(
+  public getContentHash = this.generateRawFunction<typeof getContentHash>(
     './getSpecificRecord',
-    ['contracts'],
+    ['contracts', 'universalWrapper'],
     'getContentHash',
   )
 
-  public getAddr = this.generateFunction<typeof getAddr>(
+  public _getContentHash = this.generateRawFunction<typeof _getContentHash>(
     './getSpecificRecord',
     ['contracts'],
+    '_getContentHash',
+  )
+
+  public getAddr = this.generateRawFunction<typeof getAddr>(
+    './getSpecificRecord',
+    ['contracts', 'universalWrapper'],
     'getAddr',
   )
 
-  public getText = this.generateFunction<typeof getText>(
+  public _getAddr = this.generateRawFunction<typeof _getAddr>(
     './getSpecificRecord',
     ['contracts'],
+    '_getAddr',
+  )
+
+  public getText = this.generateRawFunction<typeof getText>(
+    './getSpecificRecord',
+    ['contracts', 'universalWrapper'],
     'getText',
+  )
+
+  public _getText = this.generateRawFunction<typeof _getText>(
+    './getSpecificRecord',
+    ['contracts'],
+    '_getText',
   )
 
   public _getOwner = this.generateFunction<typeof getOwner>(
@@ -234,6 +268,16 @@ export class ENS {
     ['contracts'],
     'getOwner',
   )
+
+  public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
+    './batchWrappers',
+    ['contracts'],
+    'universalWrapper',
+  )
+
+  public resolverMulticallWrapper = this.generateRawFunction<
+    typeof resolverMulticallWrapper
+  >('./batchWrappers', ['contracts'], 'resolverMulticallWrapper')
 
   public setName = this.generateFunction<typeof setName>('./setName', [
     'contracts',

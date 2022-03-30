@@ -1,6 +1,6 @@
-import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
+import { formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import { ENSArgs, InternalENS } from '.'
+import { ENSArgs } from '.'
 import { decodeContenthash, DecodedContentHash } from './utils/contentHash'
 import { hexEncodeName } from './utils/hexEncodedName'
 
@@ -23,44 +23,44 @@ type DataItem = {
   value: string
 }
 const makeMulticallData = async (
-  { contracts }: Pick<InternalENS, 'contracts'>,
+  {
+    _getAddr,
+    _getContentHash,
+    _getText,
+    resolverMulticallWrapper,
+  }: ENSArgs<
+    '_getText' | '_getAddr' | '_getContentHash' | 'resolverMulticallWrapper'
+  >,
   name: string,
   options: InternalProfileOptions,
 ) => {
-  const publicResolver = await contracts?.getPublicResolver()
-
   let calls: any[] = []
-
-  const encodeData = (sig: string, ...args: any[]) =>
-    publicResolver?.interface.encodeFunctionData(sig, [...args])
-
-  const addCalls = (
-    recordArray: string[],
-    recordType: string,
-    functionArgs: string,
-    name: string,
-    ...args: any[]
-  ) =>
-    recordArray.forEach((item: string) =>
-      calls.push({
-        key: item,
-        data: encodeData(
-          recordType + functionArgs,
-          ethers.utils.namehash(name),
-          item,
-          ...args,
-        ),
-        type: recordType,
-      }),
-    )
-
-  options.texts && addCalls(options.texts, 'text', '(bytes32,string)', name)
+  options.texts &&
+    (calls = [
+      ...calls,
+      ...(await Promise.all(
+        options.texts.map(async (x) => ({
+          key: x,
+          data: await _getText.raw(name, x),
+          type: 'text',
+        })),
+      )),
+    ])
   options.coinTypes &&
-    addCalls(options.coinTypes, 'addr', '(bytes32,uint256)', name)
+    (calls = [
+      ...calls,
+      ...(await Promise.all(
+        options.coinTypes.map(async (x) => ({
+          key: x,
+          data: await _getAddr.raw(name, x, true),
+          type: 'addr',
+        })),
+      )),
+    ])
   if (typeof options.contentHash === 'boolean' && options.contentHash) {
     calls.push({
       key: 'contentHash',
-      data: encodeData('contenthash(bytes32)', ethers.utils.namehash(name)),
+      data: await _getContentHash.raw(name),
       type: 'contenthash',
     })
   }
@@ -68,21 +68,14 @@ const makeMulticallData = async (
   if (!calls.find((x) => x.key === '60')) {
     calls.push({
       key: '60',
-      data: encodeData(
-        'addr(bytes32,uint256)',
-        ethers.utils.namehash(name),
-        '60',
-      ),
+      data: await _getAddr.raw(name, '60', true),
       type: 'addr',
     })
   }
 
-  const data = publicResolver?.interface.encodeFunctionData(
-    'multicall(bytes[])',
-    [calls.map((call: any) => call.data)],
-  )
+  const prRawData = await resolverMulticallWrapper.raw(calls.map((x) => x.data))
 
-  return { data, calls }
+  return { data: prRawData.data, calls }
 }
 
 const makeHashIndexes = (data: string, name: string) =>
@@ -91,32 +84,61 @@ const makeHashIndexes = (data: string, name: string) =>
   )
 
 const getDataForName = async (
-  { contracts }: Pick<InternalENS, 'contracts'>,
+  {
+    contracts,
+    _getAddr,
+    _getContentHash,
+    _getText,
+    resolverMulticallWrapper,
+  }: ENSArgs<
+    | 'contracts'
+    | '_getText'
+    | '_getAddr'
+    | '_getContentHash'
+    | 'resolverMulticallWrapper'
+  >,
   name: string,
   options: InternalProfileOptions,
 ) => {
   const universalResolver = await contracts?.getUniversalResolver()
 
-  const { data, calls } = await makeMulticallData({ contracts }, name, options)
-
-  const resolver = await universalResolver?.resolve(hexEncodeName(name), data)
-  const [recordData] = ethers.utils.defaultAbiCoder.decode(
-    ['bytes[]'],
-    resolver['0'],
+  const { data, calls } = await makeMulticallData(
+    { _getAddr, _getContentHash, _getText, resolverMulticallWrapper },
+    name,
+    options,
   )
 
+  const resolver = await universalResolver?.resolve(hexEncodeName(name), data)
+  const [recordData] = await resolverMulticallWrapper.decode(resolver['0'])
+
+  const matchAddress = recordData[calls.findIndex((x) => x.key === '60')]
+
   return {
-    address: ethers.utils.defaultAbiCoder.decode(
-      ['bytes'],
-      recordData[calls.findIndex((x) => x.key === '60')],
-    )[0],
-    records: formatRecords(recordData, calls, options),
+    address: matchAddress && (await _getAddr.decode(matchAddress)),
+    records: await formatRecords(
+      { _getAddr, _getContentHash, _getText },
+      recordData,
+      calls,
+      options,
+    ),
     resolverAddress: resolver['1'],
   }
 }
 
 const getDataForAddress = async (
-  { contracts }: Pick<InternalENS, 'contracts'>,
+  {
+    contracts,
+    _getAddr,
+    _getContentHash,
+    _getText,
+    resolverMulticallWrapper,
+  }: ENSArgs<
+    | 'contracts'
+    | '_getText'
+    | '_getAddr'
+    | '_getContentHash'
+    | 'resolverMulticallWrapper'
+  >,
   address: string,
   options: InternalProfileOptions,
 ) => {
@@ -126,7 +148,7 @@ const getDataForAddress = async (
   const reverseNode = address.toLowerCase().substring(2) + '.addr.reverse'
 
   const { data, calls } = await makeMulticallData(
-    { contracts },
+    { _getAddr, _getContentHash, _getText, resolverMulticallWrapper },
     reverseNode,
     options,
   )
@@ -146,76 +168,93 @@ const getDataForAddress = async (
     ['bytes', 'address'],
     URData,
   )
-  const [recordData] = ethers.utils.defaultAbiCoder.decode(
-    ['bytes[]'],
-    URDecoded,
-  )
+  const [recordData] = await resolverMulticallWrapper.decode(URDecoded)
+
+  const matchAddress = recordData[calls.findIndex((x) => x.key === '60')]
 
   if (
-    ethers.utils.defaultAbiCoder.decode(
-      ['bytes'],
-      recordData[calls.findIndex((x) => x.key === '60')],
-    )[0] !== address.toLowerCase()
+    !matchAddress ||
+    (await _getAddr.decode(matchAddress)) !== address.toLowerCase()
   ) {
     return { name, records: null, match: false }
   }
   return {
     name,
-    records: formatRecords(recordData, calls, options),
+    records: await formatRecords(
+      { _getAddr, _getContentHash, _getText },
+      recordData,
+      calls,
+      options,
+    ),
     match: true,
     resolverAddress,
   }
 }
 
-const formatRecords = (
+const formatRecords = async (
+  {
+    _getText,
+    _getAddr,
+    _getContentHash,
+  }: ENSArgs<'_getText' | '_getAddr' | '_getContentHash'>,
   data: any[],
   calls: any[],
   options: InternalProfileOptions,
 ) => {
-  let returnedRecords: DataItem[] = data
-    .map((item: string, i: number) => {
-      let decodedFromAbi: any
-      let itemRet: Record<string, any> = {
-        key: calls[i].key,
-        type: calls[i].type,
-      }
-      if (itemRet.type === 'addr' || itemRet.type === 'contenthash') {
-        decodedFromAbi = ethers.utils.defaultAbiCoder.decode(['bytes'], item)[0]
-        if (ethers.utils.hexStripZeros(decodedFromAbi) === '0x') {
-          return null
+  let returnedRecords: DataItem[] = (
+    await Promise.all(
+      data.map(async (item: string, i: number) => {
+        let decodedFromAbi: any
+        let itemRet: Record<string, any> = {
+          key: calls[i].key,
+          type: calls[i].type,
         }
-      }
-      switch (calls[i].type) {
-        case 'text':
-          itemRet = {
-            ...itemRet,
-            value: ethers.utils.defaultAbiCoder.decode(['string'], item)[0],
+        if (itemRet.type === 'addr' || itemRet.type === 'contenthash') {
+          decodedFromAbi = ethers.utils.defaultAbiCoder.decode(
+            ['bytes'],
+            item,
+          )[0]
+          if (ethers.utils.hexStripZeros(decodedFromAbi) === '0x') {
+            return null
           }
-          if (itemRet.value === '') return null
-          break
-        case 'addr':
-          const format = formatsByCoinType[calls[i].key]
-          if (format) {
+        }
+        switch (calls[i].type) {
+          case 'text':
             itemRet = {
               ...itemRet,
-              coin: format.name,
-              value: format.encoder(
-                Buffer.from(decodedFromAbi.slice(2), 'hex'),
-              ),
+              value: await _getText.decode(item),
             }
+            if (itemRet.value === '') return null
             break
-          } else {
-            return null
-          }
-        case 'contenthash':
-          try {
-            itemRet = { ...itemRet, value: decodeContenthash(decodedFromAbi) }
-          } catch {
-            return null
-          }
-      }
-      return itemRet
-    })
+          case 'addr':
+            try {
+              const addr = await _getAddr.decode(item, '', calls[i].key)
+              if (addr) {
+                itemRet = {
+                  ...itemRet,
+                  ...addr,
+                }
+                break
+              } else {
+                return null
+              }
+            } catch {
+              return null
+            }
+          case 'contenthash':
+            try {
+              itemRet = {
+                ...itemRet,
+                value: await _getContentHash.decode(item),
+              }
+            } catch {
+              return null
+            }
+        }
+        return itemRet
+      }),
+    )
+  )
     .filter((x): x is DataItem => {
       return typeof x === 'object'
     })
@@ -237,6 +276,7 @@ const formatRecords = (
     ) {
       returnedResponse.contentHash = null
     } else if (
+      ethers.utils.isBytesLike((options.contentHash as any).decoded) &&
       ethers.utils.hexStripZeros((options.contentHash as any).decoded) === '0x'
     ) {
       returnedResponse.contentHash = null
@@ -263,7 +303,7 @@ const formatRecords = (
 }
 
 const graphFetch = async (
-  { gqlInstance }: Pick<InternalENS, 'gqlInstance'>,
+  { gqlInstance }: ENSArgs<'gqlInstance'>,
   name: string,
   wantedRecords: ProfileOptions,
 ) => {
@@ -315,7 +355,19 @@ const getProfileFromAddress = async (
     contracts,
     gqlInstance,
     getName,
-  }: ENSArgs<'contracts' | 'gqlInstance' | 'getName'>,
+    _getAddr,
+    _getContentHash,
+    _getText,
+    resolverMulticallWrapper,
+  }: ENSArgs<
+    | 'contracts'
+    | 'gqlInstance'
+    | 'getName'
+    | '_getText'
+    | '_getAddr'
+    | '_getContentHash'
+    | 'resolverMulticallWrapper'
+  >,
   address: string,
   options?: ProfileOptions,
 ) => {
@@ -331,15 +383,27 @@ const getProfileFromAddress = async (
       name.name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records } = await getDataForName(
-      { contracts },
+    const { records, resolverAddress } = await getDataForName(
+      {
+        contracts,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+      },
       name.name,
       wantedRecords,
     )
-    return { name: name.name, records, match: true }
+    return { name: name.name, records, match: true, resolverAddress }
   } else {
     return await getDataForAddress(
-      { contracts },
+      {
+        contracts,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+      },
       address,
       options as InternalProfileOptions,
     )
@@ -347,7 +411,21 @@ const getProfileFromAddress = async (
 }
 
 const getProfileFromName = async (
-  { contracts, gqlInstance }: ENSArgs<'contracts' | 'gqlInstance'>,
+  {
+    contracts,
+    gqlInstance,
+    _getAddr,
+    _getContentHash,
+    _getText,
+    resolverMulticallWrapper,
+  }: ENSArgs<
+    | 'contracts'
+    | 'gqlInstance'
+    | '_getText'
+    | '_getAddr'
+    | '_getContentHash'
+    | 'resolverMulticallWrapper'
+  >,
   name: string,
   options?: ProfileOptions,
 ) => {
@@ -361,10 +439,26 @@ const getProfileFromName = async (
       name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    return await getDataForName({ contracts }, name, wantedRecords)
+    return await getDataForName(
+      {
+        contracts,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+      },
+      name,
+      wantedRecords,
+    )
   } else {
     return await getDataForName(
-      { contracts },
+      {
+        contracts,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+      },
       name,
       options as InternalProfileOptions,
     )
@@ -376,7 +470,19 @@ export default async function (
     contracts,
     gqlInstance,
     getName,
-  }: ENSArgs<'contracts' | 'gqlInstance' | 'getName'>,
+    _getAddr,
+    _getContentHash,
+    _getText,
+    resolverMulticallWrapper,
+  }: ENSArgs<
+    | 'contracts'
+    | 'gqlInstance'
+    | 'getName'
+    | '_getText'
+    | '_getAddr'
+    | '_getContentHash'
+    | 'resolverMulticallWrapper'
+  >,
   nameOrAddress: string,
   options?: ProfileOptions,
 ) {
@@ -392,13 +498,28 @@ export default async function (
 
   if (nameOrAddress.includes('.')) {
     return getProfileFromName(
-      { contracts, gqlInstance },
+      {
+        contracts,
+        gqlInstance,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+      },
       nameOrAddress,
       options,
     )
   } else {
     return getProfileFromAddress(
-      { contracts, gqlInstance, getName },
+      {
+        contracts,
+        gqlInstance,
+        getName,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+      },
       nameOrAddress,
       options,
     )
