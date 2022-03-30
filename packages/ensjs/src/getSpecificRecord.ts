@@ -1,6 +1,7 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
 import { ENSArgs } from '.'
+import { decodeContenthash } from './utils/contentHash'
 
 export const _getContentHash = {
   raw: async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
@@ -22,7 +23,7 @@ export const _getContentHash = {
     if (!response) {
       return null
     }
-    return response
+    return decodeContenthash(response)
   },
 }
 
