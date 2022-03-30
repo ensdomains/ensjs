@@ -2716,7 +2716,7 @@ __metadata:
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: 2de96c77345d7e84a40033863a69324d6f57c1f7c42045f9d8e0e87955a7f54218ac1be9c11f1e7ee49513621bf684b1c3b19a4ed776e5089be3f632e22ff363
+  checksum: b55db43ae003ccf635dcf0f87b16fbda7f2f84c326d30b5a205f41e3fe37d6ccb66ea015f68e05f65f39ed6928a005a083a92576074e1f495123a1b208972941
   languageName: node
   linkType: hard
 
@@ -2728,7 +2728,7 @@ __metadata:
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: 3614e84b1639927969b592a689621f759f1dbdcf963e68bdeb6d71000c3c9167e9feaa5d720634d48b59dcc1d305a38d0ac1af6cfc543fee40aee48018a5da73
+  checksum: 08373960575af2e19765808a2d857804f7af0e2c2df443dcd64ae790b92232f488ee36ffe432d50eb6597b1e070dee699b952606c60e34a893cc368fc8c0fe60
   languageName: node
   linkType: hard
 
