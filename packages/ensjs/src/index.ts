@@ -6,6 +6,7 @@ import type {
 } from './batchWrappers'
 import type burnFuses from './burnFuses'
 import ContractManager from './contracts'
+import type createSubname from './createSubname'
 import type getFuses from './getFuses'
 import type {
   getHistory,
@@ -311,4 +312,9 @@ export class ENS {
   public burnFuses = this.generateFunction<typeof burnFuses>('./burnFuses', [
     'contracts',
   ])
+
+  public createSubname = this.generateFunction<typeof createSubname>(
+    './createSubname',
+    ['contracts', 'provider'],
+  )
 }
