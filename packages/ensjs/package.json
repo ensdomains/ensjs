@@ -34,5 +34,13 @@
   },
   "peerDependencies": {
     "ethers": "*"
+  },
+  "dependenciesMeta": {
+    "ens-contracts-namewrapper": {
+      "built": false
+    },
+    "ens-contracts-universal": {
+      "built": false
+    }
   }
 }

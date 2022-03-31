@@ -121,6 +121,11 @@ __metadata:
     ts-node: ^10.7.0
   peerDependencies:
     ethers: "*"
+  dependenciesMeta:
+    ens-contracts-namewrapper:
+      built: false
+    ens-contracts-universal:
+      built: false
   languageName: unknown
   linkType: soft
 
