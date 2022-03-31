@@ -26,8 +26,10 @@ import type {
 import GqlManager from './GqlManager'
 import type setName from './setName'
 import type setRecords from './setRecords'
-import type { setResolver, transfer } from './setters'
+import type setResolver from './setResolver'
+import type transferName from './transferName'
 import singleCall from './utils/singleCall'
+import type wrapName from './wrapName'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -291,14 +293,17 @@ export class ENS {
   ])
 
   public setResolver = this.generateFunction<typeof setResolver>(
-    './setters',
+    './setResolver',
     ['contracts', 'provider'],
-    'setResolver',
   )
 
-  public transfer = this.generateFunction<typeof transfer>(
-    './setters',
+  public transferName = this.generateFunction<typeof transferName>(
+    './transferName',
     ['contracts', 'provider'],
-    'transfer',
   )
+
+  public wrapName = this.generateFunction<typeof wrapName>('./wrapName', [
+    'contracts',
+    'provider',
+  ])
 }
