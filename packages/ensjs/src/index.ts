@@ -90,11 +90,20 @@ export class ENS {
   protected options?: ENSOptions
   protected provider?: ethers.providers.JsonRpcProvider
   protected graphURI?: string | null
+  protected initialProvider?: ethers.providers.JsonRpcProvider
   contracts?: ContractManager
   gqlInstance = new GqlManager()
 
   constructor(options?: ENSOptions) {
     this.options = options
+  }
+
+  private checkInitialProvider = async () => {
+    if (!this.initialProvider) {
+      return
+    }
+    await this.setProvider(this.initialProvider)
+    return
   }
 
   private forwardDependenciesFromArray = <F>(dependencies: FunctionDeps<F>) =>
@@ -110,10 +119,12 @@ export class ENS {
       subFunc?: 'raw' | 'decode',
     ) =>
     (...args: any[]) =>
-      import(path).then((mod) =>
-        (subFunc ? mod[exportName][subFunc] : mod[exportName])(
-          this.forwardDependenciesFromArray<F>(dependencies),
-          ...args,
+      this.checkInitialProvider().then(() =>
+        import(path).then((mod) =>
+          (subFunc ? mod[exportName][subFunc] : mod[exportName])(
+            this.forwardDependenciesFromArray<F>(dependencies),
+            ...args,
+          ),
         ),
       )
 
@@ -131,6 +142,7 @@ export class ENS {
   ): GeneratedRawFunction<F> => {
     const thisRef = this
     const mainFunc = async function (...args: any[]) {
+      await thisRef.checkInitialProvider()
       const mod = await import(path)
       return await singleCall(
         thisRef.provider!,
@@ -167,6 +179,12 @@ export class ENS {
     await this.gqlInstance.setUrl(this.graphURI)
     this.contracts = new ContractManager(this.provider)
     return
+  }
+
+  public withProvider = (provider: ethers.providers.JsonRpcProvider): ENS => {
+    const newENS = new ENS(this.options)
+    newENS.initialProvider = provider
+    return newENS
   }
 
   public batch = this.generateFunction<typeof batch>(
