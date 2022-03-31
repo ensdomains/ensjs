@@ -4,6 +4,7 @@ import type {
   resolverMulticallWrapper,
   universalWrapper,
 } from './batchWrappers'
+import type burnFuses from './burnFuses'
 import ContractManager from './contracts'
 import type getFuses from './getFuses'
 import type {
@@ -305,5 +306,9 @@ export class ENS {
   public wrapName = this.generateFunction<typeof wrapName>('./wrapName', [
     'contracts',
     'provider',
+  ])
+
+  public burnFuses = this.generateFunction<typeof burnFuses>('./burnFuses', [
+    'contracts',
   ])
 }

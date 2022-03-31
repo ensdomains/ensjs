@@ -1,17 +1,8 @@
 import { ethers } from 'ethers'
 import { ENSArgs } from '.'
-import fuses from './utils/fuses'
+import type { FuseOptions } from './@types/FuseOptions'
+import generateFuseInput from './utils/generateFuseInput'
 import { hexEncodeName } from './utils/hexEncodedName'
-
-type FuseOptions = {
-  cannotUnwrap: true
-  cannotBurnFuses?: boolean
-  cannotTransfer?: boolean
-  cannotSetResolver?: boolean
-  cannotSetTtl?: boolean
-  cannotCreateSubdomain?: boolean
-  cannotReplaceSubdomain?: boolean
-}
 
 async function wrapETH(
   { contracts }: ENSArgs<'contracts'>,
@@ -90,19 +81,7 @@ export default async function (
 
   switch (typeof fuseOptions) {
     case 'object': {
-      const fuseKeys = Object.keys(fuseOptions)
-        .filter((opt) => fuseOptions[opt as keyof FuseOptions] === true)
-        .map((opt) =>
-          opt
-            .split(/(?=[A-Z])/)
-            .join('_')
-            .toUpperCase(),
-        )
-      const bigNumberFuses = fuseKeys.reduce((prev, curr) => {
-        console.log(curr)
-        return prev.or(fuses[curr as keyof typeof fuses])
-      }, ethers.BigNumber.from(0))
-      decodedFuses = bigNumberFuses.toHexString()
+      decodedFuses = generateFuseInput(fuseOptions)
       break
     }
     case 'number': {
