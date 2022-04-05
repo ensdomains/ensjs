@@ -1,5 +1,6 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers, utils } from 'ethers'
 import { ENS } from '..'
+import { hexEncodeName } from '../utils/hexEncodedName'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -25,17 +26,12 @@ describe('wrapName', () => {
     const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0])
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getFuses('parthtejpal.eth')
-    expect(result).toMatchObject({
-      cannotUnwrap: false,
-      cannotBurnFuses: false,
-      cannotTransfer: false,
-      cannotSetResolver: false,
-      cannotSetTtl: false,
-      cannotCreateSubdomain: false,
-      cannotReplaceSubdomain: false,
-      canDoEverything: true,
-    })
+
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const [result] = await nameWrapper.getFuses(
+      utils.namehash('parthtejpal.eth'),
+    )
+    expect((result as BigNumber).toHexString()).toBe('0x00')
   })
   it('should allow initial fuses', async () => {
     const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0], {
@@ -45,17 +41,12 @@ describe('wrapName', () => {
     })
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getFuses('parthtejpal.eth')
-    expect(result).toMatchObject({
-      cannotUnwrap: true,
-      cannotBurnFuses: false,
-      cannotTransfer: false,
-      cannotSetResolver: false,
-      cannotSetTtl: true,
-      cannotCreateSubdomain: false,
-      cannotReplaceSubdomain: true,
-      canDoEverything: false,
-    })
+
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const [result] = await nameWrapper.getFuses(
+      utils.namehash('parthtejpal.eth'),
+    )
+    expect((result as BigNumber).toHexString()).toBe('0x51')
   })
   it('should allow an initial resolver address', async () => {
     const tx = await ENSInstance.wrapName(
@@ -66,7 +57,12 @@ describe('wrapName', () => {
     )
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getResolver('parthtejpal.eth')
+
+    const universalResolver =
+      await ENSInstance.contracts!.getUniversalResolver()!
+    const [result] = await universalResolver.findResolver(
+      hexEncodeName('parthtejpal.eth'),
+    )
     expect(result).toBe('0x42D63ae25990889E35F215bC95884039Ba354115')
   })
 })

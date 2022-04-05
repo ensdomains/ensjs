@@ -1,5 +1,6 @@
-import { ethers } from 'ethers'
+import { ethers, utils } from 'ethers'
 import { ENS } from '..'
+import { hexEncodeName } from '../utils/hexEncodedName'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -25,14 +26,39 @@ describe('setRecords', () => {
     })
     expect(tx).toBeTruthy()
     await tx.wait()
+
+    const universalResolver =
+      await ENSInstance.contracts!.getUniversalResolver()!
+    const publicResolver = await ENSInstance.contracts!.getPublicResolver()!
     const result = await ENSInstance.batch(
       [ENSInstance.getText, 'parthtejpal.eth', 'foo'],
       [ENSInstance.getAddr, 'parthtejpal.eth', 'ETC'],
     )
-    expect(result[0]).toBe('bar')
-    expect(result[1]).toMatchObject({
-      coin: 'ETC',
-      addr: '0x42D63ae25990889E35F215bC95884039Ba354115',
-    })
+    const encodedText = await universalResolver.resolve(
+      hexEncodeName('parthtejpal.eth'),
+      publicResolver.interface.encodeFunctionData('text(bytes32,string)', [
+        utils.namehash('parthtejpal.eth'),
+        'foo',
+      ]),
+    )
+    const encodedAddr = await universalResolver.resolve(
+      hexEncodeName('parthtejpal.eth'),
+      publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
+        utils.namehash('parthtejpal.eth'),
+        '61',
+      ]),
+    )
+    const [resultText] = publicResolver.interface.decodeFunctionResult(
+      'text(bytes32,string)',
+      encodedText[0],
+    )
+    const [resultAddr] = publicResolver.interface.decodeFunctionResult(
+      'addr(bytes32,uint256)',
+      encodedAddr[0],
+    )
+    expect(resultText).toBe('bar')
+    expect(resultAddr).toBe(
+      '0x42D63ae25990889E35F215bC95884039Ba354115'.toLowerCase(),
+    )
   })
 })

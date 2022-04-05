@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers, utils } from 'ethers'
 import { ENS } from '..'
 import setup from './setup'
 
@@ -27,6 +27,7 @@ describe('burnFuses', () => {
       accounts[0],
     )
     await wrapNameTx.wait()
+
     const tx = await ENSInstance.burnFuses('parthtejpal.eth', {
       cannotUnwrap: true,
       cannotCreateSubdomain: true,
@@ -34,16 +35,10 @@ describe('burnFuses', () => {
     })
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getFuses('parthtejpal.eth')
-    expect(result).toMatchObject({
-      cannotUnwrap: true,
-      cannotBurnFuses: false,
-      cannotTransfer: false,
-      cannotSetResolver: false,
-      cannotSetTtl: true,
-      cannotCreateSubdomain: true,
-      cannotReplaceSubdomain: false,
-      canDoEverything: false,
-    })
+
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const result = await nameWrapper.getFuses(utils.namehash('parthtejpal.eth'))
+    const fuseBN = result.fuses as BigNumber
+    expect(fuseBN.toHexString()).toBe('0x31')
   })
 })

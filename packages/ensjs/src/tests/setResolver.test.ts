@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { ENS } from '..'
+import { hexEncodeName } from '../utils/hexEncodedName'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -27,7 +28,12 @@ describe('setResolver', () => {
     )
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getResolver('parthtejpal.eth')
+
+    const universalResolver =
+      await ENSInstance.contracts!.getUniversalResolver()!
+    const [result] = await universalResolver.findResolver(
+      hexEncodeName('parthtejpal.eth'),
+    )
     expect(result).toBe('0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC')
   })
   it('should return a transaction to the namewrapper and set successfully', async () => {
@@ -44,7 +50,12 @@ describe('setResolver', () => {
     )
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getResolver('parthtejpal.eth')
+
+    const universalResolver =
+      await ENSInstance.contracts!.getUniversalResolver()!
+    const [result] = await universalResolver.findResolver(
+      hexEncodeName('parthtejpal.eth'),
+    )
     expect(result).toBe('0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC')
   })
 })

@@ -1,14 +1,17 @@
 import { ethers } from 'ethers'
 import { ENS } from '..'
+import { hexEncodeName } from '../utils/hexEncodedName'
 import setup from './setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
 let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 let provider: ethers.providers.JsonRpcProvider
+let accounts: string[]
 
 beforeAll(async () => {
   ;({ ENSInstance, revert, createSnapshot, provider } = await setup())
+  accounts = await provider.listAccounts()
 })
 
 afterAll(async () => {
@@ -20,10 +23,11 @@ describe('setName', () => {
     const tx = await ENSInstance.setName('fleek.eth')
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getName((await provider.listAccounts())[0])
-    expect(result).toMatchObject({
-      name: 'fleek.eth',
-      match: true,
-    })
+
+    const universalResolver =
+      await ENSInstance.contracts!.getUniversalResolver()!
+    const reverseNode = accounts[0].toLowerCase().substring(2) + '.addr.reverse'
+    const result = await universalResolver.reverse(hexEncodeName(reverseNode))
+    expect(result[0]).toBe('fleek.eth')
   })
 })

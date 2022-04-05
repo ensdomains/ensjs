@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, utils } from 'ethers'
 import { ENS } from '..'
 import setup from './setup'
 
@@ -30,8 +30,10 @@ describe('createSubname', () => {
     })
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getOwner('test.parthtejpal.eth')
-    expect(result?.owner).toBe(accounts[0])
+
+    const registry = await ENSInstance.contracts!.getRegistry()!
+    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
+    expect(result).toBe(accounts[0])
   })
   it('should allow creating a subname on the namewrapper unwrapped', async () => {
     const wrapNameTx = await ENSInstance.wrapName(
@@ -48,9 +50,10 @@ describe('createSubname', () => {
     })
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getOwner('test.parthtejpal.eth')
-    expect(result?.owner).toBe(accounts[0])
-    expect(result?.truthLevel).toBe('registry')
+
+    const registry = await ENSInstance.contracts!.getRegistry()!
+    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
+    expect(result).toBe(accounts[0])
   })
   it('should allow creating and wrapping a subname on the namewrapper', async () => {
     const wrapNameTx = await ENSInstance.wrapName(
@@ -67,8 +70,11 @@ describe('createSubname', () => {
     })
     expect(tx).toBeTruthy()
     await tx.wait()
-    const result = await ENSInstance.getOwner('test.parthtejpal.eth')
-    expect(result?.owner).toBe(accounts[0])
-    expect(result?.truthLevel).toBe('nameWrapper')
+
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const result = await nameWrapper.ownerOf(
+      utils.namehash('test.parthtejpal.eth'),
+    )
+    expect(result).toBe(accounts[0])
   })
 })
