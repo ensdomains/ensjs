@@ -83,6 +83,10 @@ interface GeneratedRawFunction<F extends RawFunction>
   >
 }
 
+type CombineFunctionDeps<F> = F extends RawFunction
+  ? FunctionDeps<F['raw']> | FunctionDeps<F['decode']>
+  : never
+
 export interface GenericGeneratedRawFunction extends Function, RawFunction {}
 
 export class ENS {
@@ -98,7 +102,11 @@ export class ENS {
     this.options = options
   }
 
-  private checkInitialProvider = async () => {
+  /**
+   * Checks for an initial provider and if it exists, sets it as the provider
+   * @returns {Promise<void>} - A promise that resolves when the provider is checked, and set if needed
+   */
+  private checkInitialProvider = async (): Promise<void> => {
     if (!this.initialProvider) {
       return
     }
@@ -106,69 +114,127 @@ export class ENS {
     return
   }
 
-  private forwardDependenciesFromArray = <F>(dependencies: FunctionDeps<F>) =>
+  /**
+   * Creates an object of ENS properties from an array
+   * @param {FunctionDeps} dependencies - An array of ENS properties
+   * @returns {Object} - An object of ENS properties
+   */
+  private forwardDependenciesFromArray = <F>(
+    dependencies: FunctionDeps<F>,
+  ): object =>
+    // Creates an object from entries of the array
     Object.fromEntries(
+      // Maps over dependencies and create arrays for each, e.g. ['contracts', contractObj]
       dependencies.map((dep) => [dep, this[dep as keyof InternalENS]]),
     )
 
-  private importGenerator =
-    <F>(
-      path: string,
-      dependencies: FunctionDeps<F>,
-      exportName = 'default',
-      subFunc?: 'raw' | 'decode',
-    ) =>
-    (...args: any[]) =>
-      this.checkInitialProvider().then(() =>
-        import(path).then((mod) =>
-          (subFunc ? mod[exportName][subFunc] : mod[exportName])(
-            this.forwardDependenciesFromArray<F>(dependencies),
-            ...args,
-          ),
-        ),
-      )
+  /**
+   * Creates a wrapper for a function to be dynamically imported, with the correct dependencies passed in
+   * @param {string} path - The path of the exported function
+   * @param {FunctionDeps} dependencies - An array of ENS properties
+   * @param {string} exportName - The export name of the target function
+   * @param {string} subFunc - The type of function being imported
+   * @returns {Function} - The generated wrapped function
+   */
+  private importGenerator = <F>(
+    path: string,
+    dependencies: FunctionDeps<F>,
+    exportName: string = 'default',
+    subFunc?: 'raw' | 'decode' | 'combine',
+  ): Function => {
+    const thisRef = this
+    const mainFunc = async function (...args: any[]) {
+      // check the initial provider and set if it exists
+      await thisRef.checkInitialProvider()
+      // import the module dynamically
+      const mod = await import(path)
 
+      // if combine isn't specified, run normally'
+      // otherwise, create a function from the raw and decode functions
+      if (subFunc !== 'combine') {
+        // get the function to call
+        const func = subFunc ? mod[exportName][subFunc] : mod[exportName]
+        // get the dependencies to forward to the function as the first arg
+        const dependenciesToForward =
+          thisRef.forwardDependenciesFromArray<F>(dependencies)
+        // return the function with the dependencies forwarded
+        return func(dependenciesToForward, ...args)
+      } else {
+        // get the dependencies to forward from raw and decode functions
+        const dependenciesToForward = thisRef.forwardDependenciesFromArray<
+          CombineFunctionDeps<F>
+        >(dependencies as any)
+
+        // return singleCall function with dependencies forwarded
+        return singleCall(
+          thisRef.provider!,
+          dependenciesToForward,
+          mod[exportName],
+          ...args,
+        )
+      }
+    }
+
+    // if subfunc is combine, add raw and decode property methods to the function
+    if (subFunc === 'combine') {
+      mainFunc.raw = this.importGenerator<F>(
+        path,
+        dependencies,
+        exportName,
+        'raw',
+      )
+      mainFunc.decode = this.importGenerator<F>(
+        path,
+        dependencies,
+        exportName,
+        'decode',
+      ) as (data: any, ...args: any[]) => Promise<any>
+    }
+
+    return mainFunc as Function
+  }
+
+  /**
+   * Generates a normal wrapped function
+   * @param {string} path - The path of the exported function
+   * @param {FunctionDeps} dependencies - An array of ENS properties
+   * @param {string} exportName - The export name of the target function
+   * @returns {OmitFirstArg} - The generated wrapped function
+   */
   private generateFunction = <F>(
     path: string,
     dependencies: FunctionDeps<F>,
-    exportName = 'default',
+    exportName: string = 'default',
   ): OmitFirstArg<F> =>
     this.importGenerator<F>(path, dependencies, exportName) as OmitFirstArg<F>
 
+  /**
+   * Generates a wrapped function from raw and decode exports
+   * @param {string} path - The path of the exported function
+   * @param {FunctionDeps} dependencies - An array of ENS properties
+   * @param {string} exportName - The export name of the target function
+   * @returns {GeneratedRawFunction} - The generated wrapped function
+   */
   private generateRawFunction = <F extends RawFunction>(
     path: string,
     dependencies: FunctionDeps<F['raw']> | FunctionDeps<F['decode']>,
-    exportName = 'default',
-  ): GeneratedRawFunction<F> => {
-    const thisRef = this
-    const mainFunc = async function (...args: any[]) {
-      await thisRef.checkInitialProvider()
-      const mod = await import(path)
-      return await singleCall(
-        thisRef.provider!,
-        thisRef.forwardDependenciesFromArray<
-          FunctionDeps<F['raw']> | FunctionDeps<F['decode']>
-        >(dependencies),
-        mod[exportName],
-        ...args,
-      )
-    }
-    mainFunc.raw = this.importGenerator<F['raw']>(
+    exportName: string = 'default',
+  ): GeneratedRawFunction<F> =>
+    this.importGenerator<F>(
       path,
-      dependencies,
+      dependencies as any,
       exportName,
-      'raw',
-    )
-    mainFunc.decode = this.importGenerator<F['decode']>(
-      path,
-      dependencies,
-      exportName,
-      'decode',
-    ) as (data: any, ...args: any[]) => Promise<any>
-    return mainFunc as unknown as GeneratedRawFunction<F>
-  }
+      'combine',
+    ) as GeneratedRawFunction<F>
 
-  public setProvider = async (provider: ethers.providers.JsonRpcProvider) => {
+  /**
+   * Sets the provider for the ENS class
+   * @param {ethers.providers.JsonRpcProvider} provider - The provider to set
+   * @returns {Promise<void>} - A promise that resolves when the provider is set
+   */
+  public setProvider = async (
+    provider: ethers.providers.JsonRpcProvider,
+  ): Promise<void> => {
     this.provider = provider
     if (this.options && this.options.graphURI) {
       this.graphURI = this.options.graphURI
@@ -181,6 +247,11 @@ export class ENS {
     return
   }
 
+  /**
+   * Creates a new ENS instance with a different provider, ideally should be used individually with any given function
+   * @param {ethers.providers.JsonRpcProvider} provider - The provider to use
+   * @returns {ENS} - A new ENS instance with the given provider
+   */
   public withProvider = (provider: ethers.providers.JsonRpcProvider): ENS => {
     const newENS = new ENS(this.options)
     newENS.initialProvider = provider
