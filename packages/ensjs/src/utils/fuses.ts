@@ -7,7 +7,7 @@ const CANNOT_CREATE_SUBDOMAIN = 32
 const CANNOT_REPLACE_SUBDOMAIN = 64
 const CAN_DO_EVERYTHING = 0
 
-export default {
+export const testable = {
   CANNOT_UNWRAP,
   CANNOT_BURN_FUSES,
   CANNOT_TRANSFER,
@@ -15,5 +15,9 @@ export default {
   CANNOT_SET_TTL,
   CANNOT_CREATE_SUBDOMAIN,
   CANNOT_REPLACE_SUBDOMAIN,
+}
+
+export default {
+  ...testable,
   CAN_DO_EVERYTHING,
 }

@@ -221,17 +221,19 @@ export async function getHistory(
 
   const label = name.split('.')[0]
 
-  const {
-    domains: [
-      {
-        events: domainEvents,
-        owner: {
-          registrations: [{ events: registrationEvents }],
-        },
-        resolver: { events: resolverEvents },
+  const { domains } = await client.request(query, { name, label })
+
+  if (!domains || domains.length === 0) return null
+
+  const [
+    {
+      events: domainEvents,
+      owner: {
+        registrations: [{ events: registrationEvents }],
       },
-    ],
-  } = await client.request(query, { name, label })
+      resolver: { events: resolverEvents },
+    },
+  ] = domains
 
   const domainHistory = mapEvents(domainEvents, 'Domain')
   const registrationHistory = mapEvents(registrationEvents, 'Registration')
@@ -258,11 +260,11 @@ export async function getHistoryWithDetail(
   }: ENSArgs<'contracts' | 'gqlInstance' | 'provider'>,
   name: string,
 ) {
-  const {
-    domain,
-    registration,
-    resolver: resolverHistory,
-  } = await getHistory({ gqlInstance }, name)
+  const historyRes = await getHistory({ gqlInstance }, name)
+
+  if (!historyRes) return null
+
+  const { domain, registration, resolver: resolverHistory } = historyRes
 
   const textEvents = resolverHistory.filter(
     (event) => event.type === 'TextChanged',

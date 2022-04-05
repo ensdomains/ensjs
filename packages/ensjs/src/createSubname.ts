@@ -3,14 +3,25 @@ import { ENSArgs } from '.'
 import { FuseOptions } from './@types/FuseOptions'
 import generateFuseInput from './utils/generateFuseInput'
 
+type BaseArgs = {
+  name: string
+  owner: string
+  resolverAddress?: string
+  contract: 'registry' | 'nameWrapper'
+  options?: { addressOrIndex?: string | number }
+}
+
+type NameWrapperArgs = {
+  contract: 'nameWrapper'
+  fuses?: FuseOptions
+  shouldWrap?: boolean
+} & BaseArgs
+
+type Args = BaseArgs | NameWrapperArgs
+
 export default async function (
   { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
-  name: string,
-  owner: string,
-  contract: 'registry' | 'nameWrapper',
-  resolverAddress?: string,
-  fuses?: FuseOptions,
-  options?: { addressOrIndex?: string | number },
+  { name, owner, resolverAddress, contract, options, ...wrapperArgs }: Args,
 ) {
   const signer = provider?.getSigner(options?.addressOrIndex)
 
@@ -26,11 +37,16 @@ export default async function (
     )
   }
 
-  if (fuses && contract === 'registry') {
+  if ('fuses' in wrapperArgs && contract === 'registry') {
     throw new Error('Fuses can only be set on a wrapped name')
   }
 
-  const labelhash = ethers.utils.solidityKeccak256(['string'], [labels.shift()])
+  if (!resolverAddress) {
+    resolverAddress = (await contracts?.getPublicResolver())!.address
+  }
+
+  const label = labels.shift()
+  const labelhash = ethers.utils.solidityKeccak256(['string'], [label])
   const parentNodehash = ethers.utils.namehash(labels.join('.'))
 
   switch (contract) {
@@ -48,16 +64,29 @@ export default async function (
     case 'nameWrapper': {
       const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
 
-      const generatedFuses = fuses ? generateFuseInput(fuses) : '0'
+      const generatedFuses =
+        'fuses' in wrapperArgs && wrapperArgs.fuses
+          ? generateFuseInput(wrapperArgs.fuses)
+          : '0'
 
-      return nameWrapper.setSubnodeRecordAndWrap(
-        parentNodehash,
-        labelhash,
-        owner,
-        resolverAddress,
-        0,
-        generatedFuses,
-      )
+      if ('shouldWrap' in wrapperArgs && wrapperArgs.shouldWrap) {
+        return nameWrapper.setSubnodeRecordAndWrap(
+          parentNodehash,
+          label,
+          owner,
+          resolverAddress,
+          0,
+          generatedFuses,
+        )
+      } else {
+        return nameWrapper.setSubnodeRecord(
+          parentNodehash,
+          labelhash,
+          owner,
+          resolverAddress,
+          0,
+        )
+      }
     }
     default: {
       throw new Error(`Unknown contract: ${contract}`)

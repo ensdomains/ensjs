@@ -12,7 +12,6 @@ export default (fuseOptions: FuseOptions) => {
         .toUpperCase(),
     )
   const bigNumberFuses = fuseKeys.reduce((prev, curr) => {
-    console.log(curr)
     return prev.or(fuses[curr as keyof typeof fuses])
   }, ethers.BigNumber.from(0))
   return bigNumberFuses.toHexString()

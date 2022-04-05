@@ -29,7 +29,8 @@ export const _getContentHash = {
     if (
       !decodedContent ||
       (ethers.utils.isBytesLike(decodedContent.decoded) &&
-        ethers.utils.hexStripZeros(decodedContent.decoded) === '0x')
+        ethers.utils.hexStripZeros(decodedContent.decoded) === '0x') ||
+      Object.keys(decodedContent).length === 0
     ) {
       return null
     }

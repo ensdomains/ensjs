@@ -44,7 +44,12 @@ export async function _getOwner(
     returnedData[0][1],
     returnedData[1][1],
     returnedData[2]?.[1],
-  ].map((ret) => ret && ethers.utils.defaultAbiCoder.decode(['address'], ret))
+  ].map(
+    (ret) =>
+      ret &&
+      ret !== '0x' &&
+      ethers.utils.defaultAbiCoder.decode(['address'], ret),
+  )
 
   const registryOwner = decodedData[0][0]
   const nameWrapperOwner = decodedData[1][0]
@@ -93,9 +98,15 @@ export async function getOwner(
       labels.length > 2 &&
       ethers.utils.hexStripZeros(registryOwner) !== '0x'
     ) {
+      // this means that the subname is wrapped
+      if (registryOwner === nameWrapper.address) {
+        return {
+          owner: nameWrapperOwner,
+          truthLevel: 'nameWrapper',
+        }
+      }
       // unwrapped subnames do not have NFTs associated, so do not have a registrant
       return {
-        registrant: null,
         owner: registryOwner,
         truthLevel: 'registry',
       }

@@ -108,7 +108,13 @@ const getDataForName = async (
     options,
   )
 
-  const resolver = await universalResolver?.resolve(hexEncodeName(name), data)
+  let resolver: any
+  try {
+    resolver = await universalResolver?.resolve(hexEncodeName(name), data)
+  } catch {
+    return null
+  }
+
   const [recordData] = await resolverMulticallWrapper.decode(resolver['0'])
 
   const matchAddress = recordData[calls.findIndex((x) => x.key === '60')]
@@ -153,14 +159,19 @@ const getDataForAddress = async (
     options,
   )
 
-  const result = await DNCOCURP?.reverse(hexEncodeName(reverseNode), [
-    {
-      target: universalResolver?.address,
-      data: data,
-      dataType: 0,
-      locations: makeHashIndexes(data as string, reverseNode),
-    },
-  ])
+  let result: any
+  try {
+    result = await DNCOCURP?.reverse(hexEncodeName(reverseNode), [
+      {
+        target: universalResolver?.address,
+        data: data,
+        dataType: 0,
+        locations: makeHashIndexes(data as string, reverseNode),
+      },
+    ])
+  } catch {
+    return null
+  }
 
   const name = result.name
   const URData = result.returnData[0]
@@ -174,7 +185,8 @@ const getDataForAddress = async (
 
   if (
     !matchAddress ||
-    (await _getAddr.decode(matchAddress)) !== address.toLowerCase()
+    (await _getAddr.decode(matchAddress)).toLowerCase() !==
+      address.toLowerCase()
   ) {
     return { name, records: null, match: false }
   }
@@ -324,9 +336,11 @@ const graphFetch = async (
 
   const client = gqlInstance.client
 
-  const {
-    domains: [{ resolver: resolverResponse }],
-  } = await client.request(query, { name })
+  const { domains } = await client.request(query, { name })
+
+  if (!domains || domains.length === 0) return null
+
+  const [{ resolver: resolverResponse }] = domains
 
   let returnedRecords: ProfileResponse = {}
 
@@ -376,14 +390,21 @@ const getProfileFromAddress = async (
     (options && options.texts === true) ||
     options.coinTypes === true
   ) {
-    const name = await getName(address)
+    let name
+    try {
+      name = await getName(address)
+    } catch {
+      return null
+    }
+    if (!name || !name.name || name.name === '') return null
     if (!name.match) return { name, records: null, match: false }
     const wantedRecords = await graphFetch(
       { gqlInstance },
       name.name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
-    const { records, resolverAddress } = await getDataForName(
+    if (!wantedRecords) return null
+    const result = await getDataForName(
       {
         contracts,
         _getAddr,
@@ -394,7 +415,9 @@ const getProfileFromAddress = async (
       name.name,
       wantedRecords,
     )
-    return { name: name.name, records, match: true, resolverAddress }
+    if (!result) return null
+    delete result.address
+    return { ...result, match: true, name: name.name }
   } else {
     return await getDataForAddress(
       {
@@ -439,6 +462,7 @@ const getProfileFromName = async (
       name,
       options || { contentHash: true, texts: true, coinTypes: true },
     )
+    if (!wantedRecords) return null
     return await getDataForName(
       {
         contracts,

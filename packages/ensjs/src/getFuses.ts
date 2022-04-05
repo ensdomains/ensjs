@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { ENSArgs } from '.'
-import fuseEnums from './utils/fuses'
+import { testable as fuseEnums } from './utils/fuses'
 
 const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
@@ -20,10 +20,20 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
 
     const result = Object.fromEntries(
       Object.keys(fuseEnums).map((fuseEnum) => [
-        fuseEnum,
+        fuseEnum
+          .toLowerCase()
+          .replace(/([-_][a-z])/g, (group: string) =>
+            group.toUpperCase().replace('-', '').replace('_', ''),
+          ),
         fuses.and(fuseEnums[fuseEnum as keyof typeof fuseEnums]).gt(0),
       ]),
     )
+
+    if (fuses.eq(0)) {
+      result.canDoEverything = true
+    } else {
+      result.canDoEverything = false
+    }
 
     return result
   } catch {

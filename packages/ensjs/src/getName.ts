@@ -18,6 +18,7 @@ const decode = async (
   data: string,
   address: string,
 ) => {
+  if (data === null) return null
   const universalResolver = await contracts?.getUniversalResolver()!
   try {
     const result = universalResolver.interface.decodeFunctionResult(

@@ -11,13 +11,21 @@ beforeAll(async () => {
 
 describe('getSpecificRecord', () => {
   describe('getContentHash', () => {
-    it('should return a contenthash object from a name with a valid record', async () => {
-      const result = await ENSInstance.getContentHash('matoken.eth')
-      expect(result).toHaveProperty('decoded')
+    it('should return null for a non-existent name', async () => {
+      const result = await ENSInstance.getContentHash('test123123cool.eth')
+      expect(result).toBeNull()
     })
-    it('should return null from a name with no record', async () => {
+    it('should return null for a name with no contenthash record', async () => {
       const result = await ENSInstance.getContentHash('jefflau.eth')
       expect(result).toBeNull()
+    })
+    it('should return the contenthash for a name with the record set', async () => {
+      const result = await ENSInstance.getContentHash('matoken.eth')
+      expect(result).toMatchObject({
+        protocolType: 'ipfs',
+        decoded: 'bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y',
+        error: undefined,
+      })
     })
   })
 

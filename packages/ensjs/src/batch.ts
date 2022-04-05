@@ -20,7 +20,7 @@ type BatchItem = [GenericGeneratedRawFunction, ...any[]]
 
 export async function batch(
   { contracts }: ENSArgs<'contracts'>,
-  items: BatchItem[],
+  ...items: BatchItem[]
 ) {
   const rawDataArr: { to: string; data: string }[] = await Promise.all(
     items.map(([func, ...args]) => {

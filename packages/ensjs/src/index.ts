@@ -16,6 +16,7 @@ import type {
 import type getName from './getName'
 import type { getOwner } from './getOwner'
 import type getProfile from './getProfile'
+import type getRecords from './getRecords'
 import type getResolver from './getResolver'
 import type {
   getAddr,
@@ -279,6 +280,10 @@ export class ENS {
     '_getText',
   ])
 
+  public getRecords = this.generateFunction<typeof getRecords>('./getRecords', [
+    'getProfile',
+  ])
+
   public getName = this.generateRawFunction<typeof getName>('./getName', [
     'contracts',
   ])
@@ -400,6 +405,7 @@ export class ENS {
 
   public burnFuses = this.generateFunction<typeof burnFuses>('./burnFuses', [
     'contracts',
+    'provider',
   ])
 
   public createSubname = this.generateFunction<typeof createSubname>(
