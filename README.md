@@ -1,4 +1,4 @@
-# ![ENSjs](https://user-images.githubusercontent.com/11844316/161689061-98ea01ee-b119-40ac-a512-5370eb8b4107.svg) v3
+# ![ENSjs](https://user-images.githubusercontent.com/11844316/161689061-98ea01ee-b119-40ac-a512-5370eb8b4107.svg)
 
 The ultimate ENS javascript library, with [ethers.js](https://github.com/ethers-io/ethers.js) under the hood.
 
