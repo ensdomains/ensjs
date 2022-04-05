@@ -23,7 +23,18 @@ export const _getContentHash = {
     if (!response) {
       return null
     }
-    return decodeContenthash(response)
+
+    const decodedContent = decodeContenthash(response)
+
+    if (
+      !decodedContent ||
+      (ethers.utils.isBytesLike(decodedContent.decoded) &&
+        ethers.utils.hexStripZeros(decodedContent.decoded) === '0x')
+    ) {
+      return null
+    }
+
+    return decodedContent
   },
 }
 

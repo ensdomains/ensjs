@@ -19,7 +19,7 @@ const start = async () => {
     '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
   )
   console.log(profile)
-  console.log(profileFromAddr)
+  console.log(profileFromAddr.records?.coinTypes)
 }
 
 start()

@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node --files src/index.test.ts",
-    "test:namewrapper": "ts-node --files src/namewrapper.test.ts",
+    "test": "jest src/tests",
     "test:specific": "ts-node --files "
   },
   "packageManager": "yarn@3.2.0",
@@ -25,11 +25,17 @@
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-test-env": "workspace:*",
     "@openzeppelin/contracts": "^4.5.0",
+    "@swc/core": "^1.2.162",
+    "@swc/jest": "^0.2.20",
     "@types/bn.js": "^5.1.0",
+    "@types/jest": "^27.4.1",
     "dotenv": "^16.0.0",
     "ens-contracts-namewrapper": "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375",
     "ens-contracts-universal": "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7",
+    "jest": "^27.5.1",
+    "jest-environment-node": "^27.5.1",
     "solc": "^0.8.13",
+    "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0"
   },
   "peerDependencies": {
