@@ -20,7 +20,7 @@ describe('burnFuses', () => {
   beforeEach(async () => {
     await revert()
   })
-  it('should return a transaction and succeed', async () => {
+  it('should return a burnFuses transaction and succeed', async () => {
     const wrapNameTx = await ENSInstance.wrapName(
       'parthtejpal.eth',
       accounts[0],

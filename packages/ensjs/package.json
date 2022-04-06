@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node --files src/index.test.ts",
-    "test": "jest src/tests",
+    "test": "jest --run-in-band src/tests",
     "test:specific": "ts-node --files "
   },
   "packageManager": "yarn@3.2.0",

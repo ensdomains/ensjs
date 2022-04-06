@@ -1,4 +1,4 @@
-import { ENS } from '..'
+import { ENS, GenericGeneratedRawFunction } from '..'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -20,5 +20,38 @@ describe('batch', () => {
       name: 'jefflau.eth',
       match: true,
     })
+  })
+  it('should batch a single call', async () => {
+    const result = await ENSInstance.batch([
+      ENSInstance.getText,
+      'jefflau.eth',
+      'description',
+    ])
+    expect(result[0]).toBe('Hello2')
+  })
+  it('should error when batching an unbatchable function', async () => {
+    try {
+      await ENSInstance.batch([
+        ENSInstance.getProfile as unknown as GenericGeneratedRawFunction,
+        'jefflau.eth',
+      ])
+      expect(false).toBeTruthy()
+    } catch {
+      expect(true).toBeTruthy()
+    }
+  })
+  it('should error when batching a batchable function with an unbatchable function', async () => {
+    try {
+      await ENSInstance.batch(
+        [ENSInstance.getText, 'jefflau.eth', 'description'],
+        [
+          ENSInstance.getProfile as unknown as GenericGeneratedRawFunction,
+          'jefflau.eth',
+        ],
+      )
+      expect(false).toBeTruthy()
+    } catch {
+      expect(true).toBeTruthy()
+    }
   })
 })

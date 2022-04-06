@@ -1,6 +1,14 @@
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, ethers, utils } from 'ethers'
 import { ENSArgs } from '.'
 import { testable as fuseEnums } from './utils/fuses'
+
+const NameSafety = [
+  'Safe',
+  'RegistrantNotWrapped',
+  'ControllerNotWrapped',
+  'SubdomainReplacementAllowed',
+  'Expired',
+]
 
 const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
@@ -12,7 +20,11 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
   }
 }
 
-const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
+const decode = async (
+  { contracts }: ENSArgs<'contracts'>,
+  data: string,
+  name: string,
+) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
     const [fuses, vulnerability, vulnerableNode] =
@@ -35,10 +47,21 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
       fuseObj.canDoEverything = false
     }
 
+    let returnVulnerableNode: string | null = null
+    if (utils.hexStripZeros(vulnerableNode) !== '0x') {
+      name.split('.').forEach((label, index, arr) => {
+        const node = arr.slice(index).join('.')
+        const nodehash = utils.namehash(node)
+        if (nodehash === vulnerableNode) {
+          returnVulnerableNode = node
+        }
+      })
+    }
+
     return {
       fuseObj,
-      vulnerability,
-      vulnerableNode,
+      vulnerability: NameSafety[vulnerability] || vulnerability,
+      vulnerableNode: returnVulnerableNode,
       rawFuses: fuses as BigNumber,
     }
   } catch {

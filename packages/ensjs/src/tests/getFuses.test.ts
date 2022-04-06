@@ -4,13 +4,23 @@ import setup from './setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
+let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 let provider: ethers.providers.JsonRpcProvider
+let accounts: string[]
+let withWrappedSnapshot: any
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, provider } = await setup())
-  const accounts = await provider.listAccounts()
+  ;({ ENSInstance, revert, provider, createSnapshot } = await setup())
+  accounts = await provider.listAccounts()
   const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0])
   await tx.wait()
+
+  withWrappedSnapshot = await createSnapshot()
+})
+
+afterEach(async () => {
+  await revert(withWrappedSnapshot)
+  withWrappedSnapshot = await createSnapshot()
 })
 
 afterAll(async () => {
@@ -57,6 +67,30 @@ describe('getFuses', () => {
         canDoEverything: false,
       })
       expect(result.rawFuses.toHexString()).toBe('0x51')
+    }
+  })
+  it('should return correct vulnerability data for an invulnerable node', async () => {
+    const result = await ENSInstance.getFuses('parthtejpal.eth')
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.vulnerability).toBe('Safe')
+      expect(result.vulnerableNode).toBeNull()
+    }
+  })
+  it('should return correct vulnerability data for a vulnerable node', async () => {
+    const tx = await ENSInstance.createSubname({
+      name: 'test.parthtejpal.eth',
+      owner: accounts[0],
+      contract: 'nameWrapper',
+      shouldWrap: true,
+    })
+    await tx.wait()
+
+    const result = await ENSInstance.getFuses('test.parthtejpal.eth')
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.vulnerability).toBe('SubdomainReplacementAllowed')
+      expect(result.vulnerableNode).toBe('parthtejpal.eth')
     }
   })
 })
