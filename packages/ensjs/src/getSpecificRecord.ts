@@ -72,9 +72,9 @@ export const _getText = {
       ),
     }
   },
-  decode: async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
-    const publicResolver = await contracts?.getPublicResolver()!
-    const [response] = publicResolver.interface.decodeFunctionResult(
+  decode: async (_: any, data: string) => {
+    const { contractInterface } = await import('./contracts/publicResolver')
+    const [response] = contractInterface.decodeFunctionResult(
       'text(bytes32,string)',
       data,
     )
@@ -95,12 +95,12 @@ export const getText = {
     return await universalWrapper.raw(name, prData.data)
   },
   decode: async (
-  { contracts, universalWrapper }: ENSArgs<'contracts' | 'universalWrapper'>,
+    { universalWrapper }: ENSArgs<'universalWrapper'>,
     data: string,
   ) => {
     const urData = await universalWrapper.decode(data)
     if (!urData) return null
-    return await _getText.decode({ contracts }, urData.data)
+    return await _getText.decode({}, urData.data)
   },
 }
 

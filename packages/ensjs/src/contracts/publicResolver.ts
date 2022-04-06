@@ -44,5 +44,7 @@ const ABI = [
   'function zonehash(bytes32 node) view returns (bytes)',
 ]
 
+export const contractInterface = new ethers.utils.Interface(ABI)
+
 export default (provider: ethers.providers.JsonRpcProvider, address?: string) =>
   new ethers.Contract(address || defaultAddress, ABI, provider)
