@@ -27,7 +27,14 @@ describe('getFuses', () => {
     const result = await ENSInstance.getFuses('parthtejpal.eth')
     expect(result).toBeTruthy()
     if (result) {
-      expect(result.canDoEverything).toBe(true)
+      expect(result.fuseObj.canDoEverything).toBe(true)
+      expect(
+        Object.values(result.fuseObj).reduce(
+          (prev, curr) => (curr ? prev + 1 : prev),
+          0,
+        ),
+      ).toBe(1)
+      expect(result.rawFuses.toHexString()).toBe('0x00')
     }
   })
   it('should return with other correct fuses', async () => {
@@ -39,15 +46,18 @@ describe('getFuses', () => {
     await tx.wait()
     const result = await ENSInstance.getFuses('parthtejpal.eth')
     expect(result).toBeTruthy()
-    expect(result).toMatchObject({
-      cannotUnwrap: true,
-      cannotBurnFuses: false,
-      cannotTransfer: false,
-      cannotSetResolver: false,
-      cannotSetTtl: true,
-      cannotCreateSubdomain: false,
-      cannotReplaceSubdomain: true,
-      canDoEverything: false,
-    })
+    if (result) {
+      expect(result.fuseObj).toMatchObject({
+        cannotUnwrap: true,
+        cannotBurnFuses: false,
+        cannotTransfer: false,
+        cannotSetResolver: false,
+        cannotSetTtl: true,
+        cannotCreateSubdomain: false,
+        cannotReplaceSubdomain: true,
+        canDoEverything: false,
+      })
+      expect(result.rawFuses.toHexString()).toBe('0x51')
+    }
   })
 })

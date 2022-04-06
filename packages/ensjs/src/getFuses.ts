@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { ENSArgs } from '.'
 import { testable as fuseEnums } from './utils/fuses'
 
@@ -18,7 +18,7 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     const [fuses, vulnerability, vulnerableNode] =
       nameWrapper.interface.decodeFunctionResult('getFuses(bytes32)', data)
 
-    const result = Object.fromEntries(
+    const fuseObj = Object.fromEntries(
       Object.keys(fuseEnums).map((fuseEnum) => [
         fuseEnum
           .toLowerCase()
@@ -30,12 +30,17 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     )
 
     if (fuses.eq(0)) {
-      result.canDoEverything = true
+      fuseObj.canDoEverything = true
     } else {
-      result.canDoEverything = false
+      fuseObj.canDoEverything = false
     }
 
-    return result
+    return {
+      fuseObj,
+      vulnerability,
+      vulnerableNode,
+      rawFuses: fuses as BigNumber,
+    }
   } catch {
     return null
   }
