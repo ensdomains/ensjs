@@ -80,7 +80,7 @@ export async function getOwner(
     if (registrarOwner === nameWrapper.address) {
       return {
         owner: nameWrapperOwner,
-        truthLevel: 'nameWrapper',
+        ownershipLevel: 'nameWrapper',
       }
     }
     // if there is a registrar owner, then it's not a subdomain but we have also passed the namewrapper clause
@@ -91,7 +91,7 @@ export async function getOwner(
       return {
         registrant: registrarOwner,
         owner: registryOwner,
-        truthLevel: 'registrar',
+        ownershipLevel: 'registrar',
       }
     }
     if (
@@ -102,13 +102,13 @@ export async function getOwner(
       if (registryOwner === nameWrapper.address) {
         return {
           owner: nameWrapperOwner,
-          truthLevel: 'nameWrapper',
+          ownershipLevel: 'nameWrapper',
         }
       }
       // unwrapped subnames do not have NFTs associated, so do not have a registrant
       return {
         owner: registryOwner,
-        truthLevel: 'registry',
+        ownershipLevel: 'registry',
       }
     }
     // .eth names with no registrar owner are either unregistered or expired
@@ -122,7 +122,7 @@ export async function getOwner(
   if (registryOwner == nameWrapper.address) {
     return {
       owner: nameWrapperOwner,
-      truthLevel: 'nameWrapper',
+      ownershipLevel: 'nameWrapper',
     }
   }
 
@@ -130,7 +130,7 @@ export async function getOwner(
   if (ethers.utils.hexStripZeros(registryOwner) !== '0x') {
     return {
       owner: registryOwner,
-      truthLevel: 'registry',
+      ownershipLevel: 'registry',
     }
   }
 

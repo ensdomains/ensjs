@@ -3,12 +3,10 @@ import { ENS } from '..'
 import setup from './setup'
 
 let ENSInstance: ENS
-let revert: Awaited<ReturnType<typeof setup>>['revert']
-let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 let providerFake: ethers.providers.JsonRpcProvider
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, createSnapshot } = await setup())
+  ;({ ENSInstance } = await setup())
   providerFake = new ethers.providers.JsonRpcProvider(
     'http://localhost:34023',
     'ropsten',

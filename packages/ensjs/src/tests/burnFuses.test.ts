@@ -4,12 +4,11 @@ import setup from './setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
-let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 let provider: ethers.providers.JsonRpcProvider
 let accounts: string[]
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, createSnapshot, provider } = await setup())
+  ;({ ENSInstance, revert, provider } = await setup())
   accounts = await provider.listAccounts()
 })
 

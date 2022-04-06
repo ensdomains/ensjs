@@ -4,11 +4,10 @@ import setup from './setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
-let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 let provider: ethers.providers.JsonRpcProvider
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, createSnapshot, provider } = await setup())
+  ;({ ENSInstance, revert, provider } = await setup())
   const accounts = await provider.listAccounts()
   const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0])
   await tx.wait()
@@ -28,11 +27,11 @@ describe('getOwner', () => {
     expect(result).toMatchObject({
       owner: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
       registrant: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
-      truthLevel: 'registrar',
+      ownershipLevel: 'registrar',
     })
   })
   it('should return nameWrapper as the truth level for a wrapped name', async () => {
     const result = await ENSInstance.getOwner('parthtejpal.eth')
-    expect(result?.truthLevel).toBe('nameWrapper')
+    expect(result?.ownershipLevel).toBe('nameWrapper')
   })
 })

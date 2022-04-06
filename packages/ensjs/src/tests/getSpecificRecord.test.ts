@@ -2,11 +2,9 @@ import { ENS } from '..'
 import setup from './setup'
 
 let ENSInstance: ENS
-let revert: Awaited<ReturnType<typeof setup>>['revert']
-let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, createSnapshot } = await setup())
+  ;({ ENSInstance } = await setup())
 })
 
 describe('getSpecificRecord', () => {

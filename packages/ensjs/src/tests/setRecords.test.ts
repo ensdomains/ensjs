@@ -1,15 +1,13 @@
-import { ethers, utils } from 'ethers'
+import { utils } from 'ethers'
 import { ENS } from '..'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import setup from './setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
-let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
-let provider: ethers.providers.JsonRpcProvider
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, createSnapshot, provider } = await setup())
+  ;({ ENSInstance, revert } = await setup())
 })
 
 afterAll(async () => {
