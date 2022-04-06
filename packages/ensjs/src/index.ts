@@ -7,6 +7,7 @@ import type {
 import type burnFuses from './burnFuses'
 import ContractManager from './contracts'
 import type createSubname from './createSubname'
+import deleteSubname from './deleteSubname'
 import type getFuses from './getFuses'
 import type {
   getHistory,
@@ -410,6 +411,11 @@ export class ENS {
 
   public createSubname = this.generateFunction<typeof createSubname>(
     './createSubname',
+    ['contracts', 'provider'],
+  )
+
+  public deleteSubname = this.generateFunction<typeof deleteSubname>(
+    './deleteSubname',
     ['contracts', 'provider'],
   )
 }
