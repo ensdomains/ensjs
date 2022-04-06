@@ -1,10 +1,19 @@
+import { ethers } from 'ethers'
 import { ENS } from '..'
 import setup from './setup'
 
 let ENSInstance: ENS
+let revert: Awaited<ReturnType<typeof setup>>['revert']
+let provider: ethers.providers.JsonRpcProvider
+let accounts: string[]
 
 beforeAll(async () => {
-  ;({ ENSInstance } = await setup())
+  ;({ ENSInstance, revert, provider } = await setup())
+  accounts = await provider.listAccounts()
+})
+
+afterAll(async () => {
+  await revert()
 })
 
 describe('getName', () => {
@@ -23,5 +32,16 @@ describe('getName', () => {
       '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0',
     )
     expect(result).toBeNull()
+  })
+  it('should return with a false match for a name with no forward resolution', async () => {
+    const tx = await ENSInstance.setName('jefflau.eth')
+    await tx.wait()
+
+    const result = await ENSInstance.getName(accounts[0])
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.name).toBe('jefflau.eth')
+      expect(result.match).toBeFalsy()
+    }
   })
 })

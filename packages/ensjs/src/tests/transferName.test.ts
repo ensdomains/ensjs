@@ -55,4 +55,26 @@ describe('transferName', () => {
     const result = await nameWrapper.ownerOf(utils.namehash('parthtejpal.eth'))
     expect(result).toBe(accounts[1])
   })
+  it('should allow a transfer on the registry', async () => {
+    const createSubnameTx = await ENSInstance.createSubname({
+      name: 'test.parthtejpal.eth',
+      contract: 'registry',
+      owner: accounts[0],
+      options: { addressOrIndex: accounts[0] },
+    })
+    await createSubnameTx.wait()
+
+    const tx = await ENSInstance.transferName(
+      'test.parthtejpal.eth',
+      accounts[1],
+      'registry',
+      { addressOrIndex: accounts[0] },
+    )
+    expect(tx).toBeTruthy()
+    await tx.wait()
+
+    const registry = await ENSInstance.contracts!.getRegistry()!
+    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
+    expect(result).toBe(accounts[1])
+  })
 })
