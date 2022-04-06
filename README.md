@@ -105,6 +105,11 @@ It will automatically get all the records for a name, as well as get the resolve
 Specific records can also be used as an input, if you only want to get certain ones. If an address is used as an input alongside this,
 you also save 1 RPC call.
 
+**NOTE:**  
+The profile function will always request an ETH addr record.
+For names, this means the address will always at the top level of the returned object.
+For addresses, this means the "match" property (a boolean value for matching reverse/forward resolution) will always be at the top level of the returned object.
+
 ```js
 /* Normal profile fetching */
 const profile = await ENSInstance.getProfile('test.eth')
@@ -173,6 +178,74 @@ const detail = await ENSInstance.getHistoryDetailForTransactionHash(
 const historyWithDetail = await ENSInstance.getHistoryWithDetail('test.eth')
 ```
 
-## Internal Structure
+## Ownership Levels
+
+The `getOwner` function returns not only an owner (and potentially a registrant), but also a ownershipLevel value.
+This value essentially means the contract for the "real owner" of any given name. In most cases it means the NFT contract
+of the name, but if there is no NFT then it's just the registry. This value is useful for input into the `transferName`
+function, where a contract needs to be specified.
 
 ## Wrapping Names
+
+Wrapping names is very simple, you can wrap any name from the same function, with the exact contract to use being inferred.
+You can specify both the fuses and resolver address to use with the wrapped name, but it's entirely optional.
+
+```js
+/* wrap a .eth name */
+const tx = await ENSInstance.wrapName(
+  'test.eth', // Name to wrap
+  '0xeefB13C7D42eFCc655E528dA6d6F7bBcf9A2251d', // New owner of wrapped name
+)
+
+/* wrap any other name (e.g. a subname) */
+const tx = await ENSInstance.wrapName(
+  'sub.test.eth',
+  '0xeefB13C7D42eFCc655E528dA6d6F7bBcf9A2251d',
+)
+```
+
+## Write Transaction Options
+
+Currently, some write functions have an `options` argument. While this may expand over time,
+it currently just allows you to pass an address or index for an account array to ethers for specifying the signer of the transaction.
+
+## Internal Structure
+
+### Raw Functions
+
+Raw functions are a crucial part of how ENSjs works. In the function file itself
+a `raw` and `decode` function both need to be defined, with the export being an object with those properties.
+This allows for the encoding and decoding of contract calls to be split, meaning that multiple calls can be batched together.
+For calling a raw function by itself, the raw and decode functions are stitched together with a provider call. This is done
+using `importGenerator` which is explained below.
+
+### importGenerator
+
+The importGenerator function generates a wrapped function for any given input.
+The result of the wrapped function obfuscates the processing that ENSjs does, and exposes a cleaner API to the user/developer.
+The reason we do this is to:
+
+1. Pass through all the required variables for the function
+2. Split individual functions from the main class
+3. Dynamically load functions and their dependencies
+4. Allow each function's dependencies to be imported regularly
+5. Remove duplicate code
+6. Make it easier to isolate errors
+7. Stitch `raw` and `decode` functions together
+
+### ContractManager
+
+The contract manager is where all the contracts are dynamically loaded in and resolved based on the network.
+A new instance of ContractManager is created every time you switch providers.
+
+### GqlManager
+
+The GQL manager is used as to separate the reliance of ENSjs from GQL.
+It only loads in GQL when it is needed, or not at all if specified in the constructor of the ENS class.
+Very simply, it just exposes the core functions needed for ENSjs which can then be accessed.
+
+### initialProvider
+
+The `initialProvider`, and similarly `checkInitialProvider` are used when creating single-use class instances with `withProvider`.
+It allows `withProvider` to act as a new ENS instance without having to await a promise, which simplifies the API.
+`checkInitialProvider` is run on every function call given that it's extremely lightweight.
