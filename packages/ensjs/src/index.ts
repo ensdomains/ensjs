@@ -32,6 +32,7 @@ import type setName from './setName'
 import type setRecords from './setRecords'
 import type setResolver from './setResolver'
 import type transferName from './transferName'
+import type unwrapName from './unwrapName'
 import singleCall from './utils/singleCall'
 import type wrapName from './wrapName'
 
@@ -400,6 +401,11 @@ export class ENS {
   )
 
   public wrapName = this.generateFunction<typeof wrapName>('./wrapName', [
+    'contracts',
+    'provider',
+  ])
+
+  public unwrapName = this.generateFunction<typeof unwrapName>('./unwrapName', [
     'contracts',
     'provider',
   ])
