@@ -95,7 +95,7 @@ export const getText = {
     return await universalWrapper.raw(name, prData.data)
   },
   decode: async (
-    { contracts, universalWrapper }: ENSArgs<'contracts' | 'universalWrapper'>,
+  { contracts, universalWrapper }: ENSArgs<'contracts' | 'universalWrapper'>,
     data: string,
   ) => {
     const urData = await universalWrapper.decode(data)

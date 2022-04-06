@@ -263,7 +263,7 @@ export class ENS {
 
   public batch = this.generateFunction<typeof batch>(
     './batch',
-    ['contracts'],
+    ['contracts', 'universalWrapper'],
     'batch',
   )
   public _batch = this.generateFunction<typeof _batch>(
@@ -345,17 +345,43 @@ export class ENS {
     '_getAddr',
   )
 
-  public getText = this.generateRawFunction<typeof getText>(
-    './getSpecificRecord',
-    ['contracts', 'universalWrapper'],
-    'getText',
-  )
+  // public getText = this.generateRawFunction<typeof getText>(
+  //   './getSpecificRecord',
+  //   ['contracts', 'universalWrapper'],
+  //   'getText',
+  // )
 
   public _getText = this.generateRawFunction<typeof _getText>(
     './getSpecificRecord',
     ['contracts'],
     '_getText',
   )
+
+
+  public async getText(ensName: string, key: string) {
+    const thisRef = this
+    await thisRef.checkInitialProvider()
+    const { getText } = await import('./getSpecificRecord')
+
+    return singleCall(
+        thisRef.provider!,
+        { contracts: this.contracts, universalWrapper: this.universalWrapper },
+        getText,
+        ensName,
+        key
+    )
+  }
+
+  public async getTextBatch(ensName: string, key: string) {
+    const thisRef = this
+    await thisRef.checkInitialProvider()
+    const { getText } = await import('./getSpecificRecord')
+    return {
+      raw: await getText.raw({ contracts: this.contracts, universalWrapper: this.universalWrapper}, ensName, key),
+      decode: getText.decode
+    }
+  }
+
 
   public _getOwner = this.generateFunction<typeof getOwner>(
     './getOwner',
