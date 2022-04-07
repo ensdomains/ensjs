@@ -68,14 +68,14 @@ export const getContentHash = {
 
 export const _getText = {
   raw: async (
-    { contracts }: ENSArgs<'contracts'>,
+    _: any,
     name: string,
     key: string,
   ) => {
-    const publicResolver = await contracts?.getPublicResolver()!
+    const { contractInterface } = await import('./contracts/publicResolver')
     return {
       to: '0x0000000000000000000000000000000000000000',
-      data: publicResolver.interface.encodeFunctionData(
+      data: contractInterface.encodeFunctionData(
         'text(bytes32,string)',
         [ethers.utils.namehash(name), key],
       ),
@@ -96,12 +96,12 @@ export const _getText = {
 
 export const getText = {
   raw: async (
-    { contracts, universalWrapper }: ENSArgs<'contracts' | 'universalWrapper'>,
+    { contracts }: ENSArgs<'contracts'>,
     name: string,
     key: string,
   ) => {
-    const prData = await _getText.raw({ contracts }, name, key)
-    return await universalWrapper.raw(name, prData.data)
+    const prData = await _getText.raw({}, name, key)
+    return await universalWrapper.raw({ address: '', contracts }, name, prData.data)
   },
   decode: async (
     _: any,

@@ -3,14 +3,15 @@ import { hexEncodeName } from './utils/hexEncodedName'
 
 export const universalWrapper = {
   raw: async (
-    { contracts }: ENSArgs<'contracts'>,
+    { address }: any,
     name: string,
     data: string,
   ) => {
-    const universalResolver = await contracts?.getUniversalResolver()!
+    //TODO: pass through address
+    const { contractInterface, defaultAddress } = await import('./contracts/universalResolver')
     return {
-      to: universalResolver.address,
-      data: universalResolver.interface.encodeFunctionData(
+      to: defaultAddress,
+      data: contractInterface.encodeFunctionData(
         'resolve(bytes,bytes)',
         [hexEncodeName(name), data],
       ),

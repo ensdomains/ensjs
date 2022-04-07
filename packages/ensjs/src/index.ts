@@ -261,11 +261,18 @@ export class ENS {
     return newENS
   }
 
-  public batch = this.generateFunction<typeof batch>(
-    './batch',
-    ['contracts', 'universalWrapper'],
-    'batch',
-  )
+  public async batch (...items: any){
+    const thisRef = this
+    await thisRef.checkInitialProvider()
+    const { batch } = await import('./batch')
+    return batch({ provider: this.provider, contracts: this.contracts }, ...items)
+  }
+  
+  // this.generateFunction<typeof batch>(
+  //   './batch',
+  //   ['contracts', 'universalWrapper'],
+  //   'batch',
+  // )
   public _batch = this.generateFunction<typeof _batch>(
     './batch',
     ['contracts'],

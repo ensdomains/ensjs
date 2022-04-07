@@ -2,11 +2,14 @@ import { ethers } from 'ethers'
 import { ENSArgs, GenericGeneratedRawFunction } from '.'
 
 export async function _batch(
-  { contracts }: ENSArgs<'contracts'>,
+  { provider, address, contracts }: any,
   transactions: ethers.providers.TransactionRequest[],
   requireSuccess: boolean = false,
 ) {
-  const multicall = await contracts?.getMulticall()!
+  //const multicall = await contracts?.getMulticall()!
+  const module = await import('./contracts/multicall')
+  const multicall = module.default(provider, "0xcA11bde05977b3631167028862bE2a173976CA11")
+
   return multicall.callStatic.tryAggregate(
     requireSuccess,
     transactions.map((tx) => ({
@@ -40,17 +43,16 @@ type BatchItem = [any, ...any[]]
 // }
 
 export async function batch(
-  dependencies: ENSArgs<'contracts'>,
+  { provider, address, contracts }: any,
   ...items: any
 ) {
-  const { contracts } = dependencies
   const txObjects = await Promise.all(items)
   const rawDataArr = txObjects.map(item => item.raw)
-  const response = await _batch({ contracts }, rawDataArr)
+  const response = await _batch({ provider, address: "", contracts }, rawDataArr)
   
   return Promise.all(
       response.map((ret: any, i: number) =>
-      txObjects[i].decode(dependencies, ret.returnData),
+      txObjects[i].decode({}, ret.returnData),
       ),
     )
 }

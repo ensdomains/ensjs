@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-const defaultAddress = '0xcA11bde05977b3631167028862bE2a173976CA11'
+export const defaultAddress = '0xcA11bde05977b3631167028862bE2a173976CA11'
 
 const ABI = [
   'function aggregate(tuple(address target, bytes callData)[] calls) payable returns (uint256 blockNumber, bytes[] returnData)',

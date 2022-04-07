@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-const defaultAddress = '0x9e6c745CAEdA0AB8a7AD0f393ef90dcb7C70074A'
+export const defaultAddress = '0x9e6c745CAEdA0AB8a7AD0f393ef90dcb7C70074A'
 
 const ABI = [
   'error OffchainLookup(address sender, string[] urls, bytes callData, bytes4 callbackFunction, bytes extraData)',
