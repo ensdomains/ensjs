@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import fs from 'fs'
+import fsP from 'fs/promises'
 import nModule from 'module'
 import path from 'path'
 import solc from 'solc'
@@ -73,6 +74,10 @@ export default async (server) => {
   const UniversalResolver = ethers.ContractFactory.fromSolidity(
     CompiledUniversalResolver,
     deployer,
+  )
+  await fsP.writeFile(
+    process.cwd() + '/src/ABIs/UniversalResolver.json',
+    UniversalResolver.interface.format(ethers.utils.FormatTypes.json),
   )
 
   const universalResolverAddress = await deployContract(UniversalResolver, [
