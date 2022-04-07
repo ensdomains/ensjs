@@ -4,14 +4,6 @@ import { ENSArgs } from '.'
 import { decodeContenthash } from './utils/contentHash'
 import { universalWrapper } from './batchWrappers'
 
-async function decodeUniversalResolverResult(data: string){
-  const { contractInterface } = await import('./contracts/universalResolver')
-  const response = await contractInterface.decodeFunctionResult('resolve(bytes,bytes)', data)
-  if (!response || !response[0]) {
-    return null
-  }
-}
-
 export const _getContentHash = {
   raw: async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
     const publicResolver = await contracts?.getPublicResolver()!
