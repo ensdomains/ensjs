@@ -2,11 +2,10 @@ import { ethers } from 'ethers'
 import { ENSArgs, GenericGeneratedRawFunction } from '.'
 
 export async function _batch(
-  { provider, address, contracts }: any,
+  { provider, address }: any,
   transactions: ethers.providers.TransactionRequest[],
   requireSuccess: boolean = false,
 ) {
-  //const multicall = await contracts?.getMulticall()!
   const module = await import('./contracts/multicall')
   const multicall = module.default(provider, "0xcA11bde05977b3631167028862bE2a173976CA11")
 
