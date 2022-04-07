@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
+import { ENSArgs } from '..'
 
 export async function _getOwner(
   { contracts }: ENSArgs<'contracts'>,

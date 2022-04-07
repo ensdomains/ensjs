@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { ENSArgs, GenericGeneratedRawFunction } from '.'
+import { ENSArgs, GenericGeneratedRawFunction } from '..'
 
 export async function _batch(
   { contracts }: ENSArgs<'contracts'>,

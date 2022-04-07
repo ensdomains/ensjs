@@ -1,8 +1,8 @@
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
-import type { FuseOptions } from './@types/FuseOptions'
-import generateFuseInput from './utils/generateFuseInput'
-import { hexEncodeName } from './utils/hexEncodedName'
+import { ENSArgs } from '..'
+import type { FuseOptions } from '../@types/FuseOptions'
+import generateFuseInput from '../utils/generateFuseInput'
+import { hexEncodeName } from '../utils/hexEncodedName'
 
 async function wrapETH(
   { contracts }: ENSArgs<'contracts'>,

@@ -1,7 +1,7 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
-import { encodeContenthash } from './utils/contentHash'
+import { ENSArgs } from '..'
+import { encodeContenthash } from '../utils/contentHash'
 
 type RecordItem = {
   key: string

@@ -1,8 +1,8 @@
 import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
-import { decodeContenthash } from './utils/contentHash'
-import { makeOtherIndexes } from './utils/makeHashIndexes'
+import { ENSArgs } from '..'
+import { decodeContenthash } from '../utils/contentHash'
+import { makeOtherIndexes } from '../utils/makeHashIndexes'
 
 type DomainEvent = 'NewOwner' | 'NewResolver' | 'Transfer' | 'NewTTL'
 type RegistrationEvent = 'NameRegistered' | 'NameRenewed' | 'NameTransferred'

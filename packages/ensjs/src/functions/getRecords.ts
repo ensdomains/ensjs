@@ -1,4 +1,4 @@
-import { ENSArgs } from '.'
+import { ENSArgs } from '..'
 
 type ProfileOptions = {
   contentHash?: boolean

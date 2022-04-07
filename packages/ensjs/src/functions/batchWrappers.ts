@@ -1,5 +1,5 @@
-import { ENSArgs } from '.'
-import { hexEncodeName } from './utils/hexEncodedName'
+import { ENSArgs } from '..'
+import { hexEncodeName } from '../utils/hexEncodedName'
 
 export const universalWrapper = {
   raw: async (

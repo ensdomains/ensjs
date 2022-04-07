@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
-import { FuseOptions } from './@types/FuseOptions'
-import generateFuseInput from './utils/generateFuseInput'
+import { ENSArgs } from '..'
+import { FuseOptions } from '../@types/FuseOptions'
+import generateFuseInput from '../utils/generateFuseInput'
 
 export default async function (
   { contracts, provider }: ENSArgs<'contracts' | 'provider'>,

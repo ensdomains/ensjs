@@ -15,7 +15,12 @@ export default class ContractManager {
       address?: string,
     ): Promise<ethers.Contract> => {
       if (!imported) {
-        imported = (await import(path)).default
+        imported = (
+          await import(
+            /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true */
+            `./${path}`
+          )
+        ).default
       }
       if (passedProvider) {
         return imported(passedProvider, address) as ethers.Contract
@@ -27,14 +32,12 @@ export default class ContractManager {
     }
   }
 
-  public getPublicResolver = this.generateContractGetter('./publicResolver')
-  public getUniversalResolver = this.generateContractGetter(
-    './universalResolver',
-  )
-  public getRegistry = this.generateContractGetter('./registry')
-  public getReverseRegistrar = this.generateContractGetter('./reverseRegistrar')
-  public getDNCOCURP = this.generateContractGetter('./DNCOCURP')
-  public getNameWrapper = this.generateContractGetter('./nameWrapper')
-  public getBaseRegistrar = this.generateContractGetter('./baseRegistrar')
-  public getMulticall = this.generateContractGetter('./multicall')
+  public getPublicResolver = this.generateContractGetter('publicResolver')
+  public getUniversalResolver = this.generateContractGetter('universalResolver')
+  public getRegistry = this.generateContractGetter('registry')
+  public getReverseRegistrar = this.generateContractGetter('reverseRegistrar')
+  public getDNCOCURP = this.generateContractGetter('DNCOCURP')
+  public getNameWrapper = this.generateContractGetter('nameWrapper')
+  public getBaseRegistrar = this.generateContractGetter('baseRegistrar')
+  public getMulticall = this.generateContractGetter('multicall')
 }

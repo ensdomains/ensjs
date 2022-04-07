@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
-import { hexEncodeName } from './utils/hexEncodedName'
+import { ENSArgs } from '..'
+import { hexEncodeName } from '../utils/hexEncodedName'
 
 const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
   const universalResolver = await contracts?.getUniversalResolver()!

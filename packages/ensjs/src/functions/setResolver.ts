@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
+import { ENSArgs } from '..'
 
 export default async function (
   { contracts, provider }: ENSArgs<'contracts' | 'provider'>,

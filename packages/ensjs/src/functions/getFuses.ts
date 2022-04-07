@@ -1,6 +1,6 @@
 import { BigNumber, ethers, utils } from 'ethers'
-import { ENSArgs } from '.'
-import { testable as fuseEnums } from './utils/fuses'
+import { ENSArgs } from '..'
+import { testable as fuseEnums } from '../utils/fuses'
 
 const NameSafety = [
   'Safe',

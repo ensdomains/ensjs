@@ -1,8 +1,8 @@
 import { formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
-import { ENSArgs } from '.'
-import { decodeContenthash, DecodedContentHash } from './utils/contentHash'
-import { hexEncodeName } from './utils/hexEncodedName'
+import { ENSArgs } from '..'
+import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'
+import { hexEncodeName } from '../utils/hexEncodedName'
 
 type InternalProfileOptions = {
   contentHash?: boolean | string | DecodedContentHash
