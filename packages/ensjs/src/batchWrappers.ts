@@ -16,12 +16,9 @@ export const universalWrapper = {
       ),
     }
   },
-  decode: async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
-    const universalResolver = await contracts?.getUniversalResolver()!
-    const response = universalResolver.interface.decodeFunctionResult(
-      'resolve(bytes,bytes)',
-      data,
-    )
+  decode: async (_: any, data: string) => {
+    const { contractInterface } = await import('./contracts/universalResolver')
+    const response = await contractInterface.decodeFunctionResult('resolve(bytes,bytes)', data)
     if (!response || !response[0]) {
       return null
     }

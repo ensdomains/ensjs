@@ -11,5 +11,8 @@ const ABI = [
   'function transferOwnership(address newOwner)',
   'function universalResolver() view returns (address)',
 ]
+
+export const contractInterface = new ethers.utils.Interface(ABI)
+
 export default (provider: ethers.providers.JsonRpcProvider, address?: string) =>
   new ethers.Contract(address || defaultAddress, ABI, provider)

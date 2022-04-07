@@ -12,5 +12,7 @@ const ABI = [
   'function supportsInterface(bytes4 interfaceId) view returns (bool)',
 ]
 
+export const contractInterface = new ethers.utils.Interface(ABI)
+
 export default (provider: ethers.providers.JsonRpcProvider, address?: string) =>
   new ethers.Contract(address || defaultAddress, ABI, provider)

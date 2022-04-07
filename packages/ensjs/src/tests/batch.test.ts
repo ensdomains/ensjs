@@ -15,6 +15,8 @@ describe('batch', () => {
       // [ENSInstance.getAddr, 'jefflau.eth'],
       // [ENSInstance.getName, '0x866B3c4994e1416B7C738B9818b31dC246b95eEE'],
     )
+
+    console.log(result)
     expect(result[0]).toBe('Hello2')
     expect(result[1]).toBe('twitter.com')
   })

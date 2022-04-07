@@ -40,7 +40,7 @@ type BatchItem = [any, ...any[]]
 // }
 
 export async function batch(
-  dependencies: ENSArgs<'contracts' | 'universalWrapper'>,
+  dependencies: ENSArgs<'contracts'>,
   ...items: any
 ) {
   const { contracts } = dependencies

@@ -2,6 +2,15 @@ import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
 import { ENSArgs } from '.'
 import { decodeContenthash } from './utils/contentHash'
+import { universalWrapper } from './batchWrappers'
+
+async function decodeUniversalResolverResult(data: string){
+  const { contractInterface } = await import('./contracts/universalResolver')
+  const response = await contractInterface.decodeFunctionResult('resolve(bytes,bytes)', data)
+  if (!response || !response[0]) {
+    return null
+  }
+}
 
 export const _getContentHash = {
   raw: async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
@@ -95,10 +104,10 @@ export const getText = {
     return await universalWrapper.raw(name, prData.data)
   },
   decode: async (
-    { universalWrapper }: ENSArgs<'universalWrapper'>,
+    _: any,
     data: string,
   ) => {
-    const urData = await universalWrapper.decode(data)
+    const urData = await universalWrapper.decode({}, data)
     if (!urData) return null
     return await _getText.decode({}, urData.data)
   },
