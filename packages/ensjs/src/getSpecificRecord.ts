@@ -88,12 +88,12 @@ export const _getText = {
 
 export const getText = {
   raw: async (
-    { contracts }: ENSArgs<'contracts'>,
+    _: any,
     name: string,
     key: string,
   ) => {
     const prData = await _getText.raw({}, name, key)
-    return await universalWrapper.raw({ address: '', contracts }, name, prData.data)
+    return await universalWrapper.raw({ address: '' }, name, prData.data)
   },
   decode: async (
     _: any,
