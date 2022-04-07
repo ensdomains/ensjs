@@ -4641,7 +4641,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest-environment-node", "npm:27.5.1"],\
             ["solc", "npm:0.8.13"],\
             ["ts-jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.1.4"],\
-            ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"]\
+            ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"],\
+            ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -14894,7 +14895,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["lodash.memoize", "npm:4.1.2"],\
             ["make-error", "npm:1.3.6"],\
             ["semver", "npm:7.3.5"],\
-            ["typescript", null],\
+            ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"],\
             ["yargs-parser", "npm:20.2.9"]\
           ],\
           "packagePeers": [\
@@ -14977,7 +14978,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["create-require", "npm:1.1.1"],\
             ["diff", "npm:4.0.2"],\
             ["make-error", "npm:1.3.6"],\
-            ["typescript", null],\
+            ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"],\
             ["v8-compile-cache-lib", "npm:3.0.0"],\
             ["yn", "npm:3.1.1"]\
           ],\

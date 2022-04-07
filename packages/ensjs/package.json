@@ -2,14 +2,23 @@
   "name": "@ensdomains/ensjs",
   "version": "3.0.0",
   "description": "ENS javascript library for contract interaction",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/",
+    "src/",
+    "!src/tests"
+  ],
   "repository": "git@github.com:ensdomains/ensjs-v3.git",
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
     "start": "ts-node --files src/index.test.ts",
     "test": "jest --run-in-band src/tests",
-    "test:specific": "ts-node --files "
+    "test:specific": "ts-node --files ",
+    "clean": "rm -rf ./dist",
+    "build": "yarn clean && tsc --project tsconfig.build.json",
+    "prepublish": "yarn build"
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
@@ -36,7 +45,8 @@
     "jest-environment-node": "^27.5.1",
     "solc": "^0.8.13",
     "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0"
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
   },
   "peerDependencies": {
     "ethers": "*"
