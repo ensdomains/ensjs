@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "types": ["jest"]
-    }
+        "types": ["jest"],
+        "outDir": "./dist",
+        "declaration": true,                             
+        "importsNotUsedAsValues": "remove",
+    },
 }

@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { UniversalResolver__factory } from '../generated/factories/UniversalResolver__factory'
 
 export const defaultAddress = '0x9e6c745CAEdA0AB8a7AD0f393ef90dcb7C70074A'
 
@@ -12,7 +13,8 @@ const ABI = [
   'function supportsInterface(bytes4 interfaceId) view returns (bool)',
 ]
 
-export const contractInterface = new ethers.utils.Interface(ABI)
+
+export const contractInterface = UniversalResolver__factory.createInterface()
 
 export default (provider: ethers.providers.JsonRpcProvider, address?: string) =>
-  new ethers.Contract(address || defaultAddress, ABI, provider)
+  UniversalResolver__factory.connect(address || defaultAddress, provider)

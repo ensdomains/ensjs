@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import fs from 'fs'
+import fsP from 'fs/promises'
 import nModule from 'module'
 import path from 'path'
 import solc from 'solc'
@@ -97,13 +98,26 @@ export default async (server) => {
     CompiledNameWrapper,
     deployer,
   )
+  console.log(process.cwd())
+  await fsP.writeFile(
+    process.cwd() + '/src/ABIs/NameWrapper.json',
+    NameWrapper.interface.format(ethers.utils.FormatTypes.json),
+  )
   const StaticMetadataService = ethers.ContractFactory.fromSolidity(
     CompiledStaticMetadataService,
     deployer,
   )
+  await fsP.writeFile(
+    process.cwd() + '/src/ABIs/StaticMetadataService.json',
+    StaticMetadataService.interface.format(ethers.utils.FormatTypes.json),
+  )
   const PublicResolver = ethers.ContractFactory.fromSolidity(
     CompiledPublicResolver,
     deployer,
+  )
+  await fsP.writeFile(
+    process.cwd() + '/src/ABIs/PublicResolver.json',
+    PublicResolver.interface.format(ethers.utils.FormatTypes.json),
   )
 
   console.log('Setting metadata service URL to:', metadataUrl)

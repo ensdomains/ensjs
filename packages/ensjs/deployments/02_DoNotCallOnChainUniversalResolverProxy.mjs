@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import fs from 'fs'
+import fsP from 'fs/promises'
 import nModule from 'module'
 import path from 'path'
 import solc from 'solc'
@@ -76,6 +77,10 @@ export default async (server) => {
   const DNCOCURP = ethers.ContractFactory.fromSolidity(
     CompiledDNCOCURP,
     deployer,
+  )
+  await fsP.writeFile(
+    process.cwd() + '/src/ABIs/DNCOCURP.json',
+    DNCOCURP.interface.format(ethers.utils.FormatTypes.json),
   )
 
   const DNCOCURPAddress = await deployContract(DNCOCURP, [

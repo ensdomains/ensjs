@@ -1,24 +1,24 @@
 import { ethers } from 'ethers'
-import type { batch, _batch } from './batch'
+import ContractManager from './contracts'
+import type { batch, _batch } from './functions/batch'
 import type {
   resolverMulticallWrapper,
   universalWrapper,
-} from './batchWrappers'
-import type burnFuses from './burnFuses'
-import ContractManager from './contracts'
-import type createSubname from './createSubname'
-import deleteSubname from './deleteSubname'
-import type getFuses from './getFuses'
+} from './functions/batchWrappers'
+import type burnFuses from './functions/burnFuses'
+import type createSubname from './functions/createSubname'
+import deleteSubname from './functions/deleteSubname'
+import type getFuses from './functions/getFuses'
 import type {
   getHistory,
   getHistoryDetailForTransactionHash,
   getHistoryWithDetail,
-} from './getHistory'
-import type getName from './getName'
-import type { getOwner } from './getOwner'
-import type getProfile from './getProfile'
-import type getRecords from './getRecords'
-import type getResolver from './getResolver'
+} from './functions/getHistory'
+import type getName from './functions/getName'
+import type { getOwner } from './functions/getOwner'
+import type getProfile from './functions/getProfile'
+import type getRecords from './functions/getRecords'
+import type getResolver from './functions/getResolver'
 import type {
   getAddr,
   getContentHash,
@@ -26,15 +26,15 @@ import type {
   _getAddr,
   _getContentHash,
   _getText,
-} from './getSpecificRecord'
+} from './functions/getSpecificRecord'
+import type setName from './functions/setName'
+import type setRecords from './functions/setRecords'
+import type setResolver from './functions/setResolver'
+import type transferName from './functions/transferName'
+import type unwrapName from './functions/unwrapName'
+import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
-import type setName from './setName'
-import type setRecords from './setRecords'
-import type setResolver from './setResolver'
-import type transferName from './transferName'
-import type unwrapName from './unwrapName'
 import singleCall from './utils/singleCall'
-import type wrapName from './wrapName'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -150,7 +150,10 @@ export class ENS {
       // check the initial provider and set if it exists
       await thisRef.checkInitialProvider()
       // import the module dynamically
-      const mod = await import(path)
+      const mod = await import(
+        /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true */
+        `./functions/${path}`
+      )
 
       // if combine isn't specified, run normally'
       // otherwise, create a function from the raw and decode functions
@@ -264,7 +267,7 @@ export class ENS {
   public async batch (...items: any){
     const thisRef = this
     await thisRef.checkInitialProvider()
-    const { batch } = await import('./batch')
+    const { batch } = await import('./functions/batch')
     return batch({ provider: this.provider, contracts: this.contracts }, ...items)
   }
   
@@ -274,12 +277,12 @@ export class ENS {
   //   'batch',
   // )
   public _batch = this.generateFunction<typeof _batch>(
-    './batch',
+    'batch',
     ['contracts'],
     '_batch',
   )
 
-  public getProfile = this.generateFunction<typeof getProfile>('./getProfile', [
+  public getProfile = this.generateFunction<typeof getProfile>('getProfile', [
     'contracts',
     'gqlInstance',
     'getName',
@@ -289,25 +292,25 @@ export class ENS {
     '_getText',
   ])
 
-  public getRecords = this.generateFunction<typeof getRecords>('./getRecords', [
+  public getRecords = this.generateFunction<typeof getRecords>('getRecords', [
     'getProfile',
   ])
 
-  public getName = this.generateRawFunction<typeof getName>('./getName', [
+  public getName = this.generateRawFunction<typeof getName>('getName', [
     'contracts',
   ])
 
   public getResolver = this.generateRawFunction<typeof getResolver>(
-    './getResolver',
+    'getResolver',
     ['contracts'],
   )
 
-  public getFuses = this.generateRawFunction<typeof getFuses>('./getFuses', [
+  public getFuses = this.generateRawFunction<typeof getFuses>('getFuses', [
     'contracts',
   ])
 
   public getHistory = this.generateFunction<typeof getHistory>(
-    './getHistory',
+    'getHistory',
     ['gqlInstance'],
     'getHistory',
   )
@@ -315,7 +318,7 @@ export class ENS {
   public getHistoryWithDetail = this.generateFunction<
     typeof getHistoryWithDetail
   >(
-    './getHistory',
+    'getHistory',
     ['contracts', 'gqlInstance', 'provider'],
     'getHistoryWithDetail',
   )
@@ -323,31 +326,31 @@ export class ENS {
   public getHistoryDetailForTransactionHash = this.generateFunction<
     typeof getHistoryDetailForTransactionHash
   >(
-    './getHistory',
+    'getHistory',
     ['contracts', 'provider'],
     'getHistoryDetailForTransactionHash',
   )
 
   public getContentHash = this.generateRawFunction<typeof getContentHash>(
-    './getSpecificRecord',
+    'getSpecificRecord',
     ['contracts', 'universalWrapper'],
     'getContentHash',
   )
 
   public _getContentHash = this.generateRawFunction<typeof _getContentHash>(
-    './getSpecificRecord',
+    'getSpecificRecord',
     ['contracts'],
     '_getContentHash',
   )
 
   public getAddr = this.generateRawFunction<typeof getAddr>(
-    './getSpecificRecord',
+    'getSpecificRecord',
     ['contracts', 'universalWrapper'],
     'getAddr',
   )
 
   public _getAddr = this.generateRawFunction<typeof _getAddr>(
-    './getSpecificRecord',
+    'getSpecificRecord',
     ['contracts'],
     '_getAddr',
   )
@@ -359,7 +362,7 @@ export class ENS {
   // )
 
   public _getText = this.generateRawFunction<typeof _getText>(
-    './getSpecificRecord',
+    'getSpecificRecord',
     ['contracts'],
     '_getText',
   )
@@ -386,7 +389,7 @@ export class ENS {
   public async getText(ensName: string, key: string) {
     const thisRef = this
     await thisRef.checkInitialProvider()
-    const { getText } = await import('./getSpecificRecord')
+    const { getText } = await import('./functions/getSpecificRecord')
 
     return singleCall(
         thisRef.provider!,
@@ -400,7 +403,7 @@ export class ENS {
   public async getTextBatch(ensName: string, key: string) {
     const thisRef = this
     await thisRef.checkInitialProvider()
-    const { getText } = await import('./getSpecificRecord')
+    const { getText } = await import('./functions/getSpecificRecord')
     return {
       raw: await getText.raw({}, ensName, key),
       decode: getText.decode
@@ -409,70 +412,70 @@ export class ENS {
 
 
   public _getOwner = this.generateFunction<typeof getOwner>(
-    './getOwner',
+    'getOwner',
     ['contracts'],
     '_getOwner',
   )
 
   public getOwner = this.generateFunction<typeof getOwner>(
-    './getOwner',
+    'getOwner',
     ['contracts'],
     'getOwner',
   )
 
   public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
-    './batchWrappers',
+    'batchWrappers',
     ['contracts'],
     'universalWrapper',
   )
 
   public resolverMulticallWrapper = this.generateRawFunction<
     typeof resolverMulticallWrapper
-  >('./batchWrappers', ['contracts'], 'resolverMulticallWrapper')
+  >('batchWrappers', ['contracts'], 'resolverMulticallWrapper')
 
-  public setName = this.generateFunction<typeof setName>('./setName', [
+  public setName = this.generateFunction<typeof setName>('setName', [
     'contracts',
     'provider',
   ])
 
-  public setRecords = this.generateFunction<typeof setRecords>('./setRecords', [
+  public setRecords = this.generateFunction<typeof setRecords>('setRecords', [
     'contracts',
     'provider',
     'getResolver',
   ])
 
   public setResolver = this.generateFunction<typeof setResolver>(
-    './setResolver',
+    'setResolver',
     ['contracts', 'provider'],
   )
 
   public transferName = this.generateFunction<typeof transferName>(
-    './transferName',
+    'transferName',
     ['contracts', 'provider'],
   )
 
-  public wrapName = this.generateFunction<typeof wrapName>('./wrapName', [
+  public wrapName = this.generateFunction<typeof wrapName>('wrapName', [
     'contracts',
     'provider',
   ])
 
-  public unwrapName = this.generateFunction<typeof unwrapName>('./unwrapName', [
+  public unwrapName = this.generateFunction<typeof unwrapName>('unwrapName', [
     'contracts',
     'provider',
   ])
 
-  public burnFuses = this.generateFunction<typeof burnFuses>('./burnFuses', [
+  public burnFuses = this.generateFunction<typeof burnFuses>('burnFuses', [
     'contracts',
     'provider',
   ])
 
   public createSubname = this.generateFunction<typeof createSubname>(
-    './createSubname',
+    'createSubname',
     ['contracts', 'provider'],
   )
 
   public deleteSubname = this.generateFunction<typeof deleteSubname>(
-    './deleteSubname',
+    'deleteSubname',
     ['contracts', 'provider'],
   )
 }
