@@ -364,6 +364,24 @@ export class ENS {
     '_getText',
   )
 
+  // public async _getText(ensName: string, key: string){
+  //   const thisRef = this
+  //   await thisRef.checkInitialProvider()
+  //   const { getText } = await import('./getSpecificRecord')
+
+  //   return singleCall(
+  //       thisRef.provider!,
+  //       { contracts: this.contracts },
+  //       getText,
+  //       ensName,
+  //       key
+  //   )
+  // }
+
+  // public async _getTextBatch(ensName: string, key: string){
+
+  // }
+
 
   public async getText(ensName: string, key: string) {
     const thisRef = this
@@ -372,7 +390,7 @@ export class ENS {
 
     return singleCall(
         thisRef.provider!,
-        { contracts: this.contracts, universalWrapper: this.universalWrapper },
+        {},
         getText,
         ensName,
         key
@@ -384,7 +402,7 @@ export class ENS {
     await thisRef.checkInitialProvider()
     const { getText } = await import('./getSpecificRecord')
     return {
-      raw: await getText.raw({ contracts: this.contracts, universalWrapper: this.universalWrapper}, ensName, key),
+      raw: await getText.raw({}, ensName, key),
       decode: getText.decode
     }
   }
