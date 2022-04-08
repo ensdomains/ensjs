@@ -9,9 +9,10 @@ beforeAll(async () => {
 
 describe('batchWrappers', () => {
   it('should batch calls together', async () => {
+    const textTx = (await ENSInstance._getTextBatch('jefflau.eth', 'description'))
     const batch = await ENSInstance.resolverMulticallWrapper.raw([
-      await ENSInstance._getText.raw('jefflau.eth', 'description'),
-      await ENSInstance._getText.raw('jefflau.eth', 'url'),
+      textTx.raw,
+      (await ENSInstance._getTextBatch('jefflau.eth', 'url')).raw,
       await ENSInstance._getAddr.raw('jefflau.eth'),
     ])
     const universalResponse = await ENSInstance.universalWrapper(
@@ -21,8 +22,8 @@ describe('batchWrappers', () => {
     const [batchDecoded] = await ENSInstance.resolverMulticallWrapper.decode(
       universalResponse?.data,
     )
-    const decoded1 = await ENSInstance._getText.decode(batchDecoded[0])
-    const decoded2 = await ENSInstance._getText.decode(batchDecoded[1])
+    const decoded1 = await textTx.decode({}, batchDecoded[0])
+    const decoded2 = await textTx.decode({}, batchDecoded[1])
     const decoded3 = await ENSInstance._getAddr.decode(batchDecoded[2])
     expect(decoded1).toBe('Hello2')
     expect(decoded2).toBe('twitter.com')

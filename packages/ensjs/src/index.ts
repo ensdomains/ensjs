@@ -361,29 +361,35 @@ export class ENS {
   //   'getText',
   // )
 
-  public _getText = this.generateRawFunction<typeof _getText>(
-    'getSpecificRecord',
-    ['contracts'],
-    '_getText',
-  )
+  // public _getText = this.generateRawFunction<typeof _getText>(
+  //   'getSpecificRecord',
+  //   ['contracts'],
+  //   '_getText',
+  // )
 
-  // public async _getText(ensName: string, key: string){
-  //   const thisRef = this
-  //   await thisRef.checkInitialProvider()
-  //   const { getText } = await import('./getSpecificRecord')
+  public async _getText(ensName: string, key: string){
+    const thisRef = this
+    await thisRef.checkInitialProvider()
+    const { getText } = await import('./functions/getSpecificRecord')
 
-  //   return singleCall(
-  //       thisRef.provider!,
-  //       { contracts: this.contracts },
-  //       getText,
-  //       ensName,
-  //       key
-  //   )
-  // }
+    return singleCall(
+        thisRef.provider!,
+        { contracts: this.contracts },
+        getText,
+        ensName,
+        key
+    )
+  }
 
-  // public async _getTextBatch(ensName: string, key: string){
-
-  // }
+  public async _getTextBatch(ensName: string, key: string){
+    const thisRef = this
+    await thisRef.checkInitialProvider()
+    const { _getText } = await import('./functions/getSpecificRecord')
+    return {
+      raw: await _getText.raw({}, ensName, key),
+      decode: _getText.decode
+    }
+  }
 
 
   public async getText(ensName: string, key: string) {

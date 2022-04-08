@@ -25,15 +25,16 @@ type DataItem = {
 const makeMulticallData = async (
   {
     _getAddr,
-    _getContentHash,
     _getText,
+    _getContentHash,
     resolverMulticallWrapper,
   }: ENSArgs<
-    '_getText' | '_getAddr' | '_getContentHash' | 'resolverMulticallWrapper'
+    '_getAddr' | '_getContentHash' | '_getText' | 'resolverMulticallWrapper'
   >,
   name: string,
   options: InternalProfileOptions,
 ) => {
+
   let calls: any[] = []
   options.texts &&
     (calls = [
@@ -41,7 +42,7 @@ const makeMulticallData = async (
       ...(await Promise.all(
         options.texts.map(async (x) => ({
           key: x,
-          data: await _getText.raw(name, x),
+          data: await _getText.raw({}, name, x),
           type: 'text',
         })),
       )),
@@ -87,13 +88,13 @@ const getDataForName = async (
   {
     contracts,
     _getAddr,
-    _getContentHash,
     _getText,
+    _getContentHash,
     resolverMulticallWrapper,
   }: ENSArgs<
     | 'contracts'
-    | '_getText'
     | '_getAddr'
+    | '_getText'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
   >,
@@ -234,7 +235,7 @@ const formatRecords = async (
           case 'text':
             itemRet = {
               ...itemRet,
-              value: await _getText.decode(item),
+              value: await _getText.decode({}, item),
             }
             if (itemRet.value === '') return null
             break
@@ -444,7 +445,7 @@ const getProfileFromName = async (
   }: ENSArgs<
     | 'contracts'
     | 'gqlInstance'
-    | '_getText'
+    | any
     | '_getAddr'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
@@ -496,13 +497,11 @@ export default async function (
     getName,
     _getAddr,
     _getContentHash,
-    _getText,
     resolverMulticallWrapper,
   }: ENSArgs<
     | 'contracts'
     | 'gqlInstance'
     | 'getName'
-    | '_getText'
     | '_getAddr'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
@@ -510,6 +509,7 @@ export default async function (
   nameOrAddress: string,
   options?: ProfileOptions,
 ) {
+  const { _getText } = await import('./getSpecificRecord')
   if (options && options.coinTypes && typeof options.coinTypes !== 'boolean') {
     options.coinTypes = options.coinTypes.map((coin: string) => {
       if (!isNaN(parseInt(coin))) {
