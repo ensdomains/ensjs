@@ -268,7 +268,7 @@ export class ENS {
     const thisRef = this
     await thisRef.checkInitialProvider()
     const { batch } = await import('./functions/batch')
-    return batch({ provider: this.provider, contracts: this.contracts }, ...items)
+    return batch({ provider: this.provider }, ...items)
   }
   
   // this.generateFunction<typeof batch>(
