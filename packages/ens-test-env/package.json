@@ -18,5 +18,6 @@
     "tar-fs": "^2.1.1",
     "wait-on": "^6.0.1"
   },
+  "preferUnplugged": true,
   "bin": "./src/index.js"
 }
