@@ -4706,7 +4706,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ts-jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.1.4"],\
             ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"],\
             ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0"],\
-            ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
+            ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"],\
+            ["wait-on", "npm:6.0.1"]\
           ],\
           "linkType": "SOFT"\
         }]\

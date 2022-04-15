@@ -23,6 +23,7 @@ module.exports = {
       prefixColor: 'blue.bold',
       cwd: path.resolve('./'),
       finishOnExit: true,
+      waitForGraph: true,
     },
   ],
   paths: {

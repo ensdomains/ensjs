@@ -94,9 +94,12 @@ export const main = async (deployGraph, config) => {
 
   config.scripts &&
     config.scripts.forEach((script, i) => {
+      if (script.waitForGraph) {
+        script.command = `yarn wait-on http://localhost:8040 && ${script.command}`
+      }
       cmdsToRun.push(script)
       if (script.finishOnExit) {
-        inxsToFinishOnExit.push(i)
+        inxsToFinishOnExit.push(deployGraph ? i + 1 : i)
       }
     })
 
