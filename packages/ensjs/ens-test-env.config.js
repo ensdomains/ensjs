@@ -1,21 +1,18 @@
 require('dotenv').config({ path: process.env.INIT_CWD + '/.env' })
 
 module.exports = {
-  ganache: {
-    block: 12066620,
+  docker: {
+    chainId: 3,
     network: 'ropsten',
-    networkId: 3,
-    rpcUrl: process.env.FORK_RPC_URL,
-    mnemonic: 'test test test test test test test test test test test junk',
-    port: 8545,
-    host: '0.0.0.0',
+    forkRpcUrl: process.env.FORK_RPC_URL,
+    secretWords: 'test test test test test test test test test test test junk',
   },
-  graph: {
+  archive: {
     subgraphId: 'QmXxAE7Urtv6TPa8o8XmPwLVQNbH6r35hRKHP63udTxTNa',
     epochTime: 1646894980,
+    block: 12066620,
     baseUrl: 'https://storage.googleapis.com/ens-manager-build-data',
-    useSudo: false,
-    bypassLocalRpc: false,
   },
+  deployCommand: 'yarn hardhat deploy',
   scripts: [],
 }

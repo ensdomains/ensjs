@@ -36,9 +36,9 @@ export const main = async (config) => {
     },
   })
 
-  server.listen('8545', '0.0.0.0', (err) => {
+  server.listen(8545, '0.0.0.0', (err) => {
     if (err) throw new Error(err.message)
 
-    console.log('Ganache RPC Running at: 0.0.0.0:8545')
+    console.log('Ganache listening on port 8545')
   })
 }

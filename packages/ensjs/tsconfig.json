@@ -1,5 +1,13 @@
 {
     "extends": "../../tsconfig.json",
+    "ts-node": {
+        "compilerOptions": {
+          "target": "es2018",
+          "module": "commonjs",
+          "strict": true,
+          "esModuleInterop": true
+        }
+      },
     "compilerOptions": {
         "types": ["jest"],
         "outDir": "./dist",

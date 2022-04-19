@@ -45,6 +45,8 @@
     "dotenv": "^16.0.0",
     "ens-contracts-namewrapper": "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375",
     "ens-contracts-universal": "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7",
+    "hardhat": "^2.9.3",
+    "hardhat-deploy": "^0.11.4",
     "jest": "^27.5.1",
     "jest-environment-node": "^27.5.1",
     "solc": "^0.8.13",
