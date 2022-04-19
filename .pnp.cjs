@@ -1216,7 +1216,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "concurrently",\
-        "npm:7.0.0"\
+        "npm:7.1.0"\
       ],\
       [\
         "confusing-browser-globals",\
@@ -4662,7 +4662,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["ansi-colors", "npm:4.1.1"],\
             ["cli-progress", "npm:3.10.0"],\
-            ["concurrently", "npm:7.0.0"],\
+            ["concurrently", "npm:7.1.0"],\
             ["dotenv", "npm:16.0.0"],\
             ["fs-extra", "npm:10.0.1"],\
             ["ganache", "npm:7.0.3"],\
@@ -8126,10 +8126,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["concurrently", [\
-        ["npm:7.0.0", {\
-          "packageLocation": "./.yarn/cache/concurrently-npm-7.0.0-c402b003bc-1be78f24bf.zip/node_modules/concurrently/",\
+        ["npm:7.1.0", {\
+          "packageLocation": "./.yarn/cache/concurrently-npm-7.1.0-d3983cf1fe-723996afc7.zip/node_modules/concurrently/",\
           "packageDependencies": [\
-            ["concurrently", "npm:7.0.0"],\
+            ["concurrently", "npm:7.1.0"],\
             ["chalk", "npm:4.1.2"],\
             ["date-fns", "npm:2.28.0"],\
             ["lodash", "npm:4.17.21"],\
