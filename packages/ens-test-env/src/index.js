@@ -17,10 +17,12 @@ const help = () => {
         ens-test-env help
     
     Options:
-        --no-reset   Don't reset data folder
-        --config     Specify config directory
-        --load       Load data from archive
-        --compress   Compress data folder to archive
+        --use-tenderly      Use tenderly instead of ganache for RPC
+        --no-tenderly-del   Don't delete tenderly fork after running
+        --no-reset          Don't reset data folder
+        --config            Specify config directory
+        --load              Load data from archive
+        --compress          Compress data folder to archive
     `)
 }
 
@@ -40,10 +42,11 @@ const checkKnownArgs = (maxArgs, ...knownArgs) => {
 }
 
 const start = async () => {
-  checkKnownArgs(2, '--no-reset', '--use-tenderly')
+  checkKnownArgs(3, '--no-reset', '--use-tenderly', '--no-tenderly-del')
   const opts = {
     resetData: !args.includes('--no-reset'),
     tenderly: args.includes('--use-tenderly'),
+    tenderlyDel: !args.includes('--no-tenderly-del'),
   }
   if (opts.resetData) {
     await fetchData('--load', config)
@@ -51,7 +54,7 @@ const start = async () => {
   if (!opts.tenderly) {
     ganache(config)
   }
-  manager(config, opts.tenderly)
+  manager(config, opts.tenderly, opts.tenderlyDel)
 }
 
 const data = async () => {

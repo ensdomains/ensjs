@@ -72,7 +72,7 @@ function wrapTry(fn, ...args) {
   }
 }
 
-export const main = async (config, useTenderly) => {
+export const main = async (config, useTenderly, allowTenderlyDelete) => {
   const cmdsToRun = []
   const inxsToFinishOnExit = []
 
@@ -135,9 +135,13 @@ export const main = async (config, useTenderly) => {
 
     commands.forEach((cmd) => {
       if (inxsToFinishOnExit.includes(cmd.index)) {
-        cmd.close.subscribe(() => cleanup(false, commands, config, useTenderly))
+        cmd.close.subscribe(() =>
+          cleanup(false, commands, config, useTenderly && allowTenderlyDelete),
+        )
       }
-      cmd.error.subscribe(() => cleanup(true, commands, config, useTenderly))
+      cmd.error.subscribe(() =>
+        cleanup(true, commands, config, useTenderly && allowTenderlyDelete),
+      )
     })
   }
 }
