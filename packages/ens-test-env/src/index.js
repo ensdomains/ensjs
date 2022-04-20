@@ -12,7 +12,7 @@ if (args[0] === '--help' || args[0] === '-h') args[0] = 'help'
 const help = () => {
   console.log(`
     Usage:
-        ens-test-env start [--no-reset|--config]
+        ens-test-env start [--no-reset|--config|--use-tenderly]
         ens-test-env data [--load|--compress]
         ens-test-env help
     
@@ -40,15 +40,18 @@ const checkKnownArgs = (maxArgs, ...knownArgs) => {
 }
 
 const start = async () => {
-  checkKnownArgs(1, '--no-reset')
+  checkKnownArgs(2, '--no-reset', '--use-tenderly')
   const opts = {
     resetData: !args.includes('--no-reset'),
+    tenderly: args.includes('--use-tenderly'),
   }
   if (opts.resetData) {
     await fetchData('--load', config)
   }
-  ganache(config)
-  manager(config)
+  if (!opts.tenderly) {
+    ganache(config)
+  }
+  manager(config, opts.tenderly)
 }
 
 const data = async () => {
