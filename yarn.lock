@@ -484,7 +484,7 @@ __metadata:
     concurrently: ^7.1.0
     dotenv: ^16.0.0
     fs-extra: ^10.0.1
-    ganache: ^7.0.3
+    ganache: ^7.0.4
     got: ^12.0.2
     lz4: ^0.6.5
     node-fetch: ^3.2.3
@@ -5800,9 +5800,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ganache@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "ganache@npm:7.0.3"
+"ganache@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "ganache@npm:7.0.4"
   dependencies:
     "@trufflesuite/bigint-buffer": 1.1.9
     bufferutil: 4.0.5
@@ -5819,7 +5819,7 @@ __metadata:
   bin:
     ganache: dist/node/cli.js
     ganache-cli: dist/node/cli.js
-  checksum: 4e1a478150e08c9f1a269529fb040fcec60109a10724695ea5d321aa2184438ad30899a7b40361764da82cbc9de389bce960872ae5cff6718db78c2e98882e29
+  checksum: 9611ef44120c5cfd2deaa1eace2740bd76d9fb26bf254ebf7c05468de327d26eaca46f8618cc9e662f13f0fb95de2efd498430ab5d0af4e976145e94b0a7de6e
   languageName: node
   linkType: hard
 

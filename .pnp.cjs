@@ -1996,7 +1996,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "ganache",\
-        "npm:7.0.3"\
+        "npm:7.0.4"\
       ],\
       [\
         "gauge",\
@@ -5014,7 +5014,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["concurrently", "npm:7.1.0"],\
             ["dotenv", "npm:16.0.0"],\
             ["fs-extra", "npm:10.0.1"],\
-            ["ganache", "npm:7.0.3"],\
+            ["ganache", "npm:7.0.4"],\
             ["got", "npm:12.0.2"],\
             ["lz4", "npm:0.6.5"],\
             ["node-fetch", "npm:3.2.3"],\
@@ -11244,10 +11244,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["ganache", [\
-        ["npm:7.0.3", {\
-          "packageLocation": "./.yarn/unplugged/ganache-npm-7.0.3-2877d85be9/node_modules/ganache/",\
+        ["npm:7.0.4", {\
+          "packageLocation": "./.yarn/unplugged/ganache-npm-7.0.4-278184e754/node_modules/ganache/",\
           "packageDependencies": [\
-            ["ganache", "npm:7.0.3"],\
+            ["ganache", "npm:7.0.4"],\
             ["@trufflesuite/bigint-buffer", "npm:1.1.9"],\
             ["bufferutil", "npm:4.0.5"],\
             ["emittery", "npm:0.10.0"],\
