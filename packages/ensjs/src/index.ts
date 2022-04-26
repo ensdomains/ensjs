@@ -8,6 +8,7 @@ import type {
 import type burnFuses from './functions/burnFuses'
 import type createSubname from './functions/createSubname'
 import deleteSubname from './functions/deleteSubname'
+import getExpiry from './functions/getExpiry'
 import type getFuses from './functions/getFuses'
 import type {
   getHistory,
@@ -372,6 +373,10 @@ export class ENS {
     ['contracts'],
     'getOwner',
   )
+
+  public getExpiry = this.generateRawFunction<typeof getExpiry>('getExpiry', [
+    'contracts',
+  ])
 
   public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
     'batchWrappers',
