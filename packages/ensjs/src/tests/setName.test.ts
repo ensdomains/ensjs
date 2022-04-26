@@ -18,8 +18,34 @@ afterAll(async () => {
 })
 
 describe('setName', () => {
+  beforeEach(async () => {
+    await revert()
+  })
   it('should return a transaction for a name and set successfully', async () => {
     const tx = await ENSInstance.setName('fleek.eth')
+    expect(tx).toBeTruthy()
+    await tx?.wait()
+
+    const universalResolver =
+      await ENSInstance.contracts!.getUniversalResolver()!
+    const reverseNode = accounts[0].toLowerCase().substring(2) + '.addr.reverse'
+    const result = await universalResolver.reverse(hexEncodeName(reverseNode))
+    expect(result[0]).toBe('fleek.eth')
+  })
+  it("should return a transaction for setting another address' name", async () => {
+    jest.setTimeout(20000)
+    const reverseRegistrar = (
+      await ENSInstance.contracts!.getReverseRegistrar()!
+    ).connect(provider.getSigner())
+    const setControllerTx = await reverseRegistrar.setController(
+      accounts[1],
+      true,
+    )
+    await setControllerTx?.wait()
+
+    const tx = await ENSInstance.setName('fleek.eth', accounts[0], undefined, {
+      addressOrIndex: 1,
+    })
     expect(tx).toBeTruthy()
     await tx?.wait()
 

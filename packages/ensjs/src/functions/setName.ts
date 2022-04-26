@@ -5,8 +5,11 @@ export default async function (
   name: string,
   address?: string,
   resolver?: string,
+  options?: { addressOrIndex?: string | number },
 ) {
-  const signerAddress = await provider?.getSigner().getAddress()
+  const signerAddress = await provider
+    ?.getSigner(options?.addressOrIndex)
+    .getAddress()
 
   if (!signerAddress) {
     throw new Error('No signer found')
