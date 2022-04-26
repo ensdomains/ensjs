@@ -22,7 +22,7 @@ describe('getExpiry', () => {
     expect(result).toBeTruthy()
     expect(result).toBeInstanceOf(Date)
   })
-  it('shoudl throw an error for a non .eth name', async () => {
+  it('should throw an error for a non .eth name', async () => {
     try {
       await ENSInstance.getExpiry('sub.jefflau.eth')
       expect(false).toBeTruthy()
