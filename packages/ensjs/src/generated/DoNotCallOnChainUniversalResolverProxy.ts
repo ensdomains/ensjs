@@ -26,7 +26,29 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface DNCOCURPInterface extends utils.Interface {
+export declare namespace DoNotCallOnChainUniversalResolverProxy {
+  export type ReverseCallStruct = {
+    target: string;
+    data: BytesLike;
+    dataType: BigNumberish;
+    locations: BigNumberish[];
+  };
+
+  export type ReverseCallStructOutput = [
+    string,
+    string,
+    number,
+    BigNumber[]
+  ] & {
+    target: string;
+    data: string;
+    dataType: number;
+    locations: BigNumber[];
+  };
+}
+
+export interface DoNotCallOnChainUniversalResolverProxyInterface
+  extends utils.Interface {
   functions: {
     "isOwner(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -52,12 +74,7 @@ export interface DNCOCURPInterface extends utils.Interface {
     functionFragment: "reverse",
     values: [
       BytesLike,
-      {
-        target: string;
-        data: BytesLike;
-        dataType: BigNumberish;
-        locations: BigNumberish[];
-      }[]
+      DoNotCallOnChainUniversalResolverProxy.ReverseCallStruct[]
     ]
   ): string;
   encodeFunctionData(
@@ -108,12 +125,12 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface DNCOCURP extends BaseContract {
+export interface DoNotCallOnChainUniversalResolverProxy extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: DNCOCURPInterface;
+  interface: DoNotCallOnChainUniversalResolverProxyInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -141,12 +158,7 @@ export interface DNCOCURP extends BaseContract {
 
     reverse(
       reverseNode: BytesLike,
-      calls: {
-        target: string;
-        data: BytesLike;
-        dataType: BigNumberish;
-        locations: BigNumberish[];
-      }[],
+      calls: DoNotCallOnChainUniversalResolverProxy.ReverseCallStruct[],
       overrides?: CallOverrides
     ): Promise<[string, string[]] & { name: string; returnData: string[] }>;
 
@@ -169,12 +181,7 @@ export interface DNCOCURP extends BaseContract {
 
   reverse(
     reverseNode: BytesLike,
-    calls: {
-      target: string;
-      data: BytesLike;
-      dataType: BigNumberish;
-      locations: BigNumberish[];
-    }[],
+    calls: DoNotCallOnChainUniversalResolverProxy.ReverseCallStruct[],
     overrides?: CallOverrides
   ): Promise<[string, string[]] & { name: string; returnData: string[] }>;
 
@@ -197,12 +204,7 @@ export interface DNCOCURP extends BaseContract {
 
     reverse(
       reverseNode: BytesLike,
-      calls: {
-        target: string;
-        data: BytesLike;
-        dataType: BigNumberish;
-        locations: BigNumberish[];
-      }[],
+      calls: DoNotCallOnChainUniversalResolverProxy.ReverseCallStruct[],
       overrides?: CallOverrides
     ): Promise<[string, string[]] & { name: string; returnData: string[] }>;
 
@@ -237,12 +239,7 @@ export interface DNCOCURP extends BaseContract {
 
     reverse(
       reverseNode: BytesLike,
-      calls: {
-        target: string;
-        data: BytesLike;
-        dataType: BigNumberish;
-        locations: BigNumberish[];
-      }[],
+      calls: DoNotCallOnChainUniversalResolverProxy.ReverseCallStruct[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -269,12 +266,7 @@ export interface DNCOCURP extends BaseContract {
 
     reverse(
       reverseNode: BytesLike,
-      calls: {
-        target: string;
-        data: BytesLike;
-        dataType: BigNumberish;
-        locations: BigNumberish[];
-      }[],
+      calls: DoNotCallOnChainUniversalResolverProxy.ReverseCallStruct[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

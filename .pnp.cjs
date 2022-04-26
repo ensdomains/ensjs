@@ -491,6 +491,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:1.2.8"\
       ],\
       [\
+        "@nomiclabs/hardhat-ethers",\
+        [\
+          "hardhat-deploy-ethers",\
+          "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.3.0-beta.13"\
+        ]\
+      ],\
+      [\
         "@nomiclabs/hardhat-truffle5",\
         "virtual:cd804966a4af2a115ae98988b74c122bdd7fc9af5d9f9a5a62f576ef89ea18c25fbb8b994a1a65d60bf2e11d89eb0b2e6cc089c93112e3539943bc0642c881d5#npm:2.0.5"\
       ],\
@@ -1511,6 +1518,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:1.0.0"\
       ],\
       [\
+        "delete-empty",\
+        "npm:3.0.0"\
+      ],\
+      [\
         "delimit-stream",\
         "npm:0.1.0"\
       ],\
@@ -1637,6 +1648,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "enquirer",\
         "npm:2.3.6"\
+      ],\
+      [\
+        "ens-contracts-main",\
+        "https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"\
       ],\
       [\
         "ens-contracts-namewrapper",\
@@ -2085,6 +2100,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "hardhat",\
         "npm:2.9.3"\
+      ],\
+      [\
+        "hardhat-abi-exporter",\
+        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:2.8.0"\
       ],\
       [\
         "hardhat-deploy",\
@@ -3181,6 +3200,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "path-parse",\
         "npm:1.0.7"\
+      ],\
+      [\
+        "path-starts-with",\
+        "npm:2.0.0"\
       ],\
       [\
         "path-to-regexp",\
@@ -5037,6 +5060,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["@ethersproject/abi", "npm:5.6.0"],\
             ["@ethersproject/providers", "npm:5.6.2"],\
+            ["@nomiclabs/hardhat-ethers", [\
+              "hardhat-deploy-ethers",\
+              "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.3.0-beta.13"\
+            ]],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
             ["@swc/core", "npm:1.2.162"],\
             ["@swc/jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.20"],\
@@ -5045,12 +5072,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:27.4.1"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
+            ["ens-contracts-main", "https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"],\
             ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
             ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
             ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
             ["hardhat", "npm:2.9.3"],\
+            ["hardhat-abi-exporter", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:2.8.0"],\
             ["hardhat-deploy", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.11.4"],\
             ["jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.5.1"],\
             ["jest-environment-node", "npm:27.5.1"],\
@@ -9510,6 +9539,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["delete-empty", [\
+        ["npm:3.0.0", {\
+          "packageLocation": "./.yarn/cache/delete-empty-npm-3.0.0-3c5b632650-1e2b030346.zip/node_modules/delete-empty/",\
+          "packageDependencies": [\
+            ["delete-empty", "npm:3.0.0"],\
+            ["ansi-colors", "npm:4.1.1"],\
+            ["minimist", "npm:1.2.6"],\
+            ["path-starts-with", "npm:2.0.0"],\
+            ["rimraf", "npm:2.7.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["delimit-stream", [\
         ["npm:0.1.0", {\
           "packageLocation": "./.yarn/cache/delimit-stream-npm-0.1.0-bbc01f709d-78e71f4889.zip/node_modules/delimit-stream/",\
@@ -9847,6 +9889,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["enquirer", "npm:2.3.6"],\
             ["ansi-colors", "npm:4.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["ens-contracts-main", [\
+        ["https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964", {\
+          "packageLocation": "./.yarn/cache/ens-contracts-main-https-7005d2358c-711f6e5565.zip/node_modules/ens-contracts-main/",\
+          "packageDependencies": [\
+            ["ens-contracts-main", "https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"],\
+            ["@ensdomains/buffer", "npm:0.0.13"],\
+            ["@ensdomains/solsha1", "npm:0.0.3"],\
+            ["@openzeppelin/contracts", "npm:4.5.0"],\
+            ["dns-packet", "npm:5.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -11667,6 +11722,30 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["hardhat-abi-exporter", [\
+        ["npm:2.8.0", {\
+          "packageLocation": "./.yarn/cache/hardhat-abi-exporter-npm-2.8.0-94991dcfe6-d8657b0d4e.zip/node_modules/hardhat-abi-exporter/",\
+          "packageDependencies": [\
+            ["hardhat-abi-exporter", "npm:2.8.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:2.8.0", {\
+          "packageLocation": "./.yarn/__virtual__/hardhat-abi-exporter-virtual-2b3560c0d0/0/cache/hardhat-abi-exporter-npm-2.8.0-94991dcfe6-d8657b0d4e.zip/node_modules/hardhat-abi-exporter/",\
+          "packageDependencies": [\
+            ["hardhat-abi-exporter", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:2.8.0"],\
+            ["@ethersproject/abi", "npm:5.6.1"],\
+            ["@types/hardhat", null],\
+            ["delete-empty", "npm:3.0.0"],\
+            ["hardhat", "npm:2.9.3"]\
+          ],\
+          "packagePeers": [\
+            "@types/hardhat",\
+            "hardhat"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["hardhat-deploy", [\
         ["npm:0.11.4", {\
           "packageLocation": "./.yarn/cache/hardhat-deploy-npm-0.11.4-f0c2bb7efd-0acce341b6.zip/node_modules/hardhat-deploy/",\
@@ -11710,6 +11789,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "@ethersproject/hardware-wallets",\
             "@types/ethersproject__hardware-wallets",\
             "@types/hardhat",\
+            "hardhat"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["hardhat-deploy-ethers", [\
+        ["npm:0.3.0-beta.13", {\
+          "packageLocation": "./.yarn/cache/hardhat-deploy-ethers-npm-0.3.0-beta.13-98c7c1196f-45206bf8d0.zip/node_modules/hardhat-deploy-ethers/",\
+          "packageDependencies": [\
+            ["hardhat-deploy-ethers", "npm:0.3.0-beta.13"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.3.0-beta.13", {\
+          "packageLocation": "./.yarn/__virtual__/hardhat-deploy-ethers-virtual-9a9b88bab5/0/cache/hardhat-deploy-ethers-npm-0.3.0-beta.13-98c7c1196f-45206bf8d0.zip/node_modules/hardhat-deploy-ethers/",\
+          "packageDependencies": [\
+            ["hardhat-deploy-ethers", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.3.0-beta.13"],\
+            ["@types/ethers", null],\
+            ["@types/hardhat", null],\
+            ["ethers", "npm:5.6.1"],\
+            ["hardhat", "npm:2.9.3"]\
+          ],\
+          "packagePeers": [\
+            "@types/ethers",\
+            "@types/hardhat",\
+            "ethers",\
             "hardhat"\
           ],\
           "linkType": "HARD"\
@@ -14218,6 +14323,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["minimist", "npm:1.2.5"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:1.2.6", {\
+          "packageLocation": "./.yarn/cache/minimist-npm-1.2.6-f4cee4b4af-d15428cd1e.zip/node_modules/minimist/",\
+          "packageDependencies": [\
+            ["minimist", "npm:1.2.6"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["minipass", [\
@@ -15190,6 +15302,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/path-parse-npm-1.0.7-09564527b7-49abf3d811.zip/node_modules/path-parse/",\
           "packageDependencies": [\
             ["path-parse", "npm:1.0.7"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["path-starts-with", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/path-starts-with-npm-2.0.0-7154de8f73-c780e5feb5.zip/node_modules/path-starts-with/",\
+          "packageDependencies": [\
+            ["path-starts-with", "npm:2.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\

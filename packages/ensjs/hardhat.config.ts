@@ -1,4 +1,6 @@
+import '@nomiclabs/hardhat-ethers'
 import 'dotenv/config'
+import 'hardhat-abi-exporter'
 import 'hardhat-deploy'
 import { HardhatUserConfig } from 'hardhat/config'
 
@@ -29,6 +31,20 @@ const config: HardhatUserConfig = {
   },
   namedAccounts: {
     deployer: 0,
+  },
+  abiExporter: {
+    path: './src/ABIs',
+    clear: true,
+    flat: true,
+    only: [
+      'StaticMetadataService',
+      'NameWrapper',
+      'ReverseRegistrar',
+      'PublicResolver',
+      'UniversalResolver',
+      'DoNotCallOnChainUniversalResolverProxy',
+    ],
+    except: ['INameWrapper', 'IReverseRegistrar', 'NameResolver'],
   },
 }
 

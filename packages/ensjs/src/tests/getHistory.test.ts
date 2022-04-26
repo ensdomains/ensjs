@@ -5,6 +5,7 @@ let ENSInstance: ENS
 
 beforeAll(async () => {
   ;({ ENSInstance } = await setup())
+  jest.setTimeout(20000)
 })
 
 describe('getHistory', () => {

@@ -21,7 +21,7 @@ describe('setName', () => {
   it('should return a transaction for a name and set successfully', async () => {
     const tx = await ENSInstance.setName('fleek.eth')
     expect(tx).toBeTruthy()
-    await tx.wait()
+    await tx?.wait()
 
     const universalResolver =
       await ENSInstance.contracts!.getUniversalResolver()!

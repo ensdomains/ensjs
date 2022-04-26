@@ -507,6 +507,7 @@ __metadata:
     "@ensdomains/ens-test-env": "workspace:*"
     "@ethersproject/abi": ^5.6.0
     "@ethersproject/providers": ^5.6.2
+    "@nomiclabs/hardhat-ethers": ^2.0.5
     "@openzeppelin/contracts": ^4.5.0
     "@swc/core": ^1.2.162
     "@swc/jest": ^0.2.20
@@ -515,12 +516,14 @@ __metadata:
     "@types/jest": ^27.4.1
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
+    ens-contracts-main: "github:ensdomains/ens-contracts#head=master&commit=43b483db7ae3b13b985b3600779aa4e65ca22964"
     ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
     ens-contracts-universal: "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7"
     ethers: ^5.6.1
     graphql: ^16.3.0
     graphql-request: ^4.1.0
     hardhat: ^2.9.3
+    hardhat-abi-exporter: ^2.8.0
     hardhat-deploy: ^0.11.4
     jest: ^27.5.1
     jest-environment-node: ^27.5.1
@@ -696,7 +699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:^5.1.2, @ethersproject/abi@npm:^5.4.0":
+"@ethersproject/abi@npm:^5.1.2, @ethersproject/abi@npm:^5.4.0, @ethersproject/abi@npm:^5.5.0":
   version: 5.6.1
   resolution: "@ethersproject/abi@npm:5.6.1"
   dependencies:
@@ -1505,6 +1508,16 @@ __metadata:
     "@nodelib/fs.scandir": 2.1.5
     fastq: ^1.6.0
   checksum: 190c643f156d8f8f277bf2a6078af1ffde1fd43f498f187c2db24d35b4b4b5785c02c7dc52e356497b9a1b65b13edc996de08de0b961c32844364da02986dc53
+  languageName: node
+  linkType: hard
+
+"@nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers@0.3.0-beta.13":
+  version: 0.3.0-beta.13
+  resolution: "hardhat-deploy-ethers@npm:0.3.0-beta.13"
+  peerDependencies:
+    ethers: ^5.0.0
+    hardhat: ^2.0.0
+  checksum: 45206bf8d088cda08822ecf79d73e4027d8a4777cc23c3ef94568e316c45b8597130d72826fb2417edd32fe4b3dc54097161bef577663769b5c47b8262b983bb
   languageName: node
   linkType: hard
 
@@ -2619,7 +2632,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-colors@npm:4.1.1, ansi-colors@npm:^4.1.1":
+"ansi-colors@npm:4.1.1, ansi-colors@npm:^4.1.0, ansi-colors@npm:^4.1.1":
   version: 4.1.1
   resolution: "ansi-colors@npm:4.1.1"
   checksum: 138d04a51076cb085da0a7e2d000c5c0bb09f6e772ed5c65c53cb118d37f6c5f1637506d7155fb5f330f0abcf6f12fa2e489ac3f8cdab9da393bf1bb4f9a32b0
@@ -4307,6 +4320,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"delete-empty@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "delete-empty@npm:3.0.0"
+  dependencies:
+    ansi-colors: ^4.1.0
+    minimist: ^1.2.0
+    path-starts-with: ^2.0.0
+    rimraf: ^2.6.2
+  bin:
+    delete-empty: bin/cli.js
+  checksum: 1e2b030346683f49b12460b91d7e1793fc61e9aa0be152a1b31317363632e92426be270f8d635b89d3915ae7da753dcfa6e3bd200f62edf21eaa876ef4443fd2
+  languageName: node
+  linkType: hard
+
 "delimit-stream@npm:0.1.0":
   version: 0.1.0
   resolution: "delimit-stream@npm:0.1.0"
@@ -4596,6 +4623,18 @@ __metadata:
   dependencies:
     ansi-colors: ^4.1.1
   checksum: 1c0911e14a6f8d26721c91e01db06092a5f7675159f0261d69c403396a385afd13dd76825e7678f66daffa930cfaa8d45f506fb35f818a2788463d022af1b884
+  languageName: node
+  linkType: hard
+
+"ens-contracts-main@github:ensdomains/ens-contracts#head=master&commit=43b483db7ae3b13b985b3600779aa4e65ca22964":
+  version: 0.0.9
+  resolution: "ens-contracts-main@https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"
+  dependencies:
+    "@ensdomains/buffer": ^0.0.13
+    "@ensdomains/solsha1": 0.0.3
+    "@openzeppelin/contracts": ^4.1.0
+    dns-packet: ^5.3.0
+  checksum: 711f6e55655c56f77380526b20e7a6c9c490e722d27d59534bb2f002515b4f56de893482fe9bd4409a5774980736ebdd96c93913220eea22b164027dbc4f0888
   languageName: node
   linkType: hard
 
@@ -6132,6 +6171,18 @@ __metadata:
     ajv: ^6.12.3
     har-schema: ^2.0.0
   checksum: b998a7269ca560d7f219eedc53e2c664cd87d487e428ae854a6af4573fc94f182fe9d2e3b92ab968249baec7ebaf9ead69cf975c931dc2ab282ec182ee988280
+  languageName: node
+  linkType: hard
+
+"hardhat-abi-exporter@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "hardhat-abi-exporter@npm:2.8.0"
+  dependencies:
+    "@ethersproject/abi": ^5.5.0
+    delete-empty: ^3.0.0
+  peerDependencies:
+    hardhat: ^2.0.0
+  checksum: d8657b0d4ed55e1de0a18d8e70b8de38cf1f8c85e4162cdfe499b74d75f17992359c0c621d1b920f5a666eed2bd26c0a63d8c18ba60d1660f49c9fed378afe62
   languageName: node
   linkType: hard
 
@@ -8437,6 +8488,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimist@npm:^1.2.0":
+  version: 1.2.6
+  resolution: "minimist@npm:1.2.6"
+  checksum: d15428cd1e11eb14e1233bcfb88ae07ed7a147de251441d61158619dfb32c4d7e9061d09cab4825fdee18ecd6fce323228c8c47b5ba7cd20af378ca4048fb3fb
+  languageName: node
+  linkType: hard
+
 "minimist@npm:^1.2.5":
   version: 1.2.5
   resolution: "minimist@npm:1.2.5"
@@ -9336,6 +9394,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-starts-with@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "path-starts-with@npm:2.0.0"
+  checksum: c780e5feb53f37a0cc78c446181aac2d1e4554e5693bbc4ad03c99157b9411ade26a3503dcd5b3b8f0fd56d36daa60ce5a8c24d66b54a400c812fe11eb5bcab9
+  languageName: node
+  linkType: hard
+
 "path-to-regexp@npm:0.1.7":
   version: 0.1.7
   resolution: "path-to-regexp@npm:0.1.7"
@@ -9904,7 +9969,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^2.2.8":
+"rimraf@npm:^2.2.8, rimraf@npm:^2.6.2":
   version: 2.7.1
   resolution: "rimraf@npm:2.7.1"
   dependencies:

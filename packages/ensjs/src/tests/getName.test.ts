@@ -35,7 +35,7 @@ describe('getName', () => {
   })
   it('should return with a false match for a name with no forward resolution', async () => {
     const tx = await ENSInstance.setName('jefflau.eth')
-    await tx.wait()
+    await tx?.wait()
 
     const result = await ENSInstance.getName(accounts[0])
     expect(result).toBeTruthy()
