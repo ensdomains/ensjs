@@ -31,6 +31,7 @@ import type setName from './functions/setName'
 import type setRecords from './functions/setRecords'
 import type setResolver from './functions/setResolver'
 import type transferName from './functions/transferName'
+import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
@@ -425,6 +426,11 @@ export class ENS {
 
   public deleteSubname = this.generateFunction<typeof deleteSubname>(
     'deleteSubname',
+    ['contracts', 'provider', 'transferSubname'],
+  )
+
+  public transferSubname = this.generateFunction<typeof transferSubname>(
+    'transferSubname',
     ['contracts', 'provider'],
   )
 }
