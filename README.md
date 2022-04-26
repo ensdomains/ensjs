@@ -249,3 +249,467 @@ Very simply, it just exposes the core functions needed for ENSjs which can then 
 The `initialProvider`, and similarly `checkInitialProvider` are used when creating single-use class instances with `withProvider`.
 It allows `withProvider` to act as a new ENS instance without having to await a promise, which simplifies the API.
 `checkInitialProvider` is run on every function call given that it's extremely lightweight.
+
+## Individual Functions
+
+### getFuses
+
+Gets the fuses for a specified wrapped name.
+
+Input:
+
+- `name`: string
+  - Target name
+
+Output:
+
+- `fuseObj`: object
+  - Decoded known fuses
+- `vulnerability`: string
+  - Vulnerability for name
+  - Will be "Safe" if no vulnerability
+- `vulnerableNode`: string | null
+  - Node that is vulnerable in chain
+- `rawFuses`: BigNumber
+  - Unformatted fuse result
+
+### getHistory
+
+Gets the history for a specified name.
+
+Input:
+
+- `name`: string
+  - Target name
+
+Output:
+
+- `domain`: array
+  - Domain event item
+- `registration`: array
+  - Registration event item
+- `resolver`: array
+  - Resolver event item
+
+### getHistoryWithDetail
+
+Gets the history for a specified name with details.
+
+Input:
+
+- `name`: string
+  - Target name
+
+Output:
+
+- `domain`: array
+  - Domain event item
+- `registration`: array
+  - Registration event item
+- `resolver`: array
+  - Resolver event item
+
+### getHistoryDetailForTransactionHash
+
+Gets the history details for a specified transaction hash.
+
+Input:
+
+- `hash`: string
+  - Target transaction hash
+- `indexInTransaction`: number?
+  - Index of transaction out of same transaction type
+
+Output:
+
+- object | array
+  - `key`: string
+    - Key for detail
+  - `value`: string
+    - Value for detail
+
+### getName
+
+Gets the primary name for a specified address.
+
+Input:
+
+- `address`: string
+  - Target address
+
+Output:
+
+- `name`: string | null
+  - Resolved name
+- `match`: boolean
+  - Forward resolved match check value
+
+### getOwner
+
+Gets the owner of a specified name. See _ownership levels_ for more details about the output.
+
+Input:
+
+- `name`: string
+  - Target name
+
+Output:
+
+- `owner`: string
+  - Controller of records for name
+- `registrant`: string?
+  - NFT Owner
+- `ownershipLevel`: string
+  - Level at which the ownership data is being read
+
+### getProfile
+
+Gets the profile of a specified name or address, or just certain records if specified.
+
+Input:
+
+- `nameOrAddress`: string
+  - Target name or address
+- `options`: object?
+  - `contentHash`: boolean?
+  - `texts`: boolean? | string[]?
+    - Array of keys, or true for all keys
+  - `coinTypes`: boolean? | string[]?
+    - Array of keys, or true for all keys
+
+Output:
+
+- `resolverAddress`: string
+  - Address of resolver
+- `records`: object
+  - matching records from input
+  - `contentHash`: object? | null?
+    - Decoded content hash
+  - `texts`: array?
+    - `key`: string
+    - `value`: string
+  - `coinTypes`: array?
+    - `key`: number
+    - `coin`: string
+      - Coin name
+    - `value`: string
+      - Decoded address
+- `name`: string?
+  - _Only applicable for address inputs_
+  - Resolved name
+- `address`: string?
+  - _Only applicable for name inputs_
+  - Resolved address
+- `match`: boolean?
+  - _Only applicable for address inputs_
+  - Forward resolved match check value
+
+### getRecords
+
+Gets all the records of a specified name, or just certain records if specified.
+
+Input:
+
+- `name`: string
+- `options`: object?
+  - `contentHash`: boolean?
+  - `texts`: boolean? | string[]?
+    - Array of keys, or true for all keys
+  - `coinTypes`: boolean? | string[]?
+    - Array of keys, or true for all keys
+
+Output: **see getProfile**
+
+### getResolver
+
+Gets the resolver for a specified name.
+
+Input:
+
+- `name`: string
+  - Target name
+
+Output:
+
+- string
+  - Resolver address
+
+### getContentHash
+
+Gets the content hash record for a specified name.
+
+Input:
+
+- `name`: string
+  - Target name
+
+Output:
+
+- object | null
+  - Decoded content hash
+
+### getText
+
+Gets a text record for a specified name.
+
+Input:
+
+- `name`: string
+  - Target name
+- `key`: string
+  - Target key
+
+Output:
+
+- string | null
+  - Text record value
+
+### getAddr
+
+Gets an address record for a specified name.
+
+Input:
+
+- `name`: string
+  - Target name
+- `coinType`: string? | number?
+  - Target coin
+  - Defaults to 60 (ETH) if undefined
+
+Output:
+
+- string | null
+  - Address record value
+
+### burnFuses
+
+Creates a transaction to burn fuses on a specified wrapped name.
+
+Input:
+
+- `name`: string
+  - Target name
+- `fusesToBurn`: object
+  - Object of fuses intended to be burned.
+
+Output:
+
+- transaction
+
+### createSubname
+
+Creates a subname using the specified contract.
+
+Input:
+
+- object
+  - `name`: string
+    - Target name
+  - `owner`: string
+    - New owner of subname
+  - `contract`: `registry` | `nameWrapper`
+    - Target contract
+  - `resolverAddress`: string?
+    - Resolver address for name
+  - `shouldWrap`: boolean?
+    - _Only valid with NameWrapper contract_
+    - Initial name wrapped state
+  - `fuses`: object?
+    - _Only valid with NameWrapper contract_
+    - Initial fuses to be burned
+
+Output:
+
+- transaction
+
+### deleteSubname
+
+Deletes a subname using the specified contract.
+
+Input:
+
+- `name`: string
+  - Target name
+- `contract`: `registry` | `nameWrapper`
+  - Target contract
+
+Output:
+
+- transaction
+
+### transferSubname
+
+Transfers a subname using the specified contract.
+**Please note that transferring a wrapped name using this method will unwrap the name.**
+
+Input:
+
+- `name`: string
+  - Target name
+- `contract`: `registry` | `nameWrapper`
+  - Target contract
+- `address`: string
+  - Address to transfer name to
+
+Output:
+
+- transaction
+
+### setName
+
+Sets the primary name for a specified address.
+
+Input:
+
+- `name`: string
+  - Name to set
+- `address`: string?
+  - _Setting other primary names requires authorisation_
+  - Address to set name for
+- `resolver`: string?
+  - _Setting other primary names requires authorisation_
+  - Target resolver
+
+Output:
+
+- transaction
+
+### setRecords
+
+Sets multiple records at once for the specified name.
+
+Input:
+
+- `name`: string
+  - Target name
+- `records`: object
+  - `contentHash`: string?
+    - Formatted and encoded content hash
+  - `texts`: array?
+    - object
+      - `key`: string
+        - Text key
+      - `value`: string
+        - Text value
+  - `coinTypes`: array?
+    - object
+      - `key`: string
+        - Coin name or ID
+      - `value`: string
+        - Coin address
+
+Output:
+
+- transaction
+
+### setResolver
+
+Sets the resolver for the specified name, using the specified contract.
+
+Input:
+
+- `name`: string
+  - Target Name
+- `contract`: `registry` | `nameWrapper`
+  - Target contract
+- `resolver`: string?
+  - _Leaving this undefined will use the default public resolver_
+
+Output:
+
+- transaction
+
+### transferName
+
+Transfers a name, using the specified contract.
+
+Input:
+
+- `name`: string
+  - Target name
+- `newOwner`: string
+  - Address to transfer name to
+- `contract`: `registry` | `nameWrapper` | `baseRegistrar`
+  - Target contract
+
+Output:
+
+- transaction
+
+### wrapName
+
+Wraps a name.
+
+Input:
+
+- `name`: string
+  - Target name
+- `wrappedOwner`: string
+  - New owner of wrapped name
+- `fuseOptions`: object?
+  - Initial fuses to burn
+- `resolverAddress`: string?
+  - Initial resolver address
+
+Output:
+
+- transaction
+
+### unwrapName
+
+Unwraps a name.
+
+Input:
+
+- `name`: string
+  - Target name
+- `newController`: string
+  - New controller for name
+- `newRegistrant`: string?
+  - New registrant for name
+
+Output:
+
+- transaction
+
+### universalWrapper
+
+Wraps a function so it is directed to the universal resolver instead of the default public resolver.
+
+Input:
+
+- `name`: string
+  - Name to resolve
+- `data`: string
+  - Hex encoded function data
+
+Output:
+
+- object
+  - `data`: string
+    - Hex encoded function result
+  - `resolver`: string
+    - Used resolver address
+
+Examples for universalWrapper can be found in `getSpecificRecord`.
+
+### resolverMulticallWrapper
+
+Wraps multiple resolver calls so they are made into a single resolver multicall.
+
+Input:
+
+- array
+  - object
+    - `to`: string
+      - Placeholder for standard function calls, ignore this.
+    - `data`: string
+      - Hex encoded function data
+
+Output:
+
+- array
+  - string
+    - Hex encoded function result
+
+Examples for resolverMulticallWrapper can be found in `getProfile`.
