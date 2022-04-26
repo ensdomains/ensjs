@@ -2,8 +2,18 @@
   "name": "@ensdomains/ensjs",
   "version": "3.0.1",
   "description": "ENS javascript library for contract interaction",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./*": {
+      "default": "./*"
+    }
+  },
   "files": [
     "dist/",
     "src/",
@@ -19,7 +29,9 @@
     "test": "jest --run-in-band src/tests",
     "test:specific": "ts-node --files ",
     "clean": "rm -rf ./dist",
-    "build": "yarn clean && tsc --project tsconfig.build.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build": "yarn clean && yarn build:esm && yarn build:cjs",
     "prepublish": "yarn build"
   },
   "packageManager": "yarn@3.2.0",

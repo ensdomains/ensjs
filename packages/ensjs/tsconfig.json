@@ -1,17 +1,17 @@
 {
-    "extends": "../../tsconfig.json",
-    "ts-node": {
-        "compilerOptions": {
-          "target": "es2018",
-          "module": "commonjs",
-          "strict": true,
-          "esModuleInterop": true
-        }
-      },
+  "extends": "../../tsconfig.json",
+  "ts-node": {
     "compilerOptions": {
-        "types": ["jest"],
-        "outDir": "./dist",
-        "declaration": true,                             
-        "importsNotUsedAsValues": "remove",
-    },
+      "target": "es2018",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true
+    }
+  },
+  "compilerOptions": {
+    "types": ["jest"],
+    "outDir": "./dist",
+    "declaration": true,
+    "importsNotUsedAsValues": "remove"
+  }
 }
