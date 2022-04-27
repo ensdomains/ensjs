@@ -31,7 +31,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ).address,
   )
   await tx.wait()
-  console.log(tx)
 
   console.log(
     'Deployed PublicResolver, address:',
