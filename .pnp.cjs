@@ -2518,6 +2518,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:27.5.1"\
       ],\
       [\
+        "jest-localstorage-mock",\
+        "npm:2.4.21"\
+      ],\
+      [\
         "jest-matcher-utils",\
         "npm:27.5.1"\
       ],\
@@ -5083,6 +5087,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["hardhat-deploy", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.11.4"],\
             ["jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.5.1"],\
             ["jest-environment-node", "npm:27.5.1"],\
+            ["jest-localstorage-mock", "npm:2.4.21"],\
             ["solc", "npm:0.8.13"],\
             ["ts-jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.1.4"],\
             ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"],\
@@ -13043,6 +13048,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest-leak-detector", "npm:27.5.1"],\
             ["jest-get-type", "npm:27.5.1"],\
             ["pretty-format", "npm:27.5.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["jest-localstorage-mock", [\
+        ["npm:2.4.21", {\
+          "packageLocation": "./.yarn/cache/jest-localstorage-mock-npm-2.4.21-dac750b4d5-f838fbfde3.zip/node_modules/jest-localstorage-mock/",\
+          "packageDependencies": [\
+            ["jest-localstorage-mock", "npm:2.4.21"]\
           ],\
           "linkType": "HARD"\
         }]\

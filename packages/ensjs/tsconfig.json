@@ -12,6 +12,7 @@
     "types": ["jest"],
     "outDir": "./dist",
     "declaration": true,
-    "importsNotUsedAsValues": "remove"
+    "importsNotUsedAsValues": "remove",
+    "lib": ["ES2021", "DOM"]
   }
 }

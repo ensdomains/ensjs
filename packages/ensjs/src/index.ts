@@ -29,6 +29,7 @@ import type {
   _getContentHash,
   _getText,
 } from './functions/getSpecificRecord'
+import getSubnames from './functions/getSubnames'
 import type setName from './functions/setName'
 import type setRecords from './functions/setRecords'
 import type setResolver from './functions/setResolver'
@@ -372,6 +373,11 @@ export class ENS {
     'contracts',
     'multicallWrapper',
   ])
+
+  public getSubnames = this.generateFunction<typeof getSubnames>(
+    'getSubnames',
+    ['gqlInstance'],
+  )
 
   public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
     'batchWrappers',

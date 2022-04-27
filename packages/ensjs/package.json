@@ -65,6 +65,7 @@
     "hardhat-deploy": "^0.11.4",
     "jest": "^27.5.1",
     "jest-environment-node": "^27.5.1",
+    "jest-localstorage-mock": "^2.4.21",
     "solc": "^0.8.13",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",

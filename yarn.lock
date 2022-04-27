@@ -527,6 +527,7 @@ __metadata:
     hardhat-deploy: ^0.11.4
     jest: ^27.5.1
     jest-environment-node: ^27.5.1
+    jest-localstorage-mock: ^2.4.21
     solc: ^0.8.13
     ts-jest: ^27.1.4
     ts-node: ^10.7.0
@@ -7323,6 +7324,13 @@ __metadata:
     jest-get-type: ^27.5.1
     pretty-format: ^27.5.1
   checksum: 5c9689060960567ddaf16c570d87afa760a461885765d2c71ef4f4857bbc3af1482c34e3cce88e50beefde1bf35e33530b020480752057a7e3dbb1ca0bae359f
+  languageName: node
+  linkType: hard
+
+"jest-localstorage-mock@npm:^2.4.21":
+  version: 2.4.21
+  resolution: "jest-localstorage-mock@npm:2.4.21"
+  checksum: f838fbfde323a3be694bdda670612530e48c3013bed8a4e4fd2f9b06335274aff9ff4863eda8117ffed8a53928df67790c5f2a2a274cae3bdc93993b1689bfc3
   languageName: node
   linkType: hard
 
