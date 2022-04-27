@@ -14,12 +14,15 @@ describe('batch', () => {
       [ENSInstance.getAddr, 'jefflau.eth'],
       [ENSInstance.getName, '0x866B3c4994e1416B7C738B9818b31dC246b95eEE'],
     )
-    expect(result[0]).toBe('Hello2')
-    expect(result[1]).toBe('0x866B3c4994e1416B7C738B9818b31dC246b95eEE')
-    expect(result[2]).toMatchObject({
-      name: 'jefflau.eth',
-      match: true,
-    })
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result[0]).toBe('Hello2')
+      expect(result[1]).toBe('0x866B3c4994e1416B7C738B9818b31dC246b95eEE')
+      expect(result[2]).toMatchObject({
+        name: 'jefflau.eth',
+        match: true,
+      })
+    }
   })
   it('should batch a single call', async () => {
     const result = await ENSInstance.batch([
@@ -27,7 +30,10 @@ describe('batch', () => {
       'jefflau.eth',
       'description',
     ])
-    expect(result[0]).toBe('Hello2')
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result[0]).toBe('Hello2')
+    }
   })
   it('should error when batching an unbatchable function', async () => {
     try {

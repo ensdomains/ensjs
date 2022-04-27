@@ -1,7 +1,8 @@
 import { ethers } from 'ethers'
 import ContractManager from './contracts'
-import type { batch, _batch } from './functions/batch'
-import type {
+import type batch from './functions/batch'
+import {
+  multicallWrapper,
   resolverMulticallWrapper,
   universalWrapper,
 } from './functions/batchWrappers'
@@ -266,16 +267,9 @@ export class ENS {
     return newENS
   }
 
-  public batch = this.generateFunction<typeof batch>(
-    'batch',
-    ['contracts'],
-    'batch',
-  )
-  public _batch = this.generateFunction<typeof _batch>(
-    'batch',
-    ['contracts'],
-    '_batch',
-  )
+  public batch = this.generateRawFunction<typeof batch>('batch', [
+    'multicallWrapper',
+  ])
 
   public getProfile = this.generateFunction<typeof getProfile>('getProfile', [
     'contracts',
@@ -376,6 +370,7 @@ export class ENS {
 
   public getExpiry = this.generateRawFunction<typeof getExpiry>('getExpiry', [
     'contracts',
+    'multicallWrapper',
   ])
 
   public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
@@ -387,6 +382,12 @@ export class ENS {
   public resolverMulticallWrapper = this.generateRawFunction<
     typeof resolverMulticallWrapper
   >('batchWrappers', ['contracts'], 'resolverMulticallWrapper')
+
+  public multicallWrapper = this.generateRawFunction<typeof multicallWrapper>(
+    'batchWrappers',
+    ['contracts'],
+    'multicallWrapper',
+  )
 
   public setName = this.generateFunction<typeof setName>('setName', [
     'contracts',

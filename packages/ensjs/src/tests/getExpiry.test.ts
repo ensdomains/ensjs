@@ -20,7 +20,11 @@ describe('getExpiry', () => {
   it('should get the expiry for a name', async () => {
     const result = await ENSInstance.getExpiry('jefflau.eth')
     expect(result).toBeTruthy()
-    expect(result).toBeInstanceOf(Date)
+    if (result) {
+      const { expiry, gracePeriod } = result
+      expect(expiry).toBeInstanceOf(Date)
+      expect(gracePeriod).toBe(7776000000)
+    }
   })
   it('should throw an error for a non .eth name', async () => {
     try {
