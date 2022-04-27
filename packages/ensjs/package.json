@@ -23,6 +23,7 @@
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
+    "env": "yarn ens-test-env",
     "generate-types": "ts-node scripts/runTypechain.ts",
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",

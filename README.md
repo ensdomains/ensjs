@@ -45,14 +45,13 @@ await ENSInstance.setProvider(provider)
 
 The batch function is a large part of this library, and there are plenty of situations where you might want to use it.
 **Note that only functions with the `GeneratedRawFunction` type can be batched together.**
-**TS will throw an error if it isn't one though, so don't worry about mixing them up.**
 
 ```js
 /* Batch functions can be called like so, with the function as the first item in an array, with the following items being the function's arguments */
 const batched = await batch(
-  [ENSInstance.getText, 'test.eth', 'foo'],
-  [ENSInstance.getAddr, 'test.eth'],
-  [ENSInstance.getOwner, 'test.eth'],
+  ENSInstance.getText.batch('test.eth', 'foo'),
+  ENSInstance.getAddr.batch('test.eth'),
+  ENSInstance.getOwner.batch('test.eth'),
 )
 
 /* The response is formatted like so:
