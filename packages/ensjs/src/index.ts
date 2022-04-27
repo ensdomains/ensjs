@@ -17,7 +17,7 @@ import type {
   getHistoryWithDetail,
 } from './functions/getHistory'
 import type getName from './functions/getName'
-import type { getOwner } from './functions/getOwner'
+import type getOwner from './functions/getOwner'
 import type getProfile from './functions/getProfile'
 import type getRecords from './functions/getRecords'
 import type getResolver from './functions/getResolver'
@@ -357,17 +357,10 @@ export class ENS {
     '_getText',
   )
 
-  public _getOwner = this.generateFunction<typeof getOwner>(
-    'getOwner',
-    ['contracts'],
-    '_getOwner',
-  )
-
-  public getOwner = this.generateFunction<typeof getOwner>(
-    'getOwner',
-    ['contracts'],
-    'getOwner',
-  )
+  public getOwner = this.generateRawFunction<typeof getOwner>('getOwner', [
+    'contracts',
+    'multicallWrapper',
+  ])
 
   public getExpiry = this.generateRawFunction<typeof getExpiry>('getExpiry', [
     'contracts',
