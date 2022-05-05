@@ -3,6 +3,8 @@ import { solidityKeccak256 } from 'ethers/lib/utils'
 export const labelhash = (input: string) =>
   solidityKeccak256(['string'], [input])
 
+export const keccakFromString = (input: string) => labelhash(input)
+
 export function decodeLabelhash(hash: string) {
   if (!(hash.startsWith('[') && hash.endsWith(']'))) {
     throw Error(

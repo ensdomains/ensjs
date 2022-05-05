@@ -227,6 +227,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "workspace:packages/ensjs"\
       ],\
       [\
+        "@ensdomains/eth-ens-namehash",\
+        "npm:2.0.15"\
+      ],\
+      [\
         "@ensdomains/solsha1",\
         "npm:0.0.3"\
       ],\
@@ -5062,6 +5066,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/content-hash", "npm:2.5.7"],\
             ["@ensdomains/ens-contracts", "npm:0.0.11"],\
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
+            ["@ensdomains/eth-ens-namehash", "npm:2.0.15"],\
             ["@ethersproject/abi", "npm:5.6.0"],\
             ["@ethersproject/providers", "npm:5.6.2"],\
             ["@nomiclabs/hardhat-ethers", [\
@@ -5096,6 +5101,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["wait-on", "npm:6.0.1"]\
           ],\
           "linkType": "SOFT"\
+        }]\
+      ]],\
+      ["@ensdomains/eth-ens-namehash", [\
+        ["npm:2.0.15", {\
+          "packageLocation": "./.yarn/cache/@ensdomains-eth-ens-namehash-npm-2.0.15-eca6507ffc-56e2d4275f.zip/node_modules/@ensdomains/eth-ens-namehash/",\
+          "packageDependencies": [\
+            ["@ensdomains/eth-ens-namehash", "npm:2.0.15"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["@ensdomains/solsha1", [\
