@@ -505,6 +505,7 @@ __metadata:
     "@ensdomains/content-hash": ^2.5.7
     "@ensdomains/ens-contracts": ^0.0.11
     "@ensdomains/ens-test-env": "workspace:*"
+    "@ensdomains/eth-ens-namehash": ^2.0.15
     "@ethersproject/abi": ^5.6.0
     "@ethersproject/providers": ^5.6.2
     "@nomiclabs/hardhat-ethers": ^2.0.5
@@ -538,6 +539,13 @@ __metadata:
     ethers: "*"
   languageName: unknown
   linkType: soft
+
+"@ensdomains/eth-ens-namehash@npm:^2.0.15":
+  version: 2.0.15
+  resolution: "@ensdomains/eth-ens-namehash@npm:2.0.15"
+  checksum: 56e2d4275f30b701e7328e488b7107b5ee793b57653342232f01396f769a51b812e73f9475faf894198ffc8ea97eead3809c1431e0955b9377400f503b4da970
+  languageName: node
+  linkType: hard
 
 "@ensdomains/solsha1@npm:0.0.3":
   version: 0.0.3
