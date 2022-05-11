@@ -85,4 +85,18 @@ describe('getProfile', () => {
       expect(result).toBeNull()
     })
   })
+  describe('with an unmigrated name', () => {
+    beforeAll(async () => {
+      ;({ ENSInstance } = await setup(true))
+      jest.setTimeout(20000)
+    })
+    it('should return an object with isMigrated false and a message', async () => {
+      const result = await ENSInstance.getProfile('jefflau.test')
+      expect(result).toBeTruthy()
+      if (result) {
+        expect(result.isMigrated).toBe(false)
+        expect(result.message).toBe("Records fetch didn't complete")
+      }
+    })
+  })
 })

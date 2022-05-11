@@ -1,14 +1,18 @@
 import { ethers } from 'ethers'
 import { ENS } from '../'
 
-export default async () => {
+export default async (useReal?: boolean) => {
+  const graphURI = useReal
+    ? 'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten'
+    : 'http://localhost:8000/subgraphs/name/graphprotocol/ens'
+
   const provider = new ethers.providers.JsonRpcProvider(
     'http://localhost:8545',
     'ropsten',
   )
 
   let ENSInstance = new ENS({
-    graphURI: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+    graphURI,
   })
   await ENSInstance.setProvider(provider)
 
@@ -22,7 +26,7 @@ export default async () => {
     }
 
     ENSInstance = new ENS({
-      graphURI: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+      graphURI,
     })
     await ENSInstance.setProvider(provider)
     return
