@@ -23,6 +23,22 @@ type DataItem = {
   coin?: string
   value: string
 }
+
+type ResolvedProfile = {
+  isMigrated: boolean | null
+  createdAt: string | null
+  address?: string
+  name?: string
+  match?: boolean
+  message?: string
+  records?: {
+    contentHash?: DecodedContentHash | string | null
+    texts?: DataItem[]
+    coinTypes?: DataItem[]
+  }
+  resolverAddress?: string
+}
+
 const makeMulticallData = async (
   {
     _getAddr,
@@ -339,7 +355,8 @@ const getProfileFromName = async (
     name,
     usingOptions ? wantedRecords : (options as InternalProfileOptions),
   )
-  if (!result) return { isMigrated, message: "Records fetch didn't complete" }
+  if (!result)
+    return { isMigrated, createdAt, message: "Records fetch didn't complete" }
   return { ...result, isMigrated, createdAt, message: undefined }
 }
 
@@ -371,14 +388,7 @@ const getProfileFromAddress = async (
     return null
   }
   if (!name || !name.name || name.name === '') return null
-  if (!name.match)
-    return {
-      ...name,
-      records: null,
-      match: false,
-      isMigrated: null,
-      message: null,
-    }
+  if (!name.match) return { ...name, isMigrated: null, createdAt: null }
   const result = await getProfileFromName(
     {
       contracts,
@@ -420,7 +430,7 @@ export default async function (
   >,
   nameOrAddress: string,
   options?: ProfileOptions,
-) {
+): Promise<ResolvedProfile | null> {
   if (options && options.coinTypes && typeof options.coinTypes !== 'boolean') {
     options.coinTypes = options.coinTypes.map((coin: string) => {
       if (!isNaN(parseInt(coin))) {
