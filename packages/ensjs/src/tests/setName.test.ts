@@ -34,14 +34,14 @@ describe('setName', () => {
   })
   it("should return a transaction for setting another address' name", async () => {
     jest.setTimeout(20000)
-    const reverseRegistrar = (
-      await ENSInstance.contracts!.getReverseRegistrar()!
-    ).connect(provider.getSigner())
-    const setControllerTx = await reverseRegistrar.setController(
+    const registry = (await ENSInstance.contracts!.getRegistry()!).connect(
+      provider.getSigner(),
+    )
+    const setApprovedForAllTx = await registry.setApprovalForAll(
       accounts[1],
       true,
     )
-    await setControllerTx?.wait()
+    await setApprovedForAllTx?.wait()
 
     const tx = await ENSInstance.setName('fleek.eth', accounts[0], undefined, {
       addressOrIndex: 1,

@@ -35,7 +35,7 @@ describe('createSubname', () => {
     const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
     expect(result).toBe(accounts[0])
   })
-  it('should allow creating a subname on the namewrapper unwrapped', async () => {
+  it('should allow creating a subname on the namewrapper', async () => {
     const wrapNameTx = await ENSInstance.wrapName(
       'parthtejpal.eth',
       accounts[0],
@@ -45,27 +45,6 @@ describe('createSubname', () => {
       contract: 'nameWrapper',
       name: 'test.parthtejpal.eth',
       owner: accounts[0],
-      shouldWrap: false,
-      options: { addressOrIndex: 0 },
-    })
-    expect(tx).toBeTruthy()
-    await tx.wait()
-
-    const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
-    expect(result).toBe(accounts[0])
-  })
-  it('should allow creating and wrapping a subname on the namewrapper', async () => {
-    const wrapNameTx = await ENSInstance.wrapName(
-      'parthtejpal.eth',
-      accounts[0],
-    )
-    await wrapNameTx.wait()
-    const tx = await ENSInstance.createSubname({
-      contract: 'nameWrapper',
-      name: 'test.parthtejpal.eth',
-      owner: accounts[0],
-      shouldWrap: true,
       options: { addressOrIndex: 0 },
     })
     expect(tx).toBeTruthy()

@@ -32,25 +32,25 @@ describe('getFuses', () => {
     const result = await ENSInstance.getFuses('jefflau.eth')
     expect(result).toBeNull()
   })
-  it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
-    const result = await ENSInstance.getFuses('parthtejpal.eth')
-    expect(result).toBeTruthy()
-    if (result) {
-      expect(result.fuseObj.canDoEverything).toBe(true)
-      expect(
-        Object.values(result.fuseObj).reduce(
-          (prev, curr) => (curr ? prev + 1 : prev),
-          0,
-        ),
-      ).toBe(1)
-      expect(result.rawFuses.toHexString()).toBe('0x00')
-    }
-  })
+  // it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
+  //   const result = await ENSInstance.getFuses('parthtejpal.eth')
+  //   expect(result).toBeTruthy()
+  //   if (result) {
+  //     expect(result.fuseObj.canDoEverything).toBe(true)
+  //     expect(
+  //       Object.values(result.fuseObj).reduce(
+  //         (prev, curr) => (curr ? prev + 1 : prev),
+  //         0,
+  //       ),
+  //     ).toBe(1)
+  //     expect(result.rawFuses.toHexString()).toBe('0x00')
+  //   }
+  // })
   it('should return with other correct fuses', async () => {
     const tx = await ENSInstance.burnFuses('parthtejpal.eth', {
       cannotUnwrap: true,
       cannotSetTtl: true,
-      cannotReplaceSubdomain: true,
+      cannotCreateSubdomain: true,
     })
     await tx.wait()
     const result = await ENSInstance.getFuses('parthtejpal.eth')
@@ -62,11 +62,11 @@ describe('getFuses', () => {
         cannotTransfer: false,
         cannotSetResolver: false,
         cannotSetTtl: true,
-        cannotCreateSubdomain: false,
-        cannotReplaceSubdomain: true,
+        cannotCreateSubdomain: true,
+        parentCannotControl: true,
         canDoEverything: false,
       })
-      expect(result.rawFuses.toHexString()).toBe('0x51')
+      expect(result.rawFuses.toHexString()).toBe('0x71')
     }
   })
   it('should return correct vulnerability data for an invulnerable node', async () => {
@@ -82,7 +82,6 @@ describe('getFuses', () => {
       name: 'test.parthtejpal.eth',
       owner: accounts[0],
       contract: 'nameWrapper',
-      shouldWrap: true,
     })
     await tx.wait()
 

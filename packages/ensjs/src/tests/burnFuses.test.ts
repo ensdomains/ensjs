@@ -38,6 +38,6 @@ describe('burnFuses', () => {
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
     const result = await nameWrapper.getFuses(utils.namehash('parthtejpal.eth'))
     const fuseBN = result.fuses as BigNumber
-    expect(fuseBN.toHexString()).toBe('0x31')
+    expect(fuseBN.toHexString()).toBe('0x71')
   })
 })

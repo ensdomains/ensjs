@@ -31,13 +31,12 @@ describe('wrapName', () => {
     const [result] = await nameWrapper.getFuses(
       utils.namehash('parthtejpal.eth'),
     )
-    expect((result as BigNumber).toHexString()).toBe('0x00')
+    expect((result as BigNumber).toHexString()).toBe('0x40')
   })
   it('should allow initial fuses', async () => {
     const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0], {
       cannotUnwrap: true,
       cannotSetTtl: true,
-      cannotReplaceSubdomain: true,
     })
     expect(tx).toBeTruthy()
     await tx.wait()

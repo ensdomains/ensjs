@@ -28,7 +28,7 @@ type ResolvedProfile = {
   isMigrated: boolean | null
   createdAt: string | null
   address?: string
-  name?: string
+  name?: string | null
   match?: boolean
   message?: string
   records?: {
@@ -37,6 +37,7 @@ type ResolvedProfile = {
     coinTypes?: DataItem[]
   }
   resolverAddress?: string
+  reverseResolverAddress?: string
 }
 
 const makeMulticallData = async (
@@ -384,7 +385,7 @@ const getProfileFromAddress = async (
   let name
   try {
     name = await getName(address)
-  } catch {
+  } catch (e) {
     return null
   }
   if (!name || !name.name || name.name === '') return null

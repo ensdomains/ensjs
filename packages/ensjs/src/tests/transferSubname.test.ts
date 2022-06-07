@@ -16,7 +16,7 @@ afterAll(async () => {
   await revert()
 })
 
-describe('deleteSubname', () => {
+describe('transferSubname', () => {
   beforeEach(async () => {
     await revert()
   })
@@ -52,7 +52,6 @@ describe('deleteSubname', () => {
       contract: 'nameWrapper',
       name: 'test.parthtejpal.eth',
       owner: accounts[0],
-      shouldWrap: true,
       options: { addressOrIndex: 0 },
     })
     await createSubnameTx.wait()
@@ -66,8 +65,10 @@ describe('deleteSubname', () => {
     expect(tx).toBeTruthy()
     await tx.wait()
 
-    const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const result = await nameWrapper.ownerOf(
+      utils.namehash('test.parthtejpal.eth'),
+    )
     expect(result).toBe(accounts[1])
   })
 })
