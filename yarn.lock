@@ -517,9 +517,7 @@ __metadata:
     "@types/jest": ^27.4.1
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
-    ens-contracts-main: "github:ensdomains/ens-contracts#head=master&commit=43b483db7ae3b13b985b3600779aa4e65ca22964"
-    ens-contracts-namewrapper: "github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
-    ens-contracts-universal: "github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7"
+    ens-contracts: "github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"
     ethers: ^5.6.1
     graphql: ^16.3.0
     graphql-request: ^4.1.0
@@ -4635,39 +4633,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ens-contracts-main@github:ensdomains/ens-contracts#head=master&commit=43b483db7ae3b13b985b3600779aa4e65ca22964":
+"ens-contracts@github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93":
   version: 0.0.9
-  resolution: "ens-contracts-main@https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"
+  resolution: "ens-contracts@https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"
   dependencies:
     "@ensdomains/buffer": ^0.0.13
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: 711f6e55655c56f77380526b20e7a6c9c490e722d27d59534bb2f002515b4f56de893482fe9bd4409a5774980736ebdd96c93913220eea22b164027dbc4f0888
-  languageName: node
-  linkType: hard
-
-"ens-contracts-namewrapper@github:ensdomains/ens-contracts#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375":
-  version: 0.0.9
-  resolution: "ens-contracts-namewrapper@https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"
-  dependencies:
-    "@ensdomains/buffer": ^0.0.13
-    "@ensdomains/solsha1": 0.0.3
-    "@openzeppelin/contracts": ^4.1.0
-    dns-packet: ^5.3.0
-  checksum: 2de96c77345d7e84a40033863a69324d6f57c1f7c42045f9d8e0e87955a7f54218ac1be9c11f1e7ee49513621bf684b1c3b19a4ed776e5089be3f632e22ff363
-  languageName: node
-  linkType: hard
-
-"ens-contracts-universal@github:ensdomains/ens-contracts#head=feature/record-proxy&commit=ec2657e78811ff9fa09436209798a6135ecca9b7":
-  version: 0.0.8
-  resolution: "ens-contracts-universal@https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"
-  dependencies:
-    "@ensdomains/buffer": ^0.0.13
-    "@ensdomains/solsha1": 0.0.3
-    "@openzeppelin/contracts": ^4.1.0
-    dns-packet: ^5.3.0
-  checksum: 3614e84b1639927969b592a689621f759f1dbdcf963e68bdeb6d71000c3c9167e9feaa5d720634d48b59dcc1d305a38d0ac1af6cfc543fee40aee48018a5da73
+  checksum: d3aeb0140f671d0a6d2d82b840d643e61b543e6e410d68c19cfb21b634b73b99291a7cc46d9d1861181483955ce14f48e3cc027f5cb06b9251a6b90e77259e5d
   languageName: node
   linkType: hard
 

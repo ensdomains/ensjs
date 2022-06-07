@@ -1654,16 +1654,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:2.3.6"\
       ],\
       [\
-        "ens-contracts-main",\
-        "https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"\
-      ],\
-      [\
-        "ens-contracts-namewrapper",\
-        "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"\
-      ],\
-      [\
-        "ens-contracts-universal",\
-        "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"\
+        "ens-contracts",\
+        "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"\
       ],\
       [\
         "entities",\
@@ -5081,9 +5073,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:27.4.1"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
-            ["ens-contracts-main", "https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"],\
-            ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
-            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"],\
+            ["ens-contracts", "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
             ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
@@ -9912,37 +9902,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["ens-contracts-main", [\
-        ["https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964", {\
-          "packageLocation": "./.yarn/cache/ens-contracts-main-https-7005d2358c-711f6e5565.zip/node_modules/ens-contracts-main/",\
+      ["ens-contracts", [\
+        ["https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93", {\
+          "packageLocation": "./.yarn/cache/ens-contracts-https-70e7901c0d-d3aeb0140f.zip/node_modules/ens-contracts/",\
           "packageDependencies": [\
-            ["ens-contracts-main", "https://github.com/ensdomains/ens-contracts.git#commit=43b483db7ae3b13b985b3600779aa4e65ca22964"],\
-            ["@ensdomains/buffer", "npm:0.0.13"],\
-            ["@ensdomains/solsha1", "npm:0.0.3"],\
-            ["@openzeppelin/contracts", "npm:4.5.0"],\
-            ["dns-packet", "npm:5.3.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ens-contracts-namewrapper", [\
-        ["https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375", {\
-          "packageLocation": "./.yarn/cache/ens-contracts-namewrapper-https-fba17cd56b-2de96c7734.zip/node_modules/ens-contracts-namewrapper/",\
-          "packageDependencies": [\
-            ["ens-contracts-namewrapper", "https://github.com/ensdomains/ens-contracts.git#commit=9b42c4b57e76aa4041847579c0bd5c3ca3cf6375"],\
-            ["@ensdomains/buffer", "npm:0.0.13"],\
-            ["@ensdomains/solsha1", "npm:0.0.3"],\
-            ["@openzeppelin/contracts", "npm:4.5.0"],\
-            ["dns-packet", "npm:5.3.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ens-contracts-universal", [\
-        ["https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7", {\
-          "packageLocation": "./.yarn/cache/ens-contracts-universal-https-fae6d2cd0c-3614e84b16.zip/node_modules/ens-contracts-universal/",\
-          "packageDependencies": [\
-            ["ens-contracts-universal", "https://github.com/ensdomains/ens-contracts.git#commit=ec2657e78811ff9fa09436209798a6135ecca9b7"],\
+            ["ens-contracts", "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"],\
             ["@ensdomains/buffer", "npm:0.0.13"],\
             ["@ensdomains/solsha1", "npm:0.0.3"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
