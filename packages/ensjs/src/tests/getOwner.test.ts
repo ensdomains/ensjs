@@ -21,7 +21,7 @@ afterAll(async () => {
 describe('getOwner', () => {
   it('should return null for an unregistered name', async () => {
     const result = await ENSInstance.getOwner('test123123cool.eth')
-    expect(result).toBeNull()
+    expect(result).toBeUndefined()
   })
   it('should return the owner, registrant, and ownership level for a registered name', async () => {
     const result = await ENSInstance.getOwner('jefflau.eth')

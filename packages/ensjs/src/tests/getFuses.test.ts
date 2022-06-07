@@ -30,7 +30,7 @@ afterAll(async () => {
 describe('getFuses', () => {
   it('should return null for an unwrapped name', async () => {
     const result = await ENSInstance.getFuses('jefflau.eth')
-    expect(result).toBeNull()
+    expect(result).toBeUndefined()
   })
   it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
     const tx = await ENSInstance.createSubname({
