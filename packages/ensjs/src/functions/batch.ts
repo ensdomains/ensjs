@@ -21,7 +21,7 @@ const decode = async (
   ...items: BatchFunctionResult<RawFunction>[]
 ): Promise<any[] | null> => {
   const response = await multicallWrapper.decode(data)
-  if (!response) return null
+  if (!response) return
 
   return Promise.all(
     response.map((ret: any, i: number) =>

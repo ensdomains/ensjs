@@ -52,7 +52,7 @@ describe('getProfile', () => {
       const result = await ENSInstance.getProfile(
         '0x8e8db5ccef88cca9d624701db544989c996e3216',
       )
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
   })
   describe('with a name', () => {
@@ -82,7 +82,7 @@ describe('getProfile', () => {
     })
     it('should return null for an unregistered name', async () => {
       const result = await ENSInstance.getProfile('test123123123cool.eth')
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
   })
   describe('with an unmigrated name', () => {
