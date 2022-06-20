@@ -221,5 +221,11 @@ export const main = async (arg, config) => {
       await compressToArchive().then(() => logTime('Compressed archive in'))
       return
     }
+    case '--clean': {
+      console.log('Cleaning data directory...')
+      await fs.rm(outPath, { force: true, recursive: true })
+      await fs.mkdir(outPath)
+      return
+    }
   }
 }

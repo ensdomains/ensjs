@@ -17,6 +17,7 @@ const help = () => {
         ens-test-env help
     
     Options:
+        --clean             Don't use any archive
         --use-tenderly      Use tenderly instead of ganache for RPC
         --no-tenderly-del   Don't delete tenderly fork after running
         --no-reset          Don't reset data folder
@@ -42,17 +43,26 @@ const checkKnownArgs = (maxArgs, ...knownArgs) => {
 }
 
 const start = async () => {
-  checkKnownArgs(3, '--no-reset', '--use-tenderly', '--no-tenderly-del')
+  checkKnownArgs(
+    3,
+    '--clean',
+    '--no-reset',
+    '--use-tenderly',
+    '--no-tenderly-del',
+  )
   const opts = {
     resetData: !args.includes('--no-reset'),
     tenderly: args.includes('--use-tenderly'),
     tenderlyDel: !args.includes('--no-tenderly-del'),
+    clean: args.includes('--clean'),
   }
-  if (opts.resetData) {
+  if (opts.clean) {
+    await fetchData('--clean', config)
+  } else if (opts.resetData) {
     await fetchData('--load', config)
   }
   if (!opts.tenderly) {
-    ganache(config)
+    ganache(config, opts.clean)
   }
   manager(config, opts.tenderly, opts.tenderlyDel)
 }
