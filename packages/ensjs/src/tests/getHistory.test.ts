@@ -13,7 +13,7 @@ describe('getHistory', () => {
 
   it('should return null for a non-existent name', async () => {
     const result = await ENSInstance.getHistory('test123123cool.eth')
-    expect(result).toBeNull()
+    expect(result).toBeUndefined()
   })
   it('should return the history of a name', async () => {
     const result = await ENSInstance.getHistory('jefflau.eth')
@@ -29,7 +29,7 @@ describe('getHistory', () => {
       const result = await ENSInstance.getHistoryWithDetail(
         'test123123cool.eth',
       )
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
     it('should return the history of a name with TextChanged event detail', async () => {
       const result = await ENSInstance.getHistoryWithDetail('jefflau.eth')
@@ -58,7 +58,7 @@ describe('getHistory', () => {
       const result = await ENSInstance.getHistoryDetailForTransactionHash(
         '0x0fd7b555e3076ef38dbbe2e40deefe44c9a0530d43f6b3f60dbed4ba49d229b7',
       )
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
     it('should return single item for a given transaction hash with one event', async () => {
       const eventToUse = textEventsWithValue[0]

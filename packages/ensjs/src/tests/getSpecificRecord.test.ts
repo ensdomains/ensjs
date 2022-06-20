@@ -11,11 +11,11 @@ describe('getSpecificRecord', () => {
   describe('getContentHash', () => {
     it('should return null for a non-existent name', async () => {
       const result = await ENSInstance.getContentHash('test123123cool.eth')
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
     it('should return null for a name with no contenthash record', async () => {
       const result = await ENSInstance.getContentHash('jefflau.eth')
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
     it('should return the contenthash for a name with the record set', async () => {
       const result = await ENSInstance.getContentHash('matoken.eth')
@@ -38,7 +38,7 @@ describe('getSpecificRecord', () => {
         'jefflau.eth',
         'thiskeydoesntexist',
       )
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
   })
 
@@ -70,7 +70,7 @@ describe('getSpecificRecord', () => {
     })
     it('should return null for a non-existent coin', async () => {
       const result = await ENSInstance.getAddr('jefflau.eth', 'BNB')
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
   })
 })
