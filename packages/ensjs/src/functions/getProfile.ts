@@ -431,7 +431,7 @@ export default async function (
   >,
   nameOrAddress: string,
   options?: ProfileOptions,
-): Promise<ResolvedProfile | null> {
+): Promise<ResolvedProfile | undefined> {
   if (options && options.coinTypes && typeof options.coinTypes !== 'boolean') {
     options.coinTypes = options.coinTypes.map((coin: string) => {
       if (!isNaN(parseInt(coin))) {

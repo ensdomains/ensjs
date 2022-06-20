@@ -47,7 +47,7 @@ const decode = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
   data: string,
   name: string,
-): Promise<Owner | null> => {
+): Promise<Owner | undefined> => {
   if (data === null) return
   const result = await multicallWrapper.decode(data)
   if (result === null) return
