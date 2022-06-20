@@ -1327,7 +1327,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "commander",\
-        "npm:2.20.3"\
+        "npm:9.3.0"\
       ],\
       [\
         "concat-map",\
@@ -5034,6 +5034,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ethersproject/wallet", "npm:5.6.0"],\
             ["ansi-colors", "npm:4.1.1"],\
             ["cli-progress", "npm:3.10.0"],\
+            ["commander", "npm:9.3.0"],\
             ["concurrently", "npm:7.1.0"],\
             ["dotenv", "npm:16.0.0"],\
             ["fs-extra", "npm:10.0.1"],\
@@ -8944,6 +8945,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/commander-npm-8.3.0-c0d18c66d5-0f82321821.zip/node_modules/commander/",\
           "packageDependencies": [\
             ["commander", "npm:8.3.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:9.3.0", {\
+          "packageLocation": "./.yarn/cache/commander-npm-9.3.0-1393a6e1f6-d421ce66fe.zip/node_modules/commander/",\
+          "packageDependencies": [\
+            ["commander", "npm:9.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\

@@ -481,6 +481,7 @@ __metadata:
     "@ethersproject/wallet": ^5.6.0
     ansi-colors: ^4.1.1
     cli-progress: ^3.10.0
+    commander: ^9.3.0
     concurrently: ^7.1.0
     dotenv: ^16.0.0
     fs-extra: ^10.0.1
@@ -3837,6 +3838,13 @@ __metadata:
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
+  languageName: node
+  linkType: hard
+
+"commander@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "commander@npm:9.3.0"
+  checksum: d421ce66fee25792a1470c69aa8d1b86434bf873a96483aa92c8267f81a6f20c6f7c426f5e82f88ac50a8ec4855d3f2787aebcdef8aa559e1080a2337a95a217
   languageName: node
   linkType: hard
 

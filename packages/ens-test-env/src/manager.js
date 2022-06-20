@@ -116,7 +116,7 @@ const prepender = new Transform({
   },
 })
 
-export const main = async (config, useTenderly, allowTenderlyDelete) => {
+export const main = async (config, options) => {
   let graphRpcUrl = 'http://host.docker.internal:8545'
   const cmdsToRun = []
   const inxsToFinishOnExit = []
@@ -129,7 +129,7 @@ export const main = async (config, useTenderly, allowTenderlyDelete) => {
     graphRpcUrl = config.ethereum.fork.url
   }
 
-  if (useTenderly) {
+  if (options.tenderly) {
     console.log('USING TENDERLY!')
     graphRpcUrl = await generateFork(config)
   }
@@ -163,14 +163,14 @@ export const main = async (config, useTenderly, allowTenderlyDelete) => {
     })
 
   if (config.deployCommand) {
-    if (!useTenderly)
+    if (!options.tenderly)
       config.deployCommand = 'yarn wait-on tcp:8545 && ' + config.deployCommand
     const allArgs = config.deployCommand.split(' ')
     const deploy = spawn(allArgs.shift(), allArgs, {
       cwd: process.env.INIT_CWD,
       env: {
         ...process.env,
-        TENDERLY_RPC_URL: useTenderly ? graphRpcUrl : undefined,
+        TENDERLY_RPC_URL: options.tenderly ? graphRpcUrl : undefined,
       },
       stdio: 'pipe',
       shell: true,
@@ -187,11 +187,21 @@ export const main = async (config, useTenderly, allowTenderlyDelete) => {
     commands.forEach((cmd) => {
       if (inxsToFinishOnExit.includes(cmd.index)) {
         cmd.close.subscribe(() =>
-          cleanup(false, commands, config, useTenderly && allowTenderlyDelete),
+          cleanup(
+            false,
+            commands,
+            config,
+            options.tenderly && options.tenderlyDelete,
+          ),
         )
       }
       cmd.error.subscribe(() =>
-        cleanup(true, commands, config, useTenderly && allowTenderlyDelete),
+        cleanup(
+          true,
+          commands,
+          config,
+          options.tenderly && options.tenderlyDelete,
+        ),
       )
     })
   }
