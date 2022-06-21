@@ -506,7 +506,6 @@ __metadata:
     "@ensdomains/content-hash": ^2.5.7
     "@ensdomains/ens-contracts": ^0.0.11
     "@ensdomains/ens-test-env": "workspace:*"
-    "@ensdomains/eth-ens-namehash": ^2.0.15
     "@ethersproject/abi": ^5.6.0
     "@ethersproject/providers": ^5.6.2
     "@nomiclabs/hardhat-ethers": ^2.0.5
@@ -525,6 +524,7 @@ __metadata:
     hardhat: ^2.9.3
     hardhat-abi-exporter: ^2.8.0
     hardhat-deploy: ^0.11.4
+    idna-uts46-hx: ^4.0.2
     jest: ^27.5.1
     jest-environment-node: ^27.5.1
     jest-localstorage-mock: ^2.4.21
@@ -538,13 +538,6 @@ __metadata:
     ethers: "*"
   languageName: unknown
   linkType: soft
-
-"@ensdomains/eth-ens-namehash@npm:^2.0.15":
-  version: 2.0.15
-  resolution: "@ensdomains/eth-ens-namehash@npm:2.0.15"
-  checksum: 56e2d4275f30b701e7328e488b7107b5ee793b57653342232f01396f769a51b812e73f9475faf894198ffc8ea97eead3809c1431e0955b9377400f503b4da970
-  languageName: node
-  linkType: hard
 
 "@ensdomains/solsha1@npm:0.0.3":
   version: 0.0.3
@@ -6577,6 +6570,15 @@ __metadata:
   dependencies:
     punycode: 2.1.0
   checksum: d434c3558d2bc1090eb90f978f995101f469cb26593414ac57aa082c9352e49972b332c6e4188b9b15538172ccfeae3121e5a19b96972a97e6aeb0676d86639c
+  languageName: node
+  linkType: hard
+
+"idna-uts46-hx@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "idna-uts46-hx@npm:4.0.2"
+  dependencies:
+    punycode: ^2.1.1
+  checksum: a0ba6a788679f8e5d1a945210c1d06a66f2981fcec07333656c6d75b5c272ca9eae02af31c939c9503d375a99553a04c7f9022cb11adb0af533c1819dee4f56c
   languageName: node
   linkType: hard
 
