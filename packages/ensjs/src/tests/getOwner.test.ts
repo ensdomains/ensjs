@@ -35,6 +35,13 @@ describe('getOwner', () => {
     const result = await ENSInstance.getOwner('parthtejpal.eth')
     expect(result?.ownershipLevel).toBe('nameWrapper')
   })
+  it('should return the owner at a specific level if specified', async () => {
+    const result = await ENSInstance.getOwner('parthtejpal.eth', 'registrar')
+    const nameWrapperAddress = (await ENSInstance.contracts!.getNameWrapper())
+      .address
+    expect(result?.ownershipLevel).toBe('registrar')
+    expect(result?.registrant).toBe(nameWrapperAddress)
+  })
   // it('should return registry as the ownership level for an unwrapped subname', async () => {
   //   const result0 = await ENSInstance.getOwner('fleek.eth')
   //   console.log(result0?.owner, accounts[2])
