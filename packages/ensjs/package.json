@@ -44,7 +44,7 @@
     "ethers": "^5.6.1",
     "graphql": "^16.3.0",
     "graphql-request": "^4.1.0",
-    "idna-uts46-hx": "^4.0.2"
+    "idna-uts46-hx": "3.4.0"
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",

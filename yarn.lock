@@ -524,7 +524,7 @@ __metadata:
     hardhat: ^2.9.3
     hardhat-abi-exporter: ^2.8.0
     hardhat-deploy: ^0.11.4
-    idna-uts46-hx: ^4.0.2
+    idna-uts46-hx: 3.4.0
     jest: ^27.5.1
     jest-environment-node: ^27.5.1
     jest-localstorage-mock: ^2.4.21
@@ -6564,21 +6564,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"idna-uts46-hx@npm:3.4.0":
+  version: 3.4.0
+  resolution: "idna-uts46-hx@npm:3.4.0"
+  dependencies:
+    punycode: ^2.1.1
+  checksum: ef13b4c27f25dc1aad346bfb116255f9c1f3717297918c28e835151ebaa19ed526d52e3a70cd15547ef2270331f8425a27ea0297d8bf98a9bf541de4838d717c
+  languageName: node
+  linkType: hard
+
 "idna-uts46-hx@npm:^2.3.1":
   version: 2.3.1
   resolution: "idna-uts46-hx@npm:2.3.1"
   dependencies:
     punycode: 2.1.0
   checksum: d434c3558d2bc1090eb90f978f995101f469cb26593414ac57aa082c9352e49972b332c6e4188b9b15538172ccfeae3121e5a19b96972a97e6aeb0676d86639c
-  languageName: node
-  linkType: hard
-
-"idna-uts46-hx@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "idna-uts46-hx@npm:4.0.2"
-  dependencies:
-    punycode: ^2.1.1
-  checksum: a0ba6a788679f8e5d1a945210c1d06a66f2981fcec07333656c6d75b5c272ca9eae02af31c939c9503d375a99553a04c7f9022cb11adb0af533c1819dee4f56c
   languageName: node
   linkType: hard
 

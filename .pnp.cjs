@@ -2215,7 +2215,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "idna-uts46-hx",\
-        "npm:4.0.2"\
+        "npm:3.4.0"\
       ],\
       [\
         "ieee754",\
@@ -5076,7 +5076,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["hardhat", "npm:2.9.3"],\
             ["hardhat-abi-exporter", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:2.8.0"],\
             ["hardhat-deploy", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.11.4"],\
-            ["idna-uts46-hx", "npm:4.0.2"],\
+            ["idna-uts46-hx", "npm:3.4.0"],\
             ["jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.5.1"],\
             ["jest-environment-node", "npm:27.5.1"],\
             ["jest-localstorage-mock", "npm:2.4.21"],\
@@ -12145,10 +12145,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:4.0.2", {\
-          "packageLocation": "./.yarn/cache/idna-uts46-hx-npm-4.0.2-5ad7b4a750-a0ba6a7886.zip/node_modules/idna-uts46-hx/",\
+        ["npm:3.4.0", {\
+          "packageLocation": "./.yarn/cache/idna-uts46-hx-npm-3.4.0-1d623acf71-ef13b4c27f.zip/node_modules/idna-uts46-hx/",\
           "packageDependencies": [\
-            ["idna-uts46-hx", "npm:4.0.2"],\
+            ["idna-uts46-hx", "npm:3.4.0"],\
             ["punycode", "npm:2.1.1"]\
           ],\
           "linkType": "HARD"\
