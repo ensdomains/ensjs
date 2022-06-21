@@ -9,7 +9,7 @@ beforeAll(async () => {
 
 const checkRecords = (
   result: Record<string, any> | null,
-  textLength = 4,
+  textLength = 3,
   coinTypeLength = 5,
 ) => {
   expect(result).toBeTruthy()
