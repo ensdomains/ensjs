@@ -7,7 +7,7 @@ zeros.fill(0)
 export const normalise = (name: string) =>
   name ? uts46.toUnicode(name, { useStd3ASCII: true }) : name
 
-export const namehash = (inputName: string) => {
+export const namehash = (inputName: string): string => {
   let result: string | Uint8Array = zeros
 
   const name = normalise(inputName)
@@ -23,5 +23,5 @@ export const namehash = (inputName: string) => {
     result = hexlify(zeros)
   }
 
-  return result
+  return result as string
 }
