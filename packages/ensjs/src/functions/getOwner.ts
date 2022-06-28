@@ -52,10 +52,10 @@ const raw = async (
   const namehash = ethers.utils.namehash(name)
   const labels = name.split('.')
 
-  if (contract) {
+  if (contract || labels.length === 1) {
     return await singleContractOwnerRaw(
       { contracts },
-      contract,
+      contract || 'registry',
       namehash,
       labels,
     )
@@ -99,10 +99,11 @@ const decode = async (
   contract?: 'nameWrapper' | 'registry' | 'registrar',
 ): Promise<Owner | undefined> => {
   if (data === null) return
-  if (contract) {
+  const labels = name.split('.')
+  if (contract || labels.length === 1) {
     const singleOwner = singleContractOwnerDecode(data)
     let obj = {
-      ownershipLevel: contract,
+      ownershipLevel: contract || 'registry',
     }
     if (contract === 'registrar') {
       return {
@@ -132,8 +133,6 @@ const decode = async (
   const registrarOwner = (
     decodedData[2] as ethers.utils.Result | undefined
   )?.[0]
-
-  const labels = name.split('.')
 
   // check for only .eth names
   if (labels[labels.length - 1] === 'eth') {

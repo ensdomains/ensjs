@@ -42,6 +42,16 @@ describe('getOwner', () => {
     expect(result?.ownershipLevel).toBe('registrar')
     expect(result?.registrant).toBe(nameWrapperAddress)
   })
+  it('should return the owner of a TLD on the registry', async () => {
+    const result = await ENSInstance.getOwner('eth')
+    const baseRegistrarAddress = (
+      await ENSInstance.contracts!.getBaseRegistrar()
+    ).address
+    expect(result?.ownershipLevel).toBe('registry')
+    expect(result?.owner?.toLowerCase()).toBe(
+      baseRegistrarAddress.toLowerCase(),
+    )
+  })
   // it('should return registry as the ownership level for an unwrapped subname', async () => {
   //   const result0 = await ENSInstance.getOwner('fleek.eth')
   //   console.log(result0?.owner, accounts[2])
