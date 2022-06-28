@@ -121,7 +121,7 @@ export const _getAddr = {
       return {
         to: '0x0000000000000000000000000000000000000000',
         data: publicResolver.interface.encodeFunctionData('addr(bytes32)', [
-          ethers.utils.namehash(name),
+          namehash(name),
         ]),
       }
     }
