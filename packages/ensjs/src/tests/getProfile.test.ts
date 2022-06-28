@@ -8,11 +8,11 @@ beforeAll(async () => {
 })
 
 const checkRecords = (
-  result: Record<string, any> | null,
+  result: Record<string, any> | undefined,
   textLength = 3,
   coinTypeLength = 5,
 ) => {
-  expect(result).toBeTruthy()
+  expect(result).toBeDefined()
   if (result) {
     expect(result.records?.texts).toHaveLength(textLength)
     expect(result.records?.coinTypes).toHaveLength(coinTypeLength)
@@ -22,24 +22,32 @@ const checkRecords = (
   }
 }
 
+jest.setTimeout(20000)
+
 describe('getProfile', () => {
   describe('with an address', () => {
     it('should return a profile object with no other args', async () => {
       const result = await ENSInstance.getProfile(
         '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
       )
-      expect((result as any).name).toBe('jefflau.eth')
-      expect((result as any).address).toBeUndefined()
-      checkRecords(result)
+      expect(result).toBeDefined()
+      if (result) {
+        expect((result as any).name).toBe('jefflau.eth')
+        expect((result as any).address).toBeUndefined()
+        checkRecords(result)
+      }
     })
     it('should return a profile object with specified records', async () => {
       const result = await ENSInstance.getProfile(
         '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
         { texts: ['description', 'url'], coinTypes: ['ETC', '0'] },
       )
-      expect((result as any).name).toBe('jefflau.eth')
-      expect((result as any).address).toBeUndefined()
-      checkRecords(result, 2, 3)
+      expect(result).toBeDefined()
+      if (result) {
+        expect((result as any).name).toBe('jefflau.eth')
+        expect((result as any).address).toBeUndefined()
+        checkRecords(result, 2, 3)
+      }
     })
     it('should return a profile object with all of each specified record type', async () => {
       const result = await ENSInstance.getProfile(
@@ -80,9 +88,20 @@ describe('getProfile', () => {
       })
       checkRecords(result)
     })
-    it('should return null for an unregistered name', async () => {
+    it('should return undefined for an unregistered name', async () => {
       const result = await ENSInstance.getProfile('test123123123cool.eth')
       expect(result).toBeUndefined()
+    })
+  })
+  describe('with an old resolver', () => {
+    it('should use fallback methods for a name with an older resolver (no multicall)', async () => {
+      const result = await ENSInstance.getProfile('pepeq6.eth')
+      expect(result).toBeDefined()
+      if (result) {
+        expect(result.address).toBe(
+          '0x6308F1c6f283583C8bf8E31Da793B87718b051eD',
+        )
+      }
     })
   })
   describe('with an unmigrated name', () => {
@@ -95,7 +114,6 @@ describe('getProfile', () => {
       expect(result).toBeTruthy()
       if (result) {
         expect(result.isMigrated).toBe(false)
-        expect(result.message).toBe("Records fetch didn't complete")
       }
     })
   })
