@@ -116,6 +116,16 @@ export const _getAddr = {
     }
 
     const publicResolver = await contracts?.getPublicResolver()!
+
+    if (coinType === 60 || coinType === '60') {
+      return {
+        to: '0x0000000000000000000000000000000000000000',
+        data: publicResolver.interface.encodeFunctionData('addr(bytes32)', [
+          namehash(name),
+        ]),
+      }
+    }
+
     if (bypassFormat) {
       return {
         to: '0x0000000000000000000000000000000000000000',
@@ -164,10 +174,19 @@ export const _getAddr = {
             typeof coinType === 'number' ? coinType : parseInt(coinType)
           ]
 
-    const [response] = publicResolver.interface.decodeFunctionResult(
-      'addr(bytes32,uint256)',
-      data,
-    )
+    let response: string
+
+    if (coinType === 60 || coinType === '60') {
+      ;[response] = publicResolver.interface.decodeFunctionResult(
+        'addr(bytes32)',
+        data,
+      )
+    } else {
+      ;[response] = publicResolver.interface.decodeFunctionResult(
+        'addr(bytes32,uint256)',
+        data,
+      )
+    }
 
     if (!response) return
 

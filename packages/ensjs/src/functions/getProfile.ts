@@ -3,7 +3,6 @@ import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'
 import { hexEncodeName } from '../utils/hexEncodedName'
-import { namehash } from '../utils/normalise'
 import { parseInputType } from '../utils/validation'
 
 type InternalProfileOptions = {
@@ -97,10 +96,27 @@ const makeMulticallData = async (
   return { data: prRawData.data, calls }
 }
 
-const makeHashIndexes = (data: string, name: string) =>
-  [...data.matchAll(namehash(name).substring(2) as any)].map(
-    (x: any) => x.index / 2 - 1,
+const fetchWithoutResolverMulticall = async (
+  { multicallWrapper }: ENSArgs<'multicallWrapper'>,
+  calls: {
+    key: string | number
+    data: {
+      to: string
+      data: string
+    }
+    type: 'addr' | 'text' | 'contentHash'
+  }[],
+  resolverAddress: string,
+) => {
+  const callsWithResolver = calls.map((call) => ({
+    to: resolverAddress,
+    data: call.data.data,
+  }))
+
+  return (await multicallWrapper(callsWithResolver)).map(
+    (x: [boolean, string]) => x[1],
   )
+}
 
 const getDataForName = async (
   {
@@ -109,15 +125,18 @@ const getDataForName = async (
     _getContentHash,
     _getText,
     resolverMulticallWrapper,
+    multicallWrapper,
   }: ENSArgs<
     | 'contracts'
     | '_getText'
     | '_getAddr'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
+    | 'multicallWrapper'
   >,
   name: string,
   options: InternalProfileOptions,
+  fallbackResolver: string,
 ) => {
   const universalResolver = await contracts?.getUniversalResolver()
 
@@ -127,14 +146,28 @@ const getDataForName = async (
     options,
   )
 
-  let resolver: any
+  let resolvedData: any
+  let useFallbackResolver = false
   try {
-    resolver = await universalResolver?.resolve(hexEncodeName(name), data)
+    resolvedData = await universalResolver?.resolve(hexEncodeName(name), data)
   } catch {
-    return
+    useFallbackResolver = true
   }
 
-  const [recordData] = await resolverMulticallWrapper.decode(resolver['0'])
+  let resolverAddress: string
+  let recordData: any
+
+  if (useFallbackResolver) {
+    resolverAddress = fallbackResolver
+    recordData = await fetchWithoutResolverMulticall(
+      { multicallWrapper },
+      calls,
+      resolverAddress,
+    )
+  } else {
+    resolverAddress = resolvedData['1']
+    ;[recordData] = await resolverMulticallWrapper.decode(resolvedData['0'])
+  }
 
   const matchAddress = recordData[calls.findIndex((x) => x.key === '60')]
 
@@ -146,7 +179,7 @@ const getDataForName = async (
       calls,
       options,
     ),
-    resolverAddress: resolver['1'],
+    resolverAddress,
   }
 }
 
@@ -168,7 +201,7 @@ const formatRecords = async (
           key: calls[i].key,
           type: calls[i].type,
         }
-        if (itemRet.type === 'addr' || itemRet.type === 'contenthash') {
+        if (itemRet.type === 'contenthash') {
           decodedFromAbi = ethers.utils.defaultAbiCoder.decode(
             ['bytes'],
             item,
@@ -278,6 +311,7 @@ const graphFetch = async (
           addr {
             id
           }
+          address
         }
       }
     }
@@ -293,7 +327,14 @@ const graphFetch = async (
 
   let returnedRecords: ProfileResponse = {}
 
-  if (!wantedRecords) return { isMigrated, createdAt }
+  if (!resolverResponse) return { isMigrated, createdAt }
+
+  if (!wantedRecords)
+    return {
+      isMigrated,
+      createdAt,
+      graphResolverAddress: resolverResponse.address,
+    }
 
   Object.keys(wantedRecords).forEach((key: string) => {
     const data = wantedRecords[key as keyof ProfileOptions]
@@ -306,7 +347,12 @@ const graphFetch = async (
     }
   })
 
-  return { ...returnedRecords, isMigrated, createdAt }
+  return {
+    ...returnedRecords,
+    isMigrated,
+    createdAt,
+    graphResolverAddress: resolverResponse.address,
+  }
 }
 
 type ProfileOptions = {
@@ -323,6 +369,7 @@ const getProfileFromName = async (
     _getContentHash,
     _getText,
     resolverMulticallWrapper,
+    multicallWrapper,
   }: ENSArgs<
     | 'contracts'
     | 'gqlInstance'
@@ -330,6 +377,7 @@ const getProfileFromName = async (
     | '_getAddr'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
+    | 'multicallWrapper'
   >,
   name: string,
   options?: ProfileOptions,
@@ -343,9 +391,15 @@ const getProfileFromName = async (
   const {
     isMigrated,
     createdAt,
+    graphResolverAddress,
     ...wantedRecords
-  }: { isMigrated: boolean; createdAt: string } & InternalProfileOptions =
-    graphResult
+  }: {
+    isMigrated: boolean
+    createdAt: string
+    graphResolverAddress?: string
+  } & InternalProfileOptions = graphResult
+  if (!graphResolverAddress)
+    return { isMigrated, createdAt, message: "Name doesn't have a resolver" }
   const result = await getDataForName(
     {
       contracts,
@@ -353,9 +407,11 @@ const getProfileFromName = async (
       _getContentHash,
       _getText,
       resolverMulticallWrapper,
+      multicallWrapper,
     },
     name,
     usingOptions ? wantedRecords : (options as InternalProfileOptions),
+    graphResolverAddress,
   )
   if (!result)
     return { isMigrated, createdAt, message: "Records fetch didn't complete" }
@@ -371,6 +427,7 @@ const getProfileFromAddress = async (
     _getContentHash,
     _getText,
     resolverMulticallWrapper,
+    multicallWrapper,
   }: ENSArgs<
     | 'contracts'
     | 'gqlInstance'
@@ -379,6 +436,7 @@ const getProfileFromAddress = async (
     | '_getAddr'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
+    | 'multicallWrapper'
   >,
   address: string,
   options?: ProfileOptions,
@@ -399,6 +457,7 @@ const getProfileFromAddress = async (
       _getContentHash,
       _getText,
       resolverMulticallWrapper,
+      multicallWrapper,
     },
     name.name,
     options,
@@ -421,6 +480,7 @@ export default async function (
     _getContentHash,
     _getText,
     resolverMulticallWrapper,
+    multicallWrapper,
   }: ENSArgs<
     | 'contracts'
     | 'gqlInstance'
@@ -429,6 +489,7 @@ export default async function (
     | '_getAddr'
     | '_getContentHash'
     | 'resolverMulticallWrapper'
+    | 'multicallWrapper'
   >,
   nameOrAddress: string,
   options?: ProfileOptions,
@@ -459,6 +520,7 @@ export default async function (
         _getContentHash,
         _getText,
         resolverMulticallWrapper,
+        multicallWrapper,
       },
       nameOrAddress,
       options,
@@ -473,6 +535,7 @@ export default async function (
       _getContentHash,
       _getText,
       resolverMulticallWrapper,
+      multicallWrapper,
     },
     nameOrAddress,
     options,
