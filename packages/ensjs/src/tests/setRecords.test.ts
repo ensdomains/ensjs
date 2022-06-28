@@ -1,6 +1,6 @@
-import { utils } from 'ethers'
 import { ENS } from '..'
 import { hexEncodeName } from '../utils/hexEncodedName'
+import { namehash } from '../utils/normalise'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -31,14 +31,14 @@ describe('setRecords', () => {
     const encodedText = await universalResolver.resolve(
       hexEncodeName('parthtejpal.eth'),
       publicResolver.interface.encodeFunctionData('text(bytes32,string)', [
-        utils.namehash('parthtejpal.eth'),
+        namehash('parthtejpal.eth'),
         'foo',
       ]),
     )
     const encodedAddr = await universalResolver.resolve(
       hexEncodeName('parthtejpal.eth'),
       publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
-        utils.namehash('parthtejpal.eth'),
+        namehash('parthtejpal.eth'),
         '61',
       ]),
     )

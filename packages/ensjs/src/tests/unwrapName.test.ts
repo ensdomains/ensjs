@@ -1,5 +1,6 @@
 import { ethers, utils } from 'ethers'
 import { ENS } from '..'
+import { namehash } from '../utils/normalise'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -61,7 +62,7 @@ describe('unwrapName', () => {
     await tx.wait()
 
     const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
+    const result = await registry.owner(namehash('test.parthtejpal.eth'))
     expect(result).toBe(accounts[0])
   })
 })
