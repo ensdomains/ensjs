@@ -1,10 +1,11 @@
 /* eslint-disable import/extensions */
 import { ENSRegistry__factory } from '@ensdomains/ensjs/dist/cjs/generated/factories/ENSRegistry__factory'
 import { Root__factory } from '@ensdomains/ensjs/dist/cjs/generated/factories/Root__factory'
-import { namehash, solidityKeccak256 } from 'ethers/lib/utils'
+import { solidityKeccak256 } from 'ethers/lib/utils'
 import { ethers as _ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import { namehash } from '../src/utils/normalise'
 import { deployContract, setEthersProvider } from './.utils'
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {

@@ -1,5 +1,6 @@
-import { BigNumber, ethers, utils } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { ENS } from '..'
+import { namehash } from '../utils/normalise'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -36,7 +37,7 @@ describe('burnFuses', () => {
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const result = await nameWrapper.getFuses(utils.namehash('parthtejpal.eth'))
+    const result = await nameWrapper.getFuses(namehash('parthtejpal.eth'))
     const fuseBN = result.fuses as BigNumber
     expect(fuseBN.toHexString()).toBe('0x71')
   })

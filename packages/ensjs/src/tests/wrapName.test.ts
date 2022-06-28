@@ -1,6 +1,7 @@
-import { BigNumber, ethers, utils } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { ENS } from '..'
 import { hexEncodeName } from '../utils/hexEncodedName'
+import { namehash } from '../utils/normalise'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -28,9 +29,7 @@ describe('wrapName', () => {
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const [result] = await nameWrapper.getFuses(
-      utils.namehash('parthtejpal.eth'),
-    )
+    const [result] = await nameWrapper.getFuses(namehash('parthtejpal.eth'))
     expect((result as BigNumber).toHexString()).toBe('0x40')
   })
   it('should allow initial fuses', async () => {
@@ -42,9 +41,7 @@ describe('wrapName', () => {
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const [result] = await nameWrapper.getFuses(
-      utils.namehash('parthtejpal.eth'),
-    )
+    const [result] = await nameWrapper.getFuses(namehash('parthtejpal.eth'))
     expect((result as BigNumber).toHexString()).toBe('0x51')
   })
   it('should allow an initial resolver address', async () => {
