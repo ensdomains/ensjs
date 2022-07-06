@@ -42,9 +42,6 @@ describe('getOwner', () => {
     expect(result?.ownershipLevel).toBe('registrar')
     expect(result?.registrant).toBe(nameWrapperAddress)
   })
-  it.todo('should return the DNS owner', () => {
-    
-  })
   it('should return the owner of a TLD on the registry', async () => {
     const result = await ENSInstance.getOwner('eth')
     const baseRegistrarAddress = (
