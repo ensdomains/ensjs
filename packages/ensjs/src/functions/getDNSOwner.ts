@@ -59,13 +59,9 @@ function encodeURLParams(p: { [key: string]: string }): string {
   }
 
 export default async function (
-    { getName }: ENSArgs<'getName'>,
     dnsName: string,
 ) {
-    const result = await dnsQuery('TXT', `$ens.${dnsName}`)
+    const result = await dnsQuery('TXT', `_ens.${dnsName}`)
     const address = result?.answers?.[0]?.data?.[0]?.toString()?.split('=')?.[1]
-    const name = getName(address);
-    return {
-        address, name 
-    }
+    return address
 }
