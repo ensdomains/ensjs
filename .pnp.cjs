@@ -726,6 +726,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:4.3.0"\
       ],\
       [\
+        "@types/dns-packet",\
+        "npm:5.2.4"\
+      ],\
+      [\
         "@types/graceful-fs",\
         "npm:4.1.5"\
       ],\
@@ -4163,6 +4167,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
+            ["@types/dns-packet", "npm:5.2.4"],\
             ["@typescript-eslint/eslint-plugin", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["@typescript-eslint/parser", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["eslint", "npm:8.11.0"],\
@@ -5066,6 +5071,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@swc/jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.20"],\
             ["@typechain/ethers-v5", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.0.0"],\
             ["@types/bn.js", "npm:5.1.0"],\
+            ["@types/dns-packet", "npm:5.2.4"],\
             ["@types/jest", "npm:27.4.1"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
@@ -6903,6 +6909,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-chai-npm-4.3.0-42bcda9bbc-3e393e0942.zip/node_modules/@types/chai/",\
           "packageDependencies": [\
             ["@types/chai", "npm:4.3.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/dns-packet", [\
+        ["npm:5.2.4", {\
+          "packageLocation": "./.yarn/cache/@types-dns-packet-npm-5.2.4-44f2da8ae2-45a725a0a6.zip/node_modules/@types/dns-packet/",\
+          "packageDependencies": [\
+            ["@types/dns-packet", "npm:5.2.4"],\
+            ["@types/node", "npm:17.0.21"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -9915,6 +9931,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["ensjs-monorepo", "workspace:."],\
+            ["@types/dns-packet", "npm:5.2.4"],\
             ["@typescript-eslint/eslint-plugin", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["@typescript-eslint/parser", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["eslint", "npm:8.11.0"],\

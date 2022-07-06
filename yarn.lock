@@ -514,6 +514,7 @@ __metadata:
     "@swc/jest": ^0.2.20
     "@typechain/ethers-v5": ^10.0.0
     "@types/bn.js": ^5.1.0
+    "@types/dns-packet": ^5.2.4
     "@types/jest": ^27.4.1
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
@@ -2149,6 +2150,15 @@ __metadata:
   version: 4.3.0
   resolution: "@types/chai@npm:4.3.0"
   checksum: 3e393e094263db65df28a0123dc13f342937c1bab6cd173eae913d593c5b9a16b555713a08c34863a1fbf079aa7222b96197c70380a5c130549d6b2f6845a989
+  languageName: node
+  linkType: hard
+
+"@types/dns-packet@npm:^5.2.4":
+  version: 5.2.4
+  resolution: "@types/dns-packet@npm:5.2.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: 45a725a0a633c07f1da19188a5906a51669a37d941752da06404a9bd0e5d551aacce5b6c92c0539f38f2e8bbda46c92560c9ba3ee2ef13761e974933ef888fe1
   languageName: node
   linkType: hard
 
@@ -4650,6 +4660,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ensjs-monorepo@workspace:."
   dependencies:
+    "@types/dns-packet": ^5.2.4
     "@typescript-eslint/eslint-plugin": ^5.15.0
     "@typescript-eslint/parser": ^5.15.0
     eslint: ^8.11.0

@@ -57,6 +57,7 @@
     "@swc/jest": "^0.2.20",
     "@typechain/ethers-v5": "^10.0.0",
     "@types/bn.js": "^5.1.0",
+    "@types/dns-packet": "^5.2.4",
     "@types/jest": "^27.4.1",
     "dotenv": "^16.0.0",
     "ens-contracts": "github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93",

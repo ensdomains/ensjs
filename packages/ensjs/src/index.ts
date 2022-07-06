@@ -41,6 +41,7 @@ import type transferName from './functions/transferName'
 import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
+import type getDNSOwner from './functions/getDNSOwner'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 
@@ -502,5 +503,10 @@ export class ENS {
   public transferSubname = this.generateFunction<typeof transferSubname>(
     'transferSubname',
     ['contracts', 'provider'],
+  )
+
+  public getDNSOwner = this.generateFunction<typeof getDNSOwner>(
+    'getDNSOwner',
+    ['getName'],
   )
 }

@@ -42,20 +42,7 @@ describe('getOwner', () => {
     expect(result?.ownershipLevel).toBe('registrar')
     expect(result?.registrant).toBe(nameWrapperAddress)
   })
-  // it('should return registry as the ownership level for an unwrapped subname', async () => {
-  //   const result0 = await ENSInstance.getOwner('fleek.eth')
-  //   console.log(result0?.owner, accounts[2])
-
-  //   const tx = await ENSInstance.createSubname({
-  //     name: 'test.fleek.eth',
-  //     contract: 'registry',
-  //     owner: accounts[0],
-  //     options: { addressOrIndex: accounts[1] },
-  //   })
-
-  //   await tx.wait()
-
-  //   const result = await ENSInstance.getOwner('test.fleek.eth')
-  //   expect(result?.ownershipLevel).toBe('registry')
-  // })
+  it.todo('should return the DNS owner', () => {
+    
+  })
 })
