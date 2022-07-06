@@ -2,6 +2,7 @@ import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
+import { namehash } from '../utils/normalise'
 
 export const _getContentHash = {
   raw: async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
@@ -9,7 +10,7 @@ export const _getContentHash = {
     return {
       to: '0x0000000000000000000000000000000000000000',
       data: publicResolver.interface.encodeFunctionData('contenthash', [
-        ethers.utils.namehash(name),
+        namehash(name),
       ]),
     }
   },
@@ -66,7 +67,7 @@ export const _getText = {
     return {
       to: '0x0000000000000000000000000000000000000000',
       data: publicResolver.interface.encodeFunctionData('text', [
-        ethers.utils.namehash(name),
+        namehash(name),
         key,
       ]),
     }
@@ -115,12 +116,22 @@ export const _getAddr = {
     }
 
     const publicResolver = await contracts?.getPublicResolver()!
+
+    if (coinType === 60 || coinType === '60') {
+      return {
+        to: '0x0000000000000000000000000000000000000000',
+        data: publicResolver.interface.encodeFunctionData('addr(bytes32)', [
+          namehash(name),
+        ]),
+      }
+    }
+
     if (bypassFormat) {
       return {
         to: '0x0000000000000000000000000000000000000000',
         data: publicResolver.interface.encodeFunctionData(
           'addr(bytes32,uint256)',
-          [ethers.utils.namehash(name), coinType],
+          [namehash(name), coinType],
         ),
       }
     }
@@ -139,7 +150,7 @@ export const _getAddr = {
       to: '0x0000000000000000000000000000000000000000',
       data: publicResolver.interface.encodeFunctionData(
         'addr(bytes32,uint256)',
-        [ethers.utils.namehash(name), formatter.coinType],
+        [namehash(name), formatter.coinType],
       ),
     }
   },
@@ -163,10 +174,19 @@ export const _getAddr = {
             typeof coinType === 'number' ? coinType : parseInt(coinType)
           ]
 
-    const [response] = publicResolver.interface.decodeFunctionResult(
-      'addr(bytes32,uint256)',
-      data,
-    )
+    let response: string
+
+    if (coinType === 60 || coinType === '60') {
+      ;[response] = publicResolver.interface.decodeFunctionResult(
+        'addr(bytes32)',
+        data,
+      )
+    } else {
+      ;[response] = publicResolver.interface.decodeFunctionResult(
+        'addr(bytes32,uint256)',
+        data,
+      )
+    }
 
     if (!response) return
 

@@ -45,4 +45,30 @@ describe('getOwner', () => {
   it.todo('should return the DNS owner', () => {
     
   })
+  it('should return the owner of a TLD on the registry', async () => {
+    const result = await ENSInstance.getOwner('eth')
+    const baseRegistrarAddress = (
+      await ENSInstance.contracts!.getBaseRegistrar()
+    ).address
+    expect(result?.ownershipLevel).toBe('registry')
+    expect(result?.owner?.toLowerCase()).toBe(
+      baseRegistrarAddress.toLowerCase(),
+    )
+  })
+  // it('should return registry as the ownership level for an unwrapped subname', async () => {
+  //   const result0 = await ENSInstance.getOwner('fleek.eth')
+  //   console.log(result0?.owner, accounts[2])
+
+  //   const tx = await ENSInstance.createSubname({
+  //     name: 'test.fleek.eth',
+  //     contract: 'registry',
+  //     owner: accounts[0],
+  //     options: { addressOrIndex: accounts[1] },
+  //   })
+
+  //   await tx.wait()
+
+  //   const result = await ENSInstance.getOwner('test.fleek.eth')
+  //   expect(result?.ownershipLevel).toBe('registry')
+  // })
 })

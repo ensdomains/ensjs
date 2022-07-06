@@ -1,5 +1,6 @@
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import { ENS } from '..'
+import { namehash } from '../utils/normalise'
 import setup from './setup'
 
 let ENSInstance: ENS
@@ -39,7 +40,7 @@ describe('transferSubname', () => {
     await tx.wait()
 
     const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(utils.namehash('test.parthtejpal.eth'))
+    const result = await registry.owner(namehash('test.parthtejpal.eth'))
     expect(result).toBe(accounts[1])
   })
   it('should allow transferring a subname on the nameWrapper', async () => {
@@ -66,9 +67,7 @@ describe('transferSubname', () => {
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const result = await nameWrapper.ownerOf(
-      utils.namehash('test.parthtejpal.eth'),
-    )
+    const result = await nameWrapper.ownerOf(namehash('test.parthtejpal.eth'))
     expect(result).toBe(accounts[1])
   })
 })

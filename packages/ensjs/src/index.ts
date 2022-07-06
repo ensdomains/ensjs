@@ -322,6 +322,7 @@ export class ENS {
       'gqlInstance',
       'getName',
       'resolverMulticallWrapper',
+      'multicallWrapper',
       '_getAddr',
       '_getContentHash',
       '_getText',

@@ -9,6 +9,8 @@ We also use undeployed contracts under the hood, so this **will not** work on an
 
 Given the current development status, we're actively seeking feedback so feel free to create an issue or PR if you notice something!
 
+If you are looking for documentation for **version 2**, it an be found [here](https://github.com/ensdomains/ensjs#readme).
+
 ## Features
 
 - Dynamically load **everything**
