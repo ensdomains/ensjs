@@ -1,6 +1,6 @@
 import { ENS } from '..'
 import { makeCommitment } from '../utils/registerHelpers'
-import setup from './setup'
+import setup from '../tests/setup'
 
 let ENSInstance: ENS
 

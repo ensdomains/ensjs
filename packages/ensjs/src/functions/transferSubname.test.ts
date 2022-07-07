@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { ENS } from '..'
 import { namehash } from '../utils/normalise'
-import setup from './setup'
+import setup from '../tests/setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
@@ -17,11 +17,11 @@ afterAll(async () => {
   await revert()
 })
 
-describe('deleteSubname', () => {
+describe('transferSubname', () => {
   beforeEach(async () => {
     await revert()
   })
-  it('should allow deleting a subname on the registry', async () => {
+  it('should allow transferring a subname on the registry', async () => {
     const createSubnameTx = await ENSInstance.createSubname({
       contract: 'registry',
       name: 'test.parthtejpal.eth',
@@ -30,9 +30,10 @@ describe('deleteSubname', () => {
     })
     await createSubnameTx.wait()
 
-    const tx = await ENSInstance.deleteSubname(
+    const tx = await ENSInstance.transferSubname(
       'test.parthtejpal.eth',
       'registry',
+      accounts[1],
       { addressOrIndex: 0 },
     )
     expect(tx).toBeTruthy()
@@ -40,9 +41,9 @@ describe('deleteSubname', () => {
 
     const registry = await ENSInstance.contracts!.getRegistry()!
     const result = await registry.owner(namehash('test.parthtejpal.eth'))
-    expect(result).toBe('0x0000000000000000000000000000000000000000')
+    expect(result).toBe(accounts[1])
   })
-  it('should allow deleting a subname on the nameWrapper', async () => {
+  it('should allow transferring a subname on the nameWrapper', async () => {
     const wrapNameTx = await ENSInstance.wrapName(
       'parthtejpal.eth',
       accounts[0],
@@ -56,9 +57,10 @@ describe('deleteSubname', () => {
     })
     await createSubnameTx.wait()
 
-    const tx = await ENSInstance.deleteSubname(
+    const tx = await ENSInstance.transferSubname(
       'test.parthtejpal.eth',
       'nameWrapper',
+      accounts[1],
       { addressOrIndex: 0 },
     )
     expect(tx).toBeTruthy()
@@ -66,6 +68,6 @@ describe('deleteSubname', () => {
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
     const result = await nameWrapper.ownerOf(namehash('test.parthtejpal.eth'))
-    expect(result).toBe('0x0000000000000000000000000000000000000000')
+    expect(result).toBe(accounts[1])
   })
 })

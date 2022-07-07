@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers'
 import { ENS } from '..'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import { namehash } from '../utils/normalise'
-import setup from './setup'
+import setup from '../tests/setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
