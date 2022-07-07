@@ -4166,7 +4166,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["@types/dns-packet", "npm:5.2.4"],\
             ["@typescript-eslint/eslint-plugin", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["@typescript-eslint/parser", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["eslint", "npm:8.11.0"],\
@@ -9923,7 +9922,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["ensjs-monorepo", "workspace:."],\
-            ["@types/dns-packet", "npm:5.2.4"],\
             ["@typescript-eslint/eslint-plugin", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["@typescript-eslint/parser", "virtual:18871a8dec559cd45f159cc6ccc35dca6943896d73c1129c917a6367a95f6a0920e5882fbc8f2d0416f94184bd0f22f6747f25ff9398c218d855f8cc83da6ea8#npm:5.15.0"],\
             ["eslint", "npm:8.11.0"],\
