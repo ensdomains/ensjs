@@ -27,16 +27,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       {\
         "name": "@ensdomains/ensjs",\
         "reference": "workspace:packages/ensjs"\
-      },\
-      {\
-        "name": "@ensdomains/ens-adapter-apollo",\
-        "reference": "workspace:packages/ensjs-adapter-apollo"\
       }\
     ],\
     "enableTopLevelFallback": true,\
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
-      ["@ensdomains/ens-adapter-apollo", ["workspace:packages/ensjs-adapter-apollo"]],\
       ["@ensdomains/ens-test-env", ["workspace:packages/ens-test-env"]],\
       ["@ensdomains/ensjs", ["workspace:packages/ensjs"]],\
       ["ensjs-monorepo", ["workspace:."]]\
@@ -209,10 +204,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "@ensdomains/content-hash",\
         "npm:2.5.7"\
-      ],\
-      [\
-        "@ensdomains/ens-adapter-apollo",\
-        "workspace:packages/ensjs-adapter-apollo"\
       ],\
       [\
         "@ensdomains/ens-contracts",\
@@ -3014,6 +3005,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:1.1.0"\
       ],\
       [\
+        "nock",\
+        "npm:13.2.8"\
+      ],\
+      [\
         "node-addon-api",\
         "npm:2.0.2"\
       ],\
@@ -3288,6 +3283,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "prompts",\
         "npm:2.4.2"\
+      ],\
+      [\
+        "propagate",\
+        "npm:2.0.1"\
       ],\
       [\
         "proxy-addr",\
@@ -5005,15 +5004,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["@ensdomains/ens-adapter-apollo", [\
-        ["workspace:packages/ensjs-adapter-apollo", {\
-          "packageLocation": "./packages/ensjs-adapter-apollo/",\
-          "packageDependencies": [\
-            ["@ensdomains/ens-adapter-apollo", "workspace:packages/ensjs-adapter-apollo"]\
-          ],\
-          "linkType": "SOFT"\
-        }]\
-      ]],\
       ["@ensdomains/ens-contracts", [\
         ["npm:0.0.11", {\
           "packageLocation": "./.yarn/cache/@ensdomains-ens-contracts-npm-0.0.11-36f6a9beba-e21674ee8d.zip/node_modules/@ensdomains/ens-contracts/",\
@@ -5086,6 +5076,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.5.1"],\
             ["jest-environment-node", "npm:27.5.1"],\
             ["jest-localstorage-mock", "npm:2.4.21"],\
+            ["nock", "npm:13.2.8"],\
+            ["node-fetch", "npm:3.2.6"],\
             ["solc", "npm:0.8.13"],\
             ["ts-jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.1.4"],\
             ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"],\
@@ -14739,6 +14731,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["nock", [\
+        ["npm:13.2.8", {\
+          "packageLocation": "./.yarn/cache/nock-npm-13.2.8-6b3bcf0f50-656f696d3c.zip/node_modules/nock/",\
+          "packageDependencies": [\
+            ["nock", "npm:13.2.8"],\
+            ["debug", "virtual:62738e6f4a1bb4f8ff35ae41a77cb589aeffb1a2b896f237bc331b5509d0b413c328994ab1431dc8c128ffa7d6ca83d167ebf621c5c6b08297150420be31ce8e#npm:4.3.3"],\
+            ["json-stringify-safe", "npm:5.0.1"],\
+            ["lodash", "npm:4.17.21"],\
+            ["propagate", "npm:2.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["node-addon-api", [\
         ["npm:2.0.2", {\
           "packageLocation": "./.yarn/unplugged/node-addon-api-npm-2.0.2-8c2c1e9782/node_modules/node-addon-api/",\
@@ -14770,6 +14775,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/node-fetch-npm-3.2.3-0f62fc8780-6f702b2683.zip/node_modules/node-fetch/",\
           "packageDependencies": [\
             ["node-fetch", "npm:3.2.3"],\
+            ["data-uri-to-buffer", "npm:4.0.0"],\
+            ["fetch-blob", "npm:3.1.5"],\
+            ["formdata-polyfill", "npm:4.0.10"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:3.2.6", {\
+          "packageLocation": "./.yarn/cache/node-fetch-npm-3.2.6-6a8c53b796-ece307ace3.zip/node_modules/node-fetch/",\
+          "packageDependencies": [\
+            ["node-fetch", "npm:3.2.6"],\
             ["data-uri-to-buffer", "npm:4.0.0"],\
             ["fetch-blob", "npm:3.1.5"],\
             ["formdata-polyfill", "npm:4.0.10"]\
@@ -15562,6 +15577,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prompts", "npm:2.4.2"],\
             ["kleur", "npm:3.0.3"],\
             ["sisteransi", "npm:1.0.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["propagate", [\
+        ["npm:2.0.1", {\
+          "packageLocation": "./.yarn/cache/propagate-npm-2.0.1-2074bf76d3-c4febaee2b.zip/node_modules/propagate/",\
+          "packageDependencies": [\
+            ["propagate", "npm:2.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
