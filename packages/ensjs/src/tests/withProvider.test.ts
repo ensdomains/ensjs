@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { ENS } from '..'
-import setup from './setup'
+import setup from '../tests/setup'
 
 let ENSInstance: ENS
 let providerFake: ethers.providers.JsonRpcProvider

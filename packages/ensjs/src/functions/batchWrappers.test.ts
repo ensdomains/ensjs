@@ -1,5 +1,5 @@
 import { ENS } from '..'
-import setup from './setup'
+import setup from '../tests/setup'
 
 let ENSInstance: ENS
 

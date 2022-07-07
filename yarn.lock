@@ -456,12 +456,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/ens-adapter-apollo@workspace:packages/ensjs-adapter-apollo":
-  version: 0.0.0-use.local
-  resolution: "@ensdomains/ens-adapter-apollo@workspace:packages/ensjs-adapter-apollo"
-  languageName: unknown
-  linkType: soft
-
 "@ensdomains/ens-contracts@npm:^0.0.11":
   version: 0.0.11
   resolution: "@ensdomains/ens-contracts@npm:0.0.11"
@@ -514,6 +508,7 @@ __metadata:
     "@swc/jest": ^0.2.20
     "@typechain/ethers-v5": ^10.0.0
     "@types/bn.js": ^5.1.0
+    "@types/dns-packet": ^5.2.4
     "@types/jest": ^27.4.1
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
@@ -528,6 +523,8 @@ __metadata:
     jest: ^27.5.1
     jest-environment-node: ^27.5.1
     jest-localstorage-mock: ^2.4.21
+    nock: ^13.2.8
+    node-fetch: ^3.2.6
     solc: ^0.8.13
     ts-jest: ^27.1.4
     ts-node: ^10.7.0
@@ -2149,6 +2146,15 @@ __metadata:
   version: 4.3.0
   resolution: "@types/chai@npm:4.3.0"
   checksum: 3e393e094263db65df28a0123dc13f342937c1bab6cd173eae913d593c5b9a16b555713a08c34863a1fbf079aa7222b96197c70380a5c130549d6b2f6845a989
+  languageName: node
+  linkType: hard
+
+"@types/dns-packet@npm:^5.2.4":
+  version: 5.2.4
+  resolution: "@types/dns-packet@npm:5.2.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: 45a725a0a633c07f1da19188a5906a51669a37d941752da06404a9bd0e5d551aacce5b6c92c0539f38f2e8bbda46c92560c9ba3ee2ef13761e974933ef888fe1
   languageName: node
   linkType: hard
 
@@ -7767,7 +7773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-stringify-safe@npm:~5.0.1":
+"json-stringify-safe@npm:^5.0.1, json-stringify-safe@npm:~5.0.1":
   version: 5.0.1
   resolution: "json-stringify-safe@npm:5.0.1"
   checksum: 48ec0adad5280b8a96bb93f4563aa1667fd7a36334f79149abd42446d0989f2ddc58274b479f4819f1f00617957e6344c886c55d05a4e15ebb4ab931e4a6a8ee
@@ -8880,6 +8886,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nock@npm:^13.2.8":
+  version: 13.2.8
+  resolution: "nock@npm:13.2.8"
+  dependencies:
+    debug: ^4.1.0
+    json-stringify-safe: ^5.0.1
+    lodash: ^4.17.21
+    propagate: ^2.0.0
+  checksum: 656f696d3c1b6267b8ec366f5cc464306d2aa308ce9b41414e9992eea5b0b71e475a582945b936e16263961c3a0f9e1c388a3a36da53c1e300398a7826550f96
+  languageName: node
+  linkType: hard
+
 "node-addon-api@npm:^2.0.0":
   version: 2.0.2
   resolution: "node-addon-api@npm:2.0.2"
@@ -8918,6 +8936,17 @@ __metadata:
     fetch-blob: ^3.1.4
     formdata-polyfill: ^4.0.10
   checksum: 6f702b2683d6e1c097e99888bedaac4625d6895f2a8a60573a2bc04916f5577ea61d274f26e308c08cfb724b23d45de7d3514c14b59e0293e9809c66c88ac12c
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^3.2.6":
+  version: 3.2.6
+  resolution: "node-fetch@npm:3.2.6"
+  dependencies:
+    data-uri-to-buffer: ^4.0.0
+    fetch-blob: ^3.1.4
+    formdata-polyfill: ^4.0.10
+  checksum: ece307ace3a3ff28638ccb0fa0545bb5c0cfd673a9d06fc314d937a73ae6a55917d5bacd7f080f9a9f1449ca20a5c01b1281d0e616acb20315e5ac315971da46
   languageName: node
   linkType: hard
 
@@ -9595,6 +9624,13 @@ __metadata:
     kleur: ^3.0.3
     sisteransi: ^1.0.5
   checksum: d8fd1fe63820be2412c13bfc5d0a01909acc1f0367e32396962e737cb2fc52d004f3302475d5ce7d18a1e8a79985f93ff04ee03007d091029c3f9104bffc007d
+  languageName: node
+  linkType: hard
+
+"propagate@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "propagate@npm:2.0.1"
+  checksum: c4febaee2be0979e82fb6b3727878fd122a98d64a7fa3c9d09b0576751b88514a9e9275b1b92e76b364d488f508e223bd7e1dcdc616be4cdda876072fbc2a96c
   languageName: node
   linkType: hard
 

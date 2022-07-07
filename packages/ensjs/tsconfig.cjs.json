@@ -8,5 +8,4 @@
     "declaration": true
   },
   "include": ["./src"],
-  "exclude": ["**/tests"]
 }

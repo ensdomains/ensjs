@@ -1,6 +1,6 @@
 import { ENS } from '..'
 import { OwnedName, Registration } from '../functions/getNames'
-import setup from './setup'
+import setup from '../tests/setup'
 
 let ENSInstance: ENS
 
