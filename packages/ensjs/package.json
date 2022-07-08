@@ -34,7 +34,9 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build": "yarn clean && yarn build:esm && yarn build:cjs",
-    "prepublish": "yarn build && cp ../../{README.md,LICENSE} ./"
+    "prepublish": "yarn build && cp ../../{README.md,LICENSE} ./",
+    "remove-stableVersion": "ex -c '%s/,\\n\\s\\+\"stableVersion\".*\"//g' -cwq ./package.json",
+    "version:create": "yarn remove-stableVersion && yarn version"
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
