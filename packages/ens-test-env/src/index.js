@@ -68,7 +68,7 @@ program
       await fetchData('load', config, options.local)
     }
     if (!options.tenderly) {
-      ganache(config, options.clean)
+      ganache(config, options.clean || options.local)
     }
     manager(config, options)
   })
