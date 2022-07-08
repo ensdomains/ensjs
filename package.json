@@ -9,6 +9,7 @@
     "publish:local:ensjs": "yalc publish packages/ensjs --push --up"
   },
   "devDependencies": {
+    "@types/dns-packet": "^5.2.4",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "eslint": "^8.11.0",
