@@ -40,3 +40,11 @@ services:
       POSTGRES_DB: graph-node
     volumes:
       - $DATA_FOLDER/postgres:/var/lib/postgresql/data
+  metadata:
+    image: ghcr.io/ensdomains/ens-metadata-service:latest
+    ports:
+      - '8080:8080'
+    environment:
+      - ADDRESS_ETH_REGISTRAR=$ADDRESS_ETH_REGISTRAR
+      - ADDRESS_NAME_WRAPPER=$ADDRESS_NAME_WRAPPER
+      - USE_LOCAL_WEB3=true

@@ -151,6 +151,48 @@ export const main = async (config, options) => {
     env: { ...process.env, ...dockerEnv },
   })
 
+  if (options.clean) {
+    const internalHashes = [
+      {
+        hash: '0x9dd2c369a187b4e6b9c402f030e50743e619301ea62aa4c0737d4ef7e10a3d49',
+        label: 'xyz',
+      },
+      {
+        hash: '0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0',
+        label: 'eth',
+      },
+      {
+        hash: '0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658',
+        label: 'test',
+      },
+      {
+        hash: '0xb7ccb6878fbded310d2d05350bca9c84568ecb568d4b626c83e0508c3193ce89',
+        label: 'legacy',
+      },
+      {
+        hash: '0xe5e14487b78f85faa6e1808e89246cf57dd34831548ff2e6097380d98db2504a',
+        label: 'addr',
+      },
+      {
+        hash: '0xdec08c9dbbdd0890e300eb5062089b2d4b1c40e3673bbccb5423f7b37dcf9a9c',
+        label: 'reverse',
+      },
+    ]
+
+    const allHashes = [
+      ...internalHashes,
+      ...((config.graph && config.graph.labelHashes) || []),
+    ]
+
+    cmdsToRun.push({
+      command: `yarn wait-on http://localhost:8040 && ${sudopref}docker exec ens-test-env_postgres_1 psql -U graph-node graph-node -c "INSERT INTO public.ens_names (hash, name) VALUES ${allHashes
+        .map(({ hash, label }) => `('${hash}', '${label}')`)
+        .join(', ')};"`,
+      name: 'add-hash-table',
+      prefixColor: 'red.bold',
+    })
+  }
+
   config.scripts &&
     config.scripts.forEach((script, i) => {
       if (script.waitForGraph) {

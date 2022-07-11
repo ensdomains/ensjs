@@ -38,6 +38,7 @@ export interface ENSTestEnvConfig {
   } & ServerOptions<'ethereum'>
   graph?: {
     bypassLocal?: boolean
+    labelHashes?: { hash: string; label: string }[]
   }
   scripts?: (ConcurrentlyCommandInput & {
     finishOnExit?: boolean
