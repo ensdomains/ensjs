@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from 'ethers'
 import { ENS } from '..'
+import setup from '../tests/setup'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import { namehash } from '../utils/normalise'
-import setup from '../tests/setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
@@ -42,7 +42,7 @@ describe('wrapName', () => {
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
     const [result] = await nameWrapper.getFuses(namehash('parthtejpal.eth'))
-    expect((result as BigNumber).toHexString()).toBe('0x51')
+    expect((result as BigNumber).toHexString()).toBe('0x40')
   })
   it('should allow an initial resolver address', async () => {
     const tx = await ENSInstance.wrapName(

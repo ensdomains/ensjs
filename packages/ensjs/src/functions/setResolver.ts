@@ -1,3 +1,4 @@
+import { Signer } from 'ethers'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
@@ -6,13 +7,11 @@ export default async function (
   name: string,
   contract: 'registry' | 'nameWrapper',
   resolver?: string,
-  options?: { addressOrIndex?: string | number },
+  options?: { addressOrIndex?: string | number; signer?: Signer },
 ) {
-  const address = await provider
-    ?.getSigner(options?.addressOrIndex)
-    .getAddress()
+  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
 
-  if (!address) {
+  if (!signer) {
     throw new Error('No signer found')
   }
 

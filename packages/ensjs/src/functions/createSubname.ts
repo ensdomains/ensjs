@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, Signer } from 'ethers'
 import { ENSArgs } from '..'
 import { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
@@ -9,7 +9,7 @@ type BaseArgs = {
   owner: string
   resolverAddress?: string
   contract: 'registry' | 'nameWrapper'
-  options?: { addressOrIndex?: string | number }
+  options?: { addressOrIndex?: string | number; signer?: Signer }
 }
 
 type NameWrapperArgs = {
@@ -23,7 +23,7 @@ export default async function (
   { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
   { name, owner, resolverAddress, contract, options, ...wrapperArgs }: Args,
 ) {
-  const signer = provider?.getSigner(options?.addressOrIndex)
+  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
 
   if (!signer) {
     throw new Error('No signer found')

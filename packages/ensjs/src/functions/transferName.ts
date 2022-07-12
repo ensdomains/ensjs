@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, Signer } from 'ethers'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
@@ -7,26 +7,24 @@ export default async function (
   name: string,
   newOwner: string,
   contract: 'registry' | 'nameWrapper' | 'baseRegistrar',
-  options?: { addressOrIndex?: string | number },
+  options?: { addressOrIndex?: string | number; signer?: Signer },
 ) {
-  const address = await provider
-    ?.getSigner(options?.addressOrIndex)
-    .getAddress()
+  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
 
-  if (!address) {
+  if (!signer) {
     throw new Error('No signer found')
   }
 
+  const address = await signer.getAddress()
+
   switch (contract) {
     case 'registry': {
-      const registry = (await contracts?.getRegistry())!.connect(
-        provider?.getSigner(options?.addressOrIndex)!,
-      )
+      const registry = (await contracts?.getRegistry())!.connect(signer)
       return registry.setOwner(namehash(name), newOwner)
     }
     case 'baseRegistrar': {
       const baseRegistrar = (await contracts?.getBaseRegistrar())!.connect(
-        provider?.getSigner(options?.addressOrIndex)!,
+        signer,
       )
       const labels = name.split('.')
       if (labels.length > 2 || labels[labels.length - 1] !== 'eth') {
@@ -39,9 +37,7 @@ export default async function (
       )
     }
     case 'nameWrapper': {
-      const nameWrapper = (await contracts?.getNameWrapper())!.connect(
-        provider?.getSigner(options?.addressOrIndex)!,
-      )
+      const nameWrapper = (await contracts?.getNameWrapper())!.connect(signer)
       return nameWrapper.safeTransferFrom(
         address,
         newOwner,

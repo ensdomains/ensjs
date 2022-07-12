@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, Signer } from 'ethers'
 import { ENSArgs } from '..'
 import type { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
@@ -19,8 +19,8 @@ async function wrapETH(
   const labelhash = ethers.utils.solidityKeccak256(['string'], [labels[0]])
 
   const data = ethers.utils.defaultAbiCoder.encode(
-    ['string', 'address', 'uint96', 'address'],
-    [labels[0], wrappedOwner, decodedFuses, resolverAddress],
+    ['string', 'address', 'uint32', 'uint64', 'address'],
+    [labels[0], wrappedOwner, '0x0', decodedFuses, resolverAddress],
   )
 
   return baseRegistrar['safeTransferFrom(address,address,uint256,bytes)'](
@@ -67,15 +67,18 @@ export default async function (
   wrappedOwner: string,
   fuseOptions?: FuseOptions | string | number,
   resolverAddress?: string,
-  options?: { addressOrIndex?: string | number },
+  options?: {
+    signer?: Signer
+    addressOrIndex?: string | number
+  },
 ) {
-  const signer = provider?.getSigner(options?.addressOrIndex)
+  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
 
-  const address = await signer?.getAddress()
-
-  if (!signer || !address) {
+  if (!signer) {
     throw new Error('No signer found')
   }
+
+  const address = await signer.getAddress()
 
   let decodedFuses: string
 

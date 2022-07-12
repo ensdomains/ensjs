@@ -1,4 +1,4 @@
-import { utils } from 'ethers'
+import { Signer, utils } from 'ethers'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
@@ -7,9 +7,9 @@ export default async function (
   name: string,
   newController: string,
   newRegistrant?: string,
-  options?: { addressOrIndex?: string | number },
+  options?: { addressOrIndex?: string | number; signer?: Signer },
 ) {
-  const signer = provider?.getSigner(options?.addressOrIndex)
+  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
 
   const address = await signer?.getAddress()
 

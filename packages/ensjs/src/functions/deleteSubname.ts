@@ -1,3 +1,4 @@
+import { Signer } from 'ethers'
 import { ENSArgs } from '..'
 
 export default async function (
@@ -8,7 +9,7 @@ export default async function (
   }: ENSArgs<'contracts' | 'provider' | 'transferSubname'>,
   name: string,
   contract: 'registry' | 'nameWrapper',
-  options?: { addressOrIndex?: string | number },
+  options?: { addressOrIndex?: string | number; signer?: Signer },
 ) {
   return transferSubname(
     name,
