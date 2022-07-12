@@ -1,20 +1,18 @@
-import { ethers, Signer } from 'ethers'
+import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
 export default async function (
-  { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
-  newOwner: string,
-  contract: 'registry' | 'nameWrapper' | 'baseRegistrar',
-  options?: { addressOrIndex?: string | number; signer?: Signer },
+  {
+    newOwner,
+    contract,
+  }: {
+    newOwner: string
+    contract: 'registry' | 'nameWrapper' | 'baseRegistrar'
+  },
 ) {
-  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
-
-  if (!signer) {
-    throw new Error('No signer found')
-  }
-
   const address = await signer.getAddress()
 
   switch (contract) {

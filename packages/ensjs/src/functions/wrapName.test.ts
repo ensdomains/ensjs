@@ -24,7 +24,9 @@ describe('wrapName', () => {
     await revert()
   })
   it('should return a wrap name transaction and succeed', async () => {
-    const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0])
+    const tx = await ENSInstance.wrapName('parthtejpal.eth', {
+      wrappedOwner: accounts[0],
+    })
     expect(tx).toBeTruthy()
     await tx.wait()
 
@@ -33,9 +35,12 @@ describe('wrapName', () => {
     expect((result as BigNumber).toHexString()).toBe('0x40')
   })
   it('should allow initial fuses', async () => {
-    const tx = await ENSInstance.wrapName('parthtejpal.eth', accounts[0], {
-      cannotUnwrap: true,
-      cannotSetTtl: true,
+    const tx = await ENSInstance.wrapName('parthtejpal.eth', {
+      wrappedOwner: accounts[0],
+      fuseOptions: {
+        cannotUnwrap: true,
+        cannotSetTtl: true,
+      },
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -45,12 +50,10 @@ describe('wrapName', () => {
     expect((result as BigNumber).toHexString()).toBe('0x40')
   })
   it('should allow an initial resolver address', async () => {
-    const tx = await ENSInstance.wrapName(
-      'parthtejpal.eth',
-      accounts[0],
-      undefined,
-      '0x42D63ae25990889E35F215bC95884039Ba354115',
-    )
+    const tx = await ENSInstance.wrapName('parthtejpal.eth', {
+      wrappedOwner: accounts[0],
+      resolverAddress: '0x42D63ae25990889E35F215bC95884039Ba354115',
+    })
     expect(tx).toBeTruthy()
     await tx.wait()
 

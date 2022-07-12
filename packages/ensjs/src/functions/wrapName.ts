@@ -1,4 +1,4 @@
-import { ethers, Signer } from 'ethers'
+import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import type { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
@@ -38,8 +38,9 @@ async function wrapOther(
   decodedFuses: string,
   resolverAddress: string,
   address: string,
+  signer: ethers.Signer,
 ) {
-  const nameWrapper = await contracts?.getNameWrapper()!
+  const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
   const registry = await contracts?.getRegistry()!
 
   const hasApproval = await registry.isApprovedForAll(
@@ -62,22 +63,18 @@ async function wrapOther(
 }
 
 export default async function (
-  { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
-  wrappedOwner: string,
-  fuseOptions?: FuseOptions | string | number,
-  resolverAddress?: string,
-  options?: {
-    signer?: Signer
-    addressOrIndex?: string | number
+  {
+    wrappedOwner,
+    fuseOptions,
+    resolverAddress,
+  }: {
+    wrappedOwner: string
+    fuseOptions?: FuseOptions | string | number
+    resolverAddress?: string
   },
 ) {
-  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
-
-  if (!signer) {
-    throw new Error('No signer found')
-  }
-
   const address = await signer.getAddress()
 
   let decodedFuses: string
@@ -126,6 +123,7 @@ export default async function (
       decodedFuses,
       resolverAddress,
       address,
+      signer,
     )
   }
 }

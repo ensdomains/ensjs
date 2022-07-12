@@ -1,4 +1,3 @@
-import type { Signer } from 'ethers'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 import { generateRecordCallArray, RecordOptions } from '../utils/recordHelpers'
@@ -8,13 +7,15 @@ export default async function (
     contracts,
     provider,
     getResolver,
-  }: ENSArgs<'contracts' | 'provider' | 'getResolver'>,
+    signer,
+  }: ENSArgs<'contracts' | 'provider' | 'getResolver' | 'signer'>,
   name: string,
-  records: RecordOptions,
-  resolverAddress?: string,
-  options?: {
-    signer?: Signer
-    addressOrIndex?: string | number
+  {
+    records,
+    resolverAddress,
+  }: {
+    records: RecordOptions
+    resolverAddress?: string
   },
 ) {
   if (!name.includes('.')) {
@@ -30,12 +31,6 @@ export default async function (
 
   if (!resolverToUse) {
     throw new Error('No resolver found for input address')
-  }
-
-  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
-
-  if (!signer) {
-    throw new Error('No signer found')
   }
 
   const resolver = (

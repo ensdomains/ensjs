@@ -1,15 +1,13 @@
-import { ethers, Signer } from 'ethers'
+import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
 import { namehash } from '../utils/normalise'
 
 type BaseArgs = {
-  name: string
   owner: string
   resolverAddress?: string
   contract: 'registry' | 'nameWrapper'
-  options?: { addressOrIndex?: string | number; signer?: Signer }
 }
 
 type NameWrapperArgs = {
@@ -20,15 +18,10 @@ type NameWrapperArgs = {
 type Args = BaseArgs | NameWrapperArgs
 
 export default async function (
-  { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
-  { name, owner, resolverAddress, contract, options, ...wrapperArgs }: Args,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
+  name: string,
+  { owner, resolverAddress, contract, ...wrapperArgs }: Args,
 ) {
-  const signer = options?.signer || provider?.getSigner(options?.addressOrIndex)
-
-  if (!signer) {
-    throw new Error('No signer found')
-  }
-
   const labels = name.split('.')
 
   if (labels.length === 1) {

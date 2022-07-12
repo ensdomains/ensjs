@@ -15,5 +15,5 @@
     "importsNotUsedAsValues": "remove",
     "lib": ["ES2021", "DOM"]
   },
-  "exclude": ["src/**/*.test.ts", "**/tests"]
+  "include": ["src/**/*.ts"]
 }
