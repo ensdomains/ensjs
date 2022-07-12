@@ -3,18 +3,16 @@ import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
 export default async function (
-  { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
-  contract: 'registry' | 'nameWrapper',
-  address: string,
-  options?: { addressOrIndex?: string | number },
+  {
+    contract,
+    address,
+  }: {
+    contract: 'registry' | 'nameWrapper'
+    address: string
+  },
 ) {
-  const signer = provider?.getSigner(options?.addressOrIndex)
-
-  if (!signer) {
-    throw new Error('No signer found')
-  }
-
   const labels = name.split('.')
   const label = labels.shift() as string
   const labelhash = ethers.utils.solidityKeccak256(['string'], [label])
