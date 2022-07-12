@@ -47,4 +47,5 @@ services:
     environment:
       - ADDRESS_ETH_REGISTRAR=$ADDRESS_ETH_REGISTRAR
       - ADDRESS_NAME_WRAPPER=$ADDRESS_NAME_WRAPPER
-      - USE_LOCAL_WEB3=true
+      - RPC_PROVIDER=$DOCKER_RPC_URL
+      - SUBGRAPH_URL=http://graph-node:8000/subgraphs/name/graphprotocol/ens
