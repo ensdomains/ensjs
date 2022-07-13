@@ -62,7 +62,7 @@ program
     ).implies({ tenderly: true }),
   )
   .action(async (options) => {
-    options.clean = !options.real
+    options.local = !options.real
     delete options.real
     if (options.clean) {
       await fetchData('clean', config)
