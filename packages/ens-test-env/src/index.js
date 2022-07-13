@@ -49,7 +49,7 @@ program
   .addOption(new Option('-C, --clean', 'Use a clean data folder'))
   .addOption(new Option('-ng, --no-graph', "Don't start the graph"))
   .addOption(
-    new Option('-l, --local', 'Use the local datasets').conflicts([
+    new Option('-r, --real', 'Use real blockchain data').conflicts([
       'clean',
       'no-reset',
     ]),
@@ -62,6 +62,8 @@ program
     ).implies({ tenderly: true }),
   )
   .action(async (options) => {
+    options.clean = !options.real
+    delete options.real
     if (options.clean) {
       await fetchData('clean', config)
     } else if (!options.noReset) {
@@ -76,17 +78,17 @@ program
 program
   .command('load')
   .description('Fetches data from archive')
-  .addOption(new Option('-l, --local', 'Use the local datasets'))
-  .action(async ({ local }) => {
-    await fetchData('load', config, local)
+  .addOption(new Option('-r, --real', 'Use real blockchain data'))
+  .action(async ({ real }) => {
+    await fetchData('load', config, !real)
   })
 
 program
   .command('compress')
   .description('Compresses data folder to an archive')
-  .addOption(new Option('-l, --local', 'Use the local datasets'))
-  .action(async ({ local }) => {
-    await fetchData('compress', config, local)
+  .addOption(new Option('-r, --real', 'Use real blockchain data'))
+  .action(async ({ real }) => {
+    await fetchData('compress', config, !real)
   })
 
 program.parse(process.argv)
