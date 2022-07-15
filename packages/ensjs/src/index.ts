@@ -1,4 +1,5 @@
-import { ethers, Signer } from 'ethers'
+import { JsonRpcSigner } from '@ethersproject/providers'
+import { ContractTransaction, ethers, PopulatedTransaction } from 'ethers'
 import ContractManager from './contracts'
 import { getContractAddress as _getContractAddress } from './contracts/getContractAddress'
 import { SupportedNetworkId } from './contracts/types'
@@ -44,6 +45,7 @@ import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
+import writeTx from './utils/writeTx'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -53,7 +55,7 @@ type ENSOptions = {
 export type InternalENS = {
   options?: ENSOptions
   provider?: ethers.providers.Provider
-  signer: Signer
+  signer: JsonRpcSigner
   graphURI?: string | null
 } & ENS
 
@@ -79,10 +81,10 @@ type FunctionDeps<F> = Extract<keyof FirstArg<F>, string>[]
 
 type WriteOptions = {
   addressOrIndex?: string | number
-  signer?: Signer
+  signer?: JsonRpcSigner
 }
 
-type WriteFunction<F> = F extends (
+type OptionalWriteOptions<F> = F extends (
   x: any,
   arg_0: infer Z,
   options?: infer P,
@@ -91,6 +93,13 @@ type WriteFunction<F> = F extends (
   : F extends (x: any, arg_0: infer Z, options: infer P) => infer R
   ? (name: Z, options: P & WriteOptions) => R
   : never
+
+interface WriteFunction<F extends (...args: any) => any> extends Function {
+  (...args: Parameters<OptionalWriteOptions<F>>): Promise<ContractTransaction>
+  populateTransaction: (
+    ...args: Parameters<OptionalWriteOptions<F>>
+  ) => Promise<PopulatedTransaction>
+}
 
 const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
@@ -188,7 +197,13 @@ export class ENS {
     path: string,
     dependencies: FunctionDeps<F>,
     exportName: string = 'default',
-    subFunc?: 'raw' | 'decode' | 'combine' | 'batch' | 'write',
+    subFunc?:
+      | 'raw'
+      | 'decode'
+      | 'combine'
+      | 'batch'
+      | 'write'
+      | 'populateTransaction',
     passthrough?: RawFunction,
   ): Function => {
     // if batch is specified, create batch func
@@ -209,28 +224,31 @@ export class ENS {
       // if combine isn't specified, run normally
       // otherwise, create a function from the raw and decode functions
       if (subFunc !== 'combine') {
+        const writeable =
+          subFunc === 'write' || subFunc === 'populateTransaction'
         // get the function to call
         const func =
-          subFunc && subFunc !== 'write'
-            ? mod[exportName][subFunc]
-            : mod[exportName]
+          subFunc && !writeable ? mod[exportName][subFunc] : mod[exportName]
         // get the dependencies to forward to the function as the first arg
         let dependenciesToForward =
           thisRef.forwardDependenciesFromArray<F>(dependencies)
 
         // if func is write func, inject signer into dependencies
-        if (subFunc === 'write') {
+        if (writeable) {
           const options = (args[1] || {}) as WriteOptions
           const signer =
             options.signer ||
             thisRef.provider?.getSigner(options.addressOrIndex)
+          const populate = subFunc === 'populateTransaction'
           if (!signer) {
             throw new Error('No signer specified')
           }
           delete options.addressOrIndex
           delete options.signer
           dependenciesToForward = { ...dependenciesToForward, signer }
-          return func(dependenciesToForward, args[0], options)
+          return func(dependenciesToForward, args[0], options).then(
+            writeTx(signer, populate),
+          )
         }
 
         // return the function with the dependencies forwarded
@@ -272,6 +290,13 @@ export class ENS {
         'batch',
         { raw: mainFunc.raw as any, decode: mainFunc.decode as any },
       )
+    } else if (subFunc === 'write') {
+      mainFunc.populateTransaction = this.importGenerator<F>(
+        path,
+        dependencies,
+        exportName,
+        'populateTransaction',
+      )
     }
 
     return mainFunc as Function
@@ -298,7 +323,7 @@ export class ENS {
    * @param {string} exportName - The export name of the target function
    * @returns {OmitFirstArg} - The generated wrapped function
    */
-  private generateWriteFunction = <F>(
+  private generateWriteFunction = <F extends (...args: any) => any>(
     path: string,
     dependencies: FunctionDeps<F>,
     exportName: string = 'default',

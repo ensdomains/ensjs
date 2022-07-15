@@ -9,7 +9,7 @@ export default async function (
     contract: 'registry' | 'nameWrapper'
   },
 ) {
-  return transferSubname(name, {
+  return transferSubname.populateTransaction(name, {
     contract,
     address: '0x0000000000000000000000000000000000000000',
   })

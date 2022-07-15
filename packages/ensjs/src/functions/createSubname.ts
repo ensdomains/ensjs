@@ -44,7 +44,7 @@ export default async function (
     case 'registry': {
       const registry = (await contracts?.getRegistry()!).connect(signer)
 
-      return registry.setSubnodeRecord(
+      return registry.populateTransaction.setSubnodeRecord(
         parentNodehash,
         labelhash,
         owner,
@@ -60,7 +60,7 @@ export default async function (
           ? generateFuseInput(wrapperArgs.fuses)
           : '0'
 
-      return nameWrapper.setSubnodeRecord(
+      return nameWrapper.populateTransaction.setSubnodeRecord(
         parentNodehash,
         label,
         owner,

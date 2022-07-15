@@ -17,5 +17,5 @@ export default async function (
 
   const encodedFuses = generateFuseInput(fusesToBurn)
 
-  return nameWrapper.burnFuses(hash, encodedFuses)
+  return nameWrapper.populateTransaction.burnFuses(hash, encodedFuses)
 }

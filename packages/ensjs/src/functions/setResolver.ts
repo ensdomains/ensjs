@@ -19,11 +19,14 @@ export default async function (
   switch (contract) {
     case 'registry': {
       const registry = (await contracts?.getRegistry())!.connect(signer)
-      return registry.setResolver(namehash(name), resolver)
+      return registry.populateTransaction.setResolver(namehash(name), resolver)
     }
     case 'nameWrapper': {
       const nameWrapper = (await contracts?.getNameWrapper())!.connect(signer)
-      return nameWrapper.setResolver(namehash(name), resolver)
+      return nameWrapper.populateTransaction.setResolver(
+        namehash(name),
+        resolver,
+      )
     }
     default: {
       throw new Error(`Unknown contract: ${contract}`)
