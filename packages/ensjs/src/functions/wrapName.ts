@@ -23,12 +23,9 @@ async function wrapETH(
     [labels[0], wrappedOwner, '0x0', decodedFuses, resolverAddress],
   )
 
-  return baseRegistrar['safeTransferFrom(address,address,uint256,bytes)'](
-    address,
-    nameWrapper.address,
-    labelhash,
-    data,
-  )
+  return baseRegistrar.populateTransaction[
+    'safeTransferFrom(address,address,uint256,bytes)'
+  ](address, nameWrapper.address, labelhash, data)
 }
 
 async function wrapOther(
@@ -54,7 +51,7 @@ async function wrapOther(
     )
   }
 
-  return nameWrapper.wrap(
+  return nameWrapper.populateTransaction.wrap(
     hexEncodeName(name),
     wrappedOwner,
     decodedFuses,
@@ -63,7 +60,7 @@ async function wrapOther(
 }
 
 export default async function (
-  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
+  { contracts, signer, populate }: ENSArgs<'contracts' | 'signer' | 'populate'>,
   name: string,
   {
     wrappedOwner,

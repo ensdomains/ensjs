@@ -18,7 +18,7 @@ export default async function (
   switch (contract) {
     case 'registry': {
       const registry = (await contracts?.getRegistry())!.connect(signer)
-      return registry.setOwner(namehash(name), newOwner)
+      return registry.populateTransaction.setOwner(namehash(name), newOwner)
     }
     case 'baseRegistrar': {
       const baseRegistrar = (await contracts?.getBaseRegistrar())!.connect(
@@ -28,7 +28,9 @@ export default async function (
       if (labels.length > 2 || labels[labels.length - 1] !== 'eth') {
         throw new Error('Invalid name for baseRegistrar')
       }
-      return baseRegistrar['safeTransferFrom(address,address,uint256)'](
+      return baseRegistrar.populateTransaction[
+        'safeTransferFrom(address,address,uint256)'
+      ](
         address,
         newOwner,
         ethers.utils.solidityKeccak256(['string'], [labels[0]]),
@@ -36,7 +38,7 @@ export default async function (
     }
     case 'nameWrapper': {
       const nameWrapper = (await contracts?.getNameWrapper())!.connect(signer)
-      return nameWrapper.safeTransferFrom(
+      return nameWrapper.populateTransaction.safeTransferFrom(
         address,
         newOwner,
         namehash(name),

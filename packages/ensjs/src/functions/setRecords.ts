@@ -35,10 +35,10 @@ export default async function (
 
   const resolver = (
     await contracts?.getPublicResolver(provider, resolverToUse)
-  )?.connect(signer)
+  )?.connect(signer)!
   const hash = namehash(name)
 
   const calls: string[] = generateRecordCallArray(hash, records, resolver!)
 
-  return resolver?.multicall(calls)
+  return resolver.populateTransaction.multicall(calls)
 }

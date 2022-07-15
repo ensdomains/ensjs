@@ -22,12 +22,21 @@ export default async function (
     case 'registry': {
       const registry = (await contracts?.getRegistry()!).connect(signer)
 
-      return registry.setSubnodeOwner(parentNodehash, labelhash, address)
+      return registry.populateTransaction.setSubnodeOwner(
+        parentNodehash,
+        labelhash,
+        address,
+      )
     }
     case 'nameWrapper': {
       const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
 
-      return nameWrapper.setSubnodeOwner(parentNodehash, label, address, '0')
+      return nameWrapper.populateTransaction.setSubnodeOwner(
+        parentNodehash,
+        label,
+        address,
+        '0',
+      )
     }
     default: {
       throw new Error(`Unknown contract: ${contract}`)

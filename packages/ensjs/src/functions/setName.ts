@@ -15,18 +15,18 @@ export default async function (
 
   const reverseRegistrar = (await contracts?.getReverseRegistrar())?.connect(
     signer,
-  )
+  )!
 
   if (address) {
-    const publicResolver = await contracts?.getPublicResolver()
+    const publicResolver = await contracts?.getPublicResolver()!
 
-    return reverseRegistrar?.setNameForAddr(
+    return reverseRegistrar.populateTransaction.setNameForAddr(
       address,
       signerAddress,
-      resolver || publicResolver!.address,
+      resolver || publicResolver.address,
       name,
     )
   }
 
-  return reverseRegistrar?.setName(name)
+  return reverseRegistrar.populateTransaction.setName(name)
 }
