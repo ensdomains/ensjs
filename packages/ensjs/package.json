@@ -46,8 +46,9 @@
     "dns-packet": "^5.3.1",
     "ethers": "^5.6.1",
     "graphql": "^16.3.0",
-    "graphql-request": "^4.1.0",
-    "idna-uts46-hx": "3.4.0"
+    "graphql-request": "next",
+    "idna-uts46-hx": "3.4.0",
+    "traverse": "^0.6.6"
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
@@ -61,6 +62,7 @@
     "@typechain/ethers-v5": "^10.0.0",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.4.1",
+    "@types/traverse": "^0.6.32",
     "dotenv": "^16.0.0",
     "ens-contracts": "github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93",
     "hardhat": "^2.9.3",

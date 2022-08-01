@@ -789,6 +789,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:2.0.1"\
       ],\
       [\
+        "@types/traverse",\
+        "npm:0.6.32"\
+      ],\
+      [\
         "@types/yargs",\
         "npm:16.0.4"\
       ],\
@@ -2066,7 +2070,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "graphql-request",\
-        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"\
+        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.4.0-next.2"\
       ],\
       [\
         "growl",\
@@ -3733,6 +3737,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:0.0.3"\
       ],\
       [\
+        "traverse",\
+        "npm:0.6.6"\
+      ],\
+      [\
         "tree-kill",\
         "npm:1.2.2"\
       ],\
@@ -5057,12 +5065,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typechain/ethers-v5", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.0.0"],\
             ["@types/bn.js", "npm:5.1.0"],\
             ["@types/jest", "npm:27.4.1"],\
+            ["@types/traverse", "npm:0.6.32"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
             ["ens-contracts", "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
-            ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
+            ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.4.0-next.2"],\
             ["hardhat", "npm:2.9.3"],\
             ["hardhat-abi-exporter", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:2.8.0"],\
             ["hardhat-deploy", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.11.4"],\
@@ -5073,6 +5082,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nock", "npm:13.2.8"],\
             ["node-fetch", "npm:3.2.6"],\
             ["solc", "npm:0.8.13"],\
+            ["traverse", "npm:0.6.6"],\
             ["ts-jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.1.4"],\
             ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"],\
             ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0"],\
@@ -7076,6 +7086,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-stack-utils-npm-2.0.1-867718ab70-205fdbe332.zip/node_modules/@types/stack-utils/",\
           "packageDependencies": [\
             ["@types/stack-utils", "npm:2.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/traverse", [\
+        ["npm:0.6.32", {\
+          "packageLocation": "./.yarn/cache/@types-traverse-npm-0.6.32-65de3f0296-0d27f4758e.zip/node_modules/@types/traverse/",\
+          "packageDependencies": [\
+            ["@types/traverse", "npm:0.6.32"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -11582,17 +11601,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["graphql-request", [\
-        ["npm:4.1.0", {\
-          "packageLocation": "./.yarn/cache/graphql-request-npm-4.1.0-68b02c8089-347f3bb943.zip/node_modules/graphql-request/",\
+        ["npm:4.4.0-next.2", {\
+          "packageLocation": "./.yarn/cache/graphql-request-npm-4.4.0-next.2-d776c9f12d-035d990b96.zip/node_modules/graphql-request/",\
           "packageDependencies": [\
-            ["graphql-request", "npm:4.1.0"]\
+            ["graphql-request", "npm:4.4.0-next.2"]\
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0", {\
-          "packageLocation": "./.yarn/__virtual__/graphql-request-virtual-fe6899e1e5/0/cache/graphql-request-npm-4.1.0-68b02c8089-347f3bb943.zip/node_modules/graphql-request/",\
+        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.4.0-next.2", {\
+          "packageLocation": "./.yarn/__virtual__/graphql-request-virtual-e63450e2f8/0/cache/graphql-request-npm-4.4.0-next.2-d776c9f12d-035d990b96.zip/node_modules/graphql-request/",\
           "packageDependencies": [\
-            ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.1.0"],\
+            ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.4.0-next.2"],\
             ["@types/graphql", null],\
             ["cross-fetch", "npm:3.1.5"],\
             ["extract-files", "npm:9.0.0"],\
@@ -16986,6 +17005,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["tr46", "npm:2.1.0"],\
             ["punycode", "npm:2.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["traverse", [\
+        ["npm:0.6.6", {\
+          "packageLocation": "./.yarn/cache/traverse-npm-0.6.6-584cfa4b5f-e2afa72f11.zip/node_modules/traverse/",\
+          "packageDependencies": [\
+            ["traverse", "npm:0.6.6"]\
           ],\
           "linkType": "HARD"\
         }]\

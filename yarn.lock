@@ -509,12 +509,13 @@ __metadata:
     "@typechain/ethers-v5": ^10.0.0
     "@types/bn.js": ^5.1.0
     "@types/jest": ^27.4.1
+    "@types/traverse": ^0.6.32
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
     ens-contracts: "github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"
     ethers: ^5.6.1
     graphql: ^16.3.0
-    graphql-request: ^4.1.0
+    graphql-request: next
     hardhat: ^2.9.3
     hardhat-abi-exporter: ^2.8.0
     hardhat-deploy: ^0.11.4
@@ -525,6 +526,7 @@ __metadata:
     nock: ^13.2.8
     node-fetch: ^3.2.6
     solc: ^0.8.13
+    traverse: ^0.6.6
     ts-jest: ^27.1.4
     ts-node: ^10.7.0
     typechain: ^8.0.0
@@ -2302,6 +2304,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/traverse@npm:^0.6.32":
+  version: 0.6.32
+  resolution: "@types/traverse@npm:0.6.32"
+  checksum: 0d27f4758e1da79463c42cdd91de018095048e5c3963ad108b97044d5f43ea48b071da87062fdd4ff46407461802cc47367dd90b8f4a03a3dcf2ff94840d4909
+  languageName: node
+  linkType: hard
+
 "@types/yargs-parser@npm:*":
   version: 21.0.0
   resolution: "@types/yargs-parser@npm:21.0.0"
@@ -4020,7 +4029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.0.6":
+"cross-fetch@npm:^3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
   dependencies:
@@ -6110,16 +6119,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-request@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "graphql-request@npm:4.1.0"
+"graphql-request@npm:next":
+  version: 4.4.0-next.2
+  resolution: "graphql-request@npm:4.4.0-next.2"
   dependencies:
-    cross-fetch: ^3.0.6
+    cross-fetch: ^3.1.5
     extract-files: ^9.0.0
     form-data: ^3.0.0
   peerDependencies:
     graphql: 14 - 16
-  checksum: 347f3bb943d8f734f152765cbe507a287333d0f477b6912f4745addd4d1160cd171db3d629c7bac5c8ec627cd989c7bdf0407b32e3545808397fc791e65bfbcf
+  checksum: 035d990b961b8f3fed44e2ea43695ca7d03f2aff7b40b106efec02eb7e25c893dc0129aa94c50761e9d42659f3958172553ebfaa784e0ba2ef0246c26af7d376
   languageName: node
   linkType: hard
 
@@ -10934,6 +10943,13 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
+"traverse@npm:^0.6.6":
+  version: 0.6.6
+  resolution: "traverse@npm:0.6.6"
+  checksum: e2afa72f11efa9ba31ed763d2d9d2aa244612f22015d16c0ea3ba5f6ca8bf071de87f8108b721885cce06ea4a36ef4605d9228c67e431d9015ea4685cb364420
   languageName: node
   linkType: hard
 
