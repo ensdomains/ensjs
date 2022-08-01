@@ -2,35 +2,10 @@ import traverse from 'traverse'
 import { visit, parse } from 'graphql'
 
 import { requestMiddleware, responseMiddleware, enter } from './GqlManager'
+import { namehash } from './utils/normalise'
 
-const graphqlAst = [
-  {
-    kind: 'OperationDefinition',
-    operation: 'query',
-    name: {
-      kind: 'Name',
-      value: 'getRegistrations',
-    },
-    variableDefinitions: [],
-    directives: [],
-    selectionSet: {
-      kind: 'SelectionSet',
-      selections: [
-        {
-          kind: 'Field',
-          name: {
-            kind: 'Name',
-            value: 'name',
-          },
-          arguments: [],
-          directives: [],
-        },
-      ],
-    },
-  },
-]
-
-const queryWithoutId = `
+describe('GqlManager', () => {
+  const queryWithoutId = `
 query getNames($id: ID!, $expiryDate: Int) {
     account(id: $id) {
       registrations(first: 1000, where: { expiryDate_gt: $expiryDate }) {
@@ -60,7 +35,6 @@ query getNames($id: ID!, $expiryDate: Int) {
   }
 `
 
-describe('GqlManager', () => {
   const mockRequest = {
     method: 'POST',
     headers: {
@@ -178,12 +152,19 @@ describe('GqlManager', () => {
   }
 
   describe('requestMiddleware', () => {
-    it.only('should add id to a SelectionSet if name is present and id is not', () => {
+    it('should add id to a SelectionSet if name is present and id is not', () => {
       const result = requestMiddleware(visit, parse)(mockRequest)
-      console.log('result: ', result)
+      expect(result.body.includes('id')).toBe(true)
     })
   })
   describe('responseMiddleware', () => {
-    it('should replace name with the namehash when there is an invalid name and id combo', () => {})
+    it('should replace name with the namehash when there is an invalid name and id combo', () => {
+      const result = responseMiddleware(traverse)(mockResponse)
+      expect(result.data.account.domains[0].name).toBe(
+        namehash(
+          '0xb54c7c79c89d571f1fbf4c67f524e336a04441eeee4d76f156e835da99a46ddb',
+        ),
+      )
+    })
   })
 })
