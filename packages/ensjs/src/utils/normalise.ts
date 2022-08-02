@@ -19,7 +19,8 @@ export const namehash = (name: string): string => {
       if (isEncodedLabelhash(labels[i])) {
         labelSha = decodeLabelhash(labels[i])
       } else {
-        labelSha = keccak256(toUtf8Bytes(labels[i]))
+        const normalised = normalise(labels[i])
+        labelSha = keccak256(toUtf8Bytes(normalised))
       }
 
       result = keccak256(concat([result, labelSha]))
