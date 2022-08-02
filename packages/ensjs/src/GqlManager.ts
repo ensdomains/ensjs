@@ -64,7 +64,7 @@ export default class GqlManager {
       const [imported, traverse, { visit, parse }] = await Promise.all([
         import('graphql-request'),
         import('traverse'),
-        import('graphql'),
+        import('graphql/language'),
       ])
 
       this.client = new imported.GraphQLClient(url, {
