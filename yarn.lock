@@ -4647,7 +4647,7 @@ __metadata:
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: d3aeb0140f671d0a6d2d82b840d643e61b543e6e410d68c19cfb21b634b73b99291a7cc46d9d1861181483955ce14f48e3cc027f5cb06b9251a6b90e77259e5d
+  checksum: e3e3e560e46a68ad5014bcc334f7916427f84113096ae922f48cdf2a5e75c3eb555cd2282a4dab11f75a49f091392ab0d7857b62aebb921139c16cacc59bbbe1
   languageName: node
   linkType: hard
 
