@@ -19,6 +19,9 @@ const killChildren = (cmdName, pid = 0, error) => {
     if (cmdName.startsWith('yarn ')) {
       cmdName = cmdName.replace('yarn ', 'yarn.*')
     }
+    if (cmdName.startsWith('pnpm')) {
+      cmdName = cmdName.replace('pnpm ', 'pnpm.*')
+    }
     let children = wrapTry(execSync, `pgrep -f "${cmdName} || exit 0"`, {
       stdio: 'ignore',
     })
@@ -185,7 +188,7 @@ export const main = async (config, options) => {
     ]
 
     cmdsToRun.push({
-      command: `yarn wait-on http://localhost:8040 && ${sudopref}docker exec ens-test-env_postgres_1 psql -U graph-node graph-node -c "INSERT INTO public.ens_names (hash, name) VALUES ${allHashes
+      command: `wait-on http://localhost:8040 && ${sudopref}docker exec ens-test-env_postgres_1 psql -U graph-node graph-node -c "INSERT INTO public.ens_names (hash, name) VALUES ${allHashes
         .map(({ hash, label }) => `('${hash}', '${label}')`)
         .join(', ')};"`,
       name: 'add-hash-table',
@@ -196,7 +199,7 @@ export const main = async (config, options) => {
   config.scripts &&
     config.scripts.forEach((script, i) => {
       if (script.waitForGraph) {
-        script.command = `yarn wait-on http://localhost:8040 && ${script.command}`
+        script.command = `wait-on http://localhost:8040 && ${script.command}`
       }
       cmdsToRun.push(script)
       if (script.finishOnExit) {
@@ -206,7 +209,7 @@ export const main = async (config, options) => {
 
   if (config.deployCommand) {
     if (!options.tenderly)
-      config.deployCommand = 'yarn wait-on tcp:8545 && ' + config.deployCommand
+      config.deployCommand = 'wait-on tcp:8545 && ' + config.deployCommand
     const allArgs = config.deployCommand.split(' ')
     const deploy = spawn(allArgs.shift(), allArgs, {
       cwd: process.env.INIT_CWD,
