@@ -4667,6 +4667,10 @@ __metadata:
     prettier: ^2.6.0
     ts-node: ^10.7.0
     typescript: ^4.6.2
+  dependenciesMeta:
+    ens-contracts:
+      built: false
+      unplugged: true
   languageName: unknown
   linkType: soft
 

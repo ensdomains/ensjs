@@ -26,5 +26,11 @@
   },
   "dependencies": {
     "ethers": "^5.6.1"
+  },
+  "dependenciesMeta": {
+    "ens-contracts": {
+      "built": false,
+      "unplugged": true
+    }
   }
 }
