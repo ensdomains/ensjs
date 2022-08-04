@@ -2,9 +2,14 @@ import { ENS } from '..'
 import setup from '../tests/setup'
 
 let ENSInstance: ENS
+let revert: Awaited<ReturnType<typeof setup>>['revert']
 
 beforeAll(async () => {
-  ;({ ENSInstance } = await setup())
+  ;({ ENSInstance, revert } = await setup())
+})
+
+afterAll(async () => {
+  await revert()
 })
 
 const checkRecords = (
@@ -87,6 +92,16 @@ describe('getProfile', () => {
         coinTypes: true,
       })
       checkRecords(result)
+    })
+    it('should return a profile object for a specified resolver', async () => {
+      const result = await ENSInstance.getProfile('saganaki.xyz', {
+        resolverAddress: '0x12299799a50340fb860d276805e78550cbad3de3',
+      })
+      expect(result).toBeDefined()
+      expect(result?.address).toBe('0x157545BfD441453921049998128Ff090c1c11230')
+      expect(result?.resolverAddress).toBe(
+        '0x12299799a50340fb860d276805e78550cbad3de3',
+      )
     })
     it('should return undefined for an unregistered name', async () => {
       const result = await ENSInstance.getProfile('test123123123cool.eth')
