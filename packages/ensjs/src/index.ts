@@ -217,7 +217,7 @@ export class ENS {
       await thisRef.checkInitialProvider()
       // import the module dynamically
       const mod = await import(
-        /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true */
+        /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true, webpackExclude: /.*\.ts$/ */
         `./functions/${path}`
       )
 
