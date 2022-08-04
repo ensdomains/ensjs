@@ -1,6 +1,8 @@
 import { solidityKeccak256 } from 'ethers/lib/utils'
 import { truncateFormat } from './format'
 
+const hasLocalStorage = typeof localStorage !== 'undefined'
+
 export const labelhash = (input: string) =>
   solidityKeccak256(['string'], [input])
 
@@ -37,13 +39,13 @@ export function isEncodedLabelhash(hash: string) {
 }
 
 function getLabels() {
-  return localStorage
+  return hasLocalStorage
     ? JSON.parse(localStorage.getItem('ensjs:labels') as string) || {}
     : {}
 }
 
 function _saveLabel(hash: string, label: any) {
-  if (!localStorage) return hash
+  if (!hasLocalStorage) return hash
   const labels = getLabels()
   localStorage.setItem(
     'ensjs:labels',
@@ -106,7 +108,7 @@ export function decryptName(name: string) {
 export const truncateUndecryptedName = (name: string) => truncateFormat(name)
 
 export function checkLocalStorageSize() {
-  if (!localStorage) return 'Empty (0 KB)'
+  if (!hasLocalStorage) return 'Empty (0 KB)'
   let allStrings = ''
   for (const key in window.localStorage) {
     if (Object.prototype.hasOwnProperty.call(window.localStorage, key)) {
