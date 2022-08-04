@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'
 import { hexEncodeName } from '../utils/hexEncodedName'
+import { namehash } from '../utils/normalise'
 import { parseInputType } from '../utils/validation'
 
 type InternalProfileOptions = {
@@ -136,7 +137,8 @@ const getDataForName = async (
   >,
   name: string,
   options: InternalProfileOptions,
-  fallbackResolver: string,
+  fallbackResolver?: string,
+  specificResolver?: string,
 ) => {
   const universalResolver = await contracts?.getUniversalResolver()
 
@@ -149,7 +151,17 @@ const getDataForName = async (
   let resolvedData: any
   let useFallbackResolver = false
   try {
-    resolvedData = await universalResolver?.resolve(hexEncodeName(name), data)
+    if (specificResolver) {
+      const publicResolver = await contracts?.getPublicResolver(
+        undefined,
+        specificResolver,
+      )
+      resolvedData = await publicResolver?.callStatic.multicall(
+        calls.map((x) => x.data),
+      )
+    } else {
+      resolvedData = await universalResolver?.resolve(hexEncodeName(name), data)
+    }
   } catch {
     useFallbackResolver = true
   }
@@ -158,15 +170,19 @@ const getDataForName = async (
   let recordData: any
 
   if (useFallbackResolver) {
-    resolverAddress = fallbackResolver
+    resolverAddress = specificResolver || fallbackResolver!
     recordData = await fetchWithoutResolverMulticall(
       { multicallWrapper },
       calls,
       resolverAddress,
     )
   } else {
-    resolverAddress = resolvedData['1']
-    ;[recordData] = await resolverMulticallWrapper.decode(resolvedData['0'])
+    resolverAddress = specificResolver || resolvedData['1']
+    if (specificResolver) {
+      recordData = resolvedData
+    } else {
+      ;[recordData] = await resolverMulticallWrapper.decode(resolvedData['0'])
+    }
   }
 
   const matchAddress = recordData[calls.findIndex((x) => x.key === '60')]
@@ -298,10 +314,11 @@ const graphFetch = async (
   { gqlInstance }: ENSArgs<'gqlInstance'>,
   name: string,
   wantedRecords?: ProfileOptions,
+  resolverAddress?: string,
 ) => {
   const query = gqlInstance.gql`
-    query getRecords($name: String!) {
-      domains(where: { name: $name }) {
+    query getRecords($id: String!) {
+      domain(id: $id) {
         isMigrated
         createdAt
         resolver {
@@ -317,13 +334,44 @@ const graphFetch = async (
     }
   `
 
+  const customResolverQuery = gqlInstance.gql`
+    query getRecordsWithCustomResolver($id: String!, $resolverId: String!) {
+      domain(id: $id) {
+        isMigrated
+        createdAt
+      }
+      resolver(id: $resolverId) {
+        texts
+        coinTypes
+        contentHash
+        addr {
+          id
+        }
+      }
+    }
+  `
+
   const client = gqlInstance.client
 
-  const { domains } = await client.request(query, { name })
+  const id = namehash(name)
 
-  if (!domains || domains.length === 0) return
+  let domain: any
+  let resolverResponse: any
 
-  const [{ resolver: resolverResponse, isMigrated, createdAt }] = domains
+  if (!resolverAddress) {
+    ;({ domain } = await client.request(query, { id }))
+    resolverResponse = domain?.resolver
+  } else {
+    const resolverId = `${resolverAddress}-${id}`
+    ;({ resolver: resolverResponse, domain } = await client.request(
+      customResolverQuery,
+      { id, resolverId },
+    ))
+  }
+
+  if (!domain) return
+
+  const { isMigrated, createdAt } = domain
 
   let returnedRecords: ProfileResponse = {}
 
@@ -333,7 +381,7 @@ const graphFetch = async (
     return {
       isMigrated,
       createdAt,
-      graphResolverAddress: resolverResponse.address,
+      graphResolverAddress: resolverResponse.address || resolverAddress,
     }
 
   Object.keys(wantedRecords).forEach((key: string) => {
@@ -351,7 +399,7 @@ const graphFetch = async (
     ...returnedRecords,
     isMigrated,
     createdAt,
-    graphResolverAddress: resolverResponse.address,
+    graphResolverAddress: resolverResponse.address || resolverAddress,
   }
 }
 
@@ -359,6 +407,10 @@ type ProfileOptions = {
   contentHash?: boolean
   texts?: boolean | string[]
   coinTypes?: boolean | string[]
+}
+
+type InputProfileOptions = ProfileOptions & {
+  resolverAddress?: string
 }
 
 const getProfileFromName = async (
@@ -380,13 +432,23 @@ const getProfileFromName = async (
     | 'multicallWrapper'
   >,
   name: string,
-  options?: ProfileOptions,
+  options?: InputProfileOptions,
 ) => {
+  const { resolverAddress, ..._options } = options || {}
+  const optsLength = Object.keys(_options).length
   const usingOptions =
-    !options || options?.texts === true || options?.coinTypes === true
-      ? options || { contentHash: true, texts: true, coinTypes: true }
+    !optsLength || _options?.texts === true || _options?.coinTypes === true
+      ? optsLength
+        ? _options
+        : { contentHash: true, texts: true, coinTypes: true }
       : undefined
-  const graphResult = await graphFetch({ gqlInstance }, name, usingOptions)
+
+  const graphResult = await graphFetch(
+    { gqlInstance },
+    name,
+    usingOptions,
+    resolverAddress,
+  )
   if (!graphResult) return
   const {
     isMigrated,
@@ -398,7 +460,7 @@ const getProfileFromName = async (
     createdAt: string
     graphResolverAddress?: string
   } & InternalProfileOptions = graphResult
-  if (!graphResolverAddress)
+  if (!graphResolverAddress && !options?.resolverAddress)
     return { isMigrated, createdAt, message: "Name doesn't have a resolver" }
   const result = await getDataForName(
     {
@@ -412,6 +474,7 @@ const getProfileFromName = async (
     name,
     usingOptions ? wantedRecords : (options as InternalProfileOptions),
     graphResolverAddress,
+    options?.resolverAddress!,
   )
   if (!result)
     return { isMigrated, createdAt, message: "Records fetch didn't complete" }
@@ -439,7 +502,7 @@ const getProfileFromAddress = async (
     | 'multicallWrapper'
   >,
   address: string,
-  options?: ProfileOptions,
+  options?: InputProfileOptions,
 ) => {
   let name
   try {
@@ -492,7 +555,7 @@ export default async function (
     | 'multicallWrapper'
   >,
   nameOrAddress: string,
-  options?: ProfileOptions,
+  options?: InputProfileOptions,
 ): Promise<ResolvedProfile | undefined> {
   if (options && options.coinTypes && typeof options.coinTypes !== 'boolean') {
     options.coinTypes = options.coinTypes.map((coin: string) => {

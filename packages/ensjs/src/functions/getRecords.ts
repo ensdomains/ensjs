@@ -5,6 +5,7 @@ type ProfileOptions = {
   contentHash?: boolean
   texts?: boolean | string[]
   coinTypes?: boolean | string[]
+  resolverAddress?: string
 }
 
 export default async function (
