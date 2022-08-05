@@ -33,6 +33,47 @@ export const generateSetAddr = (
   )
 }
 
+export type RecordTypes = 'contentHash' | 'text' | 'addr'
+
+export type RecordInput<T extends RecordTypes> = T extends 'contentHash'
+  ? string
+  : RecordItem
+
+export function generateSingleRecordCall<T extends RecordTypes>(
+  namehash: string,
+  resolver: PublicResolver,
+  type: T,
+): (record: RecordInput<T>) => string {
+  if (type === 'contentHash') {
+    return (_r: RecordInput<T>) => {
+      const record = _r as string
+      let _contentHash = ''
+      if (record !== _contentHash) {
+        const encoded = encodeContenthash(record)
+        if (encoded.error) throw new Error(encoded.error)
+        _contentHash = encoded.encoded as string
+      }
+      return resolver.interface.encodeFunctionData('setContenthash', [
+        namehash,
+        _contentHash,
+      ])
+    }
+  } else {
+    return (_r: RecordInput<T>) => {
+      const record = _r as RecordItem
+      if (type === 'text') {
+        return resolver.interface.encodeFunctionData('setText', [
+          namehash,
+          record.key,
+          record.value,
+        ])
+      } else {
+        return generateSetAddr(namehash, record.key, record.value, resolver)
+      }
+    }
+  }
+}
+
 export const generateRecordCallArray = (
   namehash: string,
   records: RecordOptions,
@@ -41,31 +82,24 @@ export const generateRecordCallArray = (
   const calls: string[] = []
 
   if (records.contentHash) {
-    const contentHash =
-      records.contentHash === '' ? '' : encodeContenthash(records.contentHash)
-    const data = (resolver?.interface.encodeFunctionData as any)(
-      'setContenthash',
-      [namehash, contentHash],
-    )
+    const data = generateSingleRecordCall(
+      namehash,
+      resolver,
+      'contentHash',
+    )(records.contentHash)
     data && calls.push(data)
   }
 
   if (records.texts && records.texts.length > 0) {
-    records.texts.forEach(({ key, value }: RecordItem) => {
-      const data = resolver?.interface.encodeFunctionData('setText', [
-        namehash,
-        key,
-        value,
-      ])
-      data && calls.push(data)
-    })
+    records.texts
+      .map(generateSingleRecordCall(namehash, resolver, 'text'))
+      .forEach((call) => calls.push(call))
   }
 
   if (records.coinTypes && records.coinTypes.length > 0) {
-    records.coinTypes.forEach(({ key, value }: RecordItem) => {
-      const data = generateSetAddr(namehash, key, value, resolver!)
-      data && calls.push(data)
-    })
+    records.coinTypes
+      .map(generateSingleRecordCall(namehash, resolver, 'addr'))
+      .forEach((call) => calls.push(call))
   }
 
   return calls

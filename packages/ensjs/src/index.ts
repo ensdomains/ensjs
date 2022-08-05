@@ -37,6 +37,7 @@ import type {
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
 import type setName from './functions/setName'
+import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
 import type setResolver from './functions/setResolver'
 import type transferName from './functions/transferName'
@@ -542,6 +543,12 @@ export class ENS {
     'setRecords',
     ['contracts', 'provider', 'getResolver'],
   )
+
+  public setRecord = this.generateWriteFunction<typeof setRecord>('setRecord', [
+    'contracts',
+    'provider',
+    'getResolver',
+  ])
 
   public setResolver = this.generateWriteFunction<typeof setResolver>(
     'setResolver',
