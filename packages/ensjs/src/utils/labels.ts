@@ -19,7 +19,7 @@ export function decodeLabelhash(hash: string) {
     throw Error('Expected encoded labelhash to have a length of 66')
   }
 
-  return `${hash.slice(1, -1)}`
+  return `0x${hash.slice(1, -1)}`
 }
 
 export function encodeLabelhash(hash: string) {
