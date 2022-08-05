@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "3.0.0-alpha.9",
+  "version": "3.0.0-alpha.10",
   "description": "ENS javascript library for contract interaction",
   "main": "./dist/cjs/index.js",
   "types": "./dist/cjs/index.d.ts",
@@ -83,5 +83,5 @@
   "peerDependencies": {
     "ethers": "*"
   },
-  "stableVersion": "3.0.0-alpha.8"
+  "stableVersion": "3.0.0-alpha.9"
 }
