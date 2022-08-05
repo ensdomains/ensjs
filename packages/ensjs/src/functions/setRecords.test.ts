@@ -32,7 +32,7 @@ describe('setRecords', () => {
     const publicResolver = await ENSInstance.contracts!.getPublicResolver()!
     const encodedText = await universalResolver.resolve(
       hexEncodeName('parthtejpal.eth'),
-      publicResolver.interface.encodeFunctionData('text(bytes32,string)', [
+      publicResolver.interface.encodeFunctionData('text', [
         namehash('parthtejpal.eth'),
         'foo',
       ]),
@@ -45,7 +45,7 @@ describe('setRecords', () => {
       ]),
     )
     const [resultText] = publicResolver.interface.decodeFunctionResult(
-      'text(bytes32,string)',
+      'text',
       encodedText[0],
     )
     const [resultAddr] = publicResolver.interface.decodeFunctionResult(
