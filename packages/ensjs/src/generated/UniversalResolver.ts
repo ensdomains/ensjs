@@ -17,6 +17,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface UniversalResolverInterface extends utils.Interface {
@@ -41,21 +42,24 @@ export interface UniversalResolverInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "findResolver",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(functionFragment: "registry", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "resolve",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "resolveCallback",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
-  encodeFunctionData(functionFragment: "reverse", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "reverse",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
 
   decodeFunctionResult(
@@ -105,91 +109,91 @@ export interface UniversalResolver extends BaseContract {
 
   functions: {
     findResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string]>;
 
     registry(overrides?: CallOverrides): Promise<[string]>;
 
     resolve(
-      name: BytesLike,
-      data: BytesLike,
+      name: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string]>;
 
     resolveCallback(
-      response: BytesLike,
-      extraData: BytesLike,
+      response: PromiseOrValue<BytesLike>,
+      extraData: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     reverse(
-      reverseName: BytesLike,
+      reverseName: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string, string, string]>;
 
     supportsInterface(
-      interfaceId: BytesLike,
+      interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
 
   findResolver(
-    name: BytesLike,
+    name: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<[string, string]>;
 
   registry(overrides?: CallOverrides): Promise<string>;
 
   resolve(
-    name: BytesLike,
-    data: BytesLike,
+    name: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<[string, string]>;
 
   resolveCallback(
-    response: BytesLike,
-    extraData: BytesLike,
+    response: PromiseOrValue<BytesLike>,
+    extraData: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   reverse(
-    reverseName: BytesLike,
+    reverseName: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<[string, string, string, string]>;
 
   supportsInterface(
-    interfaceId: BytesLike,
+    interfaceId: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   callStatic: {
     findResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string]>;
 
     registry(overrides?: CallOverrides): Promise<string>;
 
     resolve(
-      name: BytesLike,
-      data: BytesLike,
+      name: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string]>;
 
     resolveCallback(
-      response: BytesLike,
-      extraData: BytesLike,
+      response: PromiseOrValue<BytesLike>,
+      extraData: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     reverse(
-      reverseName: BytesLike,
+      reverseName: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string, string, string]>;
 
     supportsInterface(
-      interfaceId: BytesLike,
+      interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
@@ -198,62 +202,62 @@ export interface UniversalResolver extends BaseContract {
 
   estimateGas: {
     findResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     registry(overrides?: CallOverrides): Promise<BigNumber>;
 
     resolve(
-      name: BytesLike,
-      data: BytesLike,
+      name: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     resolveCallback(
-      response: BytesLike,
-      extraData: BytesLike,
+      response: PromiseOrValue<BytesLike>,
+      extraData: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     reverse(
-      reverseName: BytesLike,
+      reverseName: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     supportsInterface(
-      interfaceId: BytesLike,
+      interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     findResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     registry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     resolve(
-      name: BytesLike,
-      data: BytesLike,
+      name: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     resolveCallback(
-      response: BytesLike,
-      extraData: BytesLike,
+      response: PromiseOrValue<BytesLike>,
+      extraData: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     reverse(
-      reverseName: BytesLike,
+      reverseName: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
-      interfaceId: BytesLike,
+      interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

@@ -42,7 +42,6 @@
   "dependencies": {
     "@ensdomains/address-encoder": "^0.2.16",
     "@ensdomains/content-hash": "^2.5.7",
-    "@ensdomains/ens-contracts": "^0.0.11",
     "dns-packet": "^5.3.1",
     "ethers": "^5.6.1",
     "graphql": "^16.3.0",
@@ -52,6 +51,7 @@
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
+    "@ensdomains/ens-contracts": "^0.0.12",
     "@ensdomains/ens-test-env": "workspace:*",
     "@ethersproject/abi": "^5.6.0",
     "@ethersproject/providers": "^5.6.2",
@@ -59,12 +59,11 @@
     "@openzeppelin/contracts": "^4.5.0",
     "@swc/core": "^1.2.162",
     "@swc/jest": "^0.2.20",
-    "@typechain/ethers-v5": "^10.0.0",
+    "@typechain/ethers-v5": "^10.1.0",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.4.1",
     "@types/traverse": "^0.6.32",
     "dotenv": "^16.0.0",
-    "ens-contracts": "github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93",
     "hardhat": "^2.9.3",
     "hardhat-abi-exporter": "^2.8.0",
     "hardhat-deploy": "^0.11.4",
@@ -76,7 +75,7 @@
     "solc": "^0.8.13",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
-    "typechain": "^8.0.0",
+    "typechain": "^8.1.0",
     "typescript": "^4.6.2",
     "wait-on": "^6.0.1"
   },

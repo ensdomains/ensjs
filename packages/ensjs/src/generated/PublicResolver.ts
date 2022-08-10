@@ -24,6 +24,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface PublicResolverInterface extends utils.Interface {
@@ -88,99 +89,132 @@ export interface PublicResolverInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "ABI",
-    values: [BytesLike, BigNumberish]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "addr(bytes32)",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "addr(bytes32,uint256)",
-    values: [BytesLike, BigNumberish]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "clearDNSZone",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "contenthash",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "dnsRecord",
-    values: [BytesLike, BytesLike, BigNumberish]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "hasDNSRecords",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "interfaceImplementer",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
-    values: [string, string]
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "multicall",
-    values: [BytesLike[]]
+    values: [PromiseOrValue<BytesLike>[]]
   ): string;
-  encodeFunctionData(functionFragment: "name", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "pubkey", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "name",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pubkey",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(
     functionFragment: "setABI",
-    values: [BytesLike, BigNumberish, BytesLike]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setAddr(bytes32,uint256,bytes)",
-    values: [BytesLike, BigNumberish, BytesLike]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setAddr(bytes32,address)",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
-    values: [string, boolean]
+    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: "setContenthash",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "setDNSRecords",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "setInterface",
-    values: [BytesLike, BytesLike, string]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setName",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setPubkey",
-    values: [BytesLike, BytesLike, BytesLike]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setText",
-    values: [BytesLike, string, string]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setZonehash",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "text",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "zonehash", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "zonehash",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
 
   decodeFunctionResult(functionFragment: "ABI", data: BytesLike): Result;
   decodeFunctionResult(
@@ -469,857 +503,913 @@ export interface PublicResolver extends BaseContract {
 
   functions: {
     ABI(
-      node: BytesLike,
-      contentTypes: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      contentTypes: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber, string]>;
 
     "addr(bytes32)"(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     "addr(bytes32,uint256)"(
-      node: BytesLike,
-      coinType: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     clearDNSZone(
-      node: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    contenthash(node: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    contenthash(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     dnsRecord(
-      node: BytesLike,
-      name: BytesLike,
-      resource: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
+      resource: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     hasDNSRecords(
-      node: BytesLike,
-      name: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     interfaceImplementer(
-      node: BytesLike,
-      interfaceID: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     isApprovedForAll(
-      account: string,
-      operator: string,
+      account: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     multicall(
-      data: BytesLike[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    name(node: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    name(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     pubkey(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string] & { x: string; y: string }>;
 
     setABI(
-      node: BytesLike,
-      contentType: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      contentType: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     "setAddr(bytes32,uint256,bytes)"(
-      node: BytesLike,
-      coinType: BigNumberish,
-      a: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
+      a: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     "setAddr(bytes32,address)"(
-      node: BytesLike,
-      a: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      a: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setContenthash(
-      node: BytesLike,
-      hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setDNSRecords(
-      node: BytesLike,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setInterface(
-      node: BytesLike,
-      interfaceID: BytesLike,
-      implementer: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
+      implementer: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setName(
-      node: BytesLike,
-      newName: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      newName: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setPubkey(
-      node: BytesLike,
-      x: BytesLike,
-      y: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      x: PromiseOrValue<BytesLike>,
+      y: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setText(
-      node: BytesLike,
-      key: string,
-      value: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
+      value: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setZonehash(
-      node: BytesLike,
-      hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     text(
-      node: BytesLike,
-      key: string,
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    zonehash(node: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    zonehash(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
   };
 
   ABI(
-    node: BytesLike,
-    contentTypes: BigNumberish,
+    node: PromiseOrValue<BytesLike>,
+    contentTypes: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<[BigNumber, string]>;
 
-  "addr(bytes32)"(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  "addr(bytes32)"(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   "addr(bytes32,uint256)"(
-    node: BytesLike,
-    coinType: BigNumberish,
+    node: PromiseOrValue<BytesLike>,
+    coinType: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   clearDNSZone(
-    node: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  contenthash(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  contenthash(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   dnsRecord(
-    node: BytesLike,
-    name: BytesLike,
-    resource: BigNumberish,
+    node: PromiseOrValue<BytesLike>,
+    name: PromiseOrValue<BytesLike>,
+    resource: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   hasDNSRecords(
-    node: BytesLike,
-    name: BytesLike,
+    node: PromiseOrValue<BytesLike>,
+    name: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   interfaceImplementer(
-    node: BytesLike,
-    interfaceID: BytesLike,
+    node: PromiseOrValue<BytesLike>,
+    interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   isApprovedForAll(
-    account: string,
-    operator: string,
+    account: PromiseOrValue<string>,
+    operator: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   multicall(
-    data: BytesLike[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    data: PromiseOrValue<BytesLike>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  name(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  name(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   pubkey(
-    node: BytesLike,
+    node: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<[string, string] & { x: string; y: string }>;
 
   setABI(
-    node: BytesLike,
-    contentType: BigNumberish,
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    contentType: PromiseOrValue<BigNumberish>,
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   "setAddr(bytes32,uint256,bytes)"(
-    node: BytesLike,
-    coinType: BigNumberish,
-    a: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    coinType: PromiseOrValue<BigNumberish>,
+    a: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   "setAddr(bytes32,address)"(
-    node: BytesLike,
-    a: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    a: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setApprovalForAll(
-    operator: string,
-    approved: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    operator: PromiseOrValue<string>,
+    approved: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setContenthash(
-    node: BytesLike,
-    hash: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    hash: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setDNSRecords(
-    node: BytesLike,
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setInterface(
-    node: BytesLike,
-    interfaceID: BytesLike,
-    implementer: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    interfaceID: PromiseOrValue<BytesLike>,
+    implementer: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setName(
-    node: BytesLike,
-    newName: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    newName: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setPubkey(
-    node: BytesLike,
-    x: BytesLike,
-    y: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    x: PromiseOrValue<BytesLike>,
+    y: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setText(
-    node: BytesLike,
-    key: string,
-    value: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    key: PromiseOrValue<string>,
+    value: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setZonehash(
-    node: BytesLike,
-    hash: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    hash: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   supportsInterface(
-    interfaceID: BytesLike,
+    interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   text(
-    node: BytesLike,
-    key: string,
+    node: PromiseOrValue<BytesLike>,
+    key: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  zonehash(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  zonehash(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   callStatic: {
     ABI(
-      node: BytesLike,
-      contentTypes: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      contentTypes: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber, string]>;
 
     "addr(bytes32)"(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     "addr(bytes32,uint256)"(
-      node: BytesLike,
-      coinType: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    clearDNSZone(node: BytesLike, overrides?: CallOverrides): Promise<void>;
+    clearDNSZone(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    contenthash(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+    contenthash(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     dnsRecord(
-      node: BytesLike,
-      name: BytesLike,
-      resource: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
+      resource: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     hasDNSRecords(
-      node: BytesLike,
-      name: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     interfaceImplementer(
-      node: BytesLike,
-      interfaceID: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     isApprovedForAll(
-      account: string,
-      operator: string,
+      account: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    multicall(data: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
-    name(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+    name(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     pubkey(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string] & { x: string; y: string }>;
 
     setABI(
-      node: BytesLike,
-      contentType: BigNumberish,
-      data: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      contentType: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "setAddr(bytes32,uint256,bytes)"(
-      node: BytesLike,
-      coinType: BigNumberish,
-      a: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
+      a: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "setAddr(bytes32,address)"(
-      node: BytesLike,
-      a: string,
+      node: PromiseOrValue<BytesLike>,
+      a: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setContenthash(
-      node: BytesLike,
-      hash: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setDNSRecords(
-      node: BytesLike,
-      data: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setInterface(
-      node: BytesLike,
-      interfaceID: BytesLike,
-      implementer: string,
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
+      implementer: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setName(
-      node: BytesLike,
-      newName: string,
+      node: PromiseOrValue<BytesLike>,
+      newName: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setPubkey(
-      node: BytesLike,
-      x: BytesLike,
-      y: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      x: PromiseOrValue<BytesLike>,
+      y: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setText(
-      node: BytesLike,
-      key: string,
-      value: string,
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
+      value: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setZonehash(
-      node: BytesLike,
-      hash: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     text(
-      node: BytesLike,
-      key: string,
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    zonehash(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+    zonehash(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {
     "ABIChanged(bytes32,uint256)"(
-      node?: BytesLike | null,
-      contentType?: BigNumberish | null
+      node?: PromiseOrValue<BytesLike> | null,
+      contentType?: PromiseOrValue<BigNumberish> | null
     ): ABIChangedEventFilter;
     ABIChanged(
-      node?: BytesLike | null,
-      contentType?: BigNumberish | null
+      node?: PromiseOrValue<BytesLike> | null,
+      contentType?: PromiseOrValue<BigNumberish> | null
     ): ABIChangedEventFilter;
 
     "AddrChanged(bytes32,address)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       a?: null
     ): AddrChangedEventFilter;
-    AddrChanged(node?: BytesLike | null, a?: null): AddrChangedEventFilter;
+    AddrChanged(
+      node?: PromiseOrValue<BytesLike> | null,
+      a?: null
+    ): AddrChangedEventFilter;
 
     "AddressChanged(bytes32,uint256,bytes)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       coinType?: null,
       newAddress?: null
     ): AddressChangedEventFilter;
     AddressChanged(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       coinType?: null,
       newAddress?: null
     ): AddressChangedEventFilter;
 
     "ApprovalForAll(address,address,bool)"(
-      owner?: string | null,
-      operator?: string | null,
+      owner?: PromiseOrValue<string> | null,
+      operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
     ApprovalForAll(
-      owner?: string | null,
-      operator?: string | null,
+      owner?: PromiseOrValue<string> | null,
+      operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
 
     "ContenthashChanged(bytes32,bytes)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       hash?: null
     ): ContenthashChangedEventFilter;
     ContenthashChanged(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       hash?: null
     ): ContenthashChangedEventFilter;
 
     "DNSRecordChanged(bytes32,bytes,uint16,bytes)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       name?: null,
       resource?: null,
       record?: null
     ): DNSRecordChangedEventFilter;
     DNSRecordChanged(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       name?: null,
       resource?: null,
       record?: null
     ): DNSRecordChangedEventFilter;
 
     "DNSRecordDeleted(bytes32,bytes,uint16)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       name?: null,
       resource?: null
     ): DNSRecordDeletedEventFilter;
     DNSRecordDeleted(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       name?: null,
       resource?: null
     ): DNSRecordDeletedEventFilter;
 
     "DNSZoneCleared(bytes32)"(
-      node?: BytesLike | null
+      node?: PromiseOrValue<BytesLike> | null
     ): DNSZoneClearedEventFilter;
-    DNSZoneCleared(node?: BytesLike | null): DNSZoneClearedEventFilter;
+    DNSZoneCleared(
+      node?: PromiseOrValue<BytesLike> | null
+    ): DNSZoneClearedEventFilter;
 
     "DNSZonehashChanged(bytes32,bytes,bytes)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       lastzonehash?: null,
       zonehash?: null
     ): DNSZonehashChangedEventFilter;
     DNSZonehashChanged(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       lastzonehash?: null,
       zonehash?: null
     ): DNSZonehashChangedEventFilter;
 
     "InterfaceChanged(bytes32,bytes4,address)"(
-      node?: BytesLike | null,
-      interfaceID?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      interfaceID?: PromiseOrValue<BytesLike> | null,
       implementer?: null
     ): InterfaceChangedEventFilter;
     InterfaceChanged(
-      node?: BytesLike | null,
-      interfaceID?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      interfaceID?: PromiseOrValue<BytesLike> | null,
       implementer?: null
     ): InterfaceChangedEventFilter;
 
     "NameChanged(bytes32,string)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       name?: null
     ): NameChangedEventFilter;
-    NameChanged(node?: BytesLike | null, name?: null): NameChangedEventFilter;
+    NameChanged(
+      node?: PromiseOrValue<BytesLike> | null,
+      name?: null
+    ): NameChangedEventFilter;
 
     "PubkeyChanged(bytes32,bytes32,bytes32)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       x?: null,
       y?: null
     ): PubkeyChangedEventFilter;
     PubkeyChanged(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       x?: null,
       y?: null
     ): PubkeyChangedEventFilter;
 
     "TextChanged(bytes32,string,string)"(
-      node?: BytesLike | null,
-      indexedKey?: string | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      indexedKey?: PromiseOrValue<string> | null,
       key?: null
     ): TextChangedEventFilter;
     TextChanged(
-      node?: BytesLike | null,
-      indexedKey?: string | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      indexedKey?: PromiseOrValue<string> | null,
       key?: null
     ): TextChangedEventFilter;
   };
 
   estimateGas: {
     ABI(
-      node: BytesLike,
-      contentTypes: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      contentTypes: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "addr(bytes32)"(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "addr(bytes32,uint256)"(
-      node: BytesLike,
-      coinType: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     clearDNSZone(
-      node: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    contenthash(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    contenthash(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     dnsRecord(
-      node: BytesLike,
-      name: BytesLike,
-      resource: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
+      resource: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     hasDNSRecords(
-      node: BytesLike,
-      name: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     interfaceImplementer(
-      node: BytesLike,
-      interfaceID: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     isApprovedForAll(
-      account: string,
-      operator: string,
+      account: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     multicall(
-      data: BytesLike[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    name(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    name(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    pubkey(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    pubkey(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setABI(
-      node: BytesLike,
-      contentType: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      contentType: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     "setAddr(bytes32,uint256,bytes)"(
-      node: BytesLike,
-      coinType: BigNumberish,
-      a: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
+      a: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     "setAddr(bytes32,address)"(
-      node: BytesLike,
-      a: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      a: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setContenthash(
-      node: BytesLike,
-      hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setDNSRecords(
-      node: BytesLike,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setInterface(
-      node: BytesLike,
-      interfaceID: BytesLike,
-      implementer: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
+      implementer: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setName(
-      node: BytesLike,
-      newName: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      newName: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setPubkey(
-      node: BytesLike,
-      x: BytesLike,
-      y: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      x: PromiseOrValue<BytesLike>,
+      y: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setText(
-      node: BytesLike,
-      key: string,
-      value: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
+      value: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setZonehash(
-      node: BytesLike,
-      hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     text(
-      node: BytesLike,
-      key: string,
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    zonehash(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    zonehash(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     ABI(
-      node: BytesLike,
-      contentTypes: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      contentTypes: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "addr(bytes32)"(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "addr(bytes32,uint256)"(
-      node: BytesLike,
-      coinType: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     clearDNSZone(
-      node: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     contenthash(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     dnsRecord(
-      node: BytesLike,
-      name: BytesLike,
-      resource: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
+      resource: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     hasDNSRecords(
-      node: BytesLike,
-      name: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     interfaceImplementer(
-      node: BytesLike,
-      interfaceID: BytesLike,
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
-      account: string,
-      operator: string,
+      account: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     multicall(
-      data: BytesLike[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     name(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     pubkey(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     setABI(
-      node: BytesLike,
-      contentType: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      contentType: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     "setAddr(bytes32,uint256,bytes)"(
-      node: BytesLike,
-      coinType: BigNumberish,
-      a: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      coinType: PromiseOrValue<BigNumberish>,
+      a: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     "setAddr(bytes32,address)"(
-      node: BytesLike,
-      a: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      a: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setContenthash(
-      node: BytesLike,
-      hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setDNSRecords(
-      node: BytesLike,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setInterface(
-      node: BytesLike,
-      interfaceID: BytesLike,
-      implementer: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      interfaceID: PromiseOrValue<BytesLike>,
+      implementer: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setName(
-      node: BytesLike,
-      newName: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      newName: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setPubkey(
-      node: BytesLike,
-      x: BytesLike,
-      y: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      x: PromiseOrValue<BytesLike>,
+      y: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setText(
-      node: BytesLike,
-      key: string,
-      value: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
+      value: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setZonehash(
-      node: BytesLike,
-      hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     text(
-      node: BytesLike,
-      key: string,
+      node: PromiseOrValue<BytesLike>,
+      key: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     zonehash(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

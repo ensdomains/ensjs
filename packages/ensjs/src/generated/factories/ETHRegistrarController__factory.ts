@@ -241,9 +241,14 @@ const _abi = [
         type: "bool",
       },
       {
-        internalType: "uint96",
+        internalType: "uint32",
         name: "fuses",
-        type: "uint96",
+        type: "uint32",
+      },
+      {
+        internalType: "uint64",
+        name: "wrapperExpiry",
+        type: "uint64",
       },
     ],
     name: "makeCommitment",
@@ -360,9 +365,14 @@ const _abi = [
         type: "bool",
       },
       {
-        internalType: "uint96",
+        internalType: "uint32",
         name: "fuses",
-        type: "uint96",
+        type: "uint32",
+      },
+      {
+        internalType: "uint64",
+        name: "wrapperExpiry",
+        type: "uint64",
       },
     ],
     name: "register",

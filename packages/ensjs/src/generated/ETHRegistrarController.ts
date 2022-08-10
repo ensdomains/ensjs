@@ -25,10 +25,14 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export declare namespace IPriceOracle {
-  export type PriceStruct = { base: BigNumberish; premium: BigNumberish };
+  export type PriceStruct = {
+    base: PromiseOrValue<BigNumberish>;
+    premium: PromiseOrValue<BigNumberish>;
+  };
 
   export type PriceStructOutput = [BigNumber, BigNumber] & {
     base: BigNumber;
@@ -42,13 +46,13 @@ export interface ETHRegistrarControllerInterface extends utils.Interface {
     "available(string)": FunctionFragment;
     "commit(bytes32)": FunctionFragment;
     "commitments(bytes32)": FunctionFragment;
-    "makeCommitment(string,address,uint256,bytes32,address,bytes[],bool,uint96)": FunctionFragment;
+    "makeCommitment(string,address,uint256,bytes32,address,bytes[],bool,uint32,uint64)": FunctionFragment;
     "maxCommitmentAge()": FunctionFragment;
     "minCommitmentAge()": FunctionFragment;
     "nameWrapper()": FunctionFragment;
     "owner()": FunctionFragment;
     "prices()": FunctionFragment;
-    "register(string,address,uint256,bytes32,address,bytes[],bool,uint96)": FunctionFragment;
+    "register(string,address,uint256,bytes32,address,bytes[],bool,uint32,uint64)": FunctionFragment;
     "renew(string,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rentPrice(string,uint256)": FunctionFragment;
@@ -86,23 +90,30 @@ export interface ETHRegistrarControllerInterface extends utils.Interface {
     functionFragment: "MIN_REGISTRATION_DURATION",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "available", values: [string]): string;
-  encodeFunctionData(functionFragment: "commit", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "available",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "commit",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(
     functionFragment: "commitments",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "makeCommitment",
     values: [
-      string,
-      string,
-      BigNumberish,
-      BytesLike,
-      string,
-      BytesLike[],
-      boolean,
-      BigNumberish
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>[],
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
@@ -122,19 +133,20 @@ export interface ETHRegistrarControllerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "register",
     values: [
-      string,
-      string,
-      BigNumberish,
-      BytesLike,
-      string,
-      BytesLike[],
-      boolean,
-      BigNumberish
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>[],
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "renew",
-    values: [string, BigNumberish]
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -142,7 +154,7 @@ export interface ETHRegistrarControllerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "rentPrice",
-    values: [string, BigNumberish]
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "reverseRegistrar",
@@ -150,13 +162,16 @@ export interface ETHRegistrarControllerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "valid", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "valid",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(
@@ -289,27 +304,31 @@ export interface ETHRegistrarController extends BaseContract {
   functions: {
     MIN_REGISTRATION_DURATION(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    available(name: string, overrides?: CallOverrides): Promise<[boolean]>;
+    available(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     commit(
-      commitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     commitments(
-      arg0: BytesLike,
+      arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     makeCommitment(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -324,30 +343,31 @@ export interface ETHRegistrarController extends BaseContract {
     prices(overrides?: CallOverrides): Promise<[string]>;
 
     register(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     rentPrice(
-      name: string,
-      duration: BigNumberish,
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [IPriceOracle.PriceStructOutput] & {
@@ -358,42 +378,52 @@ export interface ETHRegistrarController extends BaseContract {
     reverseRegistrar(overrides?: CallOverrides): Promise<[string]>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    valid(name: string, overrides?: CallOverrides): Promise<[boolean]>;
+    valid(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   MIN_REGISTRATION_DURATION(overrides?: CallOverrides): Promise<BigNumber>;
 
-  available(name: string, overrides?: CallOverrides): Promise<boolean>;
+  available(
+    name: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   commit(
-    commitment: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    commitment: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  commitments(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+  commitments(
+    arg0: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   makeCommitment(
-    name: string,
-    owner: string,
-    duration: BigNumberish,
-    secret: BytesLike,
-    resolver: string,
-    data: BytesLike[],
-    reverseRecord: boolean,
-    fuses: BigNumberish,
+    name: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    duration: PromiseOrValue<BigNumberish>,
+    secret: PromiseOrValue<BytesLike>,
+    resolver: PromiseOrValue<string>,
+    data: PromiseOrValue<BytesLike>[],
+    reverseRecord: PromiseOrValue<boolean>,
+    fuses: PromiseOrValue<BigNumberish>,
+    wrapperExpiry: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -408,69 +438,83 @@ export interface ETHRegistrarController extends BaseContract {
   prices(overrides?: CallOverrides): Promise<string>;
 
   register(
-    name: string,
-    owner: string,
-    duration: BigNumberish,
-    secret: BytesLike,
-    resolver: string,
-    data: BytesLike[],
-    reverseRecord: boolean,
-    fuses: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    name: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    duration: PromiseOrValue<BigNumberish>,
+    secret: PromiseOrValue<BytesLike>,
+    resolver: PromiseOrValue<string>,
+    data: PromiseOrValue<BytesLike>[],
+    reverseRecord: PromiseOrValue<boolean>,
+    fuses: PromiseOrValue<BigNumberish>,
+    wrapperExpiry: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   renew(
-    name: string,
-    duration: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    name: PromiseOrValue<string>,
+    duration: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   rentPrice(
-    name: string,
-    duration: BigNumberish,
+    name: PromiseOrValue<string>,
+    duration: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IPriceOracle.PriceStructOutput>;
 
   reverseRegistrar(overrides?: CallOverrides): Promise<string>;
 
   supportsInterface(
-    interfaceID: BytesLike,
+    interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  valid(name: string, overrides?: CallOverrides): Promise<boolean>;
+  valid(
+    name: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   withdraw(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     MIN_REGISTRATION_DURATION(overrides?: CallOverrides): Promise<BigNumber>;
 
-    available(name: string, overrides?: CallOverrides): Promise<boolean>;
+    available(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    commit(commitment: BytesLike, overrides?: CallOverrides): Promise<void>;
+    commit(
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    commitments(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    commitments(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     makeCommitment(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -485,44 +529,48 @@ export interface ETHRegistrarController extends BaseContract {
     prices(overrides?: CallOverrides): Promise<string>;
 
     register(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     renew(
-      name: string,
-      duration: BigNumberish,
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     rentPrice(
-      name: string,
-      duration: BigNumberish,
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IPriceOracle.PriceStructOutput>;
 
     reverseRegistrar(overrides?: CallOverrides): Promise<string>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     transferOwnership(
-      newOwner: string,
+      newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    valid(name: string, overrides?: CallOverrides): Promise<boolean>;
+    valid(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     withdraw(overrides?: CallOverrides): Promise<void>;
   };
@@ -530,16 +578,16 @@ export interface ETHRegistrarController extends BaseContract {
   filters: {
     "NameRegistered(string,bytes32,address,uint256,uint256,uint256)"(
       name?: null,
-      label?: BytesLike | null,
-      owner?: string | null,
+      label?: PromiseOrValue<BytesLike> | null,
+      owner?: PromiseOrValue<string> | null,
       baseCost?: null,
       premium?: null,
       expires?: null
     ): NameRegisteredEventFilter;
     NameRegistered(
       name?: null,
-      label?: BytesLike | null,
-      owner?: string | null,
+      label?: PromiseOrValue<BytesLike> | null,
+      owner?: PromiseOrValue<string> | null,
       baseCost?: null,
       premium?: null,
       expires?: null
@@ -547,48 +595,55 @@ export interface ETHRegistrarController extends BaseContract {
 
     "NameRenewed(string,bytes32,uint256,uint256)"(
       name?: null,
-      label?: BytesLike | null,
+      label?: PromiseOrValue<BytesLike> | null,
       cost?: null,
       expires?: null
     ): NameRenewedEventFilter;
     NameRenewed(
       name?: null,
-      label?: BytesLike | null,
+      label?: PromiseOrValue<BytesLike> | null,
       cost?: null,
       expires?: null
     ): NameRenewedEventFilter;
 
     "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
   };
 
   estimateGas: {
     MIN_REGISTRATION_DURATION(overrides?: CallOverrides): Promise<BigNumber>;
 
-    available(name: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    commit(
-      commitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    available(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    commitments(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    commit(
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    commitments(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     makeCommitment(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -603,49 +658,53 @@ export interface ETHRegistrarController extends BaseContract {
     prices(overrides?: CallOverrides): Promise<BigNumber>;
 
     register(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     rentPrice(
-      name: string,
-      duration: BigNumberish,
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     reverseRegistrar(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    valid(name: string, overrides?: CallOverrides): Promise<BigNumber>;
+    valid(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
@@ -655,29 +714,30 @@ export interface ETHRegistrarController extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     available(
-      name: string,
+      name: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     commit(
-      commitment: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     commitments(
-      arg0: BytesLike,
+      arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     makeCommitment(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -692,52 +752,53 @@ export interface ETHRegistrarController extends BaseContract {
     prices(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     register(
-      name: string,
-      owner: string,
-      duration: BigNumberish,
-      secret: BytesLike,
-      resolver: string,
-      data: BytesLike[],
-      reverseRecord: boolean,
-      fuses: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      secret: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      data: PromiseOrValue<BytesLike>[],
+      reverseRecord: PromiseOrValue<boolean>,
+      fuses: PromiseOrValue<BigNumberish>,
+      wrapperExpiry: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renew(
-      name: string,
-      duration: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     rentPrice(
-      name: string,
-      duration: BigNumberish,
+      name: PromiseOrValue<string>,
+      duration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     reverseRegistrar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     valid(
-      name: string,
+      name: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     withdraw(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

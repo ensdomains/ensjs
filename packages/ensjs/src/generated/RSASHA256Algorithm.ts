@@ -17,6 +17,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface RSASHA256AlgorithmInterface extends utils.Interface {
@@ -28,7 +29,11 @@ export interface RSASHA256AlgorithmInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "verify",
-    values: [BytesLike, BytesLike, BytesLike]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
 
   decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
@@ -64,25 +69,25 @@ export interface RSASHA256Algorithm extends BaseContract {
 
   functions: {
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      sig: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      sig: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
 
   verify(
-    key: BytesLike,
-    data: BytesLike,
-    sig: BytesLike,
+    key: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
+    sig: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   callStatic: {
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      sig: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      sig: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
@@ -91,18 +96,18 @@ export interface RSASHA256Algorithm extends BaseContract {
 
   estimateGas: {
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      sig: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      sig: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      sig: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      sig: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

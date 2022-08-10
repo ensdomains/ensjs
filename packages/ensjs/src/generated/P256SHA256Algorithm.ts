@@ -17,6 +17,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface P256SHA256AlgorithmInterface extends utils.Interface {
@@ -28,7 +29,11 @@ export interface P256SHA256AlgorithmInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "verify",
-    values: [BytesLike, BytesLike, BytesLike]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
 
   decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
@@ -70,9 +75,9 @@ export interface P256SHA256Algorithm extends BaseContract {
      * @param signature The signature to verify.
      */
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      signature: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
@@ -84,9 +89,9 @@ export interface P256SHA256Algorithm extends BaseContract {
    * @param signature The signature to verify.
    */
   verify(
-    key: BytesLike,
-    data: BytesLike,
-    signature: BytesLike,
+    key: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
+    signature: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -98,9 +103,9 @@ export interface P256SHA256Algorithm extends BaseContract {
      * @param signature The signature to verify.
      */
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      signature: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
@@ -115,9 +120,9 @@ export interface P256SHA256Algorithm extends BaseContract {
      * @param signature The signature to verify.
      */
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      signature: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -130,9 +135,9 @@ export interface P256SHA256Algorithm extends BaseContract {
      * @param signature The signature to verify.
      */
     verify(
-      key: BytesLike,
-      data: BytesLike,
-      signature: BytesLike,
+      key: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

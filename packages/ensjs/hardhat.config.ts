@@ -37,25 +37,6 @@ const config: HardhatUserConfig = {
       default: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
     },
   },
-  abiExporter: {
-    path: './src/ABIs',
-    clear: true,
-    flat: true,
-    only: [
-      'StaticMetadataService',
-      'NameWrapper',
-      'ReverseRegistrar',
-      'PublicResolver',
-      'UniversalResolver',
-      'ETHRegistrarController',
-    ],
-    except: [
-      'INameWrapper',
-      'IETHRegistrarController',
-      'IReverseRegistrar',
-      'NameResolver',
-    ],
-  },
 }
 
 export default config

@@ -23,6 +23,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface RootInterface extends utils.Interface {
@@ -55,28 +56,43 @@ export interface RootInterface extends utils.Interface {
       | "transferOwnership"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "controllers", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "controllers",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "ens", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isOwner", values: [string]): string;
-  encodeFunctionData(functionFragment: "lock", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "locked", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "isOwner",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lock",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "locked",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setController",
-    values: [string, boolean]
+    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
-  encodeFunctionData(functionFragment: "setResolver", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setResolver",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "setSubnodeOwner",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(
@@ -150,228 +166,272 @@ export interface Root extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    controllers(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+    controllers(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     ens(overrides?: CallOverrides): Promise<[string]>;
 
-    isOwner(addr: string, overrides?: CallOverrides): Promise<[boolean]>;
+    isOwner(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     lock(
-      label: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      label: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    locked(arg0: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
+    locked(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     setController(
-      controller: string,
-      enabled: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setResolver(
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setSubnodeOwner(
-      label: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
-  controllers(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  controllers(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   ens(overrides?: CallOverrides): Promise<string>;
 
-  isOwner(addr: string, overrides?: CallOverrides): Promise<boolean>;
+  isOwner(
+    addr: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   lock(
-    label: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    label: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  locked(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+  locked(
+    arg0: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
   setController(
-    controller: string,
-    enabled: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    controller: PromiseOrValue<string>,
+    enabled: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setResolver(
-    resolver: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    resolver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setSubnodeOwner(
-    label: BytesLike,
-    owner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    label: PromiseOrValue<BytesLike>,
+    owner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   supportsInterface(
-    interfaceID: BytesLike,
+    interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    controllers(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    controllers(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     ens(overrides?: CallOverrides): Promise<string>;
 
-    isOwner(addr: string, overrides?: CallOverrides): Promise<boolean>;
+    isOwner(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    lock(label: BytesLike, overrides?: CallOverrides): Promise<void>;
+    lock(
+      label: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    locked(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+    locked(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     setController(
-      controller: string,
-      enabled: boolean,
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setResolver(resolver: string, overrides?: CallOverrides): Promise<void>;
+    setResolver(
+      resolver: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setSubnodeOwner(
-      label: BytesLike,
-      owner: string,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     transferOwnership(
-      newOwner: string,
+      newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "TLDLocked(bytes32)"(label?: BytesLike | null): TLDLockedEventFilter;
-    TLDLocked(label?: BytesLike | null): TLDLockedEventFilter;
+    "TLDLocked(bytes32)"(
+      label?: PromiseOrValue<BytesLike> | null
+    ): TLDLockedEventFilter;
+    TLDLocked(label?: PromiseOrValue<BytesLike> | null): TLDLockedEventFilter;
   };
 
   estimateGas: {
-    controllers(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    controllers(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     ens(overrides?: CallOverrides): Promise<BigNumber>;
 
-    isOwner(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    lock(
-      label: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    isOwner(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    locked(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    lock(
+      label: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    locked(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     setController(
-      controller: string,
-      enabled: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setResolver(
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setSubnodeOwner(
-      label: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     controllers(
-      arg0: string,
+      arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     ens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isOwner(
-      addr: string,
+      addr: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     lock(
-      label: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      label: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     locked(
-      arg0: BytesLike,
+      arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setController(
-      controller: string,
-      enabled: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setResolver(
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setSubnodeOwner(
-      label: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

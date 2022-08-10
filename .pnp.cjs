@@ -207,7 +207,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "@ensdomains/ens-contracts",\
-        "npm:0.0.11"\
+        "npm:0.0.12"\
       ],\
       [\
         "@ensdomains/ens-test-env",\
@@ -682,7 +682,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "@typechain/ethers-v5",\
-        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.0.0"\
+        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.1.0"\
       ],\
       [\
         "@types/abstract-leveldown",\
@@ -1643,10 +1643,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "enquirer",\
         "npm:2.3.6"\
-      ],\
-      [\
-        "ens-contracts",\
-        "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"\
       ],\
       [\
         "entities",\
@@ -3754,7 +3750,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "ts-essentials",\
-        "virtual:6ff16069e64c45f1e1df7b69fc41aa2173ec73996b5520a86c73d739559781818e98e9f86cac889ee55625afe08f0f1a491c51f2274fff2e4fb4d5eb186db50a#npm:7.0.3"\
+        "virtual:388a6d560a6937c30685e9e4d5a1cf42efa54a0ff8b596261e599e45de436d6b7e3c6507a481b4ac820d6c67542937544f4df20f0ab9670cf0ad9fc223db228c#npm:7.0.3"\
       ],\
       [\
         "ts-jest",\
@@ -3810,7 +3806,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],\
       [\
         "typechain",\
-        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0"\
+        "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.1.0"\
       ],\
       [\
         "typedarray-to-buffer",\
@@ -5008,10 +5004,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@ensdomains/ens-contracts", [\
-        ["npm:0.0.11", {\
-          "packageLocation": "./.yarn/cache/@ensdomains-ens-contracts-npm-0.0.11-36f6a9beba-e21674ee8d.zip/node_modules/@ensdomains/ens-contracts/",\
+        ["npm:0.0.12", {\
+          "packageLocation": "./.yarn/cache/@ensdomains-ens-contracts-npm-0.0.12-95e14f5d5b-ebadc111a7.zip/node_modules/@ensdomains/ens-contracts/",\
           "packageDependencies": [\
-            ["@ensdomains/ens-contracts", "npm:0.0.11"],\
+            ["@ensdomains/ens-contracts", "npm:0.0.12"],\
             ["@ensdomains/buffer", "npm:0.0.13"],\
             ["@ensdomains/solsha1", "npm:0.0.3"],\
             ["@openzeppelin/contracts", "npm:4.5.0"],\
@@ -5051,7 +5047,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@ensdomains/address-encoder", "npm:0.2.16"],\
             ["@ensdomains/buffer", "npm:0.0.13"],\
             ["@ensdomains/content-hash", "npm:2.5.7"],\
-            ["@ensdomains/ens-contracts", "npm:0.0.11"],\
+            ["@ensdomains/ens-contracts", "npm:0.0.12"],\
             ["@ensdomains/ens-test-env", "workspace:packages/ens-test-env"],\
             ["@ethersproject/abi", "npm:5.6.0"],\
             ["@ethersproject/providers", "npm:5.6.2"],\
@@ -5062,13 +5058,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@openzeppelin/contracts", "npm:4.5.0"],\
             ["@swc/core", "npm:1.2.162"],\
             ["@swc/jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:0.2.20"],\
-            ["@typechain/ethers-v5", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.0.0"],\
+            ["@typechain/ethers-v5", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.1.0"],\
             ["@types/bn.js", "npm:5.1.0"],\
             ["@types/jest", "npm:27.4.1"],\
             ["@types/traverse", "npm:0.6.32"],\
             ["dns-packet", "npm:5.3.1"],\
             ["dotenv", "npm:16.0.0"],\
-            ["ens-contracts", "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"],\
             ["ethers", "npm:5.6.1"],\
             ["graphql", "npm:16.3.0"],\
             ["graphql-request", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:4.4.0-next.2"],\
@@ -5085,7 +5080,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["traverse", "npm:0.6.6"],\
             ["ts-jest", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:27.1.4"],\
             ["ts-node", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.7.0"],\
-            ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0"],\
+            ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.1.0"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"],\
             ["wait-on", "npm:6.0.1"]\
           ],\
@@ -6772,17 +6767,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@typechain/ethers-v5", [\
-        ["npm:10.0.0", {\
-          "packageLocation": "./.yarn/cache/@typechain-ethers-v5-npm-10.0.0-2673cc9679-f89a442829.zip/node_modules/@typechain/ethers-v5/",\
+        ["npm:10.1.0", {\
+          "packageLocation": "./.yarn/cache/@typechain-ethers-v5-npm-10.1.0-b47ba5fed1-452ad685ce.zip/node_modules/@typechain/ethers-v5/",\
           "packageDependencies": [\
-            ["@typechain/ethers-v5", "npm:10.0.0"]\
+            ["@typechain/ethers-v5", "npm:10.1.0"]\
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.0.0", {\
-          "packageLocation": "./.yarn/__virtual__/@typechain-ethers-v5-virtual-6ff16069e6/0/cache/@typechain-ethers-v5-npm-10.0.0-2673cc9679-f89a442829.zip/node_modules/@typechain/ethers-v5/",\
+        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.1.0", {\
+          "packageLocation": "./.yarn/__virtual__/@typechain-ethers-v5-virtual-388a6d560a/0/cache/@typechain-ethers-v5-npm-10.1.0-b47ba5fed1-452ad685ce.zip/node_modules/@typechain/ethers-v5/",\
           "packageDependencies": [\
-            ["@typechain/ethers-v5", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.0.0"],\
+            ["@typechain/ethers-v5", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:10.1.0"],\
             ["@ethersproject/abi", "npm:5.6.0"],\
             ["@ethersproject/bytes", null],\
             ["@ethersproject/providers", "npm:5.6.2"],\
@@ -6794,8 +6789,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/typescript", null],\
             ["ethers", "npm:5.6.1"],\
             ["lodash", "npm:4.17.21"],\
-            ["ts-essentials", "virtual:6ff16069e64c45f1e1df7b69fc41aa2173ec73996b5520a86c73d739559781818e98e9f86cac889ee55625afe08f0f1a491c51f2274fff2e4fb4d5eb186db50a#npm:7.0.3"],\
-            ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0"],\
+            ["ts-essentials", "virtual:388a6d560a6937c30685e9e4d5a1cf42efa54a0ff8b596261e599e45de436d6b7e3c6507a481b4ac820d6c67542937544f4df20f0ab9670cf0ad9fc223db228c#npm:7.0.3"],\
+            ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.1.0"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
           ],\
           "packagePeers": [\
@@ -9904,19 +9899,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["enquirer", "npm:2.3.6"],\
             ["ansi-colors", "npm:4.1.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["ens-contracts", [\
-        ["https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93", {\
-          "packageLocation": "./.yarn/unplugged/ens-contracts-https-70e7901c0d/node_modules/ens-contracts/",\
-          "packageDependencies": [\
-            ["ens-contracts", "https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"],\
-            ["@ensdomains/buffer", "npm:0.0.13"],\
-            ["@ensdomains/solsha1", "npm:0.0.3"],\
-            ["@openzeppelin/contracts", "npm:4.5.0"],\
-            ["dns-packet", "npm:5.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -17057,10 +17039,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:6ff16069e64c45f1e1df7b69fc41aa2173ec73996b5520a86c73d739559781818e98e9f86cac889ee55625afe08f0f1a491c51f2274fff2e4fb4d5eb186db50a#npm:7.0.3", {\
-          "packageLocation": "./.yarn/__virtual__/ts-essentials-virtual-1f44450cbd/0/cache/ts-essentials-npm-7.0.3-dbefe5cb3b-74d75868ac.zip/node_modules/ts-essentials/",\
+        ["virtual:388a6d560a6937c30685e9e4d5a1cf42efa54a0ff8b596261e599e45de436d6b7e3c6507a481b4ac820d6c67542937544f4df20f0ab9670cf0ad9fc223db228c#npm:7.0.3", {\
+          "packageLocation": "./.yarn/__virtual__/ts-essentials-virtual-fef2aa934a/0/cache/ts-essentials-npm-7.0.3-dbefe5cb3b-74d75868ac.zip/node_modules/ts-essentials/",\
           "packageDependencies": [\
-            ["ts-essentials", "virtual:6ff16069e64c45f1e1df7b69fc41aa2173ec73996b5520a86c73d739559781818e98e9f86cac889ee55625afe08f0f1a491c51f2274fff2e4fb4d5eb186db50a#npm:7.0.3"],\
+            ["ts-essentials", "virtual:388a6d560a6937c30685e9e4d5a1cf42efa54a0ff8b596261e599e45de436d6b7e3c6507a481b4ac820d6c67542937544f4df20f0ab9670cf0ad9fc223db228c#npm:7.0.3"],\
             ["@types/typescript", null],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
           ],\
@@ -17373,17 +17355,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["typechain", [\
-        ["npm:8.0.0", {\
-          "packageLocation": "./.yarn/cache/typechain-npm-8.0.0-5c30ec90f8-c049cc84ac.zip/node_modules/typechain/",\
+        ["npm:8.1.0", {\
+          "packageLocation": "./.yarn/cache/typechain-npm-8.1.0-c7faf20c1e-d8e05c4437.zip/node_modules/typechain/",\
           "packageDependencies": [\
-            ["typechain", "npm:8.0.0"]\
+            ["typechain", "npm:8.1.0"]\
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0", {\
-          "packageLocation": "./.yarn/__virtual__/typechain-virtual-962075e2a1/0/cache/typechain-npm-8.0.0-5c30ec90f8-c049cc84ac.zip/node_modules/typechain/",\
+        ["virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.1.0", {\
+          "packageLocation": "./.yarn/__virtual__/typechain-virtual-6d41886141/0/cache/typechain-npm-8.1.0-c7faf20c1e-d8e05c4437.zip/node_modules/typechain/",\
           "packageDependencies": [\
-            ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.0.0"],\
+            ["typechain", "virtual:dbab5548d6c479b3d0fbae056bca9e1ff56916aea7763afdc9f1e6c586db7a0fc611c24fbb7ceb65db0555e200d7d546a786802dd5359ca981e1d851cccb800c#npm:8.1.0"],\
             ["@types/prettier", "npm:2.4.4"],\
             ["@types/typescript", null],\
             ["debug", "virtual:62738e6f4a1bb4f8ff35ae41a77cb589aeffb1a2b896f237bc331b5509d0b413c328994ab1431dc8c128ffa7d6ca83d167ebf621c5c6b08297150420be31ce8e#npm:4.3.3"],\
@@ -17394,7 +17376,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mkdirp", "npm:1.0.4"],\
             ["prettier", "npm:2.6.2"],\
             ["ts-command-line-args", "npm:2.2.1"],\
-            ["ts-essentials", "virtual:6ff16069e64c45f1e1df7b69fc41aa2173ec73996b5520a86c73d739559781818e98e9f86cac889ee55625afe08f0f1a491c51f2274fff2e4fb4d5eb186db50a#npm:7.0.3"],\
+            ["ts-essentials", "virtual:388a6d560a6937c30685e9e4d5a1cf42efa54a0ff8b596261e599e45de436d6b7e3c6507a481b4ac820d6c67542937544f4df20f0ab9670cf0ad9fc223db228c#npm:7.0.3"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
           ],\
           "packagePeers": [\

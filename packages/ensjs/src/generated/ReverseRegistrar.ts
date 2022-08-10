@@ -23,6 +23,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface ReverseRegistrarInterface extends utils.Interface {
@@ -61,22 +62,35 @@ export interface ReverseRegistrarInterface extends utils.Interface {
       | "transferOwnership"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "claim", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "claim",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "claimForAddr",
-    values: [string, string, string]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "claimWithResolver",
-    values: [string, string]
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "controllers", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "controllers",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "defaultResolver",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "ens", values?: undefined): string;
-  encodeFunctionData(functionFragment: "node", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "node",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -84,20 +98,28 @@ export interface ReverseRegistrarInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setController",
-    values: [string, boolean]
+    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: "setDefaultResolver",
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "setName", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setName",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "setNameForAddr",
-    values: [string, string, string, string]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
@@ -216,296 +238,326 @@ export interface ReverseRegistrar extends BaseContract {
 
   functions: {
     claim(
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     claimForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     claimWithResolver(
-      owner: string,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    controllers(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+    controllers(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     defaultResolver(overrides?: CallOverrides): Promise<[string]>;
 
     ens(overrides?: CallOverrides): Promise<[string]>;
 
-    node(addr: string, overrides?: CallOverrides): Promise<[string]>;
+    node(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setController(
-      controller: string,
-      enabled: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setDefaultResolver(
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setName(
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setNameForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   claim(
-    owner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    owner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   claimForAddr(
-    addr: string,
-    owner: string,
-    resolver: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    addr: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    resolver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   claimWithResolver(
-    owner: string,
-    resolver: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    owner: PromiseOrValue<string>,
+    resolver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  controllers(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  controllers(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   defaultResolver(overrides?: CallOverrides): Promise<string>;
 
   ens(overrides?: CallOverrides): Promise<string>;
 
-  node(addr: string, overrides?: CallOverrides): Promise<string>;
+  node(
+    addr: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setController(
-    controller: string,
-    enabled: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    controller: PromiseOrValue<string>,
+    enabled: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setDefaultResolver(
-    resolver: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    resolver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setName(
-    name: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    name: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setNameForAddr(
-    addr: string,
-    owner: string,
-    resolver: string,
-    name: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    addr: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    resolver: PromiseOrValue<string>,
+    name: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    claim(owner: string, overrides?: CallOverrides): Promise<string>;
+    claim(
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     claimForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     claimWithResolver(
-      owner: string,
-      resolver: string,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    controllers(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    controllers(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     defaultResolver(overrides?: CallOverrides): Promise<string>;
 
     ens(overrides?: CallOverrides): Promise<string>;
 
-    node(addr: string, overrides?: CallOverrides): Promise<string>;
+    node(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     setController(
-      controller: string,
-      enabled: boolean,
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setDefaultResolver(
-      resolver: string,
+      resolver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setName(name: string, overrides?: CallOverrides): Promise<string>;
+    setName(
+      name: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     setNameForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      name: string,
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     transferOwnership(
-      newOwner: string,
+      newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
     "ControllerChanged(address,bool)"(
-      controller?: string | null,
+      controller?: PromiseOrValue<string> | null,
       enabled?: null
     ): ControllerChangedEventFilter;
     ControllerChanged(
-      controller?: string | null,
+      controller?: PromiseOrValue<string> | null,
       enabled?: null
     ): ControllerChangedEventFilter;
 
     "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
 
     "ReverseClaimed(address,bytes32)"(
-      addr?: string | null,
-      node?: BytesLike | null
+      addr?: PromiseOrValue<string> | null,
+      node?: PromiseOrValue<BytesLike> | null
     ): ReverseClaimedEventFilter;
     ReverseClaimed(
-      addr?: string | null,
-      node?: BytesLike | null
+      addr?: PromiseOrValue<string> | null,
+      node?: PromiseOrValue<BytesLike> | null
     ): ReverseClaimedEventFilter;
   };
 
   estimateGas: {
     claim(
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     claimForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     claimWithResolver(
-      owner: string,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    controllers(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    controllers(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     defaultResolver(overrides?: CallOverrides): Promise<BigNumber>;
 
     ens(overrides?: CallOverrides): Promise<BigNumber>;
 
-    node(addr: string, overrides?: CallOverrides): Promise<BigNumber>;
+    node(
+      addr: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setController(
-      controller: string,
-      enabled: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setDefaultResolver(
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setName(
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setNameForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     claim(
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     claimForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     claimWithResolver(
-      owner: string,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     controllers(
-      arg0: string,
+      arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -514,43 +566,43 @@ export interface ReverseRegistrar extends BaseContract {
     ens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     node(
-      addr: string,
+      addr: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setController(
-      controller: string,
-      enabled: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      controller: PromiseOrValue<string>,
+      enabled: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setDefaultResolver(
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setName(
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setNameForAddr(
-      addr: string,
-      owner: string,
-      resolver: string,
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      addr: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

@@ -456,15 +456,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/ens-contracts@npm:^0.0.11":
-  version: 0.0.11
-  resolution: "@ensdomains/ens-contracts@npm:0.0.11"
+"@ensdomains/ens-contracts@npm:^0.0.12":
+  version: 0.0.12
+  resolution: "@ensdomains/ens-contracts@npm:0.0.12"
   dependencies:
     "@ensdomains/buffer": ^0.0.13
     "@ensdomains/solsha1": 0.0.3
     "@openzeppelin/contracts": ^4.1.0
     dns-packet: ^5.3.0
-  checksum: e21674ee8ddc6df3dd27276efb51a9e19728cc9d0f61c79df1a20a985b525f7a7fe8eecfed4775901eae0f189ccab4295d616401ad11ecd3839f30795efa0ed5
+  checksum: ebadc111a78afdd5368b7f38048db0460de49b71bccbbbcd02f85fb608d0f2a45ae5418f651cd653256d41ddf4b844d295693aae157fc74c3963c08c09b54bc9
   languageName: node
   linkType: hard
 
@@ -498,7 +498,7 @@ __metadata:
     "@ensdomains/address-encoder": ^0.2.16
     "@ensdomains/buffer": ^0.0.13
     "@ensdomains/content-hash": ^2.5.7
-    "@ensdomains/ens-contracts": ^0.0.11
+    "@ensdomains/ens-contracts": ^0.0.12
     "@ensdomains/ens-test-env": "workspace:*"
     "@ethersproject/abi": ^5.6.0
     "@ethersproject/providers": ^5.6.2
@@ -506,13 +506,12 @@ __metadata:
     "@openzeppelin/contracts": ^4.5.0
     "@swc/core": ^1.2.162
     "@swc/jest": ^0.2.20
-    "@typechain/ethers-v5": ^10.0.0
+    "@typechain/ethers-v5": ^10.1.0
     "@types/bn.js": ^5.1.0
     "@types/jest": ^27.4.1
     "@types/traverse": ^0.6.32
     dns-packet: ^5.3.1
     dotenv: ^16.0.0
-    ens-contracts: "github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"
     ethers: ^5.6.1
     graphql: ^16.3.0
     graphql-request: next
@@ -529,7 +528,7 @@ __metadata:
     traverse: ^0.6.6
     ts-jest: ^27.1.4
     ts-node: ^10.7.0
-    typechain: ^8.0.0
+    typechain: ^8.1.0
     typescript: ^4.6.2
     wait-on: ^6.0.1
   peerDependencies:
@@ -2048,9 +2047,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typechain/ethers-v5@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@typechain/ethers-v5@npm:10.0.0"
+"@typechain/ethers-v5@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@typechain/ethers-v5@npm:10.1.0"
   dependencies:
     lodash: ^4.17.15
     ts-essentials: ^7.0.1
@@ -2059,9 +2058,9 @@ __metadata:
     "@ethersproject/bytes": ^5.0.0
     "@ethersproject/providers": ^5.0.0
     ethers: ^5.1.3
-    typechain: ^8.0.0
+    typechain: ^8.1.0
     typescript: ">=4.3.0"
-  checksum: f89a442829398d00e6c10c4cdebb16af3195cfbf6b0c062f24503ee1befc01c121a6d46edfd7b54aaf00c81b2e845730d2b556ecbaa6e15f360456f42fedb44d
+  checksum: 452ad685ce792ddefebdcb8ae72f4343ed1411f91701250e273c1a0dd79753d0d40f311cff19ec0c4fd6a9b9cf23e55eb9ae1b94cb388fbc54c122ae4d0e6f47
   languageName: node
   linkType: hard
 
@@ -4636,18 +4635,6 @@ __metadata:
   dependencies:
     ansi-colors: ^4.1.1
   checksum: 1c0911e14a6f8d26721c91e01db06092a5f7675159f0261d69c403396a385afd13dd76825e7678f66daffa930cfaa8d45f506fb35f818a2788463d022af1b884
-  languageName: node
-  linkType: hard
-
-"ens-contracts@github:ensdomains/ens-contracts#head=master&commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93":
-  version: 0.0.9
-  resolution: "ens-contracts@https://github.com/ensdomains/ens-contracts.git#commit=3ecc56b14beb4aae8296f8a94f7c0d095e62fd93"
-  dependencies:
-    "@ensdomains/buffer": ^0.0.13
-    "@ensdomains/solsha1": 0.0.3
-    "@openzeppelin/contracts": ^4.1.0
-    dns-packet: ^5.3.0
-  checksum: e3e3e560e46a68ad5014bcc334f7916427f84113096ae922f48cdf2a5e75c3eb555cd2282a4dab11f75a49f091392ab0d7857b62aebb921139c16cacc59bbbe1
   languageName: node
   linkType: hard
 
@@ -11199,9 +11186,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typechain@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "typechain@npm:8.0.0"
+"typechain@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "typechain@npm:8.1.0"
   dependencies:
     "@types/prettier": ^2.1.1
     debug: ^4.3.1
@@ -11217,7 +11204,7 @@ __metadata:
     typescript: ">=4.3.0"
   bin:
     typechain: dist/cli/cli.js
-  checksum: c049cc84ac3cf3a5ed8374db750b7b9adcfc523bb1940e1b8bafef063297aed081a5378560c3fbccd1f5d130d32c9ba9678654dfe00d97fb1dfa17d04a933450
+  checksum: d8e05c4437d5ba54fd5dea28c20884c2aa259e911c6ffc9d1768a229633c661f378439e4b0a1a21f33372e8ed82adc324583381cde16f199af9440792a95da88
   languageName: node
   linkType: hard
 
