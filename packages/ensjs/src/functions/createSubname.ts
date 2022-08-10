@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
@@ -13,12 +13,19 @@ type BaseArgs = {
 type NameWrapperArgs = {
   contract: 'nameWrapper'
   fuses?: FuseOptions
+  expiry?: string | number | Date | BigNumber
 } & BaseArgs
 
 type Args = BaseArgs | NameWrapperArgs
 
+const MAX_EXPIRY = ethers.BigNumber.from(2).pow(64).sub(1)
+
 export default async function (
-  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
+  {
+    contracts,
+    signer,
+    getExpiry,
+  }: ENSArgs<'contracts' | 'signer' | 'getExpiry'>,
   name: string,
   { owner, resolverAddress, contract, ...wrapperArgs }: Args,
 ) {
@@ -54,6 +61,27 @@ export default async function (
     }
     case 'nameWrapper': {
       const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
+      let expiry: BigNumber
+
+      if ('expiry' in wrapperArgs) {
+        const _expiry = wrapperArgs.expiry
+        if (_expiry instanceof Date) {
+          expiry = BigNumber.from(_expiry.getTime() / 1000)
+        } else if (_expiry instanceof BigNumber) {
+          expiry = _expiry
+        } else {
+          expiry = BigNumber.from(_expiry)
+        }
+      } else {
+        if (name.endsWith('.eth')) {
+          const expResponse = await getExpiry(name)
+          if (!expResponse?.expiry)
+            throw new Error("Couldn't get expiry for name, please provide one.")
+          expiry = BigNumber.from(expResponse.expiry.getTime() / 1000)
+        } else {
+          expiry = MAX_EXPIRY
+        }
+      }
 
       const generatedFuses =
         'fuses' in wrapperArgs && wrapperArgs.fuses
@@ -67,6 +95,7 @@ export default async function (
         resolverAddress,
         0,
         generatedFuses,
+        expiry,
       )
     }
     default: {

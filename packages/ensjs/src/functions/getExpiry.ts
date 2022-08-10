@@ -1,18 +1,23 @@
 import { BigNumber } from 'ethers'
 import { solidityKeccak256 } from 'ethers/lib/utils'
 import { ENSArgs } from '..'
+import { namehash } from '../utils/normalise'
 
-const raw = async (
+type ContractOption = 'registrar' | 'nameWrapper'
+
+type Args = {
+  contract?: ContractOption
+}
+
+const getRegistrarExpiry = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
-  name: string,
+  labels: string[],
 ) => {
-  const baseRegistrar = await contracts?.getBaseRegistrar()!
-
-  const labels = name.split('.')
-
   if (labels.length > 2 || labels[1] !== 'eth') {
-    throw new Error('Only .eth names have expiry dates')
+    throw new Error('Only .eth names have expiry dates on the registrar')
   }
+
+  const baseRegistrar = await contracts?.getBaseRegistrar()!
 
   const expiryCall = baseRegistrar.interface.encodeFunctionData('nameExpires', [
     solidityKeccak256(['string'], [labels[0]]),
@@ -32,11 +37,49 @@ const raw = async (
   ])
 }
 
-const decode = async (
+const getWrapperExpiry = async (
+  { contracts }: ENSArgs<'contracts'>,
+  labels: string[],
+) => {
+  const nameWrapper = await contracts?.getNameWrapper()!
+  const expiryCall = nameWrapper.interface.encodeFunctionData('getData', [
+    namehash(labels.join('.')),
+  ])
+  return {
+    to: nameWrapper.address,
+    data: expiryCall,
+  }
+}
+
+const getContractToUse = (
+  contract: ContractOption | undefined,
+  labels: string[],
+) => {
+  if (contract) return contract
+  if (labels.length === 2 && labels[1] === 'eth') {
+    return 'registrar'
+  }
+  return 'nameWrapper'
+}
+
+const raw = async (
+  ensArgs: ENSArgs<'contracts' | 'multicallWrapper'>,
+  name: string,
+  { contract }: Args = {},
+) => {
+  const labels = name.split('.')
+
+  const contractToUse = getContractToUse(contract, labels)
+
+  return contractToUse === 'nameWrapper'
+    ? getWrapperExpiry(ensArgs, labels)
+    : getRegistrarExpiry(ensArgs, labels)
+}
+
+const decodeRegistrarExpiry = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
   data: string,
 ) => {
-  if (data === null) return
   const result = await multicallWrapper.decode(data)
   const baseRegistrar = await contracts?.getBaseRegistrar()!
   try {
@@ -55,6 +98,41 @@ const decode = async (
   } catch {
     return
   }
+}
+
+const decodeWrapperExpiry = async (
+  { contracts }: ENSArgs<'contracts'>,
+  data: string,
+) => {
+  const nameWrapper = await contracts?.getNameWrapper()!
+  try {
+    const [_owner, _fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
+      'getData',
+      data,
+    )
+    return {
+      expiry: new Date(expiry * 1000),
+      gracePeriod: null,
+    }
+  } catch {
+    return
+  }
+}
+
+const decode = async (
+  ensArgs: ENSArgs<'contracts' | 'multicallWrapper'>,
+  data: string,
+  name: string,
+  { contract }: Args = {},
+) => {
+  if (data === null) return
+
+  const labels = name.split('.')
+  const contractToUse = getContractToUse(contract, labels)
+
+  return contractToUse === 'nameWrapper'
+    ? decodeWrapperExpiry(ensArgs, data)
+    : decodeRegistrarExpiry(ensArgs, data)
 }
 
 export default {

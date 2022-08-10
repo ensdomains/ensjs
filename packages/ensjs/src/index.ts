@@ -575,7 +575,7 @@ export class ENS {
 
   public createSubname = this.generateWriteFunction<typeof createSubname>(
     'createSubname',
-    ['contracts'],
+    ['contracts', 'getExpiry'],
   )
 
   public deleteSubname = this.generateWriteFunction<typeof deleteSubname>(
