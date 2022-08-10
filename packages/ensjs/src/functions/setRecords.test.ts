@@ -16,13 +16,14 @@ afterAll(async () => {
 
 describe('setRecords', () => {
   it('should return a transaction to the resolver and set successfully', async () => {
-    const tx = await ENSInstance.setRecords('parthtejpal.eth', {
+    const tx = await ENSInstance.setRecords('test123.eth', {
       records: {
         coinTypes: [
           { key: 'ETC', value: '0x42D63ae25990889E35F215bC95884039Ba354115' },
         ],
         texts: [{ key: 'foo', value: 'bar' }],
       },
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -31,16 +32,16 @@ describe('setRecords', () => {
       await ENSInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ENSInstance.contracts!.getPublicResolver()!
     const encodedText = await universalResolver.resolve(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('text', [
-        namehash('parthtejpal.eth'),
+        namehash('test123.eth'),
         'foo',
       ]),
     )
     const encodedAddr = await universalResolver.resolve(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
-        namehash('parthtejpal.eth'),
+        namehash('test123.eth'),
         '61',
       ]),
     )

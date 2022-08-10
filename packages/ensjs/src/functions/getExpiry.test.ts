@@ -18,7 +18,7 @@ afterAll(async () => {
 
 describe('getExpiry', () => {
   it('should get the expiry for a .eth name with no other args', async () => {
-    const result = await ENSInstance.getExpiry('jefflau.eth')
+    const result = await ENSInstance.getExpiry('with-profile.eth')
     expect(result).toBeTruthy()
     if (result) {
       const { expiry, gracePeriod } = result
@@ -27,12 +27,7 @@ describe('getExpiry', () => {
     }
   })
   it('should get the expiry for a wrapped name', async () => {
-    const tx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await tx.wait()
-
-    const result = await ENSInstance.getExpiry('parthtejpal.eth', {
+    const result = await ENSInstance.getExpiry('wrapped.eth', {
       contract: 'nameWrapper',
     })
 
@@ -45,7 +40,7 @@ describe('getExpiry', () => {
   })
   it('should throw an error for a non .eth name if not wrapped', async () => {
     try {
-      await ENSInstance.getExpiry('sub.jefflau.eth')
+      await ENSInstance.getExpiry('sub.with-profile.eth')
       expect(false).toBeTruthy()
     } catch {
       expect(true).toBeTruthy()
@@ -53,7 +48,9 @@ describe('getExpiry', () => {
   })
   it('should throw an error for a non .eth name if registrar is specified', async () => {
     try {
-      await ENSInstance.getExpiry('sub.jefflau.eth', { contract: 'registrar' })
+      await ENSInstance.getExpiry('sub.with-profile.eth', {
+        contract: 'registrar',
+      })
       expect(false).toBeTruthy()
     } catch {
       expect(true).toBeTruthy()

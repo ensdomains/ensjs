@@ -22,47 +22,32 @@ describe('unwrapName', () => {
     await revert()
   })
   it('should return a .eth unwrap name transaction and succeed', async () => {
-    const wrapNameTx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await wrapNameTx.wait()
-
-    const tx = await ENSInstance.unwrapName('parthtejpal.eth', {
-      newController: accounts[0],
-      newRegistrant: accounts[0],
+    const tx = await ENSInstance.unwrapName('wrapped.eth', {
+      newController: accounts[1],
+      newRegistrant: accounts[1],
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const baseRegistrar = await ENSInstance.contracts!.getBaseRegistrar()!
     const result = await baseRegistrar.ownerOf(
-      utils.solidityKeccak256(['string'], ['parthtejpal']),
+      utils.solidityKeccak256(['string'], ['wrapped']),
     )
-    expect(result).toBe(accounts[0])
+    expect(result).toBe(accounts[1])
   })
   it('should return a regular unwrap name transaction and succeed', async () => {
-    const wrapNameTx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await wrapNameTx.wait()
-    const createSubnameTx = await ENSInstance.createSubname(
-      'test.parthtejpal.eth',
-      {
-        contract: 'nameWrapper',
-        owner: accounts[0],
-        addressOrIndex: 0,
-      },
-    )
-    await createSubnameTx.wait()
-
-    const tx = await ENSInstance.unwrapName('test.parthtejpal.eth', {
-      newController: accounts[0],
+    const tx = await ENSInstance.unwrapName('test.wrapped-with-subnames.eth', {
+      newController: accounts[1],
+      addressOrIndex: 2,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(namehash('test.parthtejpal.eth'))
-    expect(result).toBe(accounts[0])
+    const result = await registry.owner(
+      namehash('test.wrapped-with-subnames.eth'),
+    )
+    expect(result).toBe(accounts[1])
   })
 })

@@ -22,38 +22,37 @@ describe('setName', () => {
     await revert()
   })
   it('should return a transaction for a name and set successfully', async () => {
-    const tx = await ENSInstance.setName('fleek.eth')
+    const tx = await ENSInstance.setName('test123.eth', { addressOrIndex: 1 })
     expect(tx).toBeTruthy()
     await tx?.wait()
 
     const universalResolver =
       await ENSInstance.contracts!.getUniversalResolver()!
-    const reverseNode = accounts[0].toLowerCase().substring(2) + '.addr.reverse'
+    const reverseNode = accounts[1].toLowerCase().substring(2) + '.addr.reverse'
     const result = await universalResolver.reverse(hexEncodeName(reverseNode))
-    expect(result[0]).toBe('fleek.eth')
+    expect(result[0]).toBe('test123.eth')
   })
   it("should return a transaction for setting another address' name", async () => {
-    jest.setTimeout(20000)
     const registry = (await ENSInstance.contracts!.getRegistry()!).connect(
-      provider.getSigner(),
+      provider.getSigner(1),
     )
     const setApprovedForAllTx = await registry.setApprovalForAll(
-      accounts[1],
+      accounts[2],
       true,
     )
     await setApprovedForAllTx?.wait()
 
-    const tx = await ENSInstance.setName('fleek.eth', {
-      address: accounts[0],
-      addressOrIndex: 1,
+    const tx = await ENSInstance.setName('test123.eth', {
+      address: accounts[1],
+      addressOrIndex: 2,
     })
     expect(tx).toBeTruthy()
     await tx?.wait()
 
     const universalResolver =
       await ENSInstance.contracts!.getUniversalResolver()!
-    const reverseNode = accounts[0].toLowerCase().substring(2) + '.addr.reverse'
+    const reverseNode = accounts[1].toLowerCase().substring(2) + '.addr.reverse'
     const result = await universalResolver.reverse(hexEncodeName(reverseNode))
-    expect(result[0]).toBe('fleek.eth')
+    expect(result[0]).toBe('test123.eth')
   })
 })

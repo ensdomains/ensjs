@@ -1,6 +1,6 @@
 import { ENS } from '..'
-import { OwnedName, Registration } from '../functions/getNames'
 import setup from '../tests/setup'
+import { Name } from './getNames'
 
 let ENSInstance: ENS
 
@@ -14,12 +14,43 @@ const testProperties = (obj: object, ...properties: string[]) =>
 const testNotProperties = (obj: object, ...properties: string[]) =>
   properties.map((property) => expect(obj).not.toHaveProperty(property))
 
+const letterItems = [
+  'w',
+  '9',
+  '8',
+  '7',
+  '6',
+  '5',
+  '4',
+  ...Array(5).fill('3'),
+  ...Array(11).fill('2'),
+  ...Array(11).fill('1'),
+  '0',
+]
+
+const domainLetterItems = [
+  '[',
+  'w',
+  't',
+  't',
+  '9',
+  '8',
+  '7',
+  '6',
+  '5',
+  '4',
+  ...Array(5).fill('3'),
+  ...Array(11).fill('2'),
+  ...Array(11).fill('1'),
+  '0',
+]
+
 describe('getNames', () => {
   let totalRegistrations: number = 0
   let totalOwnedNames: number = 0
   it('should get the registrations for an address', async () => {
     const result = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'registrant',
     })
     totalRegistrations = result.length
@@ -39,7 +70,7 @@ describe('getNames', () => {
   })
   it('should get the owned names for an address', async () => {
     const result = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'owner',
     })
     totalOwnedNames = result.length
@@ -58,39 +89,51 @@ describe('getNames', () => {
   })
   it('should get the registrations for an address with pagination', async () => {
     const pageOne = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'registrant',
       page: 0,
     })
     expect(pageOne).toHaveLength(10)
     const pageTwo = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'registrant',
       page: 1,
     })
-    expect(pageTwo).toHaveLength(totalRegistrations % 10)
+    expect(pageTwo).toHaveLength(10)
+    const pageThree = await ENSInstance.getNames({
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      type: 'registrant',
+      page: 2,
+    })
+    expect(pageThree).toHaveLength(10)
+    const pageFour = await ENSInstance.getNames({
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      type: 'registrant',
+      page: 3,
+    })
+    expect(pageFour).toHaveLength(totalRegistrations % 10)
   })
   it('should get the owned names for an address with pagination', async () => {
     const pageOne = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'owner',
       page: 0,
     })
     expect(pageOne).toHaveLength(10)
     const pageTwo = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'owner',
       page: 1,
     })
     expect(pageTwo).toHaveLength(10)
     const pageThree = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'owner',
       page: 2,
     })
     expect(pageThree).toHaveLength(10)
     const pageFour = await ENSInstance.getNames({
-      address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'owner',
       page: 3,
     })
@@ -100,147 +143,133 @@ describe('getNames', () => {
     describe('registrations', () => {
       it('descending registrationDate', async () => {
         const registrationDateOrderedDesc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'registrant',
           orderBy: 'registrationDate',
           orderDirection: 'desc',
-        })) as Registration[]
+        })) as Name[]
         registrationDateOrderedDesc.reduce((prev, curr) => {
-          expect(prev.registrationDate.getTime()).toBeGreaterThanOrEqual(
-            curr.registrationDate.getTime(),
+          expect(prev.registrationDate!.getTime()).toBeGreaterThanOrEqual(
+            curr.registrationDate!.getTime(),
           )
           return curr
         })
       })
       it('ascending registrationDate', async () => {
         const registrationDateOrderedAsc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'registrant',
           orderBy: 'registrationDate',
           orderDirection: 'asc',
-        })) as Registration[]
+        })) as Name[]
         registrationDateOrderedAsc.reduce((prev, curr) => {
-          expect(prev.registrationDate.getTime()).toBeLessThanOrEqual(
-            curr.registrationDate.getTime(),
+          expect(prev.registrationDate!.getTime()).toBeLessThanOrEqual(
+            curr.registrationDate!.getTime(),
           )
           return curr
         })
       })
       it('descending expiryDate', async () => {
         const expiryDateOrderedDesc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'registrant',
           orderBy: 'expiryDate',
           orderDirection: 'desc',
-        })) as Registration[]
+        })) as Name[]
         expiryDateOrderedDesc.reduce((prev, curr) => {
-          expect(prev.expiryDate.getTime()).toBeGreaterThanOrEqual(
-            curr.expiryDate.getTime(),
+          expect(prev.expiryDate!.getTime()).toBeGreaterThanOrEqual(
+            curr.expiryDate!.getTime(),
           )
           return curr
         })
       })
       it('ascending expiryDate', async () => {
         const expiryDateOrderedAsc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'registrant',
           orderBy: 'expiryDate',
           orderDirection: 'asc',
-        })) as Registration[]
+        })) as Name[]
         expiryDateOrderedAsc.reduce((prev, curr) => {
-          expect(prev.expiryDate.getTime()).toBeLessThanOrEqual(
-            curr.expiryDate.getTime(),
+          expect(prev.expiryDate!.getTime()).toBeLessThanOrEqual(
+            curr.expiryDate!.getTime(),
           )
           return curr
         })
       })
       it('descending labelName', async () => {
         const labelNameOrderedDesc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'registrant',
           orderBy: 'labelName',
           orderDirection: 'desc',
-        })) as Registration[]
-        labelNameOrderedDesc.reduce((prev, curr) => {
-          expect((prev.labelName || '') > (curr.labelName || '')).toBeTruthy()
-          return curr
-        })
+        })) as Name[]
+        expect(labelNameOrderedDesc.map((n) => n.labelName![0])).toStrictEqual(
+          letterItems,
+        )
       })
       it('ascending labelName', async () => {
         const labelNameOrderedAsc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'registrant',
           orderBy: 'labelName',
           orderDirection: 'asc',
-        })) as Registration[]
-        labelNameOrderedAsc.reduce((prev, curr) => {
-          expect((prev.labelName || '') < (curr.labelName || '')).toBeTruthy()
-          return curr
-        })
+        })) as Name[]
+        expect(labelNameOrderedAsc.map((n) => n.labelName![0])).toStrictEqual(
+          letterItems.reverse(),
+        )
       })
     })
     describe('owned names', () => {
       it('descending createdAt', async () => {
         const createdAtOrderedDesc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'owner',
           orderBy: 'createdAt',
           orderDirection: 'desc',
-        })) as OwnedName[]
+        })) as Name[]
         createdAtOrderedDesc.reduce((prev, curr) => {
-          expect(prev.createdAt.getTime()).toBeGreaterThanOrEqual(
-            curr.createdAt.getTime(),
+          expect(prev.createdAt!.getTime()).toBeGreaterThanOrEqual(
+            curr.createdAt!.getTime(),
           )
           return curr
         })
       })
       it('ascending createdAt', async () => {
         const createdAtOrderedAsc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'owner',
           orderBy: 'createdAt',
           orderDirection: 'asc',
-        })) as OwnedName[]
+        })) as Name[]
         createdAtOrderedAsc.reduce((prev, curr) => {
-          expect(prev.createdAt.getTime()).toBeLessThanOrEqual(
-            curr.createdAt.getTime(),
+          expect(prev.createdAt!.getTime()).toBeLessThanOrEqual(
+            curr.createdAt!.getTime(),
           )
           return curr
         })
       })
       it('descending labelName', async () => {
         const labelNameOrderedDesc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'owner',
           orderBy: 'labelName',
           orderDirection: 'desc',
-        })) as Registration[]
-        labelNameOrderedDesc.reduce((prev, curr) => {
-          if (
-            (!prev.labelName && !curr.labelName) ||
-            (!prev.labelName && curr.labelName)
-          )
-            return curr
-          expect((prev.labelName || '') > (curr.labelName || '')).toBeTruthy()
-          return curr
-        })
+        })) as Name[]
+        expect(labelNameOrderedDesc.map((n) => n.name[0])).toStrictEqual(
+          domainLetterItems,
+        )
       })
       it('ascending labelName', async () => {
         const labelNameOrderedAsc = (await ENSInstance.getNames({
-          address: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
           type: 'owner',
           orderBy: 'labelName',
           orderDirection: 'asc',
-        })) as Registration[]
-        labelNameOrderedAsc.reduce((prev, curr) => {
-          if (
-            (!prev.labelName && !curr.labelName) ||
-            (prev.labelName && !curr.labelName)
-          )
-            return curr
-          expect((prev.labelName || '') < (curr.labelName || '')).toBeTruthy()
-          return curr
-        })
+        })) as Name[]
+        expect(labelNameOrderedAsc.map((n) => n.name[0])).toStrictEqual(
+          domainLetterItems.reverse(),
+        )
       })
     })
   })

@@ -22,58 +22,44 @@ describe('transferName', () => {
     await revert()
   })
   it('should allow a transfer on the registrar', async () => {
-    const tx = await ENSInstance.transferName('parthtejpal.eth', {
+    const tx = await ENSInstance.transferName('test123.eth', {
       contract: 'baseRegistrar',
-      newOwner: accounts[1],
-      addressOrIndex: 0,
+      newOwner: accounts[2],
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const baseRegistrar = await ENSInstance.contracts!.getBaseRegistrar()!
     const result = await baseRegistrar.ownerOf(
-      utils.solidityKeccak256(['string'], ['parthtejpal']),
+      utils.solidityKeccak256(['string'], ['test123']),
     )
-    expect(result).toBe(accounts[1])
+    expect(result).toBe(accounts[2])
   })
   it('should allow a transfer on the namewrapper', async () => {
-    const wrapNameTx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await wrapNameTx.wait()
-    const tx = await ENSInstance.transferName('parthtejpal.eth', {
-      newOwner: accounts[1],
+    const tx = await ENSInstance.transferName('wrapped.eth', {
+      newOwner: accounts[2],
       contract: 'nameWrapper',
-      addressOrIndex: 0,
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const result = await nameWrapper.ownerOf(namehash('parthtejpal.eth'))
-    expect(result).toBe(accounts[1])
+    const result = await nameWrapper.ownerOf(namehash('wrapped.eth'))
+    expect(result).toBe(accounts[2])
   })
   it('should allow a transfer on the registry', async () => {
-    const createSubnameTx = await ENSInstance.createSubname(
-      'test.parthtejpal.eth',
-      {
-        contract: 'registry',
-        owner: accounts[0],
-        addressOrIndex: accounts[0],
-      },
-    )
-    await createSubnameTx.wait()
-
-    const tx = await ENSInstance.transferName('test.parthtejpal.eth', {
+    const tx = await ENSInstance.transferName('test.with-subnames.eth', {
       newOwner: accounts[1],
       contract: 'registry',
-      addressOrIndex: accounts[0],
+      addressOrIndex: accounts[2],
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(namehash('test.parthtejpal.eth'))
+    const result = await registry.owner(namehash('test.with-subnames.eth'))
     expect(result).toBe(accounts[1])
   })
 })

@@ -10,12 +10,12 @@ beforeAll(async () => {
 describe('batchWrappers', () => {
   it('should batch calls together', async () => {
     const batch = await ENSInstance.resolverMulticallWrapper.raw([
-      await ENSInstance._getText.raw('jefflau.eth', 'description'),
-      await ENSInstance._getText.raw('jefflau.eth', 'url'),
-      await ENSInstance._getAddr.raw('jefflau.eth'),
+      await ENSInstance._getText.raw('with-profile.eth', 'description'),
+      await ENSInstance._getText.raw('with-profile.eth', 'url'),
+      await ENSInstance._getAddr.raw('with-profile.eth'),
     ])
     const universalResponse = await ENSInstance.universalWrapper(
-      'jefflau.eth',
+      'with-profile.eth',
       batch.data,
     )
     const [batchDecoded] = await ENSInstance.resolverMulticallWrapper.decode(
@@ -26,6 +26,6 @@ describe('batchWrappers', () => {
     const decoded3 = await ENSInstance._getAddr.decode(batchDecoded[2])
     expect(decoded1).toBe('Hello2')
     expect(decoded2).toBe('twitter.com')
-    expect(decoded3).toBe('0x866B3c4994e1416B7C738B9818b31dC246b95eEE')
+    expect(decoded3).toBe('0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC')
   })
 })

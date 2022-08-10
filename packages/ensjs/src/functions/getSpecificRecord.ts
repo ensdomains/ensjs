@@ -15,11 +15,17 @@ export const _getContentHash = {
     }
   },
   decode: async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
+    let response: any
     const publicResolver = await contracts?.getPublicResolver()!
-    const [response] = publicResolver.interface.decodeFunctionResult(
-      'contenthash',
-      data,
-    )
+    try {
+      ;[response] = publicResolver.interface.decodeFunctionResult(
+        'contenthash',
+        data,
+      )
+    } catch {
+      return
+    }
+
     if (!response) {
       return
     }

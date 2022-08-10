@@ -1,7 +1,5 @@
-import * as packet from 'dns-packet'
-import fetch from 'node-fetch'
 import nock from 'nock'
-
+import fetch from 'node-fetch'
 import getDNSOwner, { encodeURLParams } from './getDNSOwner'
 
 function hex_decode(string: string) {
@@ -39,7 +37,6 @@ describe('getDNSOwner', () => {
     })
       .get('/dns-query')
       .query((queryObject) => {
-        console.log('queryObject: ', queryObject)
         return (
           queryObject.ct === 'application/dns-udpwireformat' &&
           queryObject.dns ===
@@ -82,7 +79,6 @@ describe('getDNSOwner', () => {
     })
       .get('/dns-query')
       .query((queryObject) => {
-        console.log('queryObject: ', queryObject)
         return (
           queryObject.ct === 'application/dns-udpwireformat' &&
           queryObject.dns ===

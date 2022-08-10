@@ -1,8 +1,15 @@
 import '@nomiclabs/hardhat-ethers'
 import 'dotenv/config'
-import 'hardhat-abi-exporter'
 import 'hardhat-deploy'
 import { HardhatUserConfig } from 'hardhat/config'
+import nModule from 'module'
+import { resolve } from 'path'
+
+const pnp = (nModule as any).findPnpApi('./')
+const ensContractsPath = pnp.resolveToUnqualified(
+  '@ensdomains/ens-contracts',
+  './',
+)
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -20,22 +27,39 @@ const config: HardhatUserConfig = {
   },
   defaultNetwork: 'localhost',
   networks: {
+    hardhat: {
+      saveDeployments: false,
+      chainId: 1337,
+      live: false,
+      tags: ['test', 'legacy', 'use_root'],
+    },
     localhost: {
       saveDeployments: false,
       url: 'http://localhost:8545',
-      chainId: 3,
-      accounts: {
-        mnemonic: 'test test test test test test test test test test test junk',
-      },
+      chainId: 1337,
+      live: false,
+      tags: ['test', 'legacy', 'use_root'],
     },
   },
   namedAccounts: {
     deployer: {
-      default: '0xa303ddC620aa7d1390BACcc8A495508B183fab59',
+      default: 0,
     },
-    user: {
-      default: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+    owner: {
+      default: 1,
     },
+    owner2: 2,
+  },
+  external: {
+    contracts: [
+      {
+        artifacts: [
+          resolve(ensContractsPath, 'artifacts'),
+          resolve(ensContractsPath, './deployments/archive'),
+        ],
+        deploy: resolve(ensContractsPath, './build/deploy'),
+      },
+    ],
   },
 }
 

@@ -1,11 +1,15 @@
+import { ethers } from 'ethers'
 import { ENS } from '..'
 import setup from '../tests/setup'
 
 let ENSInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
+let provider: ethers.providers.JsonRpcProvider
+let accounts: string[]
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert } = await setup())
+  ;({ ENSInstance, revert, provider } = await setup())
+  accounts = await provider.listAccounts()
 })
 
 afterAll(async () => {
@@ -15,14 +19,14 @@ afterAll(async () => {
 const checkRecords = (
   result: Record<string, any> | undefined,
   textLength = 3,
-  coinTypeLength = 5,
+  coinTypeLength = 3,
 ) => {
   expect(result).toBeDefined()
   if (result) {
     expect(result.records?.texts).toHaveLength(textLength)
     expect(result.records?.coinTypes).toHaveLength(coinTypeLength)
     expect(result.resolverAddress).toBe(
-      '0x42D63ae25990889E35F215bC95884039Ba354115',
+      '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
     )
   }
 }
@@ -33,30 +37,30 @@ describe('getProfile', () => {
   describe('with an address', () => {
     it('should return a profile object with no other args', async () => {
       const result = await ENSInstance.getProfile(
-        '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       )
       expect(result).toBeDefined()
       if (result) {
-        expect((result as any).name).toBe('jefflau.eth')
+        expect((result as any).name).toBe('with-profile.eth')
         expect((result as any).address).toBeUndefined()
         checkRecords(result)
       }
     })
     it('should return a profile object with specified records', async () => {
       const result = await ENSInstance.getProfile(
-        '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
         { texts: ['description', 'url'], coinTypes: ['ETC', '0'] },
       )
       expect(result).toBeDefined()
       if (result) {
-        expect((result as any).name).toBe('jefflau.eth')
+        expect((result as any).name).toBe('with-profile.eth')
         expect((result as any).address).toBeUndefined()
         checkRecords(result, 2, 3)
       }
     })
     it('should return a profile object with all of each specified record type', async () => {
       const result = await ENSInstance.getProfile(
-        '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
         { texts: true, coinTypes: true },
       )
       checkRecords(result)
@@ -70,37 +74,42 @@ describe('getProfile', () => {
   })
   describe('with a name', () => {
     it('should return a profile object with no other args', async () => {
-      const result = await ENSInstance.getProfile('jefflau.eth')
+      const result = await ENSInstance.getProfile('with-profile.eth')
       expect((result as any).address).toBe(
-        '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       )
       checkRecords(result)
     })
     it('should return a profile object with specified records', async () => {
-      const result = await ENSInstance.getProfile('jefflau.eth', {
+      const result = await ENSInstance.getProfile('with-profile.eth', {
         texts: ['description', 'url'],
         coinTypes: ['ETC', '0'],
       })
       expect((result as any).address).toBe(
-        '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       )
       checkRecords(result, 2, 3)
     })
     it('should return a profile object with all of each specified record type', async () => {
-      const result = await ENSInstance.getProfile('jefflau.eth', {
+      const result = await ENSInstance.getProfile('with-profile.eth', {
         texts: true,
         coinTypes: true,
       })
       checkRecords(result)
     })
     it('should return a profile object for a specified resolver', async () => {
-      const result = await ENSInstance.getProfile('saganaki.xyz', {
-        resolverAddress: '0x12299799a50340fb860d276805e78550cbad3de3',
+      const tx = await ENSInstance.wrapName('test123.eth', {
+        wrappedOwner: accounts[1],
+        addressOrIndex: 1,
+      })
+      await tx.wait()
+      const result = await ENSInstance.getProfile('test123.eth', {
+        resolverAddress: '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
       })
       expect(result).toBeDefined()
-      expect(result?.address).toBe('0x157545BfD441453921049998128Ff090c1c11230')
+      expect(result?.address).toBe(accounts[1])
       expect(result?.resolverAddress).toBe(
-        '0x12299799a50340fb860d276805e78550cbad3de3',
+        '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
       )
     })
     it('should return undefined for an unregistered name', async () => {
@@ -110,22 +119,21 @@ describe('getProfile', () => {
   })
   describe('with an old resolver', () => {
     it('should use fallback methods for a name with an older resolver (no multicall)', async () => {
-      const result = await ENSInstance.getProfile('pepeq6.eth')
+      const result = await ENSInstance.getProfile('with-legacy-resolver.eth')
       expect(result).toBeDefined()
       if (result) {
         expect(result.address).toBe(
-          '0x6308F1c6f283583C8bf8E31Da793B87718b051eD',
+          '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+        )
+        expect(result.resolverAddress).toBe(
+          '0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154',
         )
       }
     })
   })
   describe('with an unmigrated name', () => {
-    beforeAll(async () => {
-      ;({ ENSInstance } = await setup(true))
-      jest.setTimeout(20000)
-    })
     it('should return an object with isMigrated false and a message', async () => {
-      const result = await ENSInstance.getProfile('jefflau.test')
+      const result = await ENSInstance.getProfile('legacy.test')
       expect(result).toBeTruthy()
       if (result) {
         expect(result.isMigrated).toBe(false)

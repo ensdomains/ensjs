@@ -12,10 +12,6 @@ let withWrappedSnapshot: any
 beforeAll(async () => {
   ;({ ENSInstance, revert, provider, createSnapshot } = await setup())
   accounts = await provider.listAccounts()
-  const tx = await ENSInstance.wrapName('parthtejpal.eth', {
-    wrappedOwner: accounts[0],
-  })
-  await tx.wait()
 
   withWrappedSnapshot = await createSnapshot()
 })
@@ -31,18 +27,12 @@ afterAll(async () => {
 
 describe('getFuses', () => {
   it('should return null for an unwrapped name', async () => {
-    const result = await ENSInstance.getFuses('jefflau.eth')
+    const result = await ENSInstance.getFuses('with-profile.eth')
     expect(result).toBeUndefined()
   })
   it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
-    const tx = await ENSInstance.createSubname('test.parthtejpal.eth', {
-      contract: 'nameWrapper',
-      owner: accounts[0],
-      addressOrIndex: 0,
-    })
-    await tx.wait()
-
-    const result = await ENSInstance.getFuses('test.parthtejpal.eth')
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const result = await ENSInstance.getFuses('test.wrapped-with-subnames.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj.canDoEverything).toBe(true)
@@ -56,15 +46,17 @@ describe('getFuses', () => {
     }
   })
   it('should return with other correct fuses', async () => {
-    const tx = await ENSInstance.burnFuses('parthtejpal.eth', {
+    const tx = await ENSInstance.burnFuses('wrapped.eth', {
       fusesToBurn: {
         cannotUnwrap: true,
         cannotSetTtl: true,
         cannotCreateSubdomain: true,
       },
+      addressOrIndex: 1,
     })
     await tx.wait()
-    const result = await ENSInstance.getFuses('parthtejpal.eth')
+
+    const result = await ENSInstance.getFuses('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj).toMatchObject({
@@ -80,26 +72,11 @@ describe('getFuses', () => {
       expect(result.rawFuses.toHexString()).toBe('0x71')
     }
   })
-  it('should return correct vulnerability data for an invulnerable node', async () => {
-    const result = await ENSInstance.getFuses('parthtejpal.eth')
+  it('should return correct expiry', async () => {
+    const result = await ENSInstance.getFuses('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
-      expect(result.vulnerability).toBe('Safe')
-      expect(result.vulnerableNode).toBeNull()
-    }
-  })
-  it('should return correct vulnerability data for a vulnerable node', async () => {
-    const tx = await ENSInstance.createSubname('test.parthtejpal.eth', {
-      owner: accounts[0],
-      contract: 'nameWrapper',
-    })
-    await tx.wait()
-
-    const result = await ENSInstance.getFuses('test.parthtejpal.eth')
-    expect(result).toBeTruthy()
-    if (result) {
-      expect(result.vulnerability).toBe('SubdomainReplacementAllowed')
-      expect(result.vulnerableNode).toBe('parthtejpal.eth')
+      expect(result.expiryDate).toBeInstanceOf(Date)
     }
   })
 })

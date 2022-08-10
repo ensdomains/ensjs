@@ -562,6 +562,7 @@ export class ENS {
 
   public wrapName = this.generateWriteFunction<typeof wrapName>('wrapName', [
     'contracts',
+    'getExpiry',
   ])
 
   public unwrapName = this.generateWriteFunction<typeof unwrapName>(
@@ -585,7 +586,7 @@ export class ENS {
 
   public transferSubname = this.generateWriteFunction<typeof transferSubname>(
     'transferSubname',
-    ['contracts'],
+    ['contracts', 'getExpiry'],
   )
 
   public getDNSOwner = this.generateFunction<typeof getDNSOwner>(

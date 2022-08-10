@@ -1,7 +1,7 @@
 import { ENSArgs } from '..'
 
 export default async function (
-  { transferSubname }: ENSArgs<'transferSubname'>,
+  { transferSubname, signer }: ENSArgs<'transferSubname' | 'signer'>,
   name: string,
   {
     contract,
@@ -11,6 +11,7 @@ export default async function (
 ) {
   return transferSubname.populateTransaction(name, {
     contract,
-    address: '0x0000000000000000000000000000000000000000',
+    owner: '0x0000000000000000000000000000000000000000',
+    signer,
   })
 }

@@ -21,13 +21,20 @@ type Params = {
   pageSize?: number
   orderDirection?: 'asc' | 'desc'
   orderBy?: 'createdAt' | 'labelName'
-  lastSubnames: Array<any>
+  lastSubnames?: Array<any>
   isLargeQuery?: boolean
 }
 
 const largeQuery = async (
   { gqlInstance }: ENSArgs<'gqlInstance'>,
-  { name, page, pageSize = 10, orderDirection, orderBy, lastSubnames }: Params,
+  {
+    name,
+    page,
+    pageSize = 10,
+    orderDirection,
+    orderBy,
+    lastSubnames = [],
+  }: Params,
 ) => {
   const client = gqlInstance.client
 

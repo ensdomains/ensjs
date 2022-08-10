@@ -10,10 +10,6 @@ let accounts: string[]
 beforeAll(async () => {
   ;({ ENSInstance, revert, provider } = await setup())
   accounts = await provider.listAccounts()
-  const tx = await ENSInstance.wrapName('parthtejpal.eth', {
-    wrappedOwner: accounts[0],
-  })
-  await tx.wait()
 })
 
 afterAll(async () => {
@@ -26,19 +22,19 @@ describe('getOwner', () => {
     expect(result).toBeUndefined()
   })
   it('should return the owner, registrant, and ownership level for a registered name', async () => {
-    const result = await ENSInstance.getOwner('jefflau.eth')
+    const result = await ENSInstance.getOwner('with-profile.eth')
     expect(result).toMatchObject({
-      owner: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
-      registrant: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      owner: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      registrant: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       ownershipLevel: 'registrar',
     })
   })
   it('should return nameWrapper as the ownership level for a wrapped name', async () => {
-    const result = await ENSInstance.getOwner('parthtejpal.eth')
+    const result = await ENSInstance.getOwner('wrapped.eth')
     expect(result?.ownershipLevel).toBe('nameWrapper')
   })
   it('should return the owner at a specific level if specified', async () => {
-    const result = await ENSInstance.getOwner('parthtejpal.eth', 'registrar')
+    const result = await ENSInstance.getOwner('wrapped.eth', 'registrar')
     const nameWrapperAddress = (await ENSInstance.contracts!.getNameWrapper())
       .address
     expect(result?.ownershipLevel).toBe('registrar')
@@ -54,20 +50,9 @@ describe('getOwner', () => {
       baseRegistrarAddress.toLowerCase(),
     )
   })
-  // it('should return registry as the ownership level for an unwrapped subname', async () => {
-  //   const result0 = await ENSInstance.getOwner('fleek.eth')
-  //   console.log(result0?.owner, accounts[2])
-
-  //   const tx = await ENSInstance.createSubname({
-  //     name: 'test.fleek.eth',
-  //     contract: 'registry',
-  //     owner: accounts[0],
-  //     options: { addressOrIndex: accounts[1] },
-  //   })
-
-  //   await tx.wait()
-
-  //   const result = await ENSInstance.getOwner('test.fleek.eth')
-  //   expect(result?.ownershipLevel).toBe('registry')
-  // })
+  it('should return registry as the ownership level for an unwrapped subname', async () => {
+    const result = await ENSInstance.getOwner('test.with-subnames.eth')
+    expect(result?.ownershipLevel).toBe('registry')
+    expect(result?.owner).toBe('0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC')
+  })
 })

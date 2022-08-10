@@ -17,9 +17,10 @@ afterAll(async () => {
 
 describe('setRecord', () => {
   it('should allow a text record set', async () => {
-    const tx = await ENSInstance.setRecord('parthtejpal.eth', {
+    const tx = await ENSInstance.setRecord('test123.eth', {
       type: 'text',
       record: { key: 'foo', value: 'bar' },
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -28,9 +29,9 @@ describe('setRecord', () => {
       await ENSInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ENSInstance.contracts!.getPublicResolver()!
     const encodedText = await universalResolver.resolve(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('text', [
-        namehash('parthtejpal.eth'),
+        namehash('test123.eth'),
         'foo',
       ]),
     )
@@ -41,12 +42,13 @@ describe('setRecord', () => {
     expect(resultText).toBe('bar')
   })
   it('should allow an address record set', async () => {
-    const tx = await ENSInstance.setRecord('parthtejpal.eth', {
+    const tx = await ENSInstance.setRecord('test123.eth', {
       type: 'addr',
       record: {
         key: 'ETC',
         value: '0x42D63ae25990889E35F215bC95884039Ba354115',
       },
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -55,9 +57,9 @@ describe('setRecord', () => {
       await ENSInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ENSInstance.contracts!.getPublicResolver()!
     const encodedAddr = await universalResolver.resolve(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
-        namehash('parthtejpal.eth'),
+        namehash('test123.eth'),
         '61',
       ]),
     )
@@ -70,10 +72,11 @@ describe('setRecord', () => {
     )
   })
   it('should allow a contenthash record set', async () => {
-    const tx = await ENSInstance.setRecord('parthtejpal.eth', {
+    const tx = await ENSInstance.setRecord('test123.eth', {
       type: 'contentHash',
       record:
         'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -82,9 +85,9 @@ describe('setRecord', () => {
       await ENSInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ENSInstance.contracts!.getPublicResolver()!
     const encodedContent = await universalResolver.resolve(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('contenthash', [
-        namehash('parthtejpal.eth'),
+        namehash('test123.eth'),
       ]),
     )
     const [resultContent] = publicResolver.interface.decodeFunctionResult(
