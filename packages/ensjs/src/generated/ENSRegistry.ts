@@ -24,6 +24,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface ENSRegistryInterface extends utils.Interface {
@@ -62,44 +63,68 @@ export interface ENSRegistryInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
-    values: [string, string]
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "old", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "owner",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(
     functionFragment: "recordExists",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
-  encodeFunctionData(functionFragment: "resolver", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "resolver",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
-    values: [string, boolean]
+    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: "setOwner",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setRecord",
-    values: [BytesLike, string, string, BigNumberish]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setResolver",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setSubnodeOwner",
-    values: [BytesLike, BytesLike, string]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setSubnodeRecord",
-    values: [BytesLike, BytesLike, string, string, BigNumberish]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setTTL",
-    values: [BytesLike, BigNumberish]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "ttl", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "ttl",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -227,391 +252,439 @@ export interface ENSRegistry extends BaseContract {
 
   functions: {
     isApprovedForAll(
-      owner: string,
-      operator: string,
+      owner: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     old(overrides?: CallOverrides): Promise<[string]>;
 
-    owner(node: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    owner(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     recordExists(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    resolver(node: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    resolver(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setOwner(
-      node: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setRecord(
-      node: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setResolver(
-      node: BytesLike,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setSubnodeOwner(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setSubnodeRecord(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setTTL(
-      node: BytesLike,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    ttl(node: BytesLike, overrides?: CallOverrides): Promise<[BigNumber]>;
+    ttl(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
   isApprovedForAll(
-    owner: string,
-    operator: string,
+    owner: PromiseOrValue<string>,
+    operator: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   old(overrides?: CallOverrides): Promise<string>;
 
-  owner(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  owner(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  recordExists(node: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+  recordExists(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
-  resolver(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  resolver(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   setApprovalForAll(
-    operator: string,
-    approved: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    operator: PromiseOrValue<string>,
+    approved: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setOwner(
-    node: BytesLike,
-    owner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    owner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setRecord(
-    node: BytesLike,
-    owner: string,
-    resolver: string,
-    ttl: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    owner: PromiseOrValue<string>,
+    resolver: PromiseOrValue<string>,
+    ttl: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setResolver(
-    node: BytesLike,
-    resolver: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    resolver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setSubnodeOwner(
-    node: BytesLike,
-    label: BytesLike,
-    owner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    label: PromiseOrValue<BytesLike>,
+    owner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setSubnodeRecord(
-    node: BytesLike,
-    label: BytesLike,
-    owner: string,
-    resolver: string,
-    ttl: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    label: PromiseOrValue<BytesLike>,
+    owner: PromiseOrValue<string>,
+    resolver: PromiseOrValue<string>,
+    ttl: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setTTL(
-    node: BytesLike,
-    ttl: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    ttl: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  ttl(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+  ttl(
+    node: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   callStatic: {
     isApprovedForAll(
-      owner: string,
-      operator: string,
+      owner: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     old(overrides?: CallOverrides): Promise<string>;
 
-    owner(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+    owner(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    recordExists(node: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+    recordExists(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    resolver(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+    resolver(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setOwner(
-      node: BytesLike,
-      owner: string,
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setRecord(
-      node: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setResolver(
-      node: BytesLike,
-      resolver: string,
+      node: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setSubnodeOwner(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     setSubnodeRecord(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setTTL(
-      node: BytesLike,
-      ttl: BigNumberish,
+      node: PromiseOrValue<BytesLike>,
+      ttl: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    ttl(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    ttl(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
     "ApprovalForAll(address,address,bool)"(
-      owner?: string | null,
-      operator?: string | null,
+      owner?: PromiseOrValue<string> | null,
+      operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
     ApprovalForAll(
-      owner?: string | null,
-      operator?: string | null,
+      owner?: PromiseOrValue<string> | null,
+      operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
 
     "NewOwner(bytes32,bytes32,address)"(
-      node?: BytesLike | null,
-      label?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      label?: PromiseOrValue<BytesLike> | null,
       owner?: null
     ): NewOwnerEventFilter;
     NewOwner(
-      node?: BytesLike | null,
-      label?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      label?: PromiseOrValue<BytesLike> | null,
       owner?: null
     ): NewOwnerEventFilter;
 
     "NewResolver(bytes32,address)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       resolver?: null
     ): NewResolverEventFilter;
     NewResolver(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       resolver?: null
     ): NewResolverEventFilter;
 
     "NewTTL(bytes32,uint64)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       ttl?: null
     ): NewTTLEventFilter;
-    NewTTL(node?: BytesLike | null, ttl?: null): NewTTLEventFilter;
+    NewTTL(
+      node?: PromiseOrValue<BytesLike> | null,
+      ttl?: null
+    ): NewTTLEventFilter;
 
     "Transfer(bytes32,address)"(
-      node?: BytesLike | null,
+      node?: PromiseOrValue<BytesLike> | null,
       owner?: null
     ): TransferEventFilter;
-    Transfer(node?: BytesLike | null, owner?: null): TransferEventFilter;
+    Transfer(
+      node?: PromiseOrValue<BytesLike> | null,
+      owner?: null
+    ): TransferEventFilter;
   };
 
   estimateGas: {
     isApprovedForAll(
-      owner: string,
-      operator: string,
+      owner: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     old(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    recordExists(
-      node: BytesLike,
+    owner(
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    resolver(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    recordExists(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    resolver(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setOwner(
-      node: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setRecord(
-      node: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setResolver(
-      node: BytesLike,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setSubnodeOwner(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setSubnodeRecord(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setTTL(
-      node: BytesLike,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    ttl(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    ttl(
+      node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     isApprovedForAll(
-      owner: string,
-      operator: string,
+      owner: PromiseOrValue<string>,
+      operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     old(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     recordExists(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     resolver(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      operator: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setOwner(
-      node: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setRecord(
-      node: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setResolver(
-      node: BytesLike,
-      resolver: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setSubnodeOwner(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setSubnodeRecord(
-      node: BytesLike,
-      label: BytesLike,
-      owner: string,
-      resolver: string,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      label: PromiseOrValue<BytesLike>,
+      owner: PromiseOrValue<string>,
+      resolver: PromiseOrValue<string>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setTTL(
-      node: BytesLike,
-      ttl: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      ttl: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     ttl(
-      node: BytesLike,
+      node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

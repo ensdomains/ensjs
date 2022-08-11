@@ -23,10 +23,14 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export declare namespace DNSSEC {
-  export type RRSetWithSignatureStruct = { rrset: BytesLike; sig: BytesLike };
+  export type RRSetWithSignatureStruct = {
+    rrset: PromiseOrValue<BytesLike>;
+    sig: PromiseOrValue<BytesLike>;
+  };
 
   export type RRSetWithSignatureStructOutput = [string, string] & {
     rrset: string;
@@ -62,33 +66,40 @@ export interface DNSRegistrarInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "claim",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(functionFragment: "ens", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "proveAndClaim",
-    values: [BytesLike, DNSSEC.RRSetWithSignatureStruct[], BytesLike]
+    values: [
+      PromiseOrValue<BytesLike>,
+      DNSSEC.RRSetWithSignatureStruct[],
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "proveAndClaimWithResolver",
     values: [
-      BytesLike,
+      PromiseOrValue<BytesLike>,
       DNSSEC.RRSetWithSignatureStruct[],
-      BytesLike,
-      string,
-      string
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
     ]
   ): string;
-  encodeFunctionData(functionFragment: "setOracle", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setOracle",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "setPublicSuffixList",
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "suffixes", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
 
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
@@ -184,9 +195,9 @@ export interface DNSRegistrar extends BaseContract {
      * @param proof A DNS RRSet proving ownership of the name. Must be verified        in the DNSSEC oracle before calling. This RRSET must contain a TXT        record for '_ens.' + name, with the value 'a=0x...'. Ownership of        the name will be transferred to the address specified in the TXT        record.
      */
     claim(
-      name: BytesLike,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<BytesLike>,
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     ens(overrides?: CallOverrides): Promise<[string]>;
@@ -194,35 +205,35 @@ export interface DNSRegistrar extends BaseContract {
     oracle(overrides?: CallOverrides): Promise<[string]>;
 
     proveAndClaim(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     proveAndClaimWithResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      resolver: string,
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      addr: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setOracle(
-      _dnssec: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _dnssec: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setPublicSuffixList(
-      _suffixes: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _suffixes: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     suffixes(overrides?: CallOverrides): Promise<[string]>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
@@ -233,9 +244,9 @@ export interface DNSRegistrar extends BaseContract {
    * @param proof A DNS RRSet proving ownership of the name. Must be verified        in the DNSSEC oracle before calling. This RRSET must contain a TXT        record for '_ens.' + name, with the value 'a=0x...'. Ownership of        the name will be transferred to the address specified in the TXT        record.
    */
   claim(
-    name: BytesLike,
-    proof: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    name: PromiseOrValue<BytesLike>,
+    proof: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   ens(overrides?: CallOverrides): Promise<string>;
@@ -243,35 +254,35 @@ export interface DNSRegistrar extends BaseContract {
   oracle(overrides?: CallOverrides): Promise<string>;
 
   proveAndClaim(
-    name: BytesLike,
+    name: PromiseOrValue<BytesLike>,
     input: DNSSEC.RRSetWithSignatureStruct[],
-    proof: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    proof: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   proveAndClaimWithResolver(
-    name: BytesLike,
+    name: PromiseOrValue<BytesLike>,
     input: DNSSEC.RRSetWithSignatureStruct[],
-    proof: BytesLike,
-    resolver: string,
-    addr: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    proof: PromiseOrValue<BytesLike>,
+    resolver: PromiseOrValue<string>,
+    addr: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setOracle(
-    _dnssec: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _dnssec: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setPublicSuffixList(
-    _suffixes: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _suffixes: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   suffixes(overrides?: CallOverrides): Promise<string>;
 
   supportsInterface(
-    interfaceID: BytesLike,
+    interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -282,8 +293,8 @@ export interface DNSRegistrar extends BaseContract {
      * @param proof A DNS RRSet proving ownership of the name. Must be verified        in the DNSSEC oracle before calling. This RRSET must contain a TXT        record for '_ens.' + name, with the value 'a=0x...'. Ownership of        the name will be transferred to the address specified in the TXT        record.
      */
     claim(
-      name: BytesLike,
-      proof: BytesLike,
+      name: PromiseOrValue<BytesLike>,
+      proof: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -292,45 +303,48 @@ export interface DNSRegistrar extends BaseContract {
     oracle(overrides?: CallOverrides): Promise<string>;
 
     proveAndClaim(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
+      proof: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     proveAndClaimWithResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      resolver: string,
-      addr: string,
+      proof: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      addr: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOracle(_dnssec: string, overrides?: CallOverrides): Promise<void>;
+    setOracle(
+      _dnssec: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setPublicSuffixList(
-      _suffixes: string,
+      _suffixes: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     suffixes(overrides?: CallOverrides): Promise<string>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
 
   filters: {
     "Claim(bytes32,address,bytes)"(
-      node?: BytesLike | null,
-      owner?: string | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      owner?: PromiseOrValue<string> | null,
       dnsname?: null
     ): ClaimEventFilter;
     Claim(
-      node?: BytesLike | null,
-      owner?: string | null,
+      node?: PromiseOrValue<BytesLike> | null,
+      owner?: PromiseOrValue<string> | null,
       dnsname?: null
     ): ClaimEventFilter;
 
@@ -350,9 +364,9 @@ export interface DNSRegistrar extends BaseContract {
      * @param proof A DNS RRSet proving ownership of the name. Must be verified        in the DNSSEC oracle before calling. This RRSET must contain a TXT        record for '_ens.' + name, with the value 'a=0x...'. Ownership of        the name will be transferred to the address specified in the TXT        record.
      */
     claim(
-      name: BytesLike,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<BytesLike>,
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     ens(overrides?: CallOverrides): Promise<BigNumber>;
@@ -360,35 +374,35 @@ export interface DNSRegistrar extends BaseContract {
     oracle(overrides?: CallOverrides): Promise<BigNumber>;
 
     proveAndClaim(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     proveAndClaimWithResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      resolver: string,
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      addr: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setOracle(
-      _dnssec: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _dnssec: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setPublicSuffixList(
-      _suffixes: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _suffixes: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     suffixes(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -400,9 +414,9 @@ export interface DNSRegistrar extends BaseContract {
      * @param proof A DNS RRSet proving ownership of the name. Must be verified        in the DNSSEC oracle before calling. This RRSET must contain a TXT        record for '_ens.' + name, with the value 'a=0x...'. Ownership of        the name will be transferred to the address specified in the TXT        record.
      */
     claim(
-      name: BytesLike,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      name: PromiseOrValue<BytesLike>,
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     ens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -410,35 +424,35 @@ export interface DNSRegistrar extends BaseContract {
     oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proveAndClaim(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     proveAndClaimWithResolver(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       input: DNSSEC.RRSetWithSignatureStruct[],
-      proof: BytesLike,
-      resolver: string,
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      resolver: PromiseOrValue<string>,
+      addr: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setOracle(
-      _dnssec: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _dnssec: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setPublicSuffixList(
-      _suffixes: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _suffixes: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     suffixes(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supportsInterface(
-      interfaceID: BytesLike,
+      interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

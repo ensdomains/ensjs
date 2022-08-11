@@ -1,13 +1,15 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { ENSArgs } from '..'
 import type { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
 import { hexEncodeName } from '../utils/hexEncodedName'
+import { Expiry, makeExpiry } from '../utils/wrapperExpiry'
 
 async function wrapETH(
   { contracts }: ENSArgs<'contracts'>,
   labels: string[],
   wrappedOwner: string,
+  expiry: BigNumber,
   decodedFuses: string,
   resolverAddress: string,
   signer: ethers.Signer,
@@ -20,7 +22,7 @@ async function wrapETH(
 
   const data = ethers.utils.defaultAbiCoder.encode(
     ['string', 'address', 'uint32', 'uint64', 'address'],
-    [labels[0], wrappedOwner, '0x0', decodedFuses, resolverAddress],
+    [labels[0], wrappedOwner, decodedFuses, expiry, resolverAddress],
   )
 
   return baseRegistrar.populateTransaction[
@@ -32,7 +34,6 @@ async function wrapOther(
   { contracts }: ENSArgs<'contracts'>,
   name: string,
   wrappedOwner: string,
-  decodedFuses: string,
   resolverAddress: string,
   address: string,
   signer: ethers.Signer,
@@ -54,21 +55,26 @@ async function wrapOther(
   return nameWrapper.populateTransaction.wrap(
     hexEncodeName(name),
     wrappedOwner,
-    decodedFuses,
     resolverAddress,
   )
 }
 
 export default async function (
-  { contracts, signer, populate }: ENSArgs<'contracts' | 'signer' | 'populate'>,
+  {
+    contracts,
+    signer,
+    getExpiry,
+  }: ENSArgs<'contracts' | 'signer' | 'getExpiry'>,
   name: string,
   {
     wrappedOwner,
     fuseOptions,
+    expiry,
     resolverAddress,
   }: {
     wrappedOwner: string
     fuseOptions?: FuseOptions | string | number
+    expiry?: Expiry
     resolverAddress?: string
   },
 ) {
@@ -76,48 +82,58 @@ export default async function (
 
   let decodedFuses: string
 
-  switch (typeof fuseOptions) {
-    case 'object': {
-      decodedFuses = generateFuseInput(fuseOptions)
-      break
-    }
-    case 'number': {
-      decodedFuses = fuseOptions.toString(16)
-      break
-    }
-    case 'string': {
-      decodedFuses = fuseOptions
-      break
-    }
-    case 'undefined': {
-      decodedFuses = '0'
-      break
-    }
-    default: {
-      throw new Error(`Invalid fuseOptions type: ${typeof fuseOptions}`)
-    }
-  }
-
   const publicResolver = await contracts?.getPublicResolver()!
   if (!resolverAddress) resolverAddress = publicResolver.address
 
   const labels = name.split('.')
-  if (labels.length < 3 && labels[labels.length - 1] === 'eth') {
+  if (labels.length === 2 && labels[1] === 'eth') {
+    switch (typeof fuseOptions) {
+      case 'object': {
+        decodedFuses = generateFuseInput(fuseOptions)
+        break
+      }
+      case 'number': {
+        decodedFuses = fuseOptions.toString(16)
+        break
+      }
+      case 'string': {
+        decodedFuses = fuseOptions
+        break
+      }
+      case 'undefined': {
+        decodedFuses = '0'
+        break
+      }
+      default: {
+        throw new Error(`Invalid fuseOptions type: ${typeof fuseOptions}`)
+      }
+    }
+
+    const expiryToUse = await makeExpiry({ getExpiry }, name, expiry)
+
     return wrapETH(
       { contracts },
       labels,
       wrappedOwner,
+      expiryToUse,
       decodedFuses,
       resolverAddress,
       signer,
       address,
     )
   } else {
+    if (fuseOptions)
+      throw new Error(
+        'Fuses can not be initially set when wrapping a non .eth name',
+      )
+    if (expiry)
+      throw new Error(
+        'Expiry can not be initially set when wrapping a non .eth name',
+      )
     return wrapOther(
       { contracts },
       name,
       wrappedOwner,
-      decodedFuses,
       resolverAddress,
       address,
       signer,

@@ -22,53 +22,34 @@ describe('transferSubname', () => {
     await revert()
   })
   it('should allow transferring a subname on the registry', async () => {
-    const createSubnameTx = await ENSInstance.createSubname(
-      'test.parthtejpal.eth',
-      {
-        contract: 'registry',
-        owner: accounts[0],
-        addressOrIndex: 0,
-      },
-    )
-    await createSubnameTx.wait()
-
-    const tx = await ENSInstance.transferSubname('test.parthtejpal.eth', {
+    const tx = await ENSInstance.transferSubname('test.with-subnames.eth', {
       contract: 'registry',
-      address: accounts[1],
-      addressOrIndex: 0,
+      owner: accounts[1],
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const registry = await ENSInstance.contracts!.getRegistry()!
-    const result = await registry.owner(namehash('test.parthtejpal.eth'))
+    const result = await registry.owner(namehash('test.with-subnames.eth'))
     expect(result).toBe(accounts[1])
   })
   it('should allow transferring a subname on the nameWrapper', async () => {
-    const wrapNameTx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await wrapNameTx.wait()
-    const createSubnameTx = await ENSInstance.createSubname(
-      'test.parthtejpal.eth',
+    const tx = await ENSInstance.transferSubname(
+      'test.wrapped-with-subnames.eth',
       {
         contract: 'nameWrapper',
-        owner: accounts[0],
-        addressOrIndex: 0,
+        owner: accounts[1],
+        addressOrIndex: 1,
       },
     )
-    await createSubnameTx.wait()
-
-    const tx = await ENSInstance.transferSubname('test.parthtejpal.eth', {
-      contract: 'nameWrapper',
-      address: accounts[1],
-      addressOrIndex: 0,
-    })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const result = await nameWrapper.ownerOf(namehash('test.parthtejpal.eth'))
+    const result = await nameWrapper.ownerOf(
+      namehash('test.wrapped-with-subnames.eth'),
+    )
     expect(result).toBe(accounts[1])
   })
 })

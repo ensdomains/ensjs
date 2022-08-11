@@ -1,6 +1,6 @@
 import { ENS } from '..'
-import { makeCommitment } from '../utils/registerHelpers'
 import setup from '../tests/setup'
+import { makeCommitment } from '../utils/registerHelpers'
 
 let ENSInstance: ENS
 
@@ -13,7 +13,7 @@ describe('makeCommitment', () => {
     const resolver = await ENSInstance.contracts!.getPublicResolver()!
     const commitment = makeCommitment({
       name: 'test.eth',
-      owner: '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      owner: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       duration: 1 * 365 * 24 * 60 * 60,
       resolver: resolver,
     })

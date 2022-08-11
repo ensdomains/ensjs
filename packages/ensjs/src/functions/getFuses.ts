@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers'
+import { BigNumber } from 'ethers'
 import { ENSArgs } from '..'
 import { testable as fuseEnums } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
@@ -28,8 +28,12 @@ const decode = async (
 ) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
-    const [fuses, vulnerability, vulnerableNode] =
-      nameWrapper.interface.decodeFunctionResult('getFuses', data)
+    const [_fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
+      'getFuses',
+      data,
+    )
+
+    const fuses = BigNumber.from(_fuses)
 
     const fuseObj = Object.fromEntries(
       Object.keys(fuseEnums).map((fuseEnum) => [
@@ -48,22 +52,12 @@ const decode = async (
       fuseObj.canDoEverything = false
     }
 
-    let returnVulnerableNode: string | null = null
-    if (utils.hexStripZeros(vulnerableNode) !== '0x') {
-      name.split('.').forEach((label, index, arr) => {
-        const node = arr.slice(index).join('.')
-        const nodehash = namehash(node)
-        if (nodehash === vulnerableNode) {
-          returnVulnerableNode = node
-        }
-      })
-    }
+    const expiryDate = new Date(expiry * 1000)
 
     return {
       fuseObj,
-      vulnerability: NameSafety[vulnerability] || vulnerability,
-      vulnerableNode: returnVulnerableNode,
-      rawFuses: fuses as BigNumber,
+      expiryDate,
+      rawFuses: fuses,
     }
   } catch {
     return

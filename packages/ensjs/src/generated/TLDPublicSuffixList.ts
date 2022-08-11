@@ -17,6 +17,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface TLDPublicSuffixListInterface extends utils.Interface {
@@ -28,7 +29,7 @@ export interface TLDPublicSuffixListInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "isPublicSuffix",
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
 
   decodeFunctionResult(
@@ -67,16 +68,19 @@ export interface TLDPublicSuffixList extends BaseContract {
 
   functions: {
     isPublicSuffix(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
 
-  isPublicSuffix(name: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+  isPublicSuffix(
+    name: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   callStatic: {
     isPublicSuffix(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
@@ -85,14 +89,14 @@ export interface TLDPublicSuffixList extends BaseContract {
 
   estimateGas: {
     isPublicSuffix(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     isPublicSuffix(
-      name: BytesLike,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

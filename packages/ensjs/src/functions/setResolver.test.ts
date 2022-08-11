@@ -20,9 +20,10 @@ describe('setResolver', () => {
     await revert()
   })
   it('should return a transaction to the registry and set successfully', async () => {
-    const tx = await ENSInstance.setResolver('parthtejpal.eth', {
+    const tx = await ENSInstance.setResolver('test123.eth', {
       contract: 'registry',
       resolver: '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC',
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -30,19 +31,15 @@ describe('setResolver', () => {
     const universalResolver =
       await ENSInstance.contracts!.getUniversalResolver()!
     const [result] = await universalResolver.findResolver(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('test123.eth'),
     )
     expect(result).toBe('0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC')
   })
   it('should return a transaction to the namewrapper and set successfully', async () => {
-    const accounts = await provider.listAccounts()
-    const wrapNameTx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await wrapNameTx.wait()
-    const tx = await ENSInstance.setResolver('parthtejpal.eth', {
+    const tx = await ENSInstance.setResolver('wrapped.eth', {
       contract: 'nameWrapper',
       resolver: '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC',
+      addressOrIndex: 1,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
@@ -50,7 +47,7 @@ describe('setResolver', () => {
     const universalResolver =
       await ENSInstance.contracts!.getUniversalResolver()!
     const [result] = await universalResolver.findResolver(
-      hexEncodeName('parthtejpal.eth'),
+      hexEncodeName('wrapped.eth'),
     )
     expect(result).toBe('0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC')
   })

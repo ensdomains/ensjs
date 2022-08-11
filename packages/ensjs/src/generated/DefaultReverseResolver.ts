@@ -19,6 +19,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface DefaultReverseResolverInterface extends utils.Interface {
@@ -33,10 +34,13 @@ export interface DefaultReverseResolverInterface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: "ens", values?: undefined): string;
-  encodeFunctionData(functionFragment: "name", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "name",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(
     functionFragment: "setName",
-    values: [BytesLike, string]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(functionFragment: "ens", data: BytesLike): Result;
@@ -75,33 +79,42 @@ export interface DefaultReverseResolver extends BaseContract {
   functions: {
     ens(overrides?: CallOverrides): Promise<[string]>;
 
-    name(arg0: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    name(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     setName(
-      node: BytesLike,
-      _name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      _name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   ens(overrides?: CallOverrides): Promise<string>;
 
-  name(arg0: BytesLike, overrides?: CallOverrides): Promise<string>;
+  name(
+    arg0: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   setName(
-    node: BytesLike,
-    _name: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    node: PromiseOrValue<BytesLike>,
+    _name: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     ens(overrides?: CallOverrides): Promise<string>;
 
-    name(arg0: BytesLike, overrides?: CallOverrides): Promise<string>;
+    name(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     setName(
-      node: BytesLike,
-      _name: string,
+      node: PromiseOrValue<BytesLike>,
+      _name: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -111,12 +124,15 @@ export interface DefaultReverseResolver extends BaseContract {
   estimateGas: {
     ens(overrides?: CallOverrides): Promise<BigNumber>;
 
-    name(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    name(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setName(
-      node: BytesLike,
-      _name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      _name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
@@ -124,14 +140,14 @@ export interface DefaultReverseResolver extends BaseContract {
     ens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(
-      arg0: BytesLike,
+      arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     setName(
-      node: BytesLike,
-      _name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      node: PromiseOrValue<BytesLike>,
+      _name: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

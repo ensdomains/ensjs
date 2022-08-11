@@ -18,6 +18,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface StaticMetadataServiceInterface extends utils.Interface {
@@ -27,7 +28,10 @@ export interface StaticMetadataServiceInterface extends utils.Interface {
 
   getFunction(nameOrSignatureOrTopic: "uri"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "uri",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
 
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
 
@@ -61,24 +65,36 @@ export interface StaticMetadataService extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+    uri(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
   };
 
-  uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  uri(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   callStatic: {
-    uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    uri(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
-    uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    uri(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     uri(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

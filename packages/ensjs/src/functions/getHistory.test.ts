@@ -2,10 +2,14 @@ import { ENS } from '..'
 import setup from '../tests/setup'
 
 let ENSInstance: ENS
+let revert: Awaited<ReturnType<typeof setup>>['revert']
 
 beforeAll(async () => {
-  ;({ ENSInstance } = await setup())
-  jest.setTimeout(20000)
+  ;({ ENSInstance, revert } = await setup())
+})
+
+afterAll(async () => {
+  await revert()
 })
 
 describe('getHistory', () => {
@@ -16,7 +20,7 @@ describe('getHistory', () => {
     expect(result).toBeUndefined()
   })
   it('should return the history of a name', async () => {
-    const result = await ENSInstance.getHistory('jefflau.eth')
+    const result = await ENSInstance.getHistory('with-profile.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result).toHaveProperty('domain')
@@ -32,7 +36,7 @@ describe('getHistory', () => {
       expect(result).toBeUndefined()
     })
     it('should return the history of a name with TextChanged event detail', async () => {
-      const result = await ENSInstance.getHistoryWithDetail('jefflau.eth')
+      const result = await ENSInstance.getHistoryWithDetail('with-profile.eth')
       expect(result).toBeTruthy()
       if (result) {
         const textEvents = result.resolver.filter(
@@ -70,13 +74,22 @@ describe('getHistory', () => {
         expect(result[0]).toMatchObject(eventToUse.data)
       }
     })
+    let hash: string = ''
     it('should return multiple items for a given transaction hash with multiple events', async () => {
-      const hash =
-        '0x002b7cc3c85168d885a38226a28fac349d13cbaff7f3db4fa3af31f22b863079'
       const dataArr = [
-        { key: 'description', value: 'Not so super description' },
-        { key: 'url', value: 'facebook.com' },
+        { key: 'foo', value: 'bar' },
+        { key: 'swag', value: 'cool' },
       ]
+      const tx = await ENSInstance.setRecords('test123.eth', {
+        records: {
+          texts: dataArr,
+        },
+        addressOrIndex: 1,
+      })
+      await tx.wait()
+
+      hash = tx.hash
+
       const result = (await ENSInstance.getHistoryDetailForTransactionHash(
         hash,
       )) as { key: any; value: any }[]
@@ -88,9 +101,8 @@ describe('getHistory', () => {
       }
     })
     it('should return a single item when an index is specified for a hash', async () => {
-      const hash =
-        '0x002b7cc3c85168d885a38226a28fac349d13cbaff7f3db4fa3af31f22b863079'
-      const data = { key: 'url', value: 'facebook.com' }
+      const data = { key: 'swag', value: 'cool' }
+
       const result = (await ENSInstance.getHistoryDetailForTransactionHash(
         hash,
         1,

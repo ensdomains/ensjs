@@ -24,10 +24,14 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export declare namespace DNSSEC {
-  export type RRSetWithSignatureStruct = { rrset: BytesLike; sig: BytesLike };
+  export type RRSetWithSignatureStruct = {
+    rrset: PromiseOrValue<BytesLike>;
+    sig: PromiseOrValue<BytesLike>;
+  };
 
   export type RRSetWithSignatureStructOutput = [string, string] & {
     rrset: string;
@@ -73,61 +77,64 @@ export interface DNSSECImplInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "algorithms",
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "anchors", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deleteRRSet",
     values: [
-      BigNumberish,
-      BytesLike,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
       DNSSEC.RRSetWithSignatureStruct,
-      BytesLike
+      PromiseOrValue<BytesLike>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "deleteRRSetNSEC3",
     values: [
-      BigNumberish,
-      BytesLike,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
       DNSSEC.RRSetWithSignatureStruct,
       DNSSEC.RRSetWithSignatureStruct,
-      BytesLike
+      PromiseOrValue<BytesLike>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "digests",
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "nsec3Digests",
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "rrdata",
-    values: [BigNumberish, BytesLike]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "setAlgorithm",
-    values: [BigNumberish, string]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setDigest",
-    values: [BigNumberish, string]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setNSEC3Digest",
-    values: [BigNumberish, string]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setOwner",
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(
     functionFragment: "submitRRSet",
-    values: [DNSSEC.RRSetWithSignatureStruct, BytesLike]
+    values: [DNSSEC.RRSetWithSignatureStruct, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "submitRRSets",
-    values: [DNSSEC.RRSetWithSignatureStruct[], BytesLike]
+    values: [DNSSEC.RRSetWithSignatureStruct[], PromiseOrValue<BytesLike>]
   ): string;
 
   decodeFunctionResult(functionFragment: "algorithms", data: BytesLike): Result;
@@ -269,33 +276,36 @@ export interface DNSSECImpl extends BaseContract {
 
   functions: {
     algorithms(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     anchors(overrides?: CallOverrides): Promise<[string]>;
 
     deleteRRSet(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       nsec: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     deleteRRSetNSEC3(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       closestEncloser: DNSSEC.RRSetWithSignatureStruct,
       nextClosest: DNSSEC.RRSetWithSignatureStruct,
-      dnskey: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      dnskey: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    digests(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+    digests(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     nsec3Digests(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -307,8 +317,8 @@ export interface DNSSECImpl extends BaseContract {
      * @param name The name to query, in DNS label-sequence format.
      */
     rrdata(
-      dnstype: BigNumberish,
-      name: BytesLike,
+      dnstype: PromiseOrValue<BigNumberish>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[number, number, string]>;
 
@@ -318,9 +328,9 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The algorithm ID
      */
     setAlgorithm(
-      id: BigNumberish,
-      algo: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      algo: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     /**
@@ -329,9 +339,9 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setDigest(
-      id: BigNumberish,
-      digest: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     /**
@@ -340,53 +350,62 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setNSEC3Digest(
-      id: BigNumberish,
-      digest: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     submitRRSet(
       input: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     submitRRSets(
       input: DNSSEC.RRSetWithSignatureStruct[],
-      _proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
-  algorithms(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  algorithms(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   anchors(overrides?: CallOverrides): Promise<string>;
 
   deleteRRSet(
-    deleteType: BigNumberish,
-    deleteName: BytesLike,
+    deleteType: PromiseOrValue<BigNumberish>,
+    deleteName: PromiseOrValue<BytesLike>,
     nsec: DNSSEC.RRSetWithSignatureStruct,
-    proof: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    proof: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   deleteRRSetNSEC3(
-    deleteType: BigNumberish,
-    deleteName: BytesLike,
+    deleteType: PromiseOrValue<BigNumberish>,
+    deleteName: PromiseOrValue<BytesLike>,
     closestEncloser: DNSSEC.RRSetWithSignatureStruct,
     nextClosest: DNSSEC.RRSetWithSignatureStruct,
-    dnskey: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    dnskey: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  digests(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  digests(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  nsec3Digests(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  nsec3Digests(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -396,8 +415,8 @@ export interface DNSSECImpl extends BaseContract {
    * @param name The name to query, in DNS label-sequence format.
    */
   rrdata(
-    dnstype: BigNumberish,
-    name: BytesLike,
+    dnstype: PromiseOrValue<BigNumberish>,
+    name: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<[number, number, string]>;
 
@@ -407,9 +426,9 @@ export interface DNSSECImpl extends BaseContract {
    * @param id The algorithm ID
    */
   setAlgorithm(
-    id: BigNumberish,
-    algo: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    id: PromiseOrValue<BigNumberish>,
+    algo: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   /**
@@ -418,9 +437,9 @@ export interface DNSSECImpl extends BaseContract {
    * @param id The digest ID
    */
   setDigest(
-    id: BigNumberish,
-    digest: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    id: PromiseOrValue<BigNumberish>,
+    digest: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   /**
@@ -429,54 +448,60 @@ export interface DNSSECImpl extends BaseContract {
    * @param id The digest ID
    */
   setNSEC3Digest(
-    id: BigNumberish,
-    digest: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    id: PromiseOrValue<BigNumberish>,
+    digest: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setOwner(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   submitRRSet(
     input: DNSSEC.RRSetWithSignatureStruct,
-    proof: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    proof: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   submitRRSets(
     input: DNSSEC.RRSetWithSignatureStruct[],
-    _proof: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _proof: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    algorithms(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    algorithms(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     anchors(overrides?: CallOverrides): Promise<string>;
 
     deleteRRSet(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       nsec: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
+      proof: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     deleteRRSetNSEC3(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       closestEncloser: DNSSEC.RRSetWithSignatureStruct,
       nextClosest: DNSSEC.RRSetWithSignatureStruct,
-      dnskey: BytesLike,
+      dnskey: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    digests(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    digests(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     nsec3Digests(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -488,8 +513,8 @@ export interface DNSSECImpl extends BaseContract {
      * @param name The name to query, in DNS label-sequence format.
      */
     rrdata(
-      dnstype: BigNumberish,
-      name: BytesLike,
+      dnstype: PromiseOrValue<BigNumberish>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[number, number, string]>;
 
@@ -499,8 +524,8 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The algorithm ID
      */
     setAlgorithm(
-      id: BigNumberish,
-      algo: string,
+      id: PromiseOrValue<BigNumberish>,
+      algo: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -510,8 +535,8 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setDigest(
-      id: BigNumberish,
-      digest: string,
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -521,22 +546,25 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setNSEC3Digest(
-      id: BigNumberish,
-      digest: string,
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
+    setOwner(
+      newOwner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     submitRRSet(
       input: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
+      proof: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     submitRRSets(
       input: DNSSEC.RRSetWithSignatureStruct[],
-      _proof: BytesLike,
+      _proof: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -575,33 +603,36 @@ export interface DNSSECImpl extends BaseContract {
 
   estimateGas: {
     algorithms(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     anchors(overrides?: CallOverrides): Promise<BigNumber>;
 
     deleteRRSet(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       nsec: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     deleteRRSetNSEC3(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       closestEncloser: DNSSEC.RRSetWithSignatureStruct,
       nextClosest: DNSSEC.RRSetWithSignatureStruct,
-      dnskey: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      dnskey: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    digests(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    digests(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     nsec3Digests(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -613,8 +644,8 @@ export interface DNSSECImpl extends BaseContract {
      * @param name The name to query, in DNS label-sequence format.
      */
     rrdata(
-      dnstype: BigNumberish,
-      name: BytesLike,
+      dnstype: PromiseOrValue<BigNumberish>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -624,9 +655,9 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The algorithm ID
      */
     setAlgorithm(
-      id: BigNumberish,
-      algo: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      algo: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     /**
@@ -635,9 +666,9 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setDigest(
-      id: BigNumberish,
-      digest: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     /**
@@ -646,61 +677,61 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setNSEC3Digest(
-      id: BigNumberish,
-      digest: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     submitRRSet(
       input: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     submitRRSets(
       input: DNSSEC.RRSetWithSignatureStruct[],
-      _proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     algorithms(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     anchors(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deleteRRSet(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       nsec: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     deleteRRSetNSEC3(
-      deleteType: BigNumberish,
-      deleteName: BytesLike,
+      deleteType: PromiseOrValue<BigNumberish>,
+      deleteName: PromiseOrValue<BytesLike>,
       closestEncloser: DNSSEC.RRSetWithSignatureStruct,
       nextClosest: DNSSEC.RRSetWithSignatureStruct,
-      dnskey: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      dnskey: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     digests(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     nsec3Digests(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -712,8 +743,8 @@ export interface DNSSECImpl extends BaseContract {
      * @param name The name to query, in DNS label-sequence format.
      */
     rrdata(
-      dnstype: BigNumberish,
-      name: BytesLike,
+      dnstype: PromiseOrValue<BigNumberish>,
+      name: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -723,9 +754,9 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The algorithm ID
      */
     setAlgorithm(
-      id: BigNumberish,
-      algo: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      algo: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -734,9 +765,9 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setDigest(
-      id: BigNumberish,
-      digest: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -745,26 +776,26 @@ export interface DNSSECImpl extends BaseContract {
      * @param id The digest ID
      */
     setNSEC3Digest(
-      id: BigNumberish,
-      digest: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      id: PromiseOrValue<BigNumberish>,
+      digest: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     submitRRSet(
       input: DNSSEC.RRSetWithSignatureStruct,
-      proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     submitRRSets(
       input: DNSSEC.RRSetWithSignatureStruct[],
-      _proof: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _proof: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

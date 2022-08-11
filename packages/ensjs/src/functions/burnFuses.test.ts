@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { ENS } from '..'
 import setup from '../tests/setup'
 import { namehash } from '../utils/normalise'
@@ -22,24 +22,19 @@ describe('burnFuses', () => {
     await revert()
   })
   it('should return a burnFuses transaction and succeed', async () => {
-    const wrapNameTx = await ENSInstance.wrapName('parthtejpal.eth', {
-      wrappedOwner: accounts[0],
-    })
-    await wrapNameTx.wait()
-
-    const tx = await ENSInstance.burnFuses('parthtejpal.eth', {
+    const tx = await ENSInstance.burnFuses('wrapped.eth', {
       fusesToBurn: {
         cannotUnwrap: true,
         cannotCreateSubdomain: true,
         cannotSetTtl: true,
       },
+      addressOrIndex: accounts[1],
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const result = await nameWrapper.getFuses(namehash('parthtejpal.eth'))
-    const fuseBN = result.fuses as BigNumber
-    expect(fuseBN.toHexString()).toBe('0x71')
+    const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
+    expect(fuses).toBe(113)
   })
 })

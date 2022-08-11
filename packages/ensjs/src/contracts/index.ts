@@ -25,7 +25,7 @@ export default class ContractManager {
   private generateContractGetter = <C extends (...args: any) => any>(
     name: ContractName,
     func: C,
-  ) => {
+  ): ((passedProvider?: any, address?: string) => Promise<ReturnType<C>>) => {
     return async (
       passedProvider?: any,
       address?: string,

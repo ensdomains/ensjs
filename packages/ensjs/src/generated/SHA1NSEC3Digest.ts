@@ -18,6 +18,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface SHA1NSEC3DigestInterface extends utils.Interface {
@@ -29,7 +30,11 @@ export interface SHA1NSEC3DigestInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "hash",
-    values: [BytesLike, BytesLike, BigNumberish]
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
 
   decodeFunctionResult(functionFragment: "hash", data: BytesLike): Result;
@@ -71,9 +76,9 @@ export interface SHA1NSEC3Digest extends BaseContract {
      * @param salt The salt value to use on each iteration.
      */
     hash(
-      salt: BytesLike,
-      data: BytesLike,
-      iterations: BigNumberish,
+      salt: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      iterations: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
   };
@@ -85,9 +90,9 @@ export interface SHA1NSEC3Digest extends BaseContract {
    * @param salt The salt value to use on each iteration.
    */
   hash(
-    salt: BytesLike,
-    data: BytesLike,
-    iterations: BigNumberish,
+    salt: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
+    iterations: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -99,9 +104,9 @@ export interface SHA1NSEC3Digest extends BaseContract {
      * @param salt The salt value to use on each iteration.
      */
     hash(
-      salt: BytesLike,
-      data: BytesLike,
-      iterations: BigNumberish,
+      salt: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      iterations: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -116,9 +121,9 @@ export interface SHA1NSEC3Digest extends BaseContract {
      * @param salt The salt value to use on each iteration.
      */
     hash(
-      salt: BytesLike,
-      data: BytesLike,
-      iterations: BigNumberish,
+      salt: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      iterations: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -131,9 +136,9 @@ export interface SHA1NSEC3Digest extends BaseContract {
      * @param salt The salt value to use on each iteration.
      */
     hash(
-      salt: BytesLike,
-      data: BytesLike,
-      iterations: BigNumberish,
+      salt: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
+      iterations: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

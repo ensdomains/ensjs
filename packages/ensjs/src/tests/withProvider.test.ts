@@ -15,11 +15,11 @@ beforeAll(async () => {
 
 describe('withProvider', () => {
   it('should be able to use a new provider', async () => {
-    const addr = await ENSInstance.getAddr('jefflau.eth')
+    const addr = await ENSInstance.getAddr('with-profile.eth')
     expect(addr).toBeTruthy()
 
     try {
-      await ENSInstance.withProvider(providerFake).getOwner('jefflau.eth')
+      await ENSInstance.withProvider(providerFake).getOwner('with-profile.eth')
       expect(false).toBeTruthy()
     } catch {
       expect(true).toBeTruthy()

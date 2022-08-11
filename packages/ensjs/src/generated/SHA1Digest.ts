@@ -17,6 +17,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from "./common";
 
 export interface SHA1DigestInterface extends utils.Interface {
@@ -28,7 +29,7 @@ export interface SHA1DigestInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "verify",
-    values: [BytesLike, BytesLike]
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>]
   ): string;
 
   decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
@@ -69,8 +70,8 @@ export interface SHA1Digest extends BaseContract {
      * @param hash The hash to compare to.
      */
     verify(
-      data: BytesLike,
-      hash: BytesLike,
+      data: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
@@ -81,8 +82,8 @@ export interface SHA1Digest extends BaseContract {
    * @param hash The hash to compare to.
    */
   verify(
-    data: BytesLike,
-    hash: BytesLike,
+    data: PromiseOrValue<BytesLike>,
+    hash: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -93,8 +94,8 @@ export interface SHA1Digest extends BaseContract {
      * @param hash The hash to compare to.
      */
     verify(
-      data: BytesLike,
-      hash: BytesLike,
+      data: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
@@ -108,8 +109,8 @@ export interface SHA1Digest extends BaseContract {
      * @param hash The hash to compare to.
      */
     verify(
-      data: BytesLike,
-      hash: BytesLike,
+      data: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -121,8 +122,8 @@ export interface SHA1Digest extends BaseContract {
      * @param hash The hash to compare to.
      */
     verify(
-      data: BytesLike,
-      hash: BytesLike,
+      data: PromiseOrValue<BytesLike>,
+      hash: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

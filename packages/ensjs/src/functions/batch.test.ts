@@ -10,23 +10,23 @@ beforeAll(async () => {
 describe('batch', () => {
   it('should batch calls together', async () => {
     const result = await ENSInstance.batch(
-      ENSInstance.getText.batch('jefflau.eth', 'description'),
-      ENSInstance.getAddr.batch('jefflau.eth'),
-      ENSInstance.getName.batch('0x866B3c4994e1416B7C738B9818b31dC246b95eEE'),
+      ENSInstance.getText.batch('with-profile.eth', 'description'),
+      ENSInstance.getAddr.batch('with-profile.eth'),
+      ENSInstance.getName.batch('0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC'),
     )
     expect(result).toBeTruthy()
     if (result) {
       expect(result[0]).toBe('Hello2')
-      expect(result[1]).toBe('0x866B3c4994e1416B7C738B9818b31dC246b95eEE')
+      expect(result[1]).toBe('0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC')
       expect(result[2]).toMatchObject({
-        name: 'jefflau.eth',
+        name: 'with-profile.eth',
         match: true,
       })
     }
   })
   it('should batch a single call', async () => {
     const result = await ENSInstance.batch(
-      ENSInstance.getText.batch('jefflau.eth', 'description'),
+      ENSInstance.getText.batch('with-profile.eth', 'description'),
     )
     expect(result).toBeTruthy()
     if (result) {

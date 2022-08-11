@@ -19,11 +19,11 @@ afterAll(async () => {
 describe('getName', () => {
   it('should get a primary name from an address', async () => {
     const result = await ENSInstance.getName(
-      '0x866B3c4994e1416B7C738B9818b31dC246b95eEE',
+      '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
     )
     expect(result).toBeTruthy()
     if (result) {
-      expect(result.name).toBe('jefflau.eth')
+      expect(result.name).toBe('with-profile.eth')
       expect(result.match).toBeTruthy()
     }
   })
@@ -34,13 +34,13 @@ describe('getName', () => {
     expect(result).toBeUndefined()
   })
   it('should return with a false match for a name with no forward resolution', async () => {
-    const tx = await ENSInstance.setName('jefflau.eth')
+    const tx = await ENSInstance.setName('with-profile.eth')
     await tx?.wait()
 
     const result = await ENSInstance.getName(accounts[0])
     expect(result).toBeTruthy()
     if (result) {
-      expect(result.name).toBe('jefflau.eth')
+      expect(result.name).toBe('with-profile.eth')
       expect(result.match).toBeFalsy()
     }
   })

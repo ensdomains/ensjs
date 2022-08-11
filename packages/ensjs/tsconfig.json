@@ -15,5 +15,5 @@
     "importsNotUsedAsValues": "remove",
     "lib": ["ES2021", "DOM"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "./hardhat.config.ts", "./deploy"]
 }

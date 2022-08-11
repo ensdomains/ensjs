@@ -1,8 +1,9 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
 import { namehash } from '../utils/normalise'
+import { Expiry, makeExpiry } from '../utils/wrapperExpiry'
 
 type BaseArgs = {
   owner: string
@@ -13,12 +14,17 @@ type BaseArgs = {
 type NameWrapperArgs = {
   contract: 'nameWrapper'
   fuses?: FuseOptions
+  expiry?: Expiry
 } & BaseArgs
 
 type Args = BaseArgs | NameWrapperArgs
 
 export default async function (
-  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
+  {
+    contracts,
+    signer,
+    getExpiry,
+  }: ENSArgs<'contracts' | 'signer' | 'getExpiry'>,
   name: string,
   { owner, resolverAddress, contract, ...wrapperArgs }: Args,
 ) {
@@ -54,6 +60,11 @@ export default async function (
     }
     case 'nameWrapper': {
       const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
+      const expiry: BigNumber = await makeExpiry(
+        { getExpiry },
+        name,
+        'expiry' in wrapperArgs ? wrapperArgs.expiry : undefined,
+      )
 
       const generatedFuses =
         'fuses' in wrapperArgs && wrapperArgs.fuses
@@ -67,6 +78,7 @@ export default async function (
         resolverAddress,
         0,
         generatedFuses,
+        expiry,
       )
     }
     default: {
