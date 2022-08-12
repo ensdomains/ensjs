@@ -14,12 +14,17 @@ const outputsToIgnore = [
   Buffer.from('eth_getTransactionReceipt'),
 ]
 
+const exitedBuffer = Buffer.from('exited with code 1')
+
 let cleanupRunning = false
 let opts = {
   log: true,
   composeOptions: ['-p', 'ens-test-env'],
 }
 
+/**
+ * @type {import('concurrently').Command[]}
+ **/
 let commands
 let options
 let config
@@ -172,6 +177,13 @@ export const main = async (_config, _options, justKill) => {
           for (let i = 0; i < outputsToIgnore.length; i++) {
             if (chunk.includes(outputsToIgnore[i])) return
           }
+          if (chunk.includes(exitedBuffer)) {
+            cleanup(
+              undefined,
+              parseInt(chunk.toString().split('exited with code ')[1]),
+            )
+            return
+          }
           process.stdout.write(chunk)
         }
       },
@@ -180,8 +192,8 @@ export const main = async (_config, _options, justKill) => {
 
   const inxsToFinishOnExit = []
   const cmdsToRun = (config.scripts || []).map(
-    ({ finishOnExit, ...script }) => {
-      finishOnExit && inxsToFinishOnExit.push
+    ({ finishOnExit, ...script }, i) => {
+      finishOnExit && inxsToFinishOnExit.push(i)
       return script
     },
   )
@@ -262,7 +274,7 @@ export const main = async (_config, _options, justKill) => {
 
   if (cmdsToRun.length > 0 && options.scripts) {
     /**
-     * @type Promise<CloseEvent[]>
+     * @type {import('concurrently').ConcurrentlyResult['result']}
      **/
     let result
     ;({ commands, result } = concurrently(cmdsToRun, {
@@ -271,12 +283,15 @@ export const main = async (_config, _options, justKill) => {
 
     commands.forEach((cmd) => {
       if (inxsToFinishOnExit.includes(cmd.index)) {
-        cmd.close.subscribe(cleanup.bind(null, { cleanup: true }))
+        cmd.close.subscribe(({ exitCode }) => cleanup(undefined, exitCode))
+      } else {
+        cmd.close.subscribe(
+          ({ exitCode }) => exitCode === 0 || cleanup(undefined, exitCode),
+        )
       }
-      cmd.error.subscribe(cleanup.bind(null, { exit: true }))
     })
 
-    await result.catch(cleanup.bind(null, { exit: true }))
+    result.catch(cleanup.bind(null, { exit: true }))
   }
 }
 
