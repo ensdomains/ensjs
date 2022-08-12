@@ -1,5 +1,4 @@
 import { ConcurrentlyCommandInput } from 'concurrently'
-import { ServerOptions } from 'ganache'
 
 /**
  * ens-test-env configuration object
@@ -7,45 +6,14 @@ import { ServerOptions } from 'ganache'
  */
 export interface ENSTestEnvConfig {
   deployCommand?: string
-  tenderly?: {
-    user: string
-    project: string
-    key: string
-  }
-  archive: {
-    localSubgraphId?: string
-    subgraphId: string
-    epochTime: number
-    blockNumber: number
-    baseUrl: string
-    network: string
-  }
-  docker: {
-    file?: string
-    sudo?: boolean
-  }
-  ethereum: {
-    chain: {
-      chainId: number
-    }
-    fork: {
-      url: string
-      blockNumber: number
-    }
-    wallet: {
-      mnemonic: string
-    }
-  } & ServerOptions<'ethereum'>
-  graph?: {
-    bypassLocal?: boolean
-    labelHashes?: { hash: string; label: string }[]
-  }
+  buildCommand?: string
+  labelHashes?: { hash: string; label: string }[]
   scripts?: (ConcurrentlyCommandInput & {
     finishOnExit?: boolean
-    waitForGraph?: boolean
   })[]
   paths?: {
-    archives?: string
     data?: string
+    archive?: string
+    composeFile?: string
   }
 }

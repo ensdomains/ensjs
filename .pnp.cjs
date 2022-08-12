@@ -1585,6 +1585,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:5.3.1"\
       ],\
       [\
+        "docker-compose",\
+        "npm:0.23.17"\
+      ],\
+      [\
         "doctrine",\
         "npm:3.0.0"\
       ],\
@@ -4165,6 +4169,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:4.0.0"\
       ],\
       [\
+        "yaml",\
+        "npm:1.10.2"\
+      ],\
+      [\
         "yargs",\
         "npm:16.2.0"\
       ],\
@@ -5050,6 +5058,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cli-progress", "npm:3.10.0"],\
             ["commander", "npm:9.3.0"],\
             ["concurrently", "npm:7.1.0"],\
+            ["docker-compose", "npm:0.23.17"],\
             ["dotenv", "npm:16.0.0"],\
             ["fs-extra", "npm:10.0.1"],\
             ["ganache", "npm:7.0.4"],\
@@ -10154,6 +10163,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["dns-packet", "npm:5.3.1"],\
             ["@leichtgewicht/ip-codec", "npm:2.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["docker-compose", [\
+        ["npm:0.23.17", {\
+          "packageLocation": "./.yarn/cache/docker-compose-npm-0.23.17-7cb83a8cad-c308bf067c.zip/node_modules/docker-compose/",\
+          "packageDependencies": [\
+            ["docker-compose", "npm:0.23.17"],\
+            ["yaml", "npm:1.10.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -19309,6 +19328,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/yallist-npm-4.0.0-b493d9e907-343617202a.zip/node_modules/yallist/",\
           "packageDependencies": [\
             ["yallist", "npm:4.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["yaml", [\
+        ["npm:1.10.2", {\
+          "packageLocation": "./.yarn/cache/yaml-npm-1.10.2-0e780aebdf-ce4ada136e.zip/node_modules/yaml/",\
+          "packageDependencies": [\
+            ["yaml", "npm:1.10.2"]\
           ],\
           "linkType": "HARD"\
         }]\
