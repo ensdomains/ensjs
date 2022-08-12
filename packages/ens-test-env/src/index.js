@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command, Option } from 'commander'
 import path from 'path'
+import { emitKeypressEvents } from 'readline'
 import { URL as URLClass } from 'url'
 import { main as fetchData } from './fetch-data.js'
 import { main as manager } from './manager.js'
@@ -16,20 +17,29 @@ program
   .description('A testing environment for everything ENS')
   .version(process.env.npm_package_version || '0.1.0')
   .option('-c, --config <path>', 'Specify config directory')
+  .option('-a, --always-cleanup', 'Always cleanup after running')
   .hook('preAction', async () => {
+    if (program.optsWithGlobals().alwaysCleanup) {
+      emitKeypressEvents(process.stdin)
+      if (process.stdin.isTTY) process.stdin.setRawMode(true)
+      process.stdin.on('keypress', (char, key) => {
+        if (key.ctrl && key.name === 'c') {
+          process.kill(process.pid, 'SIGINT')
+        }
+      })
+    }
     // if config arg supplied, get config path as next arg
     const configDir = program.optsWithGlobals().config
     // if config arg, try load config
     if (configDir) {
       try {
-        config = (await import(path.join(process.env.INIT_CWD, configDir)))
-          .default
+        config = (await import(path.join(process.cwd(), configDir))).default
       } catch {
         program.error(`Config file ${configDir} not found`)
       }
     } else {
       config = (
-        await import(path.join(process.env.INIT_CWD, 'ens-test-env.config.js'))
+        await import(path.join(process.cwd(), 'ens-test-env.config.js'))
       ).default
     }
     // if config doesn't have all data, throw error

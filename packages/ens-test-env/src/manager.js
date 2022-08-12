@@ -16,6 +16,7 @@ const outputsToIgnore = [
 
 const exitedBuffer = Buffer.from('exited with code 1')
 
+let initialFinished = false
 let cleanupRunning = false
 let opts = {
   log: true,
@@ -53,24 +54,32 @@ async function cleanup(_, exitCode) {
     }
   }
   cleanupRunning = true
-  if (!(options && options.killGracefully) || force) {
-    await compose.kill({
-      ...opts,
-      log: false,
-    })
+  if (!force) console.log('Cleaning up...')
+  else console.log('Forcing cleanup...')
+  if (!(options && options.killGracefully) || force || !initialFinished) {
+    await compose
+      .kill({
+        ...opts,
+        log: false,
+      })
+      .catch(() => console.error('kill failed'))
     if (force) return process.exit(exitCode ? 1 : 0)
-    await compose.rm({
-      ...opts,
-      log: false,
-    })
+    await compose
+      .rm({
+        ...opts,
+        log: false,
+      })
+      .catch(() => console.error('rm failed'))
   } else {
     if (options.save) {
-      await rpcFetch('anvil_dumpState', []).then((res) =>
-        fs.writeFileSync(
-          path.resolve(config.paths.data, './.state'),
-          res.result,
-        ),
-      )
+      await rpcFetch('anvil_dumpState', [])
+        .then((res) =>
+          fs.writeFileSync(
+            path.resolve(config.paths.data, './.state'),
+            res.result,
+          ),
+        )
+        .catch(() => console.error('anvil dump failed'))
     }
     await compose
       .down({
@@ -99,42 +108,41 @@ async function cleanup(_, exitCode) {
   process.exit(exitCode ? 1 : 0)
 }
 
-const prefix = Buffer.from('\x1b[1;34m[deploy]\x1b[0m ')
+const makePrepender = (prefix) =>
+  new Transform({
+    transform(chunk, _, done) {
+      this._rest =
+        this._rest && this._rest.length
+          ? Buffer.concat([this._rest, chunk])
+          : chunk
 
-const prepender = new Transform({
-  transform(chunk, _, done) {
-    this._rest =
-      this._rest && this._rest.length
-        ? Buffer.concat([this._rest, chunk])
-        : chunk
+      let index
 
-    let index
+      // As long as we keep finding newlines, keep making slices of the buffer and push them to the
+      // readable side of the transform stream
+      while ((index = this._rest.indexOf('\n')) !== -1) {
+        // The `end` parameter is non-inclusive, so increase it to include the newline we found
+        const line = this._rest.slice(0, ++index)
+        // `start` is inclusive, but we are already one char ahead of the newline -> all good
+        this._rest = this._rest.slice(index)
+        // We have a single line here! Prepend the string we want
+        this.push(Buffer.concat([prefix, line]))
+      }
 
-    // As long as we keep finding newlines, keep making slices of the buffer and push them to the
-    // readable side of the transform stream
-    while ((index = this._rest.indexOf('\n')) !== -1) {
-      // The `end` parameter is non-inclusive, so increase it to include the newline we found
-      const line = this._rest.slice(0, ++index)
-      // `start` is inclusive, but we are already one char ahead of the newline -> all good
-      this._rest = this._rest.slice(index)
-      // We have a single line here! Prepend the string we want
-      this.push(Buffer.concat([prefix, line]))
-    }
+      return void done()
+    },
 
-    return void done()
-  },
+    // Called before the end of the input so we can handle any remaining
+    // data that we have saved
+    flush(done) {
+      // If we have any remaining data in the cache, send it out
+      if (this._rest && this._rest.length) {
+        return void done(null, Buffer.concat([prefix, this._rest]))
+      }
+    },
+  })
 
-  // Called before the end of the input so we can handle any remaining
-  // data that we have saved
-  flush(done) {
-    // If we have any remaining data in the cache, send it out
-    if (this._rest && this._rest.length) {
-      return void done(null, Buffer.concat([prefix, this._rest]))
-    }
-  },
-})
-
-const awaitCommand = (command) => {
+const awaitCommand = async (name, command) => {
   const allArgs = command.split(' ')
   const deploy = spawn(allArgs.shift(), allArgs, {
     cwd: process.cwd(),
@@ -142,7 +150,10 @@ const awaitCommand = (command) => {
     stdio: 'pipe',
     shell: true,
   })
-  deploy.stdout.pipe(prepender).pipe(process.stdout)
+  const outPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
+  const errPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
+  deploy.stdout.pipe(outPrepender).pipe(process.stdout)
+  deploy.stderr.pipe(errPrepender).pipe(process.stderr)
   return new Promise((resolve) => deploy.on('exit', () => resolve()))
 }
 
@@ -202,7 +213,7 @@ export const main = async (_config, _options, justKill) => {
 
   await waitOn({ resources: ['tcp:localhost:8545'] })
   if (config.deployCommand && options.save) {
-    await awaitCommand(config.deployCommand)
+    await awaitCommand('deploy', config.deployCommand)
   } else {
     const state = fs.readFileSync(path.resolve(config.paths.data, './.state'), {
       encoding: 'utf8',
@@ -211,8 +222,10 @@ export const main = async (_config, _options, justKill) => {
   }
 
   if (config.buildCommand && options.build) {
-    await awaitCommand(config.buildCommand)
+    await awaitCommand('build', config.buildCommand)
   }
+
+  initialFinished = true
 
   if (cleanupRunning) return
 
