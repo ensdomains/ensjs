@@ -15,11 +15,7 @@ import type deleteSubname from './functions/deleteSubname'
 import type getDNSOwner from './functions/getDNSOwner'
 import type getExpiry from './functions/getExpiry'
 import type getFuses from './functions/getFuses'
-import type {
-  getHistory,
-  getHistoryDetailForTransactionHash,
-  getHistoryWithDetail,
-} from './functions/getHistory'
+import type { getHistory } from './functions/getHistory'
 import type getName from './functions/getName'
 import type getNames from './functions/getNames'
 import type getOwner from './functions/getOwner'
@@ -435,22 +431,6 @@ export class ENS {
     'getHistory',
     ['gqlInstance'],
     'getHistory',
-  )
-
-  public getHistoryWithDetail = this.generateFunction<
-    typeof getHistoryWithDetail
-  >(
-    'getHistory',
-    ['contracts', 'gqlInstance', 'provider'],
-    'getHistoryWithDetail',
-  )
-
-  public getHistoryDetailForTransactionHash = this.generateFunction<
-    typeof getHistoryDetailForTransactionHash
-  >(
-    'getHistory',
-    ['contracts', 'provider'],
-    'getHistoryDetailForTransactionHash',
   )
 
   public getContentHash = this.generateRawFunction<typeof getContentHash>(

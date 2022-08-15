@@ -15,6 +15,7 @@
     "cli-progress": "^3.10.0",
     "commander": "^9.3.0",
     "concurrently": "^7.1.0",
+    "docker-compose": "^0.23.17",
     "dotenv": "^16.0.0",
     "fs-extra": "^10.0.1",
     "ganache": "^7.0.4",

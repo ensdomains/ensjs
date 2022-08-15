@@ -477,6 +477,7 @@ __metadata:
     cli-progress: ^3.10.0
     commander: ^9.3.0
     concurrently: ^7.1.0
+    docker-compose: ^0.23.17
     dotenv: ^16.0.0
     fs-extra: ^10.0.1
     ganache: ^7.0.4
@@ -4919,6 +4920,15 @@ __metadata:
   dependencies:
     "@leichtgewicht/ip-codec": ^2.0.1
   checksum: 196ff74a0669126cf5fc901a5849b72f625bd7a4cb163b3f4d41fbe19ed0b017cf7674daef5b0acbd448c094fcd795e501d7066f301be428e4acecfcf3c5f336
+  languageName: node
+  linkType: hard
+
+"docker-compose@npm:^0.23.17":
+  version: 0.23.17
+  resolution: "docker-compose@npm:0.23.17"
+  dependencies:
+    yaml: ^1.10.2
+  checksum: c308bf067cabe178d245b3e499119937b1d2a5effdc9fac6227e04be4308a0250ca7bb1471789b3d0492ea2ce83f74e40b7517a9a5cb540a21355a64e4ad5d3c
   languageName: node
   linkType: hard
 
@@ -13055,6 +13065,13 @@ __metadata:
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 343617202af32df2a15a3be36a5a8c0c8545208f3d3dfbc6bb7c3e3b7e8c6f8e7485432e4f3b88da3031a6e20afa7c711eded32ddfb122896ac5d914e75848d5
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^1.10.2":
+  version: 1.10.2
+  resolution: "yaml@npm:1.10.2"
+  checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
   languageName: node
   linkType: hard
 

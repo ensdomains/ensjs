@@ -7,7 +7,6 @@ import { ContractName, SupportedNetworkId } from '../contracts/types'
 config({
   path: resolve(__dirname, '../../.env.local'),
   override: true,
-  debug: true,
 })
 
 const deploymentAddresses = JSON.parse(
