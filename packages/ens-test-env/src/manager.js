@@ -1,14 +1,11 @@
 import { spawn } from 'child_process'
 import concurrently from 'concurrently'
 import compose from 'docker-compose'
-import fs from 'fs'
-import fetch from 'node-fetch'
-import path from 'path'
 import { Transform } from 'stream'
 import waitOn from 'wait-on'
 import { main as fetchData } from './fetch-data.js'
 
-const outputsToIgnore = [
+let outputsToIgnore = [
   Buffer.from('eth_getBlockByNumber'),
   Buffer.from('eth_getBlockByHash'),
   Buffer.from('eth_getTransactionReceipt'),
@@ -29,20 +26,6 @@ let opts = {
 let commands
 let options
 let config
-
-const batchRpcFetch = (items) =>
-  fetch('http://localhost:8545', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(
-      items.map((item, i) => ({ jsonrpc: '2.0', id: i + 1, ...item })),
-    ),
-  }).then((res) => res.json())
-
-const rpcFetch = (method, params) =>
-  batchRpcFetch([{ method, params }]).then((res) => res[0])
 
 async function cleanup(_, exitCode) {
   let force = false
@@ -71,16 +54,6 @@ async function cleanup(_, exitCode) {
       })
       .catch(() => console.error('rm failed'))
   } else {
-    if (options.save) {
-      await rpcFetch('anvil_dumpState', [])
-        .then((res) =>
-          fs.writeFileSync(
-            path.resolve(config.paths.data, './.state'),
-            res.result,
-          ),
-        )
-        .catch(() => console.error('anvil dump failed'))
-    }
     await compose
       .down({
         ...opts,
@@ -164,8 +137,8 @@ export const main = async (_config, _options, justKill) => {
   opts.cwd = config.paths.composeFile.split('/docker-compose.yml')[0]
 
   opts.env = {
-    DATA_FOLDER: config.paths.data,
     ...process.env,
+    DATA_FOLDER: config.paths.data,
   }
 
   if (justKill) {
@@ -175,6 +148,8 @@ export const main = async (_config, _options, justKill) => {
   try {
     await compose.upOne('anvil', opts)
   } catch {}
+
+  if (options.verbose) outputsToIgnore = []
 
   compose
     .logs(['anvil', 'graph-node', 'postgres', 'ipfs', 'metadata'], {
@@ -212,14 +187,7 @@ export const main = async (_config, _options, justKill) => {
   if (cleanupRunning) return
 
   await waitOn({ resources: ['tcp:localhost:8545'] })
-  if (config.deployCommand && options.save) {
-    await awaitCommand('deploy', config.deployCommand)
-  } else {
-    const state = fs.readFileSync(path.resolve(config.paths.data, './.state'), {
-      encoding: 'utf8',
-    })
-    await rpcFetch('anvil_loadState', [state])
-  }
+  await awaitCommand('deploy', config.deployCommand)
 
   if (config.buildCommand && options.build) {
     await awaitCommand('build', config.buildCommand)
