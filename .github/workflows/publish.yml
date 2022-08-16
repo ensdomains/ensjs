@@ -42,7 +42,9 @@ jobs:
       - name: Publish
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm -F @ensdomains/ensjs publish
+        run: |
+          pnpm config set //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}
+          pnpm -F @ensdomains/ensjs publish
 
       - name: Push changes
         run: git push
