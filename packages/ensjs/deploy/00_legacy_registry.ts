@@ -1,10 +1,11 @@
-import { labelhash } from '@ensdomains/ensjs/dist/cjs/utils/labels.js'
 import { namehash } from 'ethers/lib/utils'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import { labelhash } from '../src/utils/labels'
 
-const ZERO_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
+const ZERO_HASH =
+  '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const names = ['legacy']
 
@@ -14,13 +15,21 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const registry = await ethers.getContract('LegacyENSRegistry', owner)
 
-  const tldTx = await registry.setSubnodeOwner(ZERO_HASH, labelhash('test'), owner)
+  const tldTx = await registry.setSubnodeOwner(
+    ZERO_HASH,
+    labelhash('test'),
+    owner,
+  )
   console.log(`Creating .test TLD (tx: ${tldTx.hash})...`)
   await tldTx.wait()
 
   await Promise.all(
     names.map(async (name) => {
-      const nameTx = await registry.setSubnodeOwner(namehash('test'), labelhash(name), owner)
+      const nameTx = await registry.setSubnodeOwner(
+        namehash('test'),
+        labelhash(name),
+        owner,
+      )
       console.log(`Creating ${name}.test (tx: ${nameTx.hash})...`)
       await nameTx.wait()
     }),

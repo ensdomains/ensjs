@@ -11,10 +11,10 @@ process.env.ADDRESS_NAME_WRAPPER = '0x9E545E3C0baAB3E08CdfD552C960A1050f373042'
  * @type {import('@ensdomains/ens-test-env').ENSTestEnvConfig}
  **/
 module.exports = {
-  deployCommand: 'pnpm -F @ensdomains/ensjs hardhat deploy',
+  deployCommand: 'pnpm hardhat deploy',
   scripts: [
     {
-      command: 'pnpm -F @ensdomains/ensjs test',
+      command: 'pnpm test',
       name: 'jest',
       prefixColor: 'yellow.bold',
       finishOnExit: true,

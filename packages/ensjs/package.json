@@ -39,7 +39,7 @@
     "ver": "pnpm version --no-workspaces-update"
   },
   "dependencies": {
-    "@ensdomains/address-encoder": "^0.2.16",
+    "@ensdomains/address-encoder": "0.2.16",
     "@ensdomains/content-hash": "^2.5.7",
     "dns-packet": "^5.3.1",
     "ethers": "^5.6.1",
