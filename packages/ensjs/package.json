@@ -23,7 +23,7 @@
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
-    "env": "yarn ens-test-env",
+    "tenv": "ens-test-env -a",
     "generate-types": "ts-node scripts/runTypechain.ts",
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",
@@ -33,13 +33,10 @@
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
     "build:esm": "tsc --project tsconfig.esm.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
-    "build": "yarn clean && yarn build:esm && yarn build:cjs",
-    "prepublish": "yarn build && cp ../../{README.md,LICENSE} ./",
-    "remove-stableVersion": "ex -c '%s/,\\n\\s\\+\"stableVersion\".*\"//g' -cwq ./package.json",
-    "version:create": "yarn remove-stableVersion && yarn version",
+    "build": "pnpm clean && pnpm build:esm && pnpm build:cjs",
+    "prepublish": "pnpm build && cp ../../{README.md,LICENSE} ./",
     "enode": "ganache --wallet.mnemonic=\"test test test test test test test test test test test junk\" --chain.chainId 1337 --chain.networkId 1337 --chain.time 1659500634000"
   },
-  "packageManager": "yarn@3.2.0",
   "dependencies": {
     "@ensdomains/address-encoder": "^0.2.16",
     "@ensdomains/content-hash": "^2.5.7",
