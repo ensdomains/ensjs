@@ -35,7 +35,8 @@
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build": "pnpm clean && pnpm build:esm && pnpm build:cjs",
     "prepublish": "pnpm build && cp ../../{README.md,LICENSE} ./",
-    "enode": "ganache --wallet.mnemonic=\"test test test test test test test test test test test junk\" --chain.chainId 1337 --chain.networkId 1337 --chain.time 1659500634000"
+    "enode": "ganache --wallet.mnemonic=\"test test test test test test test test test test test junk\" --chain.chainId 1337 --chain.networkId 1337 --chain.time 1659500634000",
+    "ver": "pnpm version --no-workspaces-update"
   },
   "dependencies": {
     "@ensdomains/address-encoder": "^0.2.16",
@@ -81,6 +82,5 @@
   },
   "peerDependencies": {
     "ethers": "*"
-  },
-  "stableVersion": "3.0.0-alpha.11"
+  }
 }
