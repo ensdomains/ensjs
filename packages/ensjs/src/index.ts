@@ -10,6 +10,7 @@ import type {
   universalWrapper,
 } from './functions/batchWrappers'
 import type burnFuses from './functions/burnFuses'
+import type commitName from './functions/commitName'
 import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
 import type getDNSOwner from './functions/getDNSOwner'
@@ -32,6 +33,8 @@ import type {
   _getText,
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
+import registerName from './functions/registerName'
+import renewName from './functions/renewName'
 import type setName from './functions/setName'
 import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
@@ -92,7 +95,11 @@ type OptionalWriteOptions<F> = F extends (
   : never
 
 interface WriteFunction<F extends (...args: any) => any> extends Function {
-  (...args: Parameters<OptionalWriteOptions<F>>): Promise<ContractTransaction>
+  (...args: Parameters<OptionalWriteOptions<F>>): Promise<
+    ContractTransaction & {
+      customData?: Record<string, any>
+    }
+  >
   populateTransaction: (
     ...args: Parameters<OptionalWriteOptions<F>>
   ) => Promise<PopulatedTransaction>
@@ -499,6 +506,11 @@ export class ENS {
     'getPrice',
   )
 
+  public getDNSOwner = this.generateFunction<typeof getDNSOwner>(
+    'getDNSOwner',
+    [],
+  )
+
   public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
     'initialGetters',
     ['contracts'],
@@ -569,8 +581,17 @@ export class ENS {
     ['contracts', 'getExpiry'],
   )
 
-  public getDNSOwner = this.generateFunction<typeof getDNSOwner>(
-    'getDNSOwner',
-    [],
+  public commitName = this.generateWriteFunction<typeof commitName>(
+    'commitName',
+    ['contracts'],
   )
+
+  public registerName = this.generateWriteFunction<typeof registerName>(
+    'registerName',
+    ['contracts'],
+  )
+
+  public renewName = this.generateWriteFunction<typeof renewName>('renewName', [
+    'contracts',
+  ])
 }
