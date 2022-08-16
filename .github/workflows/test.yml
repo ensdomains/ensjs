@@ -1,11 +1,9 @@
 name: Test
 
-on:
-  release:
-    types: [push]
+on: [push]
 
 jobs:
-  publish:
+  test:
     name: Test
     runs-on: ubuntu-latest
     strategy:
