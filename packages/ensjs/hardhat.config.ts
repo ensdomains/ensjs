@@ -2,14 +2,9 @@ import '@nomiclabs/hardhat-ethers'
 import 'dotenv/config'
 import 'hardhat-deploy'
 import { HardhatUserConfig } from 'hardhat/config'
-import nModule from 'module'
 import { resolve } from 'path'
 
-const pnp = (nModule as any).findPnpApi('./')
-const ensContractsPath = pnp.resolveToUnqualified(
-  '@ensdomains/ens-contracts',
-  './',
-)
+const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 
 const config: HardhatUserConfig = {
   solidity: {
