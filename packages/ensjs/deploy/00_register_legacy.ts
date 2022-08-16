@@ -70,6 +70,11 @@ const names = [
     },
   },
   {
+    label: 'to-be-renewed',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+  },
+  {
     label: 'with-subnames',
     namedOwner: 'owner',
     namedAddr: 'owner',
