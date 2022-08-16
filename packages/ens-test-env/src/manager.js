@@ -1,6 +1,7 @@
 import { spawn } from 'child_process'
 import concurrently from 'concurrently'
 import compose from 'docker-compose'
+import fetch from 'node-fetch'
 import { Transform } from 'stream'
 import waitOn from 'wait-on'
 import { main as fetchData } from './fetch-data.js'
@@ -26,6 +27,20 @@ let opts = {
 let commands
 let options
 let config
+
+const batchRpcFetch = (items) =>
+  fetch('http://localhost:8545', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(
+      items.map((item, i) => ({ jsonrpc: '2.0', id: i + 1, ...item })),
+    ),
+  }).then((res) => res.json())
+
+const rpcFetch = (method, params) =>
+  batchRpcFetch([{ method, params }]).then((res) => res[0])
 
 async function cleanup(_, exitCode) {
   let force = false
@@ -187,7 +202,18 @@ export const main = async (_config, _options, justKill) => {
   if (cleanupRunning) return
 
   await waitOn({ resources: ['tcp:localhost:8545'] })
+
+  // wait 100 ms to make sure the server is up
+  await new Promise((resolve) => setTimeout(resolve, 100))
+
+  // set next block timestamp to ensure consistent hashes
+  await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
+  await rpcFetch('anvil_setBlockTimestampInterval', [1])
+
   await awaitCommand('deploy', config.deployCommand)
+
+  // remove block timestamp interval after deploy
+  await rpcFetch('anvil_removeBlockTimestampInterval', [])
 
   if (config.buildCommand && options.build) {
     await awaitCommand('build', config.buildCommand)

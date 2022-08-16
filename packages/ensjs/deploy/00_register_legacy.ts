@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import crypto from 'crypto'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
@@ -83,10 +82,6 @@ const names = [
   })),
 ]
 
-const randomSecret = () => {
-  return `0x${crypto.randomBytes(32).toString('hex')}`
-}
-
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
@@ -94,8 +89,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const controller = await ethers.getContract('LegacyETHRegistrarController')
   const publicResolver = await ethers.getContract('LegacyPublicResolver')
 
+  await network.provider.send('anvil_setBlockTimestampInterval', [60])
+
   for (const { label, namedOwner, namedAddr, records, subnames } of names) {
-    const secret = randomSecret()
+    const secret =
+      '0x0000000000000000000000000000000000000000000000000000000000000000'
     const registrant = allNamedAccts[namedOwner]
     const resolver = publicResolver.address
     const addr = allNamedAccts[namedAddr]
@@ -116,7 +114,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     )
     await commitTx.wait()
 
-    await network.provider.send('evm_increaseTime', [60])
     await network.provider.send('evm_mine')
 
     const price = await controller.rentPrice(label, duration)
@@ -191,6 +188,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       }
     }
   }
+
+  await network.provider.send('anvil_setBlockTimestampInterval', [1])
 
   return true
 }
