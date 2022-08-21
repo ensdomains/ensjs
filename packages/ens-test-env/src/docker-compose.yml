@@ -1,5 +1,12 @@
 version: '3'
 services:
+  anvil:
+    image: ghcr.io/ensdomains/anvil:latest
+    ports:
+      - '8545:8545'
+    entrypoint: /bin/sh -c 'anvil --chain-id 1337 --gas-limit 50000000 --timestamp 1659500634'
+    environment:
+      ANVIL_IP_ADDR: '0.0.0.0'
   graph-node:
     image: graphprotocol/graph-node
     ports:
@@ -11,13 +18,14 @@ services:
     depends_on:
       - ipfs
       - postgres
+      - anvil
     environment:
       postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: '$NETWORK:$DOCKER_RPC_URL'
+      ethereum: 'mainnet:http://anvil:8545'
       GRAPH_LOG: debug
       GRAPH_ETHEREUM_CLEANUP_BLOCKS: 'true'
       GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: 'true'
@@ -42,10 +50,13 @@ services:
       - $DATA_FOLDER/postgres:/var/lib/postgresql/data
   metadata:
     image: ghcr.io/ensdomains/ens-metadata-service:latest
+    depends_on:
+      - anvil
+      - graph-node
     ports:
       - '8080:8080'
     environment:
       - ADDRESS_ETH_REGISTRAR=$ADDRESS_ETH_REGISTRAR
       - ADDRESS_NAME_WRAPPER=$ADDRESS_NAME_WRAPPER
-      - RPC_PROVIDER=$DOCKER_RPC_URL
+      - RPC_PROVIDER=http://anvil:8545
       - SUBGRAPH_URL=http://graph-node:8000/subgraphs/name/graphprotocol/ens
