@@ -23,7 +23,7 @@ describe('burnFuses', () => {
   })
   it('should return a burnFuses transaction and succeed', async () => {
     const tx = await ENSInstance.burnFuses('wrapped.eth', {
-      fusesToBurn: ['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL'],
+      fusesToBurn: new Set(['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL']),
       addressOrIndex: accounts[1],
     })
     expect(tx).toBeTruthy()
