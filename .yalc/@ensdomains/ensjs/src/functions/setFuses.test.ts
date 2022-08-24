@@ -37,6 +37,6 @@ describe.only('setFuses', () => {
           (prev, current) => prev + (current ? 1 : 0),
           0,
         ),
-      ).toBe(4)
+      ).toBe(3)
   })
 })
