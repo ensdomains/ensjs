@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { resolveRequestDocument } from 'graphql-request'
 import { ENS } from '..'
 import setup from '../tests/setup'
@@ -23,10 +23,7 @@ const unwrappedNameDefault = {
     canDoEverything: true
   }, 
   owner: "0x0000000000000000000000000000000000000000", 
-  rawFuses: {
-    hex: "0x00", 
-    type: "BigNumber"
-  }
+  rawFuses: BigNumber.from(0)
 }
 
 beforeAll(async () => {
@@ -67,11 +64,7 @@ describe('getFuses', () => {
   })
   it('should return with other correct fuses', async () => {
     const tx = await ENSInstance.burnFuses('wrapped.eth', {
-      fusesToBurn: {
-        cannotUnwrap: true,
-        cannotSetTtl: true,
-        cannotCreateSubdomain: true,
-      },
+      fusesToBurn: ['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL'],
       addressOrIndex: 1,
     })
     await tx.wait()
@@ -80,13 +73,13 @@ describe('getFuses', () => {
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj).toMatchObject({
-        cannotUnwrap: true,
-        cannotBurnFuses: false,
-        cannotTransfer: false,
-        cannotSetResolver: false,
-        cannotSetTtl: true,
-        cannotCreateSubdomain: true,
-        parentCannotControl: true,
+        CANNOT_UNWRAP: true,
+        CANNOT_BURN_FUSES: false,
+        CANNOT_TRANSFER: false,
+        CANNOT_SET_RESOLVER: false,
+        CANNOT_SET_TTL: true,
+        CANNOT_CREATE_SUBDOMAIN: true,
+        PARENT_CANNOT_CONTROL: true,
         canDoEverything: false,
       })
       expect(result.rawFuses.toHexString()).toBe('0x71')
