@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { resolveRequestDocument } from 'graphql-request'
 import { ENS } from '..'
 import setup from '../tests/setup'
 
@@ -8,6 +9,25 @@ let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
 let provider: ethers.providers.JsonRpcProvider
 let accounts: string[]
 let withWrappedSnapshot: any
+
+const unwrappedNameDefault = {
+  expiryDate: new Date(0).toString(), 
+  fuseObj: {
+    CANNOT_BURN_FUSES: false, 
+    CANNOT_CREATE_SUBDOMAIN: false, 
+    CANNOT_SET_RESOLVER: false, 
+    CANNOT_SET_TTL: false, 
+    CANNOT_TRANSFER: false, 
+    CANNOT_UNWRAP: false, 
+    PARENT_CANNOT_CONTROL: false, 
+    canDoEverything: true
+  }, 
+  owner: "0x0000000000000000000000000000000000000000", 
+  rawFuses: {
+    hex: "0x00", 
+    type: "BigNumber"
+  }
+}
 
 beforeAll(async () => {
   ;({ ENSInstance, revert, provider, createSnapshot } = await setup())
@@ -26,9 +46,9 @@ afterAll(async () => {
 })
 
 describe('getFuses', () => {
-  it('should return null for an unwrapped name', async () => {
+  it('should return default data for an unwrapped name', async () => {
     const result = await ENSInstance.getFuses('with-profile.eth')
-    expect(result).toBeUndefined()
+    expect({ ...result, expiryDate: result?.expiryDate.toString() }).toEqual(unwrappedNameDefault)
   })
   it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!

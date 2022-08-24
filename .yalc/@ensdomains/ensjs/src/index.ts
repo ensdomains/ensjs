@@ -9,6 +9,7 @@ import type {
   resolverMulticallWrapper,
   universalWrapper,
 } from './functions/batchWrappers'
+import type burnFuses from './functions/burnFuses'
 import type commitName from './functions/commitName'
 import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
@@ -567,6 +568,10 @@ export class ENS {
     'unwrapName',
     ['contracts'],
   )
+
+  public burnFuses = this.generateWriteFunction<typeof burnFuses>('burnFuses', [
+    'contracts',
+  ])
 
   public createSubname = this.generateWriteFunction<typeof createSubname>(
     'createSubname',

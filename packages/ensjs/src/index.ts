@@ -9,6 +9,7 @@ import type {
   resolverMulticallWrapper,
   universalWrapper,
 } from './functions/batchWrappers'
+import type burnFuses from './functions/burnFuses'
 import type commitName from './functions/commitName'
 import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
@@ -32,7 +33,6 @@ import type {
   _getText,
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
-import type setFuses from './functions/setFuses'
 import registerName from './functions/registerName'
 import renewName from './functions/renewName'
 import type setName from './functions/setName'
@@ -529,10 +529,6 @@ export class ENS {
     'multicallWrapper',
   )
 
-  public setFuses = this.generateWriteFunction<typeof setFuses>('setFuses', [
-    'contracts',
-  ])
-
   public setName = this.generateWriteFunction<typeof setName>('setName', [
     'contracts',
   ])
@@ -567,6 +563,10 @@ export class ENS {
     'unwrapName',
     ['contracts'],
   )
+
+  public burnFuses = this.generateWriteFunction<typeof burnFuses>('burnFuses', [
+    'contracts',
+  ])
 
   public createSubname = this.generateWriteFunction<typeof createSubname>(
     'createSubname',
