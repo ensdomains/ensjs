@@ -57,7 +57,7 @@ export default async function <A extends FuseArrayPossibilities>(
   if (!isArray) {
     if (props.fuseNumberToBurn > 2 ** 32) {
       throw new Error(
-        `Fuse number must be limited to Uin32, ${props.fuseNumberToBurn} was too high.`,
+        `Fuse number must be limited to uint32, ${props.fuseNumberToBurn} was too high.`,
       )
     }
   } else {
