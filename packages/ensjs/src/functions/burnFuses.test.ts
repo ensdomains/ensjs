@@ -21,9 +21,25 @@ describe('burnFuses', () => {
   beforeEach(async () => {
     await revert()
   })
-  it('should return a burnFuses transaction and succeed', async () => {
+  it('should return a burnFuses transaction from an array and succeed', async () => {
     const tx = await ENSInstance.burnFuses('wrapped.eth', {
-      fusesToBurn: new Set(['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL']),
+      fuseArrayToBurn: [
+        'CANNOT_UNWRAP',
+        'CANNOT_CREATE_SUBDOMAIN',
+        'CANNOT_SET_TTL',
+      ],
+      addressOrIndex: accounts[1],
+    })
+    expect(tx).toBeTruthy()
+    await tx.wait()
+
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
+    const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
+    expect(fuses).toBe(113)
+  })
+  it('should return a burnFuses transaction from a number and succeed', async () => {
+    const tx = await ENSInstance.burnFuses('wrapped.eth', {
+      fuseNumberToBurn: 49,
       addressOrIndex: accounts[1],
     })
     expect(tx).toBeTruthy()
