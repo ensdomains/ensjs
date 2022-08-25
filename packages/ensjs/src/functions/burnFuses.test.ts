@@ -110,7 +110,7 @@ describe('burnFuses', () => {
       const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
       expect(fuses).toBe(113)
     })
-    it('should throw an error if the number if not a uint32', async () => {
+    it('should throw an error if the number is too high', async () => {
       try {
         await ENSInstance.burnFuses('wrapped.eth', {
           fuseNumberToBurn: 4294967297,
@@ -120,6 +120,28 @@ describe('burnFuses', () => {
         expect(e.message).toBe(
           'Fuse number must be limited to uint32, 4294967297 was too high.',
         )
+      }
+    })
+    it('should throw an error if the number is too low', async () => {
+      try {
+        await ENSInstance.burnFuses('wrapped.eth', {
+          fuseNumberToBurn: -1,
+        })
+        expect(false).toBeTruthy()
+      } catch (e: any) {
+        expect(e.message).toBe(
+          'Fuse number must be limited to uint32, -1 was too low.',
+        )
+      }
+    })
+    it('should throw an error if the number is not an integer', async () => {
+      try {
+        await ENSInstance.burnFuses('wrapped.eth', {
+          fuseNumberToBurn: 7.5,
+        })
+        expect(false).toBeTruthy()
+      } catch (e: any) {
+        expect(e.message).toBe('Fuse number must be an integer, 7.5 was not.')
       }
     })
   })

@@ -69,9 +69,15 @@ export default async function <A extends FuseArrayPossibilities>(
   let encodedFuses: number = 0
 
   if (isNumber) {
-    if (props.fuseNumberToBurn > 2 ** 32 || props.fuseNumberToBurn < 0) {
+    if (props.fuseNumberToBurn > 2 ** 32 || props.fuseNumberToBurn < 1) {
       throw new Error(
-        `Fuse number must be limited to uint32, ${props.fuseNumberToBurn} was too high.`,
+        `Fuse number must be limited to uint32, ${
+          props.fuseNumberToBurn
+        } was too ${props.fuseNumberToBurn < 1 ? 'low' : 'high'}.`,
+      )
+    } else if (props.fuseNumberToBurn % 1 !== 0) {
+      throw new Error(
+        `Fuse number must be an integer, ${props.fuseNumberToBurn} was not.`,
       )
     }
     encodedFuses = props.fuseNumberToBurn
