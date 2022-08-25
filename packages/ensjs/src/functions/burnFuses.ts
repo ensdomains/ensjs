@@ -1,8 +1,12 @@
 import { ENSArgs } from '..'
-import { fuseEnum } from '../utils/fuses'
+import { fuseEnum, unnamedFuses } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 
-type Fuse = keyof typeof fuseEnum
+type FuseObj = typeof fuseEnum
+type UnnamedFuseType = typeof unnamedFuses
+type Fuse = keyof FuseObj
+type NamedFuseValues = FuseObj[Fuse]
+type UnnamedFuseValues = UnnamedFuseType[number]
 
 // We need this type so that the following type isn't infinite. This type limits the max length of the fuse array to 7.
 type FuseArrayPossibilities =
@@ -36,8 +40,12 @@ type FusesWithoutDuplicates<A, B = never> = A extends FuseArrayPossibilities
   : // CLAUSE A > FALSE: Return an empty array as it isn't a fuse tuple.
     []
 
-type FusePropsArray<A extends FuseArrayPossibilities> = {
-  fuseArrayToBurn: FusesWithoutDuplicates<A>
+type FusePropsNamedArray<A extends FuseArrayPossibilities> = {
+  namedFusesToBurn: FusesWithoutDuplicates<A>
+}
+
+type FusePropsUnnamedArray = {
+  unnamedFusesToBurn: UnnamedFuseValues[]
 }
 
 type FusePropsNumber = {
@@ -45,7 +53,8 @@ type FusePropsNumber = {
 }
 
 type FuseProps<A extends FuseArrayPossibilities> =
-  | FusePropsArray<A>
+  | (Partial<FusePropsNamedArray<A>> & FusePropsUnnamedArray)
+  | (FusePropsNamedArray<A> & Partial<FusePropsUnnamedArray>)
   | FusePropsNumber
 
 export default async function <A extends FuseArrayPossibilities>(
@@ -53,32 +62,45 @@ export default async function <A extends FuseArrayPossibilities>(
   name: string,
   props: FuseProps<A>,
 ) {
-  const isArray = 'fuseArrayToBurn' in props
-  if (!isArray) {
-    if (props.fuseNumberToBurn > 2 ** 32) {
+  const isNumber = 'fuseNumberToBurn' in props
+  const hasNamedArray = 'namedFusesToBurn' in props
+  const hasUnnamedArray = 'unnamedFusesToBurn' in props
+
+  let encodedFuses: number = 0
+
+  if (isNumber) {
+    if (props.fuseNumberToBurn > 2 ** 32 || props.fuseNumberToBurn < 0) {
       throw new Error(
         `Fuse number must be limited to uint32, ${props.fuseNumberToBurn} was too high.`,
       )
     }
+    encodedFuses = props.fuseNumberToBurn
   } else {
-    for (const fuse of props.fuseArrayToBurn) {
-      if (!(fuse in fuseEnum)) {
-        throw new Error(`${fuse} is not a valid fuse`)
+    if (!hasNamedArray && !hasUnnamedArray) {
+      throw new Error('Please provide fuses to burn')
+    }
+    if (hasNamedArray) {
+      for (const fuse of props.namedFusesToBurn!) {
+        if (!(fuse in fuseEnum)) {
+          throw new Error(`${fuse} is not a valid named fuse.`)
+        }
+        encodedFuses |= fuseEnum[fuse]
+      }
+    }
+    if (hasUnnamedArray) {
+      for (const fuse of props.unnamedFusesToBurn!) {
+        if (!unnamedFuses.includes(fuse)) {
+          throw new Error(
+            `${fuse} is not a valid unnamed fuse. If you are trying to burn a named fuse, use the namedFusesToBurn property.`,
+          )
+        }
+        encodedFuses |= fuse
       }
     }
   }
 
   const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
   const hash = namehash(name)
-
-  const encodedFuses = isArray
-    ? Array.from(props.fuseArrayToBurn).reduce(
-        (previousValue: number, currentValue): number => {
-          return previousValue + fuseEnum[currentValue as Fuse]
-        },
-        0,
-      )
-    : props.fuseNumberToBurn
 
   return nameWrapper.populateTransaction.setFuses(hash, encodedFuses)
 }

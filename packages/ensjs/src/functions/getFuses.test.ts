@@ -65,7 +65,7 @@ describe('getFuses', () => {
   })
   it('should return with other correct fuses', async () => {
     const tx = await ENSInstance.burnFuses('wrapped.eth', {
-      fuseArrayToBurn: [
+      namedFusesToBurn: [
         'CANNOT_UNWRAP',
         'CANNOT_CREATE_SUBDOMAIN',
         'CANNOT_SET_TTL',
