@@ -33,6 +33,7 @@ const domainLetterItems = [
   'w',
   't',
   't',
+  't',
   '9',
   '8',
   '7',

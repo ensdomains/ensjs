@@ -155,7 +155,6 @@ query getNames($id: ID!, $expiryDate: Int) {
     it('should add id to a SelectionSet if name is present and id is not', () => {
       const result = requestMiddleware(visit, parse, print)(mockRequest)
       const body = result.body as string
-      console.log(body)
       expect(body.match(/domain.*id.*id.*domains.*id.*id/)?.length).toBe(1)
     })
   })
