@@ -1,7 +1,7 @@
+import { parse, print, visit } from 'graphql'
 import traverse from 'traverse'
-import { visit, parse } from 'graphql'
 
-import { requestMiddleware, responseMiddleware, enter } from './GqlManager'
+import { requestMiddleware, responseMiddleware } from './GqlManager'
 import { namehash } from './utils/normalise'
 
 describe('GqlManager', () => {
@@ -153,8 +153,9 @@ query getNames($id: ID!, $expiryDate: Int) {
 
   describe('requestMiddleware', () => {
     it('should add id to a SelectionSet if name is present and id is not', () => {
-      const result = requestMiddleware(visit, parse)(mockRequest)
-      expect(result.body.includes('id')).toBe(true)
+      const result = requestMiddleware(visit, parse, print)(mockRequest)
+      const body = result.body as string
+      expect(body.match(/domain.*id.*id.*domains.*id.*id/)?.length).toBe(1)
     })
   })
   describe('responseMiddleware', () => {
