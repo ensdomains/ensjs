@@ -46,6 +46,7 @@ import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
+import fuseEnum from './utils/fuses'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -157,6 +158,7 @@ export class ENS {
   contracts?: ContractManager
   getContractAddress = _getContractAddress
   gqlInstance = new GqlManager()
+  fuses = fuseEnum
 
   constructor(options?: ENSOptions) {
     this.options = options
