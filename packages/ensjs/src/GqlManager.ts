@@ -51,7 +51,7 @@ export const requestMiddleware =
 
     return {
       ...request,
-      body: JSON.stringify(print(updatedQuery)),
+      body: JSON.stringify({ ...requestBody, query: print(updatedQuery) }),
     }
   }
 
