@@ -55,4 +55,17 @@ describe('getOwner', () => {
     expect(result?.ownershipLevel).toBe('registry')
     expect(result?.owner).toBe('0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC')
   })
+  it('should return registry ownership for a pseudo-wrapped name', async () => {
+    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()
+    const tx = await ENSInstance.transferSubname('test.with-subnames.eth', {
+      contract: 'registry',
+      owner: nameWrapper.address,
+      addressOrIndex: 1,
+    })
+    await tx.wait()
+
+    const result = await ENSInstance.getOwner('test.with-subnames.eth')
+    expect(result?.ownershipLevel).toBe('registry')
+    expect(result?.owner).toBe(nameWrapper.address)
+  })
 })
