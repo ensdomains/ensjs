@@ -161,7 +161,10 @@ const decode = async (
       ethers.utils.hexStripZeros(registryOwner) !== '0x'
     ) {
       // this means that the subname is wrapped
-      if (registryOwner === nameWrapper.address) {
+      if (
+        registryOwner === nameWrapper.address &&
+        ethers.utils.hexStripZeros(nameWrapperOwner) !== '0x'
+      ) {
         return {
           owner: nameWrapperOwner,
           ownershipLevel: 'nameWrapper',
@@ -181,7 +184,10 @@ const decode = async (
   // there will only ever be an owner for non .eth names, not a registrant
   // this is because for unwrapped names, there is no associated NFT
   // and for wrapped names, owner and registrant are the same thing
-  if (registryOwner == nameWrapper.address) {
+  if (
+    registryOwner == nameWrapper.address &&
+    ethers.utils.hexStripZeros(nameWrapperOwner) !== '0x'
+  ) {
     return {
       owner: nameWrapperOwner,
       ownershipLevel: 'nameWrapper',
