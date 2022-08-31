@@ -19,7 +19,7 @@
       },
       {
         "selector": "memberLike",
-        "format": ["camelCase", "UPPER_CASE"],
+        "format": ["camelCase", "UPPER_CASE", "PascalCase"],
         "leadingUnderscore": "allowSingleOrDouble",
         "trailingUnderscore": "allowSingleOrDouble"
       },
@@ -33,6 +33,9 @@
         "selector": "typeLike",
         "format": ["PascalCase"]
       }
-    ]
+    ],
+    "no-useless-return": ["off"],
+    "radix": ["error", "as-needed"],
+    "no-bitwise": ["off"]
   }
 }

@@ -5,7 +5,6 @@ import { namehash } from '../utils/normalise'
 type FuseObj = typeof fuseEnum
 type UnnamedFuseType = typeof unnamedFuses
 type Fuse = keyof FuseObj
-type NamedFuseValues = FuseObj[Fuse]
 type UnnamedFuseValues = UnnamedFuseType[number]
 
 // We need this type so that the following type isn't infinite. This type limits the max length of the fuse array to 7.
@@ -105,7 +104,7 @@ export default async function <A extends FuseArrayPossibilities>(
     }
   }
 
-  const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
+  const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
   const hash = namehash(name)
 
   return nameWrapper.populateTransaction.setFuses(hash, encodedFuses)

@@ -1,12 +1,10 @@
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 import { ENS } from '..'
 import setup from '../tests/setup'
 
-let ENSInstance: ENS
+let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
 let createSnapshot: Awaited<ReturnType<typeof setup>>['createSnapshot']
-let provider: ethers.providers.JsonRpcProvider
-let accounts: string[]
 let withWrappedSnapshot: any
 
 const unwrappedNameDefault = {
@@ -26,8 +24,7 @@ const unwrappedNameDefault = {
 }
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, provider, createSnapshot } = await setup())
-  accounts = await provider.listAccounts()
+  ;({ ensInstance, revert, createSnapshot } = await setup())
 
   withWrappedSnapshot = await createSnapshot()
 })
@@ -43,14 +40,13 @@ afterAll(async () => {
 
 describe('getFuses', () => {
   it('should return default data for an unwrapped name', async () => {
-    const result = await ENSInstance.getFuses('with-profile.eth')
+    const result = await ensInstance.getFuses('with-profile.eth')
     expect({ ...result, expiryDate: result?.expiryDate.toString() }).toEqual(
       unwrappedNameDefault,
     )
   })
   it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
-    const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
-    const result = await ENSInstance.getFuses('test.wrapped-with-subnames.eth')
+    const result = await ensInstance.getFuses('test.wrapped-with-subnames.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj.canDoEverything).toBe(true)
@@ -64,7 +60,7 @@ describe('getFuses', () => {
     }
   })
   it('should return with other correct fuses', async () => {
-    const tx = await ENSInstance.burnFuses('wrapped.eth', {
+    const tx = await ensInstance.burnFuses('wrapped.eth', {
       namedFusesToBurn: [
         'CANNOT_UNWRAP',
         'CANNOT_CREATE_SUBDOMAIN',
@@ -74,7 +70,7 @@ describe('getFuses', () => {
     })
     await tx.wait()
 
-    const result = await ENSInstance.getFuses('wrapped.eth')
+    const result = await ensInstance.getFuses('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj).toMatchObject({
@@ -91,7 +87,7 @@ describe('getFuses', () => {
     }
   })
   it('should return correct expiry', async () => {
-    const result = await ENSInstance.getFuses('wrapped.eth')
+    const result = await ensInstance.getFuses('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.expiryDate).toBeInstanceOf(Date)
