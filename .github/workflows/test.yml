@@ -46,3 +46,6 @@ jobs:
 
       - name: Lint
         run: pnpm -F @ensdomains/ensjs lint
+
+      - name: Type check
+        run: pnpm -F @ensdomains/ensjs exec tsc --project tsconfig.esm.json --noEmit --emitDeclarationOnly false
