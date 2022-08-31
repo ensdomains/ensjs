@@ -1,0 +1,38 @@
+{
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "no-restricted-syntax": ["off"],
+    "consistent-return": ["off"],
+    "import/no-named-as-default": ["off"],
+    "func-names": ["off"],
+    "no-param-reassign": ["off"],
+    "no-underscore-dangle": ["off"],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["camelCase"],
+        "leadingUnderscore": "allowSingleOrDouble",
+        "trailingUnderscore": "allowSingleOrDouble"
+      },
+      {
+        "selector": "memberLike",
+        "format": ["camelCase", "UPPER_CASE"],
+        "leadingUnderscore": "allowSingleOrDouble",
+        "trailingUnderscore": "allowSingleOrDouble"
+      },
+      {
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE"],
+        "leadingUnderscore": "allowSingleOrDouble",
+        "trailingUnderscore": "allowSingleOrDouble"
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
+    ]
+  }
+}

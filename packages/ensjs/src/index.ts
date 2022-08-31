@@ -1,4 +1,4 @@
-import { JsonRpcSigner } from '@ethersproject/providers'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 import { ContractTransaction, ethers, PopulatedTransaction } from 'ethers'
 import ContractManager from './contracts'
 import { getContractAddress as _getContractAddress } from './contracts/getContractAddress'
@@ -33,8 +33,8 @@ import type {
   _getText,
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
-import registerName from './functions/registerName'
-import renewName from './functions/renewName'
+import type registerName from './functions/registerName'
+import type renewName from './functions/renewName'
 import type setName from './functions/setName'
 import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
@@ -44,9 +44,9 @@ import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
+import fuseEnum from './utils/fuses'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
-import fuseEnum from './utils/fuses'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -106,12 +106,14 @@ interface WriteFunction<F extends (...args: any) => any> extends Function {
   ) => Promise<PopulatedTransaction>
 }
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
   3: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten',
   4: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
   5: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type RawFunction = {
   raw: (...args: any[]) => Promise<{ to: string; data: string }>
@@ -151,13 +153,21 @@ export interface GenericGeneratedRawFunction
 
 export class ENS {
   [x: string]: any
+
   protected options?: ENSOptions
+
   protected provider?: ethers.providers.JsonRpcProvider
+
   protected graphURI?: string | null
+
   protected initialProvider?: ethers.providers.JsonRpcProvider
+
   contracts?: ContractManager
+
   getContractAddress = _getContractAddress
+
   gqlInstance = new GqlManager()
+
   fuses = fuseEnum
 
   constructor(options?: ENSOptions) {
@@ -174,7 +184,6 @@ export class ENS {
       return
     }
     await this.setProvider(this.initialProvider)
-    return
   }
 
   /**
@@ -259,20 +268,19 @@ export class ENS {
 
         // return the function with the dependencies forwarded
         return func(dependenciesToForward, ...args)
-      } else {
-        // get the dependencies to forward from raw and decode functions
-        const dependenciesToForward = thisRef.forwardDependenciesFromArray<
-          CombineFunctionDeps<F>
-        >(dependencies as any)
-
-        // return singleCall function with dependencies forwarded
-        return singleCall(
-          thisRef.provider!,
-          dependenciesToForward,
-          mod[exportName],
-          ...args,
-        )
       }
+      // get the dependencies to forward from raw and decode functions
+      const dependenciesToForward = thisRef.forwardDependenciesFromArray<
+        CombineFunctionDeps<F>
+      >(dependencies as any)
+
+      // return singleCall function with dependencies forwarded
+      return singleCall(
+        thisRef.provider!,
+        dependenciesToForward,
+        mod[exportName],
+        ...args,
+      )
     }
 
     // if subfunc is combine, add raw and decode property methods to the function
@@ -380,7 +388,6 @@ export class ENS {
       this.provider,
       this.getContractAddress(String(network) as SupportedNetworkId),
     )
-    return
   }
 
   /**
