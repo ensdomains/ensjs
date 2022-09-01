@@ -24,6 +24,7 @@
   "license": "MIT",
   "scripts": {
     "tenv": "ens-test-env -a",
+    "denv": "pnpm tenv start -ns -nb",
     "generate-types": "ts-node scripts/runTypechain.ts",
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",

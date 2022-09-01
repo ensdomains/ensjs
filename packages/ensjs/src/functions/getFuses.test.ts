@@ -19,7 +19,7 @@ const unwrappedNameDefault = {
     CANNOT_TRANSFER: false,
     CANNOT_UNWRAP: false,
     PARENT_CANNOT_CONTROL: false,
-    canDoEverything: true,
+    CAN_DO_EVERYTHING: true,
   },
   owner: '0x0000000000000000000000000000000000000000',
   rawFuses: BigNumber.from(0),
@@ -48,12 +48,12 @@ describe('getFuses', () => {
       unwrappedNameDefault,
     )
   })
-  it('should return with canDoEverything set to true for a name with no fuses burned', async () => {
+  it('should return with CAN_DO_EVERYTHING set to true for a name with no fuses burned', async () => {
     const nameWrapper = await ENSInstance.contracts!.getNameWrapper()!
     const result = await ENSInstance.getFuses('test.wrapped-with-subnames.eth')
     expect(result).toBeTruthy()
     if (result) {
-      expect(result.fuseObj.canDoEverything).toBe(true)
+      expect(result.fuseObj.CAN_DO_EVERYTHING).toBe(true)
       expect(
         Object.values(result.fuseObj).reduce(
           (prev, curr) => (curr ? prev + 1 : prev),
@@ -85,7 +85,7 @@ describe('getFuses', () => {
         CANNOT_SET_TTL: true,
         CANNOT_CREATE_SUBDOMAIN: true,
         PARENT_CANNOT_CONTROL: true,
-        canDoEverything: false,
+        CAN_DO_EVERYTHING: false,
       })
       expect(result.rawFuses.toHexString()).toBe('0x71')
     }
