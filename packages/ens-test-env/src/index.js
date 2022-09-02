@@ -71,6 +71,12 @@ program
       killGracefully: true,
     }),
   )
+  .addOption(
+    new Option(
+      '--extra-time <time>',
+      'Sets the relative extra time for deploys',
+    ).conflicts('save'),
+  )
   .addOption(new Option('-ng, --no-graph', "Don't start the graph"))
   .addOption(new Option('-k, --kill-gracefully', 'Kill gracefully'))
   .addOption(new Option('-nb, --no-build', "Don't run the build command"))
