@@ -44,12 +44,17 @@ import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
-import fuseEnum from './utils/fuses'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
 
-export type { FusePropsNamedArray, FusePropsUnnamedArray, FusePropsNumber, FuseProps, NamedFusesToBurn } from './functions/burnFuses'
-export type FuseEnum = typeof fuseEnum 
+export type {
+  Fuse,
+  FuseArrayPossibilities,
+  FuseObj,
+  NamedFusesToBurn,
+  UnnamedFuseType,
+  UnnamedFuseValues,
+} from './utils/fuses'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -170,8 +175,6 @@ export class ENS {
   getContractAddress = _getContractAddress
 
   gqlInstance = new GqlManager()
-
-  fuses = fuseEnum
 
   constructor(options?: ENSOptions) {
     this.options = options

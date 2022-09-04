@@ -10,6 +10,16 @@
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.js"
     },
+    "./utils/*": {
+      "import": "./dist/esm/utils/*",
+      "require": "./dist/cjs/utils/*",
+      "default": "./dist/esm/utils/*"
+    },
+    "./functions/*": {
+      "import": "./dist/esm/functions/*",
+      "require": "./dist/cjs/functions/*",
+      "default": "./dist/esm/functions/*"
+    },
     "./*": {
       "default": "./*"
     }
