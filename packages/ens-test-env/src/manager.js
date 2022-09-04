@@ -206,8 +206,16 @@ export const main = async (_config, _options, justKill) => {
   // wait 100 ms to make sure the server is up
   await new Promise((resolve) => setTimeout(resolve, 100))
 
-  // set next block timestamp to ensure consistent hashes
-  await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
+  if (!options.extraTime) {
+    // set next block timestamp to ensure consistent hashes
+    await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
+  } else {
+    const timestamp =
+      Math.floor(Date.now() / 1000) - parseInt(options.extraTime)
+    console.log('\x1b[1;34m[config]\x1b[0m ', 'setting timestamp to', timestamp)
+    // set next block timestamp relative to current time
+    await rpcFetch('anvil_setNextBlockTimestamp', [timestamp])
+  }
   await rpcFetch('anvil_setBlockTimestampInterval', [1])
 
   await awaitCommand('deploy', config.deployCommand)

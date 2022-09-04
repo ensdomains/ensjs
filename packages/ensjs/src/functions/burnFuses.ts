@@ -8,7 +8,7 @@ type Fuse = keyof FuseObj
 type UnnamedFuseValues = UnnamedFuseType[number]
 
 // We need this type so that the following type isn't infinite. This type limits the max length of the fuse array to 7.
-type FuseArrayPossibilities =
+export type FuseArrayPossibilities =
   | [Fuse]
   | [Fuse, Fuse]
   | [Fuse, Fuse, Fuse]
@@ -39,27 +39,29 @@ type FusesWithoutDuplicates<A, B = never> = A extends FuseArrayPossibilities
   : // CLAUSE A > FALSE: Return an empty array as it isn't a fuse tuple.
     []
 
-type FusePropsNamedArray<A extends FuseArrayPossibilities> = {
-  namedFusesToBurn: FusesWithoutDuplicates<A>
+export type NamedFusesToBurn = FusesWithoutDuplicates<FuseArrayPossibilities>
+
+export type FusePropsNamedArray = {
+  namedFusesToBurn: NamedFusesToBurn 
 }
 
-type FusePropsUnnamedArray = {
+export type FusePropsUnnamedArray = {
   unnamedFusesToBurn: UnnamedFuseValues[]
 }
 
-type FusePropsNumber = {
+export type FusePropsNumber = {
   fuseNumberToBurn: number
 }
 
-type FuseProps<A extends FuseArrayPossibilities> =
-  | (Partial<FusePropsNamedArray<A>> & FusePropsUnnamedArray)
-  | (FusePropsNamedArray<A> & Partial<FusePropsUnnamedArray>)
+export type FuseProps =
+  | (Partial<FusePropsNamedArray> & FusePropsUnnamedArray)
+  | (FusePropsNamedArray & Partial<FusePropsUnnamedArray>)
   | FusePropsNumber
 
-export default async function <A extends FuseArrayPossibilities>(
+export default async function (
   { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
-  props: FuseProps<A>,
+  props: FuseProps,
 ) {
   const isNumber = 'fuseNumberToBurn' in props
   const hasNamedArray = 'namedFusesToBurn' in props
