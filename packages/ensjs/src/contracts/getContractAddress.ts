@@ -4,6 +4,7 @@ const addresses: Record<
   ContractName,
   Partial<Record<SupportedNetworkId, string>> | string
 > = {
+  /* eslint-disable @typescript-eslint/naming-convention */
   BaseRegistrarImplementation: {
     '1': '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
     '3': '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
@@ -34,6 +35,7 @@ const addresses: Record<
     '1': '0x580AF46E06DaaD47eb5940526FD64d95b815Cb70',
     '4': '0x74e20bd2a1fe0cdbe45b9a1d89cb7e0a45b36376',
   },
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type ContractAddressFetch = (contractName: ContractName) => string

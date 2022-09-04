@@ -10,6 +10,16 @@
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.js"
     },
+    "./utils/*": {
+      "import": "./dist/esm/utils/*",
+      "require": "./dist/cjs/utils/*",
+      "default": "./dist/esm/utils/*"
+    },
+    "./functions/*": {
+      "import": "./dist/esm/functions/*",
+      "require": "./dist/cjs/functions/*",
+      "default": "./dist/esm/functions/*"
+    },
     "./*": {
       "default": "./*"
     }
@@ -32,9 +42,9 @@
     "test:watch": "jest --watch --run-in-band",
     "test:specific": "ts-node --files ",
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
-    "build:esm": "tsc --project tsconfig.esm.json",
-    "build:cjs": "tsc --project tsconfig.cjs.json",
-    "build": "pnpm clean && pnpm build:esm && pnpm build:cjs",
+    "lint": "eslint ./src/* --no-error-on-unmatched-pattern",
+    "build:types": "tsc --emitDeclarationOnly --project tsconfig.cjs.json && tsc --emitDeclarationOnly --project tsconfig.esm.json",
+    "build": "pnpm clean && pnpm lint && pnpm build:types && pnpm node esbuild.js",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
     "enode": "ganache --wallet.mnemonic=\"test test test test test test test test test test test junk\" --chain.chainId 1337 --chain.networkId 1337 --chain.time 1659500634000",
     "ver": "pnpm version --no-workspaces-update"
@@ -64,7 +74,10 @@
     "@types/jest": "^27.4.1",
     "@types/traverse": "^0.6.32",
     "dotenv": "^16.0.0",
+    "esbuild": "^0.15.6",
+    "eslint-plugin-jest": "^27.0.1",
     "ganache": "^7.4.0",
+    "glob": "^8.0.3",
     "hardhat": "^2.10.1",
     "hardhat-abi-exporter": "^2.8.0",
     "hardhat-deploy": "^0.11.12",
@@ -78,7 +91,7 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typechain": "^8.1.0",
-    "typescript": "^4.6.2",
+    "typescript": "^4.7.4",
     "wait-on": "^6.0.1"
   },
   "peerDependencies": {

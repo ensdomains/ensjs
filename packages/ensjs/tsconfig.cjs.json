@@ -2,11 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
-    "target": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Node16",
     "outDir": "dist/cjs",
-    "declaration": true
+    "declaration": true,
+    "emitDeclarationOnly": true
   },
   "include": ["./src"],
-  "exclude": ["src/**/*.test.ts", "src/tests/**/*"]
+  "exclude": ["src/**/*.test.ts", "src/tests/**/*", "./src/ABIs/**/*"]
 }

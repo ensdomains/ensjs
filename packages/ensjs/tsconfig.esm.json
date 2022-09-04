@@ -2,10 +2,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "Node",
     "outDir": "dist/esm",
-    "declaration": true
+    "declaration": true,
+    "emitDeclarationOnly": true
   },
   "include": ["./src"],
-  "exclude": ["src/**/*.test.ts", "src/tests/**/*"]
+  "exclude": ["src/**/*.test.ts", "src/tests/**/*", "./src/ABIs/**/*"]
 }
