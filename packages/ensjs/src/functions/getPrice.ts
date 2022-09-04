@@ -54,10 +54,10 @@ const decode = async (
       ) as [BigNumber]
       base = price.sub(premium)
     } else {
-      ;[base, premium] = controller.interface.decodeFunctionData(
+      ;[[base, premium]] = controller.interface.decodeFunctionResult(
         'rentPrice',
         data,
-      ) as [BigNumber, BigNumber]
+      )
     }
     return {
       base,
