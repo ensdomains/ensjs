@@ -11,10 +11,20 @@
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.mjs"
     },
+    "./*.js": {
+      "import": "./dist/esm/*.mjs",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.mjs"
+    },
+    "./*.mjs": {
+      "import": "./dist/esm/*.mjs",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.mjs"
+    },
     "./*": {
-      "import": "./dist/esm/*",
-      "require": "./dist/cjs/*",
-      "default": "./dist/esm/*"
+      "import": "./dist/esm/*.mjs",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.mjs"
     }
   },
   "typesVersions": {
