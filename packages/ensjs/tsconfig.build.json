@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
-    "outDir": "dist/esm",
+    "outDir": "dist/types",
     "declaration": true,
     "emitDeclarationOnly": true
   },

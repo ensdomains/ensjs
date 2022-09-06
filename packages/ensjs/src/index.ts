@@ -1,7 +1,7 @@
 import type { JsonRpcSigner } from '@ethersproject/providers'
 import { ContractTransaction, ethers, PopulatedTransaction } from 'ethers'
-import ContractManager from './contracts'
 import { getContractAddress as _getContractAddress } from './contracts/getContractAddress'
+import ContractManager from './contracts/index'
 import { SupportedNetworkId } from './contracts/types'
 import type batch from './functions/batch'
 import type {

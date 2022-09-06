@@ -10,7 +10,7 @@ const base = {
     }),
   ],
   bundle: false,
-  sourcemap: true,
+  sourcemap: false,
 }
 
 const esmDeclarations = glob.sync('./dist/esm/**/*.d.ts')
@@ -29,7 +29,9 @@ esbuild.build({
       setup(build) {
         build.onResolve({ filter: /.*/ }, (args) => {
           if (args.importer) {
-            if (args.path.startsWith('./'))
+            if (args.path.startsWith('ethers/'))
+              return { path: args.path + '.js', external: true }
+            if (args.path.startsWith('./') || args.path.startsWith('../'))
               return { path: args.path + '.mjs', external: true }
             return { path: args.path, external: true }
           }
@@ -47,6 +49,24 @@ esbuild.build({
 
 esbuild.build({
   ...base,
+  plugins: [
+    {
+      name: 'add-js',
+      setup(build) {
+        build.onResolve({ filter: /.*/ }, (args) => {
+          if (args.importer) {
+            if (
+              args.path.startsWith('ethers/') ||
+              args.path.startsWith('./') ||
+              args.path.startsWith('../')
+            )
+              return { path: args.path + '.js', external: true }
+            return { path: args.path, external: true }
+          }
+        })
+      },
+    },
+  ],
   outdir: 'dist/cjs',
   format: 'cjs',
   target: ['esnext'],
