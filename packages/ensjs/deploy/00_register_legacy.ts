@@ -80,6 +80,12 @@ const names = [
     namedAddr: 'owner',
     subnames: [{ label: 'test', namedOwner: 'owner2' }],
   },
+  {
+    label: 'get-subnames',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    subnames: [{ label: 'test3', namedOwner: 'owner2' }, {label: 'test', namedOwner: 'owner2'}],
+  },
   ...Array.from({ length: 34 }, (_, i) => ({
     label: `${i}-dummy`,
     namedOwner: 'owner2',

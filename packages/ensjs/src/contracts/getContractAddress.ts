@@ -34,6 +34,7 @@ const addresses: Record<
     '1': '0x580AF46E06DaaD47eb5940526FD64d95b815Cb70',
     '4': '0x74e20bd2a1fe0cdbe45b9a1d89cb7e0a45b36376',
   },
+  BulkRenewal: '0x0000000000000000000000000000000000000000',
 }
 
 export type ContractAddressFetch = (contractName: ContractName) => string

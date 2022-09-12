@@ -9,7 +9,9 @@ import getRegistry from './registry'
 import getReverseRegistrar from './reverseRegistrar'
 import { ContractName } from './types'
 import getUniversalResolver from './universalResolver'
+import getBulkRenewal from './bulkRenewal'
 
+const ETH_NAMEHASH = '0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae'
 export default class ContractManager {
   private provider: ethers.providers.Provider
   private fetchAddress: ContractAddressFetch
@@ -65,4 +67,10 @@ export default class ContractManager {
     getEthRegistrarController,
   )
   public getMulticall = this.generateContractGetter('Multicall', getMulticall)
+
+  public getBulkRenewal = async () => {
+    const resolver = await this.getPublicResolver()
+    const address = await resolver.interfaceImplementer(ETH_NAMEHASH, '0x3150bfba')
+    return await (this.generateContractGetter('BulkRenewal', getBulkRenewal(address))())
+  }
 }

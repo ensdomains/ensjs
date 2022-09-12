@@ -3,16 +3,29 @@ import { ENSArgs } from '..'
 
 const raw = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
-  name: string,
+  nameOrNames: string | string[],
   duration: number,
   legacy?: boolean,
 ) => {
+  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
+  
+  if (names.length > 1) {
+    const bulkRenewal = await contracts?.getBulkRenewal()!
+    return {
+      to: bulkRenewal.address,
+      data: bulkRenewal.interface.encodeFunctionData('rentPrice', [
+        names,
+        duration,
+      ])
+    }
+  }
+  
   const controller = await contracts?.getEthRegistrarController()!
 
   const baseCall = {
     to: controller.address,
     data: controller.interface.encodeFunctionData('rentPrice', [
-      name,
+      names[0],
       duration,
     ]),
   }
@@ -22,7 +35,7 @@ const raw = async (
       baseCall,
       {
         to: controller.address,
-        data: controller.interface.encodeFunctionData('rentPrice', [name, 0]),
+        data: controller.interface.encodeFunctionData('rentPrice', [names[0], 0]),
       },
     ])
   }
@@ -33,16 +46,21 @@ const raw = async (
 const decode = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
   data: string,
-  _name: string,
-  _number: number,
+  _nameOrNames: string | string[],
+  _duration: number,
   legacy?: boolean,
-) => {
+) => {    
   if (data === null) return
-  const controller = await contracts?.getEthRegistrarController()!
   try {
     let base: BigNumber
     let premium: BigNumber
-    if (legacy) {
+    if (Array.isArray(_nameOrNames) && _nameOrNames.length > 1) {
+      const bulkRenewal = await contracts?.getBulkRenewal()!
+      const result = bulkRenewal.interface.decodeFunctionResult('rentPrice', data)
+      base = result[0]
+      premium = BigNumber.from(0)
+    }
+    else if (legacy) {
       const result = await multicallWrapper.decode(data)
       const [price] = utils.defaultAbiCoder.decode(
         ['uint256'],
@@ -54,10 +72,9 @@ const decode = async (
       ) as [BigNumber]
       base = price.sub(premium)
     } else {
-      ;[base, premium] = controller.interface.decodeFunctionData(
-        'rentPrice',
-        data,
-      ) as [BigNumber, BigNumber]
+      const controller = await contracts?.getEthRegistrarController()!
+      const result = controller.interface.decodeFunctionResult('rentPrice', data)
+      ;[base, premium] = result[0] as [BigNumber, BigNumber]
     }
     return {
       base,

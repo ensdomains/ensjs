@@ -80,97 +80,8 @@ const largeQuery = async (
   const { domain } = await client.request(finalQuery, queryVars)
   const subdomains = domain.subdomains.map((subname: any) => {
     const decrypted = decryptName(subname.name)
-    return {
-      ...subname,
-      name: decrypted,
-      truncatedName: truncateFormat(decrypted),
-    }
-  })
-
-  return {
-    subnames: subdomains,
-    subnameCount: domain.subdomainCount,
-  }
-}
-
-const smallQuery = async (
-  { gqlInstance }: ENSArgs<'gqlInstance'>,
-  { name, page, pageSize = 10, orderDirection, orderBy }: Params,
-) => {
-  const client = gqlInstance.client
-  const subdomainsGql = `
-  id
-  labelName
-  labelhash
-  isMigrated
-  name
-  subdomainCount
-  createdAt
-  owner {
-    id
-  }
-`
-  let queryVars = {}
-  let finalQuery = ''
-  if (typeof page !== 'number') {
-    finalQuery = gqlInstance.gql`
-    query getSubnames(
-      $id: ID! 
-      $orderBy: Domain_orderBy 
-      $orderDirection: OrderDirection
-    ) {
-      domain(
-        id: $id
-      ) {
-        subdomains(
-          orderBy: $orderBy
-          orderDirection: $orderDirection
-        ) {
-          ${subdomainsGql}
-        }
-      }
-    }
-  `
-    queryVars = {
-      id: namehash(name),
-      orderBy,
-      orderDirection,
-    }
-  } else {
-    finalQuery = gqlInstance.gql`
-    query getSubnames(
-      $id: ID! 
-      $first: Int
-      $skip: Int
-      $orderBy: Domain_orderBy 
-      $orderDirection: OrderDirection
-    ) {
-      domain(
-        id: $id
-      ) {
-        subdomainCount
-        subdomains(
-          first: $first
-          skip: $skip
-          orderBy: $orderBy
-          orderDirection: $orderDirection
-        ) {
-          ${subdomainsGql}
-        }
-      }
-    }
-  `
-    queryVars = {
-      id: namehash(name),
-      first: pageSize,
-      skip: (page || 0) * pageSize,
-      orderBy,
-      orderDirection,
-    }
-  }
-  const { domain } = await client.request(finalQuery, queryVars)
-  const subdomains = domain.subdomains.map((subname: any) => {
-    const decrypted = decryptName(subname.name)
+    console.log(subname, decrypted);
+    
     return {
       ...subname,
       name: decrypted,
@@ -187,11 +98,8 @@ const smallQuery = async (
 const getSubnames = (
   injected: ENSArgs<'gqlInstance'>,
   functionArgs: Params,
-): Promise<{ subnames: Subname[]; subnameCount: number }> => {
-  if (functionArgs.isLargeQuery) {
-    return largeQuery(injected, functionArgs)
-  }
-  return smallQuery(injected, functionArgs)
+): Promise<{ subnames: Subname[]; subnameCount: number }> => {  
+    return largeQuery(injected, functionArgs) 
 }
 
 export default getSubnames
