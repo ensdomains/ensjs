@@ -14,6 +14,7 @@ import getBulkRenewal from './bulkRenewal'
 const ETH_NAMEHASH = '0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae'
 export default class ContractManager {
   private provider: ethers.providers.Provider
+
   private fetchAddress: ContractAddressFetch
 
   constructor(
@@ -42,30 +43,37 @@ export default class ContractManager {
     'PublicResolver',
     getPublicResolver,
   )
+
   public getUniversalResolver = this.generateContractGetter(
     'UniversalResolver',
     getUniversalResolver,
   )
+
   public getRegistry = this.generateContractGetter(
     'ENSRegistryWithFallback',
     getRegistry,
   )
+
   public getReverseRegistrar = this.generateContractGetter(
     'ReverseRegistrar',
     getReverseRegistrar,
   )
+
   public getNameWrapper = this.generateContractGetter(
     'NameWrapper',
     getNameWrapper,
   )
+
   public getBaseRegistrar = this.generateContractGetter(
     'BaseRegistrarImplementation',
     getBaseRegistrar,
   )
+
   public getEthRegistrarController = this.generateContractGetter(
     'ETHRegistrarController',
     getEthRegistrarController,
   )
+
   public getMulticall = this.generateContractGetter('Multicall', getMulticall)
 
   public getBulkRenewal = async () => {

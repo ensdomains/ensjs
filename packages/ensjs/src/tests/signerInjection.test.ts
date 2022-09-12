@@ -1,14 +1,14 @@
 import { ContractTransaction, ethers } from 'ethers'
 import { ENS } from '..'
-import setup from '../tests/setup'
+import setup from './setup'
 
-let ENSInstance: ENS
+let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
 let provider: ethers.providers.JsonRpcProvider
 let accounts: string[]
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, provider } = await setup())
+  ;({ ensInstance, revert, provider } = await setup())
   accounts = await provider.listAccounts()
 })
 
@@ -24,7 +24,7 @@ describe('Signer Injection', () => {
   })
   it('should return a transaction successfully for a custom signer', async () => {
     const signer = provider.getSigner(accounts[3])
-    const tx = await ENSInstance.setName('fleek.eth', {
+    const tx = await ensInstance.setName('fleek.eth', {
       signer,
     })
     expect(tx).toBeTruthy()
@@ -34,7 +34,7 @@ describe('Signer Injection', () => {
     }
   })
   it('should return a transaction succesfully for a custom signer index', async () => {
-    const tx = (await ENSInstance.setName('fleek.eth', {
+    const tx = (await ensInstance.setName('fleek.eth', {
       addressOrIndex: 3,
     })) as ContractTransaction
     expect(tx).toBeTruthy()

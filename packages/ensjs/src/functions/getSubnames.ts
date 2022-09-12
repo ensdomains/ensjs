@@ -27,18 +27,11 @@ type Params = {
 
 const largeQuery = async (
   { gqlInstance }: ENSArgs<'gqlInstance'>,
-  {
-    name,
-    page,
-    pageSize = 10,
-    orderDirection,
-    orderBy,
-    lastSubnames = [],
-  }: Params,
+  { name, pageSize = 10, orderDirection, orderBy, lastSubnames = [] }: Params,
 ) => {
-  const client = gqlInstance.client
+  const { client } = gqlInstance
 
-  let finalQuery = gqlInstance.gql`
+  const finalQuery = gqlInstance.gql`
     query getSubnames(
       $id: ID! 
       $first: Int
@@ -70,7 +63,7 @@ const largeQuery = async (
       }
     }
   `
-  let queryVars = {
+  const queryVars = {
     id: namehash(name),
     first: pageSize,
     lastCreatedAt: lastSubnames[lastSubnames.length - 1]?.createdAt,
@@ -82,6 +75,7 @@ const largeQuery = async (
     const decrypted = decryptName(subname.name)
     console.log(subname, decrypted);
     
+
     return {
       ...subname,
       name: decrypted,

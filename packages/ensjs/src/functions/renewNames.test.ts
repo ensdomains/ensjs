@@ -3,13 +3,13 @@ import { ENS } from '..'
 import setup from '../tests/setup'
 import { labelhash } from '../utils/labels'
 
-let ENSInstance: ENS
+let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
 let provider: ethers.providers.JsonRpcProvider
 let accounts: string[]
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, provider } = await setup())
+  ;({ ensInstance, revert, provider } = await setup())
   accounts = await provider.listAccounts()
 })
 
@@ -25,13 +25,14 @@ describe('renewNames', () => {
     const name = 'to-be-renewed.eth'
     const label = name.split('.')[0]
     const duration = 31536000
-    const baseRegistrar = await ENSInstance.contracts!.getBaseRegistrar()!
+    const baseRegistrar = await ensInstance.contracts!.getBaseRegistrar()!
     const oldExpiry = await baseRegistrar.nameExpires(labelhash(label))
 
-    const controller = await ENSInstance.contracts!.getEthRegistrarController()!
+    const controller = await ensInstance.contracts!.getEthRegistrarController()!
     const [price] = await controller.rentPrice(label, duration)
 
-    const tx = await ENSInstance.renewNames(name, {
+
+    const tx = await ensInstance.renewName(name, {
       value: price.mul(2),
       duration,
       addressOrIndex: accounts[1],

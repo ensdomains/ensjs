@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import { ENS } from '..'
 import type { ETHRegistrarController, PublicResolver } from '../generated'
-import setup from '../tests/setup'
 import {
   makeCommitment,
   makeCommitmentData,
@@ -9,8 +8,9 @@ import {
   randomSecret,
   RegistrationParams,
 } from '../utils/registerHelpers'
+import setup from './setup'
 
-let ENSInstance: ENS
+let ensInstance: ENS
 let provider: ethers.providers.JsonRpcProvider
 let accounts: string[]
 let publicResolver: PublicResolver
@@ -18,10 +18,10 @@ let controller: ETHRegistrarController
 let baseData: Partial<RegistrationParams>
 
 beforeAll(async () => {
-  ;({ ENSInstance, provider } = await setup())
+  ;({ ensInstance, provider } = await setup())
   accounts = await provider.listAccounts()
-  publicResolver = await ENSInstance.contracts!.getPublicResolver()!
-  controller = await ENSInstance.contracts!.getEthRegistrarController()!
+  publicResolver = await ensInstance.contracts!.getPublicResolver()!
+  controller = await ensInstance.contracts!.getEthRegistrarController()!
   baseData = {
     name: 'test.eth',
     owner: accounts[1],

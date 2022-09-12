@@ -1,8 +1,9 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { config } from 'dotenv'
 import { ethers } from 'ethers'
 import { resolve } from 'path'
-import { ENS } from '../'
-import { ContractName, SupportedNetworkId } from '../contracts/types'
+import { ENS } from '..'
+import { ContractName } from '../contracts/types'
 
 config({
   path: resolve(__dirname, '../../.env.local'),
@@ -16,7 +17,7 @@ const deploymentAddresses = JSON.parse(
 const createENS = (graphURI: string) =>
   new ENS({
     graphURI,
-    getContractAddress: (_: SupportedNetworkId) => (contractName) =>
+    getContractAddress: () => (contractName) =>
       deploymentAddresses[
         contractName === 'ENSRegistryWithFallback'
           ? 'ENSRegistry'
@@ -34,8 +35,8 @@ export default async (useReal?: boolean) => {
     1337,
   )
 
-  let ENSInstance = createENS(graphURI)
-  await ENSInstance.setProvider(provider)
+  let ensInstance = createENS(graphURI)
+  await ensInstance.setProvider(provider)
 
   let snapshot = await provider.send('evm_snapshot', [])
 
@@ -46,12 +47,12 @@ export default async (useReal?: boolean) => {
       snapshot = await provider.send('evm_snapshot', [])
     }
 
-    ENSInstance = createENS(graphURI)
-    await ENSInstance.setProvider(provider)
+    ensInstance = createENS(graphURI)
+    await ensInstance.setProvider(provider)
     return
   }
 
-  const createSnapshot = async () => await provider.send('evm_snapshot', [])
+  const createSnapshot = async () => provider.send('evm_snapshot', [])
 
-  return { ENSInstance, revert, createSnapshot, provider }
+  return { ensInstance, revert, createSnapshot, provider }
 }

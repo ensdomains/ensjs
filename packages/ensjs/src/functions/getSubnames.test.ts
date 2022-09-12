@@ -1,10 +1,10 @@
 import { ENS } from '..'
 import setup from '../tests/setup'
 
-let ENSInstance: ENS
+let ensInstance: ENS
 
 beforeAll(async () => {
-  ;({ ENSInstance } = await setup())
+  ;({ ensInstance } = await setup())
 })
 
 const testProperties = (obj: object, ...properties: string[]) =>
@@ -13,7 +13,7 @@ const testProperties = (obj: object, ...properties: string[]) =>
 describe('getSubnames', () => {
 
   it('should get the subnames for a name', async () => {
-    const result = await ENSInstance.getSubnames({
+    const result = await ensInstance.getSubnames({
       name: 'get-subnames.eth',
       page: 0,
       pageSize: 10,
@@ -40,4 +40,5 @@ describe('getSubnames', () => {
       )
     }
   })
+
 })

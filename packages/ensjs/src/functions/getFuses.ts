@@ -11,10 +11,7 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
   }
 }
 
-const decode = async (
-  { contracts }: ENSArgs<'contracts'>,
-  data: string,
-) => {
+const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
     const {
@@ -33,9 +30,9 @@ const decode = async (
     )
 
     if (fuses.eq(0)) {
-      fuseObj.canDoEverything = true
+      fuseObj.CAN_DO_EVERYTHING = true
     } else {
-      fuseObj.canDoEverything = false
+      fuseObj.CAN_DO_EVERYTHING = false
     }
 
     const expiryDate = new Date(expiry * 1000)
