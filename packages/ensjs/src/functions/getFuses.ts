@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import { ENSArgs } from '..'
-import { fuseEnum } from '../utils/fuses'
+import { CurrentFuses, fuseEnum } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 
 const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
@@ -38,7 +38,7 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     const expiryDate = new Date(expiry * 1000)
 
     return {
-      fuseObj,
+      fuseObj: fuseObj as CurrentFuses,
       expiryDate,
       rawFuses: fuses,
       owner,

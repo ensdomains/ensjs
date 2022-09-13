@@ -37,6 +37,9 @@
       ],
       "utils/*": [
         "./dist/types/utils/*"
+      ],
+      "generated/*": [
+        "./dist/types/generated/*"
       ]
     }
   },
