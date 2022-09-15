@@ -11,7 +11,6 @@ const testProperties = (obj: object, ...properties: string[]) =>
   properties.map((property) => expect(obj).toHaveProperty(property))
 
 describe('getSubnames', () => {
-
   it('should get the subnames for a name', async () => {
     const result = await ensInstance.getSubnames({
       name: 'get-subnames.eth',
@@ -19,7 +18,7 @@ describe('getSubnames', () => {
       pageSize: 10,
       orderBy: 'createdAt',
       orderDirection: 'desc',
-      lastSubnames: [{ createdAt: Math.floor(Date.now()/1000) }],
+      lastSubnames: [{ createdAt: Math.floor(Date.now() / 1000) }],
     })
     expect(result).toBeTruthy()
     if (result) {
@@ -40,5 +39,4 @@ describe('getSubnames', () => {
       )
     }
   })
-
 })

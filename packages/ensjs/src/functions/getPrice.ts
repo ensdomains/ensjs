@@ -8,7 +8,7 @@ const raw = async (
   legacy?: boolean,
 ) => {
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
-  
+
   if (names.length > 1) {
     const bulkRenewal = await contracts?.getBulkRenewal()!
     return {
@@ -16,10 +16,10 @@ const raw = async (
       data: bulkRenewal.interface.encodeFunctionData('rentPrice', [
         names,
         duration,
-      ])
+      ]),
     }
   }
-  
+
   const controller = await contracts?.getEthRegistrarController()!
 
   const baseCall = {
@@ -35,7 +35,10 @@ const raw = async (
       baseCall,
       {
         to: controller.address,
-        data: controller.interface.encodeFunctionData('rentPrice', [names[0], 0]),
+        data: controller.interface.encodeFunctionData('rentPrice', [
+          names[0],
+          0,
+        ]),
       },
     ])
   }
@@ -49,18 +52,20 @@ const decode = async (
   _nameOrNames: string | string[],
   _duration: number,
   legacy?: boolean,
-) => {    
+) => {
   if (data === null) return
   try {
     let base: BigNumber
     let premium: BigNumber
     if (Array.isArray(_nameOrNames) && _nameOrNames.length > 1) {
       const bulkRenewal = await contracts?.getBulkRenewal()!
-      const result = bulkRenewal.interface.decodeFunctionResult('rentPrice', data)
-      base = result[0]
+      const result = bulkRenewal.interface.decodeFunctionResult(
+        'rentPrice',
+        data,
+      )
+      ;[base] = result
       premium = BigNumber.from(0)
-    }
-    else if (legacy) {
+    } else if (legacy) {
       const result = await multicallWrapper.decode(data)
       const [price] = utils.defaultAbiCoder.decode(
         ['uint256'],
@@ -73,7 +78,10 @@ const decode = async (
       base = price.sub(premium)
     } else {
       const controller = await contracts?.getEthRegistrarController()!
-      const result = controller.interface.decodeFunctionResult('rentPrice', data)
+      const result = controller.interface.decodeFunctionResult(
+        'rentPrice',
+        data,
+      )
       ;[base, premium] = result[0] as [BigNumber, BigNumber]
     }
     return {

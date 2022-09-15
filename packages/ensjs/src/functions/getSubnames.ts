@@ -73,8 +73,7 @@ const largeQuery = async (
   const { domain } = await client.request(finalQuery, queryVars)
   const subdomains = domain.subdomains.map((subname: any) => {
     const decrypted = decryptName(subname.name)
-    console.log(subname, decrypted);
-    
+    console.log(subname, decrypted)
 
     return {
       ...subname,
@@ -92,8 +91,8 @@ const largeQuery = async (
 const getSubnames = (
   injected: ENSArgs<'gqlInstance'>,
   functionArgs: Params,
-): Promise<{ subnames: Subname[]; subnameCount: number }> => {  
-    return largeQuery(injected, functionArgs) 
+): Promise<{ subnames: Subname[]; subnameCount: number }> => {
+  return largeQuery(injected, functionArgs)
 }
 
 export default getSubnames

@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+
+/* eslint-disable */
+
 import { Command, Option } from 'commander'
 import path from 'path'
 import { emitKeypressEvents } from 'readline'

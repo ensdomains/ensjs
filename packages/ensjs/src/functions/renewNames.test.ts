@@ -31,7 +31,6 @@ describe('renewNames', () => {
     const controller = await ensInstance.contracts!.getEthRegistrarController()!
     const [price] = await controller.rentPrice(label, duration)
 
-
     const tx = await ensInstance.renewName(name, {
       value: price.mul(2),
       duration,
@@ -47,12 +46,12 @@ describe('renewNames', () => {
     const names = ['to-be-renewed.eth', 'test123.eth']
     const label = names[0].split('.')[0]
     const duration = 31536000
-    const baseRegistrar = await ENSInstance.contracts!.getBaseRegistrar()!
+    const baseRegistrar = await ensInstance.contracts!.getBaseRegistrar()!
     const oldExpiry = await baseRegistrar.nameExpires(labelhash(label))
-    const controller = await ENSInstance.contracts!.getEthRegistrarController()!
+    const controller = await ensInstance.contracts!.getEthRegistrarController()!
     const [price] = await controller.rentPrice(label, duration)
 
-    const tx = await ENSInstance.renewNames(names, {
+    const tx = await ensInstance.renewNames(names, {
       value: price.mul(4),
       duration,
       addressOrIndex: accounts[1],
