@@ -1,14 +1,11 @@
 import { BigNumber } from 'ethers'
 import { ENSArgs } from '..'
 import {
-  CommitmentParams,
+  BaseRegistrationParams,
   makeRegistrationData,
 } from '../utils/registerHelpers'
 
-type Params = Omit<CommitmentParams, 'name' | 'resolver'> & {
-  resolverAddress?: string
-  secret: string
-  wrapperExpiry: number
+type Params = BaseRegistrationParams & {
   value: BigNumber
 }
 
