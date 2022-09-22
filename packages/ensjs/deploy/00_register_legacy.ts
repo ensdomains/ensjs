@@ -78,13 +78,12 @@ const names = [
     label: 'with-subnames',
     namedOwner: 'owner',
     namedAddr: 'owner',
-    subnames: [{ label: 'test', namedOwner: 'owner2' }],
-  },
-  {
-    label: 'get-subnames',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    subnames: [{ label: 'test3', namedOwner: 'owner2' }, {label: 'test', namedOwner: 'owner2'}],
+    subnames: [
+      { label: 'test', namedOwner: 'owner2' },
+      { label: 'legacy', namedOwner: 'owner2' },
+      { label: 'xyz', namedOwner: 'owner2' },
+      { label: 'addr', namedOwner: 'owner2' },
+    ],
   },
   ...Array.from({ length: 34 }, (_, i) => ({
     label: `${i}-dummy`,
@@ -184,8 +183,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     if (subnames) {
       console.log(`Setting subnames for ${label}.eth...`)
       const registry = await ethers.getContract('ENSRegistry')
-      for (const { label: subnameLabel, namedOwner } of subnames) {
-        const owner = allNamedAccts[namedOwner]
+      for (const {
+        label: subnameLabel,
+        namedOwner: subnameOwner,
+      } of subnames) {
+        const owner = allNamedAccts[subnameOwner]
         const _registry = registry.connect(await ethers.getSigner(registrant))
         const setSubnameTx = await _registry.setSubnodeRecord(
           namehash(`${label}.eth`),

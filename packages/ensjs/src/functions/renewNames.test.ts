@@ -31,7 +31,7 @@ describe('renewNames', () => {
     const controller = await ensInstance.contracts!.getEthRegistrarController()!
     const [price] = await controller.rentPrice(label, duration)
 
-    const tx = await ensInstance.renewName(name, {
+    const tx = await ensInstance.renewNames(name, {
       value: price.mul(2),
       duration,
       addressOrIndex: accounts[1],
