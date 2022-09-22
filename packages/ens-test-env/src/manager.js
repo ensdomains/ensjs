@@ -140,6 +140,9 @@ const awaitCommand = async (name, command) => {
   })
   const outPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
   const errPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
+  deploy.stdout.on('data', (data) => {
+    console.log('deploy stdout', data.toString())
+  })
   deploy.stdout.pipe(outPrepender).pipe(process.stdout)
   deploy.stderr.pipe(errPrepender).pipe(process.stderr)
   return new Promise((resolve) => deploy.on('exit', () => resolve()))
@@ -151,9 +154,20 @@ export const main = async (_config, _options, justKill) => {
 
   opts.cwd = config.paths.composeFile.split('/docker-compose.yml')[0]
 
+  //Today's timestamp at 12 noon
+  var daystamp = (function () {
+    var d = new Date()
+    d.setHours(12)
+    d.setMinutes(0)
+    d.setSeconds(0)
+    d.setMilliseconds(0)
+    return d.getTime()
+  })()
+
   opts.env = {
     ...process.env,
     DATA_FOLDER: config.paths.data,
+    BLOCK_TIMESTAMP: daystamp / 1000,
   }
 
   if (justKill) {
@@ -162,7 +176,9 @@ export const main = async (_config, _options, justKill) => {
 
   try {
     await compose.upOne('anvil', opts)
-  } catch {}
+  } catch (e) {
+    console.error('e: ', e)
+  }
 
   if (options.verbose) outputsToIgnore = []
 
@@ -207,7 +223,7 @@ export const main = async (_config, _options, justKill) => {
   await new Promise((resolve) => setTimeout(resolve, 100))
 
   // set next block timestamp to ensure consistent hashes
-  await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
+  // await rpcFetch('anvil_setNextBlockTimestamp', [daystamp])
   await rpcFetch('anvil_setBlockTimestampInterval', [1])
 
   await awaitCommand('deploy', config.deployCommand)
