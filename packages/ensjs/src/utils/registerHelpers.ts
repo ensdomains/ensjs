@@ -1,4 +1,4 @@
-import { utils } from 'ethers'
+import { BigNumberish, utils } from 'ethers'
 import type { FuseOptions } from '../@types/FuseOptions'
 import type { PublicResolver } from '../generated'
 import generateFuseInput from './generateFuseInput'
@@ -6,16 +6,25 @@ import { labelhash } from './labels'
 import { namehash } from './normalise'
 import { generateRecordCallArray, RecordOptions } from './recordHelpers'
 
-export type RegistrationParams = {
-  name: string
+const MAX_INT_64 = 2n ** 64n - 1n
+
+export type BaseRegistrationParams = {
   owner: string
   duration: number
   secret: string
-  resolver: PublicResolver
+  resolverAddress?: string
   records?: RecordOptions
   reverseRecord?: boolean
   fuses?: FuseOptions
-  wrapperExpiry: number
+  wrapperExpiry?: BigNumberish
+}
+
+export type RegistrationParams = Omit<
+  BaseRegistrationParams,
+  'resolverAddress'
+> & {
+  name: string
+  resolver: PublicResolver
 }
 
 export type CommitmentParams = Omit<
@@ -23,7 +32,7 @@ export type CommitmentParams = Omit<
   'secret' | 'wrapperExpiry'
 > & {
   secret?: string
-  wrapperExpiry?: number
+  wrapperExpiry?: BigNumberish
 }
 
 export type RegistrationTuple = [
@@ -35,7 +44,7 @@ export type RegistrationTuple = [
   data: string[],
   reverseRecord: boolean,
   fuses: string,
-  wrapperExpiry: number,
+  wrapperExpiry: BigNumberish,
 ]
 
 export type CommitmentTuple = [
@@ -47,7 +56,7 @@ export type CommitmentTuple = [
   secret: string,
   reverseRecord: boolean,
   fuses: string,
-  wrapperExpiry: number,
+  wrapperExpiry: BigNumberish,
 ]
 
 export const randomSecret = () => {
@@ -93,7 +102,7 @@ export const makeCommitmentData = ({
     secret,
     !!reverseRecord,
     fuseData,
-    wrapperExpiry || Math.floor(Date.now() / 1000) + duration,
+    wrapperExpiry || MAX_INT_64,
   ]
 }
 
