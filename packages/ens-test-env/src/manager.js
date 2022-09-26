@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { spawn } from 'child_process'
 import concurrently from 'concurrently'
 import compose from 'docker-compose'
@@ -16,14 +17,14 @@ const exitedBuffer = Buffer.from('exited with code 1')
 
 let initialFinished = false
 let cleanupRunning = false
-let opts = {
+const opts = {
   log: true,
   composeOptions: ['-p', 'ens-test-env'],
 }
 
 /**
  * @type {import('concurrently').Command[]}
- **/
+ * */
 let commands
 let options
 let config

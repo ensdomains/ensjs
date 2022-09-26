@@ -1,10 +1,8 @@
 import fs from 'fs'
 import fsp from 'fs/promises'
-import nModule from 'module'
+import path from 'path'
 import { glob, runTypeChain } from 'typechain'
 
-const pnp = (nModule as any).findPnpApi('./')
-const contracts = pnp.resolveToUnqualified('@ensdomains/ens-contracts', './')
 const overrides = [
   'ETHRegistrarController',
   'NameWrapper',
@@ -12,10 +10,16 @@ const overrides = [
   'ReverseRegistrar',
   'StaticMetadataService',
   'UniversalResolver',
+  'BulkRenewal',
 ]
 
 async function main() {
   const cwd = process.cwd()
+
+  const contracts = path.resolve(cwd, './node_modules/@ensdomains/ens-contracts')
+  if (!fs.existsSync(contracts)) {
+    throw new Error('@ensdomains/ens-contracts not found')
+  }
 
   if (!fs.existsSync('./cache/json-abis'))
     await fsp.mkdir('./cache/json-abis', { recursive: true })

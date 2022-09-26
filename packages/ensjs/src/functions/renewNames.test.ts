@@ -17,7 +17,7 @@ afterAll(async () => {
   await revert()
 })
 
-describe('registerName', () => {
+describe('renewNames', () => {
   beforeEach(async () => {
     await revert()
   })
@@ -31,8 +31,28 @@ describe('registerName', () => {
     const controller = await ensInstance.contracts!.getEthRegistrarController()!
     const [price] = await controller.rentPrice(label, duration)
 
-    const tx = await ensInstance.renewName(name, {
+    const tx = await ensInstance.renewNames(name, {
       value: price.mul(2),
+      duration,
+      addressOrIndex: accounts[1],
+    })
+    await tx.wait()
+
+    const newExpiry = await baseRegistrar.nameExpires(labelhash(label))
+    expect(newExpiry.toNumber()).toBe(oldExpiry.add(31536000).toNumber())
+  })
+
+  it('should return a renew transaction and succeed', async () => {
+    const names = ['to-be-renewed.eth', 'test123.eth']
+    const label = names[0].split('.')[0]
+    const duration = 31536000
+    const baseRegistrar = await ensInstance.contracts!.getBaseRegistrar()!
+    const oldExpiry = await baseRegistrar.nameExpires(labelhash(label))
+    const controller = await ensInstance.contracts!.getEthRegistrarController()!
+    const [price] = await controller.rentPrice(label, duration)
+
+    const tx = await ensInstance.renewNames(names, {
+      value: price.mul(4),
       duration,
       addressOrIndex: accounts[1],
     })
