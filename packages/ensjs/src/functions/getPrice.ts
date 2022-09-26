@@ -7,13 +7,10 @@ const raw = async (
   duration: number,
   legacy?: boolean,
 ) => {
-  console.log('get price raw')
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
 
   if (names.length > 1) {
     const bulkRenewal = await contracts?.getBulkRenewal()!
-    console.log('bulkRenewal', bulkRenewal)
-    console.log('names', names, 'duration', duration)
     const baseCall = {
       to: bulkRenewal.address,
       data: bulkRenewal.interface.encodeFunctionData('rentPrice', [
@@ -60,7 +57,6 @@ const raw = async (
       },
     ])
   }
-  console.log('baseCall', baseCall)
   return baseCall
 }
 
@@ -71,7 +67,6 @@ const decode = async (
   _duration: number,
   legacy?: boolean,
 ) => {
-  console.log('decode', data, _nameOrNames, _duration, legacy)
   if (data === null) return
   try {
     let base: BigNumber
@@ -79,9 +74,7 @@ const decode = async (
 
     const isBulkRenewal = Array.isArray(_nameOrNames) && _nameOrNames.length > 1
     if (isBulkRenewal && legacy) {
-      console.log('isBulkRenewal && legacy')
       const result = await multicallWrapper.decode(data)
-      console.log(result)
       const [price] = utils.defaultAbiCoder.decode(
         ['uint256'],
         result[0].returnData,
@@ -97,7 +90,6 @@ const decode = async (
         'rentPrice',
         data,
       )
-      console.log('result', result)
       ;[base] = result
       premium = BigNumber.from(0)
     } else if (!isBulkRenewal && legacy) {
@@ -117,7 +109,6 @@ const decode = async (
         'rentPrice',
         data,
       )
-      console.log('result', result)
       ;[base, premium] = result[0] as [BigNumber, BigNumber]
     }
     return {

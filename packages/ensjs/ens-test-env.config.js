@@ -20,10 +20,4 @@ module.exports = {
       finishOnExit: true,
     },
   ],
-  labelHashes: [
-    {
-      hash: '0x204558076efb2042ebc9b034aab36d85d672d8ac1fa809288da5b453a4714aae',
-      label: 'test3',
-    },
-  ],
 }

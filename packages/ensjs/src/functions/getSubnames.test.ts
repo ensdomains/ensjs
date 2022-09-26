@@ -18,7 +18,6 @@ describe('getSubnames', () => {
       orderBy: 'createdAt',
       orderDirection: 'desc',
     })
-    console.log(result)
     expect(result).toBeTruthy()
     expect(result.subnames.length).toBe(4)
     expect(result.subnameCount).toBe(4)
