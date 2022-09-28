@@ -311,6 +311,43 @@ export const main = async (_config, _options, justKill) => {
   }
 
   if (!options.save && cmdsToRun.length > 0 && options.scripts) {
+    if (options.graph) {
+      let indexArray = []
+      const getCurrentIndex = async () =>
+        fetch('http://localhost:8000/subgraphs/name/graphprotocol/ens', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+            {
+              _meta {
+                block {
+                  number
+                }
+              }
+            }
+          `,
+            variables: {},
+          }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.errors) return 0
+            return res.data._meta.block.number
+          })
+          .catch(() => 0)
+      do {
+        indexArray.push(await getCurrentIndex())
+        if (indexArray.length > 10) indexArray.shift()
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      } while (
+        !indexArray.every((i) => i === indexArray[0]) ||
+        indexArray.length < 2 ||
+        indexArray[0] === 0
+      )
+    }
     /**
      * @type {import('concurrently').ConcurrentlyResult['result']}
      **/
