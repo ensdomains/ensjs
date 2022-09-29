@@ -81,6 +81,15 @@ describe('wrapName', () => {
       )
       expect(result).toBe('0x42D63ae25990889E35F215bC95884039Ba354115')
     })
+    it('should throw an error for labels longer than 255 bytes', async () => {
+      const label = 'a'.repeat(256)
+      await expect(
+        ensInstance.wrapName(`${label}.eth`, {
+          wrappedOwner: accounts[2],
+          addressOrIndex: 1,
+        }),
+      ).rejects.toThrow("Label can't be longer than 255 bytes")
+    })
   })
   describe('other', () => {
     it('should return a wrap name transaction and succeed', async () => {

@@ -84,7 +84,7 @@ importers:
       '@ensdomains/address-encoder': 0.2.16
       '@ensdomains/buffer': ^0.0.13
       '@ensdomains/content-hash': ^2.5.7
-      '@ensdomains/ens-contracts': ^0.0.12
+      '@ensdomains/ens-contracts': ^0.0.13
       '@ensdomains/ens-test-env': workspace:*
       '@ethersproject/abi': ^5.6.0
       '@ethersproject/providers': ^5.6.2
@@ -128,12 +128,12 @@ importers:
       dns-packet: 5.4.0
       ethers: 5.6.9
       graphql: 16.6.0
-      graphql-request: 5.0.0_graphql@16.6.0
+      graphql-request: 5.0.1-next.1_graphql@16.6.0
       idna-uts46-hx: 3.4.0
       traverse: 0.6.6
     devDependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.10.2
-      '@ensdomains/ens-contracts': 0.0.12_hardhat@2.10.2
+      '@ensdomains/ens-contracts': 0.0.13_hardhat@2.10.2
       '@ensdomains/ens-test-env': link:../ens-test-env
       '@ethersproject/abi': 5.6.4
       '@ethersproject/providers': 5.6.8
@@ -566,8 +566,8 @@ packages:
       multihashes: 2.0.0
     dev: false
 
-  /@ensdomains/ens-contracts/0.0.12_hardhat@2.10.2:
-    resolution: {integrity: sha512-s6CCX/IsEF9R+dHb1vNLDPUAes07zvQFBIavXBest6Li8z1KFuFS+C+AlSA16SYtZ3LQieIBshzJgygYPM9Zog==}
+  /@ensdomains/ens-contracts/0.0.13_hardhat@2.10.2:
+    resolution: {integrity: sha512-GMEcvJHJ6T+5imQPAaJK76sK5O5yd4R6cbyyPq8rN3BX+vU/+fT3b/EVEan9o9hil5+Mvwk8tDHwWcu7Dpmlkg==}
     dependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.10.2
       '@ensdomains/solsha1': 0.0.3
@@ -5247,8 +5247,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql-request/5.0.0_graphql@16.6.0:
-    resolution: {integrity: sha512-SpVEnIo2J5k2+Zf76cUkdvIRaq5FMZvGQYnA4lUWYbc99m+fHh4CZYRRO/Ff4tCLQ613fzCm3SiDT64ubW5Gyw==}
+  /graphql-request/5.0.1-next.1_graphql@16.6.0:
+    resolution: {integrity: sha512-yo7HvMp12X9UX88PdtNGD2b6hZH553uLNb6mUByxt+QTC5HagG24qndfvpFy9+aVeKTQ6RtNHYhjw1lLDmqBQg==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
