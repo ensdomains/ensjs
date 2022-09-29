@@ -207,25 +207,40 @@ export const main = async (_config, _options, justKill) => {
   // wait 100 ms to make sure the server is up
   await new Promise((resolve) => setTimeout(resolve, 100))
 
-  if (!options.extraTime) {
-    // set next block timestamp to ensure consistent hashes
-    await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
-  } else {
-    const timestamp =
-      Math.floor(Date.now() / 1000) - parseInt(options.extraTime)
-    console.log('\x1b[1;34m[config]\x1b[0m ', 'setting timestamp to', timestamp)
-    // set next block timestamp relative to current time
-    await rpcFetch('anvil_setNextBlockTimestamp', [timestamp])
-  }
-  await rpcFetch('anvil_setBlockTimestampInterval', [1])
+  if (!options.save) {
+    if (!options.extraTime) {
+      // set next block timestamp to ensure consistent hashes
+      await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
+    } else {
+      const timestamp =
+        Math.floor(Date.now() / 1000) - parseInt(options.extraTime)
+      console.log(
+        '\x1b[1;34m[config]\x1b[0m ',
+        'setting timestamp to',
+        timestamp,
+      )
+      // set next block timestamp relative to current time
+      await rpcFetch('anvil_setNextBlockTimestamp', [timestamp])
+    }
+    await rpcFetch('anvil_setBlockTimestampInterval', [1])
 
-  await awaitCommand('deploy', config.deployCommand)
+    await awaitCommand('deploy', config.deployCommand)
 
-  // remove block timestamp interval after deploy
-  await rpcFetch('anvil_removeBlockTimestampInterval', [])
+    // remove block timestamp interval after deploy
+    await rpcFetch('anvil_removeBlockTimestampInterval', [])
 
-  if (config.buildCommand && options.build) {
-    await awaitCommand('build', config.buildCommand)
+    if (options.extraTime) {
+      // set to current time
+      await rpcFetch('anvil_setNextBlockTimestamp', [
+        Math.floor(Date.now() / 1000),
+      ])
+      // mine block for graph node to update
+      await rpcFetch('evm_mine', [])
+    }
+
+    if (config.buildCommand && options.build) {
+      await awaitCommand('build', config.buildCommand)
+    }
   }
 
   initialFinished = true
@@ -295,7 +310,44 @@ export const main = async (_config, _options, justKill) => {
     }
   }
 
-  if (cmdsToRun.length > 0 && options.scripts) {
+  if (!options.save && cmdsToRun.length > 0 && options.scripts) {
+    if (options.graph) {
+      let indexArray = []
+      const getCurrentIndex = async () =>
+        fetch('http://localhost:8000/subgraphs/name/graphprotocol/ens', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+            {
+              _meta {
+                block {
+                  number
+                }
+              }
+            }
+          `,
+            variables: {},
+          }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.errors) return 0
+            return res.data._meta.block.number
+          })
+          .catch(() => 0)
+      do {
+        indexArray.push(await getCurrentIndex())
+        if (indexArray.length > 10) indexArray.shift()
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      } while (
+        !indexArray.every((i) => i === indexArray[0]) ||
+        indexArray.length < 2 ||
+        indexArray[0] === 0
+      )
+    }
     /**
      * @type {import('concurrently').ConcurrentlyResult['result']}
      **/
