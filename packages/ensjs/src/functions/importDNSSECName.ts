@@ -1,6 +1,7 @@
 import { Oracle as NewOracle } from '@ensdomains/dnssecoraclejs'
 import packet from 'dns-packet'
 import { ENSArgs } from '..'
+import { EMPTY_ADDRESS } from '../utils/consts'
 
 export const DNS_OVER_HTTP_ENDPOINT = 'https://1.1.1.1/dns-query'
 
@@ -33,11 +34,21 @@ export default async function (
   }>
   const { proof } = proofData
 
-  return dnsRegistrarContract?.populateTransaction.proveAndClaimWithResolver(
-    encodedName,
-    data,
-    proof,
-    resolverContract!.address,
-    address,
-  )
+  if (address === EMPTY_ADDRESS) {
+    return dnsRegistrarContract?.populateTransaction.proveAndClaim(
+      encodedName,
+      data,
+      proof,
+    )
+  }
+
+  if (address) {
+    return dnsRegistrarContract?.populateTransaction.proveAndClaimWithResolver(
+      encodedName,
+      data,
+      proof,
+      resolverContract!.address,
+      address,
+    )
+  }
 }

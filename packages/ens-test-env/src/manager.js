@@ -154,20 +154,10 @@ export const main = async (_config, _options, justKill) => {
 
   opts.cwd = config.paths.composeFile.split('/docker-compose.yml')[0]
 
-  //Today's timestamp at 12 noon
-  var daystamp = (function () {
-    var d = new Date()
-    d.setHours(12)
-    d.setMinutes(0)
-    d.setSeconds(0)
-    d.setMilliseconds(0)
-    return d.getTime()
-  })()
-
   opts.env = {
     ...process.env,
     DATA_FOLDER: config.paths.data,
-    BLOCK_TIMESTAMP: daystamp / 1000,
+    BLOCK_TIMESTAMP: Math.floor(new Date().getTime() / 1000),
   }
 
   if (justKill) {
@@ -223,7 +213,9 @@ export const main = async (_config, _options, justKill) => {
   await new Promise((resolve) => setTimeout(resolve, 100))
 
   // set next block timestamp to ensure consistent hashes
-  // await rpcFetch('anvil_setNextBlockTimestamp', [daystamp])
+  await rpcFetch('anvil_setNextBlockTimestamp', [
+    Math.floor(new Date().getTime() / 1000),
+  ])
   await rpcFetch('anvil_setBlockTimestampInterval', [1])
 
   await awaitCommand('deploy', config.deployCommand)
