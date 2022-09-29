@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { ENS } from '..'
+import { ENS } from '../index'
 import setup from '../tests/setup'
 
 let ensInstance: ENS
@@ -38,15 +38,17 @@ afterAll(async () => {
   await revert()
 })
 
-describe('getFuses', () => {
+describe('getWrapperData', () => {
   it('should return default data for an unwrapped name', async () => {
-    const result = await ensInstance.getFuses('with-profile.eth')
+    const result = await ensInstance.getWrapperData('with-profile.eth')
     expect({ ...result, expiryDate: result?.expiryDate.toString() }).toEqual(
       unwrappedNameDefault,
     )
   })
   it('should return with CAN_DO_EVERYTHING set to true for a name with no fuses burned', async () => {
-    const result = await ensInstance.getFuses('test.wrapped-with-subnames.eth')
+    const result = await ensInstance.getWrapperData(
+      'test.wrapped-with-subnames.eth',
+    )
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj.CAN_DO_EVERYTHING).toBe(true)
@@ -70,7 +72,7 @@ describe('getFuses', () => {
     })
     await tx.wait()
 
-    const result = await ensInstance.getFuses('wrapped.eth')
+    const result = await ensInstance.getWrapperData('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.fuseObj).toMatchObject({
@@ -87,7 +89,7 @@ describe('getFuses', () => {
     }
   })
   it('should return correct expiry', async () => {
-    const result = await ensInstance.getFuses('wrapped.eth')
+    const result = await ensInstance.getWrapperData('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
       expect(result.expiryDate).toBeInstanceOf(Date)

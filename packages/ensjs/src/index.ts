@@ -15,7 +15,6 @@ import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
 import type getDNSOwner from './functions/getDNSOwner'
 import type getExpiry from './functions/getExpiry'
-import type getFuses from './functions/getFuses'
 import type { getHistory } from './functions/getHistory'
 import type getName from './functions/getName'
 import type getNames from './functions/getNames'
@@ -33,6 +32,7 @@ import type {
   _getText,
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
+import type getWrapperData from './functions/getWrapperData'
 import type registerName from './functions/registerName'
 import type renewNames from './functions/renewNames'
 import type setName from './functions/setName'
@@ -445,9 +445,10 @@ export class ENS {
     ['contracts'],
   )
 
-  public getFuses = this.generateRawFunction<typeof getFuses>('getFuses', [
-    'contracts',
-  ])
+  public getWrapperData = this.generateRawFunction<typeof getWrapperData>(
+    'getWrapperData',
+    ['contracts'],
+  )
 
   public getHistory = this.generateFunction<typeof getHistory>(
     'getHistory',
