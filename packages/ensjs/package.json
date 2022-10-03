@@ -53,7 +53,7 @@
   "license": "MIT",
   "scripts": {
     "tenv": "ens-test-env -a",
-    "denv": "pnpm tenv start -ns -nb",
+    "denv": "pnpm tenv start -ns -nb --extra-time 11368000",
     "generate-types": "ts-node scripts/runTypechain.ts",
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",
@@ -86,6 +86,7 @@
     "@ethersproject/providers": "^5.6.2",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/contracts": "^4.5.0",
+    "@openzeppelin/test-helpers": "^0.5.16",
     "@swc/core": "^1.2.162",
     "@swc/jest": "^0.2.20",
     "@typechain/ethers-v5": "^10.1.0",

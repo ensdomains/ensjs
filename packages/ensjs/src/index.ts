@@ -34,7 +34,11 @@ import type {
 import type getSubnames from './functions/getSubnames'
 import type getWrapperData from './functions/getWrapperData'
 import type registerName from './functions/registerName'
-import type renewNames from './functions/renewNames'
+import type {
+  // eslint-disable-next-line import/no-named-default
+  default as renewNames,
+  renewNameWithData,
+} from './functions/renewNames'
 import type setName from './functions/setName'
 import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
@@ -611,4 +615,8 @@ export class ENS {
     'renewNames',
     ['contracts'],
   )
+
+  public renewNameWithData = this.generateWriteFunction<
+    typeof renewNameWithData
+  >('renewNames', ['contracts'], 'renewNameWithData')
 }

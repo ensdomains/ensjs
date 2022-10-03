@@ -44,7 +44,7 @@ describe('wrapName', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [, , fuses] = await nameWrapper.getData(namehash('test123.eth'))
+      const [, fuses] = await nameWrapper.getData(namehash('test123.eth'))
 
       // parent cannot control
       expect(fuses).toBe(64)
@@ -62,7 +62,7 @@ describe('wrapName', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [, , fuses] = await nameWrapper.getData(namehash('test123.eth'))
+      const [, fuses] = await nameWrapper.getData(namehash('test123.eth'))
       expect(fuses).toBe(81)
     })
     it('should allow an initial resolver address', async () => {
@@ -103,7 +103,7 @@ describe('wrapName', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [, , fuses] = await nameWrapper.getData(
+      const [, fuses] = await nameWrapper.getData(
         namehash('test.with-subnames.eth'),
       )
 

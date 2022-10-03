@@ -34,7 +34,7 @@ describe('renewNames', () => {
     const tx = await ensInstance.renewNames(name, {
       value: price.mul(2),
       duration,
-      addressOrIndex: accounts[1],
+      addressOrIndex: accounts[0],
     })
     await tx.wait()
 
@@ -48,8 +48,8 @@ describe('renewNames', () => {
     const duration = 31536000
     const baseRegistrar = await ensInstance.contracts!.getBaseRegistrar()!
     const oldExpiry = await baseRegistrar.nameExpires(labelhash(label))
-    const controller = await ensInstance.contracts!.getEthRegistrarController()!
-    const [price] = await controller.rentPrice(label, duration)
+    const bulkRenewal = await ensInstance.contracts!.getBulkRenewal()!
+    const price = await bulkRenewal.rentPrice(names, duration)
 
     const tx = await ensInstance.renewNames(names, {
       value: price.mul(4),

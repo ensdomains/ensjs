@@ -14,11 +14,10 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
 const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
-    const {
-      owner,
-      fuses: _fuses,
-      expiry,
-    } = nameWrapper.interface.decodeFunctionResult('getData', data)
+    const [owner, _fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
+      'getData',
+      data,
+    )
 
     const fuses = BigNumber.from(_fuses)
 

@@ -70,4 +70,68 @@ type FusesWithoutDuplicates<A, B = never> = A extends FuseArrayPossibilities
 
 export type NamedFusesToBurn = FusesWithoutDuplicates<FuseArrayPossibilities>
 
+export type FusePropsNamedArray = {
+  namedFusesToBurn: NamedFusesToBurn
+}
+
+export type FusePropsUnnamedArray = {
+  unnamedFusesToBurn: UnnamedFuseValues[]
+}
+
+export type FusePropsNumber = {
+  fuseNumberToBurn: number
+}
+
+export type FuseProps =
+  | (Partial<FusePropsNamedArray> & FusePropsUnnamedArray)
+  | (FusePropsNamedArray & Partial<FusePropsUnnamedArray>)
+  | FusePropsNumber
+
+export const validateFuses = (fuses: FuseProps) => {
+  const isNumber = 'fuseNumberToBurn' in fuses
+  const hasNamedArray = 'namedFusesToBurn' in fuses
+  const hasUnnamedArray = 'unnamedFusesToBurn' in fuses
+
+  let encodedFuses: number = 0
+
+  if (isNumber) {
+    if (fuses.fuseNumberToBurn > 2 ** 32 || fuses.fuseNumberToBurn < 1) {
+      throw new Error(
+        `Fuse number must be limited to uint32, ${
+          fuses.fuseNumberToBurn
+        } was too ${fuses.fuseNumberToBurn < 1 ? 'low' : 'high'}.`,
+      )
+    } else if (fuses.fuseNumberToBurn % 1 !== 0) {
+      throw new Error(
+        `Fuse number must be an integer, ${fuses.fuseNumberToBurn} was not.`,
+      )
+    }
+    encodedFuses = fuses.fuseNumberToBurn
+  } else {
+    if (!hasNamedArray && !hasUnnamedArray) {
+      throw new Error('Please provide fuses to burn')
+    }
+    if (hasNamedArray) {
+      for (const fuse of fuses.namedFusesToBurn!) {
+        if (!(fuse in fuseEnum)) {
+          throw new Error(`${fuse} is not a valid named fuse.`)
+        }
+        encodedFuses |= fuseEnum[fuse]
+      }
+    }
+    if (hasUnnamedArray) {
+      for (const fuse of fuses.unnamedFusesToBurn!) {
+        if (!unnamedFuses.includes(fuse)) {
+          throw new Error(
+            `${fuse} is not a valid unnamed fuse. If you are trying to burn a named fuse, use the namedFusesToBurn property.`,
+          )
+        }
+        encodedFuses |= fuse
+      }
+    }
+  }
+
+  return encodedFuses
+}
+
 export default fullFuseEnum
