@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
-import { Expiry, makeExpiry } from '../utils/wrapperExpiry'
+import { Expiry, makeExpiry } from '../utils/wrapper'
 
 type BaseArgs = {
   owner: string

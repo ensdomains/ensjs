@@ -208,19 +208,6 @@ const _abi = [
         name: "node",
         type: "bytes32",
       },
-    ],
-    name: "DNSZoneCleared",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "node",
-        type: "bytes32",
-      },
       {
         indexed: false,
         internalType: "bytes",
@@ -327,8 +314,33 @@ const _abi = [
         name: "key",
         type: "string",
       },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "value",
+        type: "string",
+      },
     ],
     name: "TextChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "node",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "newVersion",
+        type: "uint64",
+      },
+    ],
+    name: "VersionChanged",
     type: "event",
   },
   {
@@ -411,7 +423,7 @@ const _abi = [
         type: "bytes32",
       },
     ],
-    name: "clearDNSZone",
+    name: "clearRecords",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -559,6 +571,30 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
+        name: "nodehash",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes[]",
+        name: "data",
+        type: "bytes[]",
+      },
+    ],
+    name: "multicallWithNodeCheck",
+    outputs: [
+      {
+        internalType: "bytes[]",
+        name: "results",
+        type: "bytes[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
         name: "node",
         type: "bytes32",
       },
@@ -593,6 +629,25 @@ const _abi = [
         internalType: "bytes32",
         name: "y",
         type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "recordVersions",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
       },
     ],
     stateMutability: "view",

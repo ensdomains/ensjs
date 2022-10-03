@@ -6,7 +6,7 @@ import { labelhash } from './labels'
 import { namehash } from './normalise'
 import { generateRecordCallArray, RecordOptions } from './recordHelpers'
 
-const MAX_INT_64 = 2n ** 64n - 1n
+export const MAX_INT_64 = 2n ** 64n - 1n
 
 export type BaseRegistrationParams = {
   owner: string

@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { ENSArgs } from '..'
+import { ENSArgs } from '../index'
 import { CurrentFuses, fuseEnum } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 
@@ -14,11 +14,10 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
 const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
-    const {
-      owner,
-      fuses: _fuses,
-      expiry,
-    } = nameWrapper.interface.decodeFunctionResult('getData', data)
+    const [owner, _fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
+      'getData',
+      data,
+    )
 
     const fuses = BigNumber.from(_fuses)
 
@@ -44,7 +43,7 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
       owner,
     }
   } catch (e) {
-    console.error('Error decoding fuses data: ', e)
+    console.error('Error decoding wrapper data: ', e)
     return
   }
 }

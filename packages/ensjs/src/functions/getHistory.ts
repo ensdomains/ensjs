@@ -2,6 +2,8 @@ import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
+import { labelhash } from '../utils/labels'
+import { namehash } from '../utils/normalise'
 
 type DomainEvent = 'NewOwner' | 'NewResolver' | 'Transfer' | 'NewTTL'
 type RegistrationEvent = 'NameRegistered' | 'NameRenewed' | 'NameTransferred'
@@ -102,8 +104,8 @@ export async function getHistory(
 ) {
   const { client } = gqlInstance
   const query = gqlInstance.gql`
-      query getHistory($name: String!, $label: String!) {
-        domains(where: { name: $name }) {
+      query getHistory($namehash: String!, $labelhash: String!) {
+        domain(id: $namehash) {
           events {
             id
             blockNumber
@@ -129,7 +131,7 @@ export async function getHistory(
             }
           }
           owner {
-            registrations (where: { labelName: $label }) {
+            registrations (where: { id: $labelhash }) {
               events {
                 id
                 blockNumber
@@ -201,19 +203,23 @@ export async function getHistory(
 
   const label = name.split('.')[0]
 
-  const { domains } = await client.request(query, { name, label })
+  const nameHash = namehash(name)
+  const labelHash = labelhash(label)
 
-  if (!domains || domains.length === 0) return
+  const { domain } = await client.request(query, {
+    namehash: nameHash,
+    labelhash: labelHash,
+  })
 
-  const [
-    {
-      events: domainEvents,
-      owner: {
-        registrations: [{ events: registrationEvents }],
-      },
-      resolver: { events: resolverEvents },
+  if (!domain) return
+
+  const {
+    events: domainEvents,
+    owner: {
+      registrations: [{ events: registrationEvents }],
     },
-  ] = domains
+    resolver: { events: resolverEvents },
+  } = domain
 
   const domainHistory = mapEvents(domainEvents, 'Domain')
   const registrationHistory = mapEvents(registrationEvents, 'Registration')

@@ -1,7 +1,7 @@
-import { ethers } from 'ethers'
 import dotenv from 'dotenv'
+import { ethers } from 'ethers'
 import { ENS } from '..'
-import setup from '../tests/setup'
+import setup, { deploymentAddresses } from '../tests/setup'
 
 dotenv.config()
 
@@ -29,7 +29,7 @@ const checkRecords = (
     expect(result.records?.texts).toHaveLength(textLength)
     expect(result.records?.coinTypes).toHaveLength(coinTypeLength)
     expect(result.resolverAddress).toBe(
-      '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
+      deploymentAddresses.LegacyPublicResolver,
     )
   }
 }
@@ -107,12 +107,12 @@ describe('getProfile', () => {
       })
       await tx.wait()
       const result = await ensInstance.getProfile('test123.eth', {
-        resolverAddress: '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
+        resolverAddress: deploymentAddresses.LegacyPublicResolver,
       })
       expect(result).toBeDefined()
       expect(result?.address).toBe(accounts[1])
       expect(result?.resolverAddress).toBe(
-        '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
+        deploymentAddresses.LegacyPublicResolver,
       )
     })
     it('should return undefined for an unregistered name', async () => {
@@ -123,7 +123,6 @@ describe('getProfile', () => {
   describe('with an old resolver', () => {
     it('should use fallback methods for a name with an older resolver (no multicall)', async () => {
       const result = await ensInstance.getProfile('with-legacy-resolver.eth')
-      const deploymentAddresses = JSON.parse(process.env.DEPLOYMENT_ADDRESSES!)
       expect(result).toBeDefined()
       if (result) {
         expect(result.address).toBe(

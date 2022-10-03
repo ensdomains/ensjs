@@ -84,12 +84,13 @@ importers:
       '@ensdomains/address-encoder': 0.2.16
       '@ensdomains/buffer': ^0.0.13
       '@ensdomains/content-hash': ^2.5.7
-      '@ensdomains/ens-contracts': ^0.0.12
+      '@ensdomains/ens-contracts': ^0.0.14
       '@ensdomains/ens-test-env': workspace:*
       '@ethersproject/abi': ^5.6.0
       '@ethersproject/providers': ^5.6.2
       '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
       '@openzeppelin/contracts': ^4.5.0
+      '@openzeppelin/test-helpers': ^0.5.16
       '@swc/core': ^1.2.162
       '@swc/jest': ^0.2.20
       '@typechain/ethers-v5': ^10.1.0
@@ -128,17 +129,18 @@ importers:
       dns-packet: 5.4.0
       ethers: 5.6.9
       graphql: 16.6.0
-      graphql-request: 5.0.0_graphql@16.6.0
+      graphql-request: 5.0.1-next.1_graphql@16.6.0
       idna-uts46-hx: 3.4.0
       traverse: 0.6.6
     devDependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.10.2
-      '@ensdomains/ens-contracts': 0.0.12_hardhat@2.10.2
+      '@ensdomains/ens-contracts': 0.0.14_hardhat@2.10.2
       '@ensdomains/ens-test-env': link:../ens-test-env
       '@ethersproject/abi': 5.6.4
       '@ethersproject/providers': 5.6.8
       '@nomiclabs/hardhat-ethers': /hardhat-deploy-ethers/0.3.0-beta.13_illgchr2x7f55uzbyysl5sx6wu
       '@openzeppelin/contracts': 4.7.3
+      '@openzeppelin/test-helpers': 0.5.16
       '@swc/core': 1.2.241
       '@swc/jest': 0.2.22_@swc+core@1.2.241
       '@typechain/ethers-v5': 10.1.0_fbp5tbcdjjq4jan7wzeon4p3qq
@@ -566,8 +568,8 @@ packages:
       multihashes: 2.0.0
     dev: false
 
-  /@ensdomains/ens-contracts/0.0.12_hardhat@2.10.2:
-    resolution: {integrity: sha512-s6CCX/IsEF9R+dHb1vNLDPUAes07zvQFBIavXBest6Li8z1KFuFS+C+AlSA16SYtZ3LQieIBshzJgygYPM9Zog==}
+  /@ensdomains/ens-contracts/0.0.14_hardhat@2.10.2:
+    resolution: {integrity: sha512-a56QCIZyPPLcScJ/aW2pSOddbMoFiREUOArNwbtqPgWK0oHvAzuoMs9uKTUYIqDLG20nMhbTRuigdpN7gPUeJg==}
     dependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.10.2
       '@ensdomains/solsha1': 0.0.3
@@ -1371,10 +1373,10 @@ packages:
     dependencies:
       '@ensdomains/ensjs': 2.1.0
       '@truffle/blockchain-utils': 0.1.4
-      '@truffle/contract-schema': 3.4.9
-      '@truffle/debug-utils': 6.0.32
+      '@truffle/contract-schema': 3.4.10
+      '@truffle/debug-utils': 6.0.35
       '@truffle/error': 0.1.1
-      '@truffle/interface-adapter': 0.5.21
+      '@truffle/interface-adapter': 0.5.22
       bignumber.js: 7.2.1
       ethereum-ens: 0.8.0
       ethers: 4.0.49
@@ -1386,8 +1388,36 @@ packages:
       - utf-8-validate
     dev: true
 
+  /@openzeppelin/contract-loader/0.6.3:
+    resolution: {integrity: sha512-cOFIjBjwbGgZhDZsitNgJl0Ye1rd5yu/Yx5LMgeq3u0ZYzldm4uObzHDFq4gjDdoypvyORjjJa3BlFA7eAnVIg==}
+    dependencies:
+      find-up: 4.1.0
+      fs-extra: 8.1.0
+    dev: true
+
   /@openzeppelin/contracts/4.7.3:
     resolution: {integrity: sha512-dGRS0agJzu8ybo44pCIf3xBaPQN/65AIXNgK8+4gzKd5kbvlqyxryUYVLJv7fK98Seyd2hDZzVEHSWAh0Bt1Yw==}
+    dev: true
+
+  /@openzeppelin/test-helpers/0.5.16:
+    resolution: {integrity: sha512-T1EvspSfH1qQO/sgGlskLfYVBbqzJR23SZzYl/6B2JnT4EhThcI85UpvDk0BkLWKaDScQTabGHt4GzHW+3SfZg==}
+    dependencies:
+      '@openzeppelin/contract-loader': 0.6.3
+      '@truffle/contract': 4.6.2
+      ansi-colors: 3.2.4
+      chai: 4.3.6
+      chai-bn: 0.2.2_chai@4.3.6
+      ethjs-abi: 0.2.1
+      lodash.flatten: 4.4.0
+      semver: 5.7.1
+      web3: 1.7.5
+      web3-utils: 1.7.5
+    transitivePeerDependencies:
+      - bn.js
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
     dev: true
 
   /@scure/base/1.1.1:
@@ -1713,23 +1743,23 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /@truffle/abi-utils/0.2.17:
-    resolution: {integrity: sha512-Lz8bDjEYInaesdpP3ENVnDkfSkEmrV2z9BNcIEQPQnqdB5x/H+rIrWGny7LV6rX3Kz3kAerF8eGBFh7Z/dEhZw==}
+  /@truffle/abi-utils/0.3.2:
+    resolution: {integrity: sha512-32queMD64YKL/tmQgSV4Xs073dIaZ9tp7NP1icjwvFSA3Q9yeu7ApYbSbYMsx9H9zWkkVOsfcoJ2kJEieOCzsA==}
     dependencies:
       change-case: 3.0.2
-      faker: 5.5.3
       fast-check: 3.1.1
+      web3-utils: 1.7.4
     dev: true
 
   /@truffle/blockchain-utils/0.1.4:
     resolution: {integrity: sha512-HegAo5A8UX9vE8dtceBRgCY207gOb9wj54c8mNOOWHcFpkyJz7kZYGo44As6Imh10/0hD2j7vHQ56Jf+uszJ3A==}
     dev: true
 
-  /@truffle/codec/0.14.2:
-    resolution: {integrity: sha512-rFyj/TnIZ3N9n6cTcaEUbOXktGqZH/Mk48VjN/NT7f585zpCP82YmGTAxJwn61HuT2Zan8bksSElMivjUHKHeg==}
+  /@truffle/codec/0.14.5:
+    resolution: {integrity: sha512-3FCpTJe6o7LGWUfrSdguMpdpH1PTn3u7bIfbj6Cfdzym2OAVSgxTgdlqC1poepbk0xcOVcUW+EsqNwLMqmBiPA==}
     dependencies:
-      '@truffle/abi-utils': 0.2.17
-      '@truffle/compile-common': 0.7.34
+      '@truffle/abi-utils': 0.3.2
+      '@truffle/compile-common': 0.8.1
       big.js: 6.2.1
       bn.js: 5.2.1
       cbor: 5.2.0
@@ -1742,15 +1772,15 @@ packages:
       - supports-color
     dev: true
 
-  /@truffle/compile-common/0.7.34:
-    resolution: {integrity: sha512-NA8HuTCw6pgTpCyMd7M70Ii8AVD921R95UnXB3dwVWwEyV1OksaAsTKfdLxeLnFR4ISkK6o2NqpFb/lM3+V+9w==}
+  /@truffle/compile-common/0.8.1:
+    resolution: {integrity: sha512-7mzzG9Cfrn+fDT5Sqi7B6pccvIIV5w/GM8/56YgnjysbDzy5aZ6mv0fe37ZbcznEVQ35NJjBy+lEr/ozOGXwQA==}
     dependencies:
       '@truffle/error': 0.1.1
       colors: 1.4.0
     dev: true
 
-  /@truffle/contract-schema/3.4.9:
-    resolution: {integrity: sha512-nhYMXWbUs6dMYHL1f8DTkRk/uo1sADK0yeSYXo/p/7nqnjlHzqrr75BBsKbB7OFIVT05des+GFNQJqBaRZVdxQ==}
+  /@truffle/contract-schema/3.4.10:
+    resolution: {integrity: sha512-BhRNRoRvlj2th6E5RNS0BnS0ZxQe01JJz8I7MjkGqdeXSvrn6qDCAnbmvhNgUv0l5h8w5+gBOQhAJhILf1shdQ==}
     dependencies:
       ajv: 6.12.6
       debug: 4.3.4
@@ -1758,10 +1788,33 @@ packages:
       - supports-color
     dev: true
 
-  /@truffle/debug-utils/6.0.32:
-    resolution: {integrity: sha512-q/fDMQwY2qxIYuJs0oIIBxS26GNfFl0m5TVwkjoUlcg18O7LwnrnSezXcZw+id4k90kKqWtnjXD0/ZXX/gyXyw==}
+  /@truffle/contract/4.6.2:
+    resolution: {integrity: sha512-OZZIDmKtHgZS2Q6sCczNe8OfTuMWpRaAo3vwY49LGGs0VXLiwc7nIcCFh+bMg14IRK6vBN4pWE9W9eWSBFy31Q==}
     dependencies:
-      '@truffle/codec': 0.14.2
+      '@ensdomains/ensjs': 2.1.0
+      '@truffle/blockchain-utils': 0.1.4
+      '@truffle/contract-schema': 3.4.10
+      '@truffle/debug-utils': 6.0.35
+      '@truffle/error': 0.1.1
+      '@truffle/interface-adapter': 0.5.22
+      bignumber.js: 7.2.1
+      debug: 4.3.4
+      ethers: 4.0.49
+      web3: 1.7.4
+      web3-core-helpers: 1.7.4
+      web3-core-promievent: 1.7.4
+      web3-eth-abi: 1.7.4
+      web3-utils: 1.7.4
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /@truffle/debug-utils/6.0.35:
+    resolution: {integrity: sha512-GuLsc+GFEYiUM683GWh4/ol3jkBts5a601detVWu1Xo5/bSL5gxooOjgOTovjA8dimCjkyi/DnK2yHHC+q+g0g==}
+    dependencies:
+      '@truffle/codec': 0.14.5
       '@trufflesuite/chromafi': 3.0.0
       bn.js: 5.2.1
       chalk: 2.4.2
@@ -1775,8 +1828,8 @@ packages:
     resolution: {integrity: sha512-sE7c9IHIGdbK4YayH4BC8i8qMjoAOeg6nUXUDZZp8wlU21/EMpaG+CLx+KqcIPyR+GSWIW3Dm0PXkr2nlggFDA==}
     dev: true
 
-  /@truffle/interface-adapter/0.5.21:
-    resolution: {integrity: sha512-2ltbu3upsWS0TAQu1kLQc048XlXNmDkCzH6iebX4dg3VBB+l7oG/pu5+/kl8t+LRfzGoEMLKwOQt7vk0Vm3PNA==}
+  /@truffle/interface-adapter/0.5.22:
+    resolution: {integrity: sha512-Bgl5Afb1mPVNedI8CJzZQzVIdrZWSXISTBrXPZmppD4Q+6V1RUzlLxiaGGB4gYHOA+U0pBzD8MCcSycPAD9RsA==}
     dependencies:
       bn.js: 5.2.1
       ethers: 4.0.49
@@ -2292,6 +2345,11 @@ packages:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
+    dev: true
+
+  /ansi-colors/3.2.4:
+    resolution: {integrity: sha512-hHUXGagefjN2iRrID63xckIvotOXOojhQKWIPUZ4mNUZ9nLZW+7FMNoE1lOkEhNWYsx/7ysGIuJYCiMAA9FnrA==}
+    engines: {node: '>=6'}
     dev: true
 
   /ansi-colors/4.1.1:
@@ -2899,6 +2957,15 @@ packages:
     dependencies:
       bignumber.js: 9.1.0
       nofilter: 1.0.4
+    dev: true
+
+  /chai-bn/0.2.2_chai@4.3.6:
+    resolution: {integrity: sha512-MzjelH0p8vWn65QKmEq/DLBG1Hle4WeyqT79ANhXZhn/UxRWO0OogkAxi5oGGtfzwU9bZR8mvbvYdoqNVWQwFg==}
+    peerDependencies:
+      bn.js: ^4.11.0
+      chai: ^4.0.0
+    dependencies:
+      chai: 4.3.6
     dev: true
 
   /chai/4.3.6:
@@ -4566,6 +4633,15 @@ packages:
       - bufferutil
       - utf-8-validate
 
+  /ethjs-abi/0.2.1:
+    resolution: {integrity: sha512-g2AULSDYI6nEJyJaEVEXtTimRY2aPC2fi7ddSy0W+LXvEVL8Fe1y76o43ecbgdUKwZD+xsmEgX1yJr1Ia3r1IA==}
+    engines: {node: '>=6.5.0', npm: '>=3'}
+    dependencies:
+      bn.js: 4.11.6
+      js-sha3: 0.5.5
+      number-to-bn: 1.7.0
+    dev: true
+
   /ethjs-unit/0.1.6:
     resolution: {integrity: sha512-/Sn9Y0oKl0uqQuvgFk/zQgR7aw1g36qX/jzSQ5lSwlO0GigPymk4eGQfeNTD03w1dPOqfz8V77Cy43jH56pagw==}
     engines: {node: '>=6.5.0', npm: '>=3'}
@@ -4685,10 +4761,6 @@ packages:
   /extsprintf/1.3.0:
     resolution: {integrity: sha512-11Ndz7Nv+mvAC1j0ktTa7fAb0vLyGGX+rMHNBYQviQDGU0Hw7lhctJANqbPhu9nV9/izT/IntTgZ7Im/9LJs9g==}
     engines: {'0': node >=0.6.0}
-    dev: true
-
-  /faker/5.5.3:
-    resolution: {integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==}
     dev: true
 
   /fast-check/3.1.1:
@@ -4939,6 +5011,15 @@ packages:
 
   /fs-extra/7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
+    engines: {node: '>=6 <7 || >=8'}
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 4.0.0
+      universalify: 0.1.2
+    dev: true
+
+  /fs-extra/8.1.0:
+    resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
     engines: {node: '>=6 <7 || >=8'}
     dependencies:
       graceful-fs: 4.2.10
@@ -5247,8 +5328,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql-request/5.0.0_graphql@16.6.0:
-    resolution: {integrity: sha512-SpVEnIo2J5k2+Zf76cUkdvIRaq5FMZvGQYnA4lUWYbc99m+fHh4CZYRRO/Ff4tCLQ613fzCm3SiDT64ubW5Gyw==}
+  /graphql-request/5.0.1-next.1_graphql@16.6.0:
+    resolution: {integrity: sha512-yo7HvMp12X9UX88PdtNGD2b6hZH553uLNb6mUByxt+QTC5HagG24qndfvpFy9+aVeKTQ6RtNHYhjw1lLDmqBQg==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
@@ -6442,6 +6523,10 @@ packages:
     resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}
     dev: false
 
+  /js-sha3/0.5.5:
+    resolution: {integrity: sha512-yLLwn44IVeunwjpDVTDZmQeVbB0h+dZpY2eO68B/Zik8hu6dH+rKeLxwua79GGIvW6xr8NBAcrtiUbYrTjEFTA==}
+    dev: true
+
   /js-sha3/0.5.7:
     resolution: {integrity: sha512-GII20kjaPX0zJ8wzkTbNDYMY7msuZcTWk8S5UOh6806Jq/wz1J8/bnr8uGU0DAUmYDjj2Mr4X1cW8v/GLYnR+g==}
     dev: true
@@ -6795,6 +6880,10 @@ packages:
 
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
+    dev: true
+
+  /lodash.flatten/4.4.0:
+    resolution: {integrity: sha512-C5N2Z3DgnnKr0LOpv/hKCgKdb7ZZwafIrsesve6lmzvZIRZRGaZ/l6Q8+2W7NaT+ZwO3fFlSCzCzrDCFdJfZ4g==}
     dev: true
 
   /lodash.memoize/4.1.2:

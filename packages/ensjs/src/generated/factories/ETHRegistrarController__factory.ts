@@ -47,6 +47,92 @@ const _abi = [
     type: "constructor",
   },
   {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "commitment",
+        type: "bytes32",
+      },
+    ],
+    name: "CommitmentTooNew",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "commitment",
+        type: "bytes32",
+      },
+    ],
+    name: "CommitmentTooOld",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "duration",
+        type: "uint256",
+      },
+    ],
+    name: "DurationTooShort",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InsufficientValue",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "MaxCommitmentAgeTooHigh",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "MaxCommitmentAgeTooLow",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+    ],
+    name: "NameNotAvailable",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ResolverRequiredWhenDataSupplied",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "node",
+        type: "bytes32",
+      },
+    ],
+    name: "Unauthorised",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "commitment",
+        type: "bytes32",
+      },
+    ],
+    name: "UnexpiredCommitmentExists",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -330,6 +416,29 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "_token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "recoverFunds",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "string",
         name: "name",
         type: "string",
@@ -394,6 +503,34 @@ const _abi = [
       },
     ],
     name: "renew",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "duration",
+        type: "uint256",
+      },
+      {
+        internalType: "uint32",
+        name: "fuses",
+        type: "uint32",
+      },
+      {
+        internalType: "uint64",
+        name: "wrapperExpiry",
+        type: "uint64",
+      },
+    ],
+    name: "renewWithFuses",
     outputs: [],
     stateMutability: "payable",
     type: "function",
