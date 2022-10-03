@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers'
-import { ENSArgs } from '..'
+import { toUtf8Bytes } from 'ethers/lib/utils'
+import { ENSArgs } from '../index'
 
 export type Expiry = string | number | Date | BigNumber
 
@@ -26,4 +27,10 @@ export const makeExpiry = async (
     return BigNumber.from(expResponse.expiry.getTime() / 1000)
   }
   return MAX_EXPIRY
+}
+
+export const wrappedLabelLengthCheck = (label: string) => {
+  const bytes = toUtf8Bytes(label)
+  if (bytes.byteLength > 255)
+    throw new Error("Label can't be longer than 255 bytes")
 }

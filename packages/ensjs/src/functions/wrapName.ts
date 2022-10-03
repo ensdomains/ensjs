@@ -3,7 +3,7 @@ import { ENSArgs } from '..'
 import type { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
 import { hexEncodeName } from '../utils/hexEncodedName'
-import { Expiry, makeExpiry } from '../utils/wrapperExpiry'
+import { Expiry, makeExpiry, wrappedLabelLengthCheck } from '../utils/wrapper'
 
 async function wrapETH(
   { contracts }: ENSArgs<'contracts'>,
@@ -86,6 +86,8 @@ export default async function (
   if (!resolverAddress) resolverAddress = publicResolver.address
 
   const labels = name.split('.')
+  wrappedLabelLengthCheck(labels[0])
+
   if (labels.length === 2 && labels[1] === 'eth') {
     switch (typeof fuseOptions) {
       case 'object': {

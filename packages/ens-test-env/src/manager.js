@@ -155,17 +155,23 @@ export const main = async (_config, _options, justKill) => {
   opts.env = {
     ...process.env,
     DATA_FOLDER: config.paths.data,
+    GRAPH_LOG_LEVEL: 'info',
+    ANVIL_EXTRA_ARGS: '',
   }
 
   if (justKill) {
     return cleanup(undefined, 'SIGINT')
   }
 
+  if (options.verbose) {
+    outputsToIgnore = []
+    opts.env.GRAPH_LOG_LEVEL = 'trace'
+    opts.env.ANVIL_EXTRA_ARGS = '--tracing'
+  }
+
   try {
     await compose.upOne('anvil', opts)
   } catch {}
-
-  if (options.verbose) outputsToIgnore = []
 
   compose
     .logs(['anvil', 'graph-node', 'postgres', 'ipfs', 'metadata'], {

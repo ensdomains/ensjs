@@ -35,7 +35,7 @@ describe('burnFuses', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
+      const [, fuses] = await nameWrapper.getData(namehash('wrapped.eth'))
       expect(fuses).toBe(113)
     })
     it('should return a burnFuses transaction from an unnamed fuse array and succeed', async () => {
@@ -54,7 +54,7 @@ describe('burnFuses', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
+      const [, fuses] = await nameWrapper.getData(namehash('wrapped.eth'))
       expect(fuses).toBe(961)
     })
     it('should return a burnFuses transaction from both an unnamed and named fuse array and succeed', async () => {
@@ -71,7 +71,7 @@ describe('burnFuses', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
+      const [, fuses] = await nameWrapper.getData(namehash('wrapped.eth'))
       expect(fuses).toBe(1009)
     })
     it('should throw an error when trying to burn a named fuse in an unnamed fuse array', async () => {
@@ -107,7 +107,7 @@ describe('burnFuses', () => {
       await tx.wait()
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const [fuses] = await nameWrapper.getFuses(namehash('wrapped.eth'))
+      const [, fuses] = await nameWrapper.getData(namehash('wrapped.eth'))
       expect(fuses).toBe(113)
     })
     it('should throw an error if the number is too high', async () => {

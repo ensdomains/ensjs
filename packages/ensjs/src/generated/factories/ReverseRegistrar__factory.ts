@@ -45,6 +45,19 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: "contract NameResolver",
+        name: "resolver",
+        type: "address",
+      },
+    ],
+    name: "DefaultResolverChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: "address",
         name: "previousOwner",
         type: "address",

@@ -8,6 +8,7 @@ type RecordItem = {
 }
 
 export type RecordOptions = {
+  clearRecords?: boolean
   contentHash?: string
   texts?: RecordItem[]
   coinTypes?: RecordItem[]
@@ -78,6 +79,12 @@ export const generateRecordCallArray = (
   resolver: PublicResolver,
 ) => {
   const calls: string[] = []
+
+  if (records.clearRecords) {
+    calls.push(
+      resolver.interface.encodeFunctionData('clearRecords', [namehash]),
+    )
+  }
 
   if (records.contentHash) {
     const data = generateSingleRecordCall(

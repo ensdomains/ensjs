@@ -87,11 +87,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "NameNotFound",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "bytes32",
@@ -482,7 +477,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "tokenId",
+        name: "id",
         type: "uint256",
       },
     ],
@@ -490,41 +485,17 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
-        name: "owner",
+        name: "",
         type: "address",
       },
       {
         internalType: "uint32",
-        name: "fuses",
+        name: "",
         type: "uint32",
       },
       {
         internalType: "uint64",
-        name: "expiry",
-        type: "uint64",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "node",
-        type: "bytes32",
-      },
-    ],
-    name: "getFuses",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "fuses",
-        type: "uint32",
-      },
-      {
-        internalType: "uint64",
-        name: "expiry",
+        name: "",
         type: "uint64",
       },
     ],
@@ -569,6 +540,25 @@ const _abi = [
       },
     ],
     name: "isTokenOwnerOrApproved",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "node",
+        type: "bytes32",
+      },
+    ],
+    name: "isWrapped",
     outputs: [
       {
         internalType: "bool",
@@ -680,6 +670,29 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "_token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+    ],
+    name: "recoverFunds",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "string",
         name: "label",
         type: "string",
@@ -745,6 +758,11 @@ const _abi = [
         internalType: "uint256",
         name: "duration",
         type: "uint256",
+      },
+      {
+        internalType: "uint32",
+        name: "fuses",
+        type: "uint32",
       },
       {
         internalType: "uint64",
@@ -928,7 +946,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IMetadataService",
-        name: "_newMetadataService",
+        name: "_metadataService",
         type: "address",
       },
     ],
@@ -997,7 +1015,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "newOwner",
+        name: "owner",
         type: "address",
       },
       {
@@ -1036,7 +1054,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "newOwner",
+        name: "owner",
         type: "address",
       },
       {
@@ -1061,7 +1079,13 @@ const _abi = [
       },
     ],
     name: "setSubnodeRecord",
-    outputs: [],
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "node",
+        type: "bytes32",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -1142,7 +1166,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "newController",
+        name: "controller",
         type: "address",
       },
     ],
@@ -1160,12 +1184,12 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "newRegistrant",
+        name: "registrant",
         type: "address",
       },
       {
         internalType: "address",
-        name: "newController",
+        name: "controller",
         type: "address",
       },
     ],

@@ -76,7 +76,7 @@ const getNames = async (
     page,
     pageSize = 10,
     orderDirection,
-    orderBy,
+    orderBy = 'labelName',
   }: Params,
 ) => {
   const address = _address.toLowerCase()

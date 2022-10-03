@@ -166,11 +166,13 @@ export interface ReverseRegistrarInterface extends utils.Interface {
 
   events: {
     "ControllerChanged(address,bool)": EventFragment;
+    "DefaultResolverChanged(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "ReverseClaimed(address,bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ControllerChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DefaultResolverChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ReverseClaimed"): EventFragment;
 }
@@ -186,6 +188,17 @@ export type ControllerChangedEvent = TypedEvent<
 
 export type ControllerChangedEventFilter =
   TypedEventFilter<ControllerChangedEvent>;
+
+export interface DefaultResolverChangedEventObject {
+  resolver: string;
+}
+export type DefaultResolverChangedEvent = TypedEvent<
+  [string],
+  DefaultResolverChangedEventObject
+>;
+
+export type DefaultResolverChangedEventFilter =
+  TypedEventFilter<DefaultResolverChangedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -448,6 +461,13 @@ export interface ReverseRegistrar extends BaseContract {
       controller?: PromiseOrValue<string> | null,
       enabled?: null
     ): ControllerChangedEventFilter;
+
+    "DefaultResolverChanged(address)"(
+      resolver?: PromiseOrValue<string> | null
+    ): DefaultResolverChangedEventFilter;
+    DefaultResolverChanged(
+      resolver?: PromiseOrValue<string> | null
+    ): DefaultResolverChangedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,

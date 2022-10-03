@@ -10,9 +10,12 @@ config({
   override: true,
 })
 
-const deploymentAddresses = JSON.parse(
+export const deploymentAddresses = JSON.parse(
   process.env.DEPLOYMENT_ADDRESSES!,
-) as Record<ContractName | 'ENSRegistry', string>
+) as Record<
+  ContractName | 'ENSRegistry' | 'LegacyPublicResolver' | 'NoMulticallResolver',
+  string
+>
 
 const createENS = (graphURI: string) =>
   new ENS({
