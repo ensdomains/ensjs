@@ -40,6 +40,7 @@ import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
 import type setResolver from './functions/setResolver'
 import type transferName from './functions/transferName'
+import type transferController from './functions/transferController'
 import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
@@ -566,6 +567,10 @@ export class ENS {
     'transferName',
     ['contracts'],
   )
+
+  public transferController = this.generateWriteFunction<
+    typeof transferController
+  >('transferController', ['contracts'])
 
   public wrapName = this.generateWriteFunction<typeof wrapName>('wrapName', [
     'contracts',
