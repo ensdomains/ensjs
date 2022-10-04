@@ -216,7 +216,7 @@ export const main = async (_config, _options, justKill) => {
   if (!options.save) {
     if (!options.extraTime) {
       // set next block timestamp to ensure consistent hashes
-      await rpcFetch('anvil_setNextBlockTimestamp', [1659500635])
+      await rpcFetch('anvil_setNextBlockTimestamp', [1640995200])
     } else {
       const timestamp =
         Math.floor(Date.now() / 1000) - parseInt(options.extraTime)
@@ -236,12 +236,16 @@ export const main = async (_config, _options, justKill) => {
     await rpcFetch('anvil_removeBlockTimestampInterval', [])
 
     if (options.extraTime) {
+      // snapshot before setting current time
+      await rpcFetch('evm_snapshot', [])
       // set to current time
       await rpcFetch('anvil_setNextBlockTimestamp', [
         Math.floor(Date.now() / 1000),
       ])
       // mine block for graph node to update
       await rpcFetch('evm_mine', [])
+      // snapshot after setting current time
+      await rpcFetch('evm_snapshot', [])
     }
 
     if (config.buildCommand && options.build) {
