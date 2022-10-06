@@ -1,6 +1,6 @@
 import { Oracle as NewOracle } from '@ensdomains/dnssecoraclejs'
 import packet from 'dns-packet'
-import { ENSArgs } from '..'
+import type { ENSArgs } from '..'
 import { EMPTY_ADDRESS } from '../utils/consts'
 
 export const DNS_OVER_HTTP_ENDPOINT = 'https://1.1.1.1/dns-query'

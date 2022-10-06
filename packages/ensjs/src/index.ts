@@ -51,7 +51,6 @@ import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
-import fuseEnum from './utils/fuses'
 import importDNSSECName from './functions/importDNSSECName'
 
 export type {

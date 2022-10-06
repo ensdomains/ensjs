@@ -63,10 +63,12 @@ export default class ContractManager {
     'NameWrapper',
     getNameWrapper,
   )
+
   public getDNSRegistrar = this.generateContractGetter(
     'DNSRegistrar',
     getDNSRegistrar,
   )
+
   public getBaseRegistrar = this.generateContractGetter(
     'BaseRegistrarImplementation',
     getBaseRegistrar,

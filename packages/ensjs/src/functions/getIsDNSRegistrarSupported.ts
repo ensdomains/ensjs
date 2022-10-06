@@ -1,10 +1,10 @@
-import { BigNumber } from 'ethers'
+// import { BigNumber } from 'ethers'
 import { ENSArgs } from '..'
-import { namehash } from '../utils/normalise'
+// import { namehash } from '../utils/normalise'
 import {
-  MAINNET_DNSREGISTRAR_ADDRESS,
-  ROPSTEN_DNSREGISTRAR_ADDRESS,
-  EMPTY_ADDRESS,
+  // MAINNET_DNSREGISTRAR_ADDRESS,
+  // ROPSTEN_DNSREGISTRAR_ADDRESS,
+  // EMPTY_ADDRESS,
   interfaces,
 } from '../utils/consts'
 import { labelhash } from '../utils/labels'
@@ -82,9 +82,8 @@ const raw = async (
 const decode = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
   data: string,
-  name: string,
 ) => {
-  //Find out if DNS registrar is supported
+  // Find out if DNS registrar is supported
   const result = await multicallWrapper.decode(data)
   const baseRegistrar = await contracts?.getBaseRegistrar()!
 
