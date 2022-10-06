@@ -24,7 +24,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   console.log(registry.address)
 
   await deployments.deploy('NoMulticallResolver', {
-    from: allNamedAccts['deployer'],
+    from: allNamedAccts.deployer,
     contract: JSON.parse(
       await fs.readFile(resolve(__dirname, '../contracts/OldResolver.json'), {
         encoding: 'utf8',

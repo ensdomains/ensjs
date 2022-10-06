@@ -10,9 +10,11 @@ import getRegistry from './registry'
 import getReverseRegistrar from './reverseRegistrar'
 import { ContractName } from './types'
 import getUniversalResolver from './universalResolver'
+import getBulkRenewal from './bulkRenewal'
 
 export default class ContractManager {
   private provider: ethers.providers.Provider
+
   private fetchAddress: ContractAddressFetch
 
   constructor(
@@ -41,18 +43,22 @@ export default class ContractManager {
     'PublicResolver',
     getPublicResolver,
   )
+
   public getUniversalResolver = this.generateContractGetter(
     'UniversalResolver',
     getUniversalResolver,
   )
+
   public getRegistry = this.generateContractGetter(
     'ENSRegistryWithFallback',
     getRegistry,
   )
+
   public getReverseRegistrar = this.generateContractGetter(
     'ReverseRegistrar',
     getReverseRegistrar,
   )
+
   public getNameWrapper = this.generateContractGetter(
     'NameWrapper',
     getNameWrapper,
@@ -65,9 +71,16 @@ export default class ContractManager {
     'BaseRegistrarImplementation',
     getBaseRegistrar,
   )
+
   public getEthRegistrarController = this.generateContractGetter(
     'ETHRegistrarController',
     getEthRegistrarController,
   )
+
   public getMulticall = this.generateContractGetter('Multicall', getMulticall)
+
+  public getBulkRenewal = this.generateContractGetter(
+    'BulkRenewal',
+    getBulkRenewal,
+  )
 }

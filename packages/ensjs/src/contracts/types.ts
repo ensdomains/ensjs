@@ -10,3 +10,4 @@ export type ContractName =
   | 'ENSRegistryWithFallback'
   | 'ReverseRegistrar'
   | 'UniversalResolver'
+  | 'BulkRenewal'

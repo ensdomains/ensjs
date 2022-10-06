@@ -3,7 +3,7 @@ import { ENSArgs } from '..'
 import { FuseOptions } from '../@types/FuseOptions'
 import generateFuseInput from '../utils/generateFuseInput'
 import { namehash } from '../utils/normalise'
-import { Expiry, makeExpiry } from '../utils/wrapperExpiry'
+import { Expiry, makeExpiry, wrappedLabelLengthCheck } from '../utils/wrapper'
 
 type BaseArgs = {
   owner: string
@@ -48,7 +48,7 @@ export default async function (
 
   switch (contract) {
     case 'registry': {
-      const registry = (await contracts?.getRegistry()!).connect(signer)
+      const registry = (await contracts!.getRegistry()!).connect(signer)
 
       return registry.populateTransaction.setSubnodeRecord(
         parentNodehash,
@@ -59,7 +59,8 @@ export default async function (
       )
     }
     case 'nameWrapper': {
-      const nameWrapper = (await contracts?.getNameWrapper()!).connect(signer)
+      wrappedLabelLengthCheck(label)
+      const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
       const expiry: BigNumber = await makeExpiry(
         { getExpiry },
         name,

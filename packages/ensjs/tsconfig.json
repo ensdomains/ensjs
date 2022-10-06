@@ -13,7 +13,9 @@
     "outDir": "./dist",
     "declaration": true,
     "importsNotUsedAsValues": "remove",
-    "lib": ["ES2021", "DOM"]
+    "lib": ["ES2021", "DOM"],
+    "module": "Node16",
+    "moduleResolution": "Node16"
   },
   "include": ["src/**/*.ts", "./hardhat.config.ts", "./deploy"]
 }

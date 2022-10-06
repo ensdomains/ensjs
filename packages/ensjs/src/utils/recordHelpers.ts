@@ -8,6 +8,7 @@ type RecordItem = {
 }
 
 export type RecordOptions = {
+  clearRecords?: boolean
   contentHash?: string
   texts?: RecordItem[]
   coinTypes?: RecordItem[]
@@ -20,7 +21,7 @@ export const generateSetAddr = (
   resolver: PublicResolver,
 ) => {
   let coinTypeInstance
-  if (!isNaN(parseInt(coinType))) {
+  if (!Number.isNaN(parseInt(coinType))) {
     coinTypeInstance = formatsByCoinType[parseInt(coinType)]
   } else {
     coinTypeInstance = formatsByName[coinType.toUpperCase()]
@@ -58,19 +59,17 @@ export function generateSingleRecordCall<T extends RecordTypes>(
         _contentHash,
       ])
     }
-  } else {
-    return (_r: RecordInput<T>) => {
-      const record = _r as RecordItem
-      if (type === 'text') {
-        return resolver.interface.encodeFunctionData('setText', [
-          namehash,
-          record.key,
-          record.value,
-        ])
-      } else {
-        return generateSetAddr(namehash, record.key, record.value, resolver)
-      }
+  }
+  return (_r: RecordInput<T>) => {
+    const record = _r as RecordItem
+    if (type === 'text') {
+      return resolver.interface.encodeFunctionData('setText', [
+        namehash,
+        record.key,
+        record.value,
+      ])
     }
+    return generateSetAddr(namehash, record.key, record.value, resolver)
   }
 }
 
@@ -81,13 +80,19 @@ export const generateRecordCallArray = (
 ) => {
   const calls: string[] = []
 
+  if (records.clearRecords) {
+    calls.push(
+      resolver.interface.encodeFunctionData('clearRecords', [namehash]),
+    )
+  }
+
   if (records.contentHash) {
     const data = generateSingleRecordCall(
       namehash,
       resolver,
       'contentHash',
     )(records.contentHash)
-    data && calls.push(data)
+    if (data) calls.push(data)
   }
 
   if (records.texts && records.texts.length > 0) {

@@ -1,7 +1,7 @@
-import { JsonRpcSigner } from '@ethersproject/providers'
+import type { JsonRpcSigner } from '@ethersproject/providers'
 import { ContractTransaction, ethers, PopulatedTransaction } from 'ethers'
-import ContractManager from './contracts'
 import { getContractAddress as _getContractAddress } from './contracts/getContractAddress'
+import ContractManager from './contracts/index'
 import { SupportedNetworkId } from './contracts/types'
 import type batch from './functions/batch'
 import type {
@@ -15,8 +15,6 @@ import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
 import type getDNSOwner from './functions/getDNSOwner'
 import type getExpiry from './functions/getExpiry'
-// import type getDNSEntryDetails from './functions/getDNSEntryDetails'
-import type getFuses from './functions/getFuses'
 import type { getHistory } from './functions/getHistory'
 import type getName from './functions/getName'
 import type getNames from './functions/getNames'
@@ -34,13 +32,19 @@ import type {
   _getText,
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
-import registerName from './functions/registerName'
-import renewName from './functions/renewName'
+import type getWrapperData from './functions/getWrapperData'
+import type registerName from './functions/registerName'
+import type {
+  // eslint-disable-next-line import/no-named-default
+  default as renewNames,
+  renewNameWithData,
+} from './functions/renewNames'
 import type setName from './functions/setName'
 import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
 import type setResolver from './functions/setResolver'
 import type transferName from './functions/transferName'
+import type transferController from './functions/transferController'
 import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
@@ -51,13 +55,13 @@ import fuseEnum from './utils/fuses'
 import importDNSSECName from './functions/importDNSSECName'
 
 export type {
-  FusePropsNamedArray,
-  FusePropsUnnamedArray,
-  FusePropsNumber,
-  FuseProps,
+  Fuse,
+  FuseArrayPossibilities,
+  FuseObj,
   NamedFusesToBurn,
-} from './functions/burnFuses'
-export type FuseEnum = typeof fuseEnum
+  UnnamedFuseType,
+  UnnamedFuseValues,
+} from './utils/fuses'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -117,12 +121,14 @@ interface WriteFunction<F extends (...args: any) => any> extends Function {
   ) => Promise<PopulatedTransaction>
 }
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
   3: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten',
   4: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
   5: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type RawFunction = {
   raw: (...args: any[]) => Promise<{ to: string; data: string }>
@@ -162,14 +168,20 @@ export interface GenericGeneratedRawFunction
 
 export class ENS {
   [x: string]: any
+
   protected options?: ENSOptions
+
   protected provider?: ethers.providers.JsonRpcProvider
+
   protected graphURI?: string | null
+
   protected initialProvider?: ethers.providers.JsonRpcProvider
+
   contracts?: ContractManager
+
   getContractAddress = _getContractAddress
+
   gqlInstance = new GqlManager()
-  fuses = fuseEnum
 
   constructor(options?: ENSOptions) {
     this.options = options
@@ -185,7 +197,6 @@ export class ENS {
       return
     }
     await this.setProvider(this.initialProvider)
-    return
   }
 
   /**
@@ -270,20 +281,19 @@ export class ENS {
 
         // return the function with the dependencies forwarded
         return func(dependenciesToForward, ...args)
-      } else {
-        // get the dependencies to forward from raw and decode functions
-        const dependenciesToForward = thisRef.forwardDependenciesFromArray<
-          CombineFunctionDeps<F>
-        >(dependencies as any)
-
-        // return singleCall function with dependencies forwarded
-        return singleCall(
-          thisRef.provider!,
-          dependenciesToForward,
-          mod[exportName],
-          ...args,
-        )
       }
+      // get the dependencies to forward from raw and decode functions
+      const dependenciesToForward = thisRef.forwardDependenciesFromArray<
+        CombineFunctionDeps<F>
+      >(dependencies as any)
+
+      // return singleCall function with dependencies forwarded
+      return singleCall(
+        thisRef.provider!,
+        dependenciesToForward,
+        mod[exportName],
+        ...args,
+      )
     }
 
     // if subfunc is combine, add raw and decode property methods to the function
@@ -391,7 +401,6 @@ export class ENS {
       this.provider,
       this.getContractAddress(String(network) as SupportedNetworkId),
     )
-    return
   }
 
   /**
@@ -443,13 +452,10 @@ export class ENS {
     ['contracts'],
   )
 
-  // public getDNSEntryDetails = this.generateRawFunction<
-  //   typeof getDNSEntryDetails
-  // >('getDNSEntryDetails', ['contracts', 'multicallWrapper'])
-
-  public getFuses = this.generateRawFunction<typeof getFuses>('getFuses', [
-    'contracts',
-  ])
+  public getWrapperData = this.generateRawFunction<typeof getWrapperData>(
+    'getWrapperData',
+    ['contracts'],
+  )
 
   public getHistory = this.generateFunction<typeof getHistory>(
     'getHistory',
@@ -569,6 +575,10 @@ export class ENS {
     ['contracts'],
   )
 
+  public transferController = this.generateWriteFunction<
+    typeof transferController
+  >('transferController', ['contracts'])
+
   public wrapName = this.generateWriteFunction<typeof wrapName>('wrapName', [
     'contracts',
     'getExpiry',
@@ -595,7 +605,7 @@ export class ENS {
 
   public deleteSubname = this.generateWriteFunction<typeof deleteSubname>(
     'deleteSubname',
-    ['transferSubname'],
+    ['contracts'],
   )
 
   public transferSubname = this.generateWriteFunction<typeof transferSubname>(
@@ -613,7 +623,12 @@ export class ENS {
     ['contracts'],
   )
 
-  public renewName = this.generateWriteFunction<typeof renewName>('renewName', [
-    'contracts',
-  ])
+  public renewNames = this.generateWriteFunction<typeof renewNames>(
+    'renewNames',
+    ['contracts'],
+  )
+
+  public renewNameWithData = this.generateWriteFunction<
+    typeof renewNameWithData
+  >('renewNames', ['contracts'], 'renewNameWithData')
 }

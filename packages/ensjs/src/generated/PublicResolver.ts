@@ -32,15 +32,17 @@ export interface PublicResolverInterface extends utils.Interface {
     "ABI(bytes32,uint256)": FunctionFragment;
     "addr(bytes32)": FunctionFragment;
     "addr(bytes32,uint256)": FunctionFragment;
-    "clearDNSZone(bytes32)": FunctionFragment;
+    "clearRecords(bytes32)": FunctionFragment;
     "contenthash(bytes32)": FunctionFragment;
     "dnsRecord(bytes32,bytes32,uint16)": FunctionFragment;
     "hasDNSRecords(bytes32,bytes32)": FunctionFragment;
     "interfaceImplementer(bytes32,bytes4)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
+    "multicallWithNodeCheck(bytes32,bytes[])": FunctionFragment;
     "name(bytes32)": FunctionFragment;
     "pubkey(bytes32)": FunctionFragment;
+    "recordVersions(bytes32)": FunctionFragment;
     "setABI(bytes32,uint256,bytes)": FunctionFragment;
     "setAddr(bytes32,uint256,bytes)": FunctionFragment;
     "setAddr(bytes32,address)": FunctionFragment;
@@ -62,15 +64,17 @@ export interface PublicResolverInterface extends utils.Interface {
       | "ABI"
       | "addr(bytes32)"
       | "addr(bytes32,uint256)"
-      | "clearDNSZone"
+      | "clearRecords"
       | "contenthash"
       | "dnsRecord"
       | "hasDNSRecords"
       | "interfaceImplementer"
       | "isApprovedForAll"
       | "multicall"
+      | "multicallWithNodeCheck"
       | "name"
       | "pubkey"
+      | "recordVersions"
       | "setABI"
       | "setAddr(bytes32,uint256,bytes)"
       | "setAddr(bytes32,address)"
@@ -100,7 +104,7 @@ export interface PublicResolverInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "clearDNSZone",
+    functionFragment: "clearRecords",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
@@ -132,11 +136,19 @@ export interface PublicResolverInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>[]]
   ): string;
   encodeFunctionData(
+    functionFragment: "multicallWithNodeCheck",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "name",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "pubkey",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "recordVersions",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
@@ -226,7 +238,7 @@ export interface PublicResolverInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "clearDNSZone",
+    functionFragment: "clearRecords",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -247,8 +259,16 @@ export interface PublicResolverInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "multicallWithNodeCheck",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pubkey", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "recordVersions",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setABI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setAddr(bytes32,uint256,bytes)",
@@ -296,12 +316,12 @@ export interface PublicResolverInterface extends utils.Interface {
     "ContenthashChanged(bytes32,bytes)": EventFragment;
     "DNSRecordChanged(bytes32,bytes,uint16,bytes)": EventFragment;
     "DNSRecordDeleted(bytes32,bytes,uint16)": EventFragment;
-    "DNSZoneCleared(bytes32)": EventFragment;
     "DNSZonehashChanged(bytes32,bytes,bytes)": EventFragment;
     "InterfaceChanged(bytes32,bytes4,address)": EventFragment;
     "NameChanged(bytes32,string)": EventFragment;
     "PubkeyChanged(bytes32,bytes32,bytes32)": EventFragment;
-    "TextChanged(bytes32,string,string)": EventFragment;
+    "TextChanged(bytes32,string,string,string)": EventFragment;
+    "VersionChanged(bytes32,uint64)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ABIChanged"): EventFragment;
@@ -311,12 +331,12 @@ export interface PublicResolverInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ContenthashChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DNSRecordChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DNSRecordDeleted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DNSZoneCleared"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DNSZonehashChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InterfaceChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NameChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PubkeyChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TextChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "VersionChanged"): EventFragment;
 }
 
 export interface ABIChangedEventObject {
@@ -404,16 +424,6 @@ export type DNSRecordDeletedEvent = TypedEvent<
 export type DNSRecordDeletedEventFilter =
   TypedEventFilter<DNSRecordDeletedEvent>;
 
-export interface DNSZoneClearedEventObject {
-  node: string;
-}
-export type DNSZoneClearedEvent = TypedEvent<
-  [string],
-  DNSZoneClearedEventObject
->;
-
-export type DNSZoneClearedEventFilter = TypedEventFilter<DNSZoneClearedEvent>;
-
 export interface DNSZonehashChangedEventObject {
   node: string;
   lastzonehash: string;
@@ -467,13 +477,25 @@ export interface TextChangedEventObject {
   node: string;
   indexedKey: string;
   key: string;
+  value: string;
 }
 export type TextChangedEvent = TypedEvent<
-  [string, string, string],
+  [string, string, string, string],
   TextChangedEventObject
 >;
 
 export type TextChangedEventFilter = TypedEventFilter<TextChangedEvent>;
+
+export interface VersionChangedEventObject {
+  node: string;
+  newVersion: BigNumber;
+}
+export type VersionChangedEvent = TypedEvent<
+  [string, BigNumber],
+  VersionChangedEventObject
+>;
+
+export type VersionChangedEventFilter = TypedEventFilter<VersionChangedEvent>;
 
 export interface PublicResolver extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -519,7 +541,7 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    clearDNSZone(
+    clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -559,6 +581,12 @@ export interface PublicResolver extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    multicallWithNodeCheck(
+      nodehash: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     name(
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -568,6 +596,11 @@ export interface PublicResolver extends BaseContract {
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string] & { x: string; y: string }>;
+
+    recordVersions(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     setABI(
       node: PromiseOrValue<BytesLike>,
@@ -674,7 +707,7 @@ export interface PublicResolver extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  clearDNSZone(
+  clearRecords(
     node: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -714,6 +747,12 @@ export interface PublicResolver extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  multicallWithNodeCheck(
+    nodehash: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   name(
     node: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -723,6 +762,11 @@ export interface PublicResolver extends BaseContract {
     node: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<[string, string] & { x: string; y: string }>;
+
+  recordVersions(
+    arg0: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   setABI(
     node: PromiseOrValue<BytesLike>,
@@ -829,7 +873,7 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    clearDNSZone(
+    clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -869,6 +913,12 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    multicallWithNodeCheck(
+      nodehash: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     name(
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -878,6 +928,11 @@ export interface PublicResolver extends BaseContract {
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string, string] & { x: string; y: string }>;
+
+    recordVersions(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setABI(
       node: PromiseOrValue<BytesLike>,
@@ -1041,13 +1096,6 @@ export interface PublicResolver extends BaseContract {
       resource?: null
     ): DNSRecordDeletedEventFilter;
 
-    "DNSZoneCleared(bytes32)"(
-      node?: PromiseOrValue<BytesLike> | null
-    ): DNSZoneClearedEventFilter;
-    DNSZoneCleared(
-      node?: PromiseOrValue<BytesLike> | null
-    ): DNSZoneClearedEventFilter;
-
     "DNSZonehashChanged(bytes32,bytes,bytes)"(
       node?: PromiseOrValue<BytesLike> | null,
       lastzonehash?: null,
@@ -1090,16 +1138,27 @@ export interface PublicResolver extends BaseContract {
       y?: null
     ): PubkeyChangedEventFilter;
 
-    "TextChanged(bytes32,string,string)"(
+    "TextChanged(bytes32,string,string,string)"(
       node?: PromiseOrValue<BytesLike> | null,
       indexedKey?: PromiseOrValue<string> | null,
-      key?: null
+      key?: null,
+      value?: null
     ): TextChangedEventFilter;
     TextChanged(
       node?: PromiseOrValue<BytesLike> | null,
       indexedKey?: PromiseOrValue<string> | null,
-      key?: null
+      key?: null,
+      value?: null
     ): TextChangedEventFilter;
+
+    "VersionChanged(bytes32,uint64)"(
+      node?: PromiseOrValue<BytesLike> | null,
+      newVersion?: null
+    ): VersionChangedEventFilter;
+    VersionChanged(
+      node?: PromiseOrValue<BytesLike> | null,
+      newVersion?: null
+    ): VersionChangedEventFilter;
   };
 
   estimateGas: {
@@ -1120,7 +1179,7 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    clearDNSZone(
+    clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1160,6 +1219,12 @@ export interface PublicResolver extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    multicallWithNodeCheck(
+      nodehash: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     name(
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1167,6 +1232,11 @@ export interface PublicResolver extends BaseContract {
 
     pubkey(
       node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    recordVersions(
+      arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1276,7 +1346,7 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    clearDNSZone(
+    clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -1316,6 +1386,12 @@ export interface PublicResolver extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    multicallWithNodeCheck(
+      nodehash: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     name(
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1323,6 +1399,11 @@ export interface PublicResolver extends BaseContract {
 
     pubkey(
       node: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    recordVersions(
+      arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

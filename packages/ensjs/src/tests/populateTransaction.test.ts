@@ -1,15 +1,11 @@
-import { ethers } from 'ethers'
 import { ENS } from '..'
-import setup from '../tests/setup'
+import setup from './setup'
 
-let ENSInstance: ENS
+let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
-let provider: ethers.providers.JsonRpcProvider
-let accounts: string[]
 
 beforeAll(async () => {
-  ;({ ENSInstance, revert, provider } = await setup())
-  accounts = await provider.listAccounts()
+  ;({ ensInstance, revert } = await setup())
 })
 
 afterAll(async () => {
@@ -23,7 +19,7 @@ describe('populateTransaction', () => {
     await revert()
   })
   it('should return a transaction successfully', async () => {
-    const tx = await ENSInstance.setName('fleek.eth')
+    const tx = await ensInstance.setName('fleek.eth')
     expect(tx).toBeTruthy()
     if (tx) {
       await tx.wait()
@@ -31,7 +27,7 @@ describe('populateTransaction', () => {
     }
   })
   it('should return a populated transaction successfully', async () => {
-    const tx = await ENSInstance.setName.populateTransaction('fleek.eth')
+    const tx = await ensInstance.setName.populateTransaction('fleek.eth')
     expect(tx).toBeTruthy()
     if (tx) {
       expect(tx).not.toHaveProperty('hash')

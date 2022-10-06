@@ -23,5 +23,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 func.runAtTheEnd = true
+func.dependencies = ['set-legacy-resolver']
 
 export default func

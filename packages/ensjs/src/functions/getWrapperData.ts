@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
-import { ENSArgs } from '..'
-import { fuseEnum } from '../utils/fuses'
+import { ENSArgs } from '../index'
+import { CurrentFuses, fuseEnum } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 
 const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
@@ -11,17 +11,13 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
   }
 }
 
-const decode = async (
-  { contracts }: ENSArgs<'contracts'>,
-  data: string,
-) => {
+const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
-    const {
-      owner,
-      fuses: _fuses,
-      expiry,
-    } = nameWrapper.interface.decodeFunctionResult('getData', data)
+    const [owner, _fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
+      'getData',
+      data,
+    )
 
     const fuses = BigNumber.from(_fuses)
 
@@ -41,13 +37,13 @@ const decode = async (
     const expiryDate = new Date(expiry * 1000)
 
     return {
-      fuseObj,
+      fuseObj: fuseObj as CurrentFuses,
       expiryDate,
       rawFuses: fuses,
       owner,
     }
   } catch (e) {
-    console.error('Error decoding fuses data: ', e)
+    console.error('Error decoding wrapper data: ', e)
     return
   }
 }
