@@ -20,7 +20,7 @@ export default async function (
   const label = labels.shift() as string
   const labelhash = ethers.utils.solidityKeccak256(['string'], [label])
   const parentNodehash = namehash(labels.join('.'))
- 
+
   switch (contract) {
     case 'registry': {
       const registry = (await contracts!.getRegistry()!).connect(signer)
