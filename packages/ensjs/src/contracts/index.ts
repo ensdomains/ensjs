@@ -4,6 +4,7 @@ import getEthRegistrarController from './ethRegistrarController'
 import { ContractAddressFetch } from './getContractAddress'
 import getMulticall from './multicall'
 import getNameWrapper from './nameWrapper'
+import getDNSRegistrar from './dnsRegistrar'
 import getPublicResolver from './publicResolver'
 import getRegistry from './registry'
 import getReverseRegistrar from './reverseRegistrar'
@@ -61,6 +62,11 @@ export default class ContractManager {
   public getNameWrapper = this.generateContractGetter(
     'NameWrapper',
     getNameWrapper,
+  )
+
+  public getDNSRegistrar = this.generateContractGetter(
+    'DNSRegistrar',
+    getDNSRegistrar,
   )
 
   public getBaseRegistrar = this.generateContractGetter(

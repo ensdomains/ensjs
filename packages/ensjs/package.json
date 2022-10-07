@@ -65,12 +65,14 @@
     "build:types": "tsc --emitDeclarationOnly --project tsconfig.build.json",
     "build": "pnpm clean && pnpm lint && pnpm build:types && pnpm node esbuild.js",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
-    "enode": "ganache --wallet.mnemonic=\"test test test test test test test test test test test junk\" --chain.chainId 1337 --chain.networkId 1337 --chain.time 1659500634000",
+    "enode": "ganache --wallet.mnemonic=\"test test test test test test test test test test test junk\" --chain.chainId 1337 --chain.networkId 1337 --chain.time 1663311099000",
     "ver": "pnpm version --no-workspaces-update"
   },
   "dependencies": {
     "@ensdomains/address-encoder": "0.2.16",
     "@ensdomains/content-hash": "^2.5.7",
+    "@ensdomains/dnsprovejs": "^0.4.1",
+    "@ensdomains/dnssecoraclejs": "^0.2.7",
     "dns-packet": "^5.3.1",
     "ethers": "^5.6.1",
     "graphql": "^16.3.0",
