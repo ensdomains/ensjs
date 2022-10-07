@@ -17,6 +17,11 @@ const _abi = [
         name: "_registry",
         type: "address",
       },
+      {
+        internalType: "string[]",
+        name: "_urls",
+        type: "string[]",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -59,6 +64,69 @@ const _abi = [
         name: "name",
         type: "bytes",
       },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+      {
+        internalType: "string[]",
+        name: "gateways",
+        type: "string[]",
+      },
+      {
+        internalType: "bytes4",
+        name: "callbackFunction",
+        type: "bytes4",
+      },
+      {
+        internalType: "bytes",
+        name: "metaData",
+        type: "bytes",
+      },
+    ],
+    name: "_resolveSingle",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "batchGatewayURLs",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "name",
+        type: "bytes",
+      },
     ],
     name: "findResolver",
     outputs: [
@@ -82,6 +150,103 @@ const _abi = [
     outputs: [
       {
         internalType: "contract ENS",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "name",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+      {
+        internalType: "string[]",
+        name: "gateways",
+        type: "string[]",
+      },
+    ],
+    name: "resolve",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "name",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes[]",
+        name: "data",
+        type: "bytes[]",
+      },
+    ],
+    name: "resolve",
+    outputs: [
+      {
+        internalType: "bytes[]",
+        name: "",
+        type: "bytes[]",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "name",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes[]",
+        name: "data",
+        type: "bytes[]",
+      },
+      {
+        internalType: "string[]",
+        name: "gateways",
+        type: "string[]",
+      },
+    ],
+    name: "resolve",
+    outputs: [
+      {
+        internalType: "bytes[]",
+        name: "",
+        type: "bytes[]",
+      },
+      {
+        internalType: "address",
         name: "",
         type: "address",
       },
@@ -134,9 +299,82 @@ const _abi = [
     name: "resolveCallback",
     outputs: [
       {
+        internalType: "bytes[]",
+        name: "",
+        type: "bytes[]",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "response",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "extraData",
+        type: "bytes",
+      },
+    ],
+    name: "resolveSingleCallback",
+    outputs: [
+      {
         internalType: "bytes",
         name: "",
         type: "bytes",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "reverseName",
+        type: "bytes",
+      },
+      {
+        internalType: "string[]",
+        name: "gateways",
+        type: "string[]",
+      },
+    ],
+    name: "reverse",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -174,6 +412,45 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "response",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "extraData",
+        type: "bytes",
+      },
+    ],
+    name: "reverseCallback",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

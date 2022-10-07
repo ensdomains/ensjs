@@ -6,7 +6,7 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, address: string) => {
   const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
   return {
     to: universalResolver.address,
-    data: universalResolver.interface.encodeFunctionData('reverse', [
+    data: universalResolver.interface.encodeFunctionData('reverse(bytes)', [
       hexEncodeName(reverseNode),
     ]),
   }
@@ -21,7 +21,7 @@ const decode = async (
   const universalResolver = await contracts?.getUniversalResolver()!
   try {
     const result = universalResolver.interface.decodeFunctionResult(
-      'reverse',
+      'reverse(bytes)',
       data,
     )
     return {

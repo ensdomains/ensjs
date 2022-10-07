@@ -11,6 +11,6 @@ export default async (
 ) =>
   func
     .raw(ensData, ...data)
-    .then((rawData) => provider.call(rawData))
+    .then((rawData) => provider.call({ ...rawData, ccipReadEnabled: true }))
     .catch(() => null)
     .then((ret) => func.decode(ensData, ret, ...data))

@@ -17,29 +17,43 @@ export const deploymentAddresses = JSON.parse(
   string
 >
 
-const createENS = (graphURI: string) =>
+const createENS = (graphURI: string, useReal?: boolean) =>
   new ENS({
     graphURI,
-    getContractAddress: () => (contractName) =>
-      deploymentAddresses[
-        contractName === 'ENSRegistryWithFallback'
-          ? 'ENSRegistry'
-          : contractName
-      ],
+    getContractAddress: useReal
+      ? undefined
+      : () => (contractName) =>
+          deploymentAddresses[
+            contractName === 'ENSRegistryWithFallback'
+              ? 'ENSRegistry'
+              : contractName
+          ],
   })
 
 export default async (useReal?: boolean) => {
-  const graphURI = useReal
-    ? 'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten'
-    : 'http://localhost:8000/subgraphs/name/graphprotocol/ens'
-
-  const provider = new ethers.providers.JsonRpcProvider(
-    'http://localhost:8545',
-    1337,
+  const { graphURI, providerURI, chainId } = useReal
+    ? {
+        graphURI:
+          'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
+        providerURI: 'https://web3.ens.domains/v1/goerli',
+        chainId: 5,
+      }
+    : {
+        graphURI: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+        providerURI: 'http://localhost:8545',
+        chainId: 1337,
+      }
+  const provider = new ethers.providers.StaticJsonRpcProvider(
+    providerURI,
+    chainId,
   )
 
-  let ensInstance = createENS(graphURI)
+  let ensInstance = createENS(graphURI, useReal)
   await ensInstance.setProvider(provider)
+
+  if (useReal) {
+    return { ensInstance, revert: () => {}, createSnapshot: () => {}, provider }
+  }
 
   let snapshot = await provider.send('evm_snapshot', [])
 

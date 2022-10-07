@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@ensdomains/ens-contracts": {
+      "signature": "075b434fa98454d165078bc5c192cefe",
+      "pure": true
+    }
+  }
+}

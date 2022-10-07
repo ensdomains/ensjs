@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { ENSArgs } from '..'
+import ccipLookup from '../utils/ccip'
 import { hexEncodeName } from '../utils/hexEncodedName'
 
 export const universalWrapper = {
@@ -11,16 +12,16 @@ export const universalWrapper = {
     const universalResolver = await contracts?.getUniversalResolver()!
     return {
       to: universalResolver.address,
-      data: universalResolver.interface.encodeFunctionData('resolve', [
-        hexEncodeName(name),
-        data,
-      ]),
+      data: universalResolver.interface.encodeFunctionData(
+        'resolve(bytes,bytes)',
+        [hexEncodeName(name), data],
+      ),
     }
   },
   decode: async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     const universalResolver = await contracts?.getUniversalResolver()!
     const response = universalResolver.interface.decodeFunctionResult(
-      'resolve',
+      'resolve(bytes,bytes)',
       data,
     )
     if (!response || !response[0]) {
@@ -75,7 +76,11 @@ export const multicallWrapper = {
       ]),
     }
   },
-  async decode({ contracts }: ENSArgs<'contracts'>, data: string) {
+  async decode(
+    { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
+    data: string,
+    transactions: ethers.providers.TransactionRequest[],
+  ) {
     if (!data) return
     const multicall = await contracts?.getMulticall()!
     try {
@@ -83,8 +88,34 @@ export const multicallWrapper = {
         'tryAggregate',
         data,
       )
-      return result
-    } catch {
+      const ccipChecked = await Promise.all(
+        (result as [boolean, string][]).map(
+          async ([success, returnData], i) => {
+            let newArr: [boolean, string] = [success, returnData]
+            // OffchainLookup(address,string[],bytes,bytes4,bytes)
+            if (!success && returnData.startsWith('0x556f1830')) {
+              try {
+                const newData = await ccipLookup(
+                  provider!,
+                  transactions[i],
+                  returnData,
+                )
+                if (newData) {
+                  newArr = [true, newData]
+                }
+              } catch {}
+            }
+            return {
+              ...newArr,
+              success: newArr[0],
+              returnData: newArr[1],
+            }
+          },
+        ),
+      )
+      return ccipChecked
+    } catch (e: any) {
+      console.error(e)
       return
     }
   },

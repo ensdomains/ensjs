@@ -28,7 +28,7 @@ describe('setRecord', () => {
     const universalResolver =
       await ensInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ensInstance.contracts!.getPublicResolver()!
-    const encodedText = await universalResolver.resolve(
+    const encodedText = await universalResolver['resolve(bytes,bytes)'](
       hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('text', [
         namehash('test123.eth'),
@@ -56,7 +56,7 @@ describe('setRecord', () => {
     const universalResolver =
       await ensInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ensInstance.contracts!.getPublicResolver()!
-    const encodedAddr = await universalResolver.resolve(
+    const encodedAddr = await universalResolver['resolve(bytes,bytes)'](
       hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
         namehash('test123.eth'),
@@ -84,7 +84,7 @@ describe('setRecord', () => {
     const universalResolver =
       await ensInstance.contracts!.getUniversalResolver()!
     const publicResolver = await ensInstance.contracts!.getPublicResolver()!
-    const encodedContent = await universalResolver.resolve(
+    const encodedContent = await universalResolver['resolve(bytes,bytes)'](
       hexEncodeName('test123.eth'),
       publicResolver.interface.encodeFunctionData('contenthash', [
         namehash('test123.eth'),

@@ -1,0 +1,3 @@
+[
+  "function query(tuple(address,string[],bytes)[]) returns (bool[], bytes[])"
+]
