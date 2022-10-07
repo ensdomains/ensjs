@@ -13,18 +13,14 @@ export default async function (
 ) {
   const labels = name.split('.')
 
-  if (labels.length !== 3) {
-    throw new Error('ENS.js currently only supports deleting 2LDs, not TLDs')
-  }
-
-  if (labels[2] !== 'eth') {
-    throw new Error('ENS.js currently only supports deleting .eth 2LDs')
+  if (labels.length < 3) {
+    throw new Error(`${name} is not a valid subname`)
   }
 
   const label = labels.shift() as string
   const labelhash = ethers.utils.solidityKeccak256(['string'], [label])
   const parentNodehash = namehash(labels.join('.'))
-
+ 
   switch (contract) {
     case 'registry': {
       const registry = (await contracts!.getRegistry()!).connect(signer)
