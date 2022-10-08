@@ -141,6 +141,9 @@ const awaitCommand = async (name, command) => {
   })
   const outPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
   const errPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
+  deploy.stdout.on('data', (data) => {
+    console.log('deploy stdout', data.toString())
+  })
   deploy.stdout.pipe(outPrepender).pipe(process.stdout)
   deploy.stderr.pipe(errPrepender).pipe(process.stderr)
   return new Promise((resolve) => deploy.on('exit', () => resolve()))
@@ -157,6 +160,7 @@ export const main = async (_config, _options, justKill) => {
     DATA_FOLDER: config.paths.data,
     GRAPH_LOG_LEVEL: 'info',
     ANVIL_EXTRA_ARGS: '',
+    BLOCK_TIMESTAMP: Math.floor(new Date().getTime() / 1000),
   }
 
   if (justKill) {
@@ -171,7 +175,9 @@ export const main = async (_config, _options, justKill) => {
 
   try {
     await compose.upOne('anvil', opts)
-  } catch {}
+  } catch (e) {
+    console.error('e: ', e)
+  }
 
   compose
     .logs(['anvil', 'graph-node', 'postgres', 'ipfs', 'metadata'], {

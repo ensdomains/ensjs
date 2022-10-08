@@ -51,6 +51,7 @@ import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
+import importDNSSECName from './functions/importDNSSECName'
 
 export type {
   Fuse,
@@ -590,6 +591,11 @@ export class ENS {
   public burnFuses = this.generateWriteFunction<typeof burnFuses>('burnFuses', [
     'contracts',
   ])
+
+  public importDNSSECName = this.generateWriteFunction<typeof importDNSSECName>(
+    'importDNSSECName',
+    ['contracts', 'provider', 'signer'],
+  )
 
   public createSubname = this.generateWriteFunction<typeof createSubname>(
     'createSubname',
