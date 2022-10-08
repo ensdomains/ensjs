@@ -86,7 +86,7 @@ importers:
       '@ensdomains/content-hash': ^2.5.7
       '@ensdomains/dnsprovejs': ^0.4.1
       '@ensdomains/dnssecoraclejs': ^0.2.7
-      '@ensdomains/ens-contracts': ^0.0.13
+      '@ensdomains/ens-contracts': ^0.0.14
       '@ensdomains/ens-test-env': workspace:*
       '@ethersproject/abi': ^5.6.0
       '@ethersproject/providers': ^5.6.2
@@ -138,7 +138,7 @@ importers:
       traverse: 0.6.6
     devDependencies:
       '@ensdomains/buffer': 0.0.13_miwpojjjcowsqunohrlnj24nmm
-      '@ensdomains/ens-contracts': 0.0.13_miwpojjjcowsqunohrlnj24nmm
+      '@ensdomains/ens-contracts': 0.0.14_miwpojjjcowsqunohrlnj24nmm
       '@ensdomains/ens-test-env': link:../ens-test-env
       '@ethersproject/abi': 5.6.4
       '@ethersproject/providers': 5.6.8
@@ -613,8 +613,8 @@ packages:
       - web3-utils
     dev: false
 
-  /@ensdomains/ens-contracts/0.0.13_miwpojjjcowsqunohrlnj24nmm:
-    resolution: {integrity: sha512-GMEcvJHJ6T+5imQPAaJK76sK5O5yd4R6cbyyPq8rN3BX+vU/+fT3b/EVEan9o9hil5+Mvwk8tDHwWcu7Dpmlkg==}
+  /@ensdomains/ens-contracts/0.0.14_miwpojjjcowsqunohrlnj24nmm:
+    resolution: {integrity: sha512-a56QCIZyPPLcScJ/aW2pSOddbMoFiREUOArNwbtqPgWK0oHvAzuoMs9uKTUYIqDLG20nMhbTRuigdpN7gPUeJg==}
     dependencies:
       '@ensdomains/buffer': 0.0.13_miwpojjjcowsqunohrlnj24nmm
       '@ensdomains/solsha1': 0.0.3
