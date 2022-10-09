@@ -50,7 +50,7 @@ The batch function is a large part of this library, and there are plenty of situ
 
 ```js
 /* Batch functions can be called like so, with the function as the first item in an array, with the following items being the function's arguments */
-const batched = await batch(
+const batched = await ENSInstance.batch(
   ENSInstance.getText.batch('test.eth', 'foo'),
   ENSInstance.getAddr.batch('test.eth'),
   ENSInstance.getOwner.batch('test.eth'),
