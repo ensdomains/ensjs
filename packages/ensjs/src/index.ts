@@ -50,6 +50,7 @@ import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
+import * as contentHash from './utils/contentHash'
 import writeTx from './utils/writeTx'
 import importDNSSECName from './functions/importDNSSECName'
 
@@ -164,6 +165,13 @@ type CombineFunctionDeps<F> = F extends RawFunction
 export interface GenericGeneratedRawFunction
   extends Function,
     RawFunctionWithBatch {}
+
+/**
+ * Utils namespace
+ */
+export const utils = {
+  contentHash,
+}
 
 export class ENS {
   [x: string]: any
