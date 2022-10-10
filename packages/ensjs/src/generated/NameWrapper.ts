@@ -40,6 +40,7 @@ export interface NameWrapperInterface extends utils.Interface {
     "isTokenOwnerOrApproved(bytes32,address)": FunctionFragment;
     "isWrapped(bytes32)": FunctionFragment;
     "metadataService()": FunctionFragment;
+    "name()": FunctionFragment;
     "names(bytes32)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -87,6 +88,7 @@ export interface NameWrapperInterface extends utils.Interface {
       | "isTokenOwnerOrApproved"
       | "isWrapped"
       | "metadataService"
+      | "name"
       | "names"
       | "onERC721Received"
       | "owner"
@@ -162,6 +164,7 @@ export interface NameWrapperInterface extends utils.Interface {
     functionFragment: "metadataService",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "names",
     values: [PromiseOrValue<BytesLike>]
@@ -398,6 +401,7 @@ export interface NameWrapperInterface extends utils.Interface {
     functionFragment: "metadataService",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "names", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
@@ -701,6 +705,8 @@ export interface NameWrapper extends BaseContract {
 
     metadataService(overrides?: CallOverrides): Promise<[string]>;
 
+    name(overrides?: CallOverrides): Promise<[string]>;
+
     names(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -963,6 +969,8 @@ export interface NameWrapper extends BaseContract {
 
   metadataService(overrides?: CallOverrides): Promise<string>;
 
+  name(overrides?: CallOverrides): Promise<string>;
+
   names(
     arg0: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -1224,6 +1232,8 @@ export interface NameWrapper extends BaseContract {
     ): Promise<boolean>;
 
     metadataService(overrides?: CallOverrides): Promise<string>;
+
+    name(overrides?: CallOverrides): Promise<string>;
 
     names(
       arg0: PromiseOrValue<BytesLike>,
@@ -1588,6 +1598,8 @@ export interface NameWrapper extends BaseContract {
 
     metadataService(overrides?: CallOverrides): Promise<BigNumber>;
 
+    name(overrides?: CallOverrides): Promise<BigNumber>;
+
     names(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1850,6 +1862,8 @@ export interface NameWrapper extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     metadataService(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     names(
       arg0: PromiseOrValue<BytesLike>,

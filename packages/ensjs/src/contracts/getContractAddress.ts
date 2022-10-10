@@ -49,7 +49,7 @@ const addresses: Record<
     '1': '0x580AF46E06DaaD47eb5940526FD64d95b815Cb70',
     '3': '0x74e20bd2a1fe0cdbe45b9a1d89cb7e0a45b36376',
     '4': '0x74e20bd2a1fe0cdbe45b9a1d89cb7e0a45b36376',
-    '5': '0x9380F1974D2B7064eA0c0EC251968D8c69f0Ae31',
+    '5': '0x687c30Cc44bFA39A1449e86E172BF002E7b3f0b0',
   },
   BulkRenewal: {
     '1': '0xfF252725f6122A92551A5FA9a6b6bf10eb0Be035',

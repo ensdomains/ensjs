@@ -29,7 +29,9 @@ describe('setName', () => {
     const universalResolver =
       await ensInstance.contracts!.getUniversalResolver()!
     const reverseNode = `${accounts[1].toLowerCase().substring(2)}.addr.reverse`
-    const result = await universalResolver.reverse(hexEncodeName(reverseNode))
+    const result = await universalResolver['reverse(bytes)'](
+      hexEncodeName(reverseNode),
+    )
     expect(result[0]).toBe('test123.eth')
   })
   it("should return a transaction for setting another address' name", async () => {
@@ -52,7 +54,9 @@ describe('setName', () => {
     const universalResolver =
       await ensInstance.contracts!.getUniversalResolver()!
     const reverseNode = `${accounts[1].toLowerCase().substring(2)}.addr.reverse`
-    const result = await universalResolver.reverse(hexEncodeName(reverseNode))
+    const result = await universalResolver['reverse(bytes)'](
+      hexEncodeName(reverseNode),
+    )
     expect(result[0]).toBe('test123.eth')
   })
 })

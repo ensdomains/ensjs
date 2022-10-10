@@ -100,7 +100,7 @@ const decode = async (
   name: string,
   contract?: 'nameWrapper' | 'registry' | 'registrar',
 ): Promise<Owner | undefined> => {
-  if (data === null) return
+  if (!data) return
   const labels = name.split('.')
   if (contract || labels.length === 1) {
     const singleOwner = singleContractOwnerDecode(data)
@@ -119,7 +119,7 @@ const decode = async (
     }
   }
   const result = await multicallWrapper.decode(data)
-  if (result === null) return
+  if (!result) return
   const nameWrapper = await contracts?.getNameWrapper()!
 
   const decodedData = [result[0][1], result[1][1], result[2]?.[1]].map(
@@ -163,6 +163,7 @@ const decode = async (
       // this means that the subname is wrapped
       if (
         registryOwner === nameWrapper.address &&
+        nameWrapperOwner &&
         ethers.utils.hexStripZeros(nameWrapperOwner) !== '0x'
       ) {
         return {
@@ -186,6 +187,7 @@ const decode = async (
   // and for wrapped names, owner and registrant are the same thing
   if (
     registryOwner === nameWrapper.address &&
+    nameWrapperOwner &&
     ethers.utils.hexStripZeros(nameWrapperOwner) !== '0x'
   ) {
     return {

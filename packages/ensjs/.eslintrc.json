@@ -36,7 +36,9 @@
     ],
     "no-useless-return": ["off"],
     "radix": ["error", "as-needed"],
-    "no-bitwise": ["off"]
+    "no-bitwise": ["off"],
+    "import/no-extraneous-dependencies": ["off"],
+    "no-empty": ["error", { "allowEmptyCatch": true }]
   },
   "ignorePatterns": ["node_modules", "dist", "data", "cache", "esbuild.js"]
 }

@@ -1,5 +1,6 @@
 import { formatsByName } from '@ensdomains/address-encoder'
 import { ethers } from 'ethers'
+import { hexStripZeros } from 'ethers/lib/utils'
 import { ENSArgs } from '..'
 import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'
 import { hexEncodeName } from '../utils/hexEncodedName'
@@ -14,6 +15,12 @@ type InternalProfileOptions = {
 
 type ProfileResponse = {
   contentHash?: string | DecodedContentHash
+  texts?: string[]
+  coinTypes?: string[]
+}
+
+type FallbackRecords = {
+  contentHash?: boolean
   texts?: string[]
   coinTypes?: string[]
 }
@@ -41,19 +48,25 @@ type ResolvedProfile = {
   reverseResolverAddress?: string
 }
 
+type CallObj = {
+  key: string
+  data: {
+    to: string
+    data: string
+  }
+  type: 'addr' | 'text' | 'contentHash'
+}
+
 const makeMulticallData = async (
   {
     _getAddr,
     _getContentHash,
     _getText,
-    resolverMulticallWrapper,
-  }: ENSArgs<
-    '_getText' | '_getAddr' | '_getContentHash' | 'resolverMulticallWrapper'
-  >,
+  }: ENSArgs<'_getText' | '_getAddr' | '_getContentHash'>,
   name: string,
   options: InternalProfileOptions,
 ) => {
-  let calls: any[] = []
+  let calls: (CallObj | null)[] = []
   if (options.texts)
     calls = [
       ...calls,
@@ -61,7 +74,7 @@ const makeMulticallData = async (
         options.texts.map(async (x) => ({
           key: x,
           data: await _getText.raw(name, x),
-          type: 'text',
+          type: 'text' as const,
         })),
       )),
     ]
@@ -73,7 +86,7 @@ const makeMulticallData = async (
         options.coinTypes.map(async (x) => ({
           key: x,
           data: await _getAddr.raw(name, x, true),
-          type: 'addr',
+          type: 'addr' as const,
         })),
       )),
     ]
@@ -82,21 +95,19 @@ const makeMulticallData = async (
     calls.push({
       key: 'contentHash',
       data: await _getContentHash.raw(name),
-      type: 'contenthash',
+      type: 'contentHash' as const,
     })
   }
 
-  if (!calls.find((x) => x.key === '60')) {
+  if (!calls.find((x) => x!.key === '60')) {
     calls.push({
       key: '60',
       data: await _getAddr.raw(name, '60', true),
-      type: 'addr',
+      type: 'addr' as const,
     })
   }
 
-  const prRawData = await resolverMulticallWrapper.raw(calls.map((x) => x.data))
-
-  return { data: prRawData.data, calls }
+  return { data: calls.map((x) => x!.data.data), calls }
 }
 
 const fetchWithoutResolverMulticall = async (
@@ -116,9 +127,11 @@ const fetchWithoutResolverMulticall = async (
     data: call.data.data,
   }))
 
-  return (await multicallWrapper(callsWithResolver)).map(
-    (x: [boolean, string]) => x[1],
-  )
+  const results = await multicallWrapper(callsWithResolver)
+
+  if (!results || !results.length) return []
+
+  return results.map((x: [boolean, string]) => x[1])
 }
 
 const formatRecords = async (
@@ -139,7 +152,7 @@ const formatRecords = async (
           key: calls[i].key,
           type: calls[i].type,
         }
-        if (itemRet.type === 'contenthash') {
+        if (itemRet.type === 'contentHash') {
           ;[decodedFromAbi] = ethers.utils.defaultAbiCoder.decode(
             ['bytes'],
             item,
@@ -171,7 +184,7 @@ const formatRecords = async (
             } catch {
               return
             }
-          case 'contenthash':
+          case 'contentHash':
             try {
               itemRet = {
                 ...itemRet,
@@ -217,7 +230,7 @@ const formatRecords = async (
     }
   } else if (options.contentHash) {
     const foundRecord = returnedRecords.find(
-      (item: any) => item.type === 'contenthash',
+      (item: any) => item.type === 'contentHash',
     )
     returnedResponse.contentHash = foundRecord ? foundRecord.value : null
   }
@@ -240,7 +253,6 @@ const getDataForName = async (
     _getAddr,
     _getContentHash,
     _getText,
-    resolverMulticallWrapper,
     multicallWrapper,
   }: ENSArgs<
     | 'contracts'
@@ -252,62 +264,77 @@ const getDataForName = async (
   >,
   name: string,
   options: InternalProfileOptions,
-  fallbackResolver?: string,
   specificResolver?: string,
 ) => {
-  const universalResolver = await contracts?.getUniversalResolver()
+  const universalResolver = await contracts?.getUniversalResolver()!
 
   const { data, calls } = await makeMulticallData(
-    { _getAddr, _getContentHash, _getText, resolverMulticallWrapper },
+    { _getAddr, _getContentHash, _getText },
     name,
     options,
   )
 
-  let resolvedData: any
-  let useFallbackResolver = false
-  try {
-    if (specificResolver) {
+  let recordData: (string | null)[] | undefined
+  let resolverAddress: string | undefined = specificResolver
+
+  if (specificResolver) {
+    try {
       const publicResolver = await contracts?.getPublicResolver(
         undefined,
         specificResolver,
       )
-      resolvedData = await publicResolver?.callStatic.multicall(
-        calls.map((x) => x.data),
+      recordData = await publicResolver?.callStatic.multicall(data)
+    } catch (e: any) {
+      console.error('getProfile error:', e)
+      recordData = await fetchWithoutResolverMulticall(
+        { multicallWrapper },
+        calls as CallObj[],
+        resolverAddress!,
       )
-    } else {
-      resolvedData = await universalResolver?.resolve(hexEncodeName(name), data)
     }
-  } catch {
-    useFallbackResolver = true
-  }
-
-  let resolverAddress: string
-  let recordData: any
-
-  if (useFallbackResolver) {
-    resolverAddress = specificResolver || fallbackResolver!
-    recordData = await fetchWithoutResolverMulticall(
-      { multicallWrapper },
-      calls,
-      resolverAddress,
-    )
   } else {
-    resolverAddress = specificResolver || resolvedData['1']
-    if (specificResolver) {
-      recordData = resolvedData
-    } else {
-      ;[recordData] = await resolverMulticallWrapper.decode(resolvedData['0'])
+    const resolvedData = await universalResolver['resolve(bytes,bytes[])'](
+      hexEncodeName(name),
+      data,
+      {
+        ccipReadEnabled: true,
+      },
+    )
+    recordData = [...resolvedData['0']]
+    resolverAddress = resolvedData['1']
+    for (let i = 0; i < recordData.length; i += 1) {
+      // error code for reverted call in batch
+      // this is expected when using offchain resolvers, so should be ignored
+      if (recordData[i]!.startsWith('0x0d1947a9')) {
+        calls[i] = null
+        recordData[i] = null
+      }
+    }
+  }
+  if (
+    !resolverAddress ||
+    !recordData ||
+    hexStripZeros(resolverAddress) === '0x'
+  ) {
+    return {
+      address: null,
+      records: {},
+      resolverAddress: null,
     }
   }
 
-  const matchAddress = recordData[calls.findIndex((x) => x.key === '60')]
+  const filteredCalls = calls.filter((x) => x) as CallObj[]
+  const filteredRecordData = recordData.filter((x) => x)
+
+  const matchAddress =
+    filteredRecordData[filteredCalls.findIndex((x) => x.key === '60')]
 
   return {
     address: matchAddress && (await _getAddr.decode(matchAddress)),
     records: await formatRecords(
       { _getAddr, _getContentHash, _getText },
-      recordData,
-      calls,
+      filteredRecordData,
+      filteredCalls,
       options,
     ),
     resolverAddress,
@@ -332,7 +359,6 @@ const graphFetch = async (
           addr {
             id
           }
-          address
         }
       }
     }
@@ -379,14 +405,7 @@ const graphFetch = async (
 
   const returnedRecords: ProfileResponse = {}
 
-  if (!resolverResponse) return { isMigrated, createdAt }
-
-  if (!wantedRecords)
-    return {
-      isMigrated,
-      createdAt,
-      graphResolverAddress: resolverResponse.address || resolverAddress,
-    }
+  if (!resolverResponse || !wantedRecords) return { isMigrated, createdAt }
 
   Object.keys(wantedRecords).forEach((key: string) => {
     const data = wantedRecords[key as keyof ProfileOptions]
@@ -403,7 +422,6 @@ const graphFetch = async (
     ...returnedRecords,
     isMigrated,
     createdAt,
-    graphResolverAddress: resolverResponse.address || resolverAddress,
   }
 }
 
@@ -415,6 +433,7 @@ type ProfileOptions = {
 
 type InputProfileOptions = ProfileOptions & {
   resolverAddress?: string
+  fallback?: FallbackRecords
 }
 
 const getProfileFromName = async (
@@ -438,7 +457,7 @@ const getProfileFromName = async (
   name: string,
   options?: InputProfileOptions,
 ) => {
-  const { resolverAddress, ..._options } = options || {}
+  const { resolverAddress, fallback, ..._options } = options || {}
   const optsLength = Object.keys(_options).length
   let usingOptions: InputProfileOptions | undefined
   if (!optsLength || _options?.texts === true || _options?.coinTypes === true) {
@@ -452,35 +471,69 @@ const getProfileFromName = async (
     usingOptions,
     resolverAddress,
   )
-  if (!graphResult) return
-  const {
-    isMigrated,
-    createdAt,
-    graphResolverAddress,
-    ...wantedRecords
-  }: {
-    isMigrated: boolean
-    createdAt: string
-    graphResolverAddress?: string
-  } & InternalProfileOptions = graphResult
-  if (!graphResolverAddress && !options?.resolverAddress)
-    return { isMigrated, createdAt, message: "Name doesn't have a resolver" }
-  const result = await getDataForName(
-    {
-      contracts,
-      _getAddr,
-      _getContentHash,
-      _getText,
-      resolverMulticallWrapper,
-      multicallWrapper,
-    },
-    name,
-    usingOptions ? wantedRecords : (options as InternalProfileOptions),
-    graphResolverAddress,
-    options?.resolverAddress!,
-  )
-  if (!result)
-    return { isMigrated, createdAt, message: "Records fetch didn't complete" }
+  let isMigrated: boolean | null = null
+  let createdAt: string | null = null
+  let result: Awaited<ReturnType<typeof getDataForName>> | null = null
+  if (!graphResult) {
+    if (!fallback) return
+    result = await getDataForName(
+      {
+        contracts,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+        multicallWrapper,
+      },
+      name,
+      fallback,
+      undefined,
+    )
+  } else {
+    const {
+      isMigrated: _isMigrated,
+      createdAt: _createdAt,
+      ...wantedRecords
+    }: {
+      isMigrated: boolean
+      createdAt: string
+    } & InternalProfileOptions = graphResult
+    isMigrated = _isMigrated
+    createdAt = _createdAt
+    let recordsWithFallback = usingOptions
+      ? wantedRecords
+      : (_options as InternalProfileOptions)
+    if (
+      (Object.keys(recordsWithFallback).length === 0 ||
+        (!recordsWithFallback.coinTypes &&
+          !recordsWithFallback.texts &&
+          Object.keys(recordsWithFallback.contentHash || {}).length === 0)) &&
+      fallback
+    ) {
+      recordsWithFallback = fallback
+    }
+    result = await getDataForName(
+      {
+        contracts,
+        _getAddr,
+        _getContentHash,
+        _getText,
+        resolverMulticallWrapper,
+        multicallWrapper,
+      },
+      name,
+      recordsWithFallback,
+      options?.resolverAddress!,
+    )
+  }
+  if (!result?.resolverAddress)
+    return {
+      isMigrated,
+      createdAt,
+      message: !result
+        ? "Records fetch didn't complete"
+        : "Name doesn't have a resolver",
+    }
   return { ...result, isMigrated, createdAt, message: undefined }
 }
 
@@ -537,6 +590,13 @@ const getProfileFromAddress = async (
   }
 }
 
+const mapCoinTypes = (coin: string) => {
+  if (!Number.isNaN(parseInt(coin))) {
+    return coin
+  }
+  return `${formatsByName[coin.toUpperCase()].coinType}`
+}
+
 export default async function (
   {
     contracts,
@@ -560,13 +620,13 @@ export default async function (
   nameOrAddress: string,
   options?: InputProfileOptions,
 ): Promise<ResolvedProfile | undefined> {
-  if (options && options.coinTypes && typeof options.coinTypes !== 'boolean') {
-    options.coinTypes = options.coinTypes.map((coin: string) => {
-      if (!Number.isNaN(parseInt(coin))) {
-        return coin
-      }
-      return `${formatsByName[coin.toUpperCase()].coinType}`
-    })
+  if (options) {
+    if (options.coinTypes && typeof options.coinTypes !== 'boolean') {
+      options.coinTypes = options.coinTypes.map(mapCoinTypes)
+    }
+    if (options.fallback && options.fallback.coinTypes) {
+      options.fallback.coinTypes = options.fallback.coinTypes.map(mapCoinTypes)
+    }
   }
 
   const inputType = parseInputType(nameOrAddress)
