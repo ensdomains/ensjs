@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import { ENSArgs } from '../index'
-import { CurrentFuses, fuseEnum } from '../utils/fuses'
+import { decodeFuses } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 
 const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
@@ -20,24 +20,12 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     )
 
     const fuses = BigNumber.from(_fuses)
-
-    const fuseObj = Object.fromEntries(
-      Object.keys(fuseEnum).map((fuse) => [
-        fuse,
-        fuses.and(fuseEnum[fuse as keyof typeof fuseEnum]).gt(0),
-      ]),
-    )
-
-    if (fuses.eq(0)) {
-      fuseObj.CAN_DO_EVERYTHING = true
-    } else {
-      fuseObj.CAN_DO_EVERYTHING = false
-    }
+    const fuseObj = decodeFuses(fuses)
 
     const expiryDate = new Date(expiry * 1000)
 
     return {
-      fuseObj: fuseObj as CurrentFuses,
+      fuseObj,
       expiryDate,
       rawFuses: fuses,
       owner,

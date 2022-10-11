@@ -1,3 +1,5 @@
+import { BigNumber, BigNumberish } from 'ethers'
+
 const CANNOT_UNWRAP = 1
 const CANNOT_BURN_FUSES = 2
 const CANNOT_TRANSFER = 4
@@ -132,6 +134,25 @@ export const validateFuses = (fuses: FuseProps) => {
   }
 
   return encodedFuses
+}
+
+export const decodeFuses = (fuses: BigNumberish) => {
+  const bnFuses = BigNumber.from(fuses)
+
+  const fuseObj = Object.fromEntries(
+    Object.keys(fuseEnum).map((fuse) => [
+      fuse,
+      bnFuses.and(fuseEnum[fuse as keyof typeof fuseEnum]).gt(0),
+    ]),
+  )
+
+  if (bnFuses.eq(0)) {
+    fuseObj.CAN_DO_EVERYTHING = true
+  } else {
+    fuseObj.CAN_DO_EVERYTHING = false
+  }
+
+  return fuseObj as CurrentFuses
 }
 
 export default fullFuseEnum
