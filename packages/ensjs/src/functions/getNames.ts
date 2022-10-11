@@ -1,5 +1,6 @@
 import { ENSArgs } from '..'
 import { truncateFormat } from '../utils/format'
+import { CurrentFuses, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
 
 export type Name = {
@@ -15,12 +16,13 @@ export type Name = {
   createdAt?: Date
   registrationDate?: Date
   expiryDate?: Date
-  type: 'domain' | 'registration'
+  fuses?: CurrentFuses
+  type: 'domain' | 'registration' | 'wrappedDomain'
 }
 
 type BaseParams = {
   address: string
-  type: 'registrant' | 'owner' | 'all'
+  type: 'registrant' | 'owner' | 'wrappedOwner' | 'all'
   page?: number
   pageSize?: number
   orderDirection?: 'asc' | 'desc'
@@ -36,6 +38,11 @@ type OwnerParams = {
   orderBy?: 'createdAt' | 'labelName'
 }
 
+type WrappedOwnerParams = {
+  type: 'wrappedOwner'
+  orderBy?: 'expiryDate' | 'labelName'
+}
+
 type AllParams = {
   type: 'all'
   orderBy?: 'labelName' | 'creationDate'
@@ -43,7 +50,8 @@ type AllParams = {
   pageSize?: never
 }
 
-type Params = BaseParams & (RegistrantParams | OwnerParams | AllParams)
+type Params = BaseParams &
+  (RegistrantParams | OwnerParams | WrappedOwnerParams | AllParams)
 
 const mapDomain = (domain: any) => {
   const decrypted = decryptName(domain.name)
@@ -53,6 +61,16 @@ const mapDomain = (domain: any) => {
     truncatedName: truncateFormat(decrypted),
     createdAt: new Date(parseInt(domain.createdAt) * 1000),
     type: 'domain',
+  }
+}
+
+const mapWrappedDomain = (wrappedDomain: any) => {
+  const domain = mapDomain(wrappedDomain.domain)
+  return {
+    expiryDate: new Date(parseInt(wrappedDomain.expiryDate) * 1000),
+    fuses: decodeFuses(wrappedDomain.fuses),
+    ...domain,
+    type: 'wrappedDomain',
   }
 }
 
@@ -116,6 +134,17 @@ const getNames = async (
             ${domainQueryData}
             createdAt
           }
+          wrappedDomains(first: 1000) {
+            expiryDate
+            fuses
+            domain {
+              ${domainQueryData}
+              registration {
+                registrationDate
+                expiryDate
+              }
+            }
+          }
         }
       }
     `
@@ -166,6 +195,71 @@ const getNames = async (
           }
         }
       `
+
+      queryVars = {
+        id: address,
+        first: pageSize,
+        skip: (page || 0) * pageSize,
+        orderBy,
+        orderDirection,
+      }
+    }
+  } else if (type === 'wrappedOwner') {
+    if (typeof page !== 'number') {
+      finalQuery = gqlInstance.gql`
+      query getNames(
+        $id: ID!
+        $orderBy: WrappedDomain_orderBy
+        $orderDirection: OrderDirection
+        $expiryDate: Int
+      ) {
+        account(id: $id) {
+          wrappedDomains(
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+            where: { expiryDate_gt: $expiryDate }
+          ) {
+            expiryDate
+            fuses
+            domain {
+              ${domainQueryData}
+              createdAt
+            }
+          }
+        }
+      }
+    `
+
+      queryVars = {
+        id: address,
+        expiryDate: Math.floor(Date.now() / 1000) - 90 * 24 * 60 * 60,
+      }
+    } else {
+      finalQuery = gqlInstance.gql`
+      query getNames(
+        $id: ID!
+        $first: Int
+        $skip: Int
+        $orderBy: WrappedDomain_orderBy
+        $orderDirection: OrderDirection
+      ) {
+        account(id: $id) {
+          wrappedDomains(
+            first: $first
+            skip: $skip
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+          ) {
+            expiryDate
+            fuses
+            domain {
+              ${domainQueryData}
+              createdAt
+            }
+          }
+        }
+      }
+    `
 
       queryVars = {
         id: address,
@@ -248,6 +342,7 @@ const getNames = async (
     return [
       ...account.domains.map(mapDomain),
       ...account.registrations.map(mapRegistration),
+      ...account.wrappedDomains.map(mapWrappedDomain),
     ].sort((a, b) => {
       if (orderDirection === 'desc') {
         if (orderBy === 'labelName') {
@@ -263,6 +358,9 @@ const getNames = async (
   }
   if (type === 'owner') {
     return account.domains.map(mapDomain) as Name[]
+  }
+  if (type === 'wrappedOwner') {
+    return account.wrappedDomains.map(mapWrappedDomain) as Name[]
   }
   return account.registrations.map(mapRegistration) as Name[]
 }

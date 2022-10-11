@@ -89,6 +89,25 @@ describe('getNames', () => {
     )
     testNotProperties(result[0], 'expiryDate', 'registrationDate')
   })
+  it('should get wrapped domains for an address', async () => {
+    const result = await ensInstance.getNames({
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      type: 'wrappedOwner',
+    })
+    expect(result).toBeTruthy()
+    testProperties(
+      result[0],
+      'id',
+      'labelName',
+      'labelhash',
+      'name',
+      'isMigrated',
+      'parent',
+      'truncatedName',
+      'expiryDate',
+      'fuses',
+    )
+  })
   it('should get the registrations for an address with pagination', async () => {
     const pageOne = await ensInstance.getNames({
       address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
@@ -146,6 +165,14 @@ describe('getNames', () => {
       page: 4,
     })
     expect(pageFive).toHaveLength(totalOwnedNames % 10)
+  })
+  it('should get wrapped domains for an address with pagination', async () => {
+    const pageOne = await ensInstance.getNames({
+      address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      type: 'wrappedOwner',
+      page: 0,
+    })
+    expect(pageOne).toHaveLength(1)
   })
   describe('orderBy', () => {
     describe('registrations', () => {
