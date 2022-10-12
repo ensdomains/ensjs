@@ -5,7 +5,15 @@ import { decodeContenthash } from '../utils/contentHash'
 import { labelhash } from '../utils/labels'
 import { namehash } from '../utils/normalise'
 
-type DomainEvent = 'NewOwner' | 'NewResolver' | 'Transfer' | 'NewTTL'
+type DomainEvent =
+  | 'NewOwner'
+  | 'NewResolver'
+  | 'Transfer'
+  | 'NewTTL'
+  | 'WrappedTransfer'
+  | 'NameWrapped'
+  | 'NameUnwrapped'
+  | 'FusesSet'
 type RegistrationEvent = 'NameRegistered' | 'NameRenewed' | 'NameTransferred'
 type ResolverEvent =
   | 'AddrChanged'
@@ -17,6 +25,7 @@ type ResolverEvent =
   | 'ContenthashChanged'
   | 'InterfaceChanged'
   | 'AuthorisationChanged'
+  | 'VersionChanged'
 
 type EventTypes = 'Domain' | 'Registration' | 'Resolver'
 type EventFormat = {
@@ -33,6 +42,14 @@ const eventFormat: {
     NewResolver: (args: any) => ({ resolver: args.resolver.id.split('-')[0] }),
     Transfer: (args: any) => ({ owner: args.owner.id }),
     NewTTL: (args: any) => ({ ttl: args.ttl }),
+    WrappedTransfer: (args: any) => ({ owner: args.owner.id }),
+    NameWrapped: (args: any) => ({
+      fuses: args.fuses,
+      owner: args.owner.id,
+      expiry: args.expiry,
+    }),
+    NameUnwrapped: (args: any) => ({ owner: args.owner.id }),
+    FusesSet: (args: any) => ({ fuses: args.fuses, expiry: args.expiry }),
   },
   Registration: {
     NameRegistered: (args: any) => ({
@@ -79,6 +96,7 @@ const eventFormat: {
       target: args.target,
       isAuthorized: args.isAuthorized,
     }),
+    VersionChanged: (args: any) => ({ version: args.version }),
   },
 }
 
@@ -129,27 +147,46 @@ export async function getHistory(
             ...on NewTTL {
               ttl
             }
-          }
-          owner {
-            registrations (where: { id: $labelhash }) {
-              events {
+            ...on WrappedTransfer {
+              owner {
                 id
-                blockNumber
-                transactionID
-                __typename
-                ...on NameRegistered {
-                  registrant {
-                    id
-                  }
-                  expiryDate
+              }
+            }
+            ...on NameWrapped {
+              fuses
+              expiry
+              owner {
+                id
+              }
+            }
+            ...on NameUnwrapped {
+              owner {
+                id
+              }
+            }
+            ...on FusesSet {
+              fuses
+              expiry
+            }
+          }
+          registration {
+            events {
+              id
+              blockNumber
+              transactionID
+              __typename
+              ...on NameRegistered {
+                registrant {
+                  id
                 }
-                ...on NameRenewed {
-                  expiryDate
-                }
-                ...on NameTransferred {
-                  newOwner {
-                    id
-                  }
+                expiryDate
+              }
+              ...on NameRenewed {
+                expiryDate
+              }
+              ...on NameTransferred {
+                newOwner {
+                  id
                 }
               }
             }
@@ -195,6 +232,9 @@ export async function getHistory(
                 target
                 isAuthorized
               }
+              ...on VersionChanged {
+                version
+              }
             }
           }
         }
@@ -215,9 +255,7 @@ export async function getHistory(
 
   const {
     events: domainEvents,
-    owner: {
-      registrations: [{ events: registrationEvents }],
-    },
+    registration: { events: registrationEvents },
     resolver: { events: resolverEvents },
   } = domain
 
