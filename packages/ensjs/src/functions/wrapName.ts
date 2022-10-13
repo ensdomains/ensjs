@@ -1,5 +1,6 @@
 import { BigNumber, ethers } from 'ethers'
-import { ENSArgs, FuseObj } from '..'
+import { ENSArgs } from '..'
+import { FuseOptions } from '../utils/fuses'
 import generateFuseInput from '../utils/generateFuseInput'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import { Expiry, makeExpiry, wrappedLabelLengthCheck } from '../utils/wrapper'
@@ -72,7 +73,7 @@ export default async function (
     resolverAddress,
   }: {
     wrappedOwner: string
-    fuseOptions?: FuseObj | string | number
+    fuseOptions?: FuseOptions | string | number
     expiry?: Expiry
     resolverAddress?: string
   },

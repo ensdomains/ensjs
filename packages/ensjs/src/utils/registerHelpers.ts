@@ -1,6 +1,6 @@
 import { BigNumberish, utils } from 'ethers'
-import type { FuseOptions } from '../@types/FuseOptions'
 import type { PublicResolver } from '../generated'
+import { FuseOptions } from './fuses'
 import generateFuseInput from './generateFuseInput'
 import { labelhash } from './labels'
 import { namehash } from './normalise'
