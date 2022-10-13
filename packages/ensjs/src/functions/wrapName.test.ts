@@ -53,8 +53,8 @@ describe('wrapName', () => {
       const tx = await ensInstance.wrapName('test123.eth', {
         wrappedOwner: accounts[2],
         fuseOptions: {
-          cannotUnwrap: true,
-          cannotSetTtl: true,
+          CANNOT_UNWRAP: true,
+          CANNOT_SET_TTL: true,
         },
         addressOrIndex: 1,
       })
