@@ -1,6 +1,5 @@
 import { ethers } from 'ethers'
-import { FuseOptions } from '../@types/FuseOptions'
-import fuses from './fuses'
+import fuses, { FuseOptions } from './fuses'
 
 export default (fuseOptions: FuseOptions) => {
   const fuseKeys = Object.keys(fuseOptions).filter(

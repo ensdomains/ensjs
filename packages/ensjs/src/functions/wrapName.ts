@@ -1,6 +1,6 @@
 import { BigNumber, ethers } from 'ethers'
 import { ENSArgs } from '..'
-import type { FuseOptions } from '../@types/FuseOptions'
+import { FuseOptions } from '../utils/fuses'
 import generateFuseInput from '../utils/generateFuseInput'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import { Expiry, makeExpiry, wrappedLabelLengthCheck } from '../utils/wrapper'
