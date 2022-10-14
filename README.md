@@ -253,6 +253,11 @@ It allows `withProvider` to act as a new ENS instance without having to await a 
 
 ## Individual Functions
 
+### Utils
+
+Utils can be imported at follows
+`import { encodeContenthash } from '@ensdomains/ensjs/utils/contentHash'`
+
 ### getFuses
 
 Gets the fuses for a specified wrapped name.
