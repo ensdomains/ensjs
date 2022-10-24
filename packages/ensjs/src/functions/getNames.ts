@@ -17,6 +17,10 @@ export type Name = {
   registrationDate?: Date
   expiryDate?: Date
   fuses?: CurrentFuses
+  registration?: {
+    expiryDate: Date
+    registrationDate: Date
+  }
   type: 'domain' | 'registration' | 'wrappedDomain'
 }
 
@@ -66,6 +70,12 @@ const mapDomain = (domain: any) => {
 
 const mapWrappedDomain = (wrappedDomain: any) => {
   const domain = mapDomain(wrappedDomain.domain)
+  if (domain.registration) {
+    domain.registration = {
+      expiryDate: new Date(parseInt(domain.registration.expiryDate) * 1000),
+      registrationDate: new Date(domain.registration.registrationDate * 1000),
+    }
+  }
   return {
     expiryDate: new Date(parseInt(wrappedDomain.expiryDate) * 1000),
     fuses: decodeFuses(wrappedDomain.fuses),
