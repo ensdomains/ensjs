@@ -180,16 +180,16 @@ const decode = async (
         ownershipLevel: 'registrar',
       }
     }
-    // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
-    // so we still want to return the ownership values
-    if (labels.length === 2) {
-      return {
-        registrant: undefined,
-        owner: registryOwner,
-        ownershipLevel: 'registrar',
-      }
-    }
     if (ethers.utils.hexStripZeros(registryOwner) !== '0x') {
+      // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
+      // so we still want to return the ownership values
+      if (labels.length === 2) {
+        return {
+          registrant: undefined,
+          owner: registryOwner,
+          ownershipLevel: 'registrar',
+        }
+      }
       // this means that the subname is wrapped
       if (
         registryOwner === nameWrapper.address &&
