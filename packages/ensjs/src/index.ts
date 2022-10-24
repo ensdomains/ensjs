@@ -33,6 +33,7 @@ import type {
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
 import type getWrapperData from './functions/getWrapperData'
+import importDNSSECName from './functions/importDNSSECName'
 import type registerName from './functions/registerName'
 import type {
   // eslint-disable-next-line import/no-named-default
@@ -51,7 +52,6 @@ import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
-import importDNSSECName from './functions/importDNSSECName'
 
 export type {
   Fuse,
@@ -500,7 +500,7 @@ export class ENS {
 
   public getOwner = this.generateRawFunction<typeof getOwner>(
     'initialGetters',
-    ['contracts', 'multicallWrapper'],
+    ['contracts', 'multicallWrapper', 'gqlInstance'],
     'getOwner',
   )
 

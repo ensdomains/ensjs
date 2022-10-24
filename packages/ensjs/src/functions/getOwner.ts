@@ -91,11 +91,27 @@ const raw = async (
   return multicallWrapper.raw(data)
 }
 
+const registrantQuery = `
+  query GetRegistrant($namehash: String!) {
+    domain(id: $namehash) {
+      registration {
+        registrant {
+          id
+        }
+      }
+    }
+  }
+`
+
 const singleContractOwnerDecode = (data: string) =>
   ethers.utils.defaultAbiCoder.decode(['address'], data)[0]
 
 const decode = async (
-  { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
+  {
+    contracts,
+    multicallWrapper,
+    gqlInstance,
+  }: ENSArgs<'contracts' | 'multicallWrapper' | 'gqlInstance'>,
   data: string,
   name: string,
   contract?: 'nameWrapper' | 'registry' | 'registrar',
@@ -131,12 +147,20 @@ const decode = async (
 
   const registryOwner = (decodedData[0] as ethers.utils.Result)[0]
   const nameWrapperOwner = (decodedData[1] as ethers.utils.Result)[0]
-  const registrarOwner = (
-    decodedData[2] as ethers.utils.Result | undefined
-  )?.[0]
+  let registrarOwner = (decodedData[2] as ethers.utils.Result | undefined)?.[0]
 
   // check for only .eth names
   if (labels[labels.length - 1] === 'eth') {
+    if (!registrarOwner && labels.length === 2) {
+      const graphRegistrantResult = await gqlInstance?.request(
+        registrantQuery,
+        {
+          namehash: makeNamehash(name),
+        },
+      )
+      registrarOwner =
+        graphRegistrantResult.domain?.registration?.registrant?.id
+    }
     // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
     // there is no "registrant" for wrapped names
     if (registrarOwner === nameWrapper.address) {
@@ -156,10 +180,16 @@ const decode = async (
         ownershipLevel: 'registrar',
       }
     }
-    if (
-      labels.length > 2 &&
-      ethers.utils.hexStripZeros(registryOwner) !== '0x'
-    ) {
+    if (ethers.utils.hexStripZeros(registryOwner) !== '0x') {
+      // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
+      // so we still want to return the ownership values
+      if (labels.length === 2) {
+        return {
+          registrant: undefined,
+          owner: registryOwner,
+          ownershipLevel: 'registrar',
+        }
+      }
       // this means that the subname is wrapped
       if (
         registryOwner === nameWrapper.address &&
