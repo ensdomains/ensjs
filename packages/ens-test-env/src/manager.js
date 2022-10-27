@@ -216,8 +216,8 @@ export const main = async (_config, _options, justKill) => {
 
   await waitOn({ resources: ['tcp:localhost:8545'] })
 
-  // wait 100 ms to make sure the server is up
-  await new Promise((resolve) => setTimeout(resolve, 100))
+  // wait 1000 ms to make sure the server is up
+  await new Promise((resolve) => setTimeout(resolve, 1000))
 
   if (!options.save) {
     if (!options.extraTime) {
