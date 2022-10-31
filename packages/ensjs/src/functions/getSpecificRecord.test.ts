@@ -55,21 +55,21 @@ describe('getSpecificRecord', () => {
       expect((result as any).addr).toBe(
         '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       )
-      expect((result as any).coin).toBe('ETC_LEGACY')
+      expect((result as any).coin).toBe('ETC')
     })
     it('should return the correct address based on a coin ID input as a string', async () => {
       const result = await ensInstance.getAddr('with-profile.eth', '61')
       expect((result as any).addr).toBe(
         '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       )
-      expect((result as any).coin).toBe('ETC_LEGACY')
+      expect((result as any).coin).toBe('ETC')
     })
     it('should return the correct address based on a coin name', async () => {
-      const result = await ensInstance.getAddr('with-profile.eth', 'ETC_LEGACY')
+      const result = await ensInstance.getAddr('with-profile.eth', 'ETC')
       expect((result as any).addr).toBe(
         '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       )
-      expect((result as any).coin).toBe('ETC_LEGACY')
+      expect((result as any).coin).toBe('ETC')
     })
     it('should return null for a non-existent coin', async () => {
       const result = await ensInstance.getAddr('with-profile.eth', 'BNB')
