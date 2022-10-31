@@ -52,7 +52,7 @@ describe('getProfile', () => {
     it('should return a profile object with specified records', async () => {
       const result = await ensInstance.getProfile(
         '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
-        { texts: ['description', 'url'], coinTypes: ['ETC', '0'] },
+        { texts: ['description', 'url'], coinTypes: ['ETC_LEGACY', '0'] },
       )
       expect(result).toBeDefined()
       if (result) {
@@ -86,7 +86,7 @@ describe('getProfile', () => {
     it('should return a profile object with specified records', async () => {
       const result = await ensInstance.getProfile('with-profile.eth', {
         texts: ['description', 'url'],
-        coinTypes: ['ETC', '0'],
+        coinTypes: ['ETC_LEGACY', '0'],
       })
       expect((result as any).address).toBe(
         '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',

@@ -45,7 +45,7 @@ describe('setRecord', () => {
     const tx = await ensInstance.setRecord('test123.eth', {
       type: 'addr',
       record: {
-        key: 'ETC',
+        key: 'ETC_LEGACY',
         value: '0x42D63ae25990889E35F215bC95884039Ba354115',
       },
       addressOrIndex: 1,

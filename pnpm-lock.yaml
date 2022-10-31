@@ -83,7 +83,7 @@ importers:
 
   packages/ensjs:
     specifiers:
-      '@ensdomains/address-encoder': 0.2.16
+      '@ensdomains/address-encoder': ^0.2.18
       '@ensdomains/buffer': ^0.0.13
       '@ensdomains/content-hash': ^2.5.7
       '@ensdomains/dnsprovejs': ^0.4.1
@@ -128,14 +128,14 @@ importers:
       typescript: ^4.7.4
       wait-on: ^6.0.1
     dependencies:
-      '@ensdomains/address-encoder': 0.2.16
+      '@ensdomains/address-encoder': 0.2.18
       '@ensdomains/content-hash': 2.5.7
       '@ensdomains/dnsprovejs': 0.4.1
       '@ensdomains/dnssecoraclejs': 0.2.7_timjjj5ssgey6ctscbdzvpmswi
       dns-packet: 5.4.0
       ethers: 5.6.9
       graphql: 16.6.0
-      graphql-request: 5.0.1-next.2_graphql@16.6.0
+      graphql-request: 5.1.0-next.3_graphql@16.6.0
       idna-uts46-hx: 3.4.0
       traverse: 0.6.6
     devDependencies:
@@ -528,8 +528,8 @@ packages:
       nano-base32: 1.0.1
       ripemd160: 2.0.2
 
-  /@ensdomains/address-encoder/0.2.16:
-    resolution: {integrity: sha512-V9CmwUbJgCQb+WBW+dhZptuOwGY5AaFnDGZ6POOv+oMu8dZYuAz2BoBkX7XY9t/Nz+FvMz9CeOvM4uhy4v24Zw==}
+  /@ensdomains/address-encoder/0.2.18:
+    resolution: {integrity: sha512-Elgi6smEraiEN5cUSGLfp/FVzMMFZDyMygOBL9sNCmpYBfQffJV0gwkQGGaniBwIhKRxttFN7jTpXM7+zKQRWQ==}
     dependencies:
       bech32: 2.0.0
       blakejs: 1.2.1
@@ -738,7 +738,7 @@ packages:
     dependencies:
       '@resolver-engine/imports': 0.3.3
       '@resolver-engine/imports-fs': 0.3.3
-      '@typechain/ethers-v5': 2.0.0_oai42fke67omxp5i2g4vu7ymuy
+      '@typechain/ethers-v5': 2.0.0_typechain@3.0.0
       '@types/mkdirp': 0.5.2
       '@types/node-fetch': 2.6.2
       ethers: 5.6.9
@@ -2050,14 +2050,16 @@ packages:
       typescript: 4.7.4
     dev: true
 
-  /@typechain/ethers-v5/2.0.0_oai42fke67omxp5i2g4vu7ymuy:
+  /@typechain/ethers-v5/2.0.0_typechain@3.0.0:
     resolution: {integrity: sha512-0xdCkyGOzdqh4h5JSf+zoWx85IusEjDcPIwNEHP8mrWSnCae4rvrqB+/gtpdNfX7zjlFlZiMeePn2r63EI3Lrw==}
     peerDependencies:
-      ethers: ^5.0.0
       typechain: ^3.0.0
     dependencies:
       ethers: 5.6.9
       typechain: 3.0.0_typescript@4.7.4
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: false
 
   /@types/abstract-leveldown/7.2.0:
@@ -6925,8 +6927,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql-request/5.0.1-next.2_graphql@16.6.0:
-    resolution: {integrity: sha512-wenr1clu45bJ97J37dvnrN1/Wq4JfUvnay745ZuNqsDf3Znb0V+mRGNWuXJygEsfTFHyIo3VALaUug5Sq7lYYg==}
+  /graphql-request/5.1.0-next.3_graphql@16.6.0:
+    resolution: {integrity: sha512-DzFHEz4/fUIWvo/CiWF3FnTejsaFDel/Fcu4YY34OYiFERG8LSsmGhKvwBWWygJYyzdQ5h4P42xv11+kdBheHg==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
