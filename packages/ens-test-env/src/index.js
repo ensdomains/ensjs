@@ -8,6 +8,7 @@ import { emitKeypressEvents } from 'readline'
 import { URL as URLClass } from 'url'
 import { main as fetchData } from './fetch-data.js'
 import { main as manager } from './manager.js'
+import { main as subgraph } from './subgraph.js'
 
 let config
 const program = new Command()
@@ -113,6 +114,24 @@ program
   .description('Saves data folder to an archive')
   .action(async () => {
     await fetchData('compress', config)
+  })
+
+program
+  .command('subgraph')
+  .description('Saves the deployment addresses to a subgraph file')
+  .option('-d, --directory <path>', 'The subgraph directory', '../ens-subgraph')
+  .option(
+    '--env <path>',
+    'The environment file with the deployment addresses',
+    '.env.local',
+  )
+  .option(
+    '--var <name>',
+    'The variable name in the environment file',
+    'DEPLOYMENT_ADDRESSES',
+  )
+  .action(async (options) => {
+    subgraph(options)
   })
 
 program.parse(process.argv)

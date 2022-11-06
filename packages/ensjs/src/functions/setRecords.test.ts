@@ -19,7 +19,10 @@ describe('setRecords', () => {
     const tx = await ensInstance.setRecords('test123.eth', {
       records: {
         coinTypes: [
-          { key: 'ETC', value: '0x42D63ae25990889E35F215bC95884039Ba354115' },
+          {
+            key: 'ETC_LEGACY',
+            value: '0x42D63ae25990889E35F215bC95884039Ba354115',
+          },
         ],
         texts: [{ key: 'foo', value: 'bar' }],
       },
