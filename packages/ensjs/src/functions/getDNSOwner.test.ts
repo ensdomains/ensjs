@@ -1,5 +1,5 @@
 import nock from 'nock'
-import fetch from 'node-fetch'
+import fetch from 'cross-fetch'
 import getDNSOwner, { encodeURLParams } from './getDNSOwner'
 
 function hexDecode(string: string) {

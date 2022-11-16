@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch'
 import * as packet from 'dns-packet'
 
 export function encodeURLParams(p: { [key: string]: string }): string {
@@ -7,7 +8,7 @@ export function encodeURLParams(p: { [key: string]: string }): string {
 }
 
 export const getDNS = async (q: packet.Packet): Promise<packet.Packet> => {
-  const response = await global.fetch(
+  const response = await fetch(
     `https://cloudflare-dns.com/dns-query?${encodeURLParams({
       ct: 'application/dns-udpwireformat',
       dns: packet.encode(q)?.toString('base64'),
