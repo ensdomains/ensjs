@@ -350,9 +350,9 @@ const getNames = async (
   const { account } = await client.request(finalQuery, queryVars)
   if (type === 'all') {
     return [
-      ...account.domains.map(mapDomain),
-      ...account.registrations.map(mapRegistration),
-      ...account.wrappedDomains.map(mapWrappedDomain),
+      ...(account?.domains.map(mapDomain) || []),
+      ...(account?.registrations.map(mapRegistration) || []),
+      ...(account?.wrappedDomains.map(mapWrappedDomain) || []),
     ].sort((a, b) => {
       if (orderDirection === 'desc') {
         if (orderBy === 'labelName') {
@@ -367,12 +367,12 @@ const getNames = async (
     }) as Name[]
   }
   if (type === 'owner') {
-    return account.domains.map(mapDomain) as Name[]
+    return (account?.domains.map(mapDomain) || []) as Name[]
   }
   if (type === 'wrappedOwner') {
-    return account.wrappedDomains.map(mapWrappedDomain) as Name[]
+    return (account?.wrappedDomains.map(mapWrappedDomain) || []) as Name[]
   }
-  return account.registrations.map(mapRegistration) as Name[]
+  return (account?.registrations.map(mapRegistration) || []) as Name[]
 }
 
 export default getNames
