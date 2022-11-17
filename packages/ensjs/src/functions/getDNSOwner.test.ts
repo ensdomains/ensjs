@@ -1,5 +1,4 @@
 import nock from 'nock'
-import fetch from 'node-fetch'
 import getDNSOwner, { encodeURLParams } from './getDNSOwner'
 
 function hexDecode(string: string) {
@@ -24,12 +23,6 @@ describe('encodeURLParams', () => {
 })
 
 describe('getDNSOwner', () => {
-  beforeAll(() => {
-    global.fetch = fetch as any
-  })
-  afterAll(() => {
-    global.fetch = undefined as any
-  })
   it('should return the address from the result of a dnsQuery', async () => {
     const dnsName = 'brantly.xyz'
 

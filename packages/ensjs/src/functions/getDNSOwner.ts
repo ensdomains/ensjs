@@ -1,4 +1,5 @@
 import * as packet from 'dns-packet'
+import { _fetchData } from 'ethers/lib/utils'
 
 export function encodeURLParams(p: { [key: string]: string }): string {
   return Object.entries(p)
@@ -7,15 +8,16 @@ export function encodeURLParams(p: { [key: string]: string }): string {
 }
 
 export const getDNS = async (q: packet.Packet): Promise<packet.Packet> => {
-  const response = await global.fetch(
-    `https://cloudflare-dns.com/dns-query?${encodeURLParams({
-      ct: 'application/dns-udpwireformat',
-      dns: packet.encode(q)?.toString('base64'),
-      ts: Date.now().toString(),
-    })}`,
+  const url = `https://cloudflare-dns.com/dns-query?${encodeURLParams({
+    ct: 'application/dns-udpwireformat',
+    dns: packet.encode(q)?.toString('base64'),
+    ts: Date.now().toString(),
+  })}`
+  const response = await _fetchData(url, undefined)
+  const arrayBuffer = response.buffer.slice(
+    response.byteOffset,
+    response.byteLength + response.byteOffset,
   )
-  const arrayBuffer = await response.arrayBuffer()
-  // @ts-ignore:next-line
   const fromArrayBuffer = Buffer.from(arrayBuffer)
   return packet.decode(fromArrayBuffer)
 }
