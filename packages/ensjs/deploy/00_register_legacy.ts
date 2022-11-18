@@ -6,7 +6,28 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { labelhash } from '../src/utils/labels'
 import { namehash } from '../src/utils/normalise'
 
-const names = [
+type Subname = {
+  label: string
+  namedOwner: string
+}
+
+const names: {
+  label: string
+  namedOwner: string
+  namedAddr: string
+  records?: {
+    text?: {
+      key: string
+      value: string
+    }[]
+    addr?: {
+      key: number
+      value: string
+    }[]
+    contenthash?: string
+  }
+  subnames?: Subname[]
+}[] = [
   {
     label: 'test123',
     namedOwner: 'owner',

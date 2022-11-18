@@ -15,6 +15,10 @@ beforeAll(async () => {
   accounts = await provider.listAccounts()
 })
 
+beforeEach(async () => {
+  await revert()
+})
+
 afterAll(async () => {
   await revert()
 })
@@ -140,6 +144,75 @@ describe('getProfile', () => {
       expect(result).toBeTruthy()
       if (result) {
         expect(result.isMigrated).toBe(false)
+      }
+    })
+  })
+  describe('with invalid resolver', () => {
+    it('should fail gracefully for a name with invalid resolver', async () => {
+      const tx = await ensInstance.setResolver('test123.eth', {
+        contract: 'registry',
+        resolver: '0xb794F5eA0ba39494cE839613fffBA74279579268',
+        addressOrIndex: 1,
+      })
+      expect(tx).toBeTruthy()
+      await tx.wait()
+      const result = await ensInstance.getProfile('test123.eth')
+      expect(result).toBeDefined()
+      if (result) {
+        expect(result.address).toBeUndefined()
+        expect(Object.keys(result.records!).length).toBe(0)
+        expect(result.resolverAddress).toBe(
+          '0xb794F5eA0ba39494cE839613fffBA74279579268',
+        )
+        expect(result.isInvalidResolverAddress).toBe(true)
+      }
+    })
+
+    it('should fail gracefully for a wrapped name with invalid resolver', async () => {
+      const tx = await ensInstance.setResolver('wrapped.eth', {
+        contract: 'nameWrapper',
+        resolver: '0xb794F5eA0ba39494cE839613fffBA74279579268',
+        addressOrIndex: 1,
+      })
+      expect(tx).toBeTruthy()
+      await tx.wait()
+      const result = await ensInstance.getProfile('wrapped.eth')
+      expect(result).toBeDefined()
+      if (result) {
+        expect(result.address).toBeUndefined()
+        expect(Object.keys(result.records!).length).toBe(0)
+        expect(result.resolverAddress).toBe(
+          '0xb794F5eA0ba39494cE839613fffBA74279579268',
+        )
+        expect(result.isInvalidResolverAddress).toBe(true)
+      }
+    })
+
+    it('should fail gracefully for name with invalid resolver option', async () => {
+      const result = await ensInstance.getProfile('test123.eth', {
+        resolverAddress: '0xb794F5eA0ba39494cE839613fffBA74279579268',
+      })
+      expect(result).toBeDefined()
+      if (result) {
+        expect(result.address).toBeFalsy()
+        expect(Object.keys(result.records!).length).toBe(0)
+        expect(result.resolverAddress).toBe(
+          '0xb794F5eA0ba39494cE839613fffBA74279579268',
+        )
+      }
+    })
+
+    it('should fail gracefully for wrapped name with invalid resolver option', async () => {
+      const result = await ensInstance.getProfile('wrapped.eth', {
+        resolverAddress: '0xb794F5eA0ba39494cE839613fffBA74279579268',
+      })
+      expect(result).toBeDefined()
+      if (result) {
+        expect(result.address).toBeFalsy()
+        expect(Object.keys(result.records!).length).toBe(0)
+        expect(result.resolverAddress).toBe(
+          '0xb794F5eA0ba39494cE839613fffBA74279579268',
+        )
       }
     })
   })
