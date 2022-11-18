@@ -166,6 +166,20 @@ export interface GenericGeneratedRawFunction
   extends Function,
     RawFunctionWithBatch {}
 
+interface GeneratedBatchFunction<F extends RawFunction>
+  extends Function,
+    RawFunction {
+  <I extends BatchFunctionResult<RawFunction>[]>(...args: I): Promise<
+    | {
+        [N in keyof I]: I[N] extends BatchFunctionResult<infer U>
+          ? Awaited<ReturnType<U['decode']>>
+          : never
+      }
+    | undefined
+  >
+  batch: BatchFunction<F>
+}
+
 export class ENS {
   [x: string]: any
 
@@ -418,7 +432,7 @@ export class ENS {
     'initialGetters',
     ['multicallWrapper'],
     'batch',
-  )
+  ) as GeneratedBatchFunction<typeof batch>
 
   public getProfile = this.generateFunction<typeof getProfile>(
     'initialGetters',
