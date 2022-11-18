@@ -13,6 +13,7 @@ import type burnFuses from './functions/burnFuses'
 import type commitName from './functions/commitName'
 import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
+import type getAvailable from './functions/getAvailable'
 import type getDNSOwner from './functions/getDNSOwner'
 import type getExpiry from './functions/getExpiry'
 import type { getHistory } from './functions/getHistory'
@@ -33,7 +34,7 @@ import type {
 } from './functions/getSpecificRecord'
 import type getSubnames from './functions/getSubnames'
 import type getWrapperData from './functions/getWrapperData'
-import importDNSSECName from './functions/importDNSSECName'
+import type importDNSSECName from './functions/importDNSSECName'
 import type registerName from './functions/registerName'
 import type {
   // eslint-disable-next-line import/no-named-default
@@ -531,6 +532,11 @@ export class ENS {
   public getDNSOwner = this.generateFunction<typeof getDNSOwner>(
     'getDNSOwner',
     [],
+  )
+
+  public getAvailable = this.generateRawFunction<typeof getAvailable>(
+    'getAvailable',
+    ['contracts'],
   )
 
   public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
