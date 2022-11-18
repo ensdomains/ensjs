@@ -87,7 +87,7 @@ export const _getText = {
     if (!response) {
       return
     }
-    return response
+    return response as string
   },
 }
 
