@@ -45,6 +45,7 @@ type ResolvedProfile = {
     coinTypes?: DataItem[]
   }
   resolverAddress?: string
+  isInvalidResolverAddress?: boolean
   reverseResolverAddress?: string
 }
 
@@ -293,21 +294,32 @@ const getDataForName = async (
       )
     }
   } else {
-    const resolvedData = await universalResolver['resolve(bytes,bytes[])'](
-      hexEncodeName(name),
-      data,
-      {
-        ccipReadEnabled: true,
-      },
-    )
-    recordData = [...resolvedData['0']]
-    resolverAddress = resolvedData['1']
-    for (let i = 0; i < recordData.length; i += 1) {
-      // error code for reverted call in batch
-      // this is expected when using offchain resolvers, so should be ignored
-      if (recordData[i]!.startsWith('0x0d1947a9')) {
-        calls[i] = null
-        recordData[i] = null
+    try {
+      const resolvedData = await universalResolver['resolve(bytes,bytes[])'](
+        hexEncodeName(name),
+        data,
+        {
+          ccipReadEnabled: true,
+        },
+      )
+      recordData = [...resolvedData['0']]
+      resolverAddress = resolvedData['1']
+      for (let i = 0; i < recordData.length; i += 1) {
+        // error code for reverted call in batch
+        // this is expected when using offchain resolvers, so should be ignored
+        if (recordData[i]!.startsWith('0x0d1947a9')) {
+          calls[i] = null
+          recordData[i] = null
+        }
+      }
+    } catch {
+      const registryContract = await contracts?.getRegistry()
+      resolverAddress = await registryContract?.resolver(namehash(name))
+      return {
+        address: undefined,
+        records: {},
+        resolverAddress,
+        isInvalidResolverAddress: true,
       }
     }
   }
@@ -317,9 +329,9 @@ const getDataForName = async (
     hexStripZeros(resolverAddress) === '0x'
   ) {
     return {
-      address: null,
+      address: undefined,
       records: {},
-      resolverAddress: null,
+      resolverAddress: undefined,
     }
   }
 
@@ -330,7 +342,8 @@ const getDataForName = async (
     filteredRecordData[filteredCalls.findIndex((x) => x.key === '60')]
 
   return {
-    address: matchAddress && (await _getAddr.decode(matchAddress)),
+    address:
+      matchAddress && (await _getAddr.decode(matchAddress).catch(() => false)),
     records: await formatRecords(
       { _getAddr, _getContentHash, _getText },
       filteredRecordData,
@@ -456,7 +469,7 @@ const getProfileFromName = async (
   >,
   name: string,
   options?: InputProfileOptions,
-) => {
+): Promise<ResolvedProfile | undefined> => {
   const { resolverAddress, fallback, ..._options } = options || {}
   const optsLength = Object.keys(_options).length
   let usingOptions: InputProfileOptions | undefined
