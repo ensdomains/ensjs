@@ -15,6 +15,7 @@ import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
 import type getAvailable from './functions/getAvailable'
 import type getDNSOwner from './functions/getDNSOwner'
+import type supportsTLD from './functions/supportsTLD'
 import type getExpiry from './functions/getExpiry'
 import type { getHistory } from './functions/getHistory'
 import type getName from './functions/getName'
@@ -546,6 +547,12 @@ export class ENS {
   public getDNSOwner = this.generateFunction<typeof getDNSOwner>(
     'getDNSOwner',
     [],
+  )
+
+  public supportsTLD = this.generateFunction<typeof supportsTLD>(
+    'initialGetters',
+    ['getOwner', 'provider'],
+    'supportsTLD',
   )
 
   public getAvailable = this.generateRawFunction<typeof getAvailable>(
