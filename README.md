@@ -43,6 +43,13 @@ const ENSInstance = new ENS()
 await ENSInstance.setProvider(provider)
 ```
 
+**NOTE:**
+If using ENSjs with Node, you may need to pass the `--experimental-specifier-resolution=node` flag.
+
+```sh
+node --experimental-specifier-resolution=node ./index.js
+```
+
 ## Batching Calls
 
 The batch function is a large part of this library, and there are plenty of situations where you might want to use it.
