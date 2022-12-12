@@ -69,5 +69,5 @@ esbuild.build({
   ],
   outdir: 'dist/cjs',
   format: 'cjs',
-  target: ['esnext'],
+  target: ['node16'],
 })

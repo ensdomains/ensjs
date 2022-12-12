@@ -15,7 +15,6 @@ import type createSubname from './functions/createSubname'
 import type deleteSubname from './functions/deleteSubname'
 import type getAvailable from './functions/getAvailable'
 import type getDNSOwner from './functions/getDNSOwner'
-import type supportsTLD from './functions/supportsTLD'
 import type getExpiry from './functions/getExpiry'
 import type { getHistory } from './functions/getHistory'
 import type getName from './functions/getName'
@@ -46,6 +45,7 @@ import type setName from './functions/setName'
 import type setRecord from './functions/setRecord'
 import type setRecords from './functions/setRecords'
 import type setResolver from './functions/setResolver'
+import type supportsTLD from './functions/supportsTLD'
 import type transferController from './functions/transferController'
 import type transferName from './functions/transferName'
 import type transferSubname from './functions/transferSubname'
@@ -259,10 +259,14 @@ export class ENS {
       // check the initial provider and set if it exists
       await thisRef.checkInitialProvider()
       // import the module dynamically
-      const mod = await import(
+      let mod = await import(
         /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true, webpackExclude: /.*\.ts$/ */
         `./functions/${path}`
       )
+      // if export is nested in default, use default
+      if (mod.default?.[exportName]) {
+        mod = mod.default
+      }
 
       // if combine isn't specified, run normally
       // otherwise, create a function from the raw and decode functions
