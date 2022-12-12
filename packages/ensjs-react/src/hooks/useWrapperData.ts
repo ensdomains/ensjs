@@ -1,24 +1,26 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData } from '../utils/utils'
 
-const useWrapperData = (name: string, skip?: any) => {
+import { useCachedQuery } from './useCachedQuery'
+
+type Args = {
+  name: string | null | undefined
+} & QueryConfig<ReturnType<PublicENS['getWrapperData']>, Error>
+
+const useWrapperData = ({
+  name,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+}: Args) => {
   const { ready, getWrapperData } = useEns()
-
-  const { data: wrapperData, ...query } = useQuery(
-    ['getWrapperData', name],
-    () => getWrapperData(name),
-    {
-      enabled: ready && !skip && name !== '',
-    },
-  )
-
-  return {
-    ...query,
-    wrapperData,
-    isCachedData: checkCachedData(query),
-  }
+  return useCachedQuery(['getWrapperData', name], () => getWrapperData(name!), {
+    enabled: Boolean(enabled && ready && name),
+    onError,
+    onSettled,
+    onSuccess,
+  })
 }
 
 export default useWrapperData

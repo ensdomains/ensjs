@@ -1,22 +1,26 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData } from '../utils/utils'
 
-const useSupportsTLD = (name = '') => {
+import { useCachedQuery } from './useCachedQuery'
+
+type Args = {
+  name: string | null | undefined
+} & QueryConfig<ReturnType<PublicENS['supportsTLD']>, Error>
+
+const useSupportsTLD = ({
+  name,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+}: Args) => {
   const { ready, supportsTLD } = useEns()
-  const labels = name?.split('.') || []
-  const tld = labels[labels.length - 1]
-
-  const { data: supported, ...query } = useQuery(
-    ['supportedTLD', tld],
-    () => supportsTLD(tld),
-    {
-      enabled: ready && !!tld,
-    },
-  )
-
-  return { ...query, supported, isCachedData: checkCachedData(query) }
+  return useCachedQuery(['supportsTLD', name], () => supportsTLD(name!), {
+    enabled: Boolean(enabled && ready && name),
+    onError,
+    onSettled,
+    onSuccess,
+  })
 }
 
 export default useSupportsTLD

@@ -1,31 +1,34 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData, yearsToSeconds } from '../utils/utils'
 
-const usePrice = (nameOrNames: string | string[], legacy?: boolean) => {
+import { useCachedQuery } from './useCachedQuery'
+
+type Args = {
+  nameOrNames: Parameters<PublicENS['getPrice']>['0']
+  duration: Parameters<PublicENS['getPrice']>['1']
+  legacy?: Parameters<PublicENS['getPrice']>['2']
+} & QueryConfig<ReturnType<PublicENS['getPrice']>, Error>
+
+const usePrice = ({
+  nameOrNames,
+  duration,
+  legacy,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+}: Args) => {
   const { ready, getPrice } = useEns()
-  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
-  const type = legacy ? 'legacy' : 'new'
-  const { data, ...query } = useQuery(
-    ['usePrice', type, ...names],
-    async () => getPrice(nameOrNames, yearsToSeconds(1), legacy),
+  return useCachedQuery(
+    ['getPrice', { nameOrNames, duration, legacy }],
+    () => getPrice(nameOrNames, duration, legacy),
     {
-      enabled: !!(ready && nameOrNames && nameOrNames.length > 0),
+      enabled: Boolean(enabled && ready && nameOrNames),
+      onError,
+      onSettled,
+      onSuccess,
     },
   )
-
-  const base = data?.base
-  const premium = data?.premium
-  const hasPremium = data?.premium.gt(0)
-
-  return {
-    ...query,
-    base,
-    premium,
-    hasPremium,
-    isCachedData: checkCachedData(query),
-  }
 }
 
 export default usePrice

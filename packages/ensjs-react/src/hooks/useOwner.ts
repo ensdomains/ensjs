@@ -5,17 +5,19 @@ import { useCachedQuery } from './useCachedQuery'
 
 type Args = {
   name: string | null | undefined
-} & QueryConfig<ReturnType<PublicENS['getName']>, Error>
+  contract: Parameters<PublicENS['getOwner']>['1']
+} & QueryConfig<ReturnType<PublicENS['getOwner']>, Error>
 
-const usePrimary = ({
+const useOwner = ({
   name,
+  contract,
   onError,
   onSettled,
   onSuccess,
   enabled = true,
 }: Args) => {
-  const { ready, getName } = useEns()
-  return useCachedQuery(['getName', name], () => getName(name!), {
+  const { ready, getOwner } = useEns()
+  return useCachedQuery(['getOwner', name], () => getOwner(name!, contract), {
     enabled: Boolean(enabled && ready && name),
     onError,
     onSettled,
@@ -23,4 +25,4 @@ const usePrimary = ({
   })
 }
 
-export default usePrimary
+export default useOwner

@@ -16,14 +16,6 @@ export type BatchLoadFn<K, V> = (
   keys: ReadonlyArray<K>,
 ) => Promise<ReadonlyArray<V | Error>>
 
-// Optionally turn off batching or caching or provide a cache key function or a
-// custom cache instance.
-export type Options = {
-  batch?: boolean
-  maxBatchSize?: number
-  batchScheduleFn?: (callback: () => void) => void
-}
-
 /**
  * A `DataLoader` creates a public API for loading data from a particular
  * data back-end with unique keys such as the `id` column of a SQL table or
@@ -35,7 +27,7 @@ export type Options = {
  * web request.
  */
 class DataLoader<K, V> {
-  constructor(batchLoadFn: BatchLoadFn<K, V>, options?: Options) {
+  constructor(batchLoadFn: BatchLoadFn<K, V>) {
     if (typeof batchLoadFn !== 'function') {
       throw new TypeError(
         'DataLoader must be constructed with a function which accepts ' +
@@ -43,8 +35,8 @@ class DataLoader<K, V> {
       )
     }
     this._batchLoadFn = batchLoadFn
-    this._maxBatchSize = getValidMaxBatchSize(options)
-    this._batchScheduleFn = getValidBatchScheduleFn(options)
+    this._maxBatchSize = Infinity
+    this._batchScheduleFn = enqueuePostPromiseJob
     this._batch = null
   }
 
@@ -78,41 +70,6 @@ class DataLoader<K, V> {
     })
 
     return promise as Promise<V>
-  }
-
-  /**
-   * Loads multiple keys, promising an array of values:
-   *
-   *     var [ a, b ] = await myLoader.loadMany([ 'a', 'b' ]);
-   *
-   * This is similar to the more verbose:
-   *
-   *     var [ a, b ] = await Promise.all([
-   *       myLoader.load('a'),
-   *       myLoader.load('b')
-   *     ]);
-   *
-   * However it is different in the case where any load fails. Where
-   * Promise.all() would reject, loadMany() always resolves, however each result
-   * is either a value or an Error instance.
-   *
-   *     var [ a, b, c ] = await myLoader.loadMany([ 'a', 'b', 'badkey' ]);
-   *     // c instanceof Error
-   *
-   */
-  loadMany(keys: ReadonlyArray<K>): Promise<Array<V | Error>> {
-    if (!isArrayLike(keys)) {
-      throw new TypeError(
-        'The loader.loadMany() function must be called with Array<key> ' +
-          `but got: ${keys}.`,
-      )
-    }
-    // Support ArrayLike by using only minimal property access
-    const loadPromises = []
-    for (let i = 0; i < keys.length; i += 1) {
-      loadPromises.push(this.load(keys[i]).catch((error) => error))
-    }
-    return Promise.all(loadPromises)
   }
 }
 
@@ -168,7 +125,6 @@ type Batch<K, V> = {
     resolve: (value: V) => void
     reject: (error: Error) => void
   }>
-  cacheHits?: Array<() => void>
 }
 
 // Private: Either returns the current batch, or creates and schedules a
@@ -205,7 +161,6 @@ function dispatchBatch<K, V>(loader: DataLoader<K, V>, batch: Batch<K, V>) {
 
   // If there's nothing to load, resolve any cache hits and return early.
   if (batch.keys.length === 0) {
-    resolveCacheHits(batch)
     return
   }
 
@@ -216,7 +171,6 @@ function dispatchBatch<K, V>(loader: DataLoader<K, V>, batch: Batch<K, V>) {
   // Assert the expected response from batchLoadFn
   if (!batchPromise || typeof batchPromise.then !== 'function') {
     return failedDispatch(
-      loader,
       batch,
       new TypeError(
         'DataLoader must be constructed with a function which accepts ' +
@@ -248,9 +202,6 @@ function dispatchBatch<K, V>(loader: DataLoader<K, V>, batch: Batch<K, V>) {
         )
       }
 
-      // Resolve all cache hits in the same micro-task as freshly loaded values.
-      resolveCacheHits(batch)
-
       // Step through values, resolving or rejecting each Promise in the batch.
       for (let i = 0; i < batch.callbacks.length; i += 1) {
         const value = values[i]
@@ -262,65 +213,16 @@ function dispatchBatch<K, V>(loader: DataLoader<K, V>, batch: Batch<K, V>) {
       }
     })
     .catch((error) => {
-      failedDispatch(loader, batch, error)
+      failedDispatch(batch, error)
     })
 }
 
 // Private: do not cache individual loads if the entire batch dispatch fails,
 // but still reject each request so they do not hang.
-function failedDispatch<K, V>(
-  loader: DataLoader<K, V>,
-  batch: Batch<K, V>,
-  error: Error,
-) {
-  // Cache hits are resolved, even though the batch failed.
-  resolveCacheHits(batch)
+function failedDispatch<K, V>(batch: Batch<K, V>, error: Error) {
   for (let i = 0; i < batch.keys.length; i += 1) {
     batch.callbacks[i].reject(error)
   }
-}
-
-// Private: Resolves the Promises for any cache hits in this batch.
-function resolveCacheHits(batch: Batch<any, any>) {
-  if (batch.cacheHits) {
-    for (let i = 0; i < batch.cacheHits.length; i += 1) {
-      batch.cacheHits[i]()
-    }
-  }
-}
-
-// Private: given the DataLoader's options, produce a valid max batch size.
-function getValidMaxBatchSize(options: Options | null | undefined): number {
-  const shouldBatch = !options || options.batch !== false
-  if (!shouldBatch) {
-    return 1
-  }
-  const maxBatchSize = options && options.maxBatchSize
-  if (maxBatchSize === undefined) {
-    return Infinity
-  }
-  if (typeof maxBatchSize !== 'number' || maxBatchSize < 1) {
-    throw new TypeError(
-      `maxBatchSize must be a positive number: ${maxBatchSize}`,
-    )
-  }
-  return maxBatchSize
-}
-
-// Private
-function getValidBatchScheduleFn(
-  options: Options | null | undefined,
-): (fn: () => void) => void {
-  const batchScheduleFn = options && options.batchScheduleFn
-  if (batchScheduleFn === undefined) {
-    return enqueuePostPromiseJob
-  }
-  if (typeof batchScheduleFn !== 'function') {
-    throw new TypeError(
-      `batchScheduleFn must be a function: ${batchScheduleFn}`,
-    )
-  }
-  return batchScheduleFn
 }
 
 // Private

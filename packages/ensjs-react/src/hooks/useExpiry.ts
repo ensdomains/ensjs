@@ -1,33 +1,28 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData } from '../utils/utils'
 
-const useExpiry = (name: string, skip?: boolean) => {
+import { useCachedQuery } from './useCachedQuery'
+
+type Args = {
+  name: string | null | undefined
+  contract: Parameters<PublicENS['getExpiry']>['1']
+} & QueryConfig<ReturnType<PublicENS['getExpiry']>, Error>
+
+const useExpiry = ({
+  name,
+  contract,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+}: Args) => {
   const { ready, getExpiry } = useEns()
-
-  const { data, ...query } = useQuery(
-    ['useExpiry', name],
-    async () => {
-      const results = await getExpiry(name)
-      return {
-        expiry: results?.expiry?.valueOf(),
-        gracePeriod: results?.gracePeriod,
-      }
-    },
-    {
-      enabled: !skip && ready,
-    },
-  )
-
-  return {
-    ...query,
-    expiry: {
-      expiry: data?.expiry ? new Date(data.expiry) : undefined,
-      gracePeriod: data?.gracePeriod,
-    },
-    isCachedData: checkCachedData(query),
-  }
+  return useCachedQuery(['getExpiry', name], () => getExpiry(name!, contract), {
+    enabled: Boolean(enabled && ready && name),
+    onError,
+    onSettled,
+    onSuccess,
+  })
 }
 
 export default useExpiry

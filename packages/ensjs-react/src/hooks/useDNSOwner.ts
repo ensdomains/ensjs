@@ -1,24 +1,26 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData } from '../utils/utils'
 
-const useDNSOwner = (name: string, valid: boolean | undefined) => {
+import { useCachedQuery } from './useCachedQuery'
+
+type Args = {
+  name: string | null | undefined
+} & QueryConfig<ReturnType<PublicENS['getDNSOwner']>, Error>
+
+const useDNSOwner = ({
+  name,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+}: Args) => {
   const { ready, getDNSOwner } = useEns()
-
-  const { data: dnsOwner, ...query } = useQuery(
-    ['getDNSOwner', name],
-    () => getDNSOwner(name),
-    {
-      enabled: ready && valid && !name?.endsWith('.eth'),
-    },
-  )
-
-  return {
-    ...query,
-    dnsOwner,
-    isCachedData: checkCachedData(query),
-  }
+  return useCachedQuery(['getDNSOwner', name], () => getDNSOwner(name!), {
+    enabled: Boolean(enabled && ready && name),
+    onError,
+    onSettled,
+    onSuccess,
+  })
 }
 
 export default useDNSOwner

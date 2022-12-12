@@ -1,33 +1,32 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData } from '../utils/utils'
 
-type Fallback = {
-  contentHash?: boolean | undefined
-  texts?: string[] | undefined
-  coinTypes?: string[] | undefined
-}
+import { useCachedQuery } from './useCachedQuery'
 
-const useProfile = (name: string, fallback?: Fallback, skip?: any) => {
+type Args = {
+  nameOrAddress: Parameters<PublicENS['getProfile']>[0]
+} & Parameters<PublicENS['getProfile']>[1] &
+  QueryConfig<ReturnType<PublicENS['getProfile']>, Error>
+
+const useProfile = ({
+  nameOrAddress,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+  ...arg1
+}: Args) => {
   const { ready, getProfile } = useEns()
-
-  const { data: profile, ...query } = useQuery(
-    ['graph', 'getProfile', name],
-    () =>
-      getProfile(name, {
-        fallback,
-      }),
+  return useCachedQuery(
+    ['getProfile', { nameOrAddress, ...arg1 }],
+    () => getProfile(nameOrAddress, arg1),
     {
-      enabled: ready && !skip && name !== '',
+      enabled: Boolean(enabled && ready && nameOrAddress),
+      onError,
+      onSettled,
+      onSuccess,
     },
   )
-
-  return {
-    ...query,
-    profile,
-    isCachedData: checkCachedData(query),
-  }
 }
 
 export default useProfile

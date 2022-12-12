@@ -5,22 +5,24 @@ import { useCachedQuery } from './useCachedQuery'
 
 type Args = {
   name: string | null | undefined
-} & QueryConfig<ReturnType<PublicENS['getName']>, Error>
+  key: string
+} & QueryConfig<ReturnType<PublicENS['getText']>, Error>
 
-const usePrimary = ({
+const useText = ({
   name,
+  key,
   onError,
   onSettled,
   onSuccess,
   enabled = true,
 }: Args) => {
-  const { ready, getName } = useEns()
-  return useCachedQuery(['getName', name], () => getName(name!), {
-    enabled: Boolean(enabled && ready && name),
+  const { ready, getText } = useEns()
+  return useCachedQuery(['getText', { name, key }], () => getText(name!, key), {
+    enabled: Boolean(enabled && ready && key && name),
     onError,
     onSettled,
     onSuccess,
   })
 }
 
-export default usePrimary
+export default useText

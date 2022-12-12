@@ -1,24 +1,26 @@
-import { useQuery } from 'wagmi'
-
+import { PublicENS, QueryConfig } from '../types'
 import { useEns } from '../utils/EnsProvider'
-import { checkCachedData } from '../utils/utils'
 
-const useHistory = (name: string, skip?: any) => {
+import { useCachedQuery } from './useCachedQuery'
+
+type Args = {
+  name: string | null | undefined
+} & QueryConfig<ReturnType<PublicENS['getHistory']>, Error>
+
+const useHistory = ({
+  name,
+  onError,
+  onSettled,
+  onSuccess,
+  enabled = true,
+}: Args) => {
   const { ready, getHistory } = useEns()
-
-  const { data: history, ...query } = useQuery(
-    ['graph', 'getHistory', name],
-    () => getHistory(name),
-    {
-      enabled: ready && !skip && name !== '',
-    },
-  )
-
-  return {
-    ...query,
-    history,
-    isCachedData: checkCachedData(query),
-  }
+  return useCachedQuery(['getHistory', name], () => getHistory(name!), {
+    enabled: Boolean(enabled && ready && name),
+    onError,
+    onSettled,
+    onSuccess,
+  })
 }
 
 export default useHistory
