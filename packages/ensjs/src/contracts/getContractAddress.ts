@@ -46,7 +46,7 @@ const addresses: Record<
     '5': '0xD5610A08E370051a01fdfe4bB3ddf5270af1aA48',
   },
   UniversalResolver: {
-    '1': '0x580AF46E06DaaD47eb5940526FD64d95b815Cb70',
+    '1': '0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376',
     '3': '0x74e20bd2a1fe0cdbe45b9a1d89cb7e0a45b36376',
     '4': '0x74e20bd2a1fe0cdbe45b9a1d89cb7e0a45b36376',
     '5': '0x687c30Cc44bFA39A1449e86E172BF002E7b3f0b0',
