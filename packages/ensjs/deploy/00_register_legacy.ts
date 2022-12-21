@@ -1,10 +1,132 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
+import cbor from 'cbor'
+import { toUtf8Bytes } from 'ethers/lib/utils'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import pako from 'pako'
 import { labelhash } from '../src/utils/labels'
 import { namehash } from '../src/utils/normalise'
+
+const dummyABI = [
+  {
+    type: 'event',
+    anonymous: false,
+    name: 'ABIChanged',
+    inputs: [
+      {
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    name: 'VersionChanged',
+    inputs: [
+      {
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        type: 'uint64',
+      },
+    ],
+  },
+  {
+    type: 'function',
+    name: 'ABI',
+    constant: true,
+    stateMutability: 'view',
+    payable: false,
+    inputs: [
+      {
+        type: 'bytes32',
+      },
+      {
+        type: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        type: 'uint256',
+      },
+      {
+        type: 'bytes',
+      },
+    ],
+  },
+  {
+    type: 'function',
+    name: 'clearRecords',
+    constant: false,
+    payable: false,
+    inputs: [
+      {
+        type: 'bytes32',
+      },
+    ],
+    outputs: [],
+  },
+  {
+    type: 'function',
+    name: 'recordVersions',
+    constant: true,
+    stateMutability: 'view',
+    payable: false,
+    inputs: [
+      {
+        type: 'bytes32',
+      },
+    ],
+    outputs: [
+      {
+        type: 'uint64',
+      },
+    ],
+  },
+  {
+    type: 'function',
+    name: 'setABI',
+    constant: false,
+    payable: false,
+    inputs: [
+      {
+        type: 'bytes32',
+      },
+      {
+        type: 'uint256',
+      },
+      {
+        type: 'bytes',
+      },
+    ],
+    outputs: [],
+  },
+  {
+    type: 'function',
+    name: 'supportsInterface',
+    constant: true,
+    stateMutability: 'view',
+    payable: false,
+    inputs: [
+      {
+        type: 'bytes4',
+      },
+    ],
+    outputs: [
+      {
+        type: 'bool',
+      },
+    ],
+  },
+]
 
 type Subname = {
   label: string
@@ -25,6 +147,10 @@ const names: {
       value: string
     }[]
     contenthash?: string
+    abi?: {
+      contentType: 1 | 2 | 4 | 8 | 256
+      data: object | string
+    }
   }
   subnames?: Subname[]
 }[] = [
@@ -105,6 +231,61 @@ const names: {
       { label: 'xyz', namedOwner: 'owner2' },
       { label: 'addr', namedOwner: 'owner2' },
     ],
+  },
+  {
+    label: 'with-type-1-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 1,
+        data: dummyABI,
+      },
+    },
+  },
+  {
+    label: 'with-type-2-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 2,
+        data: dummyABI,
+      },
+    },
+  },
+  {
+    label: 'with-type-4-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 4,
+        data: dummyABI,
+      },
+    },
+  },
+  {
+    label: 'with-type-8-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 8,
+        data: 'https://example.com',
+      },
+    },
+  },
+  {
+    label: 'with-type-256-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 256,
+        data: dummyABI,
+      },
+    },
   },
   ...Array.from({ length: 34 }, (_, i) => ({
     label: `${i}-dummy`,
@@ -198,6 +379,27 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           ` - ${records.contenthash} (tx: ${setContenthashTx.hash})...`,
         )
         await setContenthashTx.wait()
+      }
+      if (records.abi) {
+        console.log('ABI')
+        let data: string | Buffer | Uint8Array
+        if (records.abi.contentType === 1 || records.abi.contentType === 256) {
+          data = JSON.stringify(records.abi.data)
+        } else if (records.abi.contentType === 2) {
+          data = pako.deflate(JSON.stringify(records.abi.data))
+        } else if (records.abi.contentType === 4) {
+          data = cbor.encode(records.abi.data)
+        } else {
+          data = records.abi.data as string
+        }
+        if (typeof data === 'string') data = toUtf8Bytes(data)
+        const setABITx = await _publicResolver.setABI(
+          hash,
+          records.abi.contentType,
+          data,
+        )
+        console.log(` - ${records.abi.contentType} (tx: ${setABITx.hash})...`)
+        await setABITx.wait()
       }
     }
 

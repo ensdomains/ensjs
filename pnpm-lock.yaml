@@ -100,7 +100,9 @@ importers:
       '@typechain/ethers-v5': ^10.1.0
       '@types/bn.js': ^5.1.0
       '@types/jest': ^27.4.1
+      '@types/pako': ^2.0.0
       '@types/traverse': ^0.6.32
+      cbor: ^8.1.0
       dns-packet: ^5.3.1
       dotenv: ^16.0.0
       esbuild: ^0.15.6
@@ -120,6 +122,7 @@ importers:
       nock: ^13.2.8
       node-fetch: ^3.2.6
       node-fetch-commonjs: ^3.1.1
+      pako: ^2.1.0
       solc: ^0.8.13
       traverse: ^0.6.6
       ts-jest: ^27.1.4
@@ -132,11 +135,13 @@ importers:
       '@ensdomains/content-hash': 2.5.7
       '@ensdomains/dnsprovejs': 0.4.1
       '@ensdomains/dnssecoraclejs': 0.2.7_timjjj5ssgey6ctscbdzvpmswi
+      cbor: 8.1.0
       dns-packet: 5.4.0
       ethers: 5.6.9
       graphql: 16.6.0
-      graphql-request: 5.1.0-next.3_graphql@16.6.0
+      graphql-request: 5.1.0_graphql@16.6.0
       idna-uts46-hx: 3.4.0
+      pako: 2.1.0
       traverse: 0.6.6
     devDependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.10.2
@@ -152,6 +157,7 @@ importers:
       '@typechain/ethers-v5': 10.1.0_fbp5tbcdjjq4jan7wzeon4p3qq
       '@types/bn.js': 5.1.0
       '@types/jest': 27.5.2
+      '@types/pako': 2.0.0
       '@types/traverse': 0.6.32
       dotenv: 16.0.1
       esbuild: 0.15.6
@@ -738,7 +744,7 @@ packages:
     dependencies:
       '@resolver-engine/imports': 0.3.3
       '@resolver-engine/imports-fs': 0.3.3
-      '@typechain/ethers-v5': 2.0.0_typechain@3.0.0
+      '@typechain/ethers-v5': 2.0.0_oai42fke67omxp5i2g4vu7ymuy
       '@types/mkdirp': 0.5.2
       '@types/node-fetch': 2.6.2
       ethers: 5.6.9
@@ -2050,16 +2056,14 @@ packages:
       typescript: 4.7.4
     dev: true
 
-  /@typechain/ethers-v5/2.0.0_typechain@3.0.0:
+  /@typechain/ethers-v5/2.0.0_oai42fke67omxp5i2g4vu7ymuy:
     resolution: {integrity: sha512-0xdCkyGOzdqh4h5JSf+zoWx85IusEjDcPIwNEHP8mrWSnCae4rvrqB+/gtpdNfX7zjlFlZiMeePn2r63EI3Lrw==}
     peerDependencies:
+      ethers: ^5.0.0
       typechain: ^3.0.0
     dependencies:
       ethers: 5.6.9
       typechain: 3.0.0_typescript@4.7.4
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
     dev: false
 
   /@types/abstract-leveldown/7.2.0:
@@ -2194,6 +2198,10 @@ packages:
 
   /@types/node/18.6.5:
     resolution: {integrity: sha512-Xjt5ZGUa5WusGZJ4WJPbOT8QOqp6nDynVFRKcUt32bOgvXEoc6o085WNkYTMO7ifAj2isEfQQ2cseE+wT6jsRw==}
+
+  /@types/pako/2.0.0:
+    resolution: {integrity: sha512-10+iaz93qR5WYxTo+PMifD5TSxiOtdRaxBf7INGGXMQgTCu8Z/7GYWYFUOS3q/G0nE5boj1r4FEB+WSy7s5gbA==}
+    dev: true
 
   /@types/pbkdf2/3.1.0:
     resolution: {integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==}
@@ -3870,6 +3878,13 @@ packages:
     dependencies:
       bignumber.js: 9.1.0
       nofilter: 1.0.4
+
+  /cbor/8.1.0:
+    resolution: {integrity: sha512-DwGjNW9omn6EwP70aXsn7FQJx5kO12tX0bZkaTjzdVFM6/7nhA4t0EENocKGx6D2Bch9PE2KzCUf5SceBdeijg==}
+    engines: {node: '>=12.19'}
+    dependencies:
+      nofilter: 3.1.0
+    dev: false
 
   /chai-bn/0.2.2_chai@4.3.6:
     resolution: {integrity: sha512-MzjelH0p8vWn65QKmEq/DLBG1Hle4WeyqT79ANhXZhn/UxRWO0OogkAxi5oGGtfzwU9bZR8mvbvYdoqNVWQwFg==}
@@ -6927,8 +6942,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql-request/5.1.0-next.3_graphql@16.6.0:
-    resolution: {integrity: sha512-DzFHEz4/fUIWvo/CiWF3FnTejsaFDel/Fcu4YY34OYiFERG8LSsmGhKvwBWWygJYyzdQ5h4P42xv11+kdBheHg==}
+  /graphql-request/5.1.0_graphql@16.6.0:
+    resolution: {integrity: sha512-0OeRVYigVwIiXhNmqnPDt+JhMzsjinxHE7TVy3Lm6jUzav0guVcL0lfSbi6jVTRAxcbwgyr6yrZioSHxf9gHzw==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
@@ -9606,6 +9621,11 @@ packages:
     resolution: {integrity: sha512-N8lidFp+fCz+TD51+haYdbDGrcBWwuHX40F5+z0qkUjMJ5Tp+rdSuAkMJ9N9eoolDlEVTf6u5icM+cNKkKW2mA==}
     engines: {node: '>=8'}
 
+  /nofilter/3.1.0:
+    resolution: {integrity: sha512-l2NNj07e9afPnhAhvgVrCD/oy2Ai1yfLpuo3EpiO1jFTsB4sFz6oIfAfSZyQzVpkZQ9xS8ZS5g1jCBgq4Hwo0g==}
+    engines: {node: '>=12.19'}
+    dev: false
+
   /normalize-package-data/2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
@@ -9927,6 +9947,10 @@ packages:
 
   /pako/1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+
+  /pako/2.1.0:
+    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+    dev: false
 
   /param-case/2.1.1:
     resolution: {integrity: sha512-eQE845L6ot89sk2N8liD8HAuH4ca6Vvr7VWAWwt7+kvvG5aBcPmmphQ68JsEG2qa9n1TykS2DLeMt363AAH8/w==}

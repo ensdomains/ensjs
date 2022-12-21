@@ -25,9 +25,11 @@ import type getProfile from './functions/getProfile'
 import type getRecords from './functions/getRecords'
 import type getResolver from './functions/getResolver'
 import type {
+  getABI,
   getAddr,
   getContentHash,
   getText,
+  _getABI,
   _getAddr,
   _getContentHash,
   _getText,
@@ -516,6 +518,18 @@ export class ENS {
     'initialGetters',
     ['contracts'],
     '_getText',
+  )
+
+  public getABI = this.generateRawFunction<typeof getABI>(
+    'initialGetters',
+    ['contracts', 'universalWrapper'],
+    'getABI',
+  )
+
+  public _getABI = this.generateRawFunction<typeof _getABI>(
+    'initialGetters',
+    ['contracts'],
+    '_getABI',
   )
 
   public getOwner = this.generateRawFunction<typeof getOwner>(
