@@ -141,9 +141,6 @@ const awaitCommand = async (name, command) => {
   })
   const outPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
   const errPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
-  deploy.stdout.on('data', (data) => {
-    console.log('deploy stdout', data.toString())
-  })
   deploy.stdout.pipe(outPrepender).pipe(process.stdout)
   deploy.stderr.pipe(errPrepender).pipe(process.stderr)
   return new Promise((resolve) => deploy.on('exit', () => resolve()))
