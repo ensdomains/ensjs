@@ -16,6 +16,11 @@ type AddrOrTextInput = {
   type: 'addr' | 'text'
 }
 
+type ABIInput = {
+  record: RecordInput<'abi'>
+  type: 'abi'
+}
+
 export default async function (
   {
     contracts,
@@ -28,7 +33,7 @@ export default async function (
     record,
     type,
     resolverAddress,
-  }: BaseInput & (ContentHashInput | AddrOrTextInput),
+  }: BaseInput & (ContentHashInput | AddrOrTextInput | ABIInput),
 ) {
   if (!name.includes('.')) {
     throw new Error('Input is not an ENS name')
