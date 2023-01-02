@@ -1,4 +1,7 @@
-import type { JsonRpcSigner } from '@ethersproject/providers'
+import type {
+  JsonRpcSigner,
+  TransactionRequest,
+} from '@ethersproject/providers'
 import { ContractTransaction, ethers, PopulatedTransaction } from 'ethers'
 import { getContractAddress as _getContractAddress } from './contracts/getContractAddress'
 import ContractManager from './contracts/index'
@@ -52,7 +55,7 @@ import type transferSubname from './functions/transferSubname'
 import type unwrapName from './functions/unwrapName'
 import type wrapName from './functions/wrapName'
 import GqlManager from './GqlManager'
-import singleCall from './utils/singleCall'
+import DataLoader from './utils/autobatch'
 import writeTx from './utils/writeTx'
 
 export type {
@@ -203,6 +206,45 @@ export class ENS {
     this.getContractAddress = options?.getContractAddress || _getContractAddress
   }
 
+  providerCall = async (txs: readonly TransactionRequest[]) => {
+    if (!this.provider) throw new Error('ENS provider not set')
+    if (txs.length === 1) {
+      const call = await this.provider.call({
+        ...txs[0],
+        ccipReadEnabled: true,
+      })
+      return [call]
+    }
+
+    const multicalls = await this.multicallWrapper.raw(
+      txs as TransactionRequest[],
+    )
+    const call = await this.provider.call({
+      ...multicalls,
+      ccipReadEnabled: true,
+    })
+    const decoded = await this.multicallWrapper.decode(call, txs)
+    return decoded.map((d: any) => d.returnData)
+  }
+
+  protected batchInstances = {
+    provider: new DataLoader(this.providerCall),
+  }
+
+  protected callFunction = (
+    ensData: any,
+    func: {
+      raw: (...args: any[]) => Promise<{ to: string; data: string }>
+      decode: (...args: any[]) => Promise<any>
+    },
+    ...data: any[]
+  ) =>
+    func
+      .raw(ensData, ...data)
+      .then((rawData) => this.batchInstances.provider.load(rawData))
+      .catch(() => null)
+      .then((ret) => func.decode(ensData, ret, ...data))
+
   /**
    * Checks for an initial provider and if it exists, sets it as the provider
    * @returns {Promise<void>} - A promise that resolves when the provider is checked, and set if needed
@@ -307,8 +349,7 @@ export class ENS {
       >(dependencies as any)
 
       // return singleCall function with dependencies forwarded
-      return singleCall(
-        thisRef.provider!,
+      return thisRef.callFunction(
         dependenciesToForward,
         mod[exportName],
         ...args,
