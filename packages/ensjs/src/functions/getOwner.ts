@@ -1,4 +1,6 @@
-import { ethers } from 'ethers'
+import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import type { Result } from '@ethersproject/abi/lib/coders/abstract-coder'
+import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { labelhash } from '../utils/labels'
 import { namehash as makeNamehash } from '../utils/normalise'
@@ -104,7 +106,7 @@ const registrantQuery = `
 `
 
 const singleContractOwnerDecode = (data: string) =>
-  ethers.utils.defaultAbiCoder.decode(['address'], data)[0]
+  defaultAbiCoder.decode(['address'], data)[0]
 
 const decode = async (
   {
@@ -139,20 +141,17 @@ const decode = async (
   const nameWrapper = await contracts?.getNameWrapper()!
 
   const decodedData = [result[0][1], result[1][1], result[2]?.[1]].map(
-    (ret) =>
-      ret &&
-      ret !== '0x' &&
-      ethers.utils.defaultAbiCoder.decode(['address'], ret),
+    (ret) => ret && ret !== '0x' && defaultAbiCoder.decode(['address'], ret),
   )
 
-  const registryOwner = (decodedData[0] as ethers.utils.Result)[0]
-  const nameWrapperOwner = (decodedData[1] as ethers.utils.Result)[0]
-  let registrarOwner = (decodedData[2] as ethers.utils.Result | undefined)?.[0]
+  const registryOwner = (decodedData[0] as Result)[0]
+  const nameWrapperOwner = (decodedData[1] as Result)[0]
+  let registrarOwner = (decodedData[2] as Result | undefined)?.[0]
 
   // check for only .eth names
   if (labels[labels.length - 1] === 'eth') {
     if (!registrarOwner && labels.length === 2) {
-      const graphRegistrantResult = await gqlInstance?.request(
+      const graphRegistrantResult = await gqlInstance.client.request(
         registrantQuery,
         {
           namehash: makeNamehash(name),
@@ -180,7 +179,7 @@ const decode = async (
         ownershipLevel: 'registrar',
       }
     }
-    if (ethers.utils.hexStripZeros(registryOwner) !== '0x') {
+    if (hexStripZeros(registryOwner) !== '0x') {
       // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
       // so we still want to return the ownership values
       if (labels.length === 2) {
@@ -194,7 +193,7 @@ const decode = async (
       if (
         registryOwner === nameWrapper.address &&
         nameWrapperOwner &&
-        ethers.utils.hexStripZeros(nameWrapperOwner) !== '0x'
+        hexStripZeros(nameWrapperOwner) !== '0x'
       ) {
         return {
           owner: nameWrapperOwner,
@@ -218,7 +217,7 @@ const decode = async (
   if (
     registryOwner === nameWrapper.address &&
     nameWrapperOwner &&
-    ethers.utils.hexStripZeros(nameWrapperOwner) !== '0x'
+    hexStripZeros(nameWrapperOwner) !== '0x'
   ) {
     return {
       owner: nameWrapperOwner,
@@ -227,7 +226,7 @@ const decode = async (
   }
 
   // for unwrapped non .eth names, the owner is the registry owner
-  if (ethers.utils.hexStripZeros(registryOwner) !== '0x') {
+  if (hexStripZeros(registryOwner) !== '0x') {
     return {
       owner: registryOwner,
       ownershipLevel: 'registry',

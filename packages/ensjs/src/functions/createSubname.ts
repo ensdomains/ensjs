@@ -1,4 +1,5 @@
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { FuseOptions } from '../utils/fuses'
 import generateFuseInput from '../utils/generateFuseInput'
@@ -43,7 +44,7 @@ export default async function (
   }
 
   const label = labels.shift() as string
-  const labelhash = ethers.utils.solidityKeccak256(['string'], [label])
+  const labelhash = solidityKeccak256(['string'], [label])
   const parentNodehash = namehash(labels.join('.'))
 
   switch (contract) {

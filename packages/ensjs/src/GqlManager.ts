@@ -5,6 +5,7 @@ import type {
   SelectionSetNode,
   visit as Visit,
 } from 'graphql'
+import type { gql, GraphQLClient } from 'graphql-request'
 import type Traverse from 'traverse'
 import { namehash } from './utils/normalise'
 
@@ -78,9 +79,17 @@ export const responseMiddleware =
 
 export default class GqlManager {
   // eslint-disable-next-line class-methods-use-this
-  public gql: any = () => null
+  public gql: typeof gql | ((query: TemplateStringsArray) => string) = (
+    query: TemplateStringsArray,
+  ) => query.join()
 
-  public client?: any | null = null
+  public client:
+    | GraphQLClient
+    | {
+        request: () => Promise<null>
+      } = {
+    request: () => Promise.resolve(null),
+  }
 
   public setUrl = async (url: string | null) => {
     if (url) {
@@ -96,11 +105,10 @@ export default class GqlManager {
       })
       this.gql = imported.gql
     } else {
-      this.client = null
-      this.gql = () => null
+      this.client = {
+        request: () => Promise.resolve(null),
+      }
+      this.gql = (query: TemplateStringsArray) => query.join()
     }
   }
-
-  public request = (...arg: any[]) =>
-    this.client ? this.client.request(...arg) : null
 }

@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
 
 const CANNOT_UNWRAP = 1
 const CANNOT_BURN_FUSES = 2

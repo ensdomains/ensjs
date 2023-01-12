@@ -1,7 +1,7 @@
-import { ethers } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
 
 export default async (
-  provider: ethers.providers.Provider,
+  provider: Provider,
   ensData: any,
   func: {
     raw: (...args: any[]) => Promise<{ to: string; data: string }>

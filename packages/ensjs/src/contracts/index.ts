@@ -1,88 +1,94 @@
-import { ethers } from 'ethers'
-import getBaseRegistrar from './baseRegistrar'
-import getEthRegistrarController from './ethRegistrarController'
+import type { Interface } from '@ethersproject/abi'
+import type { Signer } from '@ethersproject/abstract-signer'
+import type { BaseContract } from '@ethersproject/contracts'
+import type { Provider } from '@ethersproject/providers'
+import type { BaseRegistrarImplementation } from '../generated/BaseRegistrarImplementation'
+import type { BulkRenewal } from '../generated/BulkRenewal'
+import type { DNSRegistrar } from '../generated/DNSRegistrar'
+import type { ENSRegistry } from '../generated/ENSRegistry'
+import type { ETHRegistrarController } from '../generated/ETHRegistrarController'
+import type { Multicall } from '../generated/Multicall'
+import type { NameWrapper } from '../generated/NameWrapper'
+import type { PublicResolver } from '../generated/PublicResolver'
+import type { ReverseRegistrar } from '../generated/ReverseRegistrar'
+import type { UniversalResolver } from '../generated/UniversalResolver'
 import { ContractAddressFetch } from './getContractAddress'
-import getMulticall from './multicall'
-import getNameWrapper from './nameWrapper'
-import getDNSRegistrar from './dnsRegistrar'
-import getPublicResolver from './publicResolver'
-import getRegistry from './registry'
-import getReverseRegistrar from './reverseRegistrar'
 import { ContractName } from './types'
-import getUniversalResolver from './universalResolver'
-import getBulkRenewal from './bulkRenewal'
+
+type BaseFactory = {
+  readonly abi: object
+  createInterface(): Interface
+  connect(address: string, signerOrProvider: Signer | Provider): BaseContract
+}
 
 export default class ContractManager {
-  private provider: ethers.providers.Provider
+  private provider: Provider
 
   private fetchAddress: ContractAddressFetch
 
+  // eslint-disable-next-line class-methods-use-this
+  protected getModule = async (name: string) => {
+    const mod = (await import(
+      /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true, webpackExclude: /.*\.ts$/ */
+      `../generated/factories/${name}__factory`
+    )) as BaseFactory
+    return mod
+  }
+
   constructor(
-    provider: ethers.providers.Provider,
+    provider: Provider,
     fetchAddress: ContractAddressFetch,
+    getModule?: (name: string) => Promise<BaseFactory>,
   ) {
     this.provider = provider
     this.fetchAddress = fetchAddress
-  }
-
-  private generateContractGetter = <C extends (...args: any) => any>(
-    name: ContractName,
-    func: C,
-  ): ((passedProvider?: any, address?: string) => Promise<ReturnType<C>>) => {
-    return async (
-      passedProvider?: any,
-      address?: string,
-    ): Promise<ReturnType<C>> => {
-      const inputAddress = address || this.fetchAddress(name)
-      const provider = passedProvider || this.provider
-      return func(provider, inputAddress)
+    if (getModule) {
+      this.getModule = getModule
     }
   }
 
-  public getPublicResolver = this.generateContractGetter(
-    'PublicResolver',
-    getPublicResolver,
-  )
+  private generateContractGetter = <C extends BaseContract>(
+    name: ContractName,
+  ): ((passedProvider?: any, address?: string) => Promise<C>) => {
+    return async (passedProvider, address) => {
+      const mod = await this.getModule(name)
+      const inputAddress = address || this.fetchAddress(name)
+      const provider = passedProvider || this.provider
+      return mod.connect(inputAddress, provider) as C
+    }
+  }
 
-  public getUniversalResolver = this.generateContractGetter(
-    'UniversalResolver',
-    getUniversalResolver,
-  )
+  public getPublicResolver =
+    this.generateContractGetter<PublicResolver>('PublicResolver')
 
-  public getRegistry = this.generateContractGetter(
+  public getUniversalResolver =
+    this.generateContractGetter<UniversalResolver>('UniversalResolver')
+
+  public getRegistry = this.generateContractGetter<ENSRegistry>(
     'ENSRegistryWithFallback',
-    getRegistry,
   )
 
-  public getReverseRegistrar = this.generateContractGetter(
-    'ReverseRegistrar',
-    getReverseRegistrar,
-  )
+  public getReverseRegistrar =
+    this.generateContractGetter<ReverseRegistrar>('ReverseRegistrar')
 
-  public getNameWrapper = this.generateContractGetter(
-    'NameWrapper',
-    getNameWrapper,
-  )
+  public getNameWrapper =
+    this.generateContractGetter<NameWrapper>('NameWrapper')
 
-  public getDNSRegistrar = this.generateContractGetter(
-    'DNSRegistrar',
-    getDNSRegistrar,
-  )
+  public getDNSRegistrar =
+    this.generateContractGetter<DNSRegistrar>('DNSRegistrar')
 
-  public getBaseRegistrar = this.generateContractGetter(
-    'BaseRegistrarImplementation',
-    getBaseRegistrar,
-  )
+  public getBaseRegistrar =
+    this.generateContractGetter<BaseRegistrarImplementation>(
+      'BaseRegistrarImplementation',
+    )
 
-  public getEthRegistrarController = this.generateContractGetter(
-    'ETHRegistrarController',
-    getEthRegistrarController,
-  )
+  public getEthRegistrarController =
+    this.generateContractGetter<ETHRegistrarController>(
+      'ETHRegistrarController',
+    )
 
-  public getMulticall = this.generateContractGetter('Multicall', getMulticall)
+  public getMulticall = this.generateContractGetter<Multicall>('Multicall')
 
-  public getBulkRenewal = this.generateContractGetter(
-    'BulkRenewal',
-    getBulkRenewal,
-  )
+  public getBulkRenewal =
+    this.generateContractGetter<BulkRenewal>('BulkRenewal')
 }

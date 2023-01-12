@@ -29,6 +29,9 @@
   },
   "typesVersions": {
     "*": {
+      "static": [
+        "./dist/types/static.d.ts"
+      ],
       "contracts/*": [
         "./dist/types/contracts/*"
       ],
@@ -58,6 +61,7 @@
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",
     "test": "jest --run-in-band",
+    "test:static": "STATIC_ENS=true jest --run-in-band",
     "test:watch": "jest --watch --run-in-band",
     "test:specific": "ts-node --files ",
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
@@ -74,7 +78,6 @@
     "@ensdomains/dnsprovejs": "^0.4.1",
     "@ensdomains/dnssecoraclejs": "^0.2.7",
     "dns-packet": "^5.3.1",
-    "ethers": "^5.6.1",
     "graphql": "^16.3.0",
     "graphql-request": "next",
     "idna-uts46-hx": "3.4.0",
@@ -84,8 +87,16 @@
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "^0.0.15",
     "@ensdomains/ens-test-env": "workspace:*",
-    "@ethersproject/abi": "^5.6.0",
-    "@ethersproject/providers": "^5.6.2",
+    "@ethersproject/abi": "^5.6.4",
+    "@ethersproject/abstract-provider": "^5.7.0",
+    "@ethersproject/abstract-signer": "^5.7.0",
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/contracts": "^5.7.0",
+    "@ethersproject/providers": "^5.6.8",
+    "@ethersproject/solidity": "^5.7.0",
+    "@ethersproject/strings": "^5.7.0",
+    "@ethersproject/web": "^5.7.1",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/contracts": "^4.5.0",
     "@openzeppelin/test-helpers": "^0.5.16",
@@ -117,6 +128,15 @@
     "wait-on": "^6.0.1"
   },
   "peerDependencies": {
-    "ethers": "*"
+    "@ethersproject/abi": "^5.6.4",
+    "@ethersproject/abstract-provider": "^5.7.0",
+    "@ethersproject/abstract-signer": "^5.7.0",
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/contracts": "^5.7.0",
+    "@ethersproject/providers": "^5.6.8",
+    "@ethersproject/solidity": "^5.7.0",
+    "@ethersproject/strings": "^5.7.0",
+    "@ethersproject/web": "^5.7.1"
   }
 }

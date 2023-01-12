@@ -1,4 +1,5 @@
-import { ethers } from 'ethers'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
+
 import { ENSArgs } from '..'
 
 export default async function (
@@ -17,12 +18,12 @@ export default async function (
   const labels = name.split('.')
   if (isOwner) {
     return registry.populateTransaction.setOwner(
-      ethers.utils.solidityKeccak256(['string'], [labels[0]]),
+      solidityKeccak256(['string'], [labels[0]]),
       newOwner,
     )
   }
   return baseRegistrar.populateTransaction.reclaim(
-    ethers.utils.solidityKeccak256(['string'], [labels[0]]),
+    solidityKeccak256(['string'], [labels[0]]),
     newOwner,
   )
 }

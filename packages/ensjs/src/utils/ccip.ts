@@ -1,12 +1,13 @@
-import type { BaseProvider, TransactionRequest } from '@ethersproject/providers'
-import { BigNumber, Transaction } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
 import {
   arrayify,
   BytesLike,
   hexConcat,
   hexDataSlice,
-  toUtf8String,
-} from 'ethers/lib/utils'
+} from '@ethersproject/bytes'
+import type { BaseProvider, TransactionRequest } from '@ethersproject/providers'
+import { toUtf8String } from '@ethersproject/strings/lib/utf8'
+import type { Transaction } from '@ethersproject/transactions'
 
 function bytesPad(value: Uint8Array): Uint8Array {
   if (value.length % 32 === 0) {
