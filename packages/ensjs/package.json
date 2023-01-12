@@ -84,6 +84,7 @@
     "traverse": "^0.6.6"
   },
   "devDependencies": {
+    "ethers": "^5.7.2",
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "^0.0.15",
     "@ensdomains/ens-test-env": "workspace:*",

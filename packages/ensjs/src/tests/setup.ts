@@ -5,6 +5,7 @@ import { resolve } from 'path'
 import { ENS } from '..'
 import { ContractName } from '../contracts/types'
 import StaticENS from '../static'
+import contracts from './contract-imports'
 import functions from './func-imports'
 
 config({
@@ -30,19 +31,14 @@ const createENS = async (
     graphURI,
     getContractAddress: useReal
       ? undefined
-      : () => (contractName) =>
-          deploymentAddresses[
-            contractName === 'ENSRegistryWithFallback'
-              ? 'ENSRegistry'
-              : contractName
-          ],
+      : () => (contractName) => deploymentAddresses[contractName],
   }
   if (!IS_STATIC) {
     const ensInstance = new ENS(options)
     await ensInstance.setProvider(provider)
     return ensInstance
   }
-  return new StaticENS(provider, { ...options, functions })
+  return new StaticENS(provider, { ...options, functions, contracts })
 }
 
 export default async (useReal?: boolean) => {

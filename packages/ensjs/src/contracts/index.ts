@@ -28,11 +28,11 @@ export default class ContractManager {
 
   // eslint-disable-next-line class-methods-use-this
   protected getModule = async (name: string) => {
-    const mod = (await import(
+    const mod = await import(
       /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true, webpackExclude: /.*\.ts$/ */
       `../generated/factories/${name}__factory`
-    )) as BaseFactory
-    return mod
+    )
+    return mod[`${name}__factory`] as BaseFactory
   }
 
   constructor(
@@ -64,9 +64,7 @@ export default class ContractManager {
   public getUniversalResolver =
     this.generateContractGetter<UniversalResolver>('UniversalResolver')
 
-  public getRegistry = this.generateContractGetter<ENSRegistry>(
-    'ENSRegistryWithFallback',
-  )
+  public getRegistry = this.generateContractGetter<ENSRegistry>('ENSRegistry')
 
   public getReverseRegistrar =
     this.generateContractGetter<ReverseRegistrar>('ReverseRegistrar')
