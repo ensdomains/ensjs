@@ -4,6 +4,9 @@ import { ethers } from 'ethers'
 import { resolve } from 'path'
 import { ENS } from '..'
 import { ContractName } from '../contracts/types'
+import StaticENS from '../static'
+import contracts from './contract-imports'
+import functions from './func-imports'
 
 config({
   path: resolve(__dirname, '../../.env.local'),
@@ -17,18 +20,26 @@ export const deploymentAddresses = JSON.parse(
   string
 >
 
-const createENS = (graphURI: string, useReal?: boolean) =>
-  new ENS({
+const IS_STATIC = !!process.env.STATIC_ENS
+
+const createENS = async (
+  provider: ethers.providers.StaticJsonRpcProvider,
+  graphURI: string,
+  useReal?: boolean,
+) => {
+  const options: ConstructorParameters<typeof ENS>[0] = {
     graphURI,
     getContractAddress: useReal
       ? undefined
-      : () => (contractName) =>
-          deploymentAddresses[
-            contractName === 'ENSRegistryWithFallback'
-              ? 'ENSRegistry'
-              : contractName
-          ],
-  })
+      : () => (contractName) => deploymentAddresses[contractName],
+  }
+  if (!IS_STATIC) {
+    const ensInstance = new ENS(options)
+    await ensInstance.setProvider(provider)
+    return ensInstance
+  }
+  return new StaticENS(provider, { ...options, functions, contracts })
+}
 
 export default async (useReal?: boolean) => {
   const { graphURI, providerURI, chainId } = useReal
@@ -48,8 +59,7 @@ export default async (useReal?: boolean) => {
     chainId,
   )
 
-  let ensInstance = createENS(graphURI, useReal)
-  await ensInstance.setProvider(provider)
+  let ensInstance = await createENS(provider, graphURI, useReal)
 
   if (useReal) {
     return { ensInstance, revert: () => {}, createSnapshot: () => {}, provider }
@@ -64,8 +74,7 @@ export default async (useReal?: boolean) => {
       snapshot = await provider.send('evm_snapshot', [])
     }
 
-    ensInstance = createENS(graphURI)
-    await ensInstance.setProvider(provider)
+    ensInstance = await createENS(provider, graphURI)
     return
   }
 

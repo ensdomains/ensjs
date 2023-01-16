@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
+import { toUtf8Bytes } from '@ethersproject/strings'
 import cbor from 'cbor'
-import { toUtf8Bytes } from 'ethers/lib/utils'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'

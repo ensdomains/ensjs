@@ -1,5 +1,5 @@
-import { ethers } from 'ethers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import { BaseRegistrarImplementation__factory } from '../generated/factories/BaseRegistrarImplementation__factory'
 
-export default (provider: ethers.providers.JsonRpcProvider, address: string) =>
+export default (provider: JsonRpcProvider, address: string) =>
   BaseRegistrarImplementation__factory.connect(address, provider)

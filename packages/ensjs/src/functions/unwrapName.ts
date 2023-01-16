@@ -1,4 +1,5 @@
-import { utils } from 'ethers'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
+
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
@@ -14,7 +15,7 @@ export default async function (
   },
 ) {
   const labels = name.split('.')
-  const labelhash = utils.solidityKeccak256(['string'], [labels[0]])
+  const labelhash = solidityKeccak256(['string'], [labels[0]])
   const parentNodehash = namehash(labels.slice(1).join('.'))
 
   const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)

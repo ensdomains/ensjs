@@ -1,5 +1,5 @@
 import { formatsByCoinType } from '@ensdomains/address-encoder'
-import { ethers } from 'ethers'
+import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
 import { labelhash } from '../utils/labels'
@@ -69,7 +69,7 @@ const eventFormat: {
           rawAddr: args.multiaddr,
         }
       }
-      if (ethers.utils.hexStripZeros(args.multiaddr) === '0x') {
+      if (hexStripZeros(args.multiaddr) === '0x') {
         return {
           coinType: args.coinType,
           coinName: format.name,
@@ -246,10 +246,11 @@ export async function getHistory(
   const nameHash = namehash(name)
   const labelHash = labelhash(label)
 
-  const { domain } = await client.request(query, {
+  const response = await client.request(query, {
     namehash: nameHash,
     labelhash: labelHash,
   })
+  const domain = response?.domain
 
   if (!domain) return
 

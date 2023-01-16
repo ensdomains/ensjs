@@ -1,4 +1,6 @@
-import { concat, hexlify, keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+import { concat, hexlify } from '@ethersproject/bytes'
+import { keccak256 } from '@ethersproject/keccak256'
+import { toUtf8Bytes } from '@ethersproject/strings/lib/utf8'
 import uts46 from 'idna-uts46-hx/uts46bundle.js'
 import { decodeLabelhash, isEncodedLabelhash } from './labels'
 

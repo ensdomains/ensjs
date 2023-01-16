@@ -1,4 +1,7 @@
-import { BigNumber, ethers } from 'ethers'
+import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { Signer } from '@ethersproject/abstract-signer'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { FuseOptions } from '../utils/fuses'
 import generateFuseInput from '../utils/generateFuseInput'
@@ -12,15 +15,15 @@ async function wrapETH(
   expiry: BigNumber,
   decodedFuses: string,
   resolverAddress: string,
-  signer: ethers.Signer,
+  signer: Signer,
   address: string,
 ) {
   const nameWrapper = await contracts?.getNameWrapper()!
   const baseRegistrar = (await contracts!.getBaseRegistrar()!).connect(signer)
 
-  const labelhash = ethers.utils.solidityKeccak256(['string'], [labels[0]])
+  const labelhash = solidityKeccak256(['string'], [labels[0]])
 
-  const data = ethers.utils.defaultAbiCoder.encode(
+  const data = defaultAbiCoder.encode(
     ['string', 'address', 'uint32', 'uint64', 'address'],
     [labels[0], wrappedOwner, decodedFuses, expiry, resolverAddress],
   )
@@ -36,7 +39,7 @@ async function wrapOther(
   wrappedOwner: string,
   resolverAddress: string,
   address: string,
-  signer: ethers.Signer,
+  signer: Signer,
 ) {
   const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
   const registry = await contracts?.getRegistry()!

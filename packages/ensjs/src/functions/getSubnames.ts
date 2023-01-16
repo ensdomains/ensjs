@@ -104,7 +104,8 @@ const largeQuery = async (
     orderDirection,
     search: search?.toLowerCase(),
   }
-  const { domain } = await client.request(finalQuery, queryVars)
+  const response = await client.request(finalQuery, queryVars)
+  const domain = response?.domain
   const subdomains = domain.subdomains.map((subname: any) => {
     const decrypted = decryptName(subname.name)
 

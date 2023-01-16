@@ -7,7 +7,7 @@ export type ContractName =
   | 'NameWrapper'
   | 'DNSRegistrar'
   | 'PublicResolver'
-  | 'ENSRegistryWithFallback'
+  | 'ENSRegistry'
   | 'ReverseRegistrar'
   | 'UniversalResolver'
   | 'BulkRenewal'

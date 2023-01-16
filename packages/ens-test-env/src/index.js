@@ -85,7 +85,9 @@ program
   .addOption(new Option('-k, --kill-gracefully', 'Kill gracefully'))
   .addOption(new Option('-nb, --no-build', "Don't run the build command"))
   .addOption(new Option('-ns, --no-scripts', "Don't run the scripts"))
-  .addOption(new Option('--verbose', 'Verbose output'))
+  .addOption(
+    new Option('--verbosity <level>', 'Verbose output level (0-2').default(0),
+  )
   .action(async (options) => {
     if (options.save) {
       await fetchData('clean', config)

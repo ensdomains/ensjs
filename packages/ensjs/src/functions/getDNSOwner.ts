@@ -1,5 +1,5 @@
+import { _fetchData } from '@ethersproject/web'
 import * as packet from 'dns-packet'
-import { _fetchData } from 'ethers/lib/utils'
 
 export function encodeURLParams(p: { [key: string]: string }): string {
   return Object.entries(p)

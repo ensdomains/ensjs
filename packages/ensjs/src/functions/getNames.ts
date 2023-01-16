@@ -347,7 +347,8 @@ const getNames = async (
     }
   }
 
-  const { account } = await client.request(finalQuery, queryVars)
+  const response = await client.request(finalQuery, queryVars)
+  const account = response?.account
   if (type === 'all') {
     return [
       ...(account?.domains.map(mapDomain) || []),

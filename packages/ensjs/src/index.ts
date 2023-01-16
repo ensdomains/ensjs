@@ -1,58 +1,16 @@
-import type { JsonRpcSigner } from '@ethersproject/providers'
-import { ContractTransaction, ethers, PopulatedTransaction } from 'ethers'
+import {
+  ContractTransaction,
+  PopulatedTransaction,
+} from '@ethersproject/contracts'
+import type {
+  JsonRpcProvider,
+  JsonRpcSigner,
+  Provider,
+} from '@ethersproject/providers'
 import { getContractAddress as _getContractAddress } from './contracts/getContractAddress'
 import ContractManager from './contracts/index'
 import { SupportedNetworkId } from './contracts/types'
-import type batch from './functions/batch'
-import type {
-  multicallWrapper,
-  resolverMulticallWrapper,
-  universalWrapper,
-} from './functions/batchWrappers'
-import type burnFuses from './functions/burnFuses'
-import type commitName from './functions/commitName'
-import type createSubname from './functions/createSubname'
-import type deleteSubname from './functions/deleteSubname'
-import type getAvailable from './functions/getAvailable'
-import type getDNSOwner from './functions/getDNSOwner'
-import type getExpiry from './functions/getExpiry'
-import type { getHistory } from './functions/getHistory'
-import type getName from './functions/getName'
-import type getNames from './functions/getNames'
-import type getOwner from './functions/getOwner'
-import type getPrice from './functions/getPrice'
-import type getProfile from './functions/getProfile'
-import type getRecords from './functions/getRecords'
-import type getResolver from './functions/getResolver'
-import type {
-  getABI,
-  getAddr,
-  getContentHash,
-  getText,
-  _getABI,
-  _getAddr,
-  _getContentHash,
-  _getText,
-} from './functions/getSpecificRecord'
-import type getSubnames from './functions/getSubnames'
-import type getWrapperData from './functions/getWrapperData'
-import type importDNSSECName from './functions/importDNSSECName'
-import type registerName from './functions/registerName'
-import type {
-  // eslint-disable-next-line import/no-named-default
-  default as renewNames,
-  renewNameWithData,
-} from './functions/renewNames'
-import type setName from './functions/setName'
-import type setRecord from './functions/setRecord'
-import type setRecords from './functions/setRecords'
-import type setResolver from './functions/setResolver'
-import type supportsTLD from './functions/supportsTLD'
-import type transferController from './functions/transferController'
-import type transferName from './functions/transferName'
-import type transferSubname from './functions/transferSubname'
-import type unwrapName from './functions/unwrapName'
-import type wrapName from './functions/wrapName'
+import type FunctionTypes from './functions/types'
 import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
@@ -73,7 +31,7 @@ type ENSOptions = {
 
 export type InternalENS = {
   options?: ENSOptions
-  provider?: ethers.providers.Provider
+  provider?: Provider
   signer: JsonRpcSigner
   graphURI?: string | null
 } & ENS
@@ -125,7 +83,7 @@ interface WriteFunction<F extends (...args: any) => any> extends Function {
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
-const graphURIEndpoints: Record<string, string> = {
+export const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
   3: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten',
   4: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
@@ -183,16 +141,24 @@ interface GeneratedBatchFunction<F extends RawFunction>
   batch: BatchFunction<F>
 }
 
+export type FunctionSubtype =
+  | 'raw'
+  | 'decode'
+  | 'combine'
+  | 'batch'
+  | 'write'
+  | 'populateTransaction'
+
 export class ENS {
   [x: string]: any
 
   protected options?: ENSOptions
 
-  protected provider?: ethers.providers.JsonRpcProvider
+  protected provider?: JsonRpcProvider
 
   protected graphURI?: string | null
 
-  protected initialProvider?: ethers.providers.JsonRpcProvider
+  protected initialProvider?: JsonRpcProvider
 
   contracts?: ContractManager
 
@@ -221,7 +187,7 @@ export class ENS {
    * @param {FunctionDeps} dependencies - An array of ENS properties
    * @returns {Object} - An object of ENS properties
    */
-  private forwardDependenciesFromArray = <F>(
+  protected forwardDependenciesFromArray = <F>(
     dependencies: FunctionDeps<F>,
   ): object =>
     // Creates an object from entries of the array
@@ -229,6 +195,30 @@ export class ENS {
       // Maps over dependencies and create arrays for each, e.g. ['contracts', contractObj]
       dependencies.map((dep) => [dep, this[dep as keyof InternalENS]]),
     )
+
+  // eslint-disable-next-line class-methods-use-this
+  protected getModule = async (path: string, exportName: string) => {
+    let mod = await import(
+      /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true, webpackExclude: /.*\.ts$/ */
+      `./functions/${path}`
+    )
+
+    // if export is nested in default, use default
+    if (mod.default?.[exportName]) {
+      mod = mod.default
+    }
+    return mod
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  protected getFunction = (
+    subFunc: FunctionSubtype | undefined,
+    writeable: boolean | undefined,
+    exportName: string,
+    mod: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _path: string,
+  ) => (subFunc && !writeable ? mod[exportName][subFunc] : mod[exportName])
 
   /**
    * Creates a wrapper for a function to be dynamically imported, with the correct dependencies passed in
@@ -242,13 +232,7 @@ export class ENS {
     path: string,
     dependencies: FunctionDeps<F>,
     exportName: string = 'default',
-    subFunc?:
-      | 'raw'
-      | 'decode'
-      | 'combine'
-      | 'batch'
-      | 'write'
-      | 'populateTransaction',
+    subFunc?: FunctionSubtype,
     passthrough?: RawFunction,
   ): Function => {
     // if batch is specified, create batch func
@@ -261,14 +245,7 @@ export class ENS {
       // check the initial provider and set if it exists
       await thisRef.checkInitialProvider()
       // import the module dynamically
-      let mod = await import(
-        /* webpackMode: "lazy", webpackChunkName: "[request]", webpackPreload: true, webpackExclude: /.*\.ts$/ */
-        `./functions/${path}`
-      )
-      // if export is nested in default, use default
-      if (mod.default?.[exportName]) {
-        mod = mod.default
-      }
+      const mod = await thisRef.getModule(path, exportName)
 
       // if combine isn't specified, run normally
       // otherwise, create a function from the raw and decode functions
@@ -276,8 +253,13 @@ export class ENS {
         const writeable =
           subFunc === 'write' || subFunc === 'populateTransaction'
         // get the function to call
-        const func =
-          subFunc && !writeable ? mod[exportName][subFunc] : mod[exportName]
+        const func = thisRef.getFunction(
+          subFunc,
+          writeable,
+          exportName,
+          mod,
+          path,
+        )
         // get the dependencies to forward to the function as the first arg
         let dependenciesToForward =
           thisRef.forwardDependenciesFromArray<F>(dependencies)
@@ -312,7 +294,7 @@ export class ENS {
       return singleCall(
         thisRef.provider!,
         dependenciesToForward,
-        mod[exportName],
+        thisRef.getFunction(undefined, undefined, exportName, mod, path),
         ...args,
       )
     }
@@ -404,14 +386,14 @@ export class ENS {
 
   /**
    * Sets the provider for the ENS class
-   * @param {ethers.providers.JsonRpcProvider} provider - The provider to set
+   * @param {JsonRpcProvider} provider - The provider to set
    * @returns {Promise<void>} - A promise that resolves when the provider is set
    */
-  public setProvider = async (
-    provider: ethers.providers.JsonRpcProvider,
-  ): Promise<void> => {
+  public setProvider = async (provider: JsonRpcProvider): Promise<void> => {
     this.provider = provider
-    const network = (await this.provider.getNetwork()).chainId
+    const network = this.staticNetwork
+      ? this.provider._network.chainId
+      : (await this.provider.getNetwork()).chainId
     if (this.options && this.options.graphURI) {
       this.graphURI = this.options.graphURI
     } else {
@@ -426,22 +408,22 @@ export class ENS {
 
   /**
    * Creates a new ENS instance with a different provider, ideally should be used individually with any given function
-   * @param {ethers.providers.JsonRpcProvider} provider - The provider to use
+   * @param {JsonRpcProvider} provider - The provider to use
    * @returns {ENS} - A new ENS instance with the given provider
    */
-  public withProvider = (provider: ethers.providers.JsonRpcProvider): ENS => {
+  public withProvider = (provider: JsonRpcProvider): ENS => {
     const newENS = new ENS(this.options)
     newENS.initialProvider = provider
     return newENS
   }
 
-  public batch = this.generateRawFunction<typeof batch>(
+  public batch = this.generateRawFunction<FunctionTypes['batch']>(
     'initialGetters',
     ['multicallWrapper'],
     'batch',
-  ) as GeneratedBatchFunction<typeof batch>
+  ) as GeneratedBatchFunction<FunctionTypes['batch']>
 
-  public getProfile = this.generateFunction<typeof getProfile>(
+  public getProfile = this.generateFunction<FunctionTypes['getProfile']>(
     'initialGetters',
     [
       'contracts',
@@ -456,223 +438,209 @@ export class ENS {
     'getProfile',
   )
 
-  public getRecords = this.generateFunction<typeof getRecords>(
+  public getRecords = this.generateFunction<FunctionTypes['getRecords']>(
     'initialGetters',
     ['getProfile'],
     'getRecords',
   )
 
-  public getName = this.generateRawFunction<typeof getName>(
+  public getName = this.generateRawFunction<FunctionTypes['getName']>(
     'initialGetters',
     ['contracts'],
     'getName',
   )
 
-  public getResolver = this.generateRawFunction<typeof getResolver>(
+  public getResolver = this.generateRawFunction<FunctionTypes['getResolver']>(
     'getResolver',
     ['contracts'],
   )
 
-  public getWrapperData = this.generateRawFunction<typeof getWrapperData>(
-    'getWrapperData',
-    ['contracts'],
-  )
+  public getWrapperData = this.generateRawFunction<
+    FunctionTypes['getWrapperData']
+  >('getWrapperData', ['contracts'])
 
-  public getHistory = this.generateFunction<typeof getHistory>(
+  public getHistory = this.generateFunction<FunctionTypes['getHistory']>(
     'getHistory',
     ['gqlInstance'],
     'getHistory',
   )
 
-  public getContentHash = this.generateRawFunction<typeof getContentHash>(
-    'initialGetters',
-    ['contracts', 'universalWrapper'],
-    'getContentHash',
-  )
+  public getContentHash = this.generateRawFunction<
+    FunctionTypes['getContentHash']
+  >('initialGetters', ['contracts', 'universalWrapper'], 'getContentHash')
 
-  public _getContentHash = this.generateRawFunction<typeof _getContentHash>(
-    'initialGetters',
-    ['contracts'],
-    '_getContentHash',
-  )
+  public _getContentHash = this.generateRawFunction<
+    FunctionTypes['_getContentHash']
+  >('initialGetters', ['contracts'], '_getContentHash')
 
-  public getAddr = this.generateRawFunction<typeof getAddr>(
+  public getAddr = this.generateRawFunction<FunctionTypes['getAddr']>(
     'initialGetters',
     ['contracts', 'universalWrapper'],
     'getAddr',
   )
 
-  public _getAddr = this.generateRawFunction<typeof _getAddr>(
+  public _getAddr = this.generateRawFunction<FunctionTypes['_getAddr']>(
     'initialGetters',
     ['contracts'],
     '_getAddr',
   )
 
-  public getText = this.generateRawFunction<typeof getText>(
+  public getText = this.generateRawFunction<FunctionTypes['getText']>(
     'initialGetters',
     ['contracts', 'universalWrapper'],
     'getText',
   )
 
-  public _getText = this.generateRawFunction<typeof _getText>(
+  public _getText = this.generateRawFunction<FunctionTypes['_getText']>(
     'initialGetters',
     ['contracts'],
     '_getText',
   )
 
-  public getABI = this.generateRawFunction<typeof getABI>(
+  public getABI = this.generateRawFunction<FunctionTypes['getABI']>(
     'initialGetters',
     ['contracts', 'universalWrapper'],
     'getABI',
   )
 
-  public _getABI = this.generateRawFunction<typeof _getABI>(
+  public _getABI = this.generateRawFunction<FunctionTypes['_getABI']>(
     'initialGetters',
     ['contracts'],
     '_getABI',
   )
 
-  public getOwner = this.generateRawFunction<typeof getOwner>(
+  public getOwner = this.generateRawFunction<FunctionTypes['getOwner']>(
     'initialGetters',
     ['contracts', 'multicallWrapper', 'gqlInstance'],
     'getOwner',
   )
 
-  public getExpiry = this.generateRawFunction<typeof getExpiry>(
+  public getExpiry = this.generateRawFunction<FunctionTypes['getExpiry']>(
     'initialGetters',
     ['contracts', 'multicallWrapper'],
     'getExpiry',
   )
 
-  public getSubnames = this.generateFunction<typeof getSubnames>(
+  public getSubnames = this.generateFunction<FunctionTypes['getSubnames']>(
     'initialGetters',
     ['gqlInstance'],
     'getSubnames',
   )
 
-  public getNames = this.generateFunction<typeof getNames>(
+  public getNames = this.generateFunction<FunctionTypes['getNames']>(
     'initialGetters',
     ['gqlInstance'],
     'getNames',
   )
 
-  public getPrice = this.generateRawFunction<typeof getPrice>(
+  public getPrice = this.generateRawFunction<FunctionTypes['getPrice']>(
     'initialGetters',
     ['contracts', 'multicallWrapper'],
     'getPrice',
   )
 
-  public getDNSOwner = this.generateFunction<typeof getDNSOwner>(
+  public getDNSOwner = this.generateFunction<FunctionTypes['getDNSOwner']>(
     'getDNSOwner',
     [],
   )
 
-  public supportsTLD = this.generateFunction<typeof supportsTLD>(
+  public supportsTLD = this.generateFunction<FunctionTypes['supportsTLD']>(
     'initialGetters',
     ['getOwner', 'provider'],
     'supportsTLD',
   )
 
-  public getAvailable = this.generateRawFunction<typeof getAvailable>(
+  public getAvailable = this.generateRawFunction<FunctionTypes['getAvailable']>(
     'getAvailable',
     ['contracts'],
   )
 
-  public universalWrapper = this.generateRawFunction<typeof universalWrapper>(
-    'initialGetters',
-    ['contracts'],
-    'universalWrapper',
-  )
+  public universalWrapper = this.generateRawFunction<
+    FunctionTypes['universalWrapper']
+  >('initialGetters', ['contracts'], 'universalWrapper')
 
   public resolverMulticallWrapper = this.generateRawFunction<
-    typeof resolverMulticallWrapper
+    FunctionTypes['resolverMulticallWrapper']
   >('initialGetters', ['contracts'], 'resolverMulticallWrapper')
 
-  public multicallWrapper = this.generateRawFunction<typeof multicallWrapper>(
-    'initialGetters',
+  public multicallWrapper = this.generateRawFunction<
+    FunctionTypes['multicallWrapper']
+  >('initialGetters', ['contracts'], 'multicallWrapper')
+
+  public setName = this.generateWriteFunction<FunctionTypes['setName']>(
+    'setName',
     ['contracts'],
-    'multicallWrapper',
   )
 
-  public setName = this.generateWriteFunction<typeof setName>('setName', [
-    'contracts',
-  ])
-
-  public setRecords = this.generateWriteFunction<typeof setRecords>(
+  public setRecords = this.generateWriteFunction<FunctionTypes['setRecords']>(
     'setRecords',
     ['contracts', 'provider', 'getResolver'],
   )
 
-  public setRecord = this.generateWriteFunction<typeof setRecord>('setRecord', [
-    'contracts',
-    'provider',
-    'getResolver',
-  ])
+  public setRecord = this.generateWriteFunction<FunctionTypes['setRecord']>(
+    'setRecord',
+    ['contracts', 'provider', 'getResolver'],
+  )
 
-  public setResolver = this.generateWriteFunction<typeof setResolver>(
+  public setResolver = this.generateWriteFunction<FunctionTypes['setResolver']>(
     'setResolver',
     ['contracts'],
   )
 
-  public transferName = this.generateWriteFunction<typeof transferName>(
-    'transferName',
-    ['contracts'],
-  )
+  public transferName = this.generateWriteFunction<
+    FunctionTypes['transferName']
+  >('transferName', ['contracts'])
 
   public transferController = this.generateWriteFunction<
-    typeof transferController
+    FunctionTypes['transferController']
   >('transferController', ['contracts'])
 
-  public wrapName = this.generateWriteFunction<typeof wrapName>('wrapName', [
-    'contracts',
-    'getExpiry',
-  ])
+  public wrapName = this.generateWriteFunction<FunctionTypes['wrapName']>(
+    'wrapName',
+    ['contracts', 'getExpiry'],
+  )
 
-  public unwrapName = this.generateWriteFunction<typeof unwrapName>(
+  public unwrapName = this.generateWriteFunction<FunctionTypes['unwrapName']>(
     'unwrapName',
     ['contracts'],
   )
 
-  public burnFuses = this.generateWriteFunction<typeof burnFuses>('burnFuses', [
-    'contracts',
-  ])
-
-  public importDNSSECName = this.generateWriteFunction<typeof importDNSSECName>(
-    'importDNSSECName',
-    ['contracts', 'provider', 'signer'],
-  )
-
-  public createSubname = this.generateWriteFunction<typeof createSubname>(
-    'createSubname',
-    ['contracts', 'getExpiry'],
-  )
-
-  public deleteSubname = this.generateWriteFunction<typeof deleteSubname>(
-    'deleteSubname',
+  public burnFuses = this.generateWriteFunction<FunctionTypes['burnFuses']>(
+    'burnFuses',
     ['contracts'],
   )
 
-  public transferSubname = this.generateWriteFunction<typeof transferSubname>(
-    'transferSubname',
-    ['contracts', 'getExpiry'],
-  )
+  public importDNSSECName = this.generateWriteFunction<
+    FunctionTypes['importDNSSECName']
+  >('importDNSSECName', ['contracts', 'provider', 'signer'])
 
-  public commitName = this.generateWriteFunction<typeof commitName>(
+  public createSubname = this.generateWriteFunction<
+    FunctionTypes['createSubname']
+  >('createSubname', ['contracts', 'getExpiry'])
+
+  public deleteSubname = this.generateWriteFunction<
+    FunctionTypes['deleteSubname']
+  >('deleteSubname', ['contracts'])
+
+  public transferSubname = this.generateWriteFunction<
+    FunctionTypes['transferSubname']
+  >('transferSubname', ['contracts', 'getExpiry'])
+
+  public commitName = this.generateWriteFunction<FunctionTypes['commitName']>(
     'commitName',
     ['contracts'],
   )
 
-  public registerName = this.generateWriteFunction<typeof registerName>(
-    'registerName',
-    ['contracts'],
-  )
+  public registerName = this.generateWriteFunction<
+    FunctionTypes['registerName']
+  >('registerName', ['contracts'])
 
-  public renewNames = this.generateWriteFunction<typeof renewNames>(
+  public renewNames = this.generateWriteFunction<FunctionTypes['renewNames']>(
     'renewNames',
     ['contracts'],
   )
 
   public renewNameWithData = this.generateWriteFunction<
-    typeof renewNameWithData
+    FunctionTypes['renewNameWithData']
   >('renewNames', ['contracts'], 'renewNameWithData')
 }

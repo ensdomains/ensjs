@@ -1,4 +1,6 @@
-import { BigNumberish, utils } from 'ethers'
+import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
+import { keccak256 } from '@ethersproject/keccak256'
 import type { PublicResolver } from '../generated'
 import { FuseOptions } from './fuses'
 import generateFuseInput from './generateFuseInput'
@@ -118,8 +120,8 @@ export const makeRegistrationData = (
 }
 
 export const _makeCommitment = (params: CommitmentTuple) => {
-  return utils.keccak256(
-    utils.defaultAbiCoder.encode(
+  return keccak256(
+    defaultAbiCoder.encode(
       [
         'bytes32',
         'address',

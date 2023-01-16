@@ -1,6 +1,7 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
-import { BigNumber, ethers } from 'ethers'
-import { arrayify } from 'ethers/lib/utils'
+import { BigNumber } from '@ethersproject/bignumber'
+import { arrayify, hexStripZeros, isBytesLike } from '@ethersproject/bytes'
+import { toUtf8String } from '@ethersproject/strings'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
 import { namehash } from '../utils/normalise'
@@ -35,8 +36,8 @@ export const _getContentHash = {
 
     if (
       !decodedContent ||
-      (ethers.utils.isBytesLike(decodedContent.decoded) &&
-        ethers.utils.hexStripZeros(decodedContent.decoded) === '0x') ||
+      (isBytesLike(decodedContent.decoded) &&
+        hexStripZeros(decodedContent.decoded) === '0x') ||
       Object.keys(decodedContent).length === 0
     ) {
       return
@@ -197,7 +198,7 @@ export const _getAddr = {
 
     if (!response) return
 
-    if (ethers.utils.hexStripZeros(response) === '0x') {
+    if (hexStripZeros(response) === '0x') {
       return
     }
 
@@ -270,7 +271,7 @@ export const _getABI = {
     switch (contentType) {
       // JSON
       case 1:
-        abiData = JSON.parse(ethers.utils.toUtf8String(encodedABIData))
+        abiData = JSON.parse(toUtf8String(encodedABIData))
         decoded = true
         break
       // zlib compressed JSON
@@ -291,12 +292,12 @@ export const _getABI = {
       }
       // URI
       case 8:
-        abiData = ethers.utils.toUtf8String(encodedABIData)
+        abiData = toUtf8String(encodedABIData)
         decoded = false
         break
       default:
         try {
-          abiData = ethers.utils.toUtf8String(encodedABIData)
+          abiData = toUtf8String(encodedABIData)
         } catch {
           abiData = encodedABIData
         }

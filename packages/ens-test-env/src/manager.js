@@ -21,6 +21,7 @@ const opts = {
   log: true,
   composeOptions: ['-p', 'ens-test-env'],
 }
+let verbosity = 0
 
 /**
  * @type {import('concurrently').Command[]}
@@ -141,10 +142,9 @@ const awaitCommand = async (name, command) => {
   })
   const outPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
   const errPrepender = makePrepender(Buffer.from(`\x1b[1;34m[${name}]\x1b[0m `))
-  deploy.stdout.on('data', (data) => {
-    console.log('deploy stdout', data.toString())
-  })
-  deploy.stdout.pipe(outPrepender).pipe(process.stdout)
+  if (verbosity > 0) {
+    deploy.stdout.pipe(outPrepender).pipe(process.stdout)
+  }
   deploy.stderr.pipe(errPrepender).pipe(process.stderr)
   return new Promise((resolve) => deploy.on('exit', () => resolve()))
 }
@@ -152,6 +152,7 @@ const awaitCommand = async (name, command) => {
 export const main = async (_config, _options, justKill) => {
   config = _config
   options = _options
+  verbosity = parseInt(options.verbosity)
 
   opts.cwd = config.paths.composeFile.split('/docker-compose.yml')[0]
 
@@ -167,7 +168,7 @@ export const main = async (_config, _options, justKill) => {
     return cleanup(undefined, 'SIGINT')
   }
 
-  if (options.verbose) {
+  if (options.verbosity >= 2) {
     outputsToIgnore = []
     opts.env.GRAPH_LOG_LEVEL = 'trace'
     opts.env.ANVIL_EXTRA_ARGS = '--tracing'
@@ -183,7 +184,7 @@ export const main = async (_config, _options, justKill) => {
     .logs(['anvil', 'graph-node', 'postgres', 'ipfs', 'metadata'], {
       ...opts,
       log: false,
-      follow: true,
+      follow: verbosity > 0 ? true : false,
       callback: (chunk, source) => {
         if (source === 'stderr') {
           process.stderr.write(chunk)

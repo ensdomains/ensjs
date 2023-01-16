@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { hexEncodeName } from '../utils/hexEncodedName'
 
@@ -19,11 +19,7 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     data,
   )
 
-  if (
-    !response ||
-    !response[0] ||
-    ethers.utils.hexStripZeros(response[0]) === '0x'
-  ) {
+  if (!response || !response[0] || hexStripZeros(response[0]) === '0x') {
     return
   }
   return response[0]
