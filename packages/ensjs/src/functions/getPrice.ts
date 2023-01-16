@@ -1,4 +1,5 @@
-import { BigNumber, utils } from 'ethers'
+import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
 import { ENSArgs } from '..'
 
 const raw = async (
@@ -75,11 +76,11 @@ const decode = async (
     const isBulkRenewal = Array.isArray(_nameOrNames) && _nameOrNames.length > 1
     if (isBulkRenewal && legacy) {
       const result = await multicallWrapper.decode(data)
-      const [price] = utils.defaultAbiCoder.decode(
+      const [price] = defaultAbiCoder.decode(
         ['uint256'],
         result[0].returnData,
       ) as [BigNumber]
-      ;[premium] = utils.defaultAbiCoder.decode(
+      ;[premium] = defaultAbiCoder.decode(
         ['uint256'],
         result[1].returnData,
       ) as [BigNumber]
@@ -94,11 +95,11 @@ const decode = async (
       premium = BigNumber.from(0)
     } else if (!isBulkRenewal && legacy) {
       const result = await multicallWrapper.decode(data)
-      const [price] = utils.defaultAbiCoder.decode(
+      const [price] = defaultAbiCoder.decode(
         ['uint256'],
         result[0].returnData,
       ) as [BigNumber]
-      ;[premium] = utils.defaultAbiCoder.decode(
+      ;[premium] = defaultAbiCoder.decode(
         ['uint256'],
         result[1].returnData,
       ) as [BigNumber]

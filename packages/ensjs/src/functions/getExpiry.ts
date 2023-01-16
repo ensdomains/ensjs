@@ -1,5 +1,5 @@
-import { BigNumber } from 'ethers'
-import { solidityKeccak256 } from 'ethers/lib/utils'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 

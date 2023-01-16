@@ -34,7 +34,7 @@ const addresses: Record<
     '3': '0x13F0659Ee6bb7484C884FEeFb7F75C93951ef837',
     '5': '0xE264d5bb84bA3b8061ADC38D3D76e6674aB91852',
   },
-  ENSRegistryWithFallback: {
+  ENSRegistry: {
     '1': '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e',
     '3': '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e',
     '4': '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e',

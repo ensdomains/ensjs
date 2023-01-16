@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import type { TransactionRequest } from '@ethersproject/providers'
 import { ENSArgs } from '..'
 import ccipLookup from '../utils/ccip'
 import { hexEncodeName } from '../utils/hexEncodedName'
@@ -61,7 +61,7 @@ export const resolverMulticallWrapper = {
 export const multicallWrapper = {
   async raw(
     { contracts }: ENSArgs<'contracts'>,
-    transactions: ethers.providers.TransactionRequest[],
+    transactions: TransactionRequest[],
     requireSuccess: boolean = false,
   ) {
     const multicall = await contracts?.getMulticall()!
@@ -79,7 +79,7 @@ export const multicallWrapper = {
   async decode(
     { contracts, provider }: ENSArgs<'contracts' | 'provider'>,
     data: string,
-    transactions: ethers.providers.TransactionRequest[],
+    transactions: TransactionRequest[],
   ) {
     if (!data) return
     const multicall = await contracts?.getMulticall()!
