@@ -1,5 +1,7 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
-import { hexStripZeros, isBytesLike } from '@ethersproject/bytes'
+import { BigNumber } from '@ethersproject/bignumber'
+import { arrayify, hexStripZeros, isBytesLike } from '@ethersproject/bytes'
+import { toUtf8String } from '@ethersproject/strings'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
 import { namehash } from '../utils/normalise'
@@ -232,5 +234,97 @@ export const getAddr = {
     const urData = await universalWrapper.decode(data)
     if (!urData) return
     return _getAddr.decode({ contracts }, urData.data, _name, coinType)
+  },
+}
+
+// Supported content types as bitwise OR
+// ID 1: JSON
+// ID 2: zlib compressed JSON
+// ID 4: CBOR
+// ID 8: URI
+const supportedContentTypes = '0xf'
+
+export const _getABI = {
+  raw: async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
+    const publicResolver = await contracts?.getPublicResolver()!
+    return {
+      to: '0x0000000000000000000000000000000000000000',
+      data: publicResolver.interface.encodeFunctionData('ABI', [
+        namehash(name),
+        supportedContentTypes,
+      ]),
+    }
+  },
+  decode: async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
+    const publicResolver = await contracts?.getPublicResolver()!
+    const [bnContentType, encodedABIData] =
+      publicResolver.interface.decodeFunctionResult('ABI', data)
+    if (!bnContentType || !data) {
+      return
+    }
+    const contentType = (bnContentType as BigNumber).toNumber()
+    if (!contentType) {
+      return
+    }
+    let abiData: string | object
+    let decoded = false
+    switch (contentType) {
+      // JSON
+      case 1:
+        abiData = JSON.parse(toUtf8String(encodedABIData))
+        decoded = true
+        break
+      // zlib compressed JSON
+      case 2: {
+        const { inflate } = await import('pako/dist/pako_inflate.min.js')
+        abiData = JSON.parse(
+          inflate(arrayify(encodedABIData), { to: 'string' }),
+        )
+        decoded = true
+        break
+      }
+      // CBOR
+      case 4: {
+        const { decodeFirst } = await import('cbor')
+        abiData = await decodeFirst(arrayify(encodedABIData))
+        decoded = true
+        break
+      }
+      // URI
+      case 8:
+        abiData = toUtf8String(encodedABIData)
+        decoded = false
+        break
+      default:
+        try {
+          abiData = toUtf8String(encodedABIData)
+        } catch {
+          abiData = encodedABIData
+        }
+        decoded = false
+    }
+    return {
+      contentType,
+      decoded,
+      abi: abiData,
+    }
+  },
+}
+
+export const getABI = {
+  raw: async (
+    { contracts, universalWrapper }: ENSArgs<'contracts' | 'universalWrapper'>,
+    name: string,
+  ) => {
+    const prData = await _getABI.raw({ contracts }, name)
+    return universalWrapper.raw(name, prData.data)
+  },
+  decode: async (
+    { contracts, universalWrapper }: ENSArgs<'contracts' | 'universalWrapper'>,
+    data: string,
+  ) => {
+    const urData = await universalWrapper.decode(data)
+    if (!urData) return
+    return _getABI.decode({ contracts }, urData.data)
   },
 }

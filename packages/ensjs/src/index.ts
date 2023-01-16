@@ -497,6 +497,18 @@ export class ENS {
     '_getText',
   )
 
+  public getABI = this.generateRawFunction<FunctionTypes['getABI']>(
+    'initialGetters',
+    ['contracts', 'universalWrapper'],
+    'getABI',
+  )
+
+  public _getABI = this.generateRawFunction<FunctionTypes['_getABI']>(
+    'initialGetters',
+    ['contracts'],
+    '_getABI',
+  )
+
   public getOwner = this.generateRawFunction<FunctionTypes['getOwner']>(
     'initialGetters',
     ['contracts', 'multicallWrapper', 'gqlInstance'],

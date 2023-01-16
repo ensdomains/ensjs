@@ -77,10 +77,12 @@
     "@ensdomains/content-hash": "^2.5.7",
     "@ensdomains/dnsprovejs": "^0.4.1",
     "@ensdomains/dnssecoraclejs": "^0.2.7",
+    "cbor": "^8.1.0",
     "dns-packet": "^5.3.1",
     "graphql": "^16.3.0",
     "graphql-request": "next",
     "idna-uts46-hx": "3.4.0",
+    "pako": "^2.1.0",
     "traverse": "^0.6.6"
   },
   "devDependencies": {
@@ -109,6 +111,7 @@
     "@typechain/ethers-v5": "^10.1.0",
     "@types/bn.js": "^5.1.0",
     "@types/jest": "^27.4.1",
+    "@types/pako": "^2.0.0",
     "@types/traverse": "^0.6.32",
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.6",

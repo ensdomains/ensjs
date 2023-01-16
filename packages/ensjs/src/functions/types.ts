@@ -20,9 +20,11 @@ import type getProfile from './getProfile'
 import type getRecords from './getRecords'
 import type getResolver from './getResolver'
 import type {
+  getABI,
   getAddr,
   getContentHash,
   getText,
+  _getABI,
   _getAddr,
   _getContentHash,
   _getText,
@@ -70,9 +72,11 @@ type Function = {
   getAddr: typeof getAddr
   getContentHash: typeof getContentHash
   getText: typeof getText
+  getABI: typeof getABI
   _getAddr: typeof _getAddr
   _getContentHash: typeof _getContentHash
   _getText: typeof _getText
+  _getABI: typeof _getABI
   getSubnames: typeof getSubnames
   getWrapperData: typeof getWrapperData
   importDNSSECName: typeof importDNSSECName

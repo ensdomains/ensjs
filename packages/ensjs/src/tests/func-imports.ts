@@ -20,9 +20,11 @@ import getProfile from '../functions/getProfile'
 import getRecords from '../functions/getRecords'
 import getResolver from '../functions/getResolver'
 import {
+  getABI,
   getAddr,
   getContentHash,
   getText,
+  _getABI,
   _getAddr,
   _getContentHash,
   _getText,
@@ -70,9 +72,11 @@ export default {
   getAddr,
   getContentHash,
   getText,
+  getABI,
   _getAddr,
   _getContentHash,
   _getText,
+  _getABI,
   getSubnames,
   getWrapperData,
   importDNSSECName,

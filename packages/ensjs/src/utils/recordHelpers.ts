@@ -1,4 +1,6 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
+import type { BigNumberish } from 'ethers'
+import { isBytesLike, toUtf8Bytes } from 'ethers/lib/utils'
 import type { PublicResolver } from '../generated'
 import { encodeContenthash } from './contentHash'
 
@@ -7,11 +9,19 @@ type RecordItem = {
   value: string
 }
 
+type ABIEncodeAs = 'json' | 'zlib' | 'cbor' | 'uri'
+
+type ABIItem = {
+  contentType?: BigNumberish
+  data: object | string
+}
+
 export type RecordOptions = {
   clearRecords?: boolean
   contentHash?: string
   texts?: RecordItem[]
   coinTypes?: RecordItem[]
+  abi?: ABIItem
 }
 
 export const generateSetAddr = (
@@ -34,10 +44,44 @@ export const generateSetAddr = (
   )
 }
 
-export type RecordTypes = 'contentHash' | 'text' | 'addr'
+export const generateABIInput = async (
+  encodeAs: ABIEncodeAs,
+  data: object | string,
+) => {
+  let contentType: number
+  let encodedData: string | Buffer | Uint8Array
+  switch (encodeAs) {
+    case 'json':
+      contentType = 1
+      encodedData = JSON.stringify(data)
+      break
+    case 'zlib': {
+      contentType = 2
+      const { deflate } = await import('pako/dist/pako_deflate.min.js')
+      encodedData = deflate(JSON.stringify(data))
+      break
+    }
+    case 'cbor': {
+      contentType = 4
+      const { encode } = await import('cbor')
+      encodedData = encode(data)
+      break
+    }
+    default: {
+      contentType = 8
+      encodedData = data as string
+      break
+    }
+  }
+  return { contentType, data: encodedData }
+}
+
+export type RecordTypes = 'contentHash' | 'text' | 'addr' | 'abi'
 
 export type RecordInput<T extends RecordTypes> = T extends 'contentHash'
   ? string
+  : T extends 'abi'
+  ? ABIItem
   : RecordItem
 
 export function generateSingleRecordCall<T extends RecordTypes>(
@@ -57,6 +101,24 @@ export function generateSingleRecordCall<T extends RecordTypes>(
       return resolver.interface.encodeFunctionData('setContenthash', [
         namehash,
         _contentHash,
+      ])
+    }
+  }
+  if (type === 'abi') {
+    return (_r: RecordInput<T>) => {
+      const record = _r as ABIItem
+      const { contentType = 1, data } = record
+      let encodedData = data as string | Uint8Array | Buffer
+      if (!isBytesLike(encodedData)) {
+        if (typeof encodedData === 'object') {
+          encodedData = JSON.stringify(encodedData)
+        }
+        encodedData = toUtf8Bytes(encodedData)
+      }
+      return resolver.interface.encodeFunctionData('setABI', [
+        namehash,
+        contentType,
+        encodedData,
       ])
     }
   }
