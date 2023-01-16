@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
 import { ENSArgs } from '../index'
 import { decodeFuses } from '../utils/fuses'
 import { namehash } from '../utils/normalise'

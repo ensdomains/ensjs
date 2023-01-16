@@ -1,5 +1,5 @@
-import { ethers } from 'ethers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import { NameWrapper__factory } from '../generated/factories/NameWrapper__factory'
 
-export default (provider: ethers.providers.JsonRpcProvider, address: string) =>
+export default (provider: JsonRpcProvider, address: string) =>
   NameWrapper__factory.connect(address, provider)

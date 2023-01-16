@@ -29,8 +29,11 @@ esbuild.build({
       setup(build) {
         build.onResolve({ filter: /.*/ }, (args) => {
           if (args.importer) {
-            if (args.path.startsWith('ethers/'))
-              return { path: args.path + '.js', external: true }
+            if (args.path.match(/^@ethersproject\/.*\//))
+              return {
+                path: args.path.replace('/lib/', '/lib.esm/') + '.js',
+                external: true,
+              }
             if (args.path.startsWith('./') || args.path.startsWith('../'))
               return { path: args.path + '.mjs', external: true }
             return { path: args.path, external: true }
@@ -56,7 +59,7 @@ esbuild.build({
         build.onResolve({ filter: /.*/ }, (args) => {
           if (args.importer) {
             if (
-              args.path.startsWith('ethers/') ||
+              args.path.match(/^@ethersproject\/.*\//) ||
               args.path.startsWith('./') ||
               args.path.startsWith('../')
             )

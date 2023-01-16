@@ -1,6 +1,6 @@
 import { formatsByName } from '@ensdomains/address-encoder'
-import { ethers } from 'ethers'
-import { hexStripZeros } from 'ethers/lib/utils'
+import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { hexStripZeros, isBytesLike } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'
 import { hexEncodeName } from '../utils/hexEncodedName'
@@ -154,11 +154,8 @@ const formatRecords = async (
           type: calls[i].type,
         }
         if (itemRet.type === 'contentHash') {
-          ;[decodedFromAbi] = ethers.utils.defaultAbiCoder.decode(
-            ['bytes'],
-            item,
-          )
-          if (ethers.utils.hexStripZeros(decodedFromAbi) === '0x') {
+          ;[decodedFromAbi] = defaultAbiCoder.decode(['bytes'], item)
+          if (hexStripZeros(decodedFromAbi) === '0x') {
             return
           }
         }
@@ -218,12 +215,12 @@ const formatRecords = async (
   ) {
     if (
       typeof options.contentHash === 'string' &&
-      ethers.utils.hexStripZeros(options.contentHash) === '0x'
+      hexStripZeros(options.contentHash) === '0x'
     ) {
       returnedResponse.contentHash = null
     } else if (
-      ethers.utils.isBytesLike((options.contentHash as any).decoded) &&
-      ethers.utils.hexStripZeros((options.contentHash as any).decoded) === '0x'
+      isBytesLike((options.contentHash as any).decoded) &&
+      hexStripZeros((options.contentHash as any).decoded) === '0x'
     ) {
       returnedResponse.contentHash = null
     } else {
@@ -402,14 +399,17 @@ const graphFetch = async (
   let resolverResponse: any
 
   if (!resolverAddress) {
-    ;({ domain } = await client.request(query, { id }))
+    const response = await client.request(query, { id })
+    domain = response?.domain
     resolverResponse = domain?.resolver
   } else {
     const resolverId = `${resolverAddress.toLowerCase()}-${id}`
-    ;({ resolver: resolverResponse, domain } = await client.request(
-      customResolverQuery,
-      { id, resolverId },
-    ))
+    const response = await client.request(customResolverQuery, {
+      id,
+      resolverId,
+    })
+    resolverResponse = response?.resolver
+    domain = response?.domain
   }
 
   if (!domain) return

@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
 import { ENSArgs } from '..'
 import { FuseProps, validateFuses } from '../utils/fuses'
 import { MAX_INT_64 } from '../utils/registerHelpers'

@@ -1,5 +1,5 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
-import { ethers } from 'ethers'
+import { hexStripZeros, isBytesLike } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
 import { namehash } from '../utils/normalise'
@@ -34,8 +34,8 @@ export const _getContentHash = {
 
     if (
       !decodedContent ||
-      (ethers.utils.isBytesLike(decodedContent.decoded) &&
-        ethers.utils.hexStripZeros(decodedContent.decoded) === '0x') ||
+      (isBytesLike(decodedContent.decoded) &&
+        hexStripZeros(decodedContent.decoded) === '0x') ||
       Object.keys(decodedContent).length === 0
     ) {
       return
@@ -196,7 +196,7 @@ export const _getAddr = {
 
     if (!response) return
 
-    if (ethers.utils.hexStripZeros(response) === '0x') {
+    if (hexStripZeros(response) === '0x') {
       return
     }
 

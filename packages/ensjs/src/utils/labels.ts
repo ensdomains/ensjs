@@ -1,4 +1,4 @@
-import { solidityKeccak256 } from 'ethers/lib/utils'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { truncateFormat } from './format'
 
 const hasLocalStorage = typeof localStorage !== 'undefined'

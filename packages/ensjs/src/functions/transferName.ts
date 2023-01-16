@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 
@@ -30,7 +30,7 @@ export default async function (
       if (labels.length > 2 || labels[labels.length - 1] !== 'eth') {
         throw new Error('Invalid name for baseRegistrar')
       }
-      const tokenId = ethers.utils.solidityKeccak256(['string'], [labels[0]])
+      const tokenId = solidityKeccak256(['string'], [labels[0]])
 
       // reclaim if sending manager on unwrapped name
       if (reclaim) {

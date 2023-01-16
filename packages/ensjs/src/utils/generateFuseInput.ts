@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
 import fuses, { FuseOptions } from './fuses'
 
 export default (fuseOptions: FuseOptions) => {
@@ -8,6 +8,6 @@ export default (fuseOptions: FuseOptions) => {
 
   const bigNumberFuses = fuseKeys.reduce((prev, curr) => {
     return prev.or(fuses[curr as keyof typeof fuses])
-  }, ethers.BigNumber.from(0))
+  }, BigNumber.from(0))
   return bigNumberFuses.toHexString()
 }

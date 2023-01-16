@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import { namehash } from 'ethers/lib/utils'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { labelhash } from '../src/utils/labels'
+import { namehash } from '../src/utils/normalise'
 
 const ZERO_HASH =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
