@@ -33,7 +33,7 @@ describe('Signer Injection', () => {
       expect(tx.from).toBe(accounts[3])
     }
   })
-  it('should return a transaction succesfully for a custom signer index', async () => {
+  it('should return a transaction successfully for a custom signer index', async () => {
     const tx = (await ensInstance.setName('fleek.eth', {
       addressOrIndex: 3,
     })) as ContractTransaction

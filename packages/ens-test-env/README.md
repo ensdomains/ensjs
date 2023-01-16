@@ -72,7 +72,7 @@ module.exports = {
 
 ### Stateless
 
-For most testing sitatutions you can use the default settings, which will create a fresh mainnet
+For most testing situations you can use the default settings, which will create a fresh mainnet
 fork from a specified block as well as deploying a fresh subgraph with the same specified block
 as it's start block.
 
@@ -98,7 +98,7 @@ tests wherever possible.
 
 ## Contract deployments
 
-Contract deployments are a small but neccessary part of testing, you can deploy contracts to
+Contract deployments are a small but necessary part of testing, you can deploy contracts to
 both stateless and stateful environments. After the locally tested contract is deployed, the
 deployment script should be left in the repo to serve as an archive.
 
