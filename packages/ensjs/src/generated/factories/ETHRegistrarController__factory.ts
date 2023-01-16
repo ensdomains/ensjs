@@ -116,17 +116,6 @@ const _abi = [
     inputs: [
       {
         internalType: 'bytes32',
-        name: 'node',
-        type: 'bytes32',
-      },
-    ],
-    name: 'Unauthorised',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
         name: 'commitment',
         type: 'bytes32',
       },
@@ -329,14 +318,9 @@ const _abi = [
         type: 'bool',
       },
       {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint64',
-        name: 'wrapperExpiry',
-        type: 'uint64',
+        internalType: 'uint16',
+        name: 'ownerControlledFuses',
+        type: 'uint16',
       },
     ],
     name: 'makeCommitment',
@@ -476,14 +460,9 @@ const _abi = [
         type: 'bool',
       },
       {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint64',
-        name: 'wrapperExpiry',
-        type: 'uint64',
+        internalType: 'uint16',
+        name: 'ownerControlledFuses',
+        type: 'uint16',
       },
     ],
     name: 'register',
@@ -505,34 +484,6 @@ const _abi = [
       },
     ],
     name: 'renew',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'string',
-        name: 'name',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: 'duration',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint64',
-        name: 'wrapperExpiry',
-        type: 'uint64',
-      },
-    ],
-    name: 'renewWithFuses',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',

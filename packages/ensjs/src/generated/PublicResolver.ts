@@ -31,11 +31,13 @@ export interface PublicResolverInterface extends Interface {
     'ABI(bytes32,uint256)': FunctionFragment
     'addr(bytes32)': FunctionFragment
     'addr(bytes32,uint256)': FunctionFragment
+    'approve(bytes32,address,bool)': FunctionFragment
     'clearRecords(bytes32)': FunctionFragment
     'contenthash(bytes32)': FunctionFragment
     'dnsRecord(bytes32,bytes32,uint16)': FunctionFragment
     'hasDNSRecords(bytes32,bytes32)': FunctionFragment
     'interfaceImplementer(bytes32,bytes4)': FunctionFragment
+    'isApprovedFor(address,bytes32,address)': FunctionFragment
     'isApprovedForAll(address,address)': FunctionFragment
     'multicall(bytes[])': FunctionFragment
     'multicallWithNodeCheck(bytes32,bytes[])': FunctionFragment
@@ -63,11 +65,13 @@ export interface PublicResolverInterface extends Interface {
       | 'ABI'
       | 'addr(bytes32)'
       | 'addr(bytes32,uint256)'
+      | 'approve'
       | 'clearRecords'
       | 'contenthash'
       | 'dnsRecord'
       | 'hasDNSRecords'
       | 'interfaceImplementer'
+      | 'isApprovedFor'
       | 'isApprovedForAll'
       | 'multicall'
       | 'multicallWithNodeCheck'
@@ -103,6 +107,14 @@ export interface PublicResolverInterface extends Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>],
   ): string
   encodeFunctionData(
+    functionFragment: 'approve',
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<boolean>,
+    ],
+  ): string
+  encodeFunctionData(
     functionFragment: 'clearRecords',
     values: [PromiseOrValue<BytesLike>],
   ): string
@@ -125,6 +137,14 @@ export interface PublicResolverInterface extends Interface {
   encodeFunctionData(
     functionFragment: 'interfaceImplementer',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BytesLike>],
+  ): string
+  encodeFunctionData(
+    functionFragment: 'isApprovedFor',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+    ],
   ): string
   encodeFunctionData(
     functionFragment: 'isApprovedForAll',
@@ -236,6 +256,7 @@ export interface PublicResolverInterface extends Interface {
     functionFragment: 'addr(bytes32,uint256)',
     data: BytesLike,
   ): Result
+  decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result
   decodeFunctionResult(
     functionFragment: 'clearRecords',
     data: BytesLike,
@@ -248,6 +269,10 @@ export interface PublicResolverInterface extends Interface {
   ): Result
   decodeFunctionResult(
     functionFragment: 'interfaceImplementer',
+    data: BytesLike,
+  ): Result
+  decodeFunctionResult(
+    functionFragment: 'isApprovedFor',
     data: BytesLike,
   ): Result
   decodeFunctionResult(
@@ -306,6 +331,7 @@ export interface PublicResolverInterface extends Interface {
     'AddrChanged(bytes32,address)': EventFragment
     'AddressChanged(bytes32,uint256,bytes)': EventFragment
     'ApprovalForAll(address,address,bool)': EventFragment
+    'Approved(address,bytes32,address,bool)': EventFragment
     'ContenthashChanged(bytes32,bytes)': EventFragment
     'DNSRecordChanged(bytes32,bytes,uint16,bytes)': EventFragment
     'DNSRecordDeleted(bytes32,bytes,uint16)': EventFragment
@@ -321,6 +347,7 @@ export interface PublicResolverInterface extends Interface {
   getEvent(nameOrSignatureOrTopic: 'AddrChanged'): EventFragment
   getEvent(nameOrSignatureOrTopic: 'AddressChanged'): EventFragment
   getEvent(nameOrSignatureOrTopic: 'ApprovalForAll'): EventFragment
+  getEvent(nameOrSignatureOrTopic: 'Approved'): EventFragment
   getEvent(nameOrSignatureOrTopic: 'ContenthashChanged'): EventFragment
   getEvent(nameOrSignatureOrTopic: 'DNSRecordChanged'): EventFragment
   getEvent(nameOrSignatureOrTopic: 'DNSRecordDeleted'): EventFragment
@@ -377,6 +404,19 @@ export type ApprovalForAllEvent = TypedEvent<
 >
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>
+
+export interface ApprovedEventObject {
+  owner: string
+  node: string
+  delegate: string
+  approved: boolean
+}
+export type ApprovedEvent = TypedEvent<
+  [string, string, string, boolean],
+  ApprovedEventObject
+>
+
+export type ApprovedEventFilter = TypedEventFilter<ApprovedEvent>
 
 export interface ContenthashChangedEventObject {
   node: string
@@ -534,6 +574,13 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<[string]>
 
+    approve(
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<ContractTransaction>
+
     clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> },
@@ -562,6 +609,13 @@ export interface PublicResolver extends BaseContract {
       interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides,
     ): Promise<[string]>
+
+    isApprovedFor(
+      owner: PromiseOrValue<string>,
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
+      overrides?: CallOverrides,
+    ): Promise<[boolean]>
 
     isApprovedForAll(
       account: PromiseOrValue<string>,
@@ -700,6 +754,13 @@ export interface PublicResolver extends BaseContract {
     overrides?: CallOverrides,
   ): Promise<string>
 
+  approve(
+    node: PromiseOrValue<BytesLike>,
+    delegate: PromiseOrValue<string>,
+    approved: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> },
+  ): Promise<ContractTransaction>
+
   clearRecords(
     node: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> },
@@ -728,6 +789,13 @@ export interface PublicResolver extends BaseContract {
     interfaceID: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides,
   ): Promise<string>
+
+  isApprovedFor(
+    owner: PromiseOrValue<string>,
+    node: PromiseOrValue<BytesLike>,
+    delegate: PromiseOrValue<string>,
+    overrides?: CallOverrides,
+  ): Promise<boolean>
 
   isApprovedForAll(
     account: PromiseOrValue<string>,
@@ -866,6 +934,13 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<string>
 
+    approve(
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: CallOverrides,
+    ): Promise<void>
+
     clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides,
@@ -894,6 +969,13 @@ export interface PublicResolver extends BaseContract {
       interfaceID: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides,
     ): Promise<string>
+
+    isApprovedFor(
+      owner: PromiseOrValue<string>,
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
+      overrides?: CallOverrides,
+    ): Promise<boolean>
 
     isApprovedForAll(
       account: PromiseOrValue<string>,
@@ -1056,6 +1138,19 @@ export interface PublicResolver extends BaseContract {
       approved?: null,
     ): ApprovalForAllEventFilter
 
+    'Approved(address,bytes32,address,bool)'(
+      owner?: null,
+      node?: PromiseOrValue<BytesLike> | null,
+      delegate?: PromiseOrValue<string> | null,
+      approved?: PromiseOrValue<boolean> | null,
+    ): ApprovedEventFilter
+    Approved(
+      owner?: null,
+      node?: PromiseOrValue<BytesLike> | null,
+      delegate?: PromiseOrValue<string> | null,
+      approved?: PromiseOrValue<boolean> | null,
+    ): ApprovedEventFilter
+
     'ContenthashChanged(bytes32,bytes)'(
       node?: PromiseOrValue<BytesLike> | null,
       hash?: null,
@@ -1172,6 +1267,13 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>
 
+    approve(
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<BigNumber>
+
     clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> },
@@ -1198,6 +1300,13 @@ export interface PublicResolver extends BaseContract {
     interfaceImplementer(
       node: PromiseOrValue<BytesLike>,
       interfaceID: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>
+
+    isApprovedFor(
+      owner: PromiseOrValue<string>,
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
       overrides?: CallOverrides,
     ): Promise<BigNumber>
 
@@ -1339,6 +1448,13 @@ export interface PublicResolver extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>
 
+    approve(
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<PopulatedTransaction>
+
     clearRecords(
       node: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> },
@@ -1365,6 +1481,13 @@ export interface PublicResolver extends BaseContract {
     interfaceImplementer(
       node: PromiseOrValue<BytesLike>,
       interfaceID: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>
+
+    isApprovedFor(
+      owner: PromiseOrValue<string>,
+      node: PromiseOrValue<BytesLike>,
+      delegate: PromiseOrValue<string>,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>
 

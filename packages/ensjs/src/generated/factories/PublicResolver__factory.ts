@@ -127,6 +127,37 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'delegate',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'bool',
+        name: 'approved',
+        type: 'bool',
+      },
+    ],
+    name: 'Approved',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: 'bytes32',
         name: 'node',
@@ -421,6 +452,29 @@ const _abi = [
         name: 'node',
         type: 'bytes32',
       },
+      {
+        internalType: 'address',
+        name: 'delegate',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'approved',
+        type: 'bool',
+      },
+    ],
+    name: 'approve',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'node',
+        type: 'bytes32',
+      },
     ],
     name: 'clearRecords',
     outputs: [],
@@ -518,6 +572,35 @@ const _abi = [
         internalType: 'address',
         name: '',
         type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'delegate',
+        type: 'address',
+      },
+    ],
+    name: 'isApprovedFor',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
       },
     ],
     stateMutability: 'view',
