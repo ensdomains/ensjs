@@ -56,7 +56,7 @@
   "license": "MIT",
   "scripts": {
     "tenv": "ens-test-env -a",
-    "denv": "pnpm tenv start -ns -nb --extra-time 11368000",
+    "denv": "pnpm tenv start -ns -nb --extra-time 11368000 --verbosity 1",
     "generate-types": "ts-node scripts/runTypechain.ts",
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",

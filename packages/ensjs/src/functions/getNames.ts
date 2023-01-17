@@ -2,6 +2,7 @@ import { ENSArgs } from '..'
 import { truncateFormat } from '../utils/format'
 import { AllCurrentFuses, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
+import { Domain, Registration, WrappedDomain } from '../utils/subgraph-types'
 
 export type Name = {
   id: string
@@ -57,23 +58,35 @@ type AllParams = {
 type Params = BaseParams &
   (RegistrantParams | OwnerParams | WrappedOwnerParams | AllParams)
 
-const mapDomain = (domain: any) => {
-  const decrypted = decryptName(domain.name)
+const mapDomain = ({ name, ...domain }: Domain) => {
+  const decrypted = name ? decryptName(name) : undefined
   return {
     ...domain,
     name: decrypted,
-    truncatedName: truncateFormat(decrypted),
+    truncatedName: decrypted ? truncateFormat(decrypted) : undefined,
     createdAt: new Date(parseInt(domain.createdAt) * 1000),
     type: 'domain',
   }
 }
 
-const mapWrappedDomain = (wrappedDomain: any) => {
-  const domain = mapDomain(wrappedDomain.domain)
+const mapWrappedDomain = (wrappedDomain: WrappedDomain) => {
+  const domain = mapDomain(wrappedDomain.domain) as Omit<
+    ReturnType<typeof mapDomain>,
+    'registration'
+  > & {
+    registration?: {
+      expiryDate: string | Date
+      registrationDate: string | Date
+    }
+  }
   if (domain.registration) {
     domain.registration = {
-      expiryDate: new Date(parseInt(domain.registration.expiryDate) * 1000),
-      registrationDate: new Date(domain.registration.registrationDate * 1000),
+      expiryDate: new Date(
+        parseInt(domain.registration.expiryDate as string) * 1000,
+      ),
+      registrationDate: new Date(
+        parseInt(domain.registration.registrationDate as string) * 1000,
+      ),
     }
   }
   return {
@@ -84,8 +97,8 @@ const mapWrappedDomain = (wrappedDomain: any) => {
   }
 }
 
-const mapRegistration = (registration: any) => {
-  const decrypted = decryptName(registration.domain.name)
+const mapRegistration = (registration: Registration) => {
+  const decrypted = decryptName(registration.domain.name!)
   return {
     expiryDate: new Date(parseInt(registration.expiryDate) * 1000),
     registrationDate: new Date(parseInt(registration.registrationDate) * 1000),
