@@ -1,6 +1,6 @@
 import { ENSArgs } from '..'
 import { truncateFormat } from '../utils/format'
-import { CurrentFuses, decodeFuses } from '../utils/fuses'
+import { AllCurrentFuses, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
 
 export type Name = {
@@ -16,7 +16,7 @@ export type Name = {
   createdAt?: Date
   registrationDate?: Date
   expiryDate?: Date
-  fuses?: CurrentFuses
+  fuses?: AllCurrentFuses
   registration?: {
     expiryDate: Date
     registrationDate: Date

@@ -4,7 +4,6 @@ import {
   resolverMulticallWrapper,
   universalWrapper,
 } from '../functions/batchWrappers'
-import burnFuses from '../functions/burnFuses'
 import commitName from '../functions/commitName'
 import createSubname from '../functions/createSubname'
 import deleteSubname from '../functions/deleteSubname'
@@ -36,8 +35,9 @@ import registerName from '../functions/registerName'
 import {
   // eslint-disable-next-line import/no-named-default
   default as renewNames,
-  renewNameWithData,
+  extendWrappedName,
 } from '../functions/renewNames'
+import burnFuses from '../functions/setFuses'
 import setName from '../functions/setName'
 import setRecord from '../functions/setRecord'
 import setRecords from '../functions/setRecords'
@@ -82,7 +82,7 @@ export default {
   importDNSSECName,
   registerName,
   renewNames,
-  renewNameWithData,
+  extendWrappedName,
   setName,
   setRecord,
   setRecords,

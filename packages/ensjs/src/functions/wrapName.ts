@@ -1,19 +1,16 @@
 import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
 import { Signer } from '@ethersproject/abstract-signer'
-import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
 import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
-import { FuseOptions } from '../utils/fuses'
-import generateFuseInput from '../utils/generateFuseInput'
+import { CombinedFuseInput, encodeFuses } from '../utils/fuses'
 import { hexEncodeName } from '../utils/hexEncodedName'
-import { Expiry, makeExpiry, wrappedLabelLengthCheck } from '../utils/wrapper'
+import { Expiry, wrappedLabelLengthCheck } from '../utils/wrapper'
 
 async function wrapETH(
   { contracts }: ENSArgs<'contracts'>,
   labels: string[],
   wrappedOwner: string,
-  expiry: BigNumber,
-  decodedFuses: string,
+  decodedFuses: number,
   resolverAddress: string,
   signer: Signer,
   address: string,
@@ -24,8 +21,8 @@ async function wrapETH(
   const labelhash = solidityKeccak256(['string'], [labels[0]])
 
   const data = defaultAbiCoder.encode(
-    ['string', 'address', 'uint32', 'uint64', 'address'],
-    [labels[0], wrappedOwner, decodedFuses, expiry, resolverAddress],
+    ['string', 'address', 'uint16', 'address'],
+    [labels[0], wrappedOwner, decodedFuses, resolverAddress],
   )
 
   return baseRegistrar.populateTransaction[
@@ -63,11 +60,7 @@ async function wrapOther(
 }
 
 export default async function (
-  {
-    contracts,
-    signer,
-    getExpiry,
-  }: ENSArgs<'contracts' | 'signer' | 'getExpiry'>,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
   {
     wrappedOwner,
@@ -76,14 +69,14 @@ export default async function (
     resolverAddress,
   }: {
     wrappedOwner: string
-    fuseOptions?: FuseOptions | string | number
+    fuseOptions?: Partial<CombinedFuseInput> | number
     expiry?: Expiry
     resolverAddress?: string
   },
 ) {
   const address = await signer.getAddress()
 
-  let decodedFuses: string
+  let decodedFuses: number
 
   const publicResolver = await contracts?.getPublicResolver()!
   if (!resolverAddress) resolverAddress = publicResolver.address
@@ -94,19 +87,15 @@ export default async function (
   if (labels.length === 2 && labels[1] === 'eth') {
     switch (typeof fuseOptions) {
       case 'object': {
-        decodedFuses = generateFuseInput(fuseOptions)
+        decodedFuses = encodeFuses(fuseOptions)
         break
       }
       case 'number': {
-        decodedFuses = fuseOptions.toString(16)
-        break
-      }
-      case 'string': {
         decodedFuses = fuseOptions
         break
       }
       case 'undefined': {
-        decodedFuses = '0'
+        decodedFuses = 0
         break
       }
       default: {
@@ -114,13 +103,10 @@ export default async function (
       }
     }
 
-    const expiryToUse = await makeExpiry({ getExpiry }, name, expiry)
-
     return wrapETH(
       { contracts },
       labels,
       wrappedOwner,
-      expiryToUse,
       decodedFuses,
       resolverAddress,
       signer,

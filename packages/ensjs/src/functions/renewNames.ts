@@ -1,39 +1,33 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
 import { ENSArgs } from '..'
-import { FuseProps, validateFuses } from '../utils/fuses'
-import { MAX_INT_64 } from '../utils/registerHelpers'
+import { MAX_INT_64 } from '../utils/consts'
+import { labelhash } from '../utils/labels'
+import { namehash } from '../utils/normalise'
 
 type BaseProps = {
   duration: number
   value: BigNumber
 }
 
-export async function renewNameWithData(
+type WrappedProps = {
+  duration: BigNumberish
+}
+
+export async function extendWrappedName(
   { contracts }: ENSArgs<'contracts'>,
   name: string,
-  {
-    duration,
-    value,
-    fuses,
-    wrapperExpiry = MAX_INT_64,
-  }: BaseProps & {
-    fuses?: FuseProps
-    wrapperExpiry?: BigNumberish
-  },
+  options?: WrappedProps,
 ) {
+  const expiry = options?.duration || MAX_INT_64
   const labels = name.split('.')
-  if (labels.length !== 2 || labels[1] !== 'eth') {
-    throw new Error('Currently only .eth TLD renewals are supported')
-  }
+  const labelHash = labelhash(labels.shift()!)
+  const parentNode = namehash(labels.join('.'))
 
-  const encodedFuses = fuses ? validateFuses(fuses) : 0
-  const controller = await contracts!.getEthRegistrarController()
-  return controller.populateTransaction.renewWithFuses(
-    labels[0],
-    duration,
-    encodedFuses,
-    wrapperExpiry,
-    { value },
+  const nameWrapper = await contracts!.getNameWrapper()
+  return nameWrapper.populateTransaction.extendExpiry(
+    parentNode,
+    labelHash,
+    expiry,
   )
 }
 

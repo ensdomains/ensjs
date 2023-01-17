@@ -86,7 +86,6 @@
     "traverse": "^0.6.6"
   },
   "devDependencies": {
-    "ethers": "^5.7.2",
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "^0.0.16",
     "@ensdomains/ens-test-env": "workspace:*",
@@ -116,6 +115,7 @@
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.6",
     "eslint-plugin-jest": "^27.0.1",
+    "ethers": "^5.7.2",
     "ganache": "^7.4.0",
     "glob": "^8.0.3",
     "hardhat": "2.10.2",

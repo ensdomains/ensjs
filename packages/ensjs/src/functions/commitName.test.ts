@@ -31,7 +31,6 @@ describe('commitName', () => {
     expect(popTx).toBeTruthy()
     expect(customData).toHaveProperty('secret')
     expect(customData).toHaveProperty('commitment')
-    expect(customData).toHaveProperty('wrapperExpiry')
 
     const tx = await provider.getSigner().sendTransaction(popTx)
     await tx.wait()
@@ -47,11 +46,9 @@ describe('commitName', () => {
       owner: accounts[1],
       addressOrIndex: accounts[1],
       secret,
-      wrapperExpiry: 100000,
     })
     await tx.wait()
     expect(tx.customData).toBeTruthy()
-    expect(tx.customData!.wrapperExpiry).toBe(100000)
     expect(tx.customData!.secret).toBe(secret)
 
     const controller = await ensInstance.contracts!.getEthRegistrarController()!

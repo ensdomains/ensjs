@@ -46,15 +46,15 @@ describe('wrapName', () => {
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
       const [, fuses] = await nameWrapper.getData(namehash('test123.eth'))
 
-      // parent cannot control
-      expect(fuses).toBe(64)
+      expect(fuses).toBe(196608)
     })
     it('should allow initial fuses', async () => {
       const tx = await ensInstance.wrapName('test123.eth', {
         wrappedOwner: accounts[2],
         fuseOptions: {
-          CANNOT_UNWRAP: true,
-          CANNOT_SET_TTL: true,
+          child: {
+            named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
+          },
         },
         addressOrIndex: 1,
       })
@@ -63,7 +63,7 @@ describe('wrapName', () => {
 
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
       const [, fuses] = await nameWrapper.getData(namehash('test123.eth'))
-      expect(fuses).toBe(81)
+      expect(fuses).toBe(196625)
     })
     it('should allow an initial resolver address', async () => {
       const tx = await ensInstance.wrapName('test123.eth', {
@@ -139,8 +139,9 @@ describe('wrapName', () => {
         ensInstance.wrapName('test.with-subnames.eth', {
           wrappedOwner: accounts[2],
           fuseOptions: {
-            cannotUnwrap: true,
-            cannotSetTtl: true,
+            child: {
+              named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
+            },
           },
           addressOrIndex: 1,
         }),
