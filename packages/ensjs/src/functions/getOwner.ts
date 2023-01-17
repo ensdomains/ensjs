@@ -177,7 +177,7 @@ const decode = async (
     }
     // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
     // there is no "registrant" for wrapped names
-    if (registrarOwner === nameWrapper.address) {
+    if (registrarOwner.toLowerCase() === nameWrapper.address.toLowerCase()) {
       return {
         owner: nameWrapperOwner,
         ownershipLevel: 'nameWrapper',
