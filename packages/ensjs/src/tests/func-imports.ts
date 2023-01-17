@@ -37,7 +37,7 @@ import {
   default as renewNames,
   extendWrappedName,
 } from '../functions/renewNames'
-import burnFuses from '../functions/setFuses'
+import setFuses, { setChildFuses } from '../functions/setFuses'
 import setName from '../functions/setName'
 import setRecord from '../functions/setRecord'
 import setRecords from '../functions/setRecords'
@@ -54,7 +54,8 @@ export default {
   multicallWrapper,
   resolverMulticallWrapper,
   universalWrapper,
-  burnFuses,
+  setFuses,
+  setChildFuses,
   commitName,
   createSubname,
   deleteSubname,
