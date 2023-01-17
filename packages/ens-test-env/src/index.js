@@ -73,6 +73,7 @@ program
   .addOption(
     new Option('-s, --save', 'Save data when exiting').implies({
       killGracefully: true,
+      verbosity: 1,
     }),
   )
   .addOption(
@@ -101,7 +102,7 @@ program
   .command('kill')
   .description('Forcefully kills the test environment')
   .action(async () => {
-    manager(config, undefined, true)
+    manager(config, {}, true)
   })
 
 program
