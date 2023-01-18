@@ -147,7 +147,9 @@ const decode = async (
 
   const registryOwner = (decodedData[0] as Result)[0]
   const nameWrapperOwner = (decodedData[1] as Result)[0]
-  let registrarOwner = (decodedData[2] as Result | undefined)?.[0]
+  let registrarOwner: string | undefined = (
+    decodedData[2] as Result | undefined
+  )?.[0]
   let baseReturnObject: {
     expired?: boolean
   } = {}
@@ -177,7 +179,7 @@ const decode = async (
     }
     // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
     // there is no "registrant" for wrapped names
-    if (registrarOwner.toLowerCase() === nameWrapper.address.toLowerCase()) {
+    if (registrarOwner?.toLowerCase() === nameWrapper.address.toLowerCase()) {
       return {
         owner: nameWrapperOwner,
         ownershipLevel: 'nameWrapper',

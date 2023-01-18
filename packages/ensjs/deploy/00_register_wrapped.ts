@@ -31,6 +31,7 @@ const names: {
   {
     label: 'expired-wrapped',
     namedOwner: 'owner',
+    subnames: [{ label: 'test', namedOwner: 'owner2' }],
     duration: 2419200,
   },
 ]

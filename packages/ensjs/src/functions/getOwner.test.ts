@@ -51,4 +51,29 @@ describe('getOwner', () => {
       expired: true,
     })
   })
+  describe('subname', () => {
+    it('should return correct ownership level and values for a unwrapped name', async () => {
+      const result = await ensInstance.getOwner('test.with-subnames.eth')
+      expect(result).toEqual({
+        ownershipLevel: 'registry',
+        owner: accounts[2],
+      })
+    })
+    it('should return correct ownership level and values for a wrapped name', async () => {
+      const result = await ensInstance.getOwner(
+        'test.wrapped-with-subnames.eth',
+      )
+      expect(result).toEqual({
+        ownershipLevel: 'nameWrapper',
+        owner: accounts[2],
+      })
+    })
+    it('should return correct ownership level and values for an expired wrapped name', async () => {
+      const result = await ensInstance.getOwner('test.expired-wrapped.eth')
+      expect(result).toEqual({
+        ownershipLevel: 'nameWrapper',
+        owner: accounts[2],
+      })
+    })
+  })
 })
