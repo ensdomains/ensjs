@@ -45,7 +45,7 @@ type OwnerParams = {
 
 type WrappedOwnerParams = {
   type: 'wrappedOwner'
-  orderBy?: 'expiryDate' | 'labelName'
+  orderBy?: 'expiryDate' | 'name'
 }
 
 type AllParams = {
@@ -288,7 +288,7 @@ const getNames = async (
         id: address,
         first: pageSize,
         skip: (page || 0) * pageSize,
-        orderBy,
+        orderBy: orderBy === 'labelName' ? 'name' : orderBy,
         orderDirection,
       }
     }

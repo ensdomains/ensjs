@@ -185,7 +185,7 @@ export type WrappedDomain = {
   expiryDate: Scalars['BigInt']
   fuses: Scalars['Int']
   owner: Account
-  labelName?: Maybe<Scalars['String']>
+  name?: Maybe<Scalars['String']>
 }
 
 export type Account = {
