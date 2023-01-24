@@ -9,6 +9,7 @@ type Owner = {
   registrant?: string
   owner?: string
   ownershipLevel: 'nameWrapper' | 'registry' | 'registrar'
+  expired?: boolean
 }
 
 const singleContractOwnerRaw = async (
@@ -146,26 +147,43 @@ const decode = async (
 
   const registryOwner = (decodedData[0] as Result)[0]
   const nameWrapperOwner = (decodedData[1] as Result)[0]
-  let registrarOwner = (decodedData[2] as Result | undefined)?.[0]
+  let registrarOwner: string | undefined = (
+    decodedData[2] as Result | undefined
+  )?.[0]
+  let baseReturnObject: {
+    expired?: boolean
+  } = {}
 
   // check for only .eth names
   if (labels[labels.length - 1] === 'eth') {
-    if (!registrarOwner && labels.length === 2) {
-      const graphRegistrantResult = await gqlInstance.client.request(
-        registrantQuery,
-        {
-          namehash: makeNamehash(name),
-        },
-      )
-      registrarOwner =
-        graphRegistrantResult.domain?.registration?.registrant?.id
+    // if there is no registrar owner, the name is expired
+    // but we still want to get the registrar owner prior to expiry
+    if (labels.length === 2) {
+      if (!registrarOwner) {
+        const graphRegistrantResult = await gqlInstance.client.request(
+          registrantQuery,
+          {
+            namehash: makeNamehash(name),
+          },
+        )
+        registrarOwner =
+          graphRegistrantResult.domain?.registration?.registrant?.id
+        baseReturnObject = {
+          expired: true,
+        }
+      } else {
+        baseReturnObject = {
+          expired: false,
+        }
+      }
     }
     // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
     // there is no "registrant" for wrapped names
-    if (registrarOwner === nameWrapper.address) {
+    if (registrarOwner?.toLowerCase() === nameWrapper.address.toLowerCase()) {
       return {
         owner: nameWrapperOwner,
         ownershipLevel: 'nameWrapper',
+        ...baseReturnObject,
       }
     }
     // if there is a registrar owner, then it's not a subdomain but we have also passed the namewrapper clause
@@ -177,6 +195,7 @@ const decode = async (
         registrant: registrarOwner,
         owner: registryOwner,
         ownershipLevel: 'registrar',
+        ...baseReturnObject,
       }
     }
     if (hexStripZeros(registryOwner) !== '0x') {
@@ -187,6 +206,7 @@ const decode = async (
           registrant: undefined,
           owner: registryOwner,
           ownershipLevel: 'registrar',
+          expired: true,
         }
       }
       // this means that the subname is wrapped

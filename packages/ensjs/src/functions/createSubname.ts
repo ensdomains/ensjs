@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
 import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
-import { FuseOptions } from '../utils/fuses'
-import generateFuseInput from '../utils/generateFuseInput'
+import { CombinedFuseInput, encodeFuses } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 import { Expiry, makeExpiry, wrappedLabelLengthCheck } from '../utils/wrapper'
 
@@ -14,7 +13,7 @@ type BaseArgs = {
 
 type NameWrapperArgs = {
   contract: 'nameWrapper'
-  fuses?: FuseOptions
+  fuses?: CombinedFuseInput
   expiry?: Expiry
 } & BaseArgs
 
@@ -70,8 +69,8 @@ export default async function (
 
       const generatedFuses =
         'fuses' in wrapperArgs && wrapperArgs.fuses
-          ? generateFuseInput(wrapperArgs.fuses)
-          : '0'
+          ? encodeFuses(wrapperArgs.fuses)
+          : 0
 
       return nameWrapper.populateTransaction.setSubnodeRecord(
         parentNodehash,

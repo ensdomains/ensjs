@@ -172,7 +172,7 @@ describe('getNames', () => {
       type: 'wrappedOwner',
       page: 0,
     })
-    expect(pageOne).toHaveLength(1)
+    expect(pageOne).toHaveLength(2)
   })
   describe('orderBy', () => {
     describe('registrations', () => {

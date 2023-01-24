@@ -1,25 +1,38 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
+import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { namehash } from '../src/utils/normalise'
 
-const names = [
+const names: {
+  label: string
+  namedOwner: string
+  data?: any[]
+  reverseRecord?: boolean
+  fuses?: number
+  subnames?: {
+    label: string
+    namedOwner: string
+  }[]
+  duration?: number
+}[] = [
   {
     label: 'wrapped',
     namedOwner: 'owner',
-    data: [],
     reverseRecord: true,
-    fuses: 0,
   },
   {
     label: 'wrapped-with-subnames',
     namedOwner: 'owner',
-    data: [],
-    reverseRecord: false,
-    fuses: 0,
     subnames: [{ label: 'test', namedOwner: 'owner2' }],
+  },
+  {
+    label: 'expired-wrapped',
+    namedOwner: 'owner',
+    subnames: [{ label: 'test', namedOwner: 'owner2' }],
+    duration: 2419200,
   },
 ]
 
@@ -35,17 +48,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   for (const {
     label,
     namedOwner,
-    data,
-    reverseRecord,
-    fuses,
+    data = [],
+    reverseRecord = false,
+    fuses = 0,
     subnames,
+    duration = 31536000,
   } of names) {
     const secret =
       '0x0000000000000000000000000000000000000000000000000000000000000000'
     const owner = allNamedAccts[namedOwner]
     const resolver = publicResolver.address
-    const duration = 31536000
-    const wrapperExpiry = 1659467455 + duration
 
     const commitment = await controller.makeCommitment(
       label,
@@ -56,7 +68,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       data,
       reverseRecord,
       fuses,
-      wrapperExpiry,
     )
 
     const _controller = controller.connect(await ethers.getSigner(owner))
@@ -79,7 +90,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       data,
       reverseRecord,
       fuses,
-      wrapperExpiry,
       {
         value: price,
       },
@@ -103,7 +113,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           resolver,
           '0',
           '0',
-          wrapperExpiry,
+          BigNumber.from(2).pow(64).sub(1),
         )
         console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
         await setSubnameTx.wait()

@@ -89,6 +89,11 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'NameIsNotWrapped',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'bytes32',
@@ -170,15 +175,28 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        indexed: false,
         internalType: 'uint64',
         name: 'expiry',
         type: 'uint64',
+      },
+    ],
+    name: 'ExpiryExtended',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        indexed: false,
+        internalType: 'uint32',
+        name: 'fuses',
+        type: 'uint32',
       },
     ],
     name: 'FusesSet',
@@ -446,6 +464,30 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address',
+      },
+    ],
+    name: 'canModifyName',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'address',
         name: '',
         type: 'address',
@@ -478,6 +520,35 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
+        name: 'parentNode',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'labelhash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint64',
+        name: 'expiry',
+        type: 'uint64',
+      },
+    ],
+    name: 'extendExpiry',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: 'id',
         type: 'uint256',
@@ -487,17 +558,17 @@ const _abi = [
     outputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'owner',
         type: 'address',
       },
       {
         internalType: 'uint32',
-        name: '',
+        name: 'fuses',
         type: 'uint32',
       },
       {
         internalType: 'uint64',
-        name: '',
+        name: 'expiry',
         type: 'uint64',
       },
     ],
@@ -518,30 +589,6 @@ const _abi = [
       },
     ],
     name: 'isApprovedForAll',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'node',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'addr',
-        type: 'address',
-      },
-    ],
-    name: 'isTokenOwnerOrApproved',
     outputs: [
       {
         internalType: 'bool',
@@ -728,14 +775,9 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint64',
-        name: 'expiry',
-        type: 'uint64',
+        internalType: 'uint16',
+        name: 'ownerControlledFuses',
+        type: 'uint16',
       },
     ],
     name: 'registerAndWrapETH2LD',
@@ -773,16 +815,6 @@ const _abi = [
         internalType: 'uint256',
         name: 'duration',
         type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint64',
-        name: 'expiry',
-        type: 'uint64',
       },
     ],
     name: 'renew',
@@ -941,9 +973,9 @@ const _abi = [
         type: 'bytes32',
       },
       {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
+        internalType: 'uint16',
+        name: 'ownerControlledFuses',
+        type: 'uint16',
       },
     ],
     name: 'setFuses',
@@ -1332,14 +1364,9 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'uint32',
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint64',
-        name: 'expiry',
-        type: 'uint64',
+        internalType: 'uint16',
+        name: 'ownerControlledFuses',
+        type: 'uint16',
       },
       {
         internalType: 'address',
@@ -1348,13 +1375,7 @@ const _abi = [
       },
     ],
     name: 'wrapETH2LD',
-    outputs: [
-      {
-        internalType: 'uint64',
-        name: '',
-        type: 'uint64',
-      },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },

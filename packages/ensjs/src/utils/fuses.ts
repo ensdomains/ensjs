@@ -1,160 +1,357 @@
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
-
+// child named fuses
 const CANNOT_UNWRAP = 1
 const CANNOT_BURN_FUSES = 2
 const CANNOT_TRANSFER = 4
 const CANNOT_SET_RESOLVER = 8
 const CANNOT_SET_TTL = 16
 const CANNOT_CREATE_SUBDOMAIN = 32
-const PARENT_CANNOT_CONTROL = 64
+
+// parent named fuses
+const PARENT_CANNOT_CONTROL = 0x10000
+const IS_DOT_ETH = 0x20000
+const CAN_EXTEND_EXPIRY = 0x40000
+
+// fuse ranges
+export const CHILD_CONTROLLED_FUSES = 0x0000ffff
+export const PARENT_CONTROLLED_FUSES = 0xffff0000
+export const USER_SETTABLE_FUSES = 0xfffdffff
+
+// empty fuse
 const CAN_DO_EVERYTHING = 0
 
-export const fuseEnum = {
+export const childFuseEnum = {
   CANNOT_UNWRAP,
   CANNOT_BURN_FUSES,
   CANNOT_TRANSFER,
   CANNOT_SET_RESOLVER,
   CANNOT_SET_TTL,
   CANNOT_CREATE_SUBDOMAIN,
-  PARENT_CANNOT_CONTROL,
 } as const
 
-export type FuseOptions = { -readonly [K in keyof typeof fuseEnum]?: boolean }
+export const parentFuseEnum = {
+  PARENT_CANNOT_CONTROL,
+  CAN_EXTEND_EXPIRY,
+}
 
-export const unnamedFuses = [
-  128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144,
-  524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864,
-  134217728, 268435456, 536870912, 1073741824, 2147483648, 4294967296,
-] as const
+export const fullParentFuseEnum = {
+  ...parentFuseEnum,
+  IS_DOT_ETH,
+} as const
 
-const fullFuseEnum = {
-  ...fuseEnum,
+export const userSettableFuseEnum = {
+  ...childFuseEnum,
+  ...parentFuseEnum,
+} as const
+
+export const fullFuseEnum = {
+  ...userSettableFuseEnum,
   CAN_DO_EVERYTHING,
 }
 
-export type FuseObj = typeof fuseEnum
-export type CurrentFuses = { [f in keyof FuseObj]: boolean } & {
-  CAN_DO_EVERYTHING: boolean
-}
-export type UnnamedFuseType = typeof unnamedFuses
-export type Fuse = keyof FuseObj
-export type UnnamedFuseValues = UnnamedFuseType[number]
+export const unnamedChildFuses = [
+  64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768,
+] as const
 
-// We need this type so that the following type isn't infinite. This type limits the max length of the fuse array to 7.
-export type FuseArrayPossibilities =
-  | [Fuse]
-  | [Fuse, Fuse]
-  | [Fuse, Fuse, Fuse]
-  | [Fuse, Fuse, Fuse, Fuse]
-  | [Fuse, Fuse, Fuse, Fuse, Fuse]
-  | [Fuse, Fuse, Fuse, Fuse, Fuse, Fuse]
-  | [Fuse, Fuse, Fuse, Fuse, Fuse, Fuse, Fuse]
+export const unnamedParentFuses = [
+  0x80000, 0x100000, 0x200000, 0x400000, 0x800000, 0x1000000, 0x2000000,
+  0x4000000, 0x8000000, 0x10000000, 0x20000000, 0x40000000, 0x80000000,
+] as const
 
-/**
- * This type creates a type error if there are any duplicate fuses.
- * It effectively works like a reduce function, starting with 0 included types, adding a type each time, and then checking for duplicates.
- *
- * @template A The array to check for duplicates.
- * @template B The union of all checked existing types.
- */
-// CLAUSE A: This extension unwraps the type as a fuse tuple.
-type FusesWithoutDuplicates<A, B = never> = A extends FuseArrayPossibilities
-  ? // CLAUSE A > TRUE: CLAUSE B: Pick out the first item in the current array, separating the current item from the rest.
-    A extends [infer Head, ...infer Tail]
-    ? // CLAUSE B > TRUE: CLAUSE C: Check if the current item is a duplicate based on the input union.
-      Head extends B
-      ? // CLAUSE C > TRUE: Duplicate found, return an empty array to throw a type error.
-        []
-      : // CLAUSE C > FALSE: Return a new array to continue the recursion, adds the current item type to the union.
-        [Head, ...FusesWithoutDuplicates<Tail, Head | B>]
-    : // CLAUSE B > FALSE: Return the input array as there is no more array elements to check.
-      A
-  : // CLAUSE A > FALSE: Return an empty array as it isn't a fuse tuple.
-    []
+export const unnamedUserSettableFuses = [
+  ...unnamedChildFuses,
+  ...unnamedParentFuses,
+] as const
 
-export type NamedFusesToBurn = FusesWithoutDuplicates<FuseArrayPossibilities>
+export const childFuseKeys = Object.keys(
+  childFuseEnum,
+) as (keyof typeof childFuseEnum)[]
+export const parentFuseKeys = Object.keys(
+  parentFuseEnum,
+) as (keyof typeof parentFuseEnum)[]
+export const fullParentFuseKeys = Object.keys(
+  fullParentFuseEnum,
+) as (keyof typeof fullParentFuseEnum)[]
+export const userSettableFuseKeys = Object.keys(
+  userSettableFuseEnum,
+) as (keyof typeof userSettableFuseEnum)[]
 
-export type FusePropsNamedArray = {
-  namedFusesToBurn: NamedFusesToBurn
+type FuseType<
+  Enum extends Record<string, number>,
+  UnnamedTuple extends readonly number[],
+  CustomFuses extends string = never,
+> = {
+  fuse: keyof Enum
+  options: { -readonly [K in keyof Enum]?: boolean }
+  current: { [K in keyof Enum]: boolean } & {
+    readonly [K in CustomFuses]: boolean
+  }
+  unnamed: UnnamedTuple
+  unnamedValues: UnnamedTuple[number]
+  unnamedObject: { [K in UnnamedTuple[number]]: boolean }
 }
 
-export type FusePropsUnnamedArray = {
-  unnamedFusesToBurn: UnnamedFuseValues[]
+export type ChildFuses = FuseType<
+  typeof childFuseEnum,
+  typeof unnamedChildFuses,
+  'CAN_DO_EVERYTHING'
+>
+export type ParentFuses = FuseType<
+  typeof parentFuseEnum,
+  typeof unnamedParentFuses
+>
+export type FullParentFuses = FuseType<
+  typeof fullParentFuseEnum,
+  typeof unnamedParentFuses
+>
+export type UserSettableFuses = FuseType<
+  typeof userSettableFuseEnum,
+  typeof unnamedUserSettableFuses
+>
+
+type InputFuses<NamedFuse extends string, UnnamedFuse extends number> =
+  | {
+      named: readonly NamedFuse[]
+    }
+  | {
+      unnamed: readonly UnnamedFuse[]
+    }
+  | {
+      named: readonly NamedFuse[]
+      unnamed: readonly UnnamedFuse[]
+    }
+  | {
+      number: number
+    }
+
+export type CombinedFuseInput = {
+  child: InputFuses<ChildFuses['fuse'], ChildFuses['unnamedValues']>
+  parent: InputFuses<ParentFuses['fuse'], ParentFuses['unnamedValues']>
 }
 
-export type FusePropsNumber = {
-  fuseNumberToBurn: number
+type FuseRestriction = 'parent' | 'child'
+
+const checkNumber = (fuses: number) => {
+  if (fuses > 2 ** 32 || fuses < 1) {
+    throw new Error(
+      `Fuse number must be limited to uint32, ${fuses} was too ${
+        fuses < 1 ? 'low' : 'high'
+      }.`,
+    )
+  } else if (fuses % 1 !== 0) {
+    throw new Error(`Fuse number must be an integer, ${fuses} was not.`)
+  } else if ((fuses & USER_SETTABLE_FUSES) !== fuses) {
+    throw new Error(
+      `Fuse number must be limited to user settable fuses, ${fuses} was not.`,
+    )
+  }
 }
 
-export type FuseProps =
-  | (Partial<FusePropsNamedArray> & FusePropsUnnamedArray)
-  | (FusePropsNamedArray & Partial<FusePropsUnnamedArray>)
-  | FusePropsNumber
+const testFuses = (fuses: any) => {
+  if ('named' in fuses && fuses.named.length > 0) {
+    return true
+  }
+  if ('unnamed' in fuses && fuses.unnamed.length > 0) {
+    return true
+  }
+  if ('number' in fuses && fuses.number !== 0) {
+    return true
+  }
+  return false
+}
 
-export const validateFuses = (fuses: FuseProps) => {
-  const isNumber = 'fuseNumberToBurn' in fuses
-  const hasNamedArray = 'namedFusesToBurn' in fuses
-  const hasUnnamedArray = 'unnamedFusesToBurn' in fuses
+export const hasFuses = (fuses: any) => {
+  if (typeof fuses === 'number') {
+    return fuses !== 0
+  }
 
+  if (typeof fuses === 'object') {
+    if ('child' in fuses && testFuses(fuses.child)) {
+      return true
+    }
+    if ('parent' in fuses && testFuses(fuses.parent)) {
+      return true
+    }
+    if (testFuses(fuses)) {
+      return true
+    }
+  }
+  return false
+}
+
+export function encodeFuses(fuses: Partial<CombinedFuseInput> | number): number
+export function encodeFuses(
+  fuses: CombinedFuseInput['child'],
+  restrictTo: 'child',
+): number
+export function encodeFuses(
+  fuses: CombinedFuseInput['parent'],
+  restrictTo: 'parent',
+): number
+export function encodeFuses<T extends FuseRestriction>(
+  fuses: CombinedFuseInput[T],
+  restrictTo?: T,
+) {
   let encodedFuses: number = 0
 
-  if (isNumber) {
-    if (fuses.fuseNumberToBurn > 2 ** 32 || fuses.fuseNumberToBurn < 1) {
-      throw new Error(
-        `Fuse number must be limited to uint32, ${
-          fuses.fuseNumberToBurn
-        } was too ${fuses.fuseNumberToBurn < 1 ? 'low' : 'high'}.`,
-      )
-    } else if (fuses.fuseNumberToBurn % 1 !== 0) {
-      throw new Error(
-        `Fuse number must be an integer, ${fuses.fuseNumberToBurn} was not.`,
-      )
+  if (typeof fuses === 'number') {
+    if (restrictTo) {
+      throw new Error('Cannot specify an exact fuse value when restricted.')
     }
-    encodedFuses = fuses.fuseNumberToBurn
+    checkNumber(fuses)
+
+    encodedFuses = fuses
   } else {
-    if (!hasNamedArray && !hasUnnamedArray) {
-      throw new Error('Please provide fuses to burn')
-    }
-    if (hasNamedArray) {
-      for (const fuse of fuses.namedFusesToBurn!) {
-        if (!(fuse in fuseEnum)) {
-          throw new Error(`${fuse} is not a valid named fuse.`)
-        }
-        encodedFuses |= fuseEnum[fuse]
+    let fusesRef = fuses as unknown as CombinedFuseInput
+    let allowedNamed: readonly UserSettableFuses['fuse'][] = []
+    let allowedUnnamed: readonly UserSettableFuses['unnamedValues'][] = []
+
+    let namedArray: readonly UserSettableFuses['fuse'][] = []
+    let unnamedArray: readonly UserSettableFuses['unnamedValues'][] = []
+
+    if (restrictTo) {
+      if ('parent' in fuses || 'child' in fuses) {
+        throw new Error("Can't specify fuse category when restricted.")
       }
+      allowedNamed = restrictTo === 'child' ? childFuseKeys : parentFuseKeys
+      allowedUnnamed =
+        restrictTo === 'child' ? unnamedChildFuses : unnamedParentFuses
+
+      fusesRef = { [restrictTo]: fuses } as unknown as CombinedFuseInput
+    } else {
+      allowedNamed = userSettableFuseKeys
+      allowedUnnamed = unnamedUserSettableFuses
     }
-    if (hasUnnamedArray) {
-      for (const fuse of fuses.unnamedFusesToBurn!) {
-        if (!unnamedFuses.includes(fuse)) {
+    if ('parent' in fusesRef) {
+      if ('named' in fusesRef.parent) namedArray = fusesRef.parent.named
+      if ('unnamed' in fusesRef.parent) unnamedArray = fusesRef.parent.unnamed
+      if ('number' in fusesRef.parent) {
+        if ('named' in fusesRef.parent || 'unnamed' in fusesRef.parent) {
           throw new Error(
-            `${fuse} is not a valid unnamed fuse. If you are trying to burn a named fuse, use the namedFusesToBurn property.`,
+            'Cannot specify both a fuse number and named/unnamed fuses.',
           )
         }
-        encodedFuses |= fuse
+        checkNumber(fusesRef.parent.number)
+
+        if (
+          (fusesRef.parent.number & PARENT_CONTROLLED_FUSES) !==
+          fusesRef.parent.number
+        ) {
+          throw new Error(
+            "Cannot specify a fuse value to set that is outside of the parent's control.",
+          )
+        }
+
+        encodedFuses |= fusesRef.parent.number
       }
+    }
+    if ('child' in fusesRef) {
+      if ('named' in fusesRef.child)
+        namedArray = [...namedArray, ...fusesRef.child.named]
+      if ('unnamed' in fusesRef.child)
+        unnamedArray = [...unnamedArray, ...fusesRef.child.unnamed]
+      if ('number' in fusesRef.child) {
+        if ('named' in fusesRef.child || 'unnamed' in fusesRef.child) {
+          throw new Error(
+            'Cannot specify both a fuse number and named/unnamed fuses.',
+          )
+        }
+        checkNumber(fusesRef.child.number)
+
+        if (
+          (fusesRef.child.number & CHILD_CONTROLLED_FUSES) !==
+          fusesRef.child.number
+        ) {
+          throw new Error(
+            "Cannot specify a fuse value to set that is outside of the owner's control.",
+          )
+        }
+
+        encodedFuses |= fusesRef.child.number
+      }
+    }
+
+    if (!namedArray.length && !unnamedArray.length && !encodedFuses) {
+      throw new Error('Must specify at least one fuse.')
+    }
+
+    for (const fuse of namedArray) {
+      if (!allowedNamed.includes(fuse)) {
+        if (!userSettableFuseKeys.includes(fuse)) {
+          throw new Error(`${fuse} is not a valid named fuse.`)
+        }
+        throw new Error(`Fuse ${fuse} is not allowed for this operation.`)
+      }
+      encodedFuses |= userSettableFuseEnum[fuse]
+    }
+    for (const fuse of unnamedArray) {
+      if (!allowedUnnamed.includes(fuse)) {
+        if (!unnamedUserSettableFuses.includes(fuse)) {
+          throw new Error(
+            `${fuse} is not a valid unnamed fuse. If you are trying to set a named fuse, use the named property.`,
+          )
+        }
+        throw new Error(`Fuse ${fuse} is not allowed for this operation.`)
+      }
+      encodedFuses |= fuse
     }
   }
 
   return encodedFuses
 }
 
-export const decodeFuses = (fuses: BigNumberish) => {
-  const bnFuses = BigNumber.from(fuses)
-
+const decodeNamedFuses = (fuses: number, arr: readonly string[]) => {
   const fuseObj = Object.fromEntries(
-    Object.keys(fuseEnum).map((fuse) => [
+    arr.map((fuse) => [
       fuse,
-      bnFuses.and(fuseEnum[fuse as keyof typeof fuseEnum]).gt(0),
+      (fuses &
+        userSettableFuseEnum[fuse as keyof typeof userSettableFuseEnum]) >
+        0,
     ]),
   )
 
-  if (bnFuses.eq(0)) {
-    fuseObj.CAN_DO_EVERYTHING = true
-  } else {
-    fuseObj.CAN_DO_EVERYTHING = false
-  }
-
-  return fuseObj as CurrentFuses
+  return fuseObj
 }
+
+const decodeUnnamedFuses = (fuses: number, arr: readonly number[]) => {
+  const fuseObj = Object.fromEntries(
+    arr.map((fuse) => [fuse, (fuses & fuse) > 0]),
+  )
+
+  return fuseObj
+}
+
+export const decodeFuses = (fuses: number) => {
+  const parentNamedFuses = decodeNamedFuses(
+    fuses,
+    fullParentFuseKeys,
+  ) as FullParentFuses['current']
+  const parentUnnamedFuses = decodeUnnamedFuses(
+    fuses,
+    unnamedParentFuses,
+  ) as ParentFuses['unnamedObject']
+
+  const childNamedFuses = decodeNamedFuses(
+    fuses,
+    childFuseKeys,
+  ) as ChildFuses['current']
+  const childUnnamedFuses = decodeUnnamedFuses(
+    fuses,
+    unnamedChildFuses,
+  ) as ChildFuses['unnamedObject']
+
+  return {
+    parent: {
+      ...parentNamedFuses,
+      unnamed: parentUnnamedFuses,
+    },
+    child: {
+      ...childNamedFuses,
+      CAN_DO_EVERYTHING: (fuses & CHILD_CONTROLLED_FUSES) === 0,
+      unnamed: childUnnamedFuses,
+    },
+  }
+}
+
+export type AllCurrentFuses = ReturnType<typeof decodeFuses>
 
 export default fullFuseEnum

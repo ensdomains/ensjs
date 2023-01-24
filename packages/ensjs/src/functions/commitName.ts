@@ -22,7 +22,7 @@ export default async function (
     undefined,
     resolverAddress,
   )
-  const { secret, commitment, wrapperExpiry } = makeCommitment({
+  const { secret, commitment } = makeCommitment({
     name,
     resolver,
     ...params,
@@ -33,7 +33,6 @@ export default async function (
     customData: {
       secret,
       commitment,
-      wrapperExpiry,
     },
   }
 }

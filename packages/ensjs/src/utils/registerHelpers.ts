@@ -1,14 +1,10 @@
 import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
-import { BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
 import { keccak256 } from '@ethersproject/keccak256'
 import type { PublicResolver } from '../generated'
-import { FuseOptions } from './fuses'
-import generateFuseInput from './generateFuseInput'
+import { CombinedFuseInput, encodeFuses, hasFuses } from './fuses'
 import { labelhash } from './labels'
 import { namehash } from './normalise'
 import { generateRecordCallArray, RecordOptions } from './recordHelpers'
-
-export const MAX_INT_64 = 2n ** 64n - 1n
 
 export type BaseRegistrationParams = {
   owner: string
@@ -17,8 +13,7 @@ export type BaseRegistrationParams = {
   resolverAddress?: string
   records?: RecordOptions
   reverseRecord?: boolean
-  fuses?: FuseOptions
-  wrapperExpiry?: BigNumberish
+  fuses?: CombinedFuseInput['child']
 }
 
 export type RegistrationParams = Omit<
@@ -29,12 +24,8 @@ export type RegistrationParams = Omit<
   resolver: PublicResolver
 }
 
-export type CommitmentParams = Omit<
-  RegistrationParams,
-  'secret' | 'wrapperExpiry'
-> & {
+export type CommitmentParams = Omit<RegistrationParams, 'secret'> & {
   secret?: string
-  wrapperExpiry?: BigNumberish
 }
 
 export type RegistrationTuple = [
@@ -45,20 +36,7 @@ export type RegistrationTuple = [
   resolver: string,
   data: string[],
   reverseRecord: boolean,
-  fuses: string,
-  wrapperExpiry: BigNumberish,
-]
-
-export type CommitmentTuple = [
-  labelhash: string,
-  owner: string,
-  duration: number,
-  resolver: string,
-  data: string[],
-  secret: string,
-  reverseRecord: boolean,
-  fuses: string,
-  wrapperExpiry: BigNumberish,
+  ownerControlledFuses: number,
 ]
 
 export const randomSecret = () => {
@@ -74,15 +52,14 @@ export const makeCommitmentData = ({
   records,
   reverseRecord,
   fuses,
-  wrapperExpiry,
   secret,
 }: CommitmentParams & {
   secret: string
-}): CommitmentTuple => {
-  const label = labelhash(name.split('.')[0])
+}): RegistrationTuple => {
+  const labelHash = labelhash(name.split('.')[0])
   const hash = namehash(name)
   const resolverAddress = resolver.address
-  const fuseData = fuses ? generateFuseInput(fuses) : '0'
+  const fuseData = hasFuses(fuses) ? encodeFuses(fuses!, 'child') : 0
 
   if (reverseRecord) {
     if (!records) {
@@ -96,15 +73,14 @@ export const makeCommitmentData = ({
   const data = records ? generateRecordCallArray(hash, records, resolver) : []
 
   return [
-    label,
+    labelHash,
     owner,
     duration,
+    secret,
     resolverAddress,
     data,
-    secret,
     !!reverseRecord,
     fuseData,
-    wrapperExpiry || MAX_INT_64,
   ]
 }
 
@@ -114,24 +90,21 @@ export const makeRegistrationData = (
   const commitmentData = makeCommitmentData(params)
   const label = params.name.split('.')[0]
   commitmentData[0] = label
-  const secret = commitmentData.splice(5, 1)[0]
-  commitmentData.splice(3, 0, secret)
-  return commitmentData as unknown as RegistrationTuple
+  return commitmentData
 }
 
-export const _makeCommitment = (params: CommitmentTuple) => {
+export const _makeCommitment = (params: RegistrationTuple) => {
   return keccak256(
     defaultAbiCoder.encode(
       [
         'bytes32',
         'address',
         'uint256',
+        'bytes32',
         'address',
         'bytes[]',
-        'bytes32',
         'bool',
-        'uint32',
-        'uint64',
+        'uint16',
       ],
       params,
     ),
@@ -152,6 +125,5 @@ export const makeCommitment = ({
   return {
     secret,
     commitment,
-    wrapperExpiry: generatedParams[8],
   }
 }

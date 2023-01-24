@@ -4,6 +4,30 @@ import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
 import { labelhash } from '../utils/labels'
 import { namehash } from '../utils/normalise'
+import {
+  AbiChanged,
+  AddrChanged,
+  AuthorisationChanged,
+  ContenthashChanged,
+  ExpiryExtended,
+  FusesSet,
+  InterfaceChanged,
+  MulticoinAddrChanged,
+  NameChanged,
+  NameRegistered,
+  NameRenewed,
+  NameTransferred,
+  NameUnwrapped,
+  NameWrapped,
+  NewOwner,
+  NewResolver,
+  NewTtl,
+  PubkeyChanged,
+  TextChanged,
+  Transfer,
+  VersionChanged,
+  WrappedTransfer,
+} from '../utils/subgraph-types'
 
 type DomainEvent =
   | 'NewOwner'
@@ -14,6 +38,7 @@ type DomainEvent =
   | 'NameWrapped'
   | 'NameUnwrapped'
   | 'FusesSet'
+  | 'ExpiryExtended'
 type RegistrationEvent = 'NameRegistered' | 'NameRenewed' | 'NameTransferred'
 type ResolverEvent =
   | 'AddrChanged'
@@ -38,30 +63,35 @@ const eventFormat: {
   [key in EventTypes]: { [n in EventFormat[key]]: (args: any) => object }
 } = {
   Domain: {
-    NewOwner: (args: any) => ({ owner: args.owner.id }),
-    NewResolver: (args: any) => ({ resolver: args.resolver.id.split('-')[0] }),
-    Transfer: (args: any) => ({ owner: args.owner.id }),
-    NewTTL: (args: any) => ({ ttl: args.ttl }),
-    WrappedTransfer: (args: any) => ({ owner: args.owner.id }),
-    NameWrapped: (args: any) => ({
+    NewOwner: (args: NewOwner) => ({ owner: args.owner.id }),
+    NewResolver: (args: NewResolver) => ({
+      resolver: args.resolver.id.split('-')[0],
+    }),
+    Transfer: (args: Transfer) => ({ owner: args.owner.id }),
+    NewTTL: (args: NewTtl) => ({ ttl: args.ttl }),
+    WrappedTransfer: (args: WrappedTransfer) => ({ owner: args.owner.id }),
+    NameWrapped: (args: NameWrapped) => ({
       fuses: args.fuses,
       owner: args.owner.id,
-      expiry: args.expiry,
+      expiryDate: args.expiryDate,
     }),
-    NameUnwrapped: (args: any) => ({ owner: args.owner.id }),
-    FusesSet: (args: any) => ({ fuses: args.fuses, expiry: args.expiry }),
+    NameUnwrapped: (args: NameUnwrapped) => ({ owner: args.owner.id }),
+    FusesSet: (args: FusesSet) => ({ fuses: args.fuses }),
+    ExpiryExtended: (args: ExpiryExtended) => ({ expiryDate: args.expiryDate }),
   },
   Registration: {
-    NameRegistered: (args: any) => ({
+    NameRegistered: (args: NameRegistered) => ({
       registrant: args.registrant.id,
       expiryDate: args.expiryDate,
     }),
-    NameRenewed: (args: any) => ({ expiryDate: args.expiryDate }),
-    NameTransferred: (args: any) => ({ owner: args.newOwner.id }),
+    NameRenewed: (args: NameRenewed) => ({ expiryDate: args.expiryDate }),
+    NameTransferred: (args: NameTransferred) => ({ owner: args.newOwner.id }),
   },
   Resolver: {
-    AddrChanged: (args: any) => ({ addr: args.addr.id }),
-    MulticoinAddrChanged: (args: any) => {
+    AddrChanged: (args: AddrChanged) => ({ addr: args.addr.id }),
+    MulticoinAddrChanged: (
+      args: Omit<MulticoinAddrChanged, 'addr'> & { multiaddr: string },
+    ) => {
       const format = formatsByCoinType[parseInt(args.coinType)]
       if (!format) {
         return {
@@ -82,21 +112,23 @@ const eventFormat: {
         addr: format.encoder(Buffer.from(args.multiaddr.slice(2), 'hex')),
       }
     },
-    NameChanged: (args: any) => ({ name: args.name }),
-    AbiChanged: (args: any) => ({ contentType: args.contentType }),
-    PubkeyChanged: (args: any) => ({ x: args.x, y: args.y }),
-    TextChanged: (args: any) => ({ key: args.key, value: args.value }),
-    ContenthashChanged: (args: any) => ({ hash: decodeContenthash(args.hash) }),
-    InterfaceChanged: (args: any) => ({
-      interfaceId: args.interfaceId,
+    NameChanged: (args: NameChanged) => ({ name: args.name }),
+    AbiChanged: (args: AbiChanged) => ({ contentType: args.contentType }),
+    PubkeyChanged: (args: PubkeyChanged) => ({ x: args.x, y: args.y }),
+    TextChanged: (args: TextChanged) => ({ key: args.key, value: args.value }),
+    ContenthashChanged: (args: ContenthashChanged) => ({
+      hash: decodeContenthash(args.hash),
+    }),
+    InterfaceChanged: (args: InterfaceChanged) => ({
+      interfaceId: args.interfaceID,
       implementer: args.implementer,
     }),
-    AuthorisationChanged: (args: any) => ({
+    AuthorisationChanged: (args: AuthorisationChanged) => ({
       owner: args.owner,
       target: args.target,
       isAuthorized: args.isAuthorized,
     }),
-    VersionChanged: (args: any) => ({ version: args.version }),
+    VersionChanged: (args: VersionChanged) => ({ version: args.version }),
   },
 }
 
@@ -154,7 +186,7 @@ export async function getHistory(
             }
             ...on NameWrapped {
               fuses
-              expiry
+              expiryDate
               owner {
                 id
               }
@@ -166,7 +198,9 @@ export async function getHistory(
             }
             ...on FusesSet {
               fuses
-              expiry
+            }
+            ...on ExpiryExtended {
+              expiryDate
             }
           }
           registration {

@@ -23,6 +23,8 @@ describe('registerName', () => {
     await revert()
   })
   it('should return a registration transaction and succeed', async () => {
+    const controller = await ensInstance.contracts!.getEthRegistrarController()!
+
     const name = 'cool-swag.eth'
     const duration = 31536000
     const { customData, ...commitPopTx } =
@@ -37,14 +39,12 @@ describe('registerName', () => {
     await provider.send('evm_increaseTime', [60])
     await provider.send('evm_mine', [])
 
-    const { secret, wrapperExpiry } = customData!
+    const { secret } = customData!
 
-    const controller = await ensInstance.contracts!.getEthRegistrarController()!
     const [price] = await controller.rentPrice(name, duration)
 
     const tx = await ensInstance.registerName(name, {
       secret,
-      wrapperExpiry,
       duration,
       owner: accounts[1],
       addressOrIndex: accounts[1],

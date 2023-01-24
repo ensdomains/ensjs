@@ -37,7 +37,6 @@ describe('registerHelpers', () => {
       const result = makeCommitment({
         ...baseData,
         secret,
-        wrapperExpiry: 100000,
       } as any)
       const fetched = await controller.makeCommitment(
         baseData.name!.split('.')[0],
@@ -48,7 +47,6 @@ describe('registerHelpers', () => {
         [],
         false,
         0,
-        100000,
       )
       expect(fetched).toBe(result.commitment)
     })
@@ -56,7 +54,6 @@ describe('registerHelpers', () => {
       const result = makeCommitment(baseData as any)
       expect(result).toHaveProperty('secret')
       expect(result).toHaveProperty('commitment')
-      expect(result).toHaveProperty('wrapperExpiry')
     })
     it('should allow a custom secret', () => {
       const result = makeCommitment({
@@ -75,20 +72,12 @@ describe('registerHelpers', () => {
       } as any)
       expect(result[4]).not.toStrictEqual([])
     })
-    it('should allow custom wrapper expiry', () => {
-      const result = makeCommitmentData({
-        ...baseData,
-        secret,
-        wrapperExpiry: 100,
-      } as any)
-      expect(result[8]).toBe(100)
-    })
     it('should return empty data if no reverse record and no records', () => {
       const result = makeCommitmentData({
         ...baseData,
         secret,
       } as any)
-      expect(result[4]).toStrictEqual([])
+      expect(result[5]).toStrictEqual([])
     })
   })
   describe('makeRegistrationData', () => {
@@ -96,7 +85,6 @@ describe('registerHelpers', () => {
       const result = makeRegistrationData({
         ...baseData,
         secret,
-        wrapperExpiry: 1000,
         duration: 1000,
       } as any)
       expect(result[0]).toBe('test')

@@ -152,6 +152,7 @@ const names: {
       data: object | string
     }
   }
+  duration?: number
   subnames?: Subname[]
 }[] = [
   {
@@ -287,6 +288,12 @@ const names: {
       },
     },
   },
+  {
+    label: 'expired',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    duration: 2419200,
+  },
   ...Array.from({ length: 34 }, (_, i) => ({
     label: `${i}-dummy`,
     namedOwner: 'owner2',
@@ -303,13 +310,19 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
 
-  for (const { label, namedOwner, namedAddr, records, subnames } of names) {
+  for (const {
+    label,
+    namedOwner,
+    namedAddr,
+    records,
+    subnames,
+    duration = 31536000,
+  } of names) {
     const secret =
       '0x0000000000000000000000000000000000000000000000000000000000000000'
     const registrant = allNamedAccts[namedOwner]
     const resolver = publicResolver.address
     const addr = allNamedAccts[namedAddr]
-    const duration = 31536000
 
     const commitment = await controller.makeCommitmentWithConfig(
       label,

@@ -15,14 +15,7 @@ import GqlManager from './GqlManager'
 import singleCall from './utils/singleCall'
 import writeTx from './utils/writeTx'
 
-export type {
-  Fuse,
-  FuseArrayPossibilities,
-  FuseObj,
-  NamedFusesToBurn,
-  UnnamedFuseType,
-  UnnamedFuseValues,
-} from './utils/fuses'
+export type { ChildFuses, ParentFuses } from './utils/fuses'
 
 type ENSOptions = {
   graphURI?: string | null
@@ -597,7 +590,7 @@ export class ENS {
 
   public wrapName = this.generateWriteFunction<FunctionTypes['wrapName']>(
     'wrapName',
-    ['contracts', 'getExpiry'],
+    ['contracts'],
   )
 
   public unwrapName = this.generateWriteFunction<FunctionTypes['unwrapName']>(
@@ -605,10 +598,14 @@ export class ENS {
     ['contracts'],
   )
 
-  public burnFuses = this.generateWriteFunction<FunctionTypes['burnFuses']>(
-    'burnFuses',
+  public setFuses = this.generateWriteFunction<FunctionTypes['setFuses']>(
+    'setFuses',
     ['contracts'],
   )
+
+  public setChildFuses = this.generateWriteFunction<
+    FunctionTypes['setChildFuses']
+  >('setFuses', ['contracts'], 'setChildFuses')
 
   public importDNSSECName = this.generateWriteFunction<
     FunctionTypes['importDNSSECName']
@@ -640,7 +637,7 @@ export class ENS {
     ['contracts'],
   )
 
-  public renewNameWithData = this.generateWriteFunction<
-    FunctionTypes['renewNameWithData']
-  >('renewNames', ['contracts'], 'renewNameWithData')
+  public extendWrappedName = this.generateWriteFunction<
+    FunctionTypes['extendWrappedName']
+  >('renewNames', ['contracts'], 'extendWrappedName')
 }

@@ -14,18 +14,20 @@ const raw = async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
 const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
   const nameWrapper = await contracts?.getNameWrapper()!
   try {
-    const [owner, _fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
+    const [owner, fuses, expiry] = nameWrapper.interface.decodeFunctionResult(
       'getData',
       data,
-    )
+    ) as [string, number, BigNumber]
 
-    const fuses = BigNumber.from(_fuses)
     const fuseObj = decodeFuses(fuses)
 
-    const expiryDate = new Date(expiry * 1000)
+    const expiryDate =
+      expiry.gt(0) && expiry.lt(BigNumber.from(2).pow(32))
+        ? new Date(expiry.mul(1000).toString())
+        : undefined
 
     return {
-      fuseObj,
+      ...fuseObj,
       expiryDate,
       rawFuses: fuses,
       owner,

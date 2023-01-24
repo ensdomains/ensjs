@@ -4,7 +4,6 @@ import type {
   resolverMulticallWrapper,
   universalWrapper,
 } from './batchWrappers'
-import type burnFuses from './burnFuses'
 import type commitName from './commitName'
 import type createSubname from './createSubname'
 import type deleteSubname from './deleteSubname'
@@ -36,8 +35,10 @@ import type registerName from './registerName'
 import type {
   // eslint-disable-next-line import/no-named-default
   default as renewNames,
-  renewNameWithData,
+  extendWrappedName,
 } from './renewNames'
+import type setFuses from './setFuses'
+import type { setChildFuses } from './setFuses'
 import type setName from './setName'
 import type setRecord from './setRecord'
 import type setRecords from './setRecords'
@@ -54,7 +55,8 @@ type Function = {
   multicallWrapper: typeof multicallWrapper
   resolverMulticallWrapper: typeof resolverMulticallWrapper
   universalWrapper: typeof universalWrapper
-  burnFuses: typeof burnFuses
+  setFuses: typeof setFuses
+  setChildFuses: typeof setChildFuses
   commitName: typeof commitName
   createSubname: typeof createSubname
   deleteSubname: typeof deleteSubname
@@ -82,7 +84,7 @@ type Function = {
   importDNSSECName: typeof importDNSSECName
   registerName: typeof registerName
   renewNames: typeof renewNames
-  renewNameWithData: typeof renewNameWithData
+  extendWrappedName: typeof extendWrappedName
   setName: typeof setName
   setRecord: typeof setRecord
   setRecords: typeof setRecords

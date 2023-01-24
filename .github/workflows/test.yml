@@ -26,7 +26,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Run tests
-        run: pnpm -F @ensdomains/ensjs tenv start
+        run: pnpm -F @ensdomains/ensjs tenv start --extra-time 11368000
         env:
           STATIC_ENS: ${{ matrix.type == 'static' }}
   lint:
