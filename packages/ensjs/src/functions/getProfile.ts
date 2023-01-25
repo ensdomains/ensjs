@@ -37,7 +37,7 @@ type ResolvedProfile = {
   createdAt: string | null
   address?: string
   name?: string | null
-  decodedName?: string | null
+  decryptedName?: string | null
   match?: boolean
   message?: string
   records?: {
@@ -417,12 +417,12 @@ const graphFetch = async (
 
   if (!domain) return
 
-  const { isMigrated, createdAt, name: decodedName } = domain
+  const { isMigrated, createdAt, name: decryptedName } = domain
 
   const returnedRecords: ProfileResponse = {}
 
   if (!resolverResponse || !wantedRecords)
-    return { isMigrated, createdAt, decodedName }
+    return { isMigrated, createdAt, decryptedName }
 
   Object.keys(wantedRecords).forEach((key: string) => {
     const data = wantedRecords[key as keyof ProfileOptions]
@@ -437,7 +437,7 @@ const graphFetch = async (
 
   return {
     ...returnedRecords,
-    decodedName,
+    decryptedName,
     isMigrated,
     createdAt,
   }
@@ -491,7 +491,7 @@ const getProfileFromName = async (
   )
   let isMigrated: boolean | null = null
   let createdAt: string | null = null
-  let decodedName: string | null = null
+  let decryptedName: string | null = null
   let result: Awaited<ReturnType<typeof getDataForName>> | null = null
   if (!graphResult) {
     if (!fallback) return
@@ -512,16 +512,16 @@ const getProfileFromName = async (
     const {
       isMigrated: _isMigrated,
       createdAt: _createdAt,
-      decodedName: _decodedName,
+      decryptedName: _decryptedName,
       ...wantedRecords
     }: {
       isMigrated: boolean
       createdAt: string
-      decodedName: string
+      decryptedName: string
     } & InternalProfileOptions = graphResult
     isMigrated = _isMigrated
     createdAt = _createdAt
-    decodedName = _decodedName
+    decryptedName = _decryptedName
     let recordsWithFallback = usingOptions
       ? wantedRecords
       : (_options as InternalProfileOptions)
@@ -556,7 +556,7 @@ const getProfileFromName = async (
         ? "Records fetch didn't complete"
         : "Name doesn't have a resolver",
     }
-  return { ...result, isMigrated, createdAt, decodedName, message: undefined }
+  return { ...result, isMigrated, createdAt, decryptedName, message: undefined }
 }
 
 const getProfileFromAddress = async (
