@@ -548,6 +548,10 @@ export class ENS {
     ['contracts'],
   )
 
+  public getDecodedName = this.generateRawFunction<
+    FunctionTypes['getDecodedName']
+  >('getDecodedName', ['contracts'])
+
   public universalWrapper = this.generateRawFunction<
     FunctionTypes['universalWrapper']
   >('initialGetters', ['contracts'], 'universalWrapper')

@@ -8,6 +8,7 @@ import commitName from '../functions/commitName'
 import createSubname from '../functions/createSubname'
 import deleteSubname from '../functions/deleteSubname'
 import getAvailable from '../functions/getAvailable'
+import getDecodedName from '../functions/getDecodedName'
 import getDNSOwner from '../functions/getDNSOwner'
 import getExpiry from '../functions/getExpiry'
 import { getHistory } from '../functions/getHistory'
@@ -60,6 +61,7 @@ export default {
   createSubname,
   deleteSubname,
   getAvailable,
+  getDecodedName,
   getDNSOwner,
   getExpiry,
   getHistory,

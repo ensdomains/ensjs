@@ -37,6 +37,7 @@ type ResolvedProfile = {
   createdAt: string | null
   address?: string
   name?: string | null
+  decodedName?: string | null
   match?: boolean
   message?: string
   records?: {
@@ -360,6 +361,7 @@ const graphFetch = async (
   const query = gqlInstance.gql`
     query getRecords($id: String!) {
       domain(id: $id) {
+        name
         isMigrated
         createdAt
         resolver {
@@ -377,6 +379,7 @@ const graphFetch = async (
   const customResolverQuery = gqlInstance.gql`
     query getRecordsWithCustomResolver($id: String!, $resolverId: String!) {
       domain(id: $id) {
+        name
         isMigrated
         createdAt
       }
@@ -414,11 +417,12 @@ const graphFetch = async (
 
   if (!domain) return
 
-  const { isMigrated, createdAt } = domain
+  const { isMigrated, createdAt, name: decodedName } = domain
 
   const returnedRecords: ProfileResponse = {}
 
-  if (!resolverResponse || !wantedRecords) return { isMigrated, createdAt }
+  if (!resolverResponse || !wantedRecords)
+    return { isMigrated, createdAt, decodedName }
 
   Object.keys(wantedRecords).forEach((key: string) => {
     const data = wantedRecords[key as keyof ProfileOptions]
@@ -433,6 +437,7 @@ const graphFetch = async (
 
   return {
     ...returnedRecords,
+    decodedName,
     isMigrated,
     createdAt,
   }
@@ -486,6 +491,7 @@ const getProfileFromName = async (
   )
   let isMigrated: boolean | null = null
   let createdAt: string | null = null
+  let decodedName: string | null = null
   let result: Awaited<ReturnType<typeof getDataForName>> | null = null
   if (!graphResult) {
     if (!fallback) return
@@ -506,13 +512,16 @@ const getProfileFromName = async (
     const {
       isMigrated: _isMigrated,
       createdAt: _createdAt,
+      decodedName: _decodedName,
       ...wantedRecords
     }: {
       isMigrated: boolean
       createdAt: string
+      decodedName: string
     } & InternalProfileOptions = graphResult
     isMigrated = _isMigrated
     createdAt = _createdAt
+    decodedName = _decodedName
     let recordsWithFallback = usingOptions
       ? wantedRecords
       : (_options as InternalProfileOptions)
@@ -547,7 +556,7 @@ const getProfileFromName = async (
         ? "Records fetch didn't complete"
         : "Name doesn't have a resolver",
     }
-  return { ...result, isMigrated, createdAt, message: undefined }
+  return { ...result, isMigrated, createdAt, decodedName, message: undefined }
 }
 
 const getProfileFromAddress = async (

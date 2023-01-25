@@ -119,6 +119,13 @@ describe('getProfile', () => {
         deploymentAddresses.LegacyPublicResolver,
       )
     })
+    it('should return the decoded name for a name with encoded labels', async () => {
+      const result = await ensInstance.getProfile(
+        '[9dd2c369a187b4e6b9c402f030e50743e619301ea62aa4c0737d4ef7e10a3d49].with-subnames.eth',
+      )
+      expect(result).toBeDefined()
+      expect(result?.decodedName).toBe('xyz.with-subnames.eth')
+    })
     it('should return undefined for an unregistered name', async () => {
       const result = await ensInstance.getProfile('test123123123cool.eth')
       expect(result).toBeUndefined()
