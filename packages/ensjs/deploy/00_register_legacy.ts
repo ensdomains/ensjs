@@ -234,6 +234,20 @@ const names: {
     ],
   },
   {
+    label: 'with-unknown-subnames',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    subnames: [
+      { label: 'aaa123', namedOwner: 'owner2' },
+      { label: 'not-known', namedOwner: 'owner2' },
+    ],
+  },
+  {
+    label: 'aaa123',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+  },
+  {
     label: 'with-type-1-abi',
     namedOwner: 'owner',
     namedAddr: 'owner',

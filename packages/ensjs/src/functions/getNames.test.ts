@@ -29,7 +29,7 @@ const letterItems = [
 ]
 
 const domainLetterItems = [
-  '[',
+  ...Array(3).fill('['),
   'x',
   'w',
   't',

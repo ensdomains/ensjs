@@ -8,7 +8,7 @@ import type commitName from './commitName'
 import type createSubname from './createSubname'
 import type deleteSubname from './deleteSubname'
 import type getAvailable from './getAvailable'
-import type getDecodedName from './getDecodedName'
+import type getDecryptedName from './getDecryptedName'
 import type getDNSOwner from './getDNSOwner'
 import type getExpiry from './getExpiry'
 import type { getHistory } from './getHistory'
@@ -62,7 +62,7 @@ type Function = {
   createSubname: typeof createSubname
   deleteSubname: typeof deleteSubname
   getAvailable: typeof getAvailable
-  getDecodedName: typeof getDecodedName
+  getDecryptedName: typeof getDecryptedName
   getDNSOwner: typeof getDNSOwner
   getExpiry: typeof getExpiry
   getHistory: typeof getHistory
