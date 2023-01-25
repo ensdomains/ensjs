@@ -4,6 +4,7 @@ import { hexDecodeName } from '../utils/hexEncodedName'
 import {
   checkIsDecrypted,
   decodeLabelhash,
+  getEncryptedLabelAmount,
   isEncodedLabelhash,
 } from '../utils/labels'
 import { namehash } from '../utils/normalise'
@@ -40,10 +41,6 @@ const generateNameQuery = (labels: string[]) => {
 
   return query
 }
-
-const encodedLabelRegex = /\[[a-fA-F0-9]{64}\]/g
-const getEncodedLabelLength = (name: string) =>
-  name.match(encodedLabelRegex)?.length || 0
 
 const decode = async (
   { contracts, gqlInstance }: ENSArgs<'contracts' | 'gqlInstance'>,
@@ -105,8 +102,8 @@ const decode = async (
     const labelLookupResult = labels.join('.')
     if (
       !namehashLookupResult ||
-      getEncodedLabelLength(namehashLookupResult) >
-        getEncodedLabelLength(labelLookupResult)
+      getEncryptedLabelAmount(namehashLookupResult) >
+        getEncryptedLabelAmount(labelLookupResult)
     )
       bestResult = labelLookupResult
   }

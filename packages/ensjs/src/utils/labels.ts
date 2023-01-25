@@ -117,3 +117,7 @@ export function checkLocalStorageSize() {
     ? `${3 + (allStrings.length * 16) / (8 * 1024)} KB`
     : 'Empty (0 KB)'
 }
+
+const encodedLabelRegex = /\[[a-fA-F0-9]{64}\]/g
+export const getEncryptedLabelAmount = (name: string) =>
+  name.match(encodedLabelRegex)?.length || 0
