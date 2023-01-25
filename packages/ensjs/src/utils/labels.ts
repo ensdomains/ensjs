@@ -64,21 +64,19 @@ export function saveLabel(label: string) {
 
 export function saveName(name: string) {
   const nameArray = name.split('.')
-  nameArray.forEach((label: any) => {
-    saveLabel(label)
-  })
+  for (const label of nameArray) {
+    if (!isEncodedLabelhash(label)) {
+      saveLabel(label)
+    }
+  }
 }
 
-// eslint-disable-next-line consistent-return
-export function checkLabel(hash: string): string | undefined {
+export function checkLabel(hash: string): string {
   const labels = getLabels()
   if (isEncodedLabelhash(hash)) {
-    return labels[decodeLabelhash(hash)]
+    return labels[decodeLabelhash(hash)] || hash
   }
-
-  if (hash.startsWith('0x')) {
-    return labels[`${hash.slice(2)}`]
-  }
+  return hash
 }
 
 export function encodeLabel(label: any) {
@@ -101,7 +99,7 @@ export function checkIsDecrypted(string: string | string[]) {
 export function decryptName(name: string) {
   return name
     .split('.')
-    .map((label: any) => checkLabel(label) || label)
+    .map((label: any) => checkLabel(label))
     .join('.')
 }
 
