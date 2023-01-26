@@ -1,5 +1,5 @@
 import { formatsByName } from '@ensdomains/address-encoder'
-import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { hexStripZeros, isBytesLike } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'

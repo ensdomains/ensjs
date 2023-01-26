@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
+import { BigNumber } from '@ethersproject/bignumber'
 import { toUtf8Bytes } from '@ethersproject/strings'
 import { ENSArgs } from '../index'
 

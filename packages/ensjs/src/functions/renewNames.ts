@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber/lib/bignumber'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { ENSArgs } from '..'
 import { MAX_INT_64 } from '../utils/consts'
 import { labelhash } from '../utils/labels'

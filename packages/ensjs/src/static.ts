@@ -1,4 +1,4 @@
-import type { StaticJsonRpcProvider } from '@ethersproject/providers/lib/url-json-rpc-provider'
+import type { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { gql, GraphQLClient } from 'graphql-request'
 import { parse, print, visit } from 'graphql/language'
 import traverse from 'traverse'
