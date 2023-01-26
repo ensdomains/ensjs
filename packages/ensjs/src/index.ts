@@ -548,6 +548,10 @@ export class ENS {
     ['contracts'],
   )
 
+  public getDecryptedName = this.generateRawFunction<
+    FunctionTypes['getDecryptedName']
+  >('getDecryptedName', ['contracts', 'gqlInstance'])
+
   public universalWrapper = this.generateRawFunction<
     FunctionTypes['universalWrapper']
   >('initialGetters', ['contracts'], 'universalWrapper')
