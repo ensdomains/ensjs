@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Interface } from '@ethersproject/abi/lib/interface'
+import { Interface } from '@ethersproject/abi'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
 import type { Provider } from '@ethersproject/providers'

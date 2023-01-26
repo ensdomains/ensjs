@@ -1,4 +1,4 @@
-import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { keccak256 } from '@ethersproject/keccak256'
 import type { PublicResolver } from '../generated'
 import { CombinedFuseInput, encodeFuses, hasFuses } from './fuses'

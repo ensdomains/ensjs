@@ -1,5 +1,5 @@
-import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
-import type { Result } from '@ethersproject/abi/lib/coders/abstract-coder'
+import type { Result } from '@ethersproject/abi'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { labelhash } from '../utils/labels'

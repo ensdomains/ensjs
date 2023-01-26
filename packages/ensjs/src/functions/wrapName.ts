@@ -1,4 +1,4 @@
-import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { Signer } from '@ethersproject/abstract-signer'
 import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'

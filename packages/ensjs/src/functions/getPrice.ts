@@ -1,5 +1,5 @@
-import { defaultAbiCoder } from '@ethersproject/abi/lib/abi-coder'
-import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
+import { defaultAbiCoder } from '@ethersproject/abi'
+import { BigNumber } from '@ethersproject/bignumber'
 import { ENSArgs } from '..'
 
 const raw = async (

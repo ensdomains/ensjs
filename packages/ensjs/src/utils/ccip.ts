@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber/lib/bignumber'
+import { BigNumber } from '@ethersproject/bignumber'
 import {
   arrayify,
   BytesLike,
@@ -6,7 +6,7 @@ import {
   hexDataSlice,
 } from '@ethersproject/bytes'
 import type { BaseProvider, TransactionRequest } from '@ethersproject/providers'
-import { toUtf8String } from '@ethersproject/strings/lib/utf8'
+import { toUtf8String } from '@ethersproject/strings'
 import type { Transaction } from '@ethersproject/transactions'
 
 function bytesPad(value: Uint8Array): Uint8Array {
