@@ -2,7 +2,6 @@ import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
-import { labelhash } from '../utils/labels'
 import { namehash } from '../utils/normalise'
 import {
   AbiChanged,
@@ -154,7 +153,7 @@ export async function getHistory(
 ) {
   const { client } = gqlInstance
   const query = gqlInstance.gql`
-      query getHistory($namehash: String!, $labelhash: String!) {
+      query getHistory($namehash: String!) {
         domain(id: $namehash) {
           events {
             id
@@ -275,14 +274,12 @@ export async function getHistory(
       }
       `
 
-  const label = name.split('.')[0]
-
   const nameHash = namehash(name)
-  const labelHash = labelhash(label)
+  const labels = name.split('.')
+  const is2ldEth = labels.length === 2 && labels[1] === 'eth'
 
   const response = await client.request(query, {
     namehash: nameHash,
-    labelhash: labelHash,
   })
   const domain = response?.domain
 
@@ -290,12 +287,10 @@ export async function getHistory(
 
   const {
     events: domainEvents,
-    registration: { events: registrationEvents },
     resolver: { events: resolverEvents },
   } = domain
 
   const domainHistory = mapEvents(domainEvents, 'Domain')
-  const registrationHistory = mapEvents(registrationEvents, 'Registration')
   const resolverHistory = mapEvents(
     // remove duplicate events for ETH cointype
     resolverEvents.filter(
@@ -304,9 +299,20 @@ export async function getHistory(
     'Resolver',
   )
 
+  if (is2ldEth) {
+    const {
+      registration: { events: registrationEvents },
+    } = domain
+    const registrationHistory = mapEvents(registrationEvents, 'Registration')
+    return {
+      domain: domainHistory,
+      registration: registrationHistory,
+      resolver: resolverHistory,
+    }
+  }
+
   return {
     domain: domainHistory,
-    registration: registrationHistory,
     resolver: resolverHistory,
   }
 }
