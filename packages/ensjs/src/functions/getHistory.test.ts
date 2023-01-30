@@ -35,4 +35,15 @@ describe('getHistory', () => {
       expect(result).toHaveProperty('registration')
     }
   })
+  it('should return the history of a subname', async () => {
+    const result = await ensInstance.getHistory(
+      'test.wrapped-with-subnames.eth',
+    )
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result).toHaveProperty('domain')
+      expect(result).toHaveProperty('resolver')
+      expect(result).not.toHaveProperty('registration')
+    }
+  })
 })

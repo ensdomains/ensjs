@@ -70,3 +70,6 @@ export const parseInputType = (input: string): InputType => {
     type: 'label',
   }
 }
+
+export const checkIsDotEth = (labels: string[]) =>
+  labels.length === 2 && labels[1] === 'eth'

@@ -4,6 +4,7 @@ import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { CombinedFuseInput, encodeFuses } from '../utils/fuses'
 import { hexEncodeName } from '../utils/hexEncodedName'
+import { checkIsDotEth } from '../utils/validation'
 import { Expiry, wrappedLabelLengthCheck } from '../utils/wrapper'
 
 async function wrapETH(
@@ -84,7 +85,7 @@ export default async function (
   const labels = name.split('.')
   wrappedLabelLengthCheck(labels[0])
 
-  if (labels.length === 2 && labels[1] === 'eth') {
+  if (checkIsDotEth(labels)) {
     switch (typeof fuseOptions) {
       case 'object': {
         decodedFuses = encodeFuses(fuseOptions)
