@@ -4,6 +4,7 @@ import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { labelhash } from '../utils/labels'
 import { namehash as makeNamehash } from '../utils/normalise'
+import { checkIsDotEth } from '../utils/validation'
 
 type Owner = {
   registrant?: string
@@ -87,7 +88,7 @@ const raw = async (
 
   const data: { to: string; data: string }[] = [registryData, nameWrapperData]
 
-  if (labels.length === 2 && labels[1] === 'eth') {
+  if (checkIsDotEth(labels)) {
     data.push(registrarData)
   }
 

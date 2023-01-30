@@ -27,6 +27,7 @@ import {
   VersionChanged,
   WrappedTransfer,
 } from '../utils/subgraph-types'
+import { checkIsDotEth } from '../utils/validation'
 
 type DomainEvent =
   | 'NewOwner'
@@ -276,7 +277,7 @@ export async function getHistory(
 
   const nameHash = namehash(name)
   const labels = name.split('.')
-  const is2ldEth = labels.length === 2 && labels[1] === 'eth'
+  const is2ldEth = checkIsDotEth(labels)
 
   const response = await client.request(query, {
     namehash: nameHash,

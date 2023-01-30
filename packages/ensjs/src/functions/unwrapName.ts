@@ -2,6 +2,7 @@ import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
+import { checkIsDotEth } from '../utils/validation'
 
 export default async function (
   { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
@@ -20,7 +21,7 @@ export default async function (
 
   const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
 
-  if (labels.length === 2 && labels[1] === 'eth') {
+  if (checkIsDotEth(labels)) {
     if (!newRegistrant) {
       throw new Error('newRegistrant must be specified for .eth names')
     }
