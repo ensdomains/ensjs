@@ -59,7 +59,9 @@ describe('getWrapperData', () => {
     const result = await ensInstance.getWrapperData('wrapped.eth')
     expect(result).toBeTruthy()
     if (result) {
+      console.log(result.expiryDate)
       expect(result.expiryDate).toBeInstanceOf(Date)
+      expect(Number.isNaN(result.expiryDate?.getTime())).toBe(false)
     }
   })
 })
