@@ -133,7 +133,7 @@ const ccipLookup = async (
     }
 
     const tx = {
-      to: sender,
+      to: txSender,
       data: hexConcat([
         callbackSelector,
         encodeBytes([ccipResult, extraData!]),

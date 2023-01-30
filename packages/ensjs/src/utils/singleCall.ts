@@ -4,13 +4,18 @@ export default async (
   provider: Provider,
   ensData: any,
   func: {
-    raw: (...args: any[]) => Promise<{ to: string; data: string }>
+    raw: (
+      ...args: any[]
+    ) => Promise<{ to: string; data: string; passthrough?: any }>
     decode: (...args: any[]) => Promise<any>
   },
   ...data: any[]
-) =>
-  func
-    .raw(ensData, ...data)
-    .then((rawData) => provider.call({ ...rawData, ccipReadEnabled: true }))
+) => {
+  const { passthrough, ...rawData } = await func.raw(ensData, ...data)
+  const result = await provider
+    .call({ ...rawData, ccipReadEnabled: true })
     .catch(() => null)
-    .then((ret) => func.decode(ensData, ret, ...data))
+  if (!result) return
+  if (passthrough) return func.decode(ensData, result, passthrough, ...data)
+  return func.decode(ensData, result, ...data)
+}

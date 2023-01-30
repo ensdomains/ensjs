@@ -562,7 +562,7 @@ export class ENS {
 
   public multicallWrapper = this.generateRawFunction<
     FunctionTypes['multicallWrapper']
-  >('initialGetters', ['contracts'], 'multicallWrapper')
+  >('initialGetters', ['contracts', 'provider'], 'multicallWrapper')
 
   public setName = this.generateWriteFunction<FunctionTypes['setName']>(
     'setName',
