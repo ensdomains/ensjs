@@ -9,22 +9,26 @@
     ".": {
       "import": "./dist/esm/index.mjs",
       "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.mjs"
+      "default": "./dist/esm/index.mjs",
+      "types": "./dist/types/index.d.ts"
     },
     "./*.js": {
       "import": "./dist/esm/*.mjs",
       "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.mjs"
+      "default": "./dist/esm/*.mjs",
+      "types": "./dist/types/*.d.ts"
     },
     "./*.mjs": {
       "import": "./dist/esm/*.mjs",
       "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.mjs"
+      "default": "./dist/esm/*.mjs",
+      "types": "./dist/types/*.d.ts"
     },
     "./*": {
       "import": "./dist/esm/*.mjs",
       "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.mjs"
+      "default": "./dist/esm/*.mjs",
+      "types": "./dist/types/*.d.ts"
     }
   },
   "typesVersions": {
