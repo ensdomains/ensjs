@@ -26,7 +26,12 @@ const names: {
   {
     label: 'wrapped-with-subnames',
     namedOwner: 'owner',
-    subnames: [{ label: 'test', namedOwner: 'owner2' }],
+    subnames: [
+      { label: 'test', namedOwner: 'owner2' },
+      { label: 'legacy', namedOwner: 'owner2' },
+      { label: 'xyz', namedOwner: 'owner2' },
+      { label: 'addr', namedOwner: 'owner2' },
+    ],
   },
   {
     label: 'expired-wrapped',
