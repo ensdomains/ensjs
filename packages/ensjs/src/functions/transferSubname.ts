@@ -2,7 +2,7 @@ import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
 import { makeResolver } from '../utils/registry'
-import { Expiry, makeExpiry } from '../utils/wrapper'
+import { expiryToBigNumber, Expiry } from '../utils/wrapper'
 
 type BaseArgs = {
   owner: string
@@ -22,16 +22,15 @@ const transferWrappedSubname = async (
     contracts,
     signer,
     getWrapperData,
-    getExpiry,
   }: ENSArgs<'contracts' | 'signer' | 'getWrapperData' | 'getExpiry'>,
   name: string,
-  { contract, owner, resolverAddress, ...wrapperArgs }: Args,
+  { contract, owner, resolverAddress, ...wrapperArgs }: NameWrapperArgs,
 ) => {
   const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
   const data = await getWrapperData(name)
-  const isPCCBurned = !!data?.parent?.PARENT_CANNOT_CONTROL
+  const senderAddress = await signer.getAddress()
 
-  if (isPCCBurned) {
+  if (senderAddress === data?.owner) {
     const node = namehash(name)
     const resolver = await makeResolver({ contracts }, name, resolverAddress)
     return nameWrapper.populateTransaction.setRecord(node, owner, resolver, 0)
@@ -40,11 +39,7 @@ const transferWrappedSubname = async (
   const labels = name.split('.')
   const label = labels.shift() as string
   const parentNodehash = namehash(labels.join('.'))
-  const expiry = await makeExpiry(
-    { getExpiry },
-    name,
-    'expiry' in wrapperArgs ? wrapperArgs.expiry : undefined,
-  )
+  const expiry = expiryToBigNumber(wrapperArgs.expiry, 0)
 
   return nameWrapper.populateTransaction.setSubnodeOwner(
     parentNodehash,
