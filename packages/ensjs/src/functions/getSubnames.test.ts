@@ -131,6 +131,20 @@ describe('getSubnames', () => {
     )
   })
 
+  it('should return fuses for wrapped subnames', async () => {
+    const result = await ensInstance.getSubnames({
+      name: 'wrapped-with-subnames.eth',
+      pageSize: 10,
+      orderBy: 'createdAt',
+      orderDirection: 'desc',
+    })
+
+    expect(result).toBeTruthy()
+    expect(result.subnames.length).toBe(1)
+    expect(result.subnameCount).toBe(1)
+    expect(result.subnames[0].fuses).toBeDefined()
+  })
+
   describe('with pagination', () => {
     it('should get paginated subnames for a name ordered by createdAt in desc order', async () => {
       const result = await ensInstance.getSubnames({

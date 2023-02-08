@@ -1,7 +1,9 @@
 import { ENSArgs } from '..'
 import { truncateFormat } from '../utils/format'
+import { AllCurrentFuses, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
 import { namehash } from '../utils/normalise'
+import { Domain } from '../utils/subgraph-types'
 
 type Subname = {
   id: string
@@ -13,6 +15,8 @@ type Subname = {
   owner: {
     id: string
   }
+  fuses?: AllCurrentFuses
+  expiryDate?: Date
 }
 
 type Params = {
@@ -90,6 +94,10 @@ const largeQuery = async (
           owner {
             id
           }
+          wrappedDomain {
+            fuses
+            expiryDate
+          }
         }
       }
     }
@@ -106,15 +114,26 @@ const largeQuery = async (
   }
   const response = await client.request(finalQuery, queryVars)
   const domain = response?.domain
-  const subdomains = domain.subdomains.map((subname: any) => {
-    const decrypted = decryptName(subname.name)
+  const subdomains = domain.subdomains.map(
+    ({ wrappedDomain, ...subname }: Domain) => {
+      const decrypted = decryptName(subname.name!)
 
-    return {
-      ...subname,
-      name: decrypted,
-      truncatedName: truncateFormat(decrypted),
-    }
-  })
+      const obj: Subname = {
+        ...subname,
+        labelName: subname.labelName || null,
+        labelhash: subname.labelhash || '',
+        name: decrypted,
+        truncatedName: truncateFormat(decrypted),
+      }
+
+      if (wrappedDomain) {
+        obj.fuses = decodeFuses(wrappedDomain.fuses)
+        obj.expiryDate = new Date(parseInt(wrappedDomain.expiryDate) * 1000)
+      }
+
+      return obj
+    },
+  )
 
   return {
     subnames: subdomains,
