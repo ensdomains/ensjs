@@ -128,7 +128,10 @@ const largeQuery = async (
 
       if (wrappedDomain) {
         obj.fuses = decodeFuses(wrappedDomain.fuses)
-        obj.expiryDate = new Date(parseInt(wrappedDomain.expiryDate) * 1000)
+        obj.expiryDate =
+          wrappedDomain.expiryDate && wrappedDomain.expiryDate !== '0'
+            ? new Date(parseInt(wrappedDomain.expiryDate) * 1000)
+            : undefined
       }
 
       return obj

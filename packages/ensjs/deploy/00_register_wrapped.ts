@@ -15,6 +15,8 @@ const names: {
   subnames?: {
     label: string
     namedOwner: string
+    fuses?: number
+    expiry?: number
   }[]
   duration?: number
 }[] = [
@@ -33,6 +35,22 @@ const names: {
     namedOwner: 'owner',
     subnames: [{ label: 'test', namedOwner: 'owner2' }],
     duration: 2419200,
+  },
+  {
+    label: 'wrapped-with-expiring-subnames',
+    namedOwner: 'owner',
+    subnames: [
+      {
+        label: 'test',
+        namedOwner: 'owner2',
+        expiry: Math.floor(Date.now() / 1000),
+      },
+      {
+        label: 'test1',
+        namedOwner: 'owner2',
+        expiry: 0,
+      },
+    ],
   },
 ]
 
@@ -103,6 +121,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       for (const {
         label: subnameLabel,
         namedOwner: namedSubnameOwner,
+        fuses: subnameFuses = 0,
+        expiry: subnameExpiry = BigNumber.from(2).pow(64).sub(1),
       } of subnames) {
         const subnameOwner = allNamedAccts[namedSubnameOwner]
         const _nameWrapper = nameWrapper.connect(await ethers.getSigner(owner))
@@ -112,8 +132,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           subnameOwner,
           resolver,
           '0',
-          '0',
-          BigNumber.from(2).pow(64).sub(1),
+          subnameFuses,
+          subnameExpiry,
         )
         console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
         await setSubnameTx.wait()
