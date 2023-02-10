@@ -60,8 +60,21 @@ type Params = BaseParams &
 
 const mapDomain = ({ name, ...domain }: Domain) => {
   const decrypted = name ? decryptName(name) : undefined
+
   return {
     ...domain,
+    ...(domain.registration
+      ? {
+          registration: {
+            expiryDate: new Date(
+              parseInt(domain.registration.expiryDate) * 1000,
+            ),
+            registrationDate: new Date(
+              parseInt(domain.registration.registrationDate) * 1000,
+            ),
+          },
+        }
+      : {}),
     name: decrypted,
     truncatedName: decrypted ? truncateFormat(decrypted) : undefined,
     createdAt: new Date(parseInt(domain.createdAt) * 1000),
@@ -87,25 +100,7 @@ const mapWrappedDomain = (wrappedDomain: WrappedDomain) => {
     return null
   }
 
-  const domain = mapDomain(wrappedDomain.domain) as Omit<
-    ReturnType<typeof mapDomain>,
-    'registration'
-  > & {
-    registration?: {
-      expiryDate: string | Date
-      registrationDate: string | Date
-    }
-  }
-  if (domain.registration) {
-    domain.registration = {
-      expiryDate: new Date(
-        parseInt(domain.registration.expiryDate as string) * 1000,
-      ),
-      registrationDate: new Date(
-        parseInt(domain.registration.registrationDate as string) * 1000,
-      ),
-    }
-  }
+  const domain = mapDomain(wrappedDomain.domain)
 
   return {
     expiryDate,
@@ -174,6 +169,10 @@ const getNames = async (
           domains(first: 1000) {
             ${domainQueryData}
             createdAt
+            registration {
+              registrationDate
+              expiryDate
+            }
           }
           wrappedDomains(first: 1000) {
             expiryDate
@@ -205,6 +204,10 @@ const getNames = async (
             domains(orderBy: $orderBy, orderDirection: $orderDirection) {
               ${domainQueryData}
               createdAt
+              registration {
+                registrationDate
+                expiryDate
+              }
             }
           }
         }
