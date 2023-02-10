@@ -625,7 +625,7 @@ export class ENS {
 
   public transferSubname = this.generateWriteFunction<
     FunctionTypes['transferSubname']
-  >('transferSubname', ['contracts', 'getExpiry'])
+  >('transferSubname', ['contracts'])
 
   public commitName = this.generateWriteFunction<FunctionTypes['commitName']>(
     'commitName',

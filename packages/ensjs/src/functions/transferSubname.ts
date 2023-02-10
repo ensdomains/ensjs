@@ -1,7 +1,7 @@
 import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
-import { Expiry, makeExpiry } from '../utils/wrapper'
+import { expiryToBigNumber, Expiry } from '../utils/wrapper'
 
 type BaseArgs = {
   owner: string
@@ -17,11 +17,7 @@ type NameWrapperArgs = {
 type Args = BaseArgs | NameWrapperArgs
 
 export default async function (
-  {
-    contracts,
-    signer,
-    getExpiry,
-  }: ENSArgs<'contracts' | 'signer' | 'getExpiry'>,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
   { contract, owner, resolverAddress, ...wrapperArgs }: Args,
 ) {
@@ -42,10 +38,9 @@ export default async function (
     }
     case 'nameWrapper': {
       const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
-      const expiry = await makeExpiry(
-        { getExpiry },
-        labels.join('.'),
-        'expiry' in wrapperArgs ? wrapperArgs.expiry : undefined,
+      const expiry = expiryToBigNumber(
+        (wrapperArgs as NameWrapperArgs).expiry,
+        0,
       )
 
       return nameWrapper.populateTransaction.setSubnodeOwner(

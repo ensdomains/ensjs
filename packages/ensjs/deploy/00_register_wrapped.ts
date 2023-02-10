@@ -7,7 +7,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { encodeFuses } from '../src/utils/fuses'
 import { namehash } from '../src/utils/normalise'
 
-const names: {
+export const names: {
   label: string
   namedOwner: string
   data?: any[]
@@ -29,7 +29,12 @@ const names: {
   {
     label: 'wrapped-with-subnames',
     namedOwner: 'owner',
-    subnames: [{ label: 'test', namedOwner: 'owner2' }],
+    subnames: [
+      { label: 'test', namedOwner: 'owner2' },
+      { label: 'legacy', namedOwner: 'owner2' },
+      { label: 'xyz', namedOwner: 'owner2' },
+      { label: 'addr', namedOwner: 'owner2' },
+    ],
   },
   {
     label: 'expired-wrapped',
