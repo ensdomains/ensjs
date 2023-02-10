@@ -1,6 +1,7 @@
 import { ENS } from '..'
 import setup from '../tests/setup'
 import { Name } from './getNames'
+import { names as wrappedNames } from '../../deploy/00_register_wrapped'
 
 let ensInstance: ENS
 
@@ -166,13 +167,25 @@ describe('getNames', () => {
     })
     expect(pageFive).toHaveLength(totalOwnedNames % 10)
   })
-  it('should get wrapped domains for an address with pagination', async () => {
+  it('should get wrapped domains for an address with pagination, and filter out pcc expired names', async () => {
     const pageOne = await ensInstance.getNames({
       address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
       type: 'wrappedOwner',
       page: 0,
     })
-    expect(pageOne).toHaveLength(5)
+
+    const nameCout = wrappedNames.reduce<number>((count, name) => {
+      if (name.namedOwner === 'owner2') count += 1
+      ;(name.subnames || []).forEach((subname: any) => {
+        if (subname.namedOwner === 'owner2') count += 1
+      })
+      return count
+    }, 0)
+
+    // length of page one should be all the names on 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+    // minus 1 for the PCC expired name.
+    // the result here implies that the PCC expired name is not returned
+    expect(pageOne).toHaveLength(nameCout - 1)
   })
   describe('orderBy', () => {
     describe('registrations', () => {
