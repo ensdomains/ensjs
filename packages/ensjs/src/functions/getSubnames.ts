@@ -1,19 +1,35 @@
 import { ENSArgs } from '..'
 import { truncateFormat } from '../utils/format'
+import { AllCurrentFuses, checkPCCBurned, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
 import { namehash } from '../utils/normalise'
+import { Domain } from '../utils/subgraph-types'
 
-type Subname = {
+type BaseSubname = {
   id: string
   labelName: string | null
   truncatedName?: string
   labelhash: string
   isMigrated: boolean
   name: string
-  owner: {
-    id: string
-  }
+  owner: string | undefined
 }
+
+type UnwrappedSubname = BaseSubname & {
+  fuses?: never
+  expiryDate?: never
+  pccExpired?: never
+  type: 'domain'
+}
+
+type WrappedSubname = BaseSubname & {
+  fuses: AllCurrentFuses
+  expiryDate: Date
+  pccExpired: boolean
+  type: 'wrappedDomain'
+}
+
+type Subname = WrappedSubname | UnwrappedSubname
 
 type Params = {
   name: string
@@ -90,6 +106,13 @@ const largeQuery = async (
           owner {
             id
           }
+          wrappedDomain {
+            fuses
+            expiryDate
+            owner {
+              id
+            }
+          }
         }
       }
     }
@@ -106,18 +129,44 @@ const largeQuery = async (
   }
   const response = await client.request(finalQuery, queryVars)
   const domain = response?.domain
-  const subdomains = domain.subdomains.map((subname: any) => {
-    const decrypted = decryptName(subname.name)
+  const subdomains = domain.subdomains.map(
+    ({ wrappedDomain, ...subname }: Domain) => {
+      const decrypted = decryptName(subname.name!)
 
-    return {
-      ...subname,
-      name: decrypted,
-      truncatedName: truncateFormat(decrypted),
-    }
-  })
+      const obj = {
+        ...subname,
+        labelName: subname.labelName || null,
+        labelhash: subname.labelhash || '',
+        name: decrypted,
+        truncatedName: truncateFormat(decrypted),
+        owner: subname.owner.id,
+        type: 'domain',
+      } as Subname
+
+      if (wrappedDomain) {
+        obj.type = 'wrappedDomain'
+        const expiryDateAsDate =
+          wrappedDomain.expiryDate && wrappedDomain.expiryDate !== '0'
+            ? new Date(parseInt(wrappedDomain.expiryDate) * 1000)
+            : undefined
+        // if a user's local time is out of sync with the blockchain, this could potentially
+        // be incorrect. the likelihood of that happening though is very low, and devs
+        // shouldn't be relying on this value for anything critical anyway.
+        const hasExpired = expiryDateAsDate && expiryDateAsDate < new Date()
+        obj.expiryDate = expiryDateAsDate
+        obj.fuses = decodeFuses(hasExpired ? 0 : wrappedDomain.fuses)
+        obj.pccExpired = hasExpired
+          ? checkPCCBurned(wrappedDomain.fuses)
+          : false
+        obj.owner = obj.pccExpired ? undefined : wrappedDomain.owner.id
+      }
+
+      return obj
+    },
+  )
 
   return {
-    subnames: subdomains,
+    subnames: subdomains as Subname[],
     subnameCount: domain.subdomainCount,
   }
 }
