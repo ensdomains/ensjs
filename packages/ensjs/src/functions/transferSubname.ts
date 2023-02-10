@@ -1,7 +1,6 @@
 import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
 import { ENSArgs } from '..'
 import { namehash } from '../utils/normalise'
-import { makeResolver } from '../utils/registry'
 import { expiryToBigNumber, Expiry } from '../utils/wrapper'
 
 type BaseArgs = {
@@ -17,46 +16,8 @@ type NameWrapperArgs = {
 
 type Args = BaseArgs | NameWrapperArgs
 
-const transferWrappedSubname = async (
-  {
-    contracts,
-    signer,
-    getWrapperData,
-  }: ENSArgs<'contracts' | 'signer' | 'getWrapperData' | 'getExpiry'>,
-  name: string,
-  { contract, owner, resolverAddress, ...wrapperArgs }: NameWrapperArgs,
-) => {
-  const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
-  const data = await getWrapperData(name)
-  const senderAddress = await signer.getAddress()
-
-  if (senderAddress === data?.owner) {
-    const node = namehash(name)
-    const resolver = await makeResolver({ contracts }, name, resolverAddress)
-    return nameWrapper.populateTransaction.setRecord(node, owner, resolver, 0)
-  }
-
-  const labels = name.split('.')
-  const label = labels.shift() as string
-  const parentNodehash = namehash(labels.join('.'))
-  const expiry = expiryToBigNumber(wrapperArgs.expiry, 0)
-
-  return nameWrapper.populateTransaction.setSubnodeOwner(
-    parentNodehash,
-    label,
-    owner,
-    '0',
-    expiry,
-  )
-}
-
 export default async function (
-  {
-    contracts,
-    signer,
-    getExpiry,
-    getWrapperData,
-  }: ENSArgs<'contracts' | 'signer' | 'getExpiry' | 'getWrapperData'>,
+  { contracts, signer }: ENSArgs<'contracts' | 'signer'>,
   name: string,
   { contract, owner, resolverAddress, ...wrapperArgs }: Args,
 ) {
@@ -76,15 +37,18 @@ export default async function (
       )
     }
     case 'nameWrapper': {
-      return transferWrappedSubname(
-        { contracts, signer, getWrapperData, getExpiry },
-        name,
-        {
-          contract,
-          owner,
-          resolverAddress,
-          ...wrapperArgs,
-        },
+      const nameWrapper = (await contracts!.getNameWrapper()!).connect(signer)
+      const expiry = expiryToBigNumber(
+        (wrapperArgs as NameWrapperArgs).expiry,
+        0,
+      )
+
+      return nameWrapper.populateTransaction.setSubnodeOwner(
+        parentNodehash,
+        label,
+        owner,
+        '0',
+        expiry,
       )
     }
     default: {

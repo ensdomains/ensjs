@@ -37,23 +37,20 @@ describe('transferSubname', () => {
   })
 
   describe('wrapped name with PCC NOT burned', () => {
-    it('should allow transferring a subname by name owner', async () => {
+    it('should NOT allow transferring a subname by name owner', async () => {
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
-      const tx = await ensInstance.transferSubname(
-        'test.wrapped-with-subnames.eth',
-        {
+      await expect(
+        ensInstance.transferSubname('test.wrapped-with-subnames.eth', {
           contract: 'nameWrapper',
           owner: accounts[1],
           addressOrIndex: 2,
-        },
-      )
-      expect(tx).toBeTruthy()
-      await tx.wait()
+        }),
+      ).rejects.toThrow()
 
       const result = await nameWrapper.ownerOf(
         namehash('test.wrapped-with-subnames.eth'),
       )
-      expect(result).toBe(accounts[1])
+      expect(result).toBe(accounts[2])
     })
 
     it('should allow transferring a subname by parent owner', async () => {
@@ -86,7 +83,7 @@ describe('transferSubname', () => {
       await tx0.wait()
     })
 
-    it('should allow transferring a subname by name owner', async () => {
+    it('should NOT allow transferring a subname by name owner', async () => {
       const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
 
       const tx1 = await ensInstance.setChildFuses(
@@ -108,21 +105,17 @@ describe('transferSubname', () => {
       )
       expect(checkOwner).toBe(accounts[2])
 
-      const tx = await ensInstance.transferSubname(
-        'test.wrapped-with-subnames.eth',
-        {
+      await expect(
+        ensInstance.transferSubname('test.wrapped-with-subnames.eth', {
           contract: 'nameWrapper',
           owner: accounts[1],
           addressOrIndex: 2,
-        },
-      )
-      expect(tx).toBeTruthy()
-      await tx.wait()
-
+        }),
+      ).rejects.toThrow()
       const result = await nameWrapper.ownerOf(
         namehash('test.wrapped-with-subnames.eth'),
       )
-      expect(result).toBe(accounts[1])
+      expect(result).toBe(accounts[2])
     })
 
     it('should NOT allow transferring a subname by parent owner', async () => {

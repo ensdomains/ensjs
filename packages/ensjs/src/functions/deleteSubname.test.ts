@@ -13,6 +13,10 @@ beforeAll(async () => {
   accounts = await provider.listAccounts()
 })
 
+beforeEach(async () => {
+  await revert()
+})
+
 afterAll(async () => {
   await revert()
 })
@@ -21,15 +25,17 @@ describe('deleteSubname', () => {
   beforeEach(async () => {
     await revert()
   })
-  it('should allow deleting a subname on the registry', async () => {
+  it('should allow deleting a subname on the registry by parent owner', async () => {
+    const registry = await ensInstance.contracts!.getRegistry()!
+    const parentOwner = await registry.owner(namehash('with-subnames.eth'))
+
     const tx = await ensInstance.deleteSubname('test.with-subnames.eth', {
       contract: 'registry',
-      addressOrIndex: 1,
+      addressOrIndex: parentOwner,
     })
     expect(tx).toBeTruthy()
     await tx.wait()
 
-    const registry = await ensInstance.contracts!.getRegistry()!
     const result = await registry.owner(namehash('test.with-subnames.eth'))
     expect(result).toBe('0x0000000000000000000000000000000000000000')
   })
@@ -37,11 +43,16 @@ describe('deleteSubname', () => {
   it('should allow deleting a subname on the nameWrapper by parent owner', async () => {
     const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
 
+    const parentOwner = await nameWrapper.ownerOf(
+      namehash('wrapped-with-subnames.eth'),
+    )
+
     const tx = await ensInstance.deleteSubname(
       'test.wrapped-with-subnames.eth',
       {
         contract: 'nameWrapper',
-        addressOrIndex: 1,
+        method: 'setSubnodeOwner',
+        addressOrIndex: parentOwner,
       },
     )
     expect(tx).toBeTruthy()
@@ -53,33 +64,35 @@ describe('deleteSubname', () => {
     expect(result).toBe('0x0000000000000000000000000000000000000000')
   })
 
-  it('should NOT allow deleting a subname on the nameWrapper by name owner', async () => {
+  it('should allow deleting a subname on the nameWrapper by name owner', async () => {
     const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
 
-    const checkOwner = await nameWrapper.ownerOf(
+    const nameOwner = await nameWrapper.ownerOf(
       namehash('addr.wrapped-with-subnames.eth'),
     )
-    expect(checkOwner).toBe(accounts[2])
 
-    expect(
-      ensInstance.deleteSubname('addr.wrapped-with-subnames.eth', {
-        contract: 'nameWrapper',
-        addressOrIndex: 2,
-      }),
-    ).rejects.toThrow()
+    await ensInstance.deleteSubname('addr.wrapped-with-subnames.eth', {
+      contract: 'nameWrapper',
+      method: 'setRecord',
+      addressOrIndex: nameOwner,
+    })
 
     const result = await nameWrapper.ownerOf(
       namehash('addr.wrapped-with-subnames.eth'),
     )
-    expect(result).toBe(accounts[2])
+    expect(result).toBe('0x0000000000000000000000000000000000000000')
   })
 
   it('should allow deleting a subname on the nameWrapper with PCC burned by name owner', async () => {
     const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
 
+    const parentOwner = await nameWrapper.ownerOf(
+      namehash('wrapped-with-subnames.eth'),
+    )
+
     const tx0 = await ensInstance.setFuses('wrapped-with-subnames.eth', {
       named: ['CANNOT_UNWRAP'],
-      addressOrIndex: 1,
+      addressOrIndex: parentOwner,
     })
     expect(tx0).toBeTruthy()
     await tx0.wait()
@@ -92,22 +105,24 @@ describe('deleteSubname', () => {
             named: ['PARENT_CANNOT_CONTROL'],
           },
         },
-        addressOrIndex: 1,
+        addressOrIndex: parentOwner,
       },
     )
     expect(tx1).toBeTruthy()
     await tx1.wait()
 
-    const checkOwner = await nameWrapper.ownerOf(
+    const nameOwner = await nameWrapper.ownerOf(
       namehash('xyz.wrapped-with-subnames.eth'),
     )
-    expect(checkOwner).toBe(accounts[2])
+
+    expect(parentOwner === nameOwner).toBe(false)
 
     const tx = await ensInstance.deleteSubname(
       'xyz.wrapped-with-subnames.eth',
       {
         contract: 'nameWrapper',
-        addressOrIndex: 2,
+        method: 'setRecord',
+        addressOrIndex: nameOwner,
       },
     )
     expect(tx).toBeTruthy()
@@ -122,9 +137,13 @@ describe('deleteSubname', () => {
   it('should NOT allow deleting a subname on the nameWrapper with PCC burned by parent owner', async () => {
     const nameWrapper = await ensInstance.contracts!.getNameWrapper()!
 
+    const parentOwner = await nameWrapper.ownerOf(
+      namehash('wrapped-with-subnames.eth'),
+    )
+
     const tx0 = await ensInstance.setFuses('wrapped-with-subnames.eth', {
       named: ['CANNOT_UNWRAP'],
-      addressOrIndex: 1,
+      addressOrIndex: parentOwner,
     })
     expect(tx0).toBeTruthy()
     await tx0.wait()
@@ -137,7 +156,7 @@ describe('deleteSubname', () => {
             named: ['PARENT_CANNOT_CONTROL'],
           },
         },
-        addressOrIndex: 1,
+        addressOrIndex: parentOwner,
       },
     )
     expect(tx1).toBeTruthy()
@@ -151,7 +170,8 @@ describe('deleteSubname', () => {
     await expect(
       ensInstance.deleteSubname('legacy.wrapped-with-subnames.eth', {
         contract: 'nameWrapper',
-        addressOrIndex: 1,
+        method: 'setSubnodeOwner',
+        addressOrIndex: parentOwner,
       }),
     ).rejects.toThrow()
 
@@ -165,6 +185,7 @@ describe('deleteSubname', () => {
     await expect(
       ensInstance.deleteSubname('eth', {
         contract: 'nameWrapper',
+        method: 'setRecord',
         addressOrIndex: 1,
       }),
     ).rejects.toThrow()

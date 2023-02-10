@@ -621,11 +621,11 @@ export class ENS {
 
   public deleteSubname = this.generateWriteFunction<
     FunctionTypes['deleteSubname']
-  >('deleteSubname', ['contracts', 'getWrapperData'])
+  >('deleteSubname', ['contracts'])
 
   public transferSubname = this.generateWriteFunction<
     FunctionTypes['transferSubname']
-  >('transferSubname', ['contracts', 'getExpiry', 'getWrapperData'])
+  >('transferSubname', ['contracts'])
 
   public commitName = this.generateWriteFunction<FunctionTypes['commitName']>(
     'commitName',
