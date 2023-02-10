@@ -4,6 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import { encodeFuses } from '../src/utils/fuses'
 import { namehash } from '../src/utils/normalise'
 
 const names: {
@@ -39,6 +40,11 @@ const names: {
   {
     label: 'wrapped-with-expiring-subnames',
     namedOwner: 'owner',
+    fuses: encodeFuses({
+      child: {
+        named: ['CANNOT_UNWRAP'],
+      },
+    }),
     subnames: [
       {
         label: 'test',
@@ -49,6 +55,14 @@ const names: {
         label: 'test1',
         namedOwner: 'owner2',
         expiry: 0,
+      },
+      {
+        label: 'recent-pcc',
+        namedOwner: 'owner2',
+        expiry: Math.floor(Date.now() / 1000),
+        fuses: encodeFuses({
+          parent: { named: ['PARENT_CANNOT_CONTROL'] },
+        }),
       },
     ],
   },

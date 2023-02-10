@@ -1,5 +1,6 @@
 import { ENS } from '..'
 import setup from '../tests/setup'
+import { decodeFuses } from '../utils/fuses'
 
 let ensInstance: ENS
 
@@ -130,7 +131,6 @@ describe('getSubnames', () => {
       'truncatedName',
     )
   })
-
   describe('wrapped subnames', () => {
     it('should return fuses', async () => {
       const result = await ensInstance.getSubnames({
@@ -154,7 +154,7 @@ describe('getSubnames', () => {
       })
 
       expect(result).toBeTruthy()
-      expect(result.subnames[0].expiryDate).toBeUndefined()
+      expect(result.subnames[1].expiryDate).toBeUndefined()
     })
     it('should return expiry', async () => {
       const result = await ensInstance.getSubnames({
@@ -165,7 +165,20 @@ describe('getSubnames', () => {
       })
 
       expect(result).toBeTruthy()
-      expect(result.subnames[1].expiryDate).toBeInstanceOf(Date)
+      expect(result.subnames[2].expiryDate).toBeInstanceOf(Date)
+    })
+    it('should return owner as undefined, fuses as 0, and pccExpired as true if pcc expired', async () => {
+      const result = await ensInstance.getSubnames({
+        name: 'wrapped-with-expiring-subnames.eth',
+        pageSize: 10,
+        orderBy: 'createdAt',
+        orderDirection: 'desc',
+      })
+
+      expect(result).toBeTruthy()
+      expect(result.subnames[0].owner).toBeUndefined()
+      expect(result.subnames[0].fuses).toStrictEqual(decodeFuses(0))
+      expect(result.subnames[0].pccExpired).toBe(true)
     })
   })
 
