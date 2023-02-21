@@ -144,6 +144,7 @@ const getNames = async (
     parent {
         name
     }
+    createdAt
   `
 
   let queryVars: object = {}
@@ -168,7 +169,6 @@ const getNames = async (
           }
           domains(first: 1000) {
             ${domainQueryData}
-            createdAt
             registration {
               registrationDate
               expiryDate
@@ -203,7 +203,6 @@ const getNames = async (
           account(id: $id) {
             domains(orderBy: $orderBy, orderDirection: $orderDirection) {
               ${domainQueryData}
-              createdAt
               registration {
                 registrationDate
                 expiryDate
@@ -234,7 +233,6 @@ const getNames = async (
               orderDirection: $orderDirection
             ) {
               ${domainQueryData}
-              createdAt
             }
           }
         }
@@ -267,7 +265,6 @@ const getNames = async (
             fuses
             domain {
               ${domainQueryData}
-              createdAt
             }
           }
         }
@@ -298,7 +295,6 @@ const getNames = async (
             fuses
             domain {
               ${domainQueryData}
-              createdAt
             }
           }
         }
