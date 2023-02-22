@@ -1,7 +1,28 @@
+import { toUtf8String } from 'ethers/lib/utils'
 import { ENS } from '..'
 import setup from '../tests/setup'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import { namehash } from '../utils/normalise'
+
+const dummyABI = [
+  {
+    type: 'function',
+    name: 'supportsInterface',
+    constant: true,
+    stateMutability: 'view',
+    payable: false,
+    inputs: [
+      {
+        type: 'bytes4',
+      },
+    ],
+    outputs: [
+      {
+        type: 'bool',
+      },
+    ],
+  },
+]
 
 let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
@@ -25,6 +46,9 @@ describe('setRecords', () => {
           },
         ],
         texts: [{ key: 'foo', value: 'bar' }],
+        abi: {
+          data: dummyABI,
+        },
       },
       addressOrIndex: 1,
     })
@@ -60,5 +84,17 @@ describe('setRecords', () => {
     expect(resultAddr).toBe(
       '0x42D63ae25990889E35F215bC95884039Ba354115'.toLowerCase(),
     )
+
+    const encodedABI = await universalResolver['resolve(bytes,bytes)'](
+      hexEncodeName('test123.eth'),
+      publicResolver.interface.encodeFunctionData('ABI', [
+        namehash('test123.eth'),
+        '0x01',
+      ]),
+    )
+    const [contentType, resultABI] =
+      publicResolver.interface.decodeFunctionResult('ABI', encodedABI[0])
+    expect(contentType.toNumber()).toBe(1)
+    expect(toUtf8String(resultABI)).toBe(JSON.stringify(dummyABI))
   })
 })
