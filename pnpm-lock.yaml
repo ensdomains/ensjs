@@ -114,7 +114,7 @@ importers:
       ganache: ^7.4.0
       glob: ^8.0.3
       graphql: ^16.3.0
-      graphql-request: 5.2.0-next.3
+      graphql-request: 5.1.0
       hardhat: 2.10.2
       hardhat-abi-exporter: ^2.8.0
       hardhat-deploy: ^0.11.12
@@ -141,7 +141,7 @@ importers:
       cbor: 8.1.0
       dns-packet: 5.4.0
       graphql: 16.6.0
-      graphql-request: 5.2.0-next.3_graphql@16.6.0
+      graphql-request: 5.1.0_graphql@16.6.0
       idna-uts46-hx: 3.4.0
       pako: 2.1.0
       traverse: 0.6.6
@@ -7374,8 +7374,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql-request/5.2.0-next.3_graphql@16.6.0:
-    resolution: {integrity: sha512-x/Fm3igyxnTkyXxpNgTBYQquAcdNBr/2BeAgggb+TSa8YBP/FDjVWYDzm/c/9YOQdddLMyHdW06Gl/i6KSiBcQ==}
+  /graphql-request/5.1.0_graphql@16.6.0:
+    resolution: {integrity: sha512-0OeRVYigVwIiXhNmqnPDt+JhMzsjinxHE7TVy3Lm6jUzav0guVcL0lfSbi6jVTRAxcbwgyr6yrZioSHxf9gHzw==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
@@ -11968,7 +11968,7 @@ packages:
       es-abstract: 1.21.1
       get-intrinsic: 1.2.0
       has-symbols: 1.0.3
-      internal-slot: 1.0.3
+      internal-slot: 1.0.5
       regexp.prototype.flags: 1.4.3
       side-channel: 1.0.4
     dev: true
