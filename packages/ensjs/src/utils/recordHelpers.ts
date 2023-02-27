@@ -158,6 +158,15 @@ export const generateRecordCallArray = (
     if (data) calls.push(data)
   }
 
+  if (records.abi) {
+    const data = generateSingleRecordCall(
+      namehash,
+      resolver,
+      'abi',
+    )(records.abi)
+    if (data) calls.push(data)
+  }
+
   if (records.texts && records.texts.length > 0) {
     records.texts
       .map(generateSingleRecordCall(namehash, resolver, 'text'))
