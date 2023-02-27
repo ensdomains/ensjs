@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "3.0.0-alpha.46",
+  "version": "3.0.0-alpha.48",
   "description": "ENS javascript library for contract interaction",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.mjs",
@@ -84,7 +84,7 @@
     "cbor": "^8.1.0",
     "dns-packet": "^5.3.1",
     "graphql": "^16.3.0",
-    "graphql-request": "next",
+    "graphql-request": "5.1.0",
     "idna-uts46-hx": "3.4.0",
     "pako": "^2.1.0",
     "traverse": "^0.6.6"
