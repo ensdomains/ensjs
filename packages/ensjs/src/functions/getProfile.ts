@@ -305,7 +305,9 @@ const getDataForName = async (
       for (let i = 0; i < recordData.length; i += 1) {
         // error code for reverted call in batch
         // this is expected when using offchain resolvers, so should be ignored
-        if (recordData[i]!.startsWith('0x0d1947a9')) {
+        // Error((uint16, string)[])
+        // or if data is 0x, clear the call so there is no decoding errors
+        if (recordData[i]!.startsWith('0x0d1947a9') || recordData[i] === '0x') {
           calls[i] = null
           recordData[i] = null
         }

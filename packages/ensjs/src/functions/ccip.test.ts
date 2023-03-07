@@ -29,6 +29,21 @@ describe('CCIP', () => {
         )
       }
     })
+    it('should return a profile from arb-resolver.eth', async () => {
+      const result = await ensInstance.getProfile('arb-resolver.eth', {
+        fallback: {
+          texts: ['email', 'description'],
+          contentHash: true,
+          coinTypes: ['LTC', '60'],
+        },
+      })
+      expect(result).toBeTruthy()
+      if (result) {
+        expect(result.address).toBe(
+          '0xA5313060f9FA6B607AC8Ca8728a851166c9f6127',
+        )
+      }
+    })
   })
   describe('batch', () => {
     it('allows batch ccip', async () => {
