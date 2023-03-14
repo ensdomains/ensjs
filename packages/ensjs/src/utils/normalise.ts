@@ -1,14 +1,32 @@
+import {
+  DisallowedToken,
+  EmojiToken,
+  ens_beautify,
+  ens_emoji,
+  ens_normalize,
+  ens_normalize_fragment,
+  ens_split,
+  ens_tokenize,
+  IgnoredToken,
+  is_combining_mark,
+  Label,
+  MappedToken,
+  NFCToken,
+  should_escape,
+  StopToken,
+  TextToken,
+  Token,
+  ValidToken,
+} from '@adraffy/ens-normalize'
 import { concat, hexlify } from '@ethersproject/bytes'
 import { keccak256 } from '@ethersproject/keccak256'
 import { toUtf8Bytes } from '@ethersproject/strings'
-import uts46 from 'idna-uts46-hx/uts46bundle.js'
 import { decodeLabelhash, isEncodedLabelhash } from './labels'
 
 const zeros = new Uint8Array(32)
 zeros.fill(0)
 
-export const normalise = (name: string) =>
-  name ? uts46.toUnicode(name, { useStd3ASCII: true }) : name
+export const normalise = (name: string) => (name ? ens_normalize(name) : name)
 
 export const namehash = (name: string): string => {
   let result: string | Uint8Array = zeros
@@ -32,4 +50,25 @@ export const namehash = (name: string): string => {
   }
 
   return result as string
+}
+
+export const beautify = ens_beautify
+export const emoji = ens_emoji
+export const normalizeFragment = ens_normalize_fragment
+export const split = ens_split
+export const tokenise = ens_tokenize
+export const isCombiningMark = is_combining_mark
+export const shouldEscape = should_escape
+
+export type {
+  DisallowedToken,
+  EmojiToken,
+  IgnoredToken,
+  Label,
+  MappedToken,
+  NFCToken,
+  StopToken,
+  TextToken,
+  Token,
+  ValidToken,
 }
