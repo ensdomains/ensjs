@@ -5,6 +5,7 @@ const CANNOT_TRANSFER = 4
 const CANNOT_SET_RESOLVER = 8
 const CANNOT_SET_TTL = 16
 const CANNOT_CREATE_SUBDOMAIN = 32
+const CANNOT_APPROVE = 64
 
 // parent named fuses
 const PARENT_CANNOT_CONTROL = 0x10000
@@ -26,6 +27,7 @@ export const childFuseEnum = {
   CANNOT_SET_RESOLVER,
   CANNOT_SET_TTL,
   CANNOT_CREATE_SUBDOMAIN,
+  CANNOT_APPROVE,
 } as const
 
 export const parentFuseEnum = {
@@ -50,7 +52,7 @@ export const fullFuseEnum = {
 }
 
 export const unnamedChildFuses = [
-  64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768,
+  128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768,
 ] as const
 
 export const unnamedParentFuses = [

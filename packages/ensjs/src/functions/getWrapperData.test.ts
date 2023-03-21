@@ -40,7 +40,12 @@ describe('getWrapperData', () => {
   })
   it('should return with other correct fuses', async () => {
     const tx = await ensInstance.setFuses('wrapped.eth', {
-      named: ['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL'],
+      named: [
+        'CANNOT_UNWRAP',
+        'CANNOT_CREATE_SUBDOMAIN',
+        'CANNOT_SET_TTL',
+        'CANNOT_APPROVE',
+      ],
       addressOrIndex: 1,
     })
     await tx.wait()
@@ -52,6 +57,7 @@ describe('getWrapperData', () => {
       expect(result.child.CANNOT_UNWRAP).toBe(true)
       expect(result.child.CANNOT_CREATE_SUBDOMAIN).toBe(true)
       expect(result.child.CANNOT_SET_TTL).toBe(true)
+      expect(result.child.CANNOT_APPROVE).toBe(true)
       expect(result.parent.IS_DOT_ETH).toBe(true)
     }
   })

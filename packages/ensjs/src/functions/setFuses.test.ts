@@ -74,7 +74,12 @@ describe('setFuses', () => {
   describe('Array', () => {
     it('should return a setFuses transaction from a named fuse array and succeed', async () => {
       const tx = await ensInstance.setFuses('wrapped.eth', {
-        named: ['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL'],
+        named: [
+          'CANNOT_UNWRAP',
+          'CANNOT_CREATE_SUBDOMAIN',
+          'CANNOT_SET_TTL',
+          'CANNOT_APPROVE',
+        ],
         addressOrIndex: accounts[1],
       })
       expect(tx).toBeTruthy()
@@ -87,6 +92,7 @@ describe('setFuses', () => {
         'CANNOT_CREATE_SUBDOMAIN',
         'CANNOT_SET_TTL',
         'PARENT_CANNOT_CONTROL',
+        'CANNOT_APPROVE',
       ])
     })
     it('should return a setFuses transaction from an unnamed fuse array and succeed', async () => {
@@ -110,7 +116,12 @@ describe('setFuses', () => {
     })
     it('should return a setFuses transaction from both an unnamed and named fuse array and succeed', async () => {
       const tx = await ensInstance.setFuses('wrapped.eth', {
-        named: ['CANNOT_UNWRAP', 'CANNOT_CREATE_SUBDOMAIN', 'CANNOT_SET_TTL'],
+        named: [
+          'CANNOT_UNWRAP',
+          'CANNOT_CREATE_SUBDOMAIN',
+          'CANNOT_SET_TTL',
+          'CANNOT_APPROVE',
+        ],
         unnamed: [128, 256, 512],
         addressOrIndex: accounts[1],
       })
@@ -124,6 +135,7 @@ describe('setFuses', () => {
         'CANNOT_CREATE_SUBDOMAIN',
         'CANNOT_SET_TTL',
         'PARENT_CANNOT_CONTROL',
+        'CANNOT_APPROVE',
       ])
       checkUnnamedFuses(fuses, [128, 256, 512])
     })
@@ -154,7 +166,7 @@ describe('setFuses', () => {
   describe('Number', () => {
     it('should return a setFuses transaction from a number and succeed', async () => {
       const tx = await ensInstance.setFuses('wrapped.eth', {
-        number: 49,
+        number: 113,
         addressOrIndex: accounts[1],
       })
       expect(tx).toBeTruthy()
@@ -166,6 +178,7 @@ describe('setFuses', () => {
         'CANNOT_UNWRAP',
         'CANNOT_CREATE_SUBDOMAIN',
         'CANNOT_SET_TTL',
+        'CANNOT_APPROVE',
         'PARENT_CANNOT_CONTROL',
       ])
     })
@@ -224,7 +237,7 @@ describe('setChildFuses', () => {
     const tx = await ensInstance.setChildFuses(
       'test.wrapped-with-subnames.eth',
       {
-        fuses: 65537,
+        fuses: 65537 + 64,
         addressOrIndex: accounts[1],
       },
     )
@@ -235,6 +248,10 @@ describe('setChildFuses', () => {
       namehash('test.wrapped-with-subnames.eth'),
     )
 
-    checkFuses(fuses, ['CANNOT_UNWRAP', 'PARENT_CANNOT_CONTROL'])
+    checkFuses(fuses, [
+      'CANNOT_UNWRAP',
+      'PARENT_CANNOT_CONTROL',
+      'CANNOT_APPROVE',
+    ])
   })
 })
