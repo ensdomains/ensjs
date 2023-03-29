@@ -4,10 +4,10 @@ import { Label, normalise, split } from './normalise'
 
 export const validateName = (name: string) => {
   const nameArray = name.split('.')
-  const hasEmptyLabels = nameArray.some((label) => label.length === 0)
-  if (hasEmptyLabels) throw new Error('Name cannot have empty labels')
   const normalisedArray = nameArray.map((label) => {
+    if (label.length === 0) throw new Error('Name cannot have empty labels')
     if (label === '[root]') {
+      if (name !== label) throw new Error('Root label must be the only label')
       return label
     }
     return isEncodedLabelhash(label)
@@ -17,11 +17,6 @@ export const validateName = (name: string) => {
   const normalisedName = normalisedArray.join('.')
   saveName(normalisedName)
   return normalisedName
-}
-
-export const validateTLD = (name: string) => {
-  const labels = name.split('.')
-  return validateName(labels[labels.length - 1])
 }
 
 export type ParsedInputResult = {
