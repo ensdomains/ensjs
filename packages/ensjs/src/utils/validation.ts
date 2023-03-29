@@ -1,20 +1,22 @@
-import { isAddress } from '@ethersproject/address'
-import { isEncodedLabelhash, saveName } from './labels'
-import { normalise } from './normalise'
+import { MINIMUM_DOT_ETH_CHARS } from './consts'
+import { checkLabel, isEncodedLabelhash, saveName } from './labels'
+import { Label, normalise, split } from './normalise'
 
 export const validateName = (name: string) => {
   const nameArray = name.split('.')
   const hasEmptyLabels = nameArray.some((label) => label.length === 0)
   if (hasEmptyLabels) throw new Error('Name cannot have empty labels')
-  const normalizedArray = nameArray.map((label) => {
+  const normalisedArray = nameArray.map((label) => {
     if (label === '[root]') {
       return label
     }
-    return isEncodedLabelhash(label) ? label : normalise(label)
+    return isEncodedLabelhash(label)
+      ? checkLabel(label) || label
+      : normalise(label)
   })
-  const normalizedName = normalizedArray.join('.')
-  saveName(normalizedName)
-  return normalizedName
+  const normalisedName = normalisedArray.join('.')
+  saveName(normalisedName)
+  return normalisedName
 }
 
 export const validateTLD = (name: string) => {
@@ -22,52 +24,55 @@ export const validateTLD = (name: string) => {
   return validateName(labels[labels.length - 1])
 }
 
-type InputType = {
-  type: 'name' | 'label' | 'address' | 'unknown'
-  info?: 'short' | 'supported' | 'unsupported'
+export type ParsedInputResult = {
+  type: 'name' | 'label'
+  normalised: string | undefined
+  isValid: boolean
+  isShort: boolean
+  is2LD: boolean
+  isETH: boolean
+  labelDataArray: Label[]
 }
 
-export const parseInputType = (input: string): InputType => {
-  const validTLD = validateTLD(input)
-  const regex = /[^.]+$/
+export const parseInput = (input: string): ParsedInputResult => {
+  let nameReference = input
+  let isValid = false
 
   try {
-    validateName(input)
-  } catch (e) {
+    nameReference = validateName(input)
+    isValid = true
+  } catch {}
+
+  const normalisedName = isValid ? nameReference : undefined
+
+  const labels = nameReference.split('.')
+  const tld = labels[labels.length - 1]
+  const isETH = tld === 'eth'
+  const labelDataArray = split(nameReference)
+  const isShort =
+    (labelDataArray[0].output?.length || 0) < MINIMUM_DOT_ETH_CHARS
+
+  if (labels.length === 1) {
     return {
-      type: 'unknown',
+      type: 'label',
+      normalised: normalisedName,
+      isShort,
+      isValid,
+      is2LD: false,
+      isETH,
+      labelDataArray,
     }
   }
 
-  if (input.indexOf('.') !== -1) {
-    const termArray = input.split('.')
-    const tld = input.match(regex) ? input.match(regex)![0] : ''
-    if (validTLD) {
-      if (tld === 'eth' && [...termArray[termArray.length - 2]].length < 3) {
-        // code-point length
-        return {
-          type: 'name',
-          info: 'short',
-        }
-      }
-      return {
-        type: 'name',
-        info: 'supported',
-      }
-    }
-
-    return {
-      type: 'name',
-      info: 'unsupported',
-    }
-  }
-  if (isAddress(input)) {
-    return {
-      type: 'address',
-    }
-  }
+  const is2LD = labels.length === 2
   return {
-    type: 'label',
+    type: 'name',
+    normalised: normalisedName,
+    isShort: isETH && is2LD ? isShort : false,
+    isValid,
+    is2LD,
+    isETH,
+    labelDataArray,
   }
 }
 

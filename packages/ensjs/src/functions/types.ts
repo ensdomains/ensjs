@@ -17,7 +17,6 @@ import type getNames from './getNames'
 import type getOwner from './getOwner'
 import type getPrice from './getPrice'
 import type getProfile from './getProfile'
-import type getRecords from './getRecords'
 import type getResolver from './getResolver'
 import type {
   getABI,
@@ -71,7 +70,6 @@ type Function = {
   getOwner: typeof getOwner
   getPrice: typeof getPrice
   getProfile: typeof getProfile
-  getRecords: typeof getRecords
   getResolver: typeof getResolver
   getAddr: typeof getAddr
   getContentHash: typeof getContentHash
