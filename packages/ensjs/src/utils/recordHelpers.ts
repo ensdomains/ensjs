@@ -38,7 +38,8 @@ export const generateSetAddr = (
     coinTypeInstance = formatsByName[coinType.toUpperCase()]
   }
   const inputCoinType = coinTypeInstance.coinType
-  const encodedAddress = coinTypeInstance.decoder(address)
+  const encodedAddress =
+    address !== '' ? coinTypeInstance.decoder(address) : '0x'
   return resolver?.interface.encodeFunctionData(
     'setAddr(bytes32,uint256,bytes)',
     [namehash, inputCoinType, encodedAddress],
