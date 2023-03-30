@@ -96,6 +96,55 @@ describe('setRecord', () => {
       '0x42D63ae25990889E35F215bC95884039Ba354115'.toLowerCase(),
     )
   })
+  it('should allow an empty address record to be set', async () => {
+    const setRecord = await ensInstance.setRecord('test123.eth', {
+      type: 'addr',
+      record: {
+        key: 'BNB',
+        value: 'bnb1rrhqmj4fa28vlrnm89f6gjsgz3ya6h40ptckj0',
+      },
+      addressOrIndex: 1,
+    })
+    await setRecord.wait()
+
+    const universalResolver =
+      await ensInstance.contracts!.getUniversalResolver()!
+    const publicResolver = await ensInstance.contracts!.getPublicResolver()!
+    const getEncodedAddr = () =>
+      universalResolver['resolve(bytes,bytes)'](
+        hexEncodeName('test123.eth'),
+        publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
+          namehash('test123.eth'),
+          '714',
+        ]),
+      )
+    const encodedAddr = await getEncodedAddr()
+    const [resultAddr] = publicResolver.interface.decodeFunctionResult(
+      'addr(bytes32,uint256)',
+      encodedAddr[0],
+    )
+    // record as hex
+    expect(resultAddr).toBe('0x18ee0dcaa9ea8ecf8e7b3953a44a081449dd5eaf')
+
+    const tx = await ensInstance.setRecord('test123.eth', {
+      type: 'addr',
+      record: {
+        key: 'BNB',
+        value: '',
+      },
+      addressOrIndex: 1,
+    })
+    expect(tx).toBeTruthy()
+    await tx.wait()
+
+    const encodedEmptyAddr = await getEncodedAddr()
+    const [resultEmptyAddr] = publicResolver.interface.decodeFunctionResult(
+      'addr(bytes32,uint256)',
+      encodedEmptyAddr[0],
+    )
+    // record as hex
+    expect(resultEmptyAddr).toBe('0x')
+  })
   it('should allow a contenthash record set', async () => {
     const tx = await ensInstance.setRecord('test123.eth', {
       type: 'contentHash',
