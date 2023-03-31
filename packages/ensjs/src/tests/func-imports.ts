@@ -17,7 +17,6 @@ import getNames from '../functions/getNames'
 import getOwner from '../functions/getOwner'
 import getPrice from '../functions/getPrice'
 import getProfile from '../functions/getProfile'
-import getRecords from '../functions/getRecords'
 import getResolver from '../functions/getResolver'
 import {
   getABI,
@@ -70,7 +69,6 @@ export default {
   getOwner,
   getPrice,
   getProfile,
-  getRecords,
   getResolver,
   getAddr,
   getContentHash,

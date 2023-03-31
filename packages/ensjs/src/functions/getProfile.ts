@@ -1,11 +1,11 @@
 import { formatsByName } from '@ensdomains/address-encoder'
 import { defaultAbiCoder } from '@ethersproject/abi'
+import { isAddress } from '@ethersproject/address'
 import { hexStripZeros, isBytesLike } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash, DecodedContentHash } from '../utils/contentHash'
 import { hexEncodeName } from '../utils/hexEncodedName'
 import { namehash } from '../utils/normalise'
-import { parseInputType } from '../utils/validation'
 
 type InternalProfileOptions = {
   contentHash?: boolean | string | DecodedContentHash
@@ -653,13 +653,9 @@ export default async function (
     }
   }
 
-  const inputType = parseInputType(nameOrAddress)
+  const inputIsAddress = isAddress(nameOrAddress)
 
-  if (inputType.type === 'unknown' || inputType.info === 'unsupported') {
-    throw new Error('Invalid input type')
-  }
-
-  if (inputType.type === 'address') {
+  if (inputIsAddress) {
     return getProfileFromAddress(
       {
         contracts,
