@@ -214,7 +214,6 @@ describe('getNames', () => {
         expect(pageOne.length).toBe(RESOLVED_ADDRESS_COUNT[ADDRESS])
         let prevLabelName = pageOne[0].labelName
         for (const name of pageOne) {
-          console.log(name.labelName)
           expect(
             !!name.labelName &&
               prevLabelName &&

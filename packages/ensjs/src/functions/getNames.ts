@@ -128,10 +128,11 @@ const mapWrappedDomain = (wrappedDomain: WrappedDomain) => {
 
 const mapRegistration = (registration: Registration) => {
   const decrypted = decryptName(registration.domain.name!)
+  const domain = mapDomain(registration.domain)
   return {
     expiryDate: new Date(parseInt(registration.expiryDate) * 1000),
     registrationDate: new Date(parseInt(registration.registrationDate) * 1000),
-    ...registration.domain,
+    ...domain,
     name: decrypted,
     truncatedName: truncateFormat(decrypted),
     type: 'registration',
