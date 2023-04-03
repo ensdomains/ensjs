@@ -46,8 +46,8 @@ const addresses: Record<
     '5': '0x4f7A657451358a22dc397d5eE7981FfC526cd856',
   },
   UniversalResolver: {
-    '1': '0xE4Acdd618deED4e6d2f03b9bf62dc6118FC9A4da',
-    '5': '0xA292E2E58d4ddEb29C33c63173d0E8B7a2A4c62e',
+    '1': '0xc0497e381f536be9ce14b0dd3817cbcae57d2f62',
+    '5': '0x56522d00c410a43bffdf00a9a569489297385790',
   },
   BulkRenewal: {
     '1': '0xfF252725f6122A92551A5FA9a6b6bf10eb0Be035',
