@@ -238,7 +238,7 @@ const names: {
     namedOwner: 'owner',
     namedAddr: 'owner',
     subnames: [
-      { label: 'aaa123', namedOwner: 'owner2' },
+      { label: 'abc123', namedOwner: 'owner2' },
       { label: 'not-known', namedOwner: 'owner2' },
     ],
   },

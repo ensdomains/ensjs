@@ -22,12 +22,14 @@ export type Name = {
     expiryDate: Date
     registrationDate: Date
   }
+  owner?: string
+  manager?: string
   type: 'domain' | 'registration' | 'wrappedDomain'
 }
 
 type BaseParams = {
   address: string
-  type: 'registrant' | 'owner' | 'wrappedOwner' | 'all'
+  type: 'registrant' | 'owner' | 'wrappedOwner' | 'all' | 'resolvedAddress'
   page?: number
   pageSize?: number
   orderDirection?: 'asc' | 'desc'
@@ -55,12 +57,26 @@ type AllParams = {
   pageSize?: never
 }
 
+type ResolvedAddressParams = {
+  type: 'resolvedAddress'
+  orderBy?: 'labelName' | 'createdAt'
+  page?: never
+  pageSize?: never
+}
+
 type Params = BaseParams &
-  (RegistrantParams | OwnerParams | WrappedOwnerParams | AllParams)
+  (
+    | RegistrantParams
+    | OwnerParams
+    | WrappedOwnerParams
+    | AllParams
+    | ResolvedAddressParams
+  )
 
-const mapDomain = ({ name, ...domain }: Domain) => {
-  const decrypted = name ? decryptName(name) : undefined
+const mapDomain = (domain?: Domain) => {
+  if (!domain) return {}
 
+  const decrypted = domain.name ? decryptName(domain.name) : undefined
   return {
     ...domain,
     ...(domain.registration
@@ -112,13 +128,45 @@ const mapWrappedDomain = (wrappedDomain: WrappedDomain) => {
 
 const mapRegistration = (registration: Registration) => {
   const decrypted = decryptName(registration.domain.name!)
+  const domain = mapDomain(registration.domain)
   return {
     expiryDate: new Date(parseInt(registration.expiryDate) * 1000),
     registrationDate: new Date(parseInt(registration.registrationDate) * 1000),
-    ...registration.domain,
+    ...domain,
     name: decrypted,
     truncatedName: truncateFormat(decrypted),
     type: 'registration',
+  }
+}
+
+const mapResolvedAddress = ({
+  wrappedDomain,
+  registration,
+  ...domain
+}: Domain) => {
+  const mappedDomain = mapDomain(domain)
+  if (wrappedDomain) {
+    const mappedWrappedDomain = mapWrappedDomain(wrappedDomain)
+    // If wrapped domain is expired then filter it out.
+    if (!mappedWrappedDomain) return null
+    return {
+      ...mappedDomain,
+      ...mappedWrappedDomain,
+      owner: wrappedDomain.owner.id,
+    }
+  }
+  return {
+    ...mappedDomain,
+    ...(registration
+      ? {
+          expiryDate: new Date(parseInt(registration.expiryDate) * 1000),
+          registrationDate: new Date(
+            parseInt(registration.registrationDate) * 1000,
+          ),
+          owner: registration.registrant.id,
+        }
+      : {}),
+    manager: domain.owner.id,
   }
 }
 
@@ -191,6 +239,47 @@ const getNames = async (
     queryVars = {
       id: address,
       expiryDate: Math.floor(Date.now() / 1000) - 90 * 24 * 60 * 60,
+    }
+  } else if (type === 'resolvedAddress') {
+    finalQuery = gqlInstance.gql`
+    query getNames(
+      $id: String!
+      $orderBy: Domain_orderBy
+      $orderDirection: OrderDirection
+    ) {
+      domains(
+        first: 1000
+        where: { 
+           resolvedAddress: $id 
+        }
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+      ) {
+        ${domainQueryData}
+        owner {
+          id
+        }
+        registration {
+          registrationDate
+          expiryDate
+          registrant {
+            id
+          }
+        }
+        wrappedDomain {
+          expiryDate
+          fuses
+          owner {
+            id
+          }
+        }
+      }
+    }`
+
+    queryVars = {
+      id: address,
+      orderBy: orderBy === 'labelName' ? 'labelName' : 'createdAt',
+      orderDirection: orderDirection === 'asc' ? 'asc' : 'desc',
     }
   } else if (type === 'owner') {
     if (typeof page !== 'number') {
@@ -397,6 +486,10 @@ const getNames = async (
       }
       return a.createdAt.getTime() - b.createdAt.getTime()
     }) as Name[]
+  }
+  if (type === 'resolvedAddress') {
+    return (response?.domains.map(mapResolvedAddress).filter((d: any) => d) ||
+      []) as Name[]
   }
   if (type === 'owner') {
     return (account?.domains.map(mapDomain) || []) as Name[]
