@@ -69,4 +69,22 @@ describe('getWrapperData', () => {
       expect(Number.isNaN(result.expiryDate?.getTime())).toBe(false)
     }
   })
+  it('should return correct expiry for large expiry', async () => {
+    const result = await ensInstance.getWrapperData('wrapped-big-duration.eth')
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.expiryDate).toBeInstanceOf(Date)
+      expect(result.expiryDate!.getFullYear()).toBe(275760)
+      expect(Number.isNaN(result.expiryDate?.getTime())).toBe(false)
+    }
+  })
+  it('should return correct max expiry for expiry larger than maximum for date', async () => {
+    const result = await ensInstance.getWrapperData('wrapped-max-duration.eth')
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.expiryDate).toBeInstanceOf(Date)
+      expect(result.expiryDate!.getFullYear()).toBe(275760)
+      expect(Number.isNaN(result.expiryDate?.getTime())).toBe(false)
+    }
+  })
 })

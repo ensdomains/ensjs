@@ -4,6 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import { MAX_DATE_INT } from '../src/utils/consts'
 import { encodeFuses } from '../src/utils/fuses'
 import { namehash } from '../src/utils/normalise'
 
@@ -19,7 +20,7 @@ export const names: {
     fuses?: number
     expiry?: number
   }[]
-  duration?: number
+  duration?: number | BigNumber
 }[] = [
   {
     label: 'wrapped',
@@ -41,6 +42,16 @@ export const names: {
     namedOwner: 'owner',
     subnames: [{ label: 'test', namedOwner: 'owner2' }],
     duration: 2419200,
+  },
+  {
+    label: 'wrapped-big-duration',
+    namedOwner: 'owner3',
+    duration: Math.floor((MAX_DATE_INT - Date.now()) / 1000),
+  },
+  {
+    label: 'wrapped-max-duration',
+    namedOwner: 'owner3',
+    duration: BigNumber.from('18446744073709'),
   },
   {
     label: 'wrapped-with-expiring-subnames',
