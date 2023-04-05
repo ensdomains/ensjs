@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { ENSArgs } from '../index'
+import { MAX_DATE_INT } from '../utils/consts'
 import { decodeFuses } from '../utils/fuses'
 import { namehash } from '../utils/normalise'
 
@@ -22,7 +23,7 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
     const fuseObj = decodeFuses(fuses)
 
     const expiryDate =
-      expiry.gt(0) && expiry.lt(BigNumber.from(2).pow(32))
+      expiry.gt(0) && expiry.lte(MAX_DATE_INT)
         ? new Date(expiry.mul(1000).toNumber())
         : undefined
 
