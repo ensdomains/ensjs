@@ -22,10 +22,16 @@ const decode = async ({ contracts }: ENSArgs<'contracts'>, data: string) => {
 
     const fuseObj = decodeFuses(fuses)
 
-    const expiryDate =
-      expiry.gt(0) && expiry.lte(MAX_DATE_INT)
-        ? new Date(expiry.mul(1000).toNumber())
-        : undefined
+    let expiryDate: Date | undefined
+
+    if (expiry.gt(0)) {
+      const msBigNumber = expiry.mul(1000)
+      if (msBigNumber.gte(MAX_DATE_INT)) {
+        expiryDate = new Date(MAX_DATE_INT)
+      } else {
+        expiryDate = new Date(msBigNumber.toNumber())
+      }
+    }
 
     return {
       ...fuseObj,
