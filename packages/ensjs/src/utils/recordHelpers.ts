@@ -99,6 +99,8 @@ export function generateSingleRecordCall<T extends RecordTypes>(
         const encoded = encodeContenthash(record)
         if (encoded.error) throw new Error(encoded.error)
         _contentHash = encoded.encoded as string
+      } else {
+        _contentHash = '0x'
       }
       return resolver.interface.encodeFunctionData('setContenthash', [
         namehash,
@@ -150,7 +152,7 @@ export const generateRecordCallArray = (
     )
   }
 
-  if (records.contentHash) {
+  if (typeof records.contentHash === 'string') {
     const data = generateSingleRecordCall(
       namehash,
       resolver,
