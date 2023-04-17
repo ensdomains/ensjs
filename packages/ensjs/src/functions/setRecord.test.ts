@@ -1,3 +1,4 @@
+import { formatsByName } from '@ensdomains/address-encoder'
 import { decodeFirst } from 'cbor'
 import { BigNumber } from 'ethers'
 import { arrayify, toUtf8String } from 'ethers/lib/utils'
@@ -145,6 +146,22 @@ describe('setRecord', () => {
     // record as hex
     expect(resultEmptyAddr).toBe('0x')
   })
+
+  Object.keys(formatsByName).forEach((coinName) => {
+    it(`should allow an empty address record for ${coinName}`, async () => {
+      const tx = await ensInstance.setRecord('test123.eth', {
+        type: 'addr',
+        record: {
+          key: coinName,
+          value: '',
+        },
+        addressOrIndex: 1,
+      })
+      expect(tx).toBeTruthy()
+      await tx.wait()
+    })
+  })
+
   it('should allow a contenthash record set', async () => {
     const tx = await ensInstance.setRecord('test123.eth', {
       type: 'contentHash',

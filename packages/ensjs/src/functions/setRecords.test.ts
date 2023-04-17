@@ -97,4 +97,120 @@ describe('setRecords', () => {
     expect(contentType.toNumber()).toBe(1)
     expect(toUtf8String(resultABI)).toBe(JSON.stringify(dummyABI))
   })
+
+  describe('record types', () => {
+    it('should be able to set and delete a cointype for a wrapped name', async () => {
+      const tx = await ensInstance.setRecords('wrapped.eth', {
+        records: {
+          coinTypes: [
+            {
+              key: 'ETH',
+              value: '0x42D63ae25990889E35F215bC95884039Ba354115',
+            },
+          ],
+        },
+        addressOrIndex: 1,
+      })
+      expect(tx).toBeTruthy()
+      await tx.wait()
+
+      const universalResolver =
+        await ensInstance.contracts!.getUniversalResolver()!
+      const publicResolver = await ensInstance.contracts!.getPublicResolver()!
+
+      const encodedAddr = await universalResolver['resolve(bytes,bytes)'](
+        hexEncodeName('wrapped.eth'),
+        publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
+          namehash('wrapped.eth'),
+          '60',
+        ]),
+      )
+      const [resultAddr] = publicResolver.interface.decodeFunctionResult(
+        'addr(bytes32,uint256)',
+        encodedAddr[0],
+      )
+      expect(resultAddr).toBe(
+        '0x42D63ae25990889E35F215bC95884039Ba354115'.toLowerCase(),
+      )
+
+      const tx2 = await ensInstance.setRecords('wrapped.eth', {
+        records: {
+          coinTypes: [
+            {
+              key: 'ETH',
+              value: '',
+            },
+          ],
+        },
+        addressOrIndex: 1,
+      })
+      expect(tx2).toBeTruthy()
+      await tx2.wait()
+
+      const encodedAddr2 = await universalResolver['resolve(bytes,bytes)'](
+        hexEncodeName('wrapped.eth'),
+        publicResolver.interface.encodeFunctionData('addr(bytes32,uint256)', [
+          namehash('wrapped.eth'),
+          '60',
+        ]),
+      )
+      const [resultAddr2] = publicResolver.interface.decodeFunctionResult(
+        'addr(bytes32,uint256)',
+        encodedAddr2[0],
+      )
+      expect(resultAddr2).toBe(
+        '0x0000000000000000000000000000000000000000'.toLowerCase(),
+      )
+    })
+
+    it('should be able to set and delete a contenthash for a wrapped name', async () => {
+      const tx = await ensInstance.setRecords('wrapped.eth', {
+        records: {
+          contentHash: 'ipfs://QmRAQB6YaCyidP37UdDnjFY5vQuiBrcqdyoW1CuDgwxkD4',
+        },
+        addressOrIndex: 1,
+      })
+      expect(tx).toBeTruthy()
+      await tx.wait()
+
+      const universalResolver =
+        await ensInstance.contracts!.getUniversalResolver()!
+      const publicResolver = await ensInstance.contracts!.getPublicResolver()!
+
+      const encodedData = await universalResolver['resolve(bytes,bytes)'](
+        hexEncodeName('wrapped.eth'),
+        publicResolver.interface.encodeFunctionData('contenthash', [
+          namehash('wrapped.eth'),
+        ]),
+      )
+      const [resultData] = publicResolver.interface.decodeFunctionResult(
+        'contenthash',
+        encodedData[0],
+      )
+      expect(resultData).toBe(
+        '0xe3010170122029f2d17be6139079dc48696d1f582a8530eb9805b561eda517e22a892c7e3f1f'.toLowerCase(),
+      )
+
+      const tx2 = await ensInstance.setRecords('wrapped.eth', {
+        records: {
+          contentHash: '',
+        },
+        addressOrIndex: 1,
+      })
+      expect(tx2).toBeTruthy()
+      await tx2.wait()
+
+      const encodedAddr2 = await universalResolver['resolve(bytes,bytes)'](
+        hexEncodeName('wrapped.eth'),
+        publicResolver.interface.encodeFunctionData('contenthash', [
+          namehash('wrapped.eth'),
+        ]),
+      )
+      const [resultAddr2] = publicResolver.interface.decodeFunctionResult(
+        'contenthash',
+        encodedAddr2[0],
+      )
+      expect(resultAddr2).toBe('0x'.toLowerCase())
+    })
+  })
 })
