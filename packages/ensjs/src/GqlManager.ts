@@ -68,7 +68,13 @@ export const responseMiddleware =
           return
         }
 
-        const hashedName = namehash(responseItem.name)
+        let hashedName = '[Invalid ENS Name]'
+        try {
+          hashedName = namehash(responseItem.name)
+        } catch (e) {
+          this.update({ ...responseItem, name: hashedName, invalidName: true })
+          return
+        }
         if (responseItem.id !== hashedName) {
           this.update({ ...responseItem, name: hashedName, invalidName: true })
         }
