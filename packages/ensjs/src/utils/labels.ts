@@ -1,14 +1,11 @@
-import { keccak256 as solidityKeccak256 } from '@ethersproject/solidity'
+import { Hex, labelhash } from 'viem'
 import { truncateFormat } from './format'
 
 const hasLocalStorage = typeof localStorage !== 'undefined'
 
-export const labelhash = (input: string) =>
-  solidityKeccak256(['string'], [input])
-
 export const keccakFromString = (input: string) => labelhash(input)
 
-export function decodeLabelhash(hash: string) {
+export function decodeLabelhash(hash: string): Hex {
   if (!(hash.startsWith('[') && hash.endsWith(']'))) {
     throw Error(
       'Expected encoded labelhash to start and end with square brackets',

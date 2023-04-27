@@ -1,5 +1,43 @@
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { PublicResolver__factory } from '../generated/factories/PublicResolver__factory'
+export const singleAddrSnippet = [
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+    ],
+    name: 'addr',
+    outputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
 
-export default (provider: JsonRpcProvider, address: string) =>
-  PublicResolver__factory.connect(address, provider)
+export const multiAddrSnippet = [
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'coinType',
+        type: 'uint256',
+      },
+    ],
+    name: 'addr',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const

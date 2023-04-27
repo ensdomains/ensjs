@@ -81,12 +81,14 @@
     "@ensdomains/address-encoder": "^0.2.18",
     "@ensdomains/content-hash": "^2.5.7",
     "@ensdomains/dnssecoraclejs": "^0.2.8",
+    "abitype": "^0.8.0",
     "cbor": "^8.1.0",
     "dns-packet": "^5.3.1",
     "graphql": "^16.3.0",
     "graphql-request": "5.1.0",
     "pako": "^2.1.0",
-    "traverse": "^0.6.6"
+    "traverse": "^0.6.6",
+    "viem": "^0.3.11"
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
@@ -134,7 +136,7 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typechain": "^8.1.0",
-    "typescript": "^4.7.4",
+    "typescript": "^5.0.4",
     "wait-on": "^6.0.1"
   },
   "peerDependencies": {

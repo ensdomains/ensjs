@@ -18,9 +18,7 @@ import {
   Token,
   ValidToken,
 } from '@adraffy/ens-normalize'
-import { concat, hexlify } from '@ethersproject/bytes'
-import { keccak256 } from '@ethersproject/keccak256'
-import { toUtf8Bytes } from '@ethersproject/strings'
+import { bytesToHex, concat, hexToBytes, keccak256, stringToBytes } from 'viem'
 import { decodeLabelhash, isEncodedLabelhash } from './labels'
 
 const zeros = new Uint8Array(32)
@@ -28,28 +26,24 @@ zeros.fill(0)
 
 export const normalise = (name: string) => (name ? ens_normalize(name) : name)
 
-export const namehash = (name: string): string => {
-  let result: string | Uint8Array = zeros
+export function namehash(name: string) {
+  let result = new Uint8Array(32).fill(0)
+  if (!name) return bytesToHex(result)
 
-  if (name) {
-    const labels = name.split('.')
-
-    for (let i = labels.length - 1; i >= 0; i -= 1) {
-      let labelSha: string
-      if (isEncodedLabelhash(labels[i])) {
-        labelSha = decodeLabelhash(labels[i])
-      } else {
-        const normalised = normalise(labels[i])
-        labelSha = keccak256(toUtf8Bytes(normalised))
-      }
-
-      result = keccak256(concat([result, labelSha]))
+  const labels = name.split('.')
+  // Iterate in reverse order building up hash
+  for (let i = labels.length - 1; i >= 0; i -= 1) {
+    let labelSha: Uint8Array
+    if (isEncodedLabelhash(labels[i])) {
+      labelSha = hexToBytes(decodeLabelhash(labels[i]))
+    } else {
+      const normalised = normalise(labels[i])
+      labelSha = keccak256(stringToBytes(normalised), 'bytes')
     }
-  } else {
-    result = hexlify(zeros)
+    result = keccak256(concat([result, labelSha]), 'bytes')
   }
 
-  return result as string
+  return bytesToHex(result)
 }
 
 export const beautify = ens_beautify

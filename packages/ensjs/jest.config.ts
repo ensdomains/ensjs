@@ -6,7 +6,7 @@ const config = {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  transformIgnorePatterns: []
+  transformIgnorePatterns: [],
 }
 
 export default config

@@ -1,149 +1,141 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  arrayify,
-  BytesLike,
-  hexConcat,
-  hexDataSlice,
-} from '@ethersproject/bytes'
-import type { BaseProvider, TransactionRequest } from '@ethersproject/providers'
-import { toUtf8String } from '@ethersproject/strings'
-import type { Transaction } from '@ethersproject/transactions'
+  Hex,
+  PublicClient,
+  concat,
+  encodeAbiParameters,
+  hexToString,
+  slice,
+} from 'viem'
+import { TransactionRequest } from '../types'
 
-function bytesPad(value: Uint8Array): Uint8Array {
-  if (value.length % 32 === 0) {
-    return value
-  }
-
-  const result = new Uint8Array(Math.ceil(value.length / 32) * 32)
-  result.set(value)
-  return result
-}
-
-function numPad(value: number): Uint8Array {
-  const result = arrayify(value)
-  if (result.length > 32) {
-    throw new Error('internal; should not happen')
-  }
-
-  const padded = new Uint8Array(32)
-  padded.set(result, 32 - result.length)
-  return padded
-}
-
-// ABI Encodes a series of (bytes, bytes, ...)
-function encodeBytes(datas: Array<BytesLike>) {
-  const result: Array<Uint8Array> = []
-
-  let byteCount = 0
-
-  // Add place-holders for pointers as we add items
-  for (let i = 0; i < datas.length; i += 1) {
-    result.push(new Uint8Array(0))
-    byteCount += 32
-  }
-
-  for (let i = 0; i < datas.length; i += 1) {
-    const data = arrayify(datas[i])
-
-    // Update the bytes offset
-    result[i] = numPad(byteCount)
-
-    // The length and padded value of data
-    result.push(numPad(data.length))
-    result.push(bytesPad(data))
-    byteCount += 32 + Math.ceil(data.length / 32) * 32
-  }
-
-  return hexConcat(result)
-}
-
-function _parseBytes(result: string, start: number): null | string {
+function _parseBytes(result: Hex, start: number): null | Hex {
   if (result === '0x') {
     return null
   }
 
-  const offset = BigNumber.from(
-    hexDataSlice(result, start, start + 32),
-  ).toNumber()
-  const length = BigNumber.from(
-    hexDataSlice(result, offset, offset + 32),
-  ).toNumber()
+  const offset = parseInt(slice(result, start, start + 32))
+  const length = parseInt(slice(result, offset, offset + 32))
 
-  return hexDataSlice(result, offset + 32, offset + 32 + length)
+  return slice(result, offset + 32, offset + 32 + length)
 }
 
-function _parseString(result: string, start: number): null | string {
+function _parseString(result: Hex, start: number): null | string {
   try {
     const bytes = _parseBytes(result, start)
     if (bytes == null) return null
-    return toUtf8String(bytes)
+    return hexToString(bytes)
   } catch (error) {}
   return null
 }
 
+const ccipReadFetch = async (
+  tx: TransactionRequest,
+  calldata: Hex,
+  urls: string[],
+): Promise<null | Hex> => {
+  if (urls.length === 0) {
+    return null
+  }
+
+  const sender = tx.to!.toLowerCase()
+  const data = calldata.toLowerCase()
+
+  const errorMessages: Array<string> = []
+
+  for (let i = 0; i < urls.length; i += 1) {
+    const url = urls[i]
+
+    // URL expansion
+    const href = url.replace('{sender}', sender).replace('{data}', data)
+
+    // If no {data} is present, use POST; otherwise GET
+    const json: string | null =
+      url.indexOf('{data}') >= 0 ? null : JSON.stringify({ data, sender })
+
+    /* eslint-disable no-await-in-loop */
+    const result = await fetch(href, {
+      method: json === null ? 'GET' : 'POST',
+      body: json,
+    })
+    const returnedData = await result.text()
+    /* eslint-enable no-await-in-loop */
+
+    if (returnedData) return returnedData as Hex
+
+    const errorMessage = result.statusText || 'unknown error'
+
+    if (result.status >= 400 && result.status < 500) {
+      throw new Error(`response not found during CCIP fetch: ${errorMessage}`)
+    }
+
+    // 5xx indicates server issue; try the next url
+    errorMessages.push(errorMessage)
+  }
+
+  throw new Error(
+    `error encountered during CCIP fetch: ${errorMessages
+      .map((m) => JSON.stringify(m))
+      .join(', ')}`,
+  )
+}
+
 const ccipLookup = async (
-  provider: BaseProvider,
+  client: PublicClient,
   transaction: TransactionRequest,
-  result: string,
+  result: Hex,
 ) => {
   const txSender = transaction.to!
-  try {
-    const data = hexDataSlice(result, 4)
+  const data = slice(result, 4)
 
-    // Check the sender of the OffchainLookup matches the transaction
-    const sender = hexDataSlice(data, 0, 32)
-    if (!BigNumber.from(sender).eq(txSender)) {
-      throw new Error('CCIP Read sender did not match')
-    }
-
-    // Read the URLs from the response
-    const urls: Array<string> = []
-    const urlsOffset = BigNumber.from(hexDataSlice(data, 32, 64)).toNumber()
-    const urlsLength = BigNumber.from(
-      hexDataSlice(data, urlsOffset, urlsOffset + 32),
-    ).toNumber()
-    const urlsData = hexDataSlice(data, urlsOffset + 32)
-    for (let u = 0; u < urlsLength; u += 1) {
-      const url = _parseString(urlsData, u * 32)
-      if (url == null) {
-        throw new Error('CCIP Read contained corrupt URL string')
-      }
-      urls.push(url)
-    }
-
-    // Get the CCIP calldata to forward
-    const calldata = _parseBytes(data, 64)
-
-    // Get the callbackSelector (bytes4)
-    if (!BigNumber.from(hexDataSlice(data, 100, 128)).isZero()) {
-      throw new Error('CCIP Read callback selected included junk')
-    }
-    const callbackSelector = hexDataSlice(data, 96, 100)
-
-    // Get the extra data to send back to the contract as context
-    const extraData = _parseBytes(data, 128)
-
-    const ccipResult = await provider.ccipReadFetch(
-      <Transaction>transaction,
-      calldata!,
-      urls,
-    )
-    if (ccipResult == null) {
-      throw new Error('CCIP Read disabled or provided no URLs')
-    }
-
-    const tx = {
-      to: txSender,
-      data: hexConcat([
-        callbackSelector,
-        encodeBytes([ccipResult, extraData!]),
-      ]),
-    }
-
-    return await provider._call(tx, 'latest', 1)
-  } catch (error) {
-    console.error(error)
+  // Check the sender of the OffchainLookup matches the transaction
+  const sender = slice(data, 0, 32)
+  if (!BigNumber.from(sender).eq(txSender)) {
+    throw new Error('CCIP Read sender did not match')
   }
+
+  // Read the URLs from the response
+  const urls: Array<string> = []
+  const urlsOffset = parseInt(slice(data, 32, 64), 16)
+  const urlsLength = parseInt(slice(data, urlsOffset, urlsOffset + 32))
+  const urlsData = slice(data, urlsOffset + 32)
+  for (let u = 0; u < urlsLength; u += 1) {
+    const url = _parseString(urlsData, u * 32)
+    if (url == null) {
+      throw new Error('CCIP Read contained corrupt URL string')
+    }
+    urls.push(url)
+  }
+
+  // Get the CCIP calldata to forward
+  const calldata = _parseBytes(data, 64) as Hex
+
+  // Get the callbackSelector (bytes4)
+  if (BigInt(slice(data, 100, 128)) !== 0n) {
+    throw new Error('CCIP Read callback selected included junk')
+  }
+  const callbackSelector = slice(data, 96, 100)
+
+  // Get the extra data to send back to the contract as context
+  const extraData = _parseBytes(data, 128)
+
+  const ccipResult = await ccipReadFetch(transaction, calldata!, urls)
+  if (ccipResult == null) {
+    throw new Error('CCIP Read disabled or provided no URLs')
+  }
+
+  const tx = {
+    to: txSender,
+    data: concat([
+      callbackSelector,
+      encodeAbiParameters(
+        [{ type: 'bytes' }, { type: 'bytes' }],
+        [ccipResult, extraData!],
+      ),
+    ]),
+  }
+
+  return client.call(tx).then((d) => d.data)
 }
 
 export default ccipLookup
