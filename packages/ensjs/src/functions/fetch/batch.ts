@@ -6,40 +6,43 @@ import {
 } from '../../types'
 import {
   BatchFunctionResult,
-  RawFunction,
+  GeneratedFunction,
   generateFunction,
 } from '../../utils/generateFunction'
 import multicallWrapper from './multicallWrapper'
 
-const encode = async <TFunction extends RawFunction>(
+const encode = async (
   client: ClientWithEns,
-  ...items: BatchFunctionResult<TFunction>[]
+  ...items: BatchFunctionResult[]
 ) => {
   const rawDataArr: TransactionRequest[] = await Promise.all(
     items.map(({ args, encode: encodeRef }, i: number) => {
       if (!encodeRef) {
         throw new Error(`Function ${i} is not batchable`)
       }
-      return encodeRef(...args)
+      return encodeRef(client, ...args)
     }),
   )
   const response = await multicallWrapper.encode(client, rawDataArr)
   return { ...response, passthrough: rawDataArr }
 }
 
-const decode = async <I extends BatchFunctionResult<RawFunction>[]>(
+type ExtractResult<TFunction extends BatchFunctionResult> = TFunction extends {
+  decode: (...args: any[]) => Promise<infer U>
+}
+  ? U
+  : never
+
+type BatchReturnType<TFunctions extends BatchFunctionResult[]> = {
+  [TFunctionName in keyof TFunctions]: ExtractResult<TFunctions[TFunctionName]>
+}
+
+const decode = async <I extends BatchFunctionResult[]>(
   client: ClientWithEns,
   data: Hex,
   passthrough: TransactionRequestWithPassthrough[],
   ...items: I
-): Promise<
-  | {
-      [N in keyof I]: I[N] extends BatchFunctionResult<infer U>
-        ? Awaited<ReturnType<U['decode']>>
-        : never
-    }
-  | undefined
-> => {
+): Promise<BatchReturnType<I> | undefined> => {
   const response = await multicallWrapper.decode(client, data, passthrough)
   if (!response) return
 
@@ -55,9 +58,23 @@ const decode = async <I extends BatchFunctionResult<RawFunction>[]>(
       }
       return items[i].decode(client, ret.returnData, ...items[i].args)
     }),
-  )
+  ) as Promise<BatchReturnType<I>>
 }
 
-const batch = generateFunction({ encode, decode })
+type EncoderFunction = typeof encode
+type DecoderFunction = typeof decode
+
+interface GeneratedBatchFunction
+  extends GeneratedFunction<EncoderFunction, DecoderFunction> {
+  <I extends BatchFunctionResult[]>(client: ClientWithEns, ...args: I): Promise<
+    BatchReturnType<I> | undefined
+  >
+}
+
+const batch = generateFunction<
+  EncoderFunction,
+  DecoderFunction,
+  GeneratedBatchFunction
+>({ encode, decode })
 
 export default batch

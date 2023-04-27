@@ -10,7 +10,18 @@ import { reverseSnippet } from '../../contracts/universalResolver'
 import { generateFunction } from '../../utils/generateFunction'
 import { packetToBytes } from '../../utils/hexEncodedName'
 
-const encode = async (client: ClientWithEns, address: string) => {
+type GetNameArgs = {
+  address: Address
+}
+
+type GetNameResult = {
+  name: string
+  match: boolean
+  reverseResolverAddress: Address
+  resolverAddress: Address
+}
+
+const encode = async (client: ClientWithEns, { address }: GetNameArgs) => {
   const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
   return {
     to: client.chain.contracts!.ensUniversalResolver!.address,
@@ -22,12 +33,17 @@ const encode = async (client: ClientWithEns, address: string) => {
   }
 }
 
-const decode = async (client: ClientWithEns, data: Hex, address: Address) => {
+const decode = async (
+  client: ClientWithEns,
+  data: Hex,
+  { address }: GetNameArgs,
+): Promise<GetNameResult | null> => {
   const result = decodeFunctionResult({
     abi: reverseSnippet,
     functionName: 'reverse',
     data,
   })
+  if (!result[0]) return null
   return {
     name: result[0],
     match: result[1].toLowerCase() === address.toLowerCase(),

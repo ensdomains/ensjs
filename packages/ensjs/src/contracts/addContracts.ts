@@ -1,6 +1,5 @@
 import type { Chain, PublicClient, Transport } from 'viem'
 import type { ChainContract } from 'viem/src/types/chain'
-import { Prettify } from '../types'
 
 const supportedChains = ['homestead', 'goerli']
 
@@ -53,21 +52,19 @@ const addresses = {
   },
 } as const
 
-export type ChainWithEns<TChain extends Chain = Chain> = Prettify<
-  TChain & {
-    contracts: {
-      ensjs: {
-        baseRegistrarImplementation: ChainContract
-        dnsRegistrar: ChainContract
-        ethRegistrarController: ChainContract
-        nameWrapper: ChainContract
-        publicResolver: ChainContract
-        reverseRegistrar: ChainContract
-        bulkRenewal: ChainContract
-      }
+export type ChainWithEns<TChain extends Chain = Chain> = TChain & {
+  contracts: {
+    ensjs: {
+      baseRegistrarImplementation: ChainContract
+      dnsRegistrar: ChainContract
+      ethRegistrarController: ChainContract
+      nameWrapper: ChainContract
+      publicResolver: ChainContract
+      reverseRegistrar: ChainContract
+      bulkRenewal: ChainContract
     }
   }
->
+}
 
 export type ClientWithEns<
   TTransport extends Transport = Transport,

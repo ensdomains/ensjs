@@ -1,58 +1,57 @@
 import { ClientWithEns } from '../contracts/addContracts'
 import { TransactionRequestWithPassthrough } from '../types'
 
-type EncoderFunction = (
+export type EncoderFunction = (
   ...args: any[]
 ) => Promise<TransactionRequestWithPassthrough>
-type DecoderFunction = (...args: any[]) => Promise<any>
+export type DecoderFunction = (...args: any[]) => Promise<any>
 
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never
 
-export type RawFunction = {
-  encode: EncoderFunction
-  decode: DecoderFunction
+export type CoderObject<
+  TEncoderFn extends EncoderFunction = EncoderFunction,
+  TDecoderFn extends DecoderFunction = DecoderFunction,
+> = {
+  encode: TEncoderFn
+  decode: TDecoderFn
 }
 
-export type BatchFunctionResult<TFunction extends RawFunction> = {
-  args: Parameters<TFunction['encode']>
-  encode: TFunction['encode']
-  decode: TFunction['decode']
-}
+export type BatchFunctionResult<
+  TEncoderFn extends EncoderFunction = EncoderFunction,
+  TDecoderFn extends DecoderFunction = DecoderFunction,
+> = {
+  args: Parameters<OmitFirstArg<TEncoderFn>>
+} & CoderObject<TEncoderFn, TDecoderFn>
 
-type BatchFunction<TFunction extends RawFunction> = (
-  ...args: Parameters<TFunction['encode']>
-) => BatchFunctionResult<TFunction>
+export type ExtractResult<TFunction extends Function> = TFunction extends (
+  ...args: any[]
+) => Promise<infer U>
+  ? U
+  : never
 
-export interface GeneratedBatchFunction<TFunction extends RawFunction>
-  extends Function,
-    RawFunction {
-  <I extends BatchFunctionResult<RawFunction>[]>(
+export interface GeneratedFunction<
+  TEncoderFn extends EncoderFunction,
+  TDecoderFn extends DecoderFunction,
+> extends Function,
+    CoderObject<TEncoderFn, TDecoderFn> {
+  (
     client: ClientWithEns,
-    ...args: I
-  ): Promise<
-    | {
-        [N in keyof I]: I[N] extends BatchFunctionResult<infer U>
-          ? Awaited<ReturnType<U['decode']>>
-          : never
-      }
-    | undefined
-  >
-  batch: BatchFunction<TFunction>
+    ...args: Parameters<OmitFirstArg<TEncoderFn>>
+  ): Promise<ExtractResult<TDecoderFn> | null>
+  batch: (
+    ...args: Parameters<OmitFirstArg<TEncoderFn>>
+  ) => BatchFunctionResult<TEncoderFn, TDecoderFn>
 }
-
-export type FunctionSubtype =
-  | 'raw'
-  | 'decode'
-  | 'combine'
-  | 'batch'
-  | 'write'
-  | 'populateTransaction'
 
 export const generateFunction = <
   TEncoderFn extends EncoderFunction,
   TDecoderFn extends DecoderFunction,
+  TFunction extends GeneratedFunction<
+    TEncoderFn,
+    TDecoderFn
+  > = GeneratedFunction<TEncoderFn, TDecoderFn>,
 >({
   encode,
   decode,
@@ -60,17 +59,14 @@ export const generateFunction = <
   encode: TEncoderFn
   decode: TDecoderFn
 }) => {
-  const single = async function (
-    client: ClientWithEns,
-    ...args: Parameters<OmitFirstArg<TEncoderFn>>
-  ): Promise<ReturnType<TDecoderFn> | null> {
+  const single = async function (client, ...args) {
     const { passthrough, ...encodedData } = await encode(client, ...args)
     const { data: result } = await client.call(encodedData)
     if (!result) return null
     if (passthrough) return decode(client, result, passthrough, ...args)
     return decode(client, result, ...args)
-  }
-  single.batch = (...args: Parameters<OmitFirstArg<TEncoderFn>>) => ({
+  } as TFunction
+  single.batch = (...args) => ({
     args,
     encode,
     decode,

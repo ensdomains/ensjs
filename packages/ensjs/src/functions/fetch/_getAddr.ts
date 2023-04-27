@@ -10,17 +10,27 @@ import {
 import { TransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
 
+type InternalGetAddrArgs = {
+  name: string
+  coin?: string | number
+  bypassFormat?: boolean
+}
+
+type InternalGetAddrResult = {
+  id: number
+  name: string
+  addr: string
+}
+
 const encode = async (
   client: ClientWithEns,
-  name: string,
-  coinType?: string | number,
-  bypassFormat?: boolean,
+  { name, coin, bypassFormat }: InternalGetAddrArgs,
 ): Promise<TransactionRequest> => {
-  if (!coinType) {
-    coinType = 60
+  if (!coin) {
+    coin = 60
   }
 
-  if (coinType === 60 || coinType === '60') {
+  if (coin === 60 || coin === '60') {
     return {
       to: '0x0000000000000000000000000000000000000000',
       data: encodeFunctionData({
@@ -37,19 +47,17 @@ const encode = async (
       data: encodeFunctionData({
         abi: multiAddrSnippet,
         functionName: 'addr',
-        args: [namehash(name), BigInt(coinType)],
+        args: [namehash(name), BigInt(coin)],
       }),
     }
   }
   const formatter =
-    typeof coinType === 'string' && Number.isNaN(parseInt(coinType))
-      ? formatsByName[coinType]
-      : formatsByCoinType[
-          typeof coinType === 'number' ? coinType : parseInt(coinType)
-        ]
+    typeof coin === 'string' && Number.isNaN(parseInt(coin))
+      ? formatsByName[coin]
+      : formatsByCoinType[typeof coin === 'number' ? coin : parseInt(coin)]
 
   if (!formatter) {
-    throw new Error(`No formatter found for coin: ${coinType}`)
+    throw new Error(`No formatter found for coin: ${coin}`)
   }
 
   return {
@@ -65,25 +73,20 @@ const encode = async (
 const decode = async (
   client: ClientWithEns,
   data: Hex,
-  _name: string,
-  coinType?: string | number,
-) => {
-  let returnCoinType = true
-  if (!coinType) {
-    coinType = 60
-    returnCoinType = false
+  { coin }: InternalGetAddrArgs,
+): Promise<InternalGetAddrResult | null> => {
+  if (!coin) {
+    coin = 60
   }
 
   const formatter =
-    typeof coinType === 'string' && Number.isNaN(parseInt(coinType))
-      ? formatsByName[coinType]
-      : formatsByCoinType[
-          typeof coinType === 'number' ? coinType : parseInt(coinType)
-        ]
+    typeof coin === 'string' && Number.isNaN(parseInt(coin))
+      ? formatsByName[coin]
+      : formatsByCoinType[typeof coin === 'number' ? coin : parseInt(coin)]
 
   let response: Hex
 
-  if (coinType === 60 || coinType === '60') {
+  if (coin === 60 || coin === '60') {
     response = decodeFunctionResult({
       abi: singleAddrSnippet,
       functionName: 'addr',
@@ -109,11 +112,7 @@ const decode = async (
     return null
   }
 
-  if (!returnCoinType) {
-    return decodedAddr
-  }
-
-  return { coin: formatter.name, addr: decodedAddr }
+  return { id: formatter.coinType, name: formatter.name, addr: decodedAddr }
 }
 
 const _getAddr = generateFunction({ encode, decode })

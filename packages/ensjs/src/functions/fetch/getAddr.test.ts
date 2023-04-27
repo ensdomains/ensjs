@@ -17,8 +17,9 @@ const publicClient = createPublicClient({
 const main = async () => {
   const result = await batch(
     publicClient,
-    getName.batch('0x8e8Db5CcEF88cca9d624701Db544989C996E3216'),
-    getAddr.batch('taytems.eth'),
+    getName.batch({ address: '0x8e8Db5CcEF88cca9d624701Db544989C996E3216' }),
+    getAddr.batch({ name: 'taytems.eth' }),
+    getAddr.batch({ name: 'taytems.eth', coin: '60' }),
   )
   console.log(result)
 }

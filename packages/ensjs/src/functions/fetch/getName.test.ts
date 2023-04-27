@@ -13,10 +13,9 @@ const publicClient = createPublicClient({
 })
 
 const main = async () => {
-  const result = await getName(
-    publicClient,
-    '0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
-  )
+  const result = await getName(publicClient, {
+    address: '0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
+  })
   console.log(result)
 }
 
