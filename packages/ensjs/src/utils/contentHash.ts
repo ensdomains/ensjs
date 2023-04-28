@@ -1,10 +1,20 @@
 import contentHash from '@ensdomains/content-hash'
 import { isHexString } from '@ethersproject/bytes'
+import { Hex } from 'viem'
+
+export type ProtocolType =
+  | 'ipfs'
+  | 'ipns'
+  | 'bzz'
+  | 'onion'
+  | 'onion3'
+  | 'sia'
+  | 'ar'
+  | null
 
 export type DecodedContentHash = {
-  protocolType?: any
-  decoded?: any
-  error?: any
+  protocolType: ProtocolType
+  decoded: string
 }
 
 const supportedCodecs = [
@@ -25,45 +35,31 @@ function matchProtocol(text: string) {
   )
 }
 
-export function decodeContenthash(encoded: any) {
-  let decoded
-  let protocolType
-  let error
+export function decodeContenthash(encoded: Hex): DecodedContentHash | null {
   if (!encoded || encoded === '0x') {
-    return {}
+    return null
   }
-  if (encoded.error) {
-    return { protocolType: null, decoded: encoded.error }
+  let decoded = contentHash.decode(encoded)
+  let protocolType: ProtocolType = null
+  const codec = contentHash.getCodec(encoded)
+  if (codec === 'ipfs-ns') {
+    protocolType = 'ipfs'
+  } else if (codec === 'ipns-ns') {
+    protocolType = 'ipns'
+  } else if (codec === 'swarm-ns') {
+    protocolType = 'bzz'
+  } else if (codec === 'onion') {
+    protocolType = 'onion'
+  } else if (codec === 'onion3') {
+    protocolType = 'onion3'
+  } else if (codec === 'skynet-ns') {
+    protocolType = 'sia'
+  } else if (codec === 'arweave-ns') {
+    protocolType = 'ar'
+  } else {
+    decoded = encoded
   }
-  if (encoded === false) {
-    return { protocolType: null, decoded: 'invalid value' }
-  }
-  if (encoded) {
-    try {
-      decoded = contentHash.decode(encoded)
-      const codec = contentHash.getCodec(encoded)
-      if (codec === 'ipfs-ns') {
-        protocolType = 'ipfs'
-      } else if (codec === 'ipns-ns') {
-        protocolType = 'ipns'
-      } else if (codec === 'swarm-ns') {
-        protocolType = 'bzz'
-      } else if (codec === 'onion') {
-        protocolType = 'onion'
-      } else if (codec === 'onion3') {
-        protocolType = 'onion3'
-      } else if (codec === 'skynet-ns') {
-        protocolType = 'sia'
-      } else if (codec === 'arweave-ns') {
-        protocolType = 'ar'
-      } else {
-        decoded = encoded
-      }
-    } catch (e: any) {
-      error = e.message
-    }
-  }
-  return { protocolType, decoded, error }
+  return { protocolType, decoded }
 }
 
 export function validateContent(encoded: any) {

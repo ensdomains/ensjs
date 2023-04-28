@@ -7,47 +7,47 @@ import {
 } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { resolveSnippet } from '../../contracts/universalResolver'
+import { findResolverSnippet } from '../../contracts/universalResolver'
 import { SimpleTransactionRequest } from '../../types'
+import { EMPTY_ADDRESS } from '../../utils/consts'
 import { generateFunction } from '../../utils/generateFunction'
 import { packetToBytes } from '../../utils/hexEncodedName'
 
-export type UniversalWrapperParameters = {
+export type GetResolverParameters = {
   name: string
-  data: Hex
 }
 
-export type UniversalWrapperReturnType = {
-  data: Hex
-  resolver: Address
-}
+export type GetResolverReturnType = Address | null
 
 const encode = (
   client: ClientWithEns,
-  { name, data }: UniversalWrapperParameters,
+  { name }: GetResolverParameters,
 ): SimpleTransactionRequest => {
   return {
     to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
     data: encodeFunctionData({
-      abi: resolveSnippet,
-      functionName: 'resolve',
-      args: [toHex(packetToBytes(name)), data],
+      abi: findResolverSnippet,
+      functionName: 'findResolver',
+      args: [toHex(packetToBytes(name))],
     }),
   }
 }
 
 const decode = async (
-  _client: ClientWithEns,
+  client: ClientWithEns,
   data: Hex,
-): Promise<UniversalWrapperReturnType> => {
-  const result = decodeFunctionResult({
-    abi: resolveSnippet,
-    functionName: 'resolve',
+): Promise<GetResolverReturnType> => {
+  const response = decodeFunctionResult({
+    abi: findResolverSnippet,
+    functionName: 'findResolver',
     data,
   })
-  return { data: result[0], resolver: result[1] }
+
+  if (response[0] === EMPTY_ADDRESS) return null
+
+  return response[0]
 }
 
-const universalWrapper = generateFunction({ encode, decode })
+const getResolver = generateFunction({ encode, decode })
 
-export default universalWrapper
+export default getResolver

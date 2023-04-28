@@ -3,7 +3,7 @@ import { TransactionRequestWithPassthrough } from '../types'
 
 export type EncoderFunction = (
   ...args: any[]
-) => Promise<TransactionRequestWithPassthrough>
+) => TransactionRequestWithPassthrough
 export type DecoderFunction = (...args: any[]) => Promise<any>
 
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
@@ -60,7 +60,7 @@ export const generateFunction = <
   decode: TDecoderFn
 }) => {
   const single = async function (client, ...args) {
-    const { passthrough, ...encodedData } = await encode(client, ...args)
+    const { passthrough, ...encodedData } = encode(client, ...args)
     const { data: result } = await client.call(encodedData)
     if (!result) return null
     if (passthrough) return decode(client, result, passthrough, ...args)

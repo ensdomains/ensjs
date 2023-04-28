@@ -6,7 +6,7 @@ import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import pako from 'pako'
-import { labelhash } from '../src/utils/labels'
+import { labelhash } from 'viem'
 import { namehash } from '../src/utils/normalise'
 
 const dummyABI = [

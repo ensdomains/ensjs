@@ -2,34 +2,33 @@ import { Hex } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { Prettify, SimpleTransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
-import _getAddr, {
-  InternalGetAddrParameters,
-  InternalGetAddrReturnType,
-} from './_getAddr'
+import _getText, {
+  InternalGetTextParameters,
+  InternalGetTextReturnType,
+} from './_getText'
 import universalWrapper from './universalWrapper'
 
-export type GetAddrParameters = Prettify<InternalGetAddrParameters>
+export type GetTextParameters = Prettify<InternalGetTextParameters>
 
-export type GetAddrReturnType = Prettify<InternalGetAddrReturnType>
+export type GetTextReturnType = Prettify<InternalGetTextReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, coin }: GetAddrParameters,
+  { name, key }: GetTextParameters,
 ): SimpleTransactionRequest => {
-  const prData = _getAddr.encode(client, { name, coin })
+  const prData = _getText.encode(client, { name, key })
   return universalWrapper.encode(client, { name, data: prData.data })
 }
 
 const decode = async (
   client: ClientWithEns,
   data: Hex,
-  args: GetAddrParameters,
-): Promise<GetAddrReturnType> => {
+): Promise<GetTextReturnType> => {
   const urData = await universalWrapper.decode(client, data)
   if (!urData) return null
-  return _getAddr.decode(client, urData.data, args)
+  return _getText.decode(client, urData.data)
 }
 
-const getAddr = generateFunction({ encode, decode })
+const getText = generateFunction({ encode, decode })
 
-export default getAddr
+export default getText

@@ -1,5 +1,60 @@
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { BaseRegistrarImplementation__factory } from '../generated/factories/BaseRegistrarImplementation__factory'
+export const availableSnippet = [
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+    ],
+    name: 'available',
+    outputs: [
+      {
+        name: 'available',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
 
-export default (provider: JsonRpcProvider, address: string) =>
-  BaseRegistrarImplementation__factory.connect(address, provider)
+export const nameExpiresSnippet = [
+  {
+    constant: true,
+    inputs: [
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+    ],
+    name: 'nameExpires',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const gracePeriodSnippet = [
+  {
+    constant: true,
+    inputs: [],
+    name: 'GRACE_PERIOD',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const

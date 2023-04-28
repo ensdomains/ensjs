@@ -1,5 +1,23 @@
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { ENSRegistry__factory } from '../generated/factories/ENSRegistry__factory'
-
-export default (provider: JsonRpcProvider, address: string) =>
-  ENSRegistry__factory.connect(address, provider)
+export const ownerSnippet = [
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'node',
+        type: 'bytes32',
+      },
+    ],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const

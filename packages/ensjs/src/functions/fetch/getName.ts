@@ -6,25 +6,30 @@ import {
   toHex,
 } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { reverseSnippet } from '../../contracts/universalResolver'
+import { SimpleTransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
 import { packetToBytes } from '../../utils/hexEncodedName'
 
-type GetNameArgs = {
+export type GetNameParameters = {
   address: Address
 }
 
-type GetNameResult = {
+export type GetNameReturnType = {
   name: string
   match: boolean
   reverseResolverAddress: Address
   resolverAddress: Address
 }
 
-const encode = async (client: ClientWithEns, { address }: GetNameArgs) => {
+const encode = (
+  client: ClientWithEns,
+  { address }: GetNameParameters,
+): SimpleTransactionRequest => {
   const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
   return {
-    to: client.chain.contracts!.ensUniversalResolver!.address,
+    to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
     data: encodeFunctionData({
       abi: reverseSnippet,
       functionName: 'reverse',
@@ -36,8 +41,8 @@ const encode = async (client: ClientWithEns, { address }: GetNameArgs) => {
 const decode = async (
   client: ClientWithEns,
   data: Hex,
-  { address }: GetNameArgs,
-): Promise<GetNameResult | null> => {
+  { address }: GetNameParameters,
+): Promise<GetNameReturnType | null> => {
   const result = decodeFunctionResult({
     abi: reverseSnippet,
     functionName: 'reverse',

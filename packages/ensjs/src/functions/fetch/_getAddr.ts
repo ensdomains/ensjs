@@ -7,32 +7,29 @@ import {
   multiAddrSnippet,
   singleAddrSnippet,
 } from '../../contracts/publicResolver'
-import { TransactionRequest } from '../../types'
+import { DecodedAddr, Prettify, SimpleTransactionRequest } from '../../types'
+import { EMPTY_ADDRESS } from '../../utils/consts'
 import { generateFunction } from '../../utils/generateFunction'
 
-type InternalGetAddrArgs = {
+export type InternalGetAddrParameters = {
   name: string
   coin?: string | number
   bypassFormat?: boolean
 }
 
-type InternalGetAddrResult = {
-  id: number
-  name: string
-  addr: string
-}
+export type InternalGetAddrReturnType = Prettify<DecodedAddr | null>
 
-const encode = async (
-  client: ClientWithEns,
-  { name, coin, bypassFormat }: InternalGetAddrArgs,
-): Promise<TransactionRequest> => {
+const encode = (
+  _client: ClientWithEns,
+  { name, coin, bypassFormat }: InternalGetAddrParameters,
+): SimpleTransactionRequest => {
   if (!coin) {
     coin = 60
   }
 
   if (coin === 60 || coin === '60') {
     return {
-      to: '0x0000000000000000000000000000000000000000',
+      to: EMPTY_ADDRESS,
       data: encodeFunctionData({
         abi: singleAddrSnippet,
         functionName: 'addr',
@@ -43,7 +40,7 @@ const encode = async (
 
   if (bypassFormat) {
     return {
-      to: '0x0000000000000000000000000000000000000000',
+      to: EMPTY_ADDRESS,
       data: encodeFunctionData({
         abi: multiAddrSnippet,
         functionName: 'addr',
@@ -61,7 +58,7 @@ const encode = async (
   }
 
   return {
-    to: '0x0000000000000000000000000000000000000000',
+    to: EMPTY_ADDRESS,
     data: encodeFunctionData({
       abi: multiAddrSnippet,
       functionName: 'addr',
@@ -71,10 +68,10 @@ const encode = async (
 }
 
 const decode = async (
-  client: ClientWithEns,
+  _client: ClientWithEns,
   data: Hex,
-  { coin }: InternalGetAddrArgs,
-): Promise<InternalGetAddrResult | null> => {
+  { coin }: InternalGetAddrParameters,
+): Promise<InternalGetAddrReturnType> => {
   if (!coin) {
     coin = 60
   }

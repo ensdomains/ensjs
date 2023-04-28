@@ -1,7 +1,7 @@
 import type { Hex } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import {
-  TransactionRequest,
+  SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
 } from '../../types'
 import {
@@ -11,19 +11,21 @@ import {
 } from '../../utils/generateFunction'
 import multicallWrapper from './multicallWrapper'
 
-const encode = async (
+const encode = (
   client: ClientWithEns,
   ...items: BatchFunctionResult[]
-) => {
-  const rawDataArr: TransactionRequest[] = await Promise.all(
-    items.map(({ args, encode: encodeRef }, i: number) => {
+): TransactionRequestWithPassthrough => {
+  const rawDataArr: SimpleTransactionRequest[] = items.map(
+    ({ args, encode: encodeRef }, i: number) => {
       if (!encodeRef) {
         throw new Error(`Function ${i} is not batchable`)
       }
       return encodeRef(client, ...args)
-    }),
+    },
   )
-  const response = await multicallWrapper.encode(client, rawDataArr)
+  const response = multicallWrapper.encode(client, {
+    transactions: rawDataArr,
+  })
   return { ...response, passthrough: rawDataArr }
 }
 

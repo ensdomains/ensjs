@@ -2,34 +2,33 @@ import { Hex } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { Prettify, SimpleTransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
-import _getAddr, {
-  InternalGetAddrParameters,
-  InternalGetAddrReturnType,
-} from './_getAddr'
+import _getAbi, {
+  InternalGetAbiParameters,
+  InternalGetAbiReturnType,
+} from './_getABI'
 import universalWrapper from './universalWrapper'
 
-export type GetAddrParameters = Prettify<InternalGetAddrParameters>
+type GetAbiParameters = Prettify<InternalGetAbiParameters>
 
-export type GetAddrReturnType = Prettify<InternalGetAddrReturnType>
+type GetAbiReturnType = Prettify<InternalGetAbiReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, coin }: GetAddrParameters,
+  { name }: GetAbiParameters,
 ): SimpleTransactionRequest => {
-  const prData = _getAddr.encode(client, { name, coin })
+  const prData = _getAbi.encode(client, { name })
   return universalWrapper.encode(client, { name, data: prData.data })
 }
 
 const decode = async (
   client: ClientWithEns,
   data: Hex,
-  args: GetAddrParameters,
-): Promise<GetAddrReturnType> => {
+): Promise<GetAbiReturnType> => {
   const urData = await universalWrapper.decode(client, data)
   if (!urData) return null
-  return _getAddr.decode(client, urData.data, args)
+  return _getAbi.decode(client, urData.data)
 }
 
-const getAddr = generateFunction({ encode, decode })
+const getAbi = generateFunction({ encode, decode })
 
-export default getAddr
+export default getAbi

@@ -41,3 +41,18 @@ export const tryAggregateSnippet = [
     type: 'function',
   },
 ] as const
+
+export const getCurrentBlockTimestampSnippet = [
+  {
+    inputs: [],
+    name: 'getCurrentBlockTimestamp',
+    outputs: [
+      {
+        name: 'timestamp',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const

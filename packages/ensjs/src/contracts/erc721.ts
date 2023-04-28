@@ -1,4 +1,4 @@
-export const getDataSnippet = [
+export const ownerOfSnippet = [
   {
     inputs: [
       {
@@ -6,19 +6,11 @@ export const getDataSnippet = [
         type: 'uint256',
       },
     ],
-    name: 'getData',
+    name: 'ownerOf',
     outputs: [
       {
         name: 'owner',
         type: 'address',
-      },
-      {
-        name: 'fuses',
-        type: 'uint32',
-      },
-      {
-        name: 'expiry',
-        type: 'uint64',
       },
     ],
     stateMutability: 'view',
