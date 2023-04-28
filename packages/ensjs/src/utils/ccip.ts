@@ -58,10 +58,10 @@ const ccipReadFetch = async (
       method: json === null ? 'GET' : 'POST',
       body: json,
     })
-    const returnedData = await result.text()
+    const returnedData = (await result.json()) as { data?: Hex }
     /* eslint-enable no-await-in-loop */
 
-    if (returnedData) return returnedData as Hex
+    if (returnedData?.data) return returnedData.data
 
     const errorMessage = result.statusText || 'unknown error'
 

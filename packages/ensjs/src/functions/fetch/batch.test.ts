@@ -1,8 +1,19 @@
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addContracts } from '../../contracts/addContracts'
 import { testClient } from '../../tests/addTestContracts'
 import batch from './batch'
 import getAddr from './getAddr'
 import getName from './getName'
 import getText from './getText'
+
+const [mainnetWithEns] = addContracts([mainnet])
+const transport = http('https://web3.ens.domains/v1/mainnet')
+
+const publicClient = createPublicClient({
+  chain: mainnetWithEns,
+  transport,
+})
 
 describe('batch', () => {
   it('should batch calls together', async () => {
@@ -37,6 +48,19 @@ describe('batch', () => {
     expect(result).toMatchInlineSnapshot(`
       [
         "Hello2",
+      ]
+    `)
+  })
+  it('should batch ccip', async () => {
+    const result = await batch(
+      publicClient,
+      getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
+      getText.batch({ name: '2.offchainexample.eth', key: 'email' }),
+    )
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "nick@ens.domains",
+        "nick@ens.domains",
       ]
     `)
   })
