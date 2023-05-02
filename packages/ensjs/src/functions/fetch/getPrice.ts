@@ -10,7 +10,7 @@ import multicallWrapper from './multicallWrapper'
 
 export type GetPriceParameters = {
   nameOrNames: string | string[]
-  duration: number
+  duration: bigint | number
 }
 
 export type GetPriceReturnType = {

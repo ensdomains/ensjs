@@ -1,6 +1,16 @@
 import { config } from 'dotenv'
 import { resolve } from 'path'
-import { Address, PublicClient, createPublicClient, http } from 'viem'
+import {
+  Account,
+  Address,
+  PublicClient,
+  TestClient,
+  WalletClient,
+  createPublicClient,
+  createTestClient,
+  createWalletClient,
+  http,
+} from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 import { ContractName } from '../contracts/types'
 
@@ -54,11 +64,32 @@ export const localhost = {
 
 const transport = http('http://localhost:8545')
 
-export const testClient: PublicClient<
+export const publicClient: PublicClient<
   typeof transport,
   typeof localhost,
   true
 > = createPublicClient({
+  chain: localhost,
+  transport,
+})
+
+export const testClient: TestClient<
+  'anvil',
+  typeof transport,
+  typeof localhost,
+  true
+> = createTestClient({
+  chain: localhost,
+  transport,
+  mode: 'anvil',
+})
+
+export const walletClient: WalletClient<
+  typeof transport,
+  typeof localhost,
+  Account,
+  true
+> = createWalletClient({
   chain: localhost,
   transport,
 })

@@ -1,9 +1,9 @@
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import getExpiry from './getExpiry'
 
 describe('getExpiry', () => {
   it('should get the expiry for a .eth name with no other args', async () => {
-    const result = await getExpiry(testClient, { name: 'with-profile.eth' })
+    const result = await getExpiry(publicClient, { name: 'with-profile.eth' })
     expect(result).toBeTruthy()
     if (result) {
       const { expiry, gracePeriod, status } = result
@@ -14,7 +14,7 @@ describe('getExpiry', () => {
     }
   })
   it('should get the expiry for a wrapped name', async () => {
-    const result = await getExpiry(testClient, {
+    const result = await getExpiry(publicClient, {
       name: 'wrapped.eth',
       contract: 'nameWrapper',
     })
@@ -29,12 +29,14 @@ describe('getExpiry', () => {
     }
   })
   it('should return null for a non .eth name if not wrapped', async () => {
-    const result = await getExpiry(testClient, { name: 'sub.with-profile.eth' })
+    const result = await getExpiry(publicClient, {
+      name: 'sub.with-profile.eth',
+    })
     expect(result).toBeNull()
   })
   it('should throw an error for a non .eth name if registrar is specified', async () => {
     try {
-      await getExpiry(testClient, {
+      await getExpiry(publicClient, {
         name: 'sub.with-profile.eth',
         contract: 'registrar',
       })

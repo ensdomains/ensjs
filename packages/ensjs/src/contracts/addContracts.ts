@@ -1,4 +1,10 @@
-import type { Chain, PublicClient, Transport } from 'viem'
+import type {
+  Account,
+  Chain,
+  PublicClient,
+  Transport,
+  WalletClient,
+} from 'viem'
 import type { ChainContract } from 'viem/src/types/chain'
 
 const supportedChains = ['homestead', 'goerli']
@@ -76,6 +82,12 @@ export type ClientWithEns<
   TTransport extends Transport = Transport,
   TChain extends ChainWithEns = ChainWithEns,
 > = PublicClient<TTransport, TChain>
+
+export type WalletWithEns<
+  TTransport extends Transport = Transport,
+  TChain extends ChainWithEns = ChainWithEns,
+  TAccount extends Account | undefined = Account | undefined,
+> = WalletClient<TTransport, TChain, TAccount>
 
 export const addContracts = <TChain extends Chain = Chain>(
   chains: TChain[],

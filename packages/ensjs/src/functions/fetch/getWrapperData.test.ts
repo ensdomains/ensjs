@@ -1,15 +1,15 @@
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import getWrapperData from './getWrapperData'
 
 describe('getWrapperData', () => {
   it('should return null for an unwrapped name', async () => {
-    const result = await getWrapperData(testClient, {
+    const result = await getWrapperData(publicClient, {
       name: 'with-profile.eth',
     })
     expect(result).toBeNull()
   })
   it('should return with CAN_DO_EVERYTHING set to true for a name with no fuses burned', async () => {
-    const result = await getWrapperData(testClient, {
+    const result = await getWrapperData(publicClient, {
       name: 'test.wrapped-with-subnames.eth',
     })
     expect(result).toBeTruthy()
@@ -42,7 +42,7 @@ describe('getWrapperData', () => {
   //   }
   // })
   it('should return correct expiry', async () => {
-    const result = await getWrapperData(testClient, {
+    const result = await getWrapperData(publicClient, {
       name: 'wrapped.eth',
     })
     expect(result).toBeTruthy()
@@ -53,7 +53,7 @@ describe('getWrapperData', () => {
     }
   })
   it('should return correct expiry for large expiry', async () => {
-    const result = await getWrapperData(testClient, {
+    const result = await getWrapperData(publicClient, {
       name: 'wrapped-big-duration.eth',
     })
     expect(result).toBeTruthy()
@@ -65,7 +65,7 @@ describe('getWrapperData', () => {
     }
   })
   it('should return correct max expiry for expiry larger than maximum for date', async () => {
-    const result = await getWrapperData(testClient, {
+    const result = await getWrapperData(publicClient, {
       name: 'wrapped-max-duration.eth',
     })
     expect(result).toBeTruthy()

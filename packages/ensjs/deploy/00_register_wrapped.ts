@@ -80,6 +80,14 @@ export const names: {
           parent: { named: ['PARENT_CANNOT_CONTROL'] },
         }),
       },
+      {
+        label: 'pcc',
+        namedOwner: 'owner2',
+        expiry: MAX_DATE_INT,
+        fuses: encodeFuses({
+          parent: { named: ['PARENT_CANNOT_CONTROL'] },
+        }),
+      },
     ],
   },
 ]

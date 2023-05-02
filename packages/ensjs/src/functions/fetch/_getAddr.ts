@@ -99,7 +99,8 @@ const decode = async (
 
   if (!response) return null
 
-  if (trim(response) === '0x') {
+  const trimmed = trim(response)
+  if (trimmed === '0x' || trimmed === '0x0') {
     return null
   }
 

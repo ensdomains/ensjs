@@ -21,3 +21,22 @@ export const rentPriceSnippet = [
     type: 'function',
   },
 ] as const
+
+export const renewAllSnippet = [
+  {
+    inputs: [
+      {
+        name: 'names',
+        type: 'string[]',
+      },
+      {
+        name: 'duration',
+        type: 'uint256',
+      },
+    ],
+    name: 'renewAll',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+] as const

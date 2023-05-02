@@ -1,9 +1,9 @@
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import getRecords from './getRecords'
 
 describe('getRecords()', () => {
   it('works', async () => {
-    const result = await getRecords(testClient, {
+    const result = await getRecords(publicClient, {
       name: 'with-profile.eth',
       records: {
         texts: ['description', 'url'],

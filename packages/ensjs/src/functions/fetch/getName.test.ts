@@ -1,9 +1,9 @@
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import getName from './getName'
 
 describe('getName', () => {
   it('should get a primary name from an address', async () => {
-    const result = await getName(testClient, {
+    const result = await getName(publicClient, {
       address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
     })
     expect(result).toMatchInlineSnapshot(`

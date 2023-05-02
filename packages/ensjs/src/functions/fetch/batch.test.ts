@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { addContracts } from '../../contracts/addContracts'
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import batch from './batch'
 import getAddr from './getAddr'
 import getName from './getName'
@@ -10,7 +10,7 @@ import getText from './getText'
 const [mainnetWithEns] = addContracts([mainnet])
 const transport = http('https://web3.ens.domains/v1/mainnet')
 
-const publicClient = createPublicClient({
+const mainnetPublicClient = createPublicClient({
   chain: mainnetWithEns,
   transport,
 })
@@ -18,7 +18,7 @@ const publicClient = createPublicClient({
 describe('batch', () => {
   it('should batch calls together', async () => {
     const result = await batch(
-      testClient,
+      publicClient,
       getText.batch({ name: 'with-profile.eth', key: 'description' }),
       getAddr.batch({ name: 'with-profile.eth' }),
       getName.batch({ address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' }),
@@ -42,7 +42,7 @@ describe('batch', () => {
   })
   it('should batch a single call', async () => {
     const result = await batch(
-      testClient,
+      publicClient,
       getText.batch({ name: 'with-profile.eth', key: 'description' }),
     )
     expect(result).toMatchInlineSnapshot(`
@@ -53,7 +53,7 @@ describe('batch', () => {
   })
   it('should batch ccip', async () => {
     const result = await batch(
-      publicClient,
+      mainnetPublicClient,
       getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
       getText.batch({ name: '2.offchainexample.eth', key: 'email' }),
     )

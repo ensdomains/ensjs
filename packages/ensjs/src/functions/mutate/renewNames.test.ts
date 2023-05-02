@@ -1,0 +1,91 @@
+import { Address, Hex, labelhash } from 'viem'
+import { nameExpiresSnippet } from '../../contracts/baseRegistrar'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import {
+  publicClient,
+  testClient,
+  walletClient,
+} from '../../tests/addTestContracts'
+import getPrice from '../fetch/getPrice'
+import renewNames from './renewNames'
+
+let snapshot: Hex
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
+})
+
+beforeEach(async () => {
+  snapshot = await testClient.snapshot()
+})
+
+afterEach(async () => {
+  await testClient.revert({ id: snapshot })
+})
+
+const getExpiry = async (name: string) => {
+  return publicClient.readContract({
+    abi: nameExpiresSnippet,
+    functionName: 'nameExpires',
+    address: getChainContractAddress({
+      client: publicClient,
+      contract: 'ensBaseRegistrarImplementation',
+    }),
+    args: [BigInt(labelhash(name.split('.')[0]))],
+  })
+}
+
+it('should return a renew transaction for a single name and succeed', async () => {
+  const name = 'to-be-renewed.eth'
+  const duration = 31536000n
+
+  const oldExpiry = await getExpiry(name)
+
+  const price = await getPrice(publicClient, {
+    nameOrNames: name,
+    duration,
+  })
+  const total = price!.base + price!.premium
+
+  const tx = await renewNames(walletClient, {
+    nameOrNames: name,
+    duration,
+    value: total,
+    account: accounts[0],
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  expect(receipt.status).toBe('success')
+
+  const newExpiry = await getExpiry(name)
+  expect(newExpiry).toBe(oldExpiry + duration)
+})
+
+it('should return a renewAll transaction for multiple names and succeed', async () => {
+  const names = ['to-be-renewed.eth', 'test123.eth']
+  const duration = 31536000n
+
+  const oldExpiries = await Promise.all(names.map(getExpiry))
+
+  const price = await getPrice(publicClient, {
+    nameOrNames: names,
+    duration,
+  })
+  const total = price!.base + price!.premium
+
+  const tx = await renewNames(walletClient, {
+    nameOrNames: names,
+    duration,
+    value: total,
+    account: accounts[1],
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  expect(receipt.status).toBe('success')
+
+  const newExpiries = await Promise.all(names.map(getExpiry))
+  for (let i = 0; i < names.length; i += 1) {
+    expect(newExpiries[i]).toBe(oldExpiries[i] + duration)
+  }
+})

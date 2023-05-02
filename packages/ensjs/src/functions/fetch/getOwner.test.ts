@@ -1,9 +1,9 @@
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import getOwner from './getOwner'
 
 describe('getOwner', () => {
   it('should return correct ownership level and values for a wrapped .eth name', async () => {
-    const result = await getOwner(testClient, { name: 'wrapped.eth' })
+    const result = await getOwner(publicClient, { name: 'wrapped.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
         "owner": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
@@ -12,7 +12,7 @@ describe('getOwner', () => {
     `)
   })
   it('should return correct ownership level and values for an expired wrapped .eth name', async () => {
-    const result = await getOwner(testClient, { name: 'expired-wrapped.eth' })
+    const result = await getOwner(publicClient, { name: 'expired-wrapped.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
         "owner": "0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E",
@@ -27,7 +27,7 @@ describe('getOwner', () => {
     // })
   })
   it('should return correct ownership level and values for an unwrapped .eth name', async () => {
-    const result = await getOwner(testClient, { name: 'test123.eth' })
+    const result = await getOwner(publicClient, { name: 'test123.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
         "owner": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
@@ -37,7 +37,7 @@ describe('getOwner', () => {
     `)
   })
   it('should return correct ownership level and values for an expired unwrapped .eth name', async () => {
-    const result = await getOwner(testClient, { name: 'expired.eth' })
+    const result = await getOwner(publicClient, { name: 'expired.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
         "owner": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
@@ -48,7 +48,7 @@ describe('getOwner', () => {
   })
   describe('subname', () => {
     it('should return correct ownership level and values for a unwrapped name', async () => {
-      const result = await getOwner(testClient, {
+      const result = await getOwner(publicClient, {
         name: 'test.with-subnames.eth',
       })
       expect(result).toMatchInlineSnapshot(`
@@ -59,7 +59,7 @@ describe('getOwner', () => {
       `)
     })
     it('should return correct ownership level and values for a wrapped name', async () => {
-      const result = await getOwner(testClient, {
+      const result = await getOwner(publicClient, {
         name: 'test.wrapped-with-subnames.eth',
       })
       expect(result).toMatchInlineSnapshot(`
@@ -70,7 +70,7 @@ describe('getOwner', () => {
       `)
     })
     it('should return correct ownership level and values for an expired wrapped name', async () => {
-      const result = await getOwner(testClient, {
+      const result = await getOwner(publicClient, {
         name: 'test.expired-wrapped.eth',
       })
       expect(result).toMatchInlineSnapshot(`

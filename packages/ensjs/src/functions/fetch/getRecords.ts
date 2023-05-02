@@ -24,7 +24,7 @@ import {
 } from '../../utils/generateFunction'
 import { packetToBytes } from '../../utils/hexEncodedName'
 import { encodeLabelhash } from '../../utils/labels'
-import _getAbi, { InternalGetAbiReturnType } from './_getABI'
+import _getAbi, { InternalGetAbiReturnType } from './_getAbi'
 import _getAddr from './_getAddr'
 import _getContentHash, {
   InternalGetContentHashReturnType,

@@ -1,5 +1,51 @@
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { ReverseRegistrar__factory } from '../generated/factories/ReverseRegistrar__factory'
+export const setNameForAddrSnippet = [
+  {
+    inputs: [
+      {
+        name: 'addr',
+        type: 'address',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+      },
+      {
+        name: 'name',
+        type: 'string',
+      },
+    ],
+    name: 'setNameForAddr',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
 
-export default (provider: JsonRpcProvider, address: string) =>
-  ReverseRegistrar__factory.connect(address, provider)
+export const setNameSnippet = [
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'string',
+      },
+    ],
+    name: 'setName',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

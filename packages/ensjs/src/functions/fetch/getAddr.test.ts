@@ -1,9 +1,9 @@
-import { testClient } from '../../tests/addTestContracts'
+import { publicClient } from '../../tests/addTestContracts'
 import getAddr from './getAddr'
 
 describe('getAddr()', () => {
   it('returns the ETH record when no coin is provided', async () => {
-    const result = await getAddr(testClient, { name: 'with-profile.eth' })
+    const result = await getAddr(publicClient, { name: 'with-profile.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
         "addr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
@@ -13,7 +13,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return the correct address based on a coin ID input as a number', async () => {
-    const result = await getAddr(testClient, {
+    const result = await getAddr(publicClient, {
       name: 'with-profile.eth',
       coin: 61,
     })
@@ -26,7 +26,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return the correct address based on a coin ID input as a string', async () => {
-    const result = await getAddr(testClient, {
+    const result = await getAddr(publicClient, {
       name: 'with-profile.eth',
       coin: '61',
     })
@@ -39,7 +39,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return the correct address based on a coin name', async () => {
-    const result = await getAddr(testClient, {
+    const result = await getAddr(publicClient, {
       name: 'with-profile.eth',
       coin: 'ETC_LEGACY',
     })
@@ -52,7 +52,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return null for a non-existent coin', async () => {
-    const result = await getAddr(testClient, {
+    const result = await getAddr(publicClient, {
       name: 'with-profile.eth',
       coin: 'BNB',
     })

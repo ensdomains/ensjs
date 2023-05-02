@@ -1,39 +1,18 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { toUtf8Bytes } from '@ethersproject/strings'
-import { ENSArgs } from '../index'
+import { stringToBytes } from 'viem'
+import { AnyDate } from '../types'
 
-export type Expiry = string | number | Date | BigNumber
+export const MAX_EXPIRY = 2n ** 64n - 1n
 
-export const MAX_EXPIRY = BigNumber.from(2).pow(64).sub(1)
-
-export const expiryToBigNumber = (expiry?: Expiry, defaultValue = 0) => {
-  if (!expiry) return BigNumber.from(defaultValue)
-  if (expiry instanceof Date) {
-    return BigNumber.from(expiry.getTime() / 1000)
-  }
-  if (expiry instanceof BigNumber) {
-    return expiry
-  }
-  return BigNumber.from(expiry)
-}
-
-export const makeExpiry = async (
-  { getExpiry }: ENSArgs<'getExpiry'>,
-  name: string,
-  expiry?: Expiry,
-) => {
-  if (expiry) return expiryToBigNumber(expiry)
-  if (name.endsWith('.eth')) {
-    const expResponse = await getExpiry(name)
-    if (!expResponse?.expiry)
-      throw new Error("Couldn't get expiry for name, please provide one.")
-    return BigNumber.from(expResponse.expiry.getTime() / 1000)
-  }
-  return MAX_EXPIRY
+export const expiryToBigInt = (expiry?: AnyDate, defaultValue = 0n): bigint => {
+  if (!expiry) return defaultValue
+  if (typeof expiry === 'bigint') return expiry
+  if (typeof expiry === 'string' || typeof expiry === 'number')
+    return BigInt(expiry)
+  throw new Error('Expiry must be a bigint, string, number or Date')
 }
 
 export const wrappedLabelLengthCheck = (label: string) => {
-  const bytes = toUtf8Bytes(label)
+  const bytes = stringToBytes(label)
   if (bytes.byteLength > 255)
     throw new Error("Label can't be longer than 255 bytes")
 }
