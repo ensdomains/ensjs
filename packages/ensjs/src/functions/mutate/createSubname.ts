@@ -61,7 +61,7 @@ export type CreateSubnameParameters<
 
 export type CreateSubnameReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(

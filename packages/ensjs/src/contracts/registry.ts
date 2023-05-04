@@ -95,3 +95,71 @@ export const setApprovalForAllSnippet = [
     type: 'function',
   },
 ] as const
+
+export const setResolverSnippet = [
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+      },
+    ],
+    name: 'setResolver',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const setOwnerSnippet = [
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'setOwner',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const setSubnodeOwnerSnippet = [
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'label',
+        type: 'bytes32',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'setSubnodeOwner',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

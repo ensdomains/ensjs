@@ -14,13 +14,21 @@ export type GetOwnerParameters = {
   contract?: OwnerContract
 }
 
+type BaseGetOwnerReturnType = {
+  owner?: Address | null
+  registrant?: Address | null
+  ownershipLevel: 'registry' | 'registrar' | 'nameWrapper'
+}
+
 type RegistrarOnlyOwnership = {
+  owner?: never
   registrant: Address
   ownershipLevel: 'registrar'
 }
 
 type WrappedOwnership = {
   owner: Address
+  registrant?: never
   ownershipLevel: 'nameWrapper'
 }
 
@@ -32,14 +40,18 @@ type UnwrappedEth2ldOwnership = {
 
 type UnwrappedOwnership = {
   owner: Address
+  registrant?: never
   ownershipLevel: 'registry'
 }
 
 export type GetOwnerReturnType =
-  | RegistrarOnlyOwnership
-  | WrappedOwnership
-  | UnwrappedEth2ldOwnership
-  | UnwrappedOwnership
+  | (BaseGetOwnerReturnType &
+      (
+        | RegistrarOnlyOwnership
+        | WrappedOwnership
+        | UnwrappedEth2ldOwnership
+        | UnwrappedOwnership
+      ))
   | null
 
 const encode = (
@@ -93,12 +105,12 @@ const decode = async (
       return {
         ownershipLevel: 'registrar',
         registrant: singleOwner,
-      }
+      } as RegistrarOnlyOwnership
     }
     return {
       ownershipLevel: contract || 'registry',
       owner: singleOwner,
-    }
+    } as UnwrappedOwnership | WrappedOwnership
   }
 
   const result = await multicallWrapper.decode(client, data, [])
@@ -126,7 +138,7 @@ const decode = async (
       return {
         owner: nameWrapperOwner,
         ownershipLevel: 'nameWrapper',
-      }
+      } as WrappedOwnership
     }
     // if there is a registrar owner, then it's not a subdomain but we have also passed the namewrapper clause
     // this means that it's an unwrapped second-level name
@@ -134,10 +146,10 @@ const decode = async (
     // the owner is the controller of the records
     if (registrarOwner) {
       return {
-        registrant: registrarOwner,
-        owner: registryOwner,
+        registrant: registrarOwner!,
+        owner: registryOwner!,
         ownershipLevel: 'registrar',
-      }
+      } as UnwrappedEth2ldOwnership
     }
     if (registryOwner !== EMPTY_ADDRESS) {
       // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
@@ -147,7 +159,7 @@ const decode = async (
           registrant: null,
           owner: registryOwner,
           ownershipLevel: 'registrar',
-        }
+        } as UnwrappedEth2ldOwnership
       }
       // this means that the subname is wrapped
       if (
@@ -158,13 +170,13 @@ const decode = async (
         return {
           owner: nameWrapperOwner,
           ownershipLevel: 'nameWrapper',
-        }
+        } as WrappedOwnership
       }
       // unwrapped subnames do not have NFTs associated, so do not have a registrant
       return {
         owner: registryOwner,
         ownershipLevel: 'registry',
-      }
+      } as UnwrappedOwnership
     }
     // .eth names with no registrar owner are either unregistered or expired
     return null
@@ -182,7 +194,7 @@ const decode = async (
     return {
       owner: nameWrapperOwner,
       ownershipLevel: 'nameWrapper',
-    }
+    } as WrappedOwnership
   }
 
   // for unwrapped non .eth names, the owner is the registry owner
@@ -190,7 +202,7 @@ const decode = async (
     return {
       owner: registryOwner,
       ownershipLevel: 'registry',
-    }
+    } as UnwrappedOwnership
   }
 
   // for anything else, return

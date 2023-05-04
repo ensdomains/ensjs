@@ -38,7 +38,7 @@ export type RegisterNameParameters<
 
 export type RegisterNameReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(

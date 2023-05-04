@@ -4,57 +4,67 @@ import {
   Hash,
   SendTransactionParameters,
   Transport,
+  encodeFunctionData,
 } from 'viem'
 import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { multicallSnippet } from '../../contracts/publicResolver'
 import {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
-import { EncodedAbi } from '../../utils/encoders/encodeAbi'
-import {
-  EncodeSetAbiParameters,
-  encodeSetAbi,
-} from '../../utils/encoders/encodeSetAbi'
 import { namehash } from '../../utils/normalise'
+import {
+  RecordOptions,
+  generateRecordCallArray,
+} from '../../utils/recordHelpers'
 
-export type SetAbiDataParameters = {
+export type SetRecordsDataParameters = {
   name: string
-  encodedAbi: EncodedAbi | null
   resolverAddress: Address
-}
+} & RecordOptions
 
-export type SetAbiDataReturnType = SimpleTransactionRequest
+export type SetRecordsDataReturnType = SimpleTransactionRequest
 
-export type SetAbiParameters<
+export type SetRecordsParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetAbiDataParameters &
+  SetRecordsDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetAbiReturnType = Hash
+export type SetRecordsReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, encodedAbi, resolverAddress }: SetAbiDataParameters,
-): SetAbiDataReturnType => {
-  const encodedAbi_ = encodedAbi || { contentType: 0, encodedData: null }
+  { name, resolverAddress, ...records }: SetRecordsDataParameters,
+): SetRecordsDataReturnType => {
+  const callArray = generateRecordCallArray({
+    namehash: namehash(name),
+    ...records,
+  })
+  if (callArray.length === 0) throw new Error('No records to set')
+  if (callArray.length === 1)
+    return {
+      to: resolverAddress,
+      data: callArray[0],
+    }
   return {
     to: resolverAddress,
-    data: encodeSetAbi({
-      namehash: namehash(name),
-      ...encodedAbi_,
-    } as EncodeSetAbiParameters),
+    data: encodeFunctionData({
+      abi: multicallSnippet,
+      functionName: 'multicall',
+      args: [callArray],
+    }),
   }
 }
 
-async function setAbi<
+async function setRecords<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -62,15 +72,23 @@ async function setAbi<
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   {
     name,
-    encodedAbi,
     resolverAddress,
+    clearRecords,
+    contentHash,
+    texts,
+    coins,
+    abi,
     ...txArgs
-  }: SetAbiParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetAbiReturnType> {
+  }: SetRecordsParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetRecordsReturnType> {
   const data = makeFunctionData(wallet, {
     name,
-    encodedAbi,
     resolverAddress,
+    clearRecords,
+    contentHash,
+    texts,
+    coins,
+    abi,
   })
   const writeArgs = {
     ...data,
@@ -79,6 +97,6 @@ async function setAbi<
   return wallet.sendTransaction(writeArgs)
 }
 
-setAbi.makeFunctionData = makeFunctionData
+setRecords.makeFunctionData = makeFunctionData
 
-export default setAbi
+export default setRecords

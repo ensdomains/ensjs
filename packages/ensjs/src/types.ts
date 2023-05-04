@@ -45,7 +45,7 @@ export type DecodedAbi = {
 export type DecodedAddr = {
   id: number
   name: string
-  addr: string
+  value: string
 }
 
 export type DecodedText = {
@@ -54,3 +54,32 @@ export type DecodedText = {
 }
 
 export type AnyDate = string | number | bigint | Date
+
+export type TldName = `${string}`
+export type Eth2ldName = `${string}.eth`
+export type EthSubname = `${string}.${string}.eth`
+export type Other2ldName = `${string}.${string}`
+export type OtherSubname = `${string}.${string}.${string}`
+
+export type NameOption =
+  | TldName
+  | Eth2ldName
+  | EthSubname
+  | Other2ldName
+  | OtherSubname
+
+export type TldNameSpecifier = 'tld'
+export type Eth2ldNameSpecifier = 'eth-2ld'
+export type EthSubnameSpecifier = 'eth-subname'
+export type Other2ldNameSpecifier = 'other-2ld'
+export type OtherSubnameSpecifier = 'other-subname'
+
+export type GetNameType<TString extends string> = TString extends Eth2ldName
+  ? TString extends EthSubname
+    ? EthSubnameSpecifier
+    : Eth2ldNameSpecifier
+  : TString extends Other2ldName
+  ? TString extends OtherSubname
+    ? OtherSubnameSpecifier
+    : Other2ldNameSpecifier
+  : TldNameSpecifier

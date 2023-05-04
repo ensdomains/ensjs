@@ -61,10 +61,11 @@
   "scripts": {
     "tenv": "ens-test-env -a",
     "denv": "pnpm tenv start -ns -nb --extra-time 11368000 --verbosity 1",
+    "anvil": "pnpm denv --no-graph",
     "generate-types": "ts-node scripts/runTypechain.ts",
     "generate-abis": "hardhat export-abi",
     "start": "ts-node --files src/index.test.ts",
-    "test": "jest --run-in-band",
+    "test": "jest --runInBand",
     "test:static": "STATIC_ENS=true jest --run-in-band",
     "test:watch": "jest --watch --run-in-band",
     "test:specific": "ts-node --files ",

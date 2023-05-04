@@ -5,6 +5,7 @@ import { ownerSnippet } from '../../contracts/registry'
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import { namehash } from '../../utils/normalise'
@@ -33,7 +34,7 @@ it('should allow creating a subname on the registry', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const owner = await publicClient.readContract({
@@ -56,7 +57,7 @@ it('should allow creating a subname on the namewrapper', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const owner = await publicClient.readContract({

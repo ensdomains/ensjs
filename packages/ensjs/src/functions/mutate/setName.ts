@@ -51,7 +51,7 @@ export type SetNameParameters<
 
 export type SetNameReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account,
 >(

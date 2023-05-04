@@ -4,6 +4,10 @@ import 'hardhat-deploy'
 import { HardhatUserConfig } from 'hardhat/config'
 import { resolve } from 'path'
 
+process.env.BATCH_GATEWAY_URLS = JSON.stringify([
+  'https://universal-offchain-unwrapper.ens-cf.workers.dev/',
+])
+
 const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 
 const config: HardhatUserConfig = {

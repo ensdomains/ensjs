@@ -5,13 +5,13 @@ import { setAddrSnippet } from '../../contracts/publicResolver'
 export type EncodeSetAddrParameters = {
   namehash: Hex
   coin: string | number
-  address: Address | string | null
+  value: Address | string | null
 }
 
 export const encodeSetAddr = ({
   namehash,
   coin,
-  address,
+  value,
 }: EncodeSetAddrParameters) => {
   let coinTypeInstance
   if (typeof coin === 'number') {
@@ -22,8 +22,8 @@ export const encodeSetAddr = ({
     coinTypeInstance = formatsByName[coin.toUpperCase()]
   }
   const inputCoinType = coinTypeInstance.coinType
-  let encodedAddress: Hex | Uint8Array = address
-    ? coinTypeInstance.decoder(address)
+  let encodedAddress: Hex | Uint8Array = value
+    ? coinTypeInstance.decoder(value)
     : '0x'
   if (inputCoinType === 60 && encodedAddress === '0x')
     encodedAddress = coinTypeInstance.decoder(

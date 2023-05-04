@@ -2,6 +2,7 @@ import { Address, Hex } from 'viem'
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import { encodeAbi } from '../../utils/encoders/encodeAbi'
@@ -55,7 +56,7 @@ it('should allow an abi record to be set with json content type', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const response = await getAbi(publicClient, {
@@ -77,7 +78,7 @@ it('should allow an abi record to be set with zlib content type', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const response = await getAbi(publicClient, {
@@ -99,7 +100,7 @@ it('should allow an abi record to be set with cbor content type', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const response = await getAbi(publicClient, {
@@ -124,7 +125,7 @@ it('should allow an abi record to be set with uri content type', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const response = await getAbi(publicClient, {
@@ -145,7 +146,7 @@ it('should allow an abi record to be set to blank', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const response = await getAbi(publicClient, {

@@ -4,6 +4,7 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import getPrice from '../fetch/getPrice'
@@ -55,7 +56,7 @@ it('should return a renew transaction for a single name and succeed', async () =
     account: accounts[0],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const newExpiry = await getExpiry(name)
@@ -81,7 +82,7 @@ it('should return a renewAll transaction for multiple names and succeed', async 
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const newExpiries = await Promise.all(names.map(getExpiry))

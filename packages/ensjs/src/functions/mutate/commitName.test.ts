@@ -4,6 +4,7 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import {
@@ -41,7 +42,7 @@ it('should return a commit transaction and succeed', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const commitment = await publicClient.readContract({

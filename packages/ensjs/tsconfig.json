@@ -15,7 +15,10 @@
     "importsNotUsedAsValues": "remove",
     "lib": ["ES2021", "DOM"],
     "module": "ES2020",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "abitype": ["node_modules/abitype/dist"]
+    }
   },
   "include": ["src/**/*.ts", "./hardhat.config.ts", "./deploy"]
 }

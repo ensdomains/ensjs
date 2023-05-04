@@ -147,3 +147,62 @@ export const setRecordSnippet = [
     type: 'function',
   },
 ] as const
+
+export const setSubnodeOwnerSnippet = [
+  {
+    inputs: [
+      {
+        name: 'parentNode',
+        type: 'bytes32',
+      },
+      {
+        name: 'label',
+        type: 'string',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        name: 'fuses',
+        type: 'uint32',
+      },
+      {
+        name: 'expiry',
+        type: 'uint64',
+      },
+    ],
+    name: 'setSubnodeOwner',
+    outputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const wrapSnippet = [
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'bytes',
+      },
+      {
+        name: 'wrappedOwner',
+        type: 'address',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+      },
+    ],
+    name: 'wrap',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

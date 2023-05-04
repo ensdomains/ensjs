@@ -1,63 +1,64 @@
 import {
   Account,
+  Address,
   Hash,
   SendTransactionParameters,
   Transport,
   encodeFunctionData,
-  labelhash,
 } from 'viem'
 import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setChildFusesSnippet } from '../../contracts/nameWrapper'
+import { setResolverSnippet } from '../../contracts/registry'
 import {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
-import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
 import { namehash } from '../../utils/normalise'
 
-export type SetChildFusesDataParameters = {
+export type SetResolverDataParameters = {
   name: string
-  fuses: Partial<CombinedFuseInput> | number
-  expiry?: number | bigint
+  contract: 'registry' | 'nameWrapper'
+  resolverAddress: Address
 }
 
-export type SetChildFusesDataReturnType = SimpleTransactionRequest
+export type SetResolverDataReturnType = SimpleTransactionRequest
 
-export type SetChildFusesParameters<
+export type SetResolverParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetChildFusesDataParameters &
+  SetResolverDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetFusesReturnType = Hash
+export type SetResolverReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, fuses, expiry }: SetChildFusesDataParameters,
-): SetChildFusesDataReturnType => {
-  const encodedFuses = encodeFuses(fuses)
-  const labels = name.split('.')
-  const labelHash = labelhash(labels.shift()!)
-  const parentNode = namehash(labels.join('.'))
+  { name, contract, resolverAddress }: SetResolverDataParameters,
+): SetResolverDataReturnType => {
+  if (contract !== 'registry' && contract !== 'nameWrapper')
+    throw new Error(`Unknown contract: ${contract}`)
+
   return {
-    to: getChainContractAddress({ client: wallet, contract: 'ensNameWrapper' }),
+    to: getChainContractAddress({
+      client: wallet,
+      contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
+    }),
     data: encodeFunctionData({
-      abi: setChildFusesSnippet,
-      functionName: 'setChildFuses',
-      args: [parentNode, labelHash, encodedFuses, BigInt(expiry ?? 0)],
+      abi: setResolverSnippet,
+      functionName: 'setResolver',
+      args: [namehash(name), resolverAddress],
     }),
   }
 }
 
-async function setChildFuses<
+async function setResolver<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -65,12 +66,12 @@ async function setChildFuses<
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   {
     name,
-    fuses,
-    expiry,
+    contract,
+    resolverAddress,
     ...txArgs
-  }: SetChildFusesParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetFusesReturnType> {
-  const data = makeFunctionData(wallet, { name, fuses, expiry })
+  }: SetResolverParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetResolverReturnType> {
+  const data = makeFunctionData(wallet, { name, contract, resolverAddress })
   const writeArgs = {
     ...data,
     ...txArgs,
@@ -78,6 +79,6 @@ async function setChildFuses<
   return wallet.sendTransaction(writeArgs)
 }
 
-setChildFuses.makeFunctionData = makeFunctionData
+setResolver.makeFunctionData = makeFunctionData
 
-export default setChildFuses
+export default setResolver

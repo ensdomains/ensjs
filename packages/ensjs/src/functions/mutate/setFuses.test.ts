@@ -4,6 +4,7 @@ import { getDataSnippet } from '../../contracts/nameWrapper'
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import {
@@ -104,7 +105,7 @@ describe('Array', () => {
       },
       account: accounts[1],
     })
-    const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+    const receipt = await waitForTransaction(tx)
     expect(receipt.status).toBe('success')
 
     const fuses = await getFuses('wrapped.eth')
@@ -124,9 +125,7 @@ describe('Array', () => {
       },
       account: accounts[1],
     })
-    const tx0Receipt = await publicClient.waitForTransactionReceipt({
-      hash: tx0,
-    })
+    const tx0Receipt = await waitForTransaction(tx0)
     expect(tx0Receipt.status).toBe('success')
 
     const tx = await setFuses(walletClient, {
@@ -136,7 +135,7 @@ describe('Array', () => {
       },
       account: accounts[1],
     })
-    const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+    const receipt = await waitForTransaction(tx)
     expect(receipt.status).toBe('success')
 
     const fuses = await getFuses('wrapped.eth')
@@ -156,7 +155,7 @@ describe('Array', () => {
       },
       account: accounts[1],
     })
-    const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+    const receipt = await waitForTransaction(tx)
     expect(receipt.status).toBe('success')
 
     const fuses = await getFuses('wrapped.eth')
@@ -209,7 +208,7 @@ describe('Number', () => {
       account: accounts[1],
     })
     expect(tx).toBeTruthy()
-    const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+    const receipt = await waitForTransaction(tx)
     expect(receipt.status).toBe('success')
 
     const fuses = await getFuses('wrapped.eth')

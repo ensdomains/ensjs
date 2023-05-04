@@ -4,6 +4,7 @@ import { getDataSnippet } from '../../contracts/nameWrapper'
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import { userSettableFuseEnum } from '../../utils/fuses'
@@ -74,9 +75,7 @@ it('should return a setChildFuses transaction and succeed', async () => {
     account: accounts[1],
   })
   expect(setParentTx).toBeTruthy()
-  const setParentTxReceipt = await publicClient.waitForTransactionReceipt({
-    hash: setParentTx,
-  })
+  const setParentTxReceipt = await waitForTransaction(setParentTx)
   expect(setParentTxReceipt.status).toBe('success')
 
   const tx = await setChildFuses(walletClient, {
@@ -85,7 +84,7 @@ it('should return a setChildFuses transaction and succeed', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const fuses = await getFuses('test.wrapped-with-subnames.eth')

@@ -3,8 +3,11 @@ import { resolve } from 'path'
 import {
   Account,
   Address,
+  Hash,
   PublicClient,
   TestClient,
+  TransactionReceipt,
+  TransactionReceiptNotFoundError,
   WalletClient,
   createPublicClient,
   createTestClient,
@@ -93,3 +96,19 @@ export const walletClient: WalletClient<
   chain: localhost,
   transport,
 })
+
+export const waitForTransaction = async (hash: Hash) =>
+  new Promise<TransactionReceipt>((resolveFn, reject) => {
+    publicClient
+      .getTransactionReceipt({ hash })
+      .then(resolveFn)
+      .catch((e) => {
+        if (e instanceof TransactionReceiptNotFoundError) {
+          setTimeout(() => {
+            waitForTransaction(hash).then(resolveFn)
+          }, 100)
+        } else {
+          reject(e)
+        }
+      })
+  })

@@ -1,0 +1,172 @@
+import { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { setApprovalForAllSnippet } from '../../contracts/registry'
+import {
+  publicClient,
+  testClient,
+  waitForTransaction,
+  walletClient,
+} from '../../tests/addTestContracts'
+import getOwner from '../fetch/getOwner'
+import getResolver from '../fetch/getResolver'
+import getWrapperData from '../fetch/getWrapperData'
+import wrapName from './wrapName'
+
+let snapshot: Hex
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
+})
+
+beforeEach(async () => {
+  snapshot = await testClient.snapshot()
+})
+
+afterEach(async () => {
+  await testClient.revert({ id: snapshot })
+})
+
+const approve = async () => {
+  return walletClient.writeContract({
+    abi: setApprovalForAllSnippet,
+    address: getChainContractAddress({
+      client: walletClient,
+      contract: 'ensRegistry',
+    }),
+    functionName: 'setApprovalForAll',
+    args: [
+      getChainContractAddress({
+        client: walletClient,
+        contract: 'ensNameWrapper',
+      }),
+      true,
+    ],
+    account: accounts[2],
+  })
+}
+
+describe('eth 2ld', () => {
+  it('should return a wrap name transaction and succeed', async () => {
+    const tx = await wrapName(walletClient, {
+      name: 'test123.eth',
+      wrappedOwner: accounts[2],
+      account: accounts[1],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const owner = await getOwner(publicClient, {
+      name: 'test123.eth',
+    })
+    expect(owner!.owner).toBe(accounts[2])
+    expect(owner!.ownershipLevel).toBe('nameWrapper')
+  })
+  it('should allow initial fuses', async () => {
+    const tx = await wrapName(walletClient, {
+      name: 'test123.eth',
+      wrappedOwner: accounts[2],
+      fuses: {
+        named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
+      },
+      account: accounts[1],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const wrapperData = await getWrapperData(publicClient, {
+      name: 'test123.eth',
+    })
+    expect(wrapperData!.fuses.value).toBe(196625)
+  })
+  it('should allow a non-default resolver address', async () => {
+    const tx = await wrapName(walletClient, {
+      name: 'test123.eth',
+      wrappedOwner: accounts[2],
+      resolverAddress: '0x42D63ae25990889E35F215bC95884039Ba354115',
+      account: accounts[1],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const resolver = await getResolver(publicClient, {
+      name: 'test123.eth',
+    })
+    expect(resolver).toBe('0x42D63ae25990889E35F215bC95884039Ba354115')
+  })
+  it('should error for labels longer than 255 bytes', async () => {
+    const label = 'a'.repeat(256)
+    await expect(
+      wrapName(walletClient, {
+        name: `${label}.eth`,
+        wrappedOwner: accounts[2],
+        account: accounts[1],
+      }),
+    ).rejects.toThrow("Label can't be longer than 255 bytes")
+  })
+})
+
+describe('other', () => {
+  beforeEach(async () => {
+    await approve()
+  })
+  it('should return a wrap name transaction and succeed', async () => {
+    const tx = await wrapName(walletClient, {
+      name: 'test.with-subnames.eth',
+      wrappedOwner: accounts[2],
+      account: accounts[2],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const owner = await getOwner(publicClient, {
+      name: 'test.with-subnames.eth',
+    })
+    expect(owner!.owner).toBe(accounts[2])
+    expect(owner!.ownershipLevel).toBe('nameWrapper')
+  })
+  it('should allow a non-default resolver address', async () => {
+    const tx = await wrapName(walletClient, {
+      name: 'test.with-subnames.eth',
+      wrappedOwner: accounts[2],
+      resolverAddress: '0x42D63ae25990889E35F215bC95884039Ba354115',
+      account: accounts[2],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const resolver = await getResolver(publicClient, {
+      name: 'test.with-subnames.eth',
+    })
+    expect(resolver).toBe('0x42D63ae25990889E35F215bC95884039Ba354115')
+  })
+  it('should error if initial fuses are provided', async () => {
+    await expect(
+      wrapName(walletClient, {
+        name: 'test.with-subnames.eth',
+        wrappedOwner: accounts[2],
+        fuses: {
+          named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
+        } as any,
+        account: accounts[2],
+      }),
+    ).rejects.toThrow(
+      'Fuses can not be initially set when wrapping a non eth 2ld name',
+    )
+  })
+  it('should error for a label longer than 255 bytes', async () => {
+    const label = 'a'.repeat(256)
+    await expect(
+      wrapName(walletClient, {
+        name: `${label}.with-subnames.eth`,
+        wrappedOwner: accounts[2],
+        account: accounts[2],
+      }),
+    ).rejects.toThrow("Label can't be longer than 255 bytes")
+  })
+})

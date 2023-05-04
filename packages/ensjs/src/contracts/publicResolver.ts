@@ -219,3 +219,23 @@ export const clearRecordsSnippet = [
     type: 'function',
   },
 ] as const
+
+export const multicallSnippet = [
+  {
+    inputs: [
+      {
+        name: 'data',
+        type: 'bytes[]',
+      },
+    ],
+    name: 'multicall',
+    outputs: [
+      {
+        name: 'results',
+        type: 'bytes[]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

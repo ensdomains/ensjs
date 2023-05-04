@@ -34,7 +34,7 @@ export type SetFusesParameters<
 
 export type SetFusesReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(

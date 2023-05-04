@@ -36,7 +36,7 @@ export type RenewNamesParameters<
 
 export type RenewNamesReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(

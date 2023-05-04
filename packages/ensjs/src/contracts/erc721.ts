@@ -17,3 +17,53 @@ export const ownerOfSnippet = [
     type: 'function',
   },
 ] as const
+
+export const safeTransferFromSnippet = [
+  {
+    inputs: [
+      {
+        name: 'from',
+        type: 'address',
+      },
+      {
+        name: 'to',
+        type: 'address',
+      },
+      {
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const safeTransferFromWithDataSnippet = [
+  {
+    inputs: [
+      {
+        name: 'from',
+        type: 'address',
+      },
+      {
+        name: 'to',
+        type: 'address',
+      },
+      {
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        name: '_data',
+        type: 'bytes',
+      },
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

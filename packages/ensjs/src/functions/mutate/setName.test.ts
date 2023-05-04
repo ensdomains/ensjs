@@ -4,6 +4,7 @@ import { setApprovalForAllSnippet } from '../../contracts/registry'
 import {
   publicClient,
   testClient,
+  waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
 import getName from '../fetch/getName'
@@ -30,7 +31,7 @@ it('should return a transaction for a name and set successfully', async () => {
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const resolvedName = await getName(publicClient, {
@@ -51,9 +52,7 @@ it("should return a transaction for setting another address' name and succeed", 
     account: accounts[1],
   })
   expect(setApprovedForAllTx).toBeTruthy()
-  const setApprovedForAllReceipt = await publicClient.waitForTransactionReceipt(
-    { hash: setApprovedForAllTx },
-  )
+  const setApprovedForAllReceipt = await waitForTransaction(setApprovedForAllTx)
   expect(setApprovedForAllReceipt.status).toBe('success')
 
   const tx = await setName(walletClient, {
@@ -62,7 +61,7 @@ it("should return a transaction for setting another address' name and succeed", 
     account: accounts[2],
   })
   expect(tx).toBeTruthy()
-  const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
+  const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
   const resolvedName = await getName(publicClient, {

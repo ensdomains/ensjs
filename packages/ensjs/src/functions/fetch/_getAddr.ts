@@ -110,7 +110,7 @@ const decode = async (
     return null
   }
 
-  return { id: formatter.coinType, name: formatter.name, addr: decodedAddr }
+  return { id: formatter.coinType, name: formatter.name, value: decodedAddr }
 }
 
 const _getAddr = generateFunction({ encode, decode })

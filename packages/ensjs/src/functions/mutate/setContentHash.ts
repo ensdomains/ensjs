@@ -33,7 +33,7 @@ export type SetContentHashParameters<
 
 export type SetContentHashReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(

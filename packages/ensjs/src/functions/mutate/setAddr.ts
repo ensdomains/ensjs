@@ -17,7 +17,7 @@ import { namehash } from '../../utils/normalise'
 export type SetAddrDataParameters = {
   name: string
   coin: string | number
-  address: Address | string | null
+  value: Address | string | null
   resolverAddress: Address
 }
 
@@ -34,16 +34,16 @@ export type SetAddrParameters<
 
 export type SetAddrReturnType = Hash
 
-const makeFunctionData = <
+export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, coin, address, resolverAddress }: SetAddrDataParameters,
+  { name, coin, value, resolverAddress }: SetAddrDataParameters,
 ): SetAddrDataReturnType => {
   return {
     to: resolverAddress,
-    data: encodeSetAddr({ namehash: namehash(name), coin, address }),
+    data: encodeSetAddr({ namehash: namehash(name), coin, value }),
   }
 }
 
@@ -56,7 +56,7 @@ async function setAddr<
   {
     name,
     coin,
-    address,
+    value,
     resolverAddress,
     ...txArgs
   }: SetAddrParameters<TChain, TAccount, TChainOverride>,
@@ -64,7 +64,7 @@ async function setAddr<
   const data = makeFunctionData(wallet, {
     name,
     coin,
-    address,
+    value,
     resolverAddress,
   })
   const writeArgs = {

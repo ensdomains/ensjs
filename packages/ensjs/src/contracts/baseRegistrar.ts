@@ -58,3 +58,22 @@ export const gracePeriodSnippet = [
     type: 'function',
   },
 ] as const
+
+export const reclaimSnippet = [
+  {
+    inputs: [
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'reclaim',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
