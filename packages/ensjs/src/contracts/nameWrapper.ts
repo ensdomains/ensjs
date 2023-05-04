@@ -206,3 +206,49 @@ export const wrapSnippet = [
     type: 'function',
   },
 ] as const
+
+export const unwrapSnippet = [
+  {
+    inputs: [
+      {
+        name: 'parentNode',
+        type: 'bytes32',
+      },
+      {
+        name: 'labelhash',
+        type: 'bytes32',
+      },
+      {
+        name: 'controller',
+        type: 'address',
+      },
+    ],
+    name: 'unwrap',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const unwrapEth2ldSnippet = [
+  {
+    inputs: [
+      {
+        name: 'labelhash',
+        type: 'bytes32',
+      },
+      {
+        name: 'registrant',
+        type: 'address',
+      },
+      {
+        name: 'controller',
+        type: 'address',
+      },
+    ],
+    name: 'unwrapETH2LD',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
