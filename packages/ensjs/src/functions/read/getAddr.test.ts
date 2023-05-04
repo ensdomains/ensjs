@@ -6,9 +6,9 @@ describe('getAddr()', () => {
     const result = await getAddr(publicClient, { name: 'with-profile.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
-        "addr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "id": 60,
         "name": "ETH",
+        "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
   })
@@ -19,9 +19,9 @@ describe('getAddr()', () => {
     })
     expect(result).toMatchInlineSnapshot(`
       {
-        "addr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "id": 61,
         "name": "ETC_LEGACY",
+        "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
   })
@@ -32,9 +32,9 @@ describe('getAddr()', () => {
     })
     expect(result).toMatchInlineSnapshot(`
       {
-        "addr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "id": 61,
         "name": "ETC_LEGACY",
+        "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
   })
@@ -45,9 +45,9 @@ describe('getAddr()', () => {
     })
     expect(result).toMatchInlineSnapshot(`
       {
-        "addr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "id": 61,
         "name": "ETC_LEGACY",
+        "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
   })

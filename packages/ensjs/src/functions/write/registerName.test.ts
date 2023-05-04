@@ -9,7 +9,7 @@ import {
 } from '../../tests/addTestContracts'
 import { namehash } from '../../utils/normalise'
 import { RegistrationParameters } from '../../utils/registerHelpers'
-import getPrice from '../fetch/getPrice'
+import getPrice from '../read/getPrice'
 import commitName from './commitName'
 import registerName from './registerName'
 

@@ -27,9 +27,9 @@ describe('batch', () => {
       [
         "Hello2",
         {
-          "addr": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
           "id": 60,
           "name": "ETH",
+          "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         },
         {
           "match": true,

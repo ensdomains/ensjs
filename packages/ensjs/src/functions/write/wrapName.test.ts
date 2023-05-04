@@ -7,9 +7,9 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getOwner from '../fetch/getOwner'
-import getResolver from '../fetch/getResolver'
-import getWrapperData from '../fetch/getWrapperData'
+import getOwner from '../read/getOwner'
+import getResolver from '../read/getResolver'
+import getWrapperData from '../read/getWrapperData'
 import wrapName from './wrapName'
 
 let snapshot: Hex

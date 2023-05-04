@@ -5,8 +5,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getResolver from '../fetch/getResolver'
-import getText from '../fetch/getText'
+import getResolver from '../read/getResolver'
+import getText from '../read/getText'
 import setText from './setText'
 
 let snapshot: Hex

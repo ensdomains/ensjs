@@ -5,7 +5,7 @@ import { generateFunction } from '../../utils/generateFunction'
 import _getAbi, {
   InternalGetAbiParameters,
   InternalGetAbiReturnType,
-} from './_getABI'
+} from './_getAbi'
 import universalWrapper from './universalWrapper'
 
 type GetAbiParameters = Prettify<InternalGetAbiParameters>

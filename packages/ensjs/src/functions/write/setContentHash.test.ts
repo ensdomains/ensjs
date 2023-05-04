@@ -5,8 +5,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getContentHash from '../fetch/getContentHash'
-import getResolver from '../fetch/getResolver'
+import getContentHash from '../read/getContentHash'
+import getResolver from '../read/getResolver'
 import setContentHash from './setContentHash'
 
 let snapshot: Hex
