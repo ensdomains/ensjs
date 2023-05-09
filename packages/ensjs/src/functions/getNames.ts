@@ -1,4 +1,5 @@
 import { ENSArgs } from '..'
+import { returnOrThrow } from '../utils/errors'
 import { truncateFormat } from '../utils/format'
 import { AllCurrentFuses, checkPCCBurned, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
@@ -171,7 +172,7 @@ const mapResolvedAddress = ({
 }
 
 const getNames = async (
-  { gqlInstance }: ENSArgs<'gqlInstance'>,
+  { gqlInstance, provider }: ENSArgs<'gqlInstance' | 'provider'>,
   {
     address: _address,
     type,
@@ -468,8 +469,10 @@ const getNames = async (
 
   const response = await client.request(finalQuery, queryVars)
   const account = response?.account
+  const meta = response?._meta
+
   if (type === 'all') {
-    return [
+    const data = [
       ...(account?.domains.map(mapDomain) || []),
       ...(account?.registrations.map(mapRegistration) || []),
       ...(account?.wrappedDomains.map(mapWrappedDomain).filter((d: any) => d) ||
@@ -486,20 +489,27 @@ const getNames = async (
       }
       return a.createdAt.getTime() - b.createdAt.getTime()
     }) as Name[]
+    return returnOrThrow<Name[]>(data, meta, provider)
   }
   if (type === 'resolvedAddress') {
-    return (response?.domains.map(mapResolvedAddress).filter((d: any) => d) ||
-      []) as Name[]
+    const data = (response?.domains
+      .map(mapResolvedAddress)
+      .filter((d: any) => d) || []) as Name[]
+    return returnOrThrow<Name[]>(data, meta, provider)
   }
   if (type === 'owner') {
-    return (account?.domains.map(mapDomain) || []) as Name[]
+    const data = (account?.domains.map(mapDomain) || []) as Name[]
+    return returnOrThrow<Name[]>(data, meta, provider)
   }
   if (type === 'wrappedOwner') {
-    return (account?.wrappedDomains
+    const data = (account?.wrappedDomains
       .map(mapWrappedDomain)
       .filter((d: any) => d) || []) as Name[]
+    return returnOrThrow<Name[]>(data, meta, provider)
   }
-  return (account?.registrations.map(mapRegistration) || []) as Name[]
+
+  const data = (account?.registrations.map(mapRegistration) || []) as Name[]
+  return returnOrThrow<Name[]>(data, meta, provider)
 }
 
 export default getNames

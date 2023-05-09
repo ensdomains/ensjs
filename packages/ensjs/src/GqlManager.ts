@@ -21,6 +21,56 @@ const generateSelection = (selection: any) => ({
   selectionSet: undefined,
 })
 
+const metaSelection = {
+  kind: 'Field' as Kind.FIELD,
+  name: {
+    kind: 'Name' as Kind.NAME,
+    value: '_meta',
+  },
+  alias: undefined,
+  arguments: [],
+  directives: [],
+  selectionSet: {
+    kind: 'SelectionSet' as Kind.SELECTION_SET,
+    selections: [
+      {
+        kind: 'Field' as Kind.FIELD,
+        alias: undefined,
+        name: {
+          kind: 'Name' as Kind.NAME,
+          value: 'hasIndexingErrors',
+        },
+        arguments: [],
+        directives: [],
+      },
+      {
+        kind: 'Field' as Kind.FIELD,
+        alias: undefined,
+        name: {
+          kind: 'Name' as Kind.NAME,
+          value: 'block',
+        },
+        arguments: [],
+        directives: [],
+        selectionSet: {
+          kind: 'SelectionSet' as Kind.SELECTION_SET,
+          selections: [
+            {
+              kind: 'Field' as Kind.FIELD,
+              name: {
+                kind: 'Name' as Kind.NAME,
+                value: 'number',
+              },
+              arguments: [],
+              directives: [],
+            },
+          ],
+        },
+      },
+    ],
+  },
+}
+
 export const enter = (node: SelectionSetNode) => {
   let hasName = false
   let hasId = false
@@ -49,6 +99,17 @@ export const requestMiddleware =
       // eslint-disable-next-line @typescript-eslint/naming-convention
       SelectionSet: {
         enter,
+      },
+      OperationDefinition: {
+        enter: (node) => {
+          if (node.operation === 'query') {
+            node.selectionSet.selections = [
+              metaSelection,
+              ...node.selectionSet.selections,
+            ]
+          }
+          return node
+        },
       },
     })
 
