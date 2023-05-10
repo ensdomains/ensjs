@@ -134,6 +134,9 @@ const decode = async (
   const { contract, skipGraph = true } = options
 
   const labels = name.split('.')
+  const isEth = labels[labels.length - 1] === 'eth'
+  const is2LD = labels.length === 2
+
   if (contract || labels.length === 1) {
     const singleOwner = singleContractOwnerDecode(data)
     const obj = {
@@ -168,12 +171,12 @@ const decode = async (
   } = {}
 
   // check for only .eth names
-  if (labels[labels.length - 1] === 'eth') {
+  if (isEth) {
     let meta: GraphMeta | undefined
 
     // if there is no registrar owner, the name is expired
     // but we still want to get the registrar owner prior to expiry
-    if (labels.length === 2) {
+    if (is2LD) {
       if (!registrarOwner && !skipGraph) {
         const graphRegistrantResult = await gqlInstance.client.request(
           registrantQuery,
@@ -193,12 +196,27 @@ const decode = async (
         }
       }
     }
-    // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
-    // there is no "registrant" for wrapped names
+
+    // If baseReturnObject.expired is true, then we know that the name is expired and a 2LD eth name.
+    // If the reigstry owner is the nameWrapper, then we know it's a wrapped name.
     if (
-      registrarOwner?.toLowerCase() === nameWrapper.address.toLowerCase() ||
+      baseReturnObject.expired &&
       registryOwner?.toLowerCase() === nameWrapper.address.toLowerCase()
     ) {
+      return returnOrThrow<Owner>(
+        {
+          owner: nameWrapperOwner,
+          ownershipLevel: 'nameWrapper',
+          ...baseReturnObject,
+        },
+        meta,
+        provider,
+      )
+    }
+
+    // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
+    // there is no "registrant" for wrapped names.
+    if (registrarOwner?.toLowerCase() === nameWrapper.address.toLowerCase()) {
       return returnOrThrow<Owner>(
         {
           owner: nameWrapperOwner,
