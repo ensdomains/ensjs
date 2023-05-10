@@ -417,22 +417,6 @@ Output:
   - _Only applicable for address inputs_
   - Forward resolved match check value
 
-### getRecords
-
-Gets all the records of a specified name, or just certain records if specified.
-
-Input:
-
-- `name`: string
-- `options`: object?
-  - `contentHash`: boolean?
-  - `texts`: boolean? | string[]?
-    - Array of keys, or true for all keys
-  - `coinTypes`: boolean? | string[]?
-    - Array of keys, or true for all keys
-
-Output: **see getProfile**
-
 ### getResolver
 
 Gets the resolver for a specified name.
