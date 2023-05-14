@@ -6,10 +6,9 @@ import { decodeFuses } from '../utils/fuses'
 type Result = Awaited<ReturnType<ENS['getSubnames']>>
 
 let ensInstance: ENS
-let provider: any
 
 beforeAll(async () => {
-  ;({ ensInstance, provider } = await setup())
+  ;({ ensInstance } = await setup())
 })
 
 const testProperties = (obj: object, ...properties: string[]) =>
@@ -1584,41 +1583,16 @@ describe('getSubnames', () => {
 
   describe(' errors', () => {
     beforeAll(() => {
-      process.env.NODE_ENV = 'development'
-      jest
-        .spyOn(provider, 'getBlock')
-        .mockImplementation(() =>
-          Promise.resolve({ timestamp: 1671169189 } as any),
-        )
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = 'on'
+      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphError')
     })
 
     afterAll(() => {
-      process.env.NODE_ENV = 'test'
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = ''
       localStorage.removeItem('ensjs-debug')
     })
 
-    it('should throw an error with data if ensjs-debug is set to ENSJSSubgraphIndexingError', async () => {
-      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphIndexingError')
-      try {
-        const result = await ensInstance.getSubnames({
-          name: 'with-subnames.eth',
-          pageSize: 10,
-          orderBy: 'createdAt',
-          orderDirection: 'desc',
-        })
-        expect(result).toBeFalsy()
-      } catch (e) {
-        expect(e).toBeInstanceOf(ENSJSError)
-        const error = e as ENSJSError<Result>
-        expect(error.name).toBe('ENSJSSubgraphIndexingError')
-        expect(error.data?.subnames.length).toBe(4)
-        expect(error.data?.subnameCount).toBe(4)
-        expect(error.timestamp).toBe(1671169189)
-      }
-    })
-
     it('should throw an error with no data if ensjs-debug is set to ENSJSUknownError', async () => {
-      localStorage.setItem('ensjs-debug', 'ENSJSUnknownError')
       try {
         const result = await ensInstance.getSubnames({
           name: 'with-subnames.eth',
@@ -1630,9 +1604,11 @@ describe('getSubnames', () => {
       } catch (e) {
         expect(e).toBeInstanceOf(ENSJSError)
         const error = e as ENSJSError<Result>
-        expect(error.name).toBe('ENSJSUnknownError')
-        expect(error.data).toBeUndefined()
-        expect(error.timestamp).toBeUndefined()
+        expect(error.name).toBe('ENSJSSubgraphError')
+        expect(error.data).toEqual({
+          subnames: [],
+          subnameCount: 0,
+        })
       }
     })
   })

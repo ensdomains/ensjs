@@ -5,10 +5,9 @@ import { ReturnData } from './getHistory'
 
 let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
-let provider: any
 
 beforeAll(async () => {
-  ;({ ensInstance, revert, provider } = await setup())
+  ;({ ensInstance, revert } = await setup())
 })
 
 afterAll(async () => {
@@ -52,37 +51,16 @@ describe('getHistory', () => {
 
   describe('errors', () => {
     beforeAll(() => {
-      process.env.NODE_ENV = 'development'
-      jest
-        .spyOn(provider, 'getBlock')
-        .mockImplementation(() =>
-          Promise.resolve({ timestamp: 1671169189 } as any),
-        )
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = 'on'
+      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphError')
     })
 
     afterAll(() => {
-      process.env.NODE_ENV = 'test'
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = ''
       localStorage.removeItem('ensjs-debug')
     })
 
-    it('should throw an error with data if ensjs-debug is set to ENSJSSubgraphIndexingError', async () => {
-      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphIndexingError')
-      try {
-        await ensInstance.getHistory('with-profile.eth')
-        expect(true).toBeFalsy()
-      } catch (e) {
-        expect(e).toBeInstanceOf(ENSJSError)
-        const error = e as ENSJSError<ReturnData>
-        const result = error.data
-        expect(result).toBeTruthy()
-        expect(result).toHaveProperty('domain')
-        expect(result).toHaveProperty('resolver')
-        expect(result).toHaveProperty('registration')
-      }
-    })
-
-    it('should throw an error no data if ensjs-debug is set to ENSJSUnknownError', async () => {
-      localStorage.setItem('ensjs-debug', 'ENSJSUnknownError')
+    it('should throw an error with no data', async () => {
       try {
         await ensInstance.getHistory('with-profile.eth')
         expect(true).toBeFalsy()
