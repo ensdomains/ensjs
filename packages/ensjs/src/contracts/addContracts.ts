@@ -58,6 +58,25 @@ const addresses = {
   },
 } as const
 
+const subgraphs = {
+  homestead: {
+    ens: {
+      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+    },
+  },
+  goerli: {
+    ens: {
+      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
+    },
+  },
+} as const
+
+type Subgraphs = {
+  ens: {
+    url: string
+  }
+}
+
 type EnsChainContracts = {
   ensBaseRegistrarImplementation: ChainContract
   ensDnsRegistrar: ChainContract
@@ -76,6 +95,7 @@ type BaseChainContracts = {
 
 export type ChainWithEns<TChain extends Chain = Chain> = TChain & {
   contracts: BaseChainContracts & EnsChainContracts
+  subgraphs: Subgraphs
 }
 
 export type ClientWithEns<
@@ -101,6 +121,9 @@ export const addContracts = <TChain extends Chain = Chain>(
           contracts: {
             ...chain.contracts,
             ...addresses[chain.name as keyof typeof addresses],
+          },
+          subgraphs: {
+            ...subgraphs[chain.name as keyof typeof subgraphs],
           },
         } as ChainWithEns<TChain>),
     )

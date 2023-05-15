@@ -63,6 +63,11 @@ export const localhost = {
       address: deploymentAddresses.BulkRenewal,
     },
   },
+  subgraphs: {
+    ens: {
+      url: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+    },
+  },
 } as const
 
 const transport = http('http://localhost:8545')

@@ -1,6 +1,5 @@
 // Adapted from https://github.com/mafintosh/dns-packet
-import type { ByteArray } from 'viem'
-import { stringToBytes } from 'viem'
+import { ByteArray, bytesToString, stringToBytes } from 'viem'
 
 /*
  * @description Encodes a DNS packet into a ByteArray containing a UDP payload.
@@ -26,4 +25,22 @@ export function packetToBytes(packet: string): ByteArray {
   }
 
   return bytes
+}
+
+export function bytesToPacket(bytes: ByteArray): string {
+  let offset = 0
+  let result = ''
+
+  while (offset < bytes.length) {
+    const len = bytes[offset]
+    if (len === 0) {
+      offset += 1
+      break
+    }
+
+    result += `${bytesToString(bytes.subarray(offset + 1, offset + len + 1))}.`
+    offset += len + 1
+  }
+
+  return result.replace(/\.$/, '')
 }

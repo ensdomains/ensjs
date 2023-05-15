@@ -252,3 +252,23 @@ export const unwrapEth2ldSnippet = [
     type: 'function',
   },
 ] as const
+
+export const namesSnippet = [
+  {
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    name: 'names',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
