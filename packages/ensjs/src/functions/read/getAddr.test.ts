@@ -1,5 +1,16 @@
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addContracts } from '../../contracts/addContracts'
 import { publicClient } from '../../tests/addTestContracts'
 import getAddr from './getAddr'
+
+const [mainnetWithEns] = addContracts([mainnet])
+const transport = http('https://web3.ens.domains/v1/mainnet')
+
+const mainnetPublicClient = createPublicClient({
+  chain: mainnetWithEns,
+  transport,
+})
 
 describe('getAddr()', () => {
   it('returns the ETH record when no coin is provided', async () => {
@@ -57,5 +68,17 @@ describe('getAddr()', () => {
       coin: 'BNB',
     })
     expect(result).toBeNull()
+  })
+  it('should return value for label > 255 bytes', async () => {
+    const result = await getAddr(mainnetPublicClient, {
+      name: `696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969.eth`,
+    })
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "id": 60,
+        "name": "ETH",
+        "value": "0xde9ba5F62D6047C4a9cCF24455AA733cCC5B8F41",
+      }
+    `)
   })
 })

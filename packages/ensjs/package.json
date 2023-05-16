@@ -89,7 +89,7 @@
     "graphql-request": "5.1.0",
     "pako": "^2.1.0",
     "traverse": "^0.6.6",
-    "viem": "^0.3.11"
+    "viem": "^0.3.24"
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",

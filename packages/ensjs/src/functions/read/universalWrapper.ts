@@ -3,6 +3,8 @@ import {
   Hex,
   decodeFunctionResult,
   encodeFunctionData,
+  labelhash,
+  toBytes,
   toHex,
 } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
@@ -11,6 +13,7 @@ import { resolveSnippet } from '../../contracts/universalResolver'
 import { SimpleTransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
 import { packetToBytes } from '../../utils/hexEncodedName'
+import { encodeLabelhash } from '../../utils/labels'
 
 export type UniversalWrapperParameters = {
   name: string
@@ -26,12 +29,22 @@ const encode = (
   client: ClientWithEns,
   { name, data }: UniversalWrapperParameters,
 ): SimpleTransactionRequest => {
+  const nameWithSizedLabels = name
+    .split('.')
+    .map((label) => {
+      const labelLength = toBytes(label).byteLength
+      if (labelLength > 255) {
+        return encodeLabelhash(labelhash(label))
+      }
+      return label
+    })
+    .join('.')
   return {
     to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
     data: encodeFunctionData({
       abi: resolveSnippet,
       functionName: 'resolve',
-      args: [toHex(packetToBytes(name)), data],
+      args: [toHex(packetToBytes(nameWithSizedLabels)), data],
     }),
   }
 }

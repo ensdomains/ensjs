@@ -132,7 +132,7 @@ importers:
       ts-node: ^10.7.0
       typechain: ^8.1.0
       typescript: ^5.0.4
-      viem: ^0.3.11
+      viem: ^0.3.24
       wait-on: ^6.0.1
     dependencies:
       '@adraffy/ens-normalize': 1.9.0
@@ -146,7 +146,7 @@ importers:
       graphql-request: 5.1.0_graphql@16.6.0
       pako: 2.1.0
       traverse: 0.6.6
-      viem: 0.3.11_typescript@5.0.4
+      viem: 0.3.24_typescript@5.0.4
     devDependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.10.2
       '@ensdomains/ens-contracts': 0.0.17_hardhat@2.10.2
@@ -1601,14 +1601,8 @@ packages:
     resolution: {integrity: sha512-eMk0b9ReBbV23xXU693TAIrLyeO5iTgBZGSJfpqriG8UkYvr/hC9u9pyMlAakDNHWmbhMZCDs6KQO0jzKD8OTw==}
     dev: false
 
-  /@noble/curves/0.8.3:
-    resolution: {integrity: sha512-OqaOf4RWDaCRuBKJLDURrgVxjLmneGsiCXGuzYB5y95YithZMA6w4uk34DHSm0rKMrrYiaeZj48/81EvaAScLQ==}
-    dependencies:
-      '@noble/hashes': 1.3.0
-    dev: false
-
-  /@noble/curves/0.9.0:
-    resolution: {integrity: sha512-OAdtHMXBp7Chl2lcTn/i7vnFX/q+hhTwDnek5NfYfZsY4LyaUuHCcoq2JlLY3BTFTLT+ZhYZalhF6ejlV7KnJQ==}
+  /@noble/curves/1.0.0:
+    resolution: {integrity: sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==}
     dependencies:
       '@noble/hashes': 1.3.0
     dev: false
@@ -1739,10 +1733,10 @@ packages:
       '@scure/base': 1.1.1
     dev: true
 
-  /@scure/bip32/1.2.0:
-    resolution: {integrity: sha512-O+vT/hBVk+ag2i6j2CDemwd1E1MtGt+7O1KzrPNsaNvSsiEK55MyPIxJIMI2PS8Ijj464B2VbQlpRoQXxw1uHg==}
+  /@scure/bip32/1.3.0:
+    resolution: {integrity: sha512-bcKpo1oj54hGholplGLpqPHRbIsnbixFtc06nwuNM5/dwSXOq/AAYoIBRsBmnZJSdfeNW5rnff7NTAz3ZCqR9Q==}
     dependencies:
-      '@noble/curves': 0.8.3
+      '@noble/curves': 1.0.0
       '@noble/hashes': 1.3.0
       '@scure/base': 1.1.1
     dev: false
@@ -2561,8 +2555,8 @@ packages:
     dev: false
     optional: true
 
-  /abitype/0.7.1_typescript@5.0.4:
-    resolution: {integrity: sha512-VBkRHTDZf9Myaek/dO3yMmOzB/y2s3Zo6nVU7yaw1G+TvCHAjwaJzNGN9yo4K5D8bU/VZXKP1EJpRhFr862PlQ==}
+  /abitype/0.8.0_typescript@5.0.4:
+    resolution: {integrity: sha512-QqBuwc2trtaNd/kp4k0dSjVu3OQIYRAB4ww4LCPwfSECXcCGTD3imYovNYNjx0SyN3OHV0XUOzUVwnXP1kLsVQ==}
     peerDependencies:
       typescript: '>=4.9.4'
       zod: ^3 >=3.19.1
@@ -2573,10 +2567,10 @@ packages:
       typescript: 5.0.4
     dev: false
 
-  /abitype/0.8.0_typescript@5.0.4:
-    resolution: {integrity: sha512-QqBuwc2trtaNd/kp4k0dSjVu3OQIYRAB4ww4LCPwfSECXcCGTD3imYovNYNjx0SyN3OHV0XUOzUVwnXP1kLsVQ==}
+  /abitype/0.8.2_typescript@5.0.4:
+    resolution: {integrity: sha512-B1ViNMGpfx/qjVQi0RTc2HEFHuR9uoCoTEkwELT5Y7pBPtBbctYijz9BK6+Kd0hQ3S70FhYTO2dWWk0QNUEXMA==}
     peerDependencies:
-      typescript: '>=4.9.4'
+      typescript: '>=5.0.4'
       zod: ^3 >=3.19.1
     peerDependenciesMeta:
       zod:
@@ -9611,16 +9605,16 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /viem/0.3.11_typescript@5.0.4:
-    resolution: {integrity: sha512-Z7AXS31B/hukJyrDD9GhdE9j2OtsoTdNNJgLNC3sNPMgBcF90y8u+t+uiHSxLivXia+JLCer5M+LC+edPXV6tw==}
+  /viem/0.3.24_typescript@5.0.4:
+    resolution: {integrity: sha512-Oa2FgJ4mswl1I6nPPnyBnt+9+8w4/xcw4XjB1q115g9JJOqX8Ic9nq4Z31lDAonjtCca+K7u1M30t1lFXafqFg==}
     dependencies:
       '@adraffy/ens-normalize': 1.9.0
-      '@noble/curves': 0.9.0
+      '@noble/curves': 1.0.0
       '@noble/hashes': 1.3.0
-      '@scure/bip32': 1.2.0
+      '@scure/bip32': 1.3.0
       '@scure/bip39': 1.2.0
       '@wagmi/chains': 0.2.16_typescript@5.0.4
-      abitype: 0.7.1_typescript@5.0.4
+      abitype: 0.8.2_typescript@5.0.4
       isomorphic-ws: 5.0.0_ws@8.12.0
       ws: 8.12.0
     transitivePeerDependencies:
