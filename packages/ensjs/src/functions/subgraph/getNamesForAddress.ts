@@ -1,12 +1,15 @@
 import { gql } from 'graphql-request'
-import { Address, Hex, getAddress } from 'viem'
+import { Address } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
-import { DateWithValue } from '../../types'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts'
-import { truncateFormat } from '../../utils/format'
-import { AllCurrentFuses, decodeFuses } from '../../utils/fuses'
-import { decryptName } from '../../utils/labels'
 import { createSubgraphClient } from './client'
+import {
+  SubgraphDomain,
+  domainDetailsFragment,
+  registrationDetailsFragment,
+  wrappedDomainDetailsFragment,
+} from './fragments'
+import { Name, makeNameObject } from './utils'
 
 type GetNamesForAddressOrderBy =
   | 'expiryDate'
@@ -33,115 +36,17 @@ export type GetNamesForAddressParameters = {
   orderBy?: GetNamesForAddressOrderBy
   orderDirection?: 'asc' | 'desc'
 
-  previousPage?: Name[]
+  previousPage?: NameWithRelation[]
   pageSize?: number
 }
 
-export type Name = {
-  id: Hex
-  name: string
-  truncatedName?: string
-  labelName: string | null
-  labelhash: Hex
-  isMigrated: boolean
-  parentName: string | null
-  createdAt: DateWithValue<number>
-  registrationDate?: DateWithValue<number>
-  expiryDate?: DateWithValue<number>
-  fuses?: AllCurrentFuses
-  owner: Address
-  registrant?: Address
-  wrappedOwner?: Address
-  resolvedAddress?: Address
+export type NameWithRelation = Name & {
   relation: GetNamesForAddressRelation
-}
-
-const domainDetailsFragment = gql`
-  fragment DomainDetails on Domain {
-    id
-    labelName
-    labelhash
-    name
-    isMigrated
-    parent {
-      name
-    }
-    createdAt
-    resolvedAddress {
-      id
-    }
-    owner {
-      id
-    }
-    registrant {
-      id
-    }
-    wrappedOwner {
-      id
-    }
-  }
-`
-
-type SubgraphDomainFragment = {
-  id: Hex
-  labelName: string | null
-  labelhash: Hex
-  name: string
-  isMigrated: boolean
-  parent?: {
-    name: string
-  }
-  createdAt: string
-  resolvedAddress?: {
-    id: Address
-  }
-  owner: {
-    id: Address
-  }
-  registrant?: {
-    id: Address
-  }
-  wrappedOwner?: {
-    id: Address
-  }
-}
-
-const registrationDetailsFragment = gql`
-  fragment RegistrationDetails on Registration {
-    registrationDate
-    expiryDate
-  }
-`
-
-type SubgraphRegistrationFragment = {
-  registrationDate: string
-  expiryDate: string
-}
-
-const wrappedDomainDetailsFragment = gql`
-  fragment WrappedDomainDetails on WrappedDomain {
-    expiryDate
-    fuses
-  }
-`
-
-type SubgraphWrappedDomainFragment = {
-  expiryDate: string
-  fuses: string
-}
-
-type SubgraphDomain = SubgraphDomainFragment & {
-  registration?: SubgraphRegistrationFragment
-  wrappedDomain?: SubgraphWrappedDomainFragment
 }
 
 type SubgraphResult = {
   domains: SubgraphDomain[]
 }
-
-const getChecksumAddressOrNull = (
-  address: string | undefined,
-): Address | null => (address ? getAddress(address) : null)
 
 const getNamesForAddress = async (
   client: ClientWithEns,
@@ -160,7 +65,7 @@ const getNamesForAddress = async (
     pageSize = 100,
     previousPage,
   }: GetNamesForAddressParameters,
-): Promise<Name[]> => {
+): Promise<NameWithRelation[]> => {
   const subgraphClient = createSubgraphClient({ client })
 
   let ownerWhereFilter = `
@@ -260,7 +165,7 @@ const getNamesForAddress = async (
             name_${operator}: $orderByStringVar
           }
         `
-        orderByStringVar = lastDomain.name
+        orderByStringVar = lastDomain.name ?? ''
         break
       }
       case 'labelName': {
@@ -374,15 +279,6 @@ const getNamesForAddress = async (
   if (!result) return []
 
   const names = result.domains.map((domain) => {
-    const decrypted = domain.name ? decryptName(domain.name) : null
-    const createdAt = parseInt(domain.createdAt) * 1000
-    const registrationDate = domain.registration?.registrationDate
-      ? parseInt(domain.registration?.registrationDate) * 1000
-      : null
-    const expiryDateRef =
-      domain.registration?.expiryDate || domain.wrappedDomain?.expiryDate
-    const expiryDate = expiryDateRef ? parseInt(expiryDateRef) * 1000 : null
-
     const relation: GetNamesForAddressRelation = {}
 
     if (domain.owner) {
@@ -400,38 +296,9 @@ const getNamesForAddress = async (
     }
 
     return {
-      id: domain.id,
-      name: decrypted,
-      truncatedName: decrypted ? truncateFormat(decrypted) : null,
-      labelName: domain.labelName,
-      labelhash: domain.labelhash,
-      isMigrated: domain.isMigrated,
-      parentName: domain.parent?.name ?? null,
-      createdAt: {
-        date: new Date(createdAt),
-        value: createdAt,
-      },
-      registrationDate: registrationDate
-        ? {
-            date: new Date(registrationDate),
-            value: registrationDate,
-          }
-        : null,
-      expiryDate: expiryDate
-        ? {
-            date: new Date(expiryDate),
-            value: expiryDate,
-          }
-        : null,
-      fuses: domain.wrappedDomain?.fuses
-        ? decodeFuses(parseInt(domain.wrappedDomain.fuses))
-        : null,
-      owner: getAddress(domain.owner.id),
-      registrant: getChecksumAddressOrNull(domain.registrant?.id),
-      wrappedOwner: getChecksumAddressOrNull(domain.wrappedOwner?.id),
-      resolvedAddress: getChecksumAddressOrNull(domain.resolvedAddress?.id),
+      ...makeNameObject(domain),
       relation,
-    } as Name
+    }
   })
 
   return names

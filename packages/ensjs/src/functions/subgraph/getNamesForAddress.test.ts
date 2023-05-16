@@ -2,7 +2,7 @@
 
 import { Address } from 'viem'
 import { publicClient, walletClient } from '../../tests/addTestContracts'
-import getNamesForAddress, { Name } from './getNamesForAddress'
+import getNamesForAddress, { NameWithRelation } from './getNamesForAddress'
 
 let accounts: Address[]
 
@@ -136,17 +136,19 @@ describe.each([
   {
     orderBy: 'name',
     orderDirection: 'asc',
-    compareFn: (a: Name, b: Name) => a.name.localeCompare(b.name),
+    compareFn: (a: NameWithRelation, b: NameWithRelation) =>
+      (a.name || '').localeCompare(b.name || ''),
   },
   {
     orderBy: 'name',
     orderDirection: 'desc',
-    compareFn: (a: Name, b: Name) => b.name.localeCompare(a.name),
+    compareFn: (a: NameWithRelation, b: NameWithRelation) =>
+      (b.name || '').localeCompare(a.name || ''),
   },
   {
     orderBy: 'labelName',
     orderDirection: 'asc',
-    compareFn: (a: Name, b: Name) => {
+    compareFn: (a: NameWithRelation, b: NameWithRelation) => {
       const aLabelName = a.labelName || ''
       const bLabelName = b.labelName || ''
       return aLabelName.localeCompare(bLabelName)
@@ -155,7 +157,7 @@ describe.each([
   {
     orderBy: 'labelName',
     orderDirection: 'desc',
-    compareFn: (a: Name, b: Name) => {
+    compareFn: (a: NameWithRelation, b: NameWithRelation) => {
       const aLabelName = a.labelName || ''
       const bLabelName = b.labelName || ''
       return bLabelName.localeCompare(aLabelName)
@@ -164,7 +166,7 @@ describe.each([
   {
     orderBy: 'expiryDate',
     orderDirection: 'asc',
-    compareFn: (a: Name, b: Name) => {
+    compareFn: (a: NameWithRelation, b: NameWithRelation) => {
       const aExpiryDate = a.expiryDate?.value || Infinity
       const bExpiryDate = b.expiryDate?.value || Infinity
       return aExpiryDate - bExpiryDate
@@ -173,7 +175,7 @@ describe.each([
   {
     orderBy: 'expiryDate',
     orderDirection: 'desc',
-    compareFn: (a: Name, b: Name) => {
+    compareFn: (a: NameWithRelation, b: NameWithRelation) => {
       const aExpiryDate = a.expiryDate?.value || Infinity
       const bExpiryDate = b.expiryDate?.value || Infinity
       return bExpiryDate - aExpiryDate
@@ -182,7 +184,7 @@ describe.each([
   {
     orderBy: 'createdAt',
     orderDirection: 'asc',
-    compareFn: (a: Name, b: Name) => {
+    compareFn: (a: NameWithRelation, b: NameWithRelation) => {
       const aCreatedAt = a.createdAt.value
       const bCreatedAt = b.createdAt.value
       return aCreatedAt - bCreatedAt
@@ -191,7 +193,7 @@ describe.each([
   {
     orderBy: 'createdAt',
     orderDirection: 'desc',
-    compareFn: (a: Name, b: Name) => {
+    compareFn: (a: NameWithRelation, b: NameWithRelation) => {
       const aCreatedAt = a.createdAt.value
       const bCreatedAt = b.createdAt.value
       return bCreatedAt - aCreatedAt
@@ -209,7 +211,7 @@ describe.each([
       })
       if (!fullResult.length) throw new Error('No names found')
       const paginatedResults = []
-      let lastResult: Name[] = []
+      let lastResult: NameWithRelation[] = []
       do {
         const result = await getNamesForAddress(publicClient, {
           address: accounts[1],
