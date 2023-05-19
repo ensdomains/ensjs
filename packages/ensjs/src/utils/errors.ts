@@ -1,7 +1,7 @@
 import { ClientError } from 'graphql-request'
 import { GraphQLError } from 'graphql'
 
-export type ENSJSErrorName = 'ENSJSSubgraphError' | 'ENSJSNetworkLatencyError'
+export type ENSJSErrorName = 'ENSJSSubgraphError'
 
 export class ENSJSError<T> extends Error {
   name = 'ENSJSSubgraphError'
@@ -22,12 +22,26 @@ export const getClientErrors = (e: unknown) => {
   return error?.response?.errors || [new GraphQLError('unknown_error')]
 }
 
+const isDebugEnvironmentActive = () => {
+  return (
+    process.env.NODE_ENV === 'development' ||
+    process.env.NEXT_PUBLIC_ENSJS_DEBUG === 'on'
+  )
+}
+
 export const debugSubgraphError = (request: any) => {
   if (
-    process.env.NEXT_PUBLIC_ENSJS_DEBUG === 'on' &&
+    isDebugEnvironmentActive() &&
     typeof localStorage !== 'undefined' &&
     localStorage.getItem('ensjs-debug') === 'ENSJSSubgraphError'
   ) {
+    // If we are testing indexing errors, we will allow _meta queries
+    // to pass through.
+    if (
+      localStorage.getItem('subgraph-debug') === 'ENSJSSubgraphIndexingError' &&
+      /_meta {/.test(request.body)
+    )
+      return
     throw new ClientError(
       {
         data: undefined,
@@ -41,7 +55,7 @@ export const debugSubgraphError = (request: any) => {
 
 export const debugSubgraphLatency = (): Promise<void> | undefined => {
   if (
-    process.env.NEXT_PUBLIC_ENSJS_DEBUG === 'on' &&
+    isDebugEnvironmentActive() &&
     typeof localStorage !== 'undefined' &&
     localStorage.getItem('ensjs-debug') === 'ENSJSSubgraphLatency'
   ) {
