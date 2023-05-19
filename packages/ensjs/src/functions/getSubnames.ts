@@ -1,4 +1,9 @@
 import { ENSArgs } from '..'
+import {
+  ENSJSError,
+  getClientErrors,
+  debugSubgraphLatency,
+} from '../utils/errors'
 import { truncateFormat } from '../utils/format'
 import { AllCurrentFuses, checkPCCBurned, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
@@ -30,6 +35,11 @@ type WrappedSubname = BaseSubname & {
 }
 
 type Subname = WrappedSubname | UnwrappedSubname
+
+type ReturnData = {
+  subnames: Subname[]
+  subnameCount: number
+}
 
 type Params = {
   name: string
@@ -127,7 +137,19 @@ const largeQuery = async (
     orderDirection,
     search: search?.toLowerCase(),
   }
-  const response = await client.request(finalQuery, queryVars)
+  const response = await client
+    .request(finalQuery, queryVars)
+    .catch((e) => {
+      throw new ENSJSError({
+        data: {
+          subnames: [],
+          subnameCount: 0,
+        },
+        errors: getClientErrors(e),
+      })
+    })
+    .finally(debugSubgraphLatency)
+
   const domain = response?.domain
   const subdomains = domain.subdomains.map(
     ({ wrappedDomain, ...subname }: Domain) => {
@@ -174,7 +196,7 @@ const largeQuery = async (
 const getSubnames = (
   injected: ENSArgs<'gqlInstance'>,
   functionArgs: Params,
-): Promise<{ subnames: Subname[]; subnameCount: number }> => {
+): Promise<ReturnData> => {
   return largeQuery(injected, functionArgs)
 }
 

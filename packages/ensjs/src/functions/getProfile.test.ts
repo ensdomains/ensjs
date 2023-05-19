@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import { ethers } from 'ethers'
 import { ENS } from '..'
 import setup, { deploymentAddresses } from '../tests/setup'
+import { ENSJSError } from '../utils/errors'
 
 dotenv.config()
 
@@ -78,6 +79,42 @@ describe('getProfile', () => {
       )
       expect(result).toBeUndefined()
     })
+
+    describe('skipGraph', () => {
+      it('should return undefined if skipGraph is true', async () => {
+        const result = await ensInstance.getProfile(
+          '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+          { skipGraph: true },
+        )
+        expect(result).toBeUndefined()
+      })
+
+      it('should return undefined with specified records and skipGraph is true', async () => {
+        const result = await ensInstance.getProfile(
+          '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+          {
+            texts: ['description', 'url'],
+            coinTypes: ['ETC_LEGACY', '0'],
+            skipGraph: true,
+          },
+        )
+        expect(result).toBeUndefined()
+      })
+
+      it('should return fallback records if skipGraph is true', async () => {
+        const result = await ensInstance.getProfile(
+          '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+          {
+            fallback: {
+              texts: ['description', 'url'],
+              coinTypes: ['ETC_LEGACY', '0'],
+            },
+            skipGraph: true,
+          },
+        )
+        checkRecords(result, 2, 3)
+      })
+    })
   })
   describe('with a name', () => {
     it('should return a profile object with no other args', async () => {
@@ -129,6 +166,33 @@ describe('getProfile', () => {
     it('should return undefined for an unregistered name', async () => {
       const result = await ensInstance.getProfile('test123123123cool.eth')
       expect(result).toBeUndefined()
+    })
+
+    describe('skipGraph', () => {
+      it('should return undefined if skipGraph is true', async () => {
+        const result = await ensInstance.getProfile('with-profile.eth', {
+          skipGraph: true,
+        })
+        expect(result).toBeUndefined()
+      })
+      it('should return undefined if skipGraph is true with specified records', async () => {
+        const result = await ensInstance.getProfile('with-profile.eth', {
+          texts: ['description', 'url'],
+          coinTypes: ['ETC_LEGACY', '0'],
+          skipGraph: true,
+        })
+        expect(result).toBeUndefined()
+      })
+      it('should return a profile object if skipGraph is true with fallback options', async () => {
+        const result = await ensInstance.getProfile('with-profile.eth', {
+          fallback: {
+            texts: ['description', 'url'],
+            coinTypes: ['ETC_LEGACY', '0'],
+          },
+          skipGraph: true,
+        })
+        checkRecords(result, 2, 3)
+      })
     })
   })
   describe('with an old resolver', () => {
@@ -213,13 +277,76 @@ describe('getProfile', () => {
       const result = await ensInstance.getProfile('wrapped.eth', {
         resolverAddress: '0xb794F5eA0ba39494cE839613fffBA74279579268',
       })
-      expect(result).toBeDefined()
       if (result) {
         expect(result.address).toBeFalsy()
-        expect(Object.keys(result.records!).length).toBe(0)
+        const recordsKeys = Object.keys(result.records!).filter(
+          (key) => key !== 'contentHash',
+        )
+        expect(recordsKeys.length).toBe(0)
+        const contentHash = result.records!.contentHash || {}
+        expect(Object.keys(contentHash).length).toBe(0)
         expect(result.resolverAddress).toBe(
           '0xb794F5eA0ba39494cE839613fffBA74279579268',
         )
+      }
+    })
+  })
+
+  describe('errors', () => {
+    beforeAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = 'on'
+      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphError')
+    })
+
+    afterAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = ''
+      localStorage.removeItem('ensjs-debug')
+    })
+
+    it('should throw an ensjs error with no data', async () => {
+      try {
+        await ensInstance.getProfile('with-profile.eth')
+        expect(true).toBeFalsy()
+      } catch (e) {
+        expect(e).toBeInstanceOf(ENSJSError)
+        const error = e as ENSJSError<any>
+        expect(error.name).toBe('ENSJSSubgraphError')
+        expect(error.data).toBeUndefined()
+      }
+    })
+
+    it('should throw error with data of fallback records', async () => {
+      try {
+        await ensInstance.getProfile(
+          '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+          {
+            fallback: {
+              texts: ['description', 'url'],
+              coinTypes: ['ETC_LEGACY', '0'],
+            },
+          },
+        )
+        expect(true).toBeFalsy()
+      } catch (e) {
+        expect(e).toBeInstanceOf(ENSJSError)
+        const error = e as ENSJSError<any>
+        expect(error.name).toBe('ENSJSSubgraphError')
+        checkRecords(error.data, 2, 3)
+      }
+    })
+
+    it('should not throw an ensjs error if skipGraph is true', async () => {
+      try {
+        const result = await ensInstance.getProfile('with-profile.eth', {
+          skipGraph: true,
+          fallback: {
+            texts: ['description', 'url'],
+            coinTypes: ['ETC_LEGACY', '0'],
+          },
+        })
+        checkRecords(result, 2, 3)
+      } catch (e) {
+        expect(true).toBeFalsy()
       }
     })
   })

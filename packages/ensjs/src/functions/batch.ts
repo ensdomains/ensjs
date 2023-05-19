@@ -1,5 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BatchFunctionResult, ENSArgs, RawFunction } from '..'
+import { ENSJSError } from '../utils/errors'
 
 const raw = async (
   { multicallWrapper }: ENSArgs<'multicallWrapper'>,
@@ -26,7 +27,7 @@ const decode = async (
   const response = await multicallWrapper.decode(data, passthrough)
   if (!response) return
 
-  return Promise.all(
+  const results = await Promise.allSettled(
     response.map((ret: any, i: number) => {
       if (passthrough[i].passthrough) {
         return items[i].decode(
@@ -38,6 +39,35 @@ const decode = async (
       return items[i].decode(ret.returnData, ...items[i].args)
     }),
   )
+
+  const reducedResults = results.reduce<{
+    errors: any[]
+    data: any[]
+  }>(
+    (acc, result) => {
+      if (result.status === 'fulfilled') {
+        return { ...acc, data: [...acc.data, result.value] }
+      }
+      const error =
+        result.reason instanceof ENSJSError
+          ? (result.reason as ENSJSError<any>)
+          : undefined
+      const itemData = error?.data
+      const itemErrors = error?.errors || [{ message: 'unknown_error' }]
+      return {
+        errors: [...acc.errors, ...itemErrors],
+        data: [...acc.data, itemData],
+      }
+    },
+    { data: [], errors: [] },
+  )
+
+  if (reducedResults.errors.length)
+    throw new ENSJSError({
+      data: reducedResults.data,
+      errors: reducedResults.errors,
+    })
+  return reducedResults.data
 }
 
 export default {

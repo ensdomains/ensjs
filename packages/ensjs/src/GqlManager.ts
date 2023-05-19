@@ -7,6 +7,7 @@ import type {
 } from 'graphql'
 import type { gql, GraphQLClient } from 'graphql-request'
 import type Traverse from 'traverse'
+import { debugSubgraphError } from './utils/errors'
 import { namehash } from './utils/normalise'
 
 const generateSelection = (selection: any) => ({
@@ -42,6 +43,9 @@ export const enter = (node: SelectionSetNode) => {
 export const requestMiddleware =
   (visit: typeof Visit, parse: typeof Parse, print: typeof Print) =>
   (request: any) => {
+    // Debug here because response middleware will resolve any error thrown
+    debugSubgraphError(request)
+
     const requestBody = JSON.parse(request.body)
     const rawQuery = requestBody.query
     const parsedQuery = parse(rawQuery)
@@ -60,6 +64,9 @@ export const requestMiddleware =
 
 export const responseMiddleware =
   (traverse: typeof Traverse) => (response: any) => {
+    // If response is of type error, we do not need to further process it
+    if (response instanceof Error) return response
+
     // eslint-disable-next-line func-names
     traverse(response).forEach(function (responseItem: any) {
       if (responseItem instanceof Object && responseItem.name) {

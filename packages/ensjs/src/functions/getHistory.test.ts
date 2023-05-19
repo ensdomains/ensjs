@@ -1,5 +1,7 @@
 import { ENS } from '..'
 import setup from '../tests/setup'
+import { ENSJSError } from '../utils/errors'
+import { ReturnData } from './getHistory'
 
 let ensInstance: ENS
 let revert: Awaited<ReturnType<typeof setup>>['revert']
@@ -45,5 +47,28 @@ describe('getHistory', () => {
       expect(result).toHaveProperty('resolver')
       expect(result).not.toHaveProperty('registration')
     }
+  })
+
+  describe('errors', () => {
+    beforeAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = 'on'
+      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphError')
+    })
+
+    afterAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = ''
+      localStorage.removeItem('ensjs-debug')
+    })
+
+    it('should throw an error with no data', async () => {
+      try {
+        await ensInstance.getHistory('with-profile.eth')
+        expect(true).toBeFalsy()
+      } catch (e) {
+        expect(e).toBeInstanceOf(ENSJSError)
+        const error = e as ENSJSError<ReturnData>
+        expect(error.data).toBeUndefined()
+      }
+    })
   })
 })

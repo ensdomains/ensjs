@@ -1,6 +1,9 @@
 import { ENS } from '..'
 import setup from '../tests/setup'
+import { ENSJSError } from '../utils/errors'
 import { decodeFuses } from '../utils/fuses'
+
+type Result = Awaited<ReturnType<ENS['getSubnames']>>
 
 let ensInstance: ENS
 
@@ -1575,6 +1578,38 @@ describe('getSubnames', () => {
           'truncatedName',
         )
       })
+    })
+  })
+
+  describe(' errors', () => {
+    beforeAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = 'on'
+      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphError')
+    })
+
+    afterAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = ''
+      localStorage.removeItem('ensjs-debug')
+    })
+
+    it('should throw an error with no data if ensjs-debug is set to ENSJSUknownError', async () => {
+      try {
+        const result = await ensInstance.getSubnames({
+          name: 'with-subnames.eth',
+          pageSize: 10,
+          orderBy: 'createdAt',
+          orderDirection: 'desc',
+        })
+        expect(result).toBeFalsy()
+      } catch (e) {
+        expect(e).toBeInstanceOf(ENSJSError)
+        const error = e as ENSJSError<Result>
+        expect(error.name).toBe('ENSJSSubgraphError')
+        expect(error.data).toEqual({
+          subnames: [],
+          subnameCount: 0,
+        })
+      }
     })
   })
 })

@@ -1,4 +1,9 @@
 import { ENSArgs } from '..'
+import {
+  getClientErrors,
+  ENSJSError,
+  debugSubgraphLatency,
+} from '../utils/errors'
 import { truncateFormat } from '../utils/format'
 import { AllCurrentFuses, checkPCCBurned, decodeFuses } from '../utils/fuses'
 import { decryptName } from '../utils/labels'
@@ -466,10 +471,20 @@ const getNames = async (
     }
   }
 
-  const response = await client.request(finalQuery, queryVars)
+  const response = await client
+    .request(finalQuery, queryVars)
+    .catch((e: unknown) => {
+      console.error(e)
+      throw new ENSJSError({
+        errors: getClientErrors(e),
+        data: [],
+      })
+    })
+    .finally(debugSubgraphLatency)
   const account = response?.account
+
   if (type === 'all') {
-    return [
+    const data = [
       ...(account?.domains.map(mapDomain) || []),
       ...(account?.registrations.map(mapRegistration) || []),
       ...(account?.wrappedDomains.map(mapWrappedDomain).filter((d: any) => d) ||
@@ -486,6 +501,7 @@ const getNames = async (
       }
       return a.createdAt.getTime() - b.createdAt.getTime()
     }) as Name[]
+    return data
   }
   if (type === 'resolvedAddress') {
     return (response?.domains.map(mapResolvedAddress).filter((d: any) => d) ||
@@ -499,6 +515,7 @@ const getNames = async (
       .map(mapWrappedDomain)
       .filter((d: any) => d) || []) as Name[]
   }
+
   return (account?.registrations.map(mapRegistration) || []) as Name[]
 }
 

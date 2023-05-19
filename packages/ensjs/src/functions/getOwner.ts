@@ -1,16 +1,27 @@
 import type { Result } from '@ethersproject/abi'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { hexStripZeros } from '@ethersproject/bytes'
+import { GraphQLError } from 'graphql'
 import { ENSArgs } from '..'
 import { labelhash } from '../utils/labels'
 import { namehash as makeNamehash } from '../utils/normalise'
 import { checkIsDotEth } from '../utils/validation'
+import {
+  debugSubgraphLatency,
+  getClientErrors,
+  ENSJSError,
+} from '../utils/errors'
 
-type Owner = {
+export type Owner = {
   registrant?: string
   owner?: string
   ownershipLevel: 'nameWrapper' | 'registry' | 'registrar'
   expired?: boolean
+}
+
+type GetOwnerOptions = {
+  contract?: 'nameWrapper' | 'registry' | 'registrar'
+  skipGraph?: boolean
 }
 
 const singleContractOwnerRaw = async (
@@ -53,8 +64,10 @@ const singleContractOwnerRaw = async (
 const raw = async (
   { contracts, multicallWrapper }: ENSArgs<'contracts' | 'multicallWrapper'>,
   name: string,
-  contract?: 'nameWrapper' | 'registry' | 'registrar',
+  options: GetOwnerOptions = {},
 ) => {
+  const { contract } = options
+
   const namehash = makeNamehash(name)
   const labels = name.split('.')
 
@@ -118,10 +131,16 @@ const decode = async (
   }: ENSArgs<'contracts' | 'multicallWrapper' | 'gqlInstance'>,
   data: string,
   name: string,
-  contract?: 'nameWrapper' | 'registry' | 'registrar',
+  options: GetOwnerOptions = {},
 ): Promise<Owner | undefined> => {
   if (!data) return
+
+  const { contract, skipGraph = true } = options
+
   const labels = name.split('.')
+  const isEth = labels[labels.length - 1] === 'eth'
+  const is2LD = labels.length === 2
+
   if (contract || labels.length === 1) {
     const singleOwner = singleContractOwnerDecode(data)
     const obj = {
@@ -156,59 +175,107 @@ const decode = async (
   } = {}
 
   // check for only .eth names
-  if (labels[labels.length - 1] === 'eth') {
+  if (isEth) {
+    let graphErrors: GraphQLError[] | undefined
+
     // if there is no registrar owner, the name is expired
     // but we still want to get the registrar owner prior to expiry
-    if (labels.length === 2) {
-      if (!registrarOwner) {
-        const graphRegistrantResult = await gqlInstance.client.request(
-          registrantQuery,
-          {
+    if (is2LD) {
+      if (!registrarOwner && !skipGraph) {
+        const graphRegistrantResult = await gqlInstance.client
+          .request(registrantQuery, {
             namehash: makeNamehash(name),
-          },
-        )
+          })
+          .catch((e: unknown) => {
+            console.error(e)
+            graphErrors = getClientErrors(e)
+            return undefined
+          })
+          .finally(debugSubgraphLatency)
         registrarOwner =
-          graphRegistrantResult.domain?.registration?.registrant?.id
+          graphRegistrantResult?.domain?.registration?.registrant?.id
         baseReturnObject = {
           expired: true,
         }
       } else {
         baseReturnObject = {
-          expired: false,
+          expired: !registrarOwner,
         }
       }
     }
-    // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
-    // there is no "registrant" for wrapped names
-    if (registrarOwner?.toLowerCase() === nameWrapper.address.toLowerCase()) {
-      return {
+
+    // If baseReturnObject.expired is true, then we know that the name is expired and a 2LD eth name.
+    // If the reigstry owner is the nameWrapper, then we know it's a wrapped name.
+    if (
+      baseReturnObject.expired &&
+      registryOwner?.toLowerCase() === nameWrapper.address.toLowerCase()
+    ) {
+      const owner: Owner = {
         owner: nameWrapperOwner,
         ownershipLevel: 'nameWrapper',
         ...baseReturnObject,
       }
+      if (graphErrors) {
+        throw new ENSJSError({
+          data: owner,
+          errors: graphErrors,
+        })
+      }
+      return owner
+    }
+
+    // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
+    // there is no "registrant" for wrapped names.
+    if (registrarOwner?.toLowerCase() === nameWrapper.address.toLowerCase()) {
+      const owner: Owner = {
+        owner: nameWrapperOwner,
+        ownershipLevel: 'nameWrapper',
+        ...baseReturnObject,
+      }
+      if (graphErrors) {
+        throw new ENSJSError({
+          data: owner,
+          errors: graphErrors,
+        })
+      }
+      return owner
     }
     // if there is a registrar owner, then it's not a subdomain but we have also passed the namewrapper clause
     // this means that it's an unwrapped second-level name
     // the registrant is the owner of the NFT
     // the owner is the controller of the records
     if (registrarOwner) {
-      return {
+      const owner: Owner = {
         registrant: registrarOwner,
         owner: registryOwner,
         ownershipLevel: 'registrar',
         ...baseReturnObject,
       }
+      if (graphErrors) {
+        throw new ENSJSError({
+          data: owner,
+          errors: graphErrors,
+        })
+      }
+      return owner
     }
     if (hexStripZeros(registryOwner) !== '0x') {
       // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
       // so we still want to return the ownership values
       if (labels.length === 2) {
-        return {
+        const owner: Owner = {
           registrant: undefined,
           owner: registryOwner,
           ownershipLevel: 'registrar',
           expired: true,
         }
+        if (graphErrors) {
+          throw new ENSJSError({
+            data: owner,
+            errors: graphErrors,
+          })
+        }
+        return owner
       }
       // this means that the subname is wrapped
       if (
@@ -228,7 +295,12 @@ const decode = async (
       }
     }
     // .eth names with no registrar owner are either unregistered or expired
-    return
+    if (graphErrors) {
+      throw new ENSJSError({
+        errors: graphErrors,
+      })
+    }
+    return undefined
   }
 
   // non .eth names inherit the owner from the registry

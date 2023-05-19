@@ -2,6 +2,11 @@ import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { hexStripZeros } from '@ethersproject/bytes'
 import { ENSArgs } from '..'
 import { decodeContenthash } from '../utils/contentHash'
+import {
+  debugSubgraphLatency,
+  ENSJSError,
+  getClientErrors,
+} from '../utils/errors'
 import { namehash } from '../utils/normalise'
 import {
   AbiChanged,
@@ -148,6 +153,14 @@ const mapEvents = <T extends EventTypes>(eventArray: any[], type: T) =>
     }),
   )
 
+type MappedEvents = ReturnType<typeof mapEvents>
+
+export type ReturnData = {
+  domain: MappedEvents
+  registration?: MappedEvents
+  resolver: MappedEvents
+}
+
 export async function getHistory(
   { gqlInstance }: ENSArgs<'gqlInstance'>,
   name: string,
@@ -279,17 +292,23 @@ export async function getHistory(
   const labels = name.split('.')
   const is2ldEth = checkIsDotEth(labels)
 
-  const response = await client.request(query, {
-    namehash: nameHash,
-  })
+  const response = await client
+    .request(query, {
+      namehash: nameHash,
+    })
+    .catch((e: unknown) => {
+      throw new ENSJSError({
+        errors: getClientErrors(e),
+      })
+    })
+    .finally(debugSubgraphLatency)
+
   const domain = response?.domain
 
-  if (!domain) return
+  if (!domain) return undefined
 
-  const {
-    events: domainEvents,
-    resolver: { events: resolverEvents },
-  } = domain
+  const domainEvents = domain.events || []
+  const resolverEvents = domain.resolver?.events || []
 
   const domainHistory = mapEvents(domainEvents, 'Domain')
   const resolverHistory = mapEvents(
@@ -301,9 +320,7 @@ export async function getHistory(
   )
 
   if (is2ldEth) {
-    const {
-      registration: { events: registrationEvents },
-    } = domain
+    const registrationEvents = domain.registration?.events || []
     const registrationHistory = mapEvents(registrationEvents, 'Registration')
     return {
       domain: domainHistory,

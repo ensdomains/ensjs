@@ -4,6 +4,7 @@ import { ENS } from '..'
 import setup from '../tests/setup'
 import { Name } from './getNames'
 import { names as wrappedNames } from '../../deploy/00_register_wrapped'
+import { ENSJSError } from '../utils/errors'
 
 let ensInstance: ENS
 let provider: ethers.providers.JsonRpcProvider
@@ -388,6 +389,33 @@ describe('getNames', () => {
           domainLetterItems.reverse(),
         )
       })
+    })
+  })
+
+  describe('error', () => {
+    beforeAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = 'on'
+      localStorage.setItem('ensjs-debug', 'ENSJSSubgraphError')
+    })
+
+    afterAll(() => {
+      process.env.NEXT_PUBLIC_ENSJS_DEBUG = ''
+      localStorage.removeItem('ensjs-debug')
+    })
+
+    it('should throw an ENSJSError for type "all"', async () => {
+      try {
+        await ensInstance.getNames({
+          address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+          type: 'all',
+        })
+        expect(true).toBeFalsy()
+      } catch (e) {
+        expect(e).toBeInstanceOf(ENSJSError)
+        const error = e as ENSJSError<Name[]>
+        expect(error.name).toBe('ENSJSSubgraphError')
+        expect(error.data?.length).toBe(0)
+      }
     })
   })
 })
