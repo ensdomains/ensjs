@@ -150,7 +150,7 @@ const largeQuery = async (
     })
     .finally(debugSubgraphLatency)
 
-  const domain = response?.domain
+  const domain = response?.domain || { subdomains: [], subdomainCount: 0 }
   const subdomains = domain.subdomains.map(
     ({ wrappedDomain, ...subname }: Domain) => {
       const decrypted = decryptName(subname.name!)
