@@ -32,6 +32,9 @@ const addresses = {
     ensBulkRenewal: {
       address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A',
     },
+    ensDnssecImpl: {
+      address: '0x21745FF62108968fBf5aB1E07961CC0FCBeB2364',
+    },
   },
   goerli: {
     ensBaseRegistrarImplementation: {
@@ -54,6 +57,9 @@ const addresses = {
     },
     ensBulkRenewal: {
       address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
+    },
+    ensDnssecImpl: {
+      address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
     },
   },
 } as const
@@ -85,6 +91,7 @@ type EnsChainContracts = {
   ensPublicResolver: ChainContract
   ensReverseRegistrar: ChainContract
   ensBulkRenewal: ChainContract
+  ensDnssecImpl: ChainContract
 }
 
 type BaseChainContracts = {

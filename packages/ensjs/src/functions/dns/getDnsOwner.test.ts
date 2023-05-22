@@ -51,9 +51,7 @@ it('returns valid address from valid domain and record', async () => {
   expect(handler).toHaveBeenCalled()
   expect(name).toBe('_ens.example.com.')
   expect(type).toBe('TXT')
-  expect(result).toEqual({
-    address: '0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
-  })
+  expect(result).toEqual('0x8e8Db5CcEF88cca9d624701Db544989C996E3216')
 })
 
 it('throws error if .eth', async () => {
@@ -78,12 +76,9 @@ it('returns error if DnsResponseStatus is not NOERROR', async () => {
     res.destroy()
   })
 
-  const result = await getDnsOwner({ name: 'example.com', endpoint: serverUrl })
-  expect(handler).toHaveBeenCalled()
-  expect(result).toEqual({
-    data: null,
-    error: `Error occurred: NXDOMAIN`,
-  })
+  await expect(
+    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
+  ).rejects.toThrow('Error occurred: NXDOMAIN')
 })
 it('returns error if AD is false', async () => {
   handler.mockImplementation((req, res) => {
@@ -97,12 +92,9 @@ it('returns error if AD is false', async () => {
     res.destroy()
   })
 
-  const result = await getDnsOwner({ name: 'example.com', endpoint: serverUrl })
-  expect(handler).toHaveBeenCalled()
-  expect(result).toEqual({
-    data: null,
-    error: 'DNSSEC verification failed',
-  })
+  await expect(
+    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
+  ).rejects.toThrow('DNSSEC verification failed; data: undefined')
 })
 it('returns error if no TXT record', async () => {
   handler.mockImplementation((req, res) => {
@@ -117,12 +109,9 @@ it('returns error if no TXT record', async () => {
     res.destroy()
   })
 
-  const result = await getDnsOwner({ name: 'example.com', endpoint: serverUrl })
-  expect(handler).toHaveBeenCalled()
-  expect(result).toEqual({
-    data: null,
-    error: 'No TXT record found',
-  })
+  await expect(
+    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
+  ).rejects.toThrow('No TXT record found')
 })
 it('returns error if TXT record is not formatted correctly', async () => {
   handler.mockImplementation((req, res) => {
@@ -144,12 +133,11 @@ it('returns error if TXT record is not formatted correctly', async () => {
     res.destroy()
   })
 
-  const result = await getDnsOwner({ name: 'example.com', endpoint: serverUrl })
-  expect(handler).toHaveBeenCalled()
-  expect(result).toEqual({
-    data: '0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
-    error: 'Invalid TXT record',
-  })
+  await expect(
+    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
+  ).rejects.toThrow(
+    'Invalid TXT record: 0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
+  )
 })
 it('returns error if address is not checksummed', async () => {
   handler.mockImplementation((req, res) => {
@@ -171,18 +159,15 @@ it('returns error if address is not checksummed', async () => {
     res.destroy()
   })
 
-  const result = await getDnsOwner({ name: 'example.com', endpoint: serverUrl })
-  expect(handler).toHaveBeenCalled()
-  expect(result).toEqual({
-    data: '0x8e8db5CcEF88cca9d624701Db544989C996E3216',
-    error: 'Invalid checksum',
-  })
+  await expect(
+    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
+  ).rejects.toThrow(
+    'Invalid checksum: 0x8e8db5CcEF88cca9d624701Db544989C996E3216',
+  )
 })
 it('real test', async () => {
   const result = await getDnsOwner({
     name: 'taytems.xyz',
   })
-  expect(result).toEqual({
-    address: '0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
-  })
+  expect(result).toEqual('0x8e8Db5CcEF88cca9d624701Db544989C996E3216')
 })

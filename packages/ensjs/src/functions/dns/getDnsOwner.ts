@@ -1,18 +1,12 @@
 import { Address, getAddress } from 'viem'
+import { Endpoint } from './types'
 
 export type GetDnsOwnerParameters = {
   name: string
-  endpoint?: `https://${string}` | `http://${string}`
+  endpoint?: Endpoint
 }
 
-export type GetDnsOwnerReturnType =
-  | {
-      address: Address
-    }
-  | {
-      data: string | null
-      error: string
-    }
+export type GetDnsOwnerReturnType = Address
 
 enum DnsResponseStatus {
   NOERROR = 0,
@@ -40,7 +34,9 @@ enum DnsResponseStatus {
 
 enum DnsRecordType {
   TXT = 16,
+  DS = 43,
   RRSIG = 46,
+  DNSKEY = 48,
 }
 
 type DnsQuestionItem = {
@@ -88,49 +84,31 @@ const getDnsOwner = async ({
     },
   ).then((res) => res.json())
 
+  if (response.Status !== DnsResponseStatus.NOERROR)
+    throw new Error(`Error occurred: ${DnsResponseStatus[response.Status]}`)
+
   const addressRecord = response.Answer?.find(
     (record) => record.type === DnsRecordType.TXT,
   )
   const unwrappedAddressRecord = addressRecord?.data?.replace(/^"(.*)"$/g, '$1')
 
-  if (response.Status !== DnsResponseStatus.NOERROR)
-    return {
-      data: unwrappedAddressRecord ?? null,
-      error:
-        response.Comment ||
-        `Error occurred: ${DnsResponseStatus[response.Status]}`,
-    }
-
   if (response.AD === false)
-    return {
-      data: unwrappedAddressRecord ?? null,
-      error: 'DNSSEC verification failed',
-    }
+    throw new Error(
+      `DNSSEC verification failed; data: ${unwrappedAddressRecord}`,
+    )
 
-  if (!addressRecord?.data)
-    return {
-      data: null,
-      error: 'No TXT record found',
-    }
+  if (!addressRecord?.data) throw new Error('No TXT record found')
 
   if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g))
-    return {
-      data: unwrappedAddressRecord!,
-      error: 'Invalid TXT record',
-    }
+    throw new Error(`Invalid TXT record: ${unwrappedAddressRecord}`)
 
   const address = unwrappedAddressRecord!.slice(2)
   const checksumAddress = getAddress(address)
 
   if (address !== checksumAddress)
-    return {
-      data: address,
-      error: 'Invalid checksum',
-    }
+    throw new Error(`Invalid checksum: ${address}`)
 
-  return {
-    address: checksumAddress,
-  }
+  return checksumAddress
 }
 
 export default getDnsOwner

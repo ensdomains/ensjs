@@ -1,0 +1,105 @@
+import { SignedSet } from '@ensdomains/dnsprovejs'
+import { Address, Hex } from 'viem'
+import {
+  publicClient,
+  testClient,
+  waitForTransaction,
+  walletClient,
+} from '../../tests/addTestContracts'
+import importDnsName from './importDnsName'
+import prepareDnsImport, { RrSetWithSig } from './prepareDnsImport'
+
+let snapshot: Hex
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
+})
+
+beforeEach(async () => {
+  snapshot = await testClient.snapshot()
+})
+
+afterEach(async () => {
+  await testClient.revert({ id: snapshot })
+})
+
+const decodeProofs = (proofs: RrSetWithSig[]) =>
+  proofs.map((proof) =>
+    SignedSet.fromWire(proof.rrset as Buffer, proof.sig as Buffer),
+  )
+
+it('returns all rrsets when no proofs are known', async () => {
+  const result = await prepareDnsImport(publicClient, {
+    name: 'taytems.xyz',
+  })
+  expect(result.rrsets.length).toBeGreaterThan(0)
+  expect(result.proof).toBeInstanceOf(Uint8Array)
+  const decodedProofs = decodeProofs(result.rrsets)
+  const rootProofs = decodedProofs.filter((x) => x.signature.name === '.')
+  const tldProofs = decodedProofs.filter((x) => x.signature.name === 'xyz')
+  const twoLDProofs = decodedProofs.filter(
+    (x) => x.signature.name === 'taytems.xyz',
+  )
+  const threeLDProofs = decodedProofs.filter(
+    (x) => x.signature.name === '_ens.taytems.xyz',
+  )
+  expect(rootProofs.length).toBeGreaterThan(0)
+  expect(tldProofs.length).toBeGreaterThan(0)
+  expect(twoLDProofs.length).toBeGreaterThan(0)
+  expect(threeLDProofs.length).toBeGreaterThan(0)
+})
+it('returns rrsets up to the first unknown proof', async () => {
+  const tx = await importDnsName(walletClient, {
+    name: 'taytems.xyz',
+    account: accounts[0],
+    preparedData: await prepareDnsImport(publicClient, { name: 'taytems.xyz' }),
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await waitForTransaction(tx)
+  expect(receipt.status).toBe('success')
+
+  const result = await prepareDnsImport(publicClient, {
+    name: 'lenster.xyz',
+  })
+  const decodedProofs = decodeProofs(result.rrsets)
+  const rootProofs = decodedProofs.filter((x) => x.signature.name === '.')
+  const tldProofs = decodedProofs.filter((x) => x.signature.name === 'xyz')
+  const twoLDProofs = decodedProofs.filter(
+    (x) => x.signature.name === 'lenster.xyz',
+  )
+  const threeLDProofs = decodedProofs.filter(
+    (x) => x.signature.name === '_ens.lenster.xyz',
+  )
+  expect(rootProofs).toHaveLength(0)
+  expect(tldProofs).toHaveLength(0)
+  expect(twoLDProofs.length).toBeGreaterThan(0)
+  expect(threeLDProofs.length).toBeGreaterThan(0)
+})
+it('returns empty rrsets for all known proofs when the last proof is known', async () => {
+  const tx = await importDnsName(walletClient, {
+    name: 'taytems.xyz',
+    account: accounts[0],
+    preparedData: await prepareDnsImport(publicClient, { name: 'taytems.xyz' }),
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await waitForTransaction(tx)
+  expect(receipt.status).toBe('success')
+
+  const result = await prepareDnsImport(publicClient, {
+    name: 'taytems.xyz',
+  })
+  const decodedProofs = decodeProofs(result.rrsets)
+  const rootProofs = decodedProofs.filter((x) => x.signature.name === '.')
+  const tldProofs = decodedProofs.filter((x) => x.signature.name === 'xyz')
+  const twoLDProofs = decodedProofs.filter(
+    (x) => x.signature.name === 'taytems.xyz',
+  )
+  const threeLDProofs = decodedProofs.filter(
+    (x) => x.signature.name === '_ens.taytems.xyz',
+  )
+  expect(rootProofs).toHaveLength(0)
+  expect(tldProofs).toHaveLength(0)
+  expect(twoLDProofs).toHaveLength(0)
+  expect(threeLDProofs).toHaveLength(0)
+})

@@ -11,3 +11,6 @@ export type ContractName =
   | 'ReverseRegistrar'
   | 'UniversalResolver'
   | 'BulkRenewal'
+  | 'DNSSECImpl'
+  | 'LegacyDNSRegistrar'
+  | 'LegacyDNSSECImpl'
