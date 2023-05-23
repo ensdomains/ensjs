@@ -7,7 +7,7 @@ export type EncodeSetContentHashParameters = {
   contentHash: string | null
 }
 
-type EncodeSetContentHashReturnType = Hex
+export type EncodeSetContentHashReturnType = Hex
 
 export const encodeSetContentHash = ({
   namehash,

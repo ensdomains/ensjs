@@ -1,4 +1,9 @@
-import { Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
+import {
+  Hex,
+  decodeFunctionResult,
+  encodeFunctionData,
+  offchainLookup,
+} from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { tryAggregateSnippet } from '../../contracts/multicall'
@@ -6,7 +11,6 @@ import {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
 } from '../../types'
-import ccipLookup from '../../utils/ccip'
 import { generateFunction } from '../../utils/generateFunction'
 
 export type MulticallWrapperParameters = {
@@ -55,7 +59,10 @@ const decode = async (
       // OffchainLookup(address,string[],bytes,bytes4,bytes)
       if (!success && returnData.startsWith('0x556f1830')) {
         try {
-          const newData = await ccipLookup(client, transactions[i], returnData)
+          const newData = await offchainLookup(client, {
+            to: transactions[i].to!,
+            data: returnData,
+          })
           if (newData) {
             newObj = { success: true, returnData: newData }
           }

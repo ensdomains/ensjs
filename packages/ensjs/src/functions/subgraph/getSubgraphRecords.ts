@@ -5,12 +5,12 @@ import { DateWithValue } from '../../types'
 import { namehash } from '../../utils/normalise'
 import { createSubgraphClient } from './client'
 
-export type GetSubgraphRecordParameters = {
+export type GetSubgraphRecordsParameters = {
   name: string
   resolverAddress?: Address
 }
 
-export type GetSubgraphRecordReturnType = {
+export type GetSubgraphRecordsReturnType = {
   isMigrated: boolean
   createdAt: DateWithValue<number>
   texts: string[]
@@ -69,8 +69,8 @@ type CustomResolverSubgraphResult = {
 
 const getSubgraphRecords = async (
   client: ClientWithEns,
-  { name, resolverAddress }: GetSubgraphRecordParameters,
-): Promise<GetSubgraphRecordReturnType> => {
+  { name, resolverAddress }: GetSubgraphRecordsParameters,
+): Promise<GetSubgraphRecordsReturnType> => {
   const subgraphClient = createSubgraphClient({ client })
   const id = namehash(name)
 

@@ -8,9 +8,9 @@ import _getAbi, {
 } from './_getAbi'
 import universalWrapper from './universalWrapper'
 
-type GetAbiParameters = Prettify<InternalGetAbiParameters>
+export type GetAbiParameters = Prettify<InternalGetAbiParameters>
 
-type GetAbiReturnType = Prettify<InternalGetAbiReturnType>
+export type GetAbiReturnType = Prettify<InternalGetAbiReturnType>
 
 const encode = (
   client: ClientWithEns,

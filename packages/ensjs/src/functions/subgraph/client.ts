@@ -36,7 +36,7 @@ const enter = (node: SelectionSetNode) => {
   }
 }
 
-const requestMiddleware: RequestMiddleware = (request) => {
+export const requestMiddleware: RequestMiddleware = (request) => {
   if (!request.body) return request
   const requestBody = JSON.parse(request.body as string)
   const rawQuery = requestBody.query as string
@@ -54,7 +54,7 @@ const requestMiddleware: RequestMiddleware = (request) => {
   }
 }
 
-const responseMiddleware = (response: Response<unknown> | Error) => {
+export const responseMiddleware = (response: Response<unknown> | Error) => {
   traverse(response).forEach(function (responseItem: unknown) {
     if (
       responseItem instanceof Object &&

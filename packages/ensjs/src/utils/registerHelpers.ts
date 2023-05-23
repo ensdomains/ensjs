@@ -64,7 +64,7 @@ export const makeCommitmentTuple = ({
         (typeof c.coin === 'string' ? parseInt(c.coin) === 60 : c.coin === 60),
     )
   ) {
-    coins.push({ coin: 60, address: owner })
+    coins.push({ coin: 60, value: owner })
   }
 
   const data = records

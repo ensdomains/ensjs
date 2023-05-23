@@ -25,7 +25,7 @@ export type GetSubnamesParameters = {
   pageSize?: number
 }
 
-export type GetSubnamesResult = Name[]
+export type GetSubnamesReturnType = Name[]
 
 type SubgraphResult = {
   domain?: {
@@ -44,7 +44,7 @@ const getSubnames = async (
     pageSize = 100,
     previousPage,
   }: GetSubnamesParameters,
-): Promise<GetSubnamesResult> => {
+): Promise<GetSubnamesReturnType> => {
   const subgraphClient = createSubgraphClient({ client })
 
   const whereFilters: string[] = []

@@ -44,6 +44,8 @@ export type NameWithRelation = Name & {
   relation: GetNamesForAddressRelation
 }
 
+export type GetNamesForAddressReturnType = NameWithRelation[]
+
 type SubgraphResult = {
   domains: SubgraphDomain[]
 }
@@ -65,7 +67,7 @@ const getNamesForAddress = async (
     pageSize = 100,
     previousPage,
   }: GetNamesForAddressParameters,
-): Promise<NameWithRelation[]> => {
+): Promise<GetNamesForAddressReturnType> => {
   const subgraphClient = createSubgraphClient({ client })
 
   let ownerWhereFilter = `

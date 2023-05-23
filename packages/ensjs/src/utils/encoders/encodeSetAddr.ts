@@ -8,11 +8,13 @@ export type EncodeSetAddrParameters = {
   value: Address | string | null
 }
 
+export type EncodeSetAddrReturnType = Hex
+
 export const encodeSetAddr = ({
   namehash,
   coin,
   value,
-}: EncodeSetAddrParameters) => {
+}: EncodeSetAddrParameters): EncodeSetAddrReturnType => {
   let coinTypeInstance
   if (typeof coin === 'number') {
     coinTypeInstance = formatsByCoinType[coin]

@@ -7,7 +7,7 @@ export type EncodeSetTextParameters = {
   value: string | null
 }
 
-type EncodeSetTextReturnType = Hex
+export type EncodeSetTextReturnType = Hex
 
 export const encodeSetText = ({
   namehash,

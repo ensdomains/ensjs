@@ -6,7 +6,7 @@ export type EncodeSetAbiParameters = {
   namehash: Hex
 } & (EncodedAbi | { contentType: 0; encodedData: null })
 
-type EncodeSetAbiReturnType = Hex
+export type EncodeSetAbiReturnType = Hex
 
 export const encodeSetAbi = ({
   namehash,

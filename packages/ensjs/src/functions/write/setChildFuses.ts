@@ -34,7 +34,7 @@ export type SetChildFusesParameters<
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetFusesReturnType = Hash
+export type SetChildFusesReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
@@ -69,7 +69,7 @@ async function setChildFuses<
     expiry,
     ...txArgs
   }: SetChildFusesParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetFusesReturnType> {
+): Promise<SetChildFusesReturnType> {
   const data = makeFunctionData(wallet, { name, fuses, expiry })
   const writeArgs = {
     ...data,
