@@ -15,10 +15,16 @@ import { safeTransferFromSnippet as erc721SafeTransferFromSnippet } from '../../
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { setOwnerSnippet } from '../../contracts/registry'
 import {
+  AdditionalParameterSpecifiedError,
+  InvalidContractTypeError,
+  UnsupportedNameTypeError,
+} from '../../errors/general'
+import {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
+import { getNameType } from '../../utils/getNameType'
 import { namehash } from '../../utils/normalise'
 
 type BaseTransferNameDataParameters = {
@@ -65,7 +71,12 @@ export const makeFunctionData = <
   { name, newOwnerAddress, contract, reclaim }: TransferNameDataParameters,
 ): TransferNameDataReturnType => {
   if (reclaim && contract !== 'registrar')
-    throw new Error("Can't reclaim name from non-registrar contract")
+    throw new AdditionalParameterSpecifiedError({
+      parameter: 'reclaim',
+      allowedParameters: ['name', 'newOwnerAddress', 'contract'],
+      details:
+        "Can't reclaim a name from any contract other than the registrar",
+    })
   switch (contract) {
     case 'registry':
       return {
@@ -80,9 +91,15 @@ export const makeFunctionData = <
         }),
       }
     case 'registrar': {
+      const nameType = getNameType(name)
+      if (nameType !== 'eth-2ld')
+        throw new UnsupportedNameTypeError({
+          nameType,
+          supportedNameTypes: ['eth-2ld'],
+          details:
+            'Only eth-2ld names can be transferred on the registrar contract',
+        })
       const labels = name.split('.')
-      if (labels.length > 2 || labels[1] !== 'eth')
-        throw new Error('Invalid name for baseRegistrar')
       const tokenId = BigInt(labelhash(labels[0]))
       return {
         to: getChainContractAddress({
@@ -121,7 +138,10 @@ export const makeFunctionData = <
         }),
       }
     default:
-      throw new Error(`Unknown contract: ${contract}`)
+      throw new InvalidContractTypeError({
+        contractType: contract,
+        supportedContractTypes: ['registry', 'registrar', 'nameWrapper'],
+      })
   }
 }
 

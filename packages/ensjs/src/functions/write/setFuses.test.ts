@@ -169,33 +169,36 @@ describe('Array', () => {
     checkUnnamedFuses(fuses, [128, 256, 512])
   })
   it('should throw an error when trying to burn a named fuse in an unnamed fuse array', async () => {
-    try {
-      await setFuses(walletClient, {
+    await expect(
+      setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
           unnamed: [32] as any,
         },
+
         account: accounts[1],
-      })
-      expect(false).toBeTruthy()
-    } catch (e: any) {
-      expect(e.message).toBe(
-        '32 is not a valid unnamed fuse. If you are trying to set a named fuse, use the named property.',
-      )
-    }
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "32 is not a valid unnamed fuse
+
+      - If you are trying to set a named fuse, use the named property
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
   it('should throw an error when trying to burn an unnamed fuse in a named fuse array', async () => {
-    try {
-      await setFuses(walletClient, {
+    await expect(
+      setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
           named: ['COOL_SWAG_FUSE'] as any,
         },
-      })
-      expect(false).toBeTruthy()
-    } catch (e: any) {
-      expect(e.message).toBe('COOL_SWAG_FUSE is not a valid named fuse.')
-    }
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "COOL_SWAG_FUSE is not a valid named fuse
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
 })
 describe('Number', () => {
@@ -221,49 +224,63 @@ describe('Number', () => {
     ])
   })
   it('should throw an error if the number is too high', async () => {
-    try {
-      await setFuses(walletClient, {
+    await expect(
+      setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
           number: 4294967297,
         },
+
         account: accounts[1],
-      })
-      expect(false).toBeTruthy()
-    } catch (e: any) {
-      expect(e.message).toBe(
-        'Fuse number must be limited to uint32, 4294967297 was too high.',
-      )
-    }
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Fuse value out of range
+
+      - Fuse value: 4294967297
+      - Allowed range: 1-4294967296
+
+      Details: Fuse number must be limited to uint32, the supplied value was too high
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
   it('should throw an error if the number is too low', async () => {
-    try {
-      await setFuses(walletClient, {
+    await expect(
+      setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
           number: -1,
         },
+
         account: accounts[1],
-      })
-      expect(false).toBeTruthy()
-    } catch (e: any) {
-      expect(e.message).toBe(
-        'Fuse number must be limited to uint32, -1 was too low.',
-      )
-    }
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Fuse value out of range
+
+      - Fuse value: -1
+      - Allowed range: 1-4294967296
+
+      Details: Fuse number must be limited to uint32, the supplied value was too low
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
   it('should throw an error if the number is not an integer', async () => {
-    try {
-      await setFuses(walletClient, {
+    await expect(
+      setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
           number: 7.5,
         },
+
         account: accounts[1],
-      })
-      expect(false).toBeTruthy()
-    } catch (e: any) {
-      expect(e.message).toBe('Fuse number must be an integer, 7.5 was not.')
-    }
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Fuse was not an integer, which is required
+
+      - Fuse value: 7.5
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
 })

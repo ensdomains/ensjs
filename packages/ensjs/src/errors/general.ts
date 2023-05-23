@@ -26,8 +26,15 @@ export class AdditionalParameterSpecifiedError extends BaseError {
   }
 }
 
-export class ParameterNotSpecifiedError extends BaseError {
-  override name = 'ParameterNotSpecifiedError'
+export class RequiredParameterNotSpecifiedError extends BaseError {
+  parameter: string
+
+  override name = 'RequiredParameterNotSpecifiedError'
+
+  constructor({ parameter, details }: { parameter: string; details?: string }) {
+    super(`Required parameter not specified: ${parameter}`, { details })
+    this.parameter = parameter
+  }
 }
 
 export class UnsupportedNameTypeError extends BaseError {
@@ -54,5 +61,32 @@ export class UnsupportedNameTypeError extends BaseError {
     })
     this.nameType = nameType
     this.supportedTypes = supportedNameTypes
+  }
+}
+
+export class InvalidContractTypeError extends BaseError {
+  contractType: string
+
+  supportedTypes: string[]
+
+  override name = 'InvalidContractTypeError'
+
+  constructor({
+    contractType,
+    supportedContractTypes,
+    details,
+  }: {
+    contractType: string
+    supportedContractTypes: string[]
+    details?: string
+  }) {
+    super(`Invalid contract type: ${contractType}`, {
+      metaMessages: [
+        `- Supported contract types: ${supportedContractTypes.join(', ')}`,
+      ],
+      details,
+    })
+    this.contractType = contractType
+    this.supportedTypes = supportedContractTypes
   }
 }

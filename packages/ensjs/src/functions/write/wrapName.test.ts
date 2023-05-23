@@ -105,7 +105,15 @@ describe('eth 2ld', () => {
         wrappedOwner: accounts[2],
         account: accounts[1],
       }),
-    ).rejects.toThrow("Label can't be longer than 255 bytes")
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Supplied label was too long
+
+      - Supplied label: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      - Max byte length: 255
+      - Actual byte length: 256
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
 })
 
@@ -155,9 +163,15 @@ describe('other', () => {
         } as any,
         account: accounts[2],
       }),
-    ).rejects.toThrow(
-      'Fuses can not be initially set when wrapping a non eth 2ld name',
-    )
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Additional parameter specified: fuses
+
+      - Allowed parameters: name, wrappedOwner, resolverAddress
+
+      Details: Fuses cannot be initially set when wrapping non eth-2ld names
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
   it('should error for a label longer than 255 bytes', async () => {
     const label = 'a'.repeat(256)
@@ -167,6 +181,14 @@ describe('other', () => {
         wrappedOwner: accounts[2],
         account: accounts[2],
       }),
-    ).rejects.toThrow("Label can't be longer than 255 bytes")
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Supplied label was too long
+
+      - Supplied label: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      - Max byte length: 255
+      - Actual byte length: 256
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
 })

@@ -10,14 +10,18 @@ import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { unwrapEth2ldSnippet, unwrapSnippet } from '../../contracts/nameWrapper'
 import {
+  AdditionalParameterSpecifiedError,
+  RequiredParameterNotSpecifiedError,
+} from '../../errors/general'
+import {
   Eth2ldName,
   Eth2ldNameSpecifier,
   GetNameType,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
+import { getNameType } from '../../utils/getNameType'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
-import { checkIsDotEth } from '../../utils/validation'
 
 type BaseUnwrapNameDataParameters<TName extends string> = {
   name: TName
@@ -72,10 +76,14 @@ export const makeFunctionData = <
     client: wallet,
     contract: 'ensNameWrapper',
   })
-  if (checkIsDotEth(name.split('.'))) {
-    if (!newRegistrantAddress) {
-      throw new Error('Must provide newRegistrantAddress for 2ld .eth names')
-    }
+  const nameType = getNameType(name)
+
+  if (nameType === 'eth-2ld') {
+    if (!newRegistrantAddress)
+      throw new RequiredParameterNotSpecifiedError({
+        parameter: 'newRegistrantAddress',
+        details: 'Must provide newRegistrantAddress for eth-2ld names',
+      })
 
     return {
       to: nameWrapperAddress,
@@ -87,11 +95,12 @@ export const makeFunctionData = <
     }
   }
 
-  if (newRegistrantAddress) {
-    throw new Error(
-      'newRegistrantAddress can only be specified for 2ld .eth names',
-    )
-  }
+  if (newRegistrantAddress)
+    throw new AdditionalParameterSpecifiedError({
+      parameter: 'newRegistrantAddress',
+      allowedParameters: ['name', 'newOwnerAddress'],
+      details: 'newRegistrantAddress can only be specified for eth-2ld names',
+    })
 
   return {
     to: nameWrapperAddress,

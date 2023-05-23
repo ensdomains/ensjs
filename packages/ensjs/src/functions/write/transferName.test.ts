@@ -113,7 +113,13 @@ it('should error if unknown contract', async () => {
       contract: 'random' as any,
       account: accounts[1],
     }),
-  ).rejects.toThrow('Unknown contract: random')
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Invalid contract type: random
+
+    - Supported contract types: registry, registrar, nameWrapper
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('should error if reclaim is specified but contract is not registrar', async () => {
   await expect(
@@ -124,5 +130,13 @@ it('should error if reclaim is specified but contract is not registrar', async (
       reclaim: true,
       account: accounts[1],
     } as any),
-  ).rejects.toThrow("Can't reclaim name from non-registrar contract")
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Additional parameter specified: reclaim
+
+    - Allowed parameters: name, newOwnerAddress, contract
+
+    Details: Can't reclaim a name from any contract other than the registrar
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })

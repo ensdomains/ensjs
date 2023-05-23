@@ -2,8 +2,10 @@ import { Hex, decodeFunctionResult, encodeFunctionData, labelhash } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { availableSnippet } from '../../contracts/baseRegistrar'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { UnsupportedNameTypeError } from '../../errors/general'
 import { SimpleTransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
+import { getNameType } from '../../utils/getNameType'
 
 export type GetAvailableParameters = {
   name: string
@@ -16,9 +18,13 @@ const encode = (
   { name }: GetAvailableParameters,
 ): SimpleTransactionRequest => {
   const labels = name.split('.')
-  if (labels.length !== 2 || labels[1] !== 'eth') {
-    throw new Error('Currently only .eth names can be checked for availability')
-  }
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Currently only eth-2ld names can be checked for availability',
+    })
 
   return {
     to: getChainContractAddress({

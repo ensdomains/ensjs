@@ -8,6 +8,7 @@ import {
 } from 'viem'
 import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { multicallSnippet } from '../../contracts/publicResolver'
+import { NoRecordsSpecifiedError } from '../../errors/read'
 import {
   Prettify,
   SimpleTransactionRequest,
@@ -48,7 +49,7 @@ export const makeFunctionData = <
     namehash: namehash(name),
     ...records,
   })
-  if (callArray.length === 0) throw new Error('No records to set')
+  if (callArray.length === 0) throw new NoRecordsSpecifiedError()
   if (callArray.length === 1)
     return {
       to: resolverAddress,

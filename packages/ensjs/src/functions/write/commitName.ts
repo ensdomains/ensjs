@@ -8,11 +8,13 @@ import {
 import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { commitSnippet } from '../../contracts/ethRegistrarController'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { UnsupportedNameTypeError } from '../../errors/general'
 import {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
+import { getNameType } from '../../utils/getNameType'
 import {
   RegistrationParameters,
   makeCommitment,
@@ -42,10 +44,13 @@ export const makeFunctionData = <
   args: CommitNameDataParameters,
 ): CommitNameDataReturnType => {
   const labels = args.name.split('.')
-  if (labels.length !== 2)
-    throw new Error('Only second level name registration is supported')
-  if (labels[1] !== 'eth')
-    throw new Error('Only .eth name registration is supported')
+  const nameType = getNameType(args.name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Only 2ld-eth name registration is supported',
+    })
   wrappedLabelLengthCheck(labels[0])
   return {
     to: getChainContractAddress({

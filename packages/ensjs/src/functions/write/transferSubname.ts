@@ -10,6 +10,7 @@ import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { setSubnodeOwnerSnippet as nameWrapperSetSubnodeOwnerSnippet } from '../../contracts/nameWrapper'
 import { setSubnodeOwnerSnippet as registrySetSubnodeOwnerSnippet } from '../../contracts/registry'
+import { InvalidContractTypeError } from '../../errors/general'
 import {
   AnyDate,
   Prettify,
@@ -95,7 +96,10 @@ export const makeFunctionData = <
         }),
       }
     default:
-      throw new Error(`Unknown contract: ${contract}`)
+      throw new InvalidContractTypeError({
+        contractType: contract,
+        supportedContractTypes: ['registry', 'nameWrapper'],
+      })
   }
 }
 

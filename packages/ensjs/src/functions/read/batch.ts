@@ -1,5 +1,6 @@
 import type { Hex } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
+import { FunctionNotBatchableError } from '../../errors/read'
 import {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
@@ -17,9 +18,7 @@ const encode = (
 ): TransactionRequestWithPassthrough => {
   const rawDataArr: SimpleTransactionRequest[] = items.map(
     ({ args, encode: encodeRef }, i: number) => {
-      if (!encodeRef) {
-        throw new Error(`Function ${i} is not batchable`)
-      }
+      if (!encodeRef) throw new FunctionNotBatchableError({ functionIndex: i })
       return encodeRef(client, ...args)
     },
   )

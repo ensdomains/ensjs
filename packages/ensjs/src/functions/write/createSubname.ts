@@ -11,12 +11,17 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import { setSubnodeRecordSnippet as nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper'
 import { setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet } from '../../contracts/registry'
 import {
+  InvalidContractTypeError,
+  UnsupportedNameTypeError,
+} from '../../errors/general'
+import {
   AnyDate,
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
 import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
+import { getNameType } from '../../utils/getNameType'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
 import {
   MAX_EXPIRY,
@@ -78,10 +83,18 @@ export const makeFunctionData = <
     fuses,
   }: CreateSubnameDataParameters,
 ): CreateSubnameDataReturnType => {
-  const labels = name.split('.')
-  if (labels.length === 1) {
-    throw new Error("Can't create a subname of a top-level domain")
-  }
+  const nameType = getNameType(name)
+  if (nameType === 'tld' || nameType === 'root')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: [
+        'eth-2ld',
+        'eth-subname',
+        'other-2ld',
+        'other-subname',
+      ],
+    })
+
   const { label, labelhash, parentNode } = makeLabelNodeAndParent(name)
 
   switch (contract) {
@@ -123,7 +136,10 @@ export const makeFunctionData = <
       }
     }
     default:
-      throw new Error(`Invalid contract type: ${contract}`)
+      throw new InvalidContractTypeError({
+        contractType: contract,
+        supportedContractTypes: ['registry', 'nameWrapper'],
+      })
   }
 }
 

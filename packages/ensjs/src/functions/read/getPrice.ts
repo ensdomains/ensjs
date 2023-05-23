@@ -3,9 +3,10 @@ import { ClientWithEns } from '../../contracts/addContracts'
 import { rentPriceSnippet as bulkRentPriceSnippet } from '../../contracts/bulkRenewal'
 import { rentPriceSnippet as controllerRentPriceSnippet } from '../../contracts/ethRegistrarController'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { UnsupportedNameTypeError } from '../../errors/general'
 import { SimpleTransactionRequest } from '../../types'
 import { generateFunction } from '../../utils/generateFunction'
-import { checkIsDotEth } from '../../utils/validation'
+import { getNameType } from '../../utils/getNameType'
 import multicallWrapper from './multicallWrapper'
 
 export type GetPriceParameters = {
@@ -25,9 +26,13 @@ const encode = (
   const names = (Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]).map(
     (name) => {
       const labels = name.split('.')
-      if (labels.length !== 1 && !checkIsDotEth(labels)) {
-        throw new Error('Only 2LD .eth names are supported for now')
-      }
+      const nameType = getNameType(name)
+      if (nameType !== 'eth-2ld' && nameType !== 'tld')
+        throw new UnsupportedNameTypeError({
+          nameType,
+          supportedNameTypes: ['eth-2ld', 'tld'],
+          details: 'Currently only the price of eth-2ld names can be fetched',
+        })
       return labels[0]
     },
   )

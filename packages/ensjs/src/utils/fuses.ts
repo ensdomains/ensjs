@@ -1,3 +1,14 @@
+import {
+  FusesFuseNotAllowedError,
+  FusesInvalidFuseObjectError,
+  FusesInvalidNamedFuseError,
+  FusesInvalidUnnamedFuseError,
+  FusesNonIntegerError,
+  FusesOutOfRangeError,
+  FusesRestrictionNotAllowedError,
+  FusesValueRequiredError,
+} from '../errors/utils'
+
 // child named fuses
 const CANNOT_UNWRAP = 1
 const CANNOT_BURN_FUSES = 2
@@ -134,19 +145,20 @@ export type CombinedFuseInput = {
 type FuseRestriction = 'parent' | 'child'
 
 const checkNumber = (fuses: number) => {
-  if (fuses > 2 ** 32 || fuses < 1) {
-    throw new Error(
-      `Fuse number must be limited to uint32, ${fuses} was too ${
+  if (fuses > 2 ** 32 || fuses < 1)
+    throw new FusesOutOfRangeError({
+      fuses,
+      details: `Fuse number must be limited to uint32, the supplied value was too ${
         fuses < 1 ? 'low' : 'high'
-      }.`,
-    )
-  } else if (fuses % 1 !== 0) {
-    throw new Error(`Fuse number must be an integer, ${fuses} was not.`)
-  } else if ((fuses & USER_SETTABLE_FUSES) !== fuses) {
-    throw new Error(
-      `Fuse number must be limited to user settable fuses, ${fuses} was not.`,
-    )
-  }
+      }`,
+    })
+  else if (fuses % 1 !== 0) throw new FusesNonIntegerError({ fuses })
+  else if ((fuses & USER_SETTABLE_FUSES) !== fuses)
+    throw new FusesOutOfRangeError({
+      fuses,
+      maximum: 2 ** 16,
+      details: `Fuse number must be limited to user settable fuses, the supplied value was not`,
+    })
 }
 
 const testFuses = (fuses: any) => {
@@ -197,9 +209,12 @@ export function encodeFuses<T extends FuseRestriction>(
   let encodedFuses: number = 0
 
   if (typeof fuses === 'number') {
-    if (restrictTo) {
-      throw new Error('Cannot specify an exact fuse value when restricted.')
-    }
+    if (restrictTo)
+      throw new FusesRestrictionNotAllowedError({
+        fuses,
+        details:
+          'Fuse restriction cannot be used when an exact value is specified',
+      })
     checkNumber(fuses)
 
     encodedFuses = fuses
@@ -212,9 +227,12 @@ export function encodeFuses<T extends FuseRestriction>(
     let unnamedArray: readonly UserSettableFuses['unnamedValues'][] = []
 
     if (restrictTo) {
-      if ('parent' in fuses || 'child' in fuses) {
-        throw new Error("Can't specify fuse category when restricted.")
-      }
+      if ('parent' in fuses || 'child' in fuses)
+        throw new FusesRestrictionNotAllowedError({
+          fuses,
+          details:
+            'Fuse restriction cannot be used when fuse category is specified',
+        })
       allowedNamed = restrictTo === 'child' ? childFuseKeys : parentFuseKeys
       allowedUnnamed =
         restrictTo === 'child' ? unnamedChildFuses : unnamedParentFuses
@@ -228,21 +246,24 @@ export function encodeFuses<T extends FuseRestriction>(
       if ('named' in fusesRef.parent) namedArray = fusesRef.parent.named
       if ('unnamed' in fusesRef.parent) unnamedArray = fusesRef.parent.unnamed
       if ('number' in fusesRef.parent) {
-        if ('named' in fusesRef.parent || 'unnamed' in fusesRef.parent) {
-          throw new Error(
-            'Cannot specify both a fuse number and named/unnamed fuses.',
-          )
-        }
+        if ('named' in fusesRef.parent || 'unnamed' in fusesRef.parent)
+          throw new FusesInvalidFuseObjectError({
+            fuses,
+            details:
+              'Cannot specify both a fuse number and named/unnamed fuses.',
+          })
         checkNumber(fusesRef.parent.number)
 
         if (
           (fusesRef.parent.number & PARENT_CONTROLLED_FUSES) !==
           fusesRef.parent.number
-        ) {
-          throw new Error(
-            "Cannot specify a fuse value to set that is outside of the parent's control.",
-          )
-        }
+        )
+          throw new FusesOutOfRangeError({
+            fuses: fusesRef.parent.number,
+            minimum: 2 ** 17,
+            details:
+              "Cannot specify a fuse value to set that is outside of the parent's control.",
+          })
 
         encodedFuses |= fusesRef.parent.number
       }
@@ -253,47 +274,45 @@ export function encodeFuses<T extends FuseRestriction>(
       if ('unnamed' in fusesRef.child)
         unnamedArray = [...unnamedArray, ...fusesRef.child.unnamed]
       if ('number' in fusesRef.child) {
-        if ('named' in fusesRef.child || 'unnamed' in fusesRef.child) {
-          throw new Error(
-            'Cannot specify both a fuse number and named/unnamed fuses.',
-          )
-        }
+        if ('named' in fusesRef.child || 'unnamed' in fusesRef.child)
+          throw new FusesInvalidFuseObjectError({
+            fuses,
+            details:
+              'Cannot specify both a fuse number and named/unnamed fuses.',
+          })
         checkNumber(fusesRef.child.number)
 
         if (
           (fusesRef.child.number & CHILD_CONTROLLED_FUSES) !==
           fusesRef.child.number
-        ) {
-          throw new Error(
-            "Cannot specify a fuse value to set that is outside of the owner's control.",
-          )
-        }
+        )
+          throw new FusesOutOfRangeError({
+            fuses: fusesRef.child.number,
+            maximum: 2 ** 16,
+            details:
+              "Cannot specify a fuse value to set that is outside of the owner's control.",
+          })
 
         encodedFuses |= fusesRef.child.number
       }
     }
 
-    if (!namedArray.length && !unnamedArray.length && !encodedFuses) {
-      throw new Error('Must specify at least one fuse.')
-    }
+    if (!namedArray.length && !unnamedArray.length && !encodedFuses)
+      throw new FusesValueRequiredError()
 
     for (const fuse of namedArray) {
       if (!allowedNamed.includes(fuse)) {
-        if (!userSettableFuseKeys.includes(fuse)) {
-          throw new Error(`${fuse} is not a valid named fuse.`)
-        }
-        throw new Error(`Fuse ${fuse} is not allowed for this operation.`)
+        if (!userSettableFuseKeys.includes(fuse))
+          throw new FusesInvalidNamedFuseError({ fuse })
+        throw new FusesFuseNotAllowedError({ fuse })
       }
       encodedFuses |= userSettableFuseEnum[fuse]
     }
     for (const fuse of unnamedArray) {
       if (!allowedUnnamed.includes(fuse)) {
-        if (!unnamedUserSettableFuses.includes(fuse)) {
-          throw new Error(
-            `${fuse} is not a valid unnamed fuse. If you are trying to set a named fuse, use the named property.`,
-          )
-        }
-        throw new Error(`Fuse ${fuse} is not allowed for this operation.`)
+        if (!unnamedUserSettableFuses.includes(fuse))
+          throw new FusesInvalidUnnamedFuseError({ fuse })
+        throw new FusesFuseNotAllowedError({ fuse })
       }
       encodedFuses |= fuse
     }

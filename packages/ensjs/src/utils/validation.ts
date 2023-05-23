@@ -1,3 +1,7 @@
+import {
+  NameWithEmptyLabelsError,
+  RootNameIncludesOtherLabelsError,
+} from '../errors/utils'
 import { MINIMUM_DOT_ETH_CHARS } from './consts'
 import { checkLabel, isEncodedLabelhash, saveName } from './labels'
 import { Label, normalise, split } from './normalise'
@@ -5,9 +9,9 @@ import { Label, normalise, split } from './normalise'
 export const validateName = (name: string) => {
   const nameArray = name.split('.')
   const normalisedArray = nameArray.map((label) => {
-    if (label.length === 0) throw new Error('Name cannot have empty labels')
+    if (label.length === 0) throw new NameWithEmptyLabelsError({ name })
     if (label === '[root]') {
-      if (name !== label) throw new Error('Root label must be the only label')
+      if (name !== label) throw new RootNameIncludesOtherLabelsError({ name })
       return label
     }
     return isEncodedLabelhash(label)

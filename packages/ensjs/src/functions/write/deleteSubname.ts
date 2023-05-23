@@ -13,11 +13,17 @@ import {
 } from '../../contracts/nameWrapper'
 import { setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet } from '../../contracts/registry'
 import {
+  AdditionalParameterSpecifiedError,
+  InvalidContractTypeError,
+  UnsupportedNameTypeError,
+} from '../../errors/general'
+import {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'
+import { getNameType } from '../../utils/getNameType'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
 import { namehash } from '../../utils/normalise'
 
@@ -60,18 +66,23 @@ export const makeFunctionData = <
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   { name, contract, asOwner }: DeleteSubnameDataParameters,
 ): DeleteSubnameDataReturnType => {
-  const labels = name.split('.')
-  if (labels.length < 3) {
-    throw new Error('Cannot delete a subname of a top-level domain')
-  }
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-subname' && nameType !== 'other-subname')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-subname', 'other-subname'],
+      details: 'Cannot delete a name that is not a subname',
+    })
 
   switch (contract) {
     case 'registry': {
-      if (asOwner) {
-        throw new Error(
-          'Deleting a subname as the name owner is not currently supported for the registry contract',
-        )
-      }
+      if (asOwner)
+        throw new AdditionalParameterSpecifiedError({
+          parameter: 'asOwner',
+          allowedParameters: ['name', 'contract'],
+          details:
+            'Deleting a suname as the name owner is not currently supported for the registry contract.',
+        })
 
       const { labelhash, parentNode } = makeLabelNodeAndParent(name)
       return {
@@ -127,9 +138,11 @@ export const makeFunctionData = <
         }),
       }
     }
-    default: {
-      throw new Error(`Invalid contract type: ${contract}`)
-    }
+    default:
+      throw new InvalidContractTypeError({
+        contractType: contract,
+        supportedContractTypes: ['registry', 'nameWrapper'],
+      })
   }
 }
 

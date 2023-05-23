@@ -65,5 +65,11 @@ it('should error if unknown contract', async () => {
       newOwnerAddress: accounts[1],
       account: accounts[1],
     }),
-  ).rejects.toThrow('Unknown contract: random')
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Invalid contract type: random
+
+    - Supported contract types: registry, nameWrapper
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })

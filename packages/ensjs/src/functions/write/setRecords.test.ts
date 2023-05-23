@@ -99,9 +99,14 @@ it('should error if there are no records to set', async () => {
       resolverAddress: (await getResolver(publicClient, {
         name: 'test123.eth',
       }))!,
+
       account: accounts[1],
     }),
-  ).rejects.toThrow('No records to set')
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "No records specified
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('should not wrap with multicall if only setting a single record', async () => {
   const encodedData = setRecords.makeFunctionData(walletClient, {

@@ -64,7 +64,13 @@ it('should error if newRegistrantAddress is not specified for .eth', async () =>
       newOwnerAddress: accounts[1],
       account: accounts[1],
     } as any),
-  ).rejects.toThrow('Must provide newRegistrantAddress for 2ld .eth names')
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Required parameter not specified: newRegistrantAddress
+
+    Details: Must provide newRegistrantAddress for eth-2ld names
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('should error if newRegistrantAddress is specified for non .eth', async () => {
   await expect(
@@ -74,7 +80,13 @@ it('should error if newRegistrantAddress is specified for non .eth', async () =>
       newRegistrantAddress: accounts[1],
       account: accounts[2],
     } as any),
-  ).rejects.toThrow(
-    'newRegistrantAddress can only be specified for 2ld .eth names',
-  )
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Additional parameter specified: newRegistrantAddress
+
+    - Allowed parameters: name, newOwnerAddress
+
+    Details: newRegistrantAddress can only be specified for eth-2ld names
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })

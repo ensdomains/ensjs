@@ -14,6 +14,7 @@ import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { safeTransferFromWithDataSnippet } from '../../contracts/erc721'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { wrapSnippet } from '../../contracts/nameWrapper'
+import { AdditionalParameterSpecifiedError } from '../../errors/general'
 import {
   Eth2ldNameSpecifier,
   GetNameType,
@@ -105,9 +106,11 @@ export const makeFunctionData = <
   }
 
   if (fuses)
-    throw new Error(
-      'Fuses can not be initially set when wrapping a non eth 2ld name',
-    )
+    throw new AdditionalParameterSpecifiedError({
+      parameter: 'fuses',
+      allowedParameters: ['name', 'wrappedOwner', 'resolverAddress'],
+      details: 'Fuses cannot be initially set when wrapping non eth-2ld names',
+    })
 
   labels.forEach((label) => wrappedLabelLengthCheck(label))
   return {

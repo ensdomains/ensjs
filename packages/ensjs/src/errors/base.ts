@@ -1,4 +1,4 @@
-import { getVersion } from './utils'
+import { getVersion } from './error-utils'
 
 type BaseErrorParameters = {
   metaMessages?: string[]

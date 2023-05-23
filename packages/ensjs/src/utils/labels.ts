@@ -1,4 +1,8 @@
 import { Hex, labelhash } from 'viem'
+import {
+  InvalidEncodedLabelError,
+  InvalidLabelhashError,
+} from '../errors/utils'
 import { truncateFormat } from './format'
 
 const hasLocalStorage = typeof localStorage !== 'undefined'
@@ -6,27 +10,34 @@ const hasLocalStorage = typeof localStorage !== 'undefined'
 export const keccakFromString = (input: string) => labelhash(input)
 
 export function decodeLabelhash(hash: string): Hex {
-  if (!(hash.startsWith('[') && hash.endsWith(']'))) {
-    throw Error(
-      'Expected encoded labelhash to start and end with square brackets',
-    )
-  }
+  if (!(hash.startsWith('[') && hash.endsWith(']')))
+    throw new InvalidEncodedLabelError({
+      label: hash,
+      details:
+        'Expected encoded labelhash to start and end with square brackets',
+    })
 
-  if (hash.length !== 66) {
-    throw Error('Expected encoded labelhash to have a length of 66')
-  }
+  if (hash.length !== 66)
+    throw new InvalidEncodedLabelError({
+      label: hash,
+      details: 'Expected encoded labelhash to have a length of 66',
+    })
 
   return `0x${hash.slice(1, -1)}`
 }
 
 export function encodeLabelhash(hash: string) {
-  if (!hash.startsWith('0x')) {
-    throw new Error('Expected label hash to start with 0x')
-  }
+  if (!hash.startsWith('0x'))
+    throw new InvalidLabelhashError({
+      labelhash: hash,
+      details: 'Expected labelhash to start with 0x',
+    })
 
-  if (hash.length !== 66) {
-    throw new Error('Expected label hash to have a length of 66')
-  }
+  if (hash.length !== 66)
+    throw new InvalidLabelhashError({
+      labelhash: hash,
+      details: 'Expected labelhash to have a length of 66',
+    })
 
   return `[${hash.slice(2)}]`
 }

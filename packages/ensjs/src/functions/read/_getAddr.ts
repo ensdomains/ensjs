@@ -7,6 +7,7 @@ import {
   multiAddrSnippet,
   singleAddrSnippet,
 } from '../../contracts/publicResolver'
+import { CoinFormatterNotFoundError } from '../../errors/read'
 import { DecodedAddr, Prettify, SimpleTransactionRequest } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'
 import { generateFunction } from '../../utils/generateFunction'
@@ -53,9 +54,7 @@ const encode = (
       ? formatsByName[coin]
       : formatsByCoinType[typeof coin === 'number' ? coin : parseInt(coin)]
 
-  if (!formatter) {
-    throw new Error(`No formatter found for coin: ${coin}`)
-  }
+  if (!formatter) throw new CoinFormatterNotFoundError({ coinType: coin })
 
   return {
     to: EMPTY_ADDRESS,
