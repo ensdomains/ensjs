@@ -104,7 +104,13 @@ it('should throw error if resolver is specified when claiming without an address
       preparedData: await prepareDnsImport(publicClient, { name }),
       account: accounts[0],
     } as any),
-  ).rejects.toThrow(
-    'resolverAddress cannot be specified when claiming without an address',
-  )
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Additional parameter specified: resolverAddress
+
+    - Allowed parameters: name, preparedData
+
+    Details: resolverAddress cannot be specified when claiming without an address
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })

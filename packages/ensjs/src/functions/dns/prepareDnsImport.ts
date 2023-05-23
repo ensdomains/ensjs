@@ -5,6 +5,7 @@ import { keccak256, toBytes, toHex } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { anchorsSnippet, rrDataSnippet } from '../../contracts/dnssecImpl'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { DnsNewerRecordTypeAvailableError } from '../../errors/dns'
 import { packetToBytes } from '../../utils/hexEncodedName'
 import { Endpoint } from './types'
 
@@ -68,11 +69,13 @@ const prepareDnsImport = async (
       functionName: 'rrdata',
       args: [type, hexEncodedName],
     })
-    if (serialNumberGt(inception, proof.signature.data.inception)) {
-      throw new Error(
-        `DNSSEC Oracle has a newer version of the ${proof.signature.data.typeCovered} RRSET on ${proof.signature.name}`,
-      )
-    }
+    if (serialNumberGt(inception, proof.signature.data.inception))
+      throw new DnsNewerRecordTypeAvailableError({
+        typeCovered: proof.signature.data.typeCovered,
+        signatureName: proof.signature.name,
+        onchainInception: inception,
+        dnsInception: proof.signature.data.inception,
+      })
     const expired = serialNumberGt(Date.now() / 1000, expiration)
     const proofHash = keccak256(proof.toWire(false)).slice(0, 42)
     const isKnownProof = hash === proofHash && !expired

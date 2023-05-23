@@ -55,8 +55,11 @@ export type DecodedText = {
 
 export type AnyDate = string | number | bigint | Date
 
+export type RootName = ''
 export type TldName = `${string}`
+export type EthTldName = `eth`
 export type Eth2ldName = `${string}.eth`
+export type EthAnyName = EthTldName | Eth2ldName
 export type EthSubname = `${string}.${string}.eth`
 export type Other2ldName = `${string}.${string}`
 export type OtherSubname = `${string}.${string}.${string}`
@@ -73,13 +76,31 @@ export type Eth2ldNameSpecifier = 'eth-2ld'
 export type EthSubnameSpecifier = 'eth-subname'
 export type Other2ldNameSpecifier = 'other-2ld'
 export type OtherSubnameSpecifier = 'other-subname'
+export type RootNameSpecifier = 'root'
+export type EthTldNameSpecifier = 'eth-tld'
 
-export type GetNameType<TString extends string> = TString extends Eth2ldName
-  ? TString extends EthSubname
-    ? EthSubnameSpecifier
-    : Eth2ldNameSpecifier
+export type NameType =
+  | TldNameSpecifier
+  | Eth2ldNameSpecifier
+  | EthSubnameSpecifier
+  | Other2ldNameSpecifier
+  | OtherSubnameSpecifier
+  | RootNameSpecifier
+  | EthTldNameSpecifier
+
+type GetEthNameType<TString extends EthAnyName> = TString extends EthTldName
+  ? EthTldNameSpecifier
+  : TString extends EthSubname
+  ? EthSubnameSpecifier
+  : Eth2ldNameSpecifier
+type GetOtherNameType<TString extends TldName> = TString extends OtherSubname
+  ? OtherSubnameSpecifier
   : TString extends Other2ldName
-  ? TString extends OtherSubname
-    ? OtherSubnameSpecifier
-    : Other2ldNameSpecifier
+  ? Other2ldNameSpecifier
   : TldNameSpecifier
+
+export type GetNameType<TString extends string> = TString extends RootName
+  ? RootNameSpecifier
+  : TString extends EthAnyName
+  ? GetEthNameType<TString>
+  : GetOtherNameType<TString>

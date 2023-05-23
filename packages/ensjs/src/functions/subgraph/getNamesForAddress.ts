@@ -1,6 +1,11 @@
 import { gql } from 'graphql-request'
 import { Address } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
+import {
+  FilterKeyRequiredError,
+  InvalidFilterKeyError,
+  InvalidOrderByError,
+} from '../../errors/subgraph'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts'
 import { createSubgraphClient } from './client'
 import {
@@ -104,13 +109,29 @@ const getNamesForAddress = async (
           break
         }
         default:
-          throw new Error(`Invalid filter key: ${key}`)
+          throw new InvalidFilterKeyError({
+            filterKey: key,
+            supportedFilterKeys: [
+              'owner',
+              'registrant',
+              'wrappedOwner',
+              'resolvedAddress',
+            ],
+          })
       }
     }
   }
 
   if (!hasFilterApplied)
-    throw new Error('At least one ownership filter must be enabled')
+    throw new FilterKeyRequiredError({
+      supportedFilterKeys: [
+        'owner',
+        'registrant',
+        'wrappedOwner',
+        'resolvedAddress',
+      ],
+      details: 'At least one ownership filter must be enabled',
+    })
 
   ownerWhereFilter += `
     ]
@@ -188,7 +209,10 @@ const getNamesForAddress = async (
         break
       }
       default:
-        throw new Error(`Invalid orderBy: ${orderBy}`)
+        throw new InvalidOrderByError({
+          orderBy,
+          supportedOrderBys: ['expiryDate', 'name', 'labelName', 'createdAt'],
+        })
     }
     whereFilters.push(orderByFilter)
   }

@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 import { Address, getAddress, labelhash } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
-import { checkIsDotEth } from '../../utils/validation'
+import { UnsupportedNameTypeError } from '../../errors/general'
+import { getNameType } from '../../utils/getNameType'
 import { createSubgraphClient } from './client'
 
 export type GetSubgraphRegistrantParameters = {
@@ -33,8 +34,13 @@ const getSubgraphRegistrant = async (
   { name }: GetSubgraphRegistrantParameters,
 ): Promise<GetSubgraphRegistrantReturnType> => {
   const labels = name.split('.')
-  if (!checkIsDotEth(labels))
-    throw new Error('Registrant can only be fetched for 2ld .eth names')
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Registrant can only be fetched for eth-2ld names',
+    })
 
   const subgraphClient = createSubgraphClient({ client })
 

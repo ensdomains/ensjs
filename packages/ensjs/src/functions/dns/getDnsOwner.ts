@@ -1,4 +1,13 @@
 import { Address, getAddress } from 'viem'
+import {
+  DnsDnssecVerificationFailedError,
+  DnsInvalidAddressChecksumError,
+  DnsInvalidTxtRecordError,
+  DnsNoTxtRecordError,
+  DnsResponseStatusError,
+} from '../../errors/dns'
+import { UnsupportedNameTypeError } from '../../errors/general'
+import { getNameType } from '../../utils/getNameType'
 import { Endpoint } from './types'
 
 export type GetDnsOwnerParameters = {
@@ -67,12 +76,13 @@ const getDnsOwner = async ({
   name,
   endpoint = 'https://cloudflare-dns.com/dns-query',
 }: GetDnsOwnerParameters): Promise<GetDnsOwnerReturnType> => {
-  const labels = name.split('.')
-  const isDotEth = labels[labels.length - 1] === 'eth'
-  const largerThan2ld = labels.length > 2
+  const nameType = getNameType(name)
 
-  if (isDotEth) throw new Error('Only DNS domains are supported')
-  if (largerThan2ld) throw new Error('Only TLDs and 2LDs are supported')
+  if (nameType !== 'other-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['other-2ld'],
+    })
 
   const response: DnsResponse = await fetch(
     `${endpoint}?name=_ens.${name}.&type=TXT`,
@@ -85,7 +95,9 @@ const getDnsOwner = async ({
   ).then((res) => res.json())
 
   if (response.Status !== DnsResponseStatus.NOERROR)
-    throw new Error(`Error occurred: ${DnsResponseStatus[response.Status]}`)
+    throw new DnsResponseStatusError({
+      responseStatus: DnsResponseStatus[response.Status],
+    })
 
   const addressRecord = response.Answer?.find(
     (record) => record.type === DnsRecordType.TXT,
@@ -93,20 +105,20 @@ const getDnsOwner = async ({
   const unwrappedAddressRecord = addressRecord?.data?.replace(/^"(.*)"$/g, '$1')
 
   if (response.AD === false)
-    throw new Error(
-      `DNSSEC verification failed; data: ${unwrappedAddressRecord}`,
-    )
+    throw new DnsDnssecVerificationFailedError({
+      record: unwrappedAddressRecord,
+    })
 
-  if (!addressRecord?.data) throw new Error('No TXT record found')
+  if (!addressRecord?.data) throw new DnsNoTxtRecordError()
 
   if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g))
-    throw new Error(`Invalid TXT record: ${unwrappedAddressRecord}`)
+    throw new DnsInvalidTxtRecordError({ record: unwrappedAddressRecord! })
 
   const address = unwrappedAddressRecord!.slice(2)
   const checksumAddress = getAddress(address)
 
   if (address !== checksumAddress)
-    throw new Error(`Invalid checksum: ${address}`)
+    throw new DnsInvalidAddressChecksumError({ address })
 
   return checksumAddress
 }

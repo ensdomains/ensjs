@@ -55,14 +55,24 @@ it('returns valid address from valid domain and record', async () => {
 })
 
 it('throws error if .eth', async () => {
-  await expect(getDnsOwner({ name: 'example.eth' })).rejects.toThrow(
-    'Only DNS domains are supported',
-  )
+  await expect(getDnsOwner({ name: 'example.eth' })).rejects
+    .toThrowErrorMatchingInlineSnapshot(`
+    "Unsupported name type: eth-2ld
+
+    - Supported name types: other-2ld
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('throws error if >2ld', async () => {
-  await expect(getDnsOwner({ name: 'subdomain.example.com' })).rejects.toThrow(
-    'Only TLDs and 2LDs are supported',
-  )
+  await expect(getDnsOwner({ name: 'subdomain.example.com' })).rejects
+    .toThrowErrorMatchingInlineSnapshot(`
+    "Unsupported name type: other-subname
+
+    - Supported name types: other-2ld
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('returns error if DnsResponseStatus is not NOERROR', async () => {
   handler.mockImplementation((req, res) => {
@@ -76,9 +86,12 @@ it('returns error if DnsResponseStatus is not NOERROR', async () => {
     res.destroy()
   })
 
-  await expect(
-    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
-  ).rejects.toThrow('Error occurred: NXDOMAIN')
+  await expect(getDnsOwner({ name: 'example.com', endpoint: serverUrl }))
+    .rejects.toThrowErrorMatchingInlineSnapshot(`
+    "DNS query failed with status: NXDOMAIN
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('returns error if AD is false', async () => {
   handler.mockImplementation((req, res) => {
@@ -92,9 +105,12 @@ it('returns error if AD is false', async () => {
     res.destroy()
   })
 
-  await expect(
-    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
-  ).rejects.toThrow('DNSSEC verification failed; data: undefined')
+  await expect(getDnsOwner({ name: 'example.com', endpoint: serverUrl }))
+    .rejects.toThrowErrorMatchingInlineSnapshot(`
+    "DNSSEC verification failed
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('returns error if no TXT record', async () => {
   handler.mockImplementation((req, res) => {
@@ -109,9 +125,12 @@ it('returns error if no TXT record', async () => {
     res.destroy()
   })
 
-  await expect(
-    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
-  ).rejects.toThrow('No TXT record found')
+  await expect(getDnsOwner({ name: 'example.com', endpoint: serverUrl }))
+    .rejects.toThrowErrorMatchingInlineSnapshot(`
+    "No TXT record found
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('returns error if TXT record is not formatted correctly', async () => {
   handler.mockImplementation((req, res) => {
@@ -133,11 +152,12 @@ it('returns error if TXT record is not formatted correctly', async () => {
     res.destroy()
   })
 
-  await expect(
-    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
-  ).rejects.toThrow(
-    'Invalid TXT record: 0x8e8Db5CcEF88cca9d624701Db544989C996E3216',
-  )
+  await expect(getDnsOwner({ name: 'example.com', endpoint: serverUrl }))
+    .rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Invalid TXT record: 0x8e8Db5CcEF88cca9d624701Db544989C996E3216
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('returns error if address is not checksummed', async () => {
   handler.mockImplementation((req, res) => {
@@ -159,11 +179,12 @@ it('returns error if address is not checksummed', async () => {
     res.destroy()
   })
 
-  await expect(
-    getDnsOwner({ name: 'example.com', endpoint: serverUrl }),
-  ).rejects.toThrow(
-    'Invalid checksum: 0x8e8db5CcEF88cca9d624701Db544989C996E3216',
-  )
+  await expect(getDnsOwner({ name: 'example.com', endpoint: serverUrl }))
+    .rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Invalid address checksum: 0x8e8db5CcEF88cca9d624701Db544989C996E3216
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })
 it('real test', async () => {
   const result = await getDnsOwner({

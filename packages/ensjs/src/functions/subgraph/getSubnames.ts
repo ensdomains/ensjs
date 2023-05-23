@@ -1,5 +1,6 @@
 import { gql } from 'graphql-request'
 import { ClientWithEns } from '../../contracts/addContracts'
+import { InvalidOrderByError } from '../../errors/subgraph'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts'
 import { namehash } from '../../utils/normalise'
 import { createSubgraphClient } from './client'
@@ -119,7 +120,10 @@ const getSubnames = async (
         break
       }
       default:
-        throw new Error(`Invalid orderBy: ${orderBy}`)
+        throw new InvalidOrderByError({
+          orderBy,
+          supportedOrderBys: ['expiryDate', 'name', 'labelName', 'createdAt'],
+        })
     }
     whereFilters.push(orderByFilter)
   }

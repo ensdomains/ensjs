@@ -18,5 +18,13 @@ it('throws an error for other name', async () => {
     getSubgraphRegistrant(publicClient, {
       name: 'test123.com',
     }),
-  ).rejects.toThrow('Registrant can only be fetched for 2ld .eth names')
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
+    "Unsupported name type: other-2ld
+
+    - Supported name types: eth-2ld
+
+    Details: Registrant can only be fetched for eth-2ld names
+
+    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+  `)
 })

@@ -26,6 +26,7 @@
     "no-console": "off",
     "prettier/prettier": "error",
     "import/prefer-default-export": "off",
-    "import/extensions": ["off"]
+    "import/extensions": ["off"],
+    "max-classes-per-file": "off"
   }
 }

@@ -14,6 +14,7 @@ import {
   proveAndClaimWithResolverSnippet,
 } from '../../contracts/dnsRegistrar'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { AdditionalParameterSpecifiedError } from '../../errors/general'
 import {
   Prettify,
   SimpleTransactionRequest,
@@ -74,9 +75,12 @@ export const makeFunctionData = <
 
   if (!address) {
     if (resolverAddress)
-      throw new Error(
-        'resolverAddress cannot be specified when claiming without an address',
-      )
+      throw new AdditionalParameterSpecifiedError({
+        parameter: 'resolverAddress',
+        allowedParameters: ['name', 'preparedData'],
+        details:
+          'resolverAddress cannot be specified when claiming without an address',
+      })
     return {
       to: dnsRegistrarAddress,
       data: encodeFunctionData({
