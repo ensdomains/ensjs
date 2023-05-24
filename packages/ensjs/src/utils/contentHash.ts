@@ -1,6 +1,5 @@
 import contentHash from '@ensdomains/content-hash'
-import { isHexString } from '@ethersproject/bytes'
-import { Hex } from 'viem'
+import { Hex, isHex } from 'viem'
 
 export type ProtocolType =
   | 'ipfs'
@@ -72,7 +71,7 @@ export function validateContent(encoded: any) {
 export function isValidContenthash(encoded: any) {
   try {
     const codec = contentHash.getCodec(encoded)
-    return isHexString(encoded) && supportedCodecs.includes(codec)
+    return isHex(encoded) && supportedCodecs.includes(codec)
   } catch (e) {
     console.log(e)
   }
