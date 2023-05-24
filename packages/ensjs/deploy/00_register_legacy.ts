@@ -1,12 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import { toUtf8Bytes } from '@ethersproject/strings'
 import cbor from 'cbor'
 import { ethers } from 'hardhat'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import pako from 'pako'
-import { labelhash } from 'viem'
+import { labelhash, toBytes } from 'viem'
 import { namehash } from '../src/utils/normalise'
 
 const dummyABI = [
@@ -419,7 +418,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         } else {
           data = records.abi.data as string
         }
-        if (typeof data === 'string') data = toUtf8Bytes(data)
+        if (typeof data === 'string') data = toBytes(data)
         const setABITx = await _publicResolver.setABI(
           hash,
           records.abi.contentType,
