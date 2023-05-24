@@ -36,9 +36,14 @@ describe('validateName()', () => {
     expect(validateName('[root]')).toEqual('[root]')
   })
   it('should throw if the name has [root] as a label and is not the only label', () => {
-    expect(() => validateName('foo.[root].bar')).toThrowError(
-      'Root label must be the only label',
-    )
+    expect(() => validateName('foo.[root].bar'))
+      .toThrowErrorMatchingInlineSnapshot(`
+      "Root name cannot have other labels
+
+      - Supplied name: foo.[root].bar
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
   })
 
   it('should get the decoded label hash from local storage', () => {

@@ -149,3 +149,13 @@ export class WrappedLabelTooLargeError extends BaseError {
     })
   }
 }
+
+export class CampaignReferenceTooLargeError extends BaseError {
+  override name = 'CampaignReferenceTooLargeError'
+
+  constructor({ campaign }: { campaign: number }) {
+    super(`Campaign reference ${campaign} is too large`, {
+      metaMessages: [`- Max campaign reference: ${0xffffffff}`],
+    })
+  }
+}

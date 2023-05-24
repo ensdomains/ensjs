@@ -29,6 +29,12 @@ const decodeProofs = (proofs: RrSetWithSig[]) =>
     SignedSet.fromWire(proof.rrset as Buffer, proof.sig as Buffer),
   )
 
+jest.setTimeout(10000)
+
+const wait = async (ms: number) =>
+  // eslint-disable-next-line no-promise-executor-return
+  new Promise((resolve) => setTimeout(resolve, ms))
+
 it('returns all rrsets when no proofs are known', async () => {
   const result = await prepareDnsImport(publicClient, {
     name: 'taytems.xyz',
@@ -59,6 +65,8 @@ it('returns rrsets up to the first unknown proof', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
+  await wait(5000)
+
   const result = await prepareDnsImport(publicClient, {
     name: 'lenster.xyz',
   })
@@ -85,6 +93,8 @@ it('returns empty rrsets for all known proofs when the last proof is known', asy
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
+
+  await wait(5000)
 
   const result = await prepareDnsImport(publicClient, {
     name: 'taytems.xyz',

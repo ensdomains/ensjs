@@ -1,7 +1,6 @@
 name: Test
 
-# on: [push]
-on: []
+on: [push]
 
 jobs:
   test:
@@ -10,7 +9,6 @@ jobs:
     strategy:
       matrix:
         node-version: [16]
-        type: ['static', 'dynamic']
     steps:
       - uses: actions/checkout@v3
 
@@ -28,8 +26,6 @@ jobs:
 
       - name: Run tests
         run: pnpm -F @ensdomains/ensjs tenv start --extra-time 11368000
-        env:
-          STATIC_ENS: ${{ matrix.type == 'static' }}
   lint:
     name: Lint
     runs-on: ubuntu-latest

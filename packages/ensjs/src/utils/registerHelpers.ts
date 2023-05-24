@@ -1,8 +1,21 @@
-import { Address, Hex, encodeAbiParameters, keccak256, labelhash } from 'viem'
+import {
+  Address,
+  Hex,
+  encodeAbiParameters,
+  keccak256,
+  labelhash,
+  pad,
+  toBytes,
+  toHex,
+} from 'viem'
+import { CampaignReferenceTooLargeError } from '../errors/utils'
 import { EMPTY_ADDRESS } from './consts'
 import { CombinedFuseInput, encodeFuses, hasFuses } from './fuses'
+import {
+  RecordOptions,
+  generateRecordCallArray,
+} from './generateRecordCallArray'
 import { namehash } from './normalise'
-import { RecordOptions, generateRecordCallArray } from './recordHelpers'
 
 export type RegistrationParameters = {
   name: string
@@ -37,9 +50,29 @@ export type RegistrationTuple = [
   ownerControlledFuses: number,
 ]
 
-export const randomSecret = () => {
-  const bytes = Buffer.allocUnsafe(32)
-  return `0x${crypto.getRandomValues(bytes).toString('hex')}`
+export const randomSecret = ({
+  platformDomain,
+  campaign,
+}: {
+  platformDomain?: string
+  campaign?: number
+} = {}) => {
+  const bytes = crypto.getRandomValues(new Uint8Array(32))
+  if (platformDomain) {
+    const hash = toBytes(namehash(platformDomain))
+    for (let i = 0; i < 4; i += 1) {
+      bytes[i] = hash[i]
+    }
+  }
+  if (campaign) {
+    if (campaign > 0xffffffff)
+      throw new CampaignReferenceTooLargeError({ campaign })
+    const campaignBytes = pad(toBytes(campaign), { size: 4 })
+    for (let i = 0; i < 4; i += 1) {
+      bytes[i + 4] = campaignBytes[i]
+    }
+  }
+  return toHex(bytes)
 }
 
 export const makeCommitmentTuple = ({

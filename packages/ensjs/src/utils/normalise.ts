@@ -48,7 +48,7 @@ export function namehash(name: string) {
 
 export const beautify = ens_beautify
 export const emoji = ens_emoji
-export const normalizeFragment = ens_normalize_fragment
+export const normaliseFragment = ens_normalize_fragment
 export const split = ens_split
 export const tokenise = ens_tokenize
 export const isCombiningMark = is_combining_mark

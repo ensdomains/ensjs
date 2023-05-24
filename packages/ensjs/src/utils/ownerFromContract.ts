@@ -3,6 +3,7 @@ import { ClientWithEns } from '../contracts/addContracts'
 import { ownerOfSnippet } from '../contracts/erc721'
 import { getChainContractAddress } from '../contracts/getChainContractAddress'
 import { ownerSnippet } from '../contracts/registry'
+import { InvalidContractTypeError } from '../errors/general'
 
 export type OwnerContract = 'nameWrapper' | 'registry' | 'registrar'
 
@@ -59,6 +60,10 @@ export const ownerFromContract = ({
           args: [BigInt(labelhash(labels[0]))],
         }),
       }
-    // no default
+    default:
+      throw new InvalidContractTypeError({
+        contractType: contract,
+        supportedContractTypes: ['nameWrapper', 'registry', 'registrar'],
+      })
   }
 }

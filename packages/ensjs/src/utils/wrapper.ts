@@ -9,6 +9,7 @@ export const expiryToBigInt = (expiry?: AnyDate, defaultValue = 0n): bigint => {
   if (typeof expiry === 'bigint') return expiry
   if (typeof expiry === 'string' || typeof expiry === 'number')
     return BigInt(expiry)
+  if (expiry instanceof Date) return BigInt(Math.floor(expiry.getTime() / 1000))
   throw new TypeError('Expiry must be a bigint, string, number or Date')
 }
 

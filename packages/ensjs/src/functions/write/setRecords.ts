@@ -14,11 +14,11 @@ import {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types'
-import { namehash } from '../../utils/normalise'
 import {
   RecordOptions,
   generateRecordCallArray,
-} from '../../utils/recordHelpers'
+} from '../../utils/generateRecordCallArray'
+import { namehash } from '../../utils/normalise'
 
 export type SetRecordsDataParameters = {
   name: string
