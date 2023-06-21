@@ -7,7 +7,9 @@ import { generateFunction } from '../../utils/generateFunction'
 import { namehash } from '../../utils/normalise'
 
 export type InternalGetTextParameters = {
+  /** Name to get text record for */
   name: string
+  /** Text record key to get */
   key: string
 }
 

@@ -8,6 +8,7 @@ import { generateFunction } from '../../utils/generateFunction'
 import { namehash } from '../../utils/normalise'
 
 export type InternalGetContentHashParameters = {
+  /** Name to get content hash record for */
   name: string
 }
 

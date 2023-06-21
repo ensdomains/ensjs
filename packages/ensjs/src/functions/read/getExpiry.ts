@@ -8,24 +8,31 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import { getCurrentBlockTimestampSnippet } from '../../contracts/multicall'
 import { getDataSnippet } from '../../contracts/nameWrapper'
 import { DateWithValue, Prettify, SimpleTransactionRequest } from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate'
 import { namehash } from '../../utils/normalise'
 import { checkIsDotEth } from '../../utils/validation'
 import multicallWrapper from './multicallWrapper'
 
 type ContractOption = 'registrar' | 'nameWrapper'
+type ExpiryStatus = 'active' | 'expired' | 'gracePeriod'
 
 export type GetExpiryParameters = Prettify<{
+  /** Name to get expiry for */
   name: string
+  /** Optional specific contract to use to get expiry */
   contract?: ContractOption
 }>
 
-type ExpiryStatus = 'active' | 'expired' | 'gracePeriod'
-
 export type GetExpiryReturnType = Prettify<{
+  /** Expiry value */
   expiry: DateWithValue<bigint>
+  /** Grace period value (in seconds) */
   gracePeriod: number
+  /** Status of name */
   status: ExpiryStatus
 } | null>
 
@@ -152,6 +159,31 @@ const decode = async (
   }
 }
 
-const getExpiry = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the expiry for a name
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetExpiryParameters}
+ * @returns Expiry object, or `null` if no expiry. {@link GetExpiryReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getExpiry } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getExpiry(client, { name: 'ens.eth' })
+ * // { expiry: { date: Date, value: 1913933217n }, gracePeriod: 7776000, status: 'active' }
+ */
+const getExpiry = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { name, contract }: GetExpiryParameters,
+) => Promise<GetExpiryReturnType>) &
+  BatchableFunctionObject
 
 export default getExpiry

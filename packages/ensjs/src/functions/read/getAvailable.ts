@@ -4,10 +4,14 @@ import { availableSnippet } from '../../contracts/baseRegistrar'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { UnsupportedNameTypeError } from '../../errors/general'
 import { SimpleTransactionRequest } from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import { getNameType } from '../../utils/getNameType'
 
 export type GetAvailableParameters = {
+  /** Name to check availability for, only compatible for eth 2ld */
   name: string
 }
 
@@ -51,6 +55,31 @@ const decode = async (
   return result
 }
 
-const getAvailable = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the availability of a name to register
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetAvailableParameters}
+ * @returns Availability as boolean. {@link GetAvailableReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getAvailable } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getAvailable(client, { name: 'ens.eth' })
+ * // false
+ */
+const getAvailable = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { name }: GetAvailableParameters,
+) => Promise<GetAvailableReturnType>) &
+  BatchableFunctionObject
 
 export default getAvailable

@@ -14,14 +14,10 @@ import { resolveArraySnippet } from '../../contracts/universalResolver'
 import {
   DecodedAddr,
   DecodedText,
-  Prettify,
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
 } from '../../types'
-import {
-  GeneratedFunction,
-  generateFunction,
-} from '../../utils/generateFunction'
+import { generateFunction } from '../../utils/generateFunction'
 import { packetToBytes } from '../../utils/hexEncodedName'
 import { encodeLabelhash } from '../../utils/labels'
 import _getAbi, { InternalGetAbiReturnType } from './_getAbi'
@@ -33,53 +29,70 @@ import _getText from './_getText'
 import multicallWrapper from './multicallWrapper'
 
 export type GetRecordsParameters = {
+  /** Name to get records for */
   name: string
+  /** Optional specific resolver address, for fallback or for all results */
   resolver?: {
+    /** Resolver address */
     address: Address
+    /** If true, will only use resolver if main fetch fails */
     fallbackOnly?: boolean
   }
+  /** Records to fetch */
   records: {
+    /** Text record key array */
     texts?: string[]
+    /** Coin record id/symbol array */
     coins?: (string | number)[]
+    /** If true, will fetch content hash */
     contentHash?: boolean
+    /** If true, will fetch ABI */
     abi?: boolean
   }
 }
 
 type WithContentHashResult = {
+  /** Retrieved content hash record for name */
   contentHash: InternalGetContentHashReturnType
 }
 
 type WithAbiResult = {
+  /** Retrieved ABI record for name */
   abi: InternalGetAbiReturnType
 }
 
 type WithTextsResult = {
+  /** Retrieved text records for name */
   texts: DecodedText[]
 }
 
 type WithCoinsResult = {
+  /** Retrieved coins for name */
   coins: DecodedAddr[]
 }
 
 type BaseGetRecordsReturnType = Partial<
   WithContentHashResult & WithAbiResult & WithTextsResult & WithCoinsResult
-> & { resolverAddress: Address }
+> & {
+  /** Resolver address used for fetch */
+  resolverAddress: Address
+}
 
-export type GetRecordsReturnType<
+type GetRecordsReturnType<
   TParams extends GetRecordsParameters = GetRecordsParameters,
-> = Prettify<
-  TParams['records'] extends undefined
-    ? BaseGetRecordsReturnType
-    : (TParams['records']['contentHash'] extends true
-        ? WithContentHashResult
-        : {}) &
-        (TParams['records']['abi'] extends true ? WithAbiResult : {}) &
-        (TParams['records']['texts'] extends string[] ? WithTextsResult : {}) &
-        (TParams['records']['coins'] extends (string | number)[]
-          ? WithCoinsResult
-          : {}) & { resolverAddress: Address }
->
+> = TParams['records'] extends undefined
+  ? BaseGetRecordsReturnType
+  : (TParams['records']['contentHash'] extends true
+      ? WithContentHashResult
+      : {}) &
+      (TParams['records']['abi'] extends true ? WithAbiResult : {}) &
+      (TParams['records']['texts'] extends string[] ? WithTextsResult : {}) &
+      (TParams['records']['coins'] extends (string | number)[]
+        ? WithCoinsResult
+        : {}) & {
+        /** Resolver address used for fetch */
+        resolverAddress: Address
+      }
 
 type CallObj = {
   key: string | number
@@ -287,13 +300,9 @@ const decode = async <TParams extends GetRecordsParameters>(
 type EncoderFunction = typeof encode
 type DecoderFunction = typeof decode<any>
 
-interface GeneratedGetRecordsFunction
-  extends GeneratedFunction<EncoderFunction, DecoderFunction> {
-  <TParams extends GetRecordsParameters>(
-    client: ClientWithEns,
-    args: TParams,
-  ): Promise<GetRecordsReturnType<TParams>>
-  // eslint-disable-next-line prettier/prettier
+type BatchableFunctionObject = {
+  encode: EncoderFunction
+  decode: DecoderFunction
   batch: <TParams extends GetRecordsParameters>(
     args: TParams,
   ) => {
@@ -303,10 +312,38 @@ interface GeneratedGetRecordsFunction
   }
 }
 
-const getRecords = generateFunction<
-  EncoderFunction,
-  DecoderFunction,
-  GeneratedGetRecordsFunction
->({ encode, decode })
+/**
+ * Gets arbitrary records for a name
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetRecordsParameters}
+ * @returns Records data object. {@link GetRecordsReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getRecords } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getRecords(client, {
+ *   name: 'ens.eth',
+ *   records: {
+ *     texts: ['com.twitter', 'com.github'],
+ *     coins: ['ETH'],
+ *     contentHash: true,
+ *   },
+ * })
+ * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
+ */
+const getRecords = generateFunction({ encode, decode }) as (<
+  TParams extends GetRecordsParameters,
+>(
+  client: ClientWithEns,
+  { name, records, resolver }: TParams,
+) => Promise<GetRecordsReturnType<TParams>>) &
+  BatchableFunctionObject
 
 export default getRecords

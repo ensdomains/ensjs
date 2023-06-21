@@ -13,8 +13,11 @@ import { EMPTY_ADDRESS } from '../../utils/consts'
 import { generateFunction } from '../../utils/generateFunction'
 
 export type InternalGetAddrParameters = {
+  /** Name to get the address record for */
   name: string
+  /** Coin to get the address record for, can be either symbol (string) or coinId (number) (default: `60`) */
   coin?: string | number
+  /** Optionally return raw bytes value of address record (default: false) */
   bypassFormat?: boolean
 }
 
@@ -22,12 +25,8 @@ export type InternalGetAddrReturnType = Prettify<DecodedAddr | null>
 
 const encode = (
   _client: ClientWithEns,
-  { name, coin, bypassFormat }: InternalGetAddrParameters,
+  { name, coin = 60, bypassFormat }: InternalGetAddrParameters,
 ): SimpleTransactionRequest => {
-  if (!coin) {
-    coin = 60
-  }
-
   if (coin === 60 || coin === '60') {
     return {
       to: EMPTY_ADDRESS,

@@ -62,20 +62,38 @@ const decode = async <I extends BatchFunctionResult[]>(
   ) as Promise<BatchReturnType<I>>
 }
 
-type EncoderFunction = typeof encode
-type DecoderFunction = typeof decode
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
 
-interface GeneratedBatchFunction
-  extends GeneratedFunction<EncoderFunction, DecoderFunction> {
-  <I extends BatchFunctionResult[]>(client: ClientWithEns, ...args: I): Promise<
-    BatchReturnType<I> | undefined
-  >
-}
-
-const batch = generateFunction<
-  EncoderFunction,
-  DecoderFunction,
-  GeneratedBatchFunction
->({ encode, decode })
+/**
+ * Batches multiple read functions into a single call.
+ * @param client - {@link ClientWithEns}
+ * @param ...parameters - Array of {@link BatchFunctionResult} objects
+ * @returns Array of return values from each function
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, batch, getText, getAddr } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await batch(
+ *   client,
+ *   getText.batch({ name: 'ens.eth', key: 'com.twitter' }),
+ *   getAddr.batch({ name: 'ens.eth', coin: 'ETH' }),
+ * )
+ * // ['ensdomains', { id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 }]
+ */
+const batch = generateFunction({
+  encode,
+  decode,
+}) as (<I extends BatchFunctionResult[]>(
+  client: ClientWithEns,
+  ...args: I
+) => Promise<BatchReturnType<I> | undefined>) &
+  BatchableFunctionObject
 
 export default batch

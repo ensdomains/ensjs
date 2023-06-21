@@ -13,6 +13,7 @@ import { generateFunction } from '../../utils/generateFunction'
 import { namehash } from '../../utils/normalise'
 
 export type InternalGetAbiParameters = {
+  /** Name to get ABI record for */
   name: string
 }
 

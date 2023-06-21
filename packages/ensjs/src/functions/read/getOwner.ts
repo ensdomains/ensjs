@@ -3,20 +3,28 @@ import { ClientWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { SimpleTransactionRequest } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import { namehash as makeNamehash } from '../../utils/normalise'
 import { OwnerContract, ownerFromContract } from '../../utils/ownerFromContract'
 import { checkIsDotEth } from '../../utils/validation'
 import multicallWrapper from './multicallWrapper'
 
 export type GetOwnerParameters = {
+  /** Name to get owner for */
   name: string
+  /** Optional specific contract to get ownership value from */
   contract?: OwnerContract
 }
 
 type BaseGetOwnerReturnType = {
+  /** Owner of the name */
   owner?: Address | null
+  /** Registrant of the name (registrar owner) */
   registrant?: Address | null
+  /** The contract level that the ownership is on */
   ownershipLevel: 'registry' | 'registrar' | 'nameWrapper'
 }
 
@@ -209,6 +217,31 @@ const decode = async (
   return null
 }
 
-const getOwner = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the owner(s) of a name.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetOwnerParameters}
+ * @returns Owner data object, or `null` if no owners exist. {@link GetOwnerReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getOwner } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getOwner(client, { name: 'ens.eth' })
+ * // { owner: '0xb6E040C9ECAaE172a89bD561c5F73e1C48d28cd9', registrant: '0xb6E040C9ECAaE172a89bD561c5F73e1C48d28cd9', ownershipLevel: 'registrar }
+ */
+const getOwner = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { name, contract }: GetOwnerParameters,
+) => Promise<GetOwnerReturnType>) &
+  BatchableFunctionObject
 
 export default getOwner

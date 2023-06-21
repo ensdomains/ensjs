@@ -116,6 +116,17 @@ export type WalletWithEns<
   TAccount extends Account | undefined = Account | undefined,
 > = WalletClient<TTransport, TChain, TAccount>
 
+/**
+ * Adds the ENS contracts to a viem chain object
+ * @param chains - The {@link Chain} objects to add the ENS contracts to
+ * @returns A {@link Chain} array with ENS contracts added
+ *
+ * @example
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ */
 export const addContracts = <TChain extends Chain = Chain>(
   chains: TChain[],
 ): ChainWithEns<TChain>[] =>

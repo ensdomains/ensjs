@@ -1,7 +1,10 @@
 import { Hex } from 'viem'
 import { ClientWithEns } from '../../contracts/addContracts'
 import { Prettify, SimpleTransactionRequest } from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import _getAbi, {
   InternalGetAbiParameters,
   InternalGetAbiReturnType,
@@ -29,6 +32,31 @@ const decode = async (
   return _getAbi.decode(client, urData.data)
 }
 
-const getAbi = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the ABI record for a name
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetAbiParameters}
+ * @returns ABI record for the name, or `null` if not found. {@link GetAbiReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getAbi } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getAbi(client, { name: 'ens.eth' })
+ * // TODO: real example
+ */
+const getAbi = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { name }: GetAbiParameters,
+) => Promise<GetAbiReturnType>) &
+  BatchableFunctionObject
 
 export default getAbi

@@ -5,17 +5,24 @@ import { rentPriceSnippet as controllerRentPriceSnippet } from '../../contracts/
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { UnsupportedNameTypeError } from '../../errors/general'
 import { SimpleTransactionRequest } from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import { getNameType } from '../../utils/getNameType'
 import multicallWrapper from './multicallWrapper'
 
 export type GetPriceParameters = {
+  /** Name, or array of names, to get price for */
   nameOrNames: string | string[]
+  /** Duration in seconds to get price for */
   duration: bigint | number
 }
 
 export type GetPriceReturnType = {
+  /** Price base value */
   base: bigint
+  /** Price premium */
   premium: bigint
 }
 
@@ -105,6 +112,31 @@ const decode = async (
   })
 }
 
-const getPrice = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the price of a name, or array of names, for a given duration.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetPriceParameters}
+ * @returns Price data object. {@link GetPriceReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getPrice } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getPrice(client, { nameOrNames: 'ens.eth' })
+ * // { base: 352828971668930335n, premium: 0n }
+ */
+const getPrice = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { nameOrNames, duration }: GetPriceParameters,
+) => Promise<GetPriceReturnType>) &
+  BatchableFunctionObject
 
 export default getPrice

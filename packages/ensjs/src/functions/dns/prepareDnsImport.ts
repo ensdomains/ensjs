@@ -10,7 +10,9 @@ import { packetToBytes } from '../../utils/hexEncodedName'
 import { Endpoint } from './types'
 
 export type PrepareDnsImportParameters = {
+  /** Name to prepare for DNS import */
   name: string
+  /** An RFC-1035 compatible DNS endpoint to use (default: `https://cloudflare-dns.com/dns-query`) */
   endpoint?: Endpoint
 }
 
@@ -36,6 +38,26 @@ const encodeProofs = (
     sig: proof.signature.data.signature,
   }))
 
+/**
+ * Creates prepared data for `importDnsName()`
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link PrepareDnsImportParameters}
+ * @returns Prepared data object
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, prepareDnsImport } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const preparedData = await prepareDnsImport(client, {
+ *   name: 'example.eth',
+ * })
+ */
 const prepareDnsImport = async (
   client: ClientWithEns,
   {

@@ -24,9 +24,13 @@ import { packetToBytes } from '../../utils/hexEncodedName'
 import { PrepareDnsImportReturnType } from './prepareDnsImport'
 
 type BaseImportDnsNameDataParameters = {
+  /** Name to import */
   name: string
+  /** Data returned from `prepareDnsImport()` */
   preparedData: PrepareDnsImportReturnType
+  /** Address to claim the name for */
   address?: Address
+  /** Address of the resolver to use (default: `ensPublicResolver`) */
   resolverAddress?: Address
 }
 
@@ -111,6 +115,34 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Creates a transaction to import a DNS name to ENS.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link ImportDnsNameParameters}
+ * @returns A transaction hash. {@link ImportDnsNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, prepareDnsImport, importDnsName } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const preparedData = await prepareDnsImport(client, {
+ *   name: 'example.com',
+ * })
+ * const hash = await importDnsName(client, {
+ *   name: 'example.com',
+ *   preparedData,
+ * })
+ */
 async function importDnsName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
