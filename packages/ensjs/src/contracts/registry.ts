@@ -163,3 +163,32 @@ export const setSubnodeOwnerSnippet = [
     type: 'function',
   },
 ] as const
+
+export const setRecordSnippet = [
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+      },
+      {
+        name: 'ttl',
+        type: 'uint64',
+      },
+    ],
+    name: 'setRecord',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

@@ -18,8 +18,11 @@ import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
 import { namehash } from '../../utils/normalise'
 
 export type SetChildFusesDataParameters = {
+  /** Name to set child fuses for */
   name: string
+  /** Fuse object or number value to set to */
   fuses: Partial<CombinedFuseInput> | number
+  /** Expiry to set for fuses */
   expiry?: number | bigint
 }
 
@@ -57,6 +60,36 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets the fuses for a name as the parent.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetChildFusesParameters}
+ * @returns Transaction hash. {@link SetChildFusesReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, setChildFuses } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await setChildFuses(wallet, {
+ *   name: 'sub.ens.eth',
+ *   fuses: {
+ *     parent: {
+ *       named: ['PARENT_CANNOT_CONTROl'],
+ *     },
+ *   },
+ * })
+ * // 0x...
+ */
 async function setChildFuses<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

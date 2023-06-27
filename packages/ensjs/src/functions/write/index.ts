@@ -45,10 +45,10 @@ export {
   default as setFuses,
 } from './setFuses'
 export {
-  SetNameParameters,
-  SetNameReturnType,
-  default as setName,
-} from './setName'
+  SetPrimaryNameParameters,
+  SetPrimaryNameReturnType,
+  default as setPrimaryName,
+} from './setPrimaryName'
 export {
   SetRecordsParameters,
   SetRecordsReturnType,

@@ -14,6 +14,7 @@ import {
 } from './events'
 
 export type GetNameHistoryParameters = {
+  /** Name to get history for */
   name: string
 }
 
@@ -53,11 +54,32 @@ type ReturnResolverEvent = FlattenedEvent<
 >
 
 export type GetNameHistoryReturnType = {
+  /** Array of domain events */
   domainEvents: ReturnDomainEvent[]
+  /** Array of registration events */
   registrationEvents: ReturnRegistrationEvent[] | null
+  /** Array of resolver events */
   resolverEvents: ReturnResolverEvent[] | null
 } | null
 
+/**
+ * Gets the history of a name from the subgraph.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetNameHistoryParameters}
+ * @returns History object, or null if name could not be found. {@link GetNameHistoryReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getNameHistory } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getNameHistory(client, { name: 'ens.eth' })
+ */
 const getNameHistory = async (
   client: ClientWithEns,
   { name }: GetNameHistoryParameters,

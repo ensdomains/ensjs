@@ -6,14 +6,20 @@ import { namehash } from '../../utils/normalise'
 import { createSubgraphClient } from './client'
 
 export type GetSubgraphRecordsParameters = {
+  /** Name to get records for */
   name: string
+  /** Resolver address to use */
   resolverAddress?: Address
 }
 
 export type GetSubgraphRecordsReturnType = {
+  /** Name migration status from old ENS registry */
   isMigrated: boolean
+  /** Initial name creation time */
   createdAt: DateWithValue<number>
+  /** Array of text record keys */
   texts: string[]
+  /** Array of coin ids */
   coins: string[]
 } | null
 
@@ -67,6 +73,30 @@ type CustomResolverSubgraphResult = {
   resolver?: ResolverResult
 }
 
+/**
+ * Gets the records for a name from the subgraph
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetSubgraphRecordsParameters}
+ * @returns Record object, or null if name was not found. {@link GetSubgraphRecordsReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getSubgraphRecords } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getSubgraphRecords(client, { name: 'ens.eth' })
+ * // {
+ * //   isMigrated: true,
+ * //   createdAt: { date: 2019-08-26T05:09:01.000Z, value: 1566796141000 },
+ * //   texts: [ 'snapshot', 'url', 'avatar', 'com.twitter', 'com.github' ],
+ * //   coins: [ '60' ]
+ * // }
+ */
 const getSubgraphRecords = async (
   client: ClientWithEns,
   { name, resolverAddress }: GetSubgraphRecordsParameters,

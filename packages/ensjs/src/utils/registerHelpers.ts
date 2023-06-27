@@ -18,13 +18,21 @@ import {
 import { namehash } from './normalise'
 
 export type RegistrationParameters = {
+  /** Name to register */
   name: string
+  /** Address to set owner to */
   owner: Address
+  /** Duration of registration */
   duration: number
+  /** Random 32 bytes to use for registration */
   secret: Hex
+  /** Custom resolver address, defaults to current public resolver deployment */
   resolverAddress?: Address
+  /** Records to set upon registration */
   records?: RecordOptions
+  /** Sets primary name upon registration */
   reverseRecord?: boolean
+  /** Fuses to set upon registration */
   fuses?: CombinedFuseInput['child']
 }
 

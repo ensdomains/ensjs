@@ -15,14 +15,19 @@ import { Name, makeNameObject } from './utils'
 type GetSubnamesOrderBy = 'expiryDate' | 'name' | 'labelName' | 'createdAt'
 
 export type GetSubnamesParameters = {
+  /** Name to get subnames for */
   name: string
-
+  /** Search string filter for subname label */
   searchString?: string
+  /** Allows expired names to be included (default: false) */
   allowExpired?: boolean
+  /** Parameter to order names by (default: name) */
   orderBy?: GetSubnamesOrderBy
+  /** Direction to order names in (default: asc) */
   orderDirection?: 'asc' | 'desc'
-
+  /** Previous page of subnames, used for pagination */
   previousPage?: Name[]
+  /** Page size (default: 100) */
   pageSize?: number
 }
 
@@ -34,6 +39,24 @@ type SubgraphResult = {
   }
 }
 
+/**
+ * Gets the subnames for a name from the subgraph.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetSubnamesParameters}
+ * @returns Subname array. {@link GetSubnamesReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getSubnames } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getSubnames(client, { name: 'ens.eth' })
+ */
 const getSubnames = async (
   client: ClientWithEns,
   {

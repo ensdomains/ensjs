@@ -30,11 +30,17 @@ import {
 } from '../../utils/wrapper'
 
 type BaseCreateSubnameDataParameters = {
+  /** Subname to create */
   name: string
+  /** New owner of subname */
   owner: Address
+  /** Contract to create subname on */
   contract: 'registry' | 'nameWrapper'
+  /** Resolver address to set */
   resolverAddress?: Address
+  /** Expiry to set (only on NameWrapper) */
   expiry?: AnyDate
+  /** Fuses to set (only on NameWrapper) */
   fuses?: CombinedFuseInput
 }
 
@@ -143,6 +149,33 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Creates a subname
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link CreateSubnameParameters}
+ * @returns Transaction hash. {@link CreateSubnameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, createSubname } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await createSubname(wallet, {
+ *   name: 'sub.ens.eth',
+ *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *   contract: 'registry',
+ * })
+ * // 0x...
+ */
 async function createSubname<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

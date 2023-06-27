@@ -19,37 +19,37 @@ import {
   WriteTransactionParameters,
 } from '../../types'
 
-type BaseSetNameDataParameters = {
+type BaseSetPrimaryNameDataParameters = {
   name: string
   address?: Address
   resolverAddress?: Address
 }
 
-type SelfSetNameDataParameters = {
+type SelfSetPrimaryNameDataParameters = {
   address?: never
   resolverAddress?: never
 }
 
-type OtherSetNameDataParameters = {
+type OtherSetPrimaryNameDataParameters = {
   address: Address
   resolverAddress?: Address
 }
 
-export type SetNameDataParameters = BaseSetNameDataParameters &
-  (SelfSetNameDataParameters | OtherSetNameDataParameters)
+export type SetPrimaryNameDataParameters = BaseSetPrimaryNameDataParameters &
+  (SelfSetPrimaryNameDataParameters | OtherSetPrimaryNameDataParameters)
 
-export type SetNameDataReturnType = SimpleTransactionRequest
+export type SetPrimaryNameDataReturnType = SimpleTransactionRequest
 
-export type SetNameParameters<
+export type SetPrimaryNameParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetNameDataParameters &
+  SetPrimaryNameDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetNameReturnType = Hash
+export type SetPrimaryNameReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
@@ -63,8 +63,8 @@ export const makeFunctionData = <
       client: wallet,
       contract: 'ensPublicResolver',
     }),
-  }: SetNameDataParameters,
-): SetNameDataReturnType => {
+  }: SetPrimaryNameDataParameters,
+): SetPrimaryNameDataReturnType => {
   const reverseRegistrarAddress = getChainContractAddress({
     client: wallet,
     contract: 'ensReverseRegistrar',
@@ -99,7 +99,7 @@ export const makeFunctionData = <
   }
 }
 
-async function setName<
+async function setPrimaryName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -110,14 +110,14 @@ async function setName<
     address,
     resolverAddress,
     ...txArgs
-  }: SetNameParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetNameReturnType> {
+  }: SetPrimaryNameParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetPrimaryNameReturnType> {
   const data = makeFunctionData(
     {
       ...wallet,
       account: parseAccount((txArgs.account || wallet.account)!),
     } as WalletWithEns<Transport, TChain, Account>,
-    { name, address, resolverAddress } as SetNameDataParameters,
+    { name, address, resolverAddress } as SetPrimaryNameDataParameters,
   )
   const writeArgs = {
     ...data,
@@ -126,6 +126,6 @@ async function setName<
   return wallet.sendTransaction(writeArgs)
 }
 
-setName.makeFunctionData = makeFunctionData
+setPrimaryName.makeFunctionData = makeFunctionData
 
-export default setName
+export default setPrimaryName

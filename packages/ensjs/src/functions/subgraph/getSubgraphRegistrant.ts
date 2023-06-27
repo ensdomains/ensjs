@@ -6,6 +6,7 @@ import { getNameType } from '../../utils/getNameType'
 import { createSubgraphClient } from './client'
 
 export type GetSubgraphRegistrantParameters = {
+  /** Name to get registrant for */
   name: string
 }
 
@@ -29,6 +30,25 @@ type SubgraphResult = {
   }
 }
 
+/**
+ * Gets the name registrant from the subgraph.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetSubgraphRegistrantParameters}
+ * @returns Registrant address, or null if name was not found. {@link GetSubgraphRegistrantReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getSubgraphRegistrant } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getSubgraphRegistrant(client, { name: 'ens.eth' })
+ * // 0xb6E040C9ECAaE172a89bD561c5F73e1C48d28cd9
+ */
 const getSubgraphRegistrant = async (
   client: ClientWithEns,
   { name }: GetSubgraphRegistrantParameters,

@@ -15,9 +15,13 @@ import { encodeSetAddr } from '../../utils/encoders/encodeSetAddr'
 import { namehash } from '../../utils/normalise'
 
 export type SetAddrDataParameters = {
+  /** Name to set address record for */
   name: string
+  /** Coin ticker or ID to set */
   coin: string | number
+  /** Value to set, null if deleting */
   value: Address | string | null
+  /** Resolver address to set address record on */
   resolverAddress: Address
 }
 
@@ -47,6 +51,34 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets an address record for a name on a resolver.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetAddrParameters}
+ * @returns Transaction hash. {@link SetAddrReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, setAddr } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await setAddr(wallet, {
+ *   name: 'ens.eth',
+ *   coin: 'ETH',
+ *   value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ * })
+ * // 0x...
+ */
 async function setAddr<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

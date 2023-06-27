@@ -9,7 +9,9 @@ import { namehash } from '../../utils/normalise'
 import { createSubgraphClient } from './client'
 
 export type GetDecodedNameParameters = {
+  /** Name with unknown labels */
   name: string
+  /** Allow a name with unknown labels to be returned */
   allowIncomplete?: boolean
 }
 
@@ -21,6 +23,25 @@ type SubgraphResult = {
   [key: `labels${number}`]: [{ labelName: string }] | []
 }
 
+/**
+ * Gets the full name for a name with unknown labels from the subgraph.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetDecodedNameParameters}
+ * @returns Full name, or null if name was could not be filled. {@link GetDecodedNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getDecodedName } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getDecodedName(client, { name: '[5cee339e13375638553bdf5a6e36ba80fb9f6a4f0783680884d92b558aa471da].eth' })
+ * // ens.eth
+ */
 const getDecodedName = async (
   client: ClientWithEns,
   { name, allowIncomplete }: GetDecodedNameParameters,

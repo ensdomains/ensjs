@@ -13,10 +13,15 @@ import {
 } from './encoders/encodeSetText'
 
 export type RecordOptions = Prettify<{
+  /** Clears all current records */
   clearRecords?: boolean
+  /** ContentHash value */
   contentHash?: string
+  /** Array of text records */
   texts?: Omit<EncodeSetTextParameters, 'namehash'>[]
+  /** Array of coin records */
   coins?: Omit<EncodeSetAddrParameters, 'namehash'>[]
+  /** ABI value */
   abi?: Omit<EncodeSetAbiParameters, 'namehash'>
 }>
 

@@ -3,15 +3,19 @@ import { ClientWithEns } from '../../contracts/addContracts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { namesSnippet } from '../../contracts/nameWrapper'
 import { SimpleTransactionRequest } from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import { bytesToPacket } from '../../utils/hexEncodedName'
 import { namehash } from '../../utils/normalise'
 
 export type GetWrapperNameParameters = {
+  /** Name with unknown labels, e.g. "[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth" */
   name: string
 }
 
-export type GetWrapperNameReturnType = string
+export type GetWrapperNameReturnType = string | null
 
 const encode = (
   client: ClientWithEns,
@@ -30,7 +34,7 @@ const encode = (
 const decode = async (
   _client: ClientWithEns,
   data: Hex,
-): Promise<GetWrapperNameReturnType | null> => {
+): Promise<GetWrapperNameReturnType> => {
   const result = decodeFunctionResult({
     abi: namesSnippet,
     functionName: 'names',
@@ -40,6 +44,31 @@ const decode = async (
   return bytesToPacket(hexToBytes(result))
 }
 
-const getWrapperName = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the full name for a name with unknown labels from the NameWrapper.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetWrapperNameParameters}
+ * @returns Full name, or null if name was not found. {@link GetWrapperNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getWrapperName } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getWrapperName(client, { name: '[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth' })
+ * // wrapped.eth
+ */
+const getWrapperName = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { name }: GetWrapperNameParameters,
+) => Promise<GetWrapperNameReturnType>) &
+  BatchableFunctionObject
 
 export default getWrapperName

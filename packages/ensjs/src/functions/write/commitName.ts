@@ -65,6 +65,35 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Commits a name to be registered
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link CommitNameParameters}
+ * @returns Transaction hash. {@link CommitNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, commitName, randomSecret } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const secret = randomSecret()
+ * const hash = await commitName(wallet, {
+ *   name: 'example.eth',
+ *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *   duration: 31536000, // 1 year
+ *   secret,
+ * })
+ * // 0x...
+ */
 async function commitName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

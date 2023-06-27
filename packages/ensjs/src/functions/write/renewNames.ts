@@ -18,8 +18,11 @@ import {
 import { getNameType } from '../../utils/getNameType'
 
 export type RenewNamesDataParameters = {
+  /** Name or names to renew */
   nameOrNames: string | string[]
+  /** Duration to renew name(s) for */
   duration: bigint | number
+  /** Value of all renewals */
   value: bigint
 }
 
@@ -87,6 +90,40 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Renews a name or names for a specified duration.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link RenewNamesParameters}
+ * @returns Transaction hash. {@link RenewNamesReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, renewNames, getPrice } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ *
+ * const duration = 31536000 // 1 year
+ * const { base, premium } = await getPrice(wallet, {
+ *  nameOrNames: 'example.eth',
+ *  duration,
+ * })
+ * const value = (base + premium) * 110n / 100n // add 10% to the price for buffer
+ * const hash = await renewNames(wallet, {
+ *   nameOrNames: 'example.eth',
+ *   duration,
+ *   value,
+ * })
+ * // 0x...
+ */
 async function renewNames<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

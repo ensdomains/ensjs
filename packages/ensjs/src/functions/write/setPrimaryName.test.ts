@@ -8,7 +8,7 @@ import {
   walletClient,
 } from '../../tests/addTestContracts'
 import getName from '../read/getName'
-import setName from './setName'
+import setPrimaryName from './setPrimaryName'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -26,7 +26,7 @@ afterEach(async () => {
 })
 
 it('should return a transaction for a name and set successfully', async () => {
-  const tx = await setName(walletClient, {
+  const tx = await setPrimaryName(walletClient, {
     name: 'test123.eth',
     account: accounts[1],
   })
@@ -55,7 +55,7 @@ it("should return a transaction for setting another address' name and succeed", 
   const setApprovedForAllReceipt = await waitForTransaction(setApprovedForAllTx)
   expect(setApprovedForAllReceipt.status).toBe('success')
 
-  const tx = await setName(walletClient, {
+  const tx = await setPrimaryName(walletClient, {
     name: 'test123.eth',
     address: accounts[1],
     account: accounts[2],

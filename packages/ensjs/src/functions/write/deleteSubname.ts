@@ -11,9 +11,11 @@ import {
   setSubnodeRecordSnippet as nameWrapperSetSubnodeRecordSnippet,
   setRecordSnippet,
 } from '../../contracts/nameWrapper'
-import { setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet } from '../../contracts/registry'
 import {
-  AdditionalParameterSpecifiedError,
+  setRecordSnippet as registrySetRecordSnippet,
+  setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet,
+} from '../../contracts/registry'
+import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
 } from '../../errors/general'
@@ -27,24 +29,14 @@ import { getNameType } from '../../utils/getNameType'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
 import { namehash } from '../../utils/normalise'
 
-type BaseDeleteSubnameDataParameters = {
+export type DeleteSubnameDataParameters = {
+  /** Subname to delete */
   name: string
+  /** Contract to delete subname on */
   contract: 'registry' | 'nameWrapper'
+  /** If true, deletes via owner methods, otherwise will delete via parent owner methods */
   asOwner?: boolean
 }
-
-type RegistryDeleteSubnameDataParameters = {
-  contract: 'registry'
-  asOwner?: never
-}
-
-type NameWrapperDeleteSubnameDataParameters = {
-  contract: 'nameWrapper'
-  asOwner?: boolean
-}
-
-export type DeleteSubnameDataParameters = BaseDeleteSubnameDataParameters &
-  (RegistryDeleteSubnameDataParameters | NameWrapperDeleteSubnameDataParameters)
 
 export type DeleteSubnameDataReturnType = SimpleTransactionRequest
 
@@ -76,20 +68,23 @@ export const makeFunctionData = <
 
   switch (contract) {
     case 'registry': {
+      const registryAddress = getChainContractAddress({
+        client: wallet,
+        contract: 'ensRegistry',
+      })
       if (asOwner)
-        throw new AdditionalParameterSpecifiedError({
-          parameter: 'asOwner',
-          allowedParameters: ['name', 'contract'],
-          details:
-            'Deleting a suname as the name owner is not currently supported for the registry contract.',
-        })
+        return {
+          to: registryAddress,
+          data: encodeFunctionData({
+            abi: registrySetRecordSnippet,
+            functionName: 'setRecord',
+            args: [namehash(name), EMPTY_ADDRESS, EMPTY_ADDRESS, BigInt(0)],
+          }),
+        }
 
       const { labelhash, parentNode } = makeLabelNodeAndParent(name)
       return {
-        to: getChainContractAddress({
-          client: wallet,
-          contract: 'ensRegistry',
-        }),
+        to: registryAddress,
         data: encodeFunctionData({
           abi: registrySetSubnodeRecordSnippet,
           functionName: 'setSubnodeRecord',
@@ -108,17 +103,15 @@ export const makeFunctionData = <
         client: wallet,
         contract: 'ensNameWrapper',
       })
-      if (asOwner) {
-        const node = namehash(name)
+      if (asOwner)
         return {
           to: nameWrapperAddress,
           data: encodeFunctionData({
             abi: setRecordSnippet,
             functionName: 'setRecord',
-            args: [node, EMPTY_ADDRESS, EMPTY_ADDRESS, BigInt(0)],
+            args: [namehash(name), EMPTY_ADDRESS, EMPTY_ADDRESS, BigInt(0)],
           }),
         }
-      }
 
       const { label, parentNode } = makeLabelNodeAndParent(name)
       return {
@@ -146,6 +139,32 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Deletes a subname
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link DeleteSubnameParameters}
+ * @returns Transaction hash. {@link DeleteSubnameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, deleteSubname } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await deleteSubname(wallet, {
+ *   name: 'sub.ens.eth',
+ *   contract: 'registry',
+ * })
+ * // 0x...
+ */
 async function deleteSubname<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

@@ -138,10 +138,10 @@ export const addContracts = <TChain extends Chain = Chain>(
           ...chain,
           contracts: {
             ...chain.contracts,
-            ...addresses[chain.name as keyof typeof addresses],
+            ...addresses[chain.network as keyof typeof addresses],
           },
           subgraphs: {
-            ...subgraphs[chain.name as keyof typeof subgraphs],
+            ...subgraphs[chain.network as keyof typeof subgraphs],
           },
         } as ChainWithEns<TChain>),
     )

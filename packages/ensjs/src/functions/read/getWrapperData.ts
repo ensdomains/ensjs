@@ -5,19 +5,26 @@ import { getDataSnippet } from '../../contracts/nameWrapper'
 import { DateWithValue, Prettify, SimpleTransactionRequest } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'
 import { decodeFuses } from '../../utils/fuses'
-import { generateFunction } from '../../utils/generateFunction'
+import {
+  GeneratedFunction,
+  generateFunction,
+} from '../../utils/generateFunction'
 import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate'
 import { namehash } from '../../utils/normalise'
 
 export type GetWrapperDataParameters = {
+  /** Name to get wrapper data for */
   name: string
 }
 
 export type GetWrapperDataReturnType = Prettify<{
+  /** Fuse object */
   fuses: ReturnType<typeof decodeFuses> & {
     value: number
   }
+  /** Expiry of the name */
   expiry: DateWithValue<bigint> | null
+  /** Owner of the name */
   owner: Address
 } | null>
 
@@ -36,7 +43,7 @@ const encode = (
 }
 
 const decode = async (
-  client: ClientWithEns,
+  _client: ClientWithEns,
   data: Hex,
 ): Promise<GetWrapperDataReturnType> => {
   const [owner, fuses, expiry] = decodeFunctionResult({
@@ -67,6 +74,30 @@ const decode = async (
   }
 }
 
-const getWrapperData = generateFunction({ encode, decode })
+type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+
+/**
+ * Gets the wrapper data for a name.
+ * @param client - {@link ClientWithEns}
+ * @param parameters - {@link GetWrapperDataParameters}
+ * @returns Wrapper data object, or null if name is not wrapped. {@link GetWrapperDataReturnType}
+ *
+ * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, getWrapperData } from '@ensdomains/ensjs'
+ *
+ * const mainnetWithEns = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const result = await getWrapperData(client, { name: 'ilikelasagna.eth' })
+ */
+const getWrapperData = generateFunction({ encode, decode }) as ((
+  client: ClientWithEns,
+  { name }: GetWrapperDataParameters,
+) => Promise<GetWrapperDataReturnType>) &
+  BatchableFunctionObject
 
 export default getWrapperData

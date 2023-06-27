@@ -19,8 +19,11 @@ import {
 import { namehash } from '../../utils/normalise'
 
 export type SetAbiDataParameters = {
+  /** Name to set ABI for */
   name: string
+  /** Encoded ABI data to set */
   encodedAbi: EncodedAbi | null
+  /** Resolver address to set ABI on */
   resolverAddress: Address
 }
 
@@ -54,6 +57,36 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets the ABI for a name on a resolver.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetAbiParameters}
+ * @returns Transaction hash. {@link SetAbiReturnType}
+ *
+ * @example
+ * import abi from './abi.json'
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, encodeAbi, setAbi } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ *
+ * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
+ * const hash = await setAbi(wallet, {
+ *   name: 'ens.eth',
+ *   encodedAbi,
+ *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ * })
+ * // 0x...
+ */
 async function setAbi<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

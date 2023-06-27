@@ -17,7 +17,9 @@ import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
 import { namehash } from '../../utils/normalise'
 
 export type SetFusesDataParameters = {
+  /** Name to set fuses for */
   name: string
+  /** Fuse object to set to */
   fuses: Prettify<CombinedFuseInput['child']>
 }
 
@@ -52,6 +54,34 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets the fuses for a name.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetFusesParameters}
+ * @returns Transaction hash. {@link SetFusesReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, setFuses } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await setFuses(wallet, {
+ *   name: 'sub.ens.eth',
+ *   fuses: {
+ *     named: ['CANNOT_TRANSFER'],
+ *   },
+ * })
+ * // 0x...
+ */
 async function setFuses<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
