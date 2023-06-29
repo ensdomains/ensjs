@@ -3,9 +3,9 @@ import { mainnet } from 'viem/chains'
 import { addContracts } from '../../contracts/addContracts'
 import { publicClient } from '../../tests/addTestContracts'
 import batch from './batch'
-import getAddr from './getAddr'
+import getAddressRecord from './getAddressRecord'
 import getName from './getName'
-import getText from './getText'
+import getText from './getTextRecord'
 
 const [mainnetWithEns] = addContracts([mainnet])
 const transport = http('https://web3.ens.domains/v1/mainnet')
@@ -20,7 +20,7 @@ describe('batch', () => {
     const result = await batch(
       publicClient,
       getText.batch({ name: 'with-profile.eth', key: 'description' }),
-      getAddr.batch({ name: 'with-profile.eth' }),
+      getAddressRecord.batch({ name: 'with-profile.eth' }),
       getName.batch({ address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' }),
     )
     expect(result).toMatchInlineSnapshot(`

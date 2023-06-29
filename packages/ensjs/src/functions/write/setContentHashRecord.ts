@@ -14,7 +14,7 @@ import {
 import { encodeSetContentHash } from '../../utils/encoders/encodeSetContentHash'
 import { namehash } from '../../utils/normalise'
 
-export type SetContentHashDataParameters = {
+export type SetContentHashRecordDataParameters = {
   /** Name to set content hash for */
   name: string
   /** Content hash value */
@@ -23,26 +23,26 @@ export type SetContentHashDataParameters = {
   resolverAddress: Address
 }
 
-export type SetContentHashDataReturnType = SimpleTransactionRequest
+export type SetContentHashRecordDataReturnType = SimpleTransactionRequest
 
-export type SetContentHashParameters<
+export type SetContentHashRecordParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetContentHashDataParameters &
+  SetContentHashRecordDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetContentHashReturnType = Hash
+export type SetContentHashRecordReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, contentHash, resolverAddress }: SetContentHashDataParameters,
-): SetContentHashDataReturnType => {
+  { name, contentHash, resolverAddress }: SetContentHashRecordDataParameters,
+): SetContentHashRecordDataReturnType => {
   return {
     to: resolverAddress,
     data: encodeSetContentHash({ namehash: namehash(name), contentHash }),
@@ -52,13 +52,13 @@ export const makeFunctionData = <
 /**
  * Sets the content hash record for a name on a resolver.
  * @param wallet - {@link WalletWithEns}
- * @param parameters - {@link SetContentHashParameters}
- * @returns Transaction hash. {@link SetContentHashReturnType}
+ * @param parameters - {@link SetContentHashRecordParameters}
+ * @returns Transaction hash. {@link SetContentHashRecordReturnType}
  *
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, setContentHash } from '@ensdomains/ensjs'
+ * import { addContracts, setContentHashRecord } from '@ensdomains/ensjs'
  *
  * const [mainnetWithEns] = addContracts([mainnet])
  * const client = createPublicClient({
@@ -69,14 +69,14 @@ export const makeFunctionData = <
  *   chain: mainnetWithEns,
  *   transport: custom(window.ethereum),
  * })
- * const hash = await setContentHash(wallet, {
+ * const hash = await setContentHashRecord(wallet, {
  *   name: 'ens.eth',
  *   value: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
  * // 0x...
  */
-async function setContentHash<
+async function setContentHashRecord<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -87,8 +87,8 @@ async function setContentHash<
     contentHash,
     resolverAddress,
     ...txArgs
-  }: SetContentHashParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetContentHashReturnType> {
+  }: SetContentHashRecordParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetContentHashRecordReturnType> {
   const data = makeFunctionData(wallet, {
     name,
     contentHash,
@@ -101,6 +101,6 @@ async function setContentHash<
   return wallet.sendTransaction(writeArgs)
 }
 
-setContentHash.makeFunctionData = makeFunctionData
+setContentHashRecord.makeFunctionData = makeFunctionData
 
-export default setContentHash
+export default setContentHashRecord

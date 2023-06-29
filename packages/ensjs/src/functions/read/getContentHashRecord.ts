@@ -11,15 +11,15 @@ import _getContentHash, {
 } from './_getContentHash'
 import universalWrapper from './universalWrapper'
 
-export type GetContentHashParameters =
+export type GetContentHashRecordParameters =
   Prettify<InternalGetContentHashParameters>
 
-export type GetContentHashReturnType =
+export type GetContentHashRecordReturnType =
   Prettify<InternalGetContentHashReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name }: GetContentHashParameters,
+  { name }: GetContentHashRecordParameters,
 ): SimpleTransactionRequest => {
   const prData = _getContentHash.encode(client, { name })
   return universalWrapper.encode(client, { name, data: prData.data })
@@ -28,7 +28,7 @@ const encode = (
 const decode = async (
   client: ClientWithEns,
   data: Hex,
-): Promise<GetContentHashReturnType> => {
+): Promise<GetContentHashRecordReturnType> => {
   const urData = await universalWrapper.decode(client, data)
   if (!urData) return null
   return _getContentHash.decode(client, urData.data)
@@ -39,26 +39,26 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
 /**
  * Gets the content hash record for a name
  * @param client - {@link ClientWithEns}
- * @param parameters - {@link GetContentHashParameters}
- * @returns Content hash object, or `null` if not found. {@link GetContentHashReturnType}
+ * @param parameters - {@link GetContentHashRecordParameters}
+ * @returns Content hash object, or `null` if not found. {@link GetContentHashRecordReturnType}
  *
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getContentHash } from '@ensdomains/ensjs'
+ * import { addContracts, getContentHashRecord } from '@ensdomains/ensjs'
  *
  * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),
  * })
- * const result = await getContentHash(client, { name: 'ens.eth' })
+ * const result = await getContentHashRecord(client, { name: 'ens.eth' })
  * // { protocolType: 'ipfs', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' }
  */
-const getContentHash = generateFunction({ encode, decode }) as ((
+const getContentHashRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name }: GetContentHashParameters,
-) => Promise<GetContentHashReturnType>) &
+  { name }: GetContentHashRecordParameters,
+) => Promise<GetContentHashRecordReturnType>) &
   BatchableFunctionObject
 
-export default getContentHash
+export default getContentHashRecord

@@ -1,21 +1,21 @@
 import { publicClient } from '../../tests/addTestContracts'
-import getContentHash from './getContentHash'
+import getContentHashRecord from './getContentHashRecord'
 
-describe('getContentHash', () => {
+describe('getContentHashRecord', () => {
   it('should return null for a non-existent name', async () => {
-    const result = await getContentHash(publicClient, {
+    const result = await getContentHashRecord(publicClient, {
       name: 'test123123cool.eth',
     })
     expect(result).toBeNull()
   })
   it('should return null for a name with no contenthash record', async () => {
-    const result = await getContentHash(publicClient, {
+    const result = await getContentHashRecord(publicClient, {
       name: 'with-profile.eth',
     })
     expect(result).toBeNull()
   })
   it('should return the contenthash for a name with the record set', async () => {
-    const result = await getContentHash(publicClient, {
+    const result = await getContentHashRecord(publicClient, {
       name: 'with-contenthash.eth',
     })
     expect(result).toMatchInlineSnapshot(`

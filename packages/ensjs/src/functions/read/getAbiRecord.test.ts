@@ -1,5 +1,5 @@
 import { publicClient } from '../../tests/addTestContracts'
-import getAbi from './getAbi'
+import getAbiRecord from './getAbiRecord'
 
 const dummyABI = [
   {
@@ -120,9 +120,11 @@ const dummyABI = [
   },
 ]
 
-describe('getAbi()', () => {
+describe('getAbiRecord()', () => {
   it('should return object for type 1 abi', async () => {
-    const result = await getAbi(publicClient, { name: 'with-type-1-abi.eth' })
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-1-abi.eth',
+    })
     expect(result).toBeTruthy()
     if (result) {
       expect(result.contentType).toBe(1)
@@ -131,7 +133,9 @@ describe('getAbi()', () => {
     }
   })
   it('should return object for type 2 ABI', async () => {
-    const result = await getAbi(publicClient, { name: 'with-type-2-abi.eth' })
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-2-abi.eth',
+    })
     expect(result).toBeTruthy()
     if (result) {
       expect(result.contentType).toBe(2)
@@ -140,7 +144,9 @@ describe('getAbi()', () => {
     }
   })
   it('should return object for type 4 ABI', async () => {
-    const result = await getAbi(publicClient, { name: 'with-type-4-abi.eth' })
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-4-abi.eth',
+    })
     expect(result).toBeTruthy()
     if (result) {
       expect(result.contentType).toBe(4)
@@ -149,7 +155,9 @@ describe('getAbi()', () => {
     }
   })
   it('should return unresolved URI for type 8 ABI', async () => {
-    const result = await getAbi(publicClient, { name: 'with-type-8-abi.eth' })
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-8-abi.eth',
+    })
     expect(result).toBeTruthy()
     if (result) {
       expect(result.contentType).toBe(8)
@@ -158,7 +166,9 @@ describe('getAbi()', () => {
     }
   })
   it('should return undefined if unsupported contentType', async () => {
-    const result = await getAbi(publicClient, { name: 'with-type-256-abi.eth' })
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-256-abi.eth',
+    })
     expect(result).toBeNull()
   })
 })

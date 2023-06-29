@@ -6,9 +6,9 @@ import {
   walletClient,
 } from '../../tests/addTestContracts'
 import { encodeAbi } from '../../utils/encoders/encodeAbi'
-import getAbi from '../read/getAbi'
+import getAbiRecord from '../read/getAbiRecord'
 import getResolver from '../read/getResolver'
-import setAbi from './setAbi'
+import setAbiRecord from './setAbiRecord'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -47,7 +47,7 @@ const dummyABI = [
 
 it('should allow an abi record to be set with json content type', async () => {
   const encodedAbi = await encodeAbi({ encodeAs: 'json', data: dummyABI })
-  const tx = await setAbi(walletClient, {
+  const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
     encodedAbi,
     resolverAddress: (await getResolver(publicClient, {
@@ -59,7 +59,7 @@ it('should allow an abi record to be set with json content type', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getAbi(publicClient, {
+  const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
   expect(response!.abi).toEqual(dummyABI)
@@ -69,7 +69,7 @@ it('should allow an abi record to be set with json content type', async () => {
 
 it('should allow an abi record to be set with zlib content type', async () => {
   const encodedAbi = await encodeAbi({ encodeAs: 'zlib', data: dummyABI })
-  const tx = await setAbi(walletClient, {
+  const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
     encodedAbi,
     resolverAddress: (await getResolver(publicClient, {
@@ -81,7 +81,7 @@ it('should allow an abi record to be set with zlib content type', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getAbi(publicClient, {
+  const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
   expect(response!.abi).toEqual(dummyABI)
@@ -91,7 +91,7 @@ it('should allow an abi record to be set with zlib content type', async () => {
 
 it('should allow an abi record to be set with cbor content type', async () => {
   const encodedAbi = await encodeAbi({ encodeAs: 'cbor', data: dummyABI })
-  const tx = await setAbi(walletClient, {
+  const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
     encodedAbi,
     resolverAddress: (await getResolver(publicClient, {
@@ -103,7 +103,7 @@ it('should allow an abi record to be set with cbor content type', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getAbi(publicClient, {
+  const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
   expect(response!.abi).toEqual(dummyABI)
@@ -116,7 +116,7 @@ it('should allow an abi record to be set with uri content type', async () => {
     encodeAs: 'uri',
     data: 'https://example.com',
   })
-  const tx = await setAbi(walletClient, {
+  const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
     encodedAbi,
     resolverAddress: (await getResolver(publicClient, {
@@ -128,7 +128,7 @@ it('should allow an abi record to be set with uri content type', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getAbi(publicClient, {
+  const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
   expect(response!.abi).toEqual('https://example.com')
@@ -137,7 +137,7 @@ it('should allow an abi record to be set with uri content type', async () => {
 })
 
 it('should allow an abi record to be set to blank', async () => {
-  const tx = await setAbi(walletClient, {
+  const tx = await setAbiRecord(walletClient, {
     name: 'with-type-1-abi.eth',
     encodedAbi: null,
     resolverAddress: (await getResolver(publicClient, {
@@ -149,7 +149,7 @@ it('should allow an abi record to be set to blank', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getAbi(publicClient, {
+  const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
   expect(response).toBeNull()

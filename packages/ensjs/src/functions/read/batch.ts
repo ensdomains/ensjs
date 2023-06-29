@@ -73,7 +73,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, batch, getText, getAddr } from '@ensdomains/ensjs'
+ * import { addContracts, batch, getText, getAddressRecord } from '@ensdomains/ensjs'
  *
  * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
@@ -83,7 +83,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await batch(
  *   client,
  *   getText.batch({ name: 'ens.eth', key: 'com.twitter' }),
- *   getAddr.batch({ name: 'ens.eth', coin: 'ETH' }),
+ *   getAddressRecord.batch({ name: 'ens.eth', coin: 'ETH' }),
  * )
  * // ['ensdomains', { id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 }]
  */

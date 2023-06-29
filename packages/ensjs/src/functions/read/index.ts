@@ -19,22 +19,26 @@ export {
   default as _getText,
 } from './_getText'
 export { default as batch } from './batch'
-export { GetAbiParameters, GetAbiReturnType, default as getAbi } from './getAbi'
 export {
-  GetAddrParameters,
-  GetAddrReturnType,
-  default as getAddr,
-} from './getAddr'
+  GetAbiRecordParameters,
+  GetAbiRecordReturnType,
+  default as getAbiRecord,
+} from './getAbiRecord'
+export {
+  GetAddressRecordParameters,
+  GetAddressRecordReturnType,
+  default as getAddressRecord,
+} from './getAddressRecord'
 export {
   GetAvailableParameters,
   GetAvailableReturnType,
   default as getAvailable,
 } from './getAvailable'
 export {
-  GetContentHashParameters,
-  GetContentHashReturnType,
-  default as getContentHash,
-} from './getContentHash'
+  GetContentHashRecordParameters,
+  GetContentHashRecordReturnType,
+  default as getContentHashRecord,
+} from './getContentHashRecord'
 export {
   GetExpiryParameters,
   GetExpiryReturnType,
@@ -71,10 +75,10 @@ export {
   default as getSupportedInterfaces,
 } from './getSupportedInterfaces'
 export {
-  GetTextParameters,
-  GetTextReturnType,
-  default as getText,
-} from './getText'
+  GetTextRecordParameters,
+  GetTextRecordReturnType,
+  default as getTextRecord,
+} from './getTextRecord'
 export {
   GetWrapperDataParameters,
   GetWrapperDataReturnType,

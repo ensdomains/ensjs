@@ -14,40 +14,40 @@ import {
 import { encodeSetText } from '../../utils/encoders/encodeSetText'
 import { namehash } from '../../utils/normalise'
 
-export type SetTextDataParameters = {
+export type SetTextRecordDataParameters = {
   name: string
   key: string
   value: string | null
   resolverAddress: Address
 }
 
-export type SetTextDataReturnType = SimpleTransactionRequest
+export type SetTextRecordDataReturnType = SimpleTransactionRequest
 
-export type SetTextParameters<
+export type SetTextRecordParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetTextDataParameters &
+  SetTextRecordDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetTextReturnType = Hash
+export type SetTextRecordReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, key, value, resolverAddress }: SetTextDataParameters,
-): SetTextDataReturnType => {
+  { name, key, value, resolverAddress }: SetTextRecordDataParameters,
+): SetTextRecordDataReturnType => {
   return {
     to: resolverAddress,
     data: encodeSetText({ namehash: namehash(name), key, value }),
   }
 }
 
-async function setText<
+async function setTextRecord<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -59,8 +59,8 @@ async function setText<
     value,
     resolverAddress,
     ...txArgs
-  }: SetTextParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetTextReturnType> {
+  }: SetTextRecordParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetTextRecordReturnType> {
   const data = makeFunctionData(wallet, {
     name,
     key,
@@ -74,6 +74,6 @@ async function setText<
   return wallet.sendTransaction(writeArgs)
 }
 
-setText.makeFunctionData = makeFunctionData
+setTextRecord.makeFunctionData = makeFunctionData
 
-export default setText
+export default setTextRecord

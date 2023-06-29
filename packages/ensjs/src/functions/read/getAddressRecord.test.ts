@@ -2,7 +2,7 @@ import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { addContracts } from '../../contracts/addContracts'
 import { publicClient } from '../../tests/addTestContracts'
-import getAddr from './getAddr'
+import getAddressRecord from './getAddressRecord'
 
 const [mainnetWithEns] = addContracts([mainnet])
 const transport = http('https://web3.ens.domains/v1/mainnet')
@@ -12,9 +12,11 @@ const mainnetPublicClient = createPublicClient({
   transport,
 })
 
-describe('getAddr()', () => {
+describe('getAddressRecord()', () => {
   it('returns the ETH record when no coin is provided', async () => {
-    const result = await getAddr(publicClient, { name: 'with-profile.eth' })
+    const result = await getAddressRecord(publicClient, {
+      name: 'with-profile.eth',
+    })
     expect(result).toMatchInlineSnapshot(`
       {
         "id": 60,
@@ -24,7 +26,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return the correct address based on a coin ID input as a number', async () => {
-    const result = await getAddr(publicClient, {
+    const result = await getAddressRecord(publicClient, {
       name: 'with-profile.eth',
       coin: 61,
     })
@@ -37,7 +39,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return the correct address based on a coin ID input as a string', async () => {
-    const result = await getAddr(publicClient, {
+    const result = await getAddressRecord(publicClient, {
       name: 'with-profile.eth',
       coin: '61',
     })
@@ -50,7 +52,7 @@ describe('getAddr()', () => {
     `)
   })
   it('should return the correct address based on a coin name', async () => {
-    const result = await getAddr(publicClient, {
+    const result = await getAddressRecord(publicClient, {
       name: 'with-profile.eth',
       coin: 'ETC_LEGACY',
     })
@@ -63,14 +65,14 @@ describe('getAddr()', () => {
     `)
   })
   it('should return null for a non-existent coin', async () => {
-    const result = await getAddr(publicClient, {
+    const result = await getAddressRecord(publicClient, {
       name: 'with-profile.eth',
       coin: 'BNB',
     })
     expect(result).toBeNull()
   })
   it('should return value for label > 255 bytes', async () => {
-    const result = await getAddr(mainnetPublicClient, {
+    const result = await getAddressRecord(mainnetPublicClient, {
       name: `696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969.eth`,
     })
     expect(result).toMatchInlineSnapshot(`

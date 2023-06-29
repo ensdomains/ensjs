@@ -78,7 +78,7 @@ type BaseGetRecordsReturnType = Partial<
   resolverAddress: Address
 }
 
-type GetRecordsReturnType<
+export type GetRecordsReturnType<
   TParams extends GetRecordsParameters = GetRecordsParameters,
 > = TParams['records'] extends undefined
   ? BaseGetRecordsReturnType

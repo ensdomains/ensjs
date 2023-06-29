@@ -14,7 +14,7 @@ import {
 import { encodeSetAddr } from '../../utils/encoders/encodeSetAddr'
 import { namehash } from '../../utils/normalise'
 
-export type SetAddrDataParameters = {
+export type SetAddressRecordDataParameters = {
   /** Name to set address record for */
   name: string
   /** Coin ticker or ID to set */
@@ -25,26 +25,26 @@ export type SetAddrDataParameters = {
   resolverAddress: Address
 }
 
-export type SetAddrDataReturnType = SimpleTransactionRequest
+export type SetAddressRecordDataReturnType = SimpleTransactionRequest
 
-export type SetAddrParameters<
+export type SetAddressRecordParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetAddrDataParameters &
+  SetAddressRecordDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetAddrReturnType = Hash
+export type SetAddressRecordReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, coin, value, resolverAddress }: SetAddrDataParameters,
-): SetAddrDataReturnType => {
+  { name, coin, value, resolverAddress }: SetAddressRecordDataParameters,
+): SetAddressRecordDataReturnType => {
   return {
     to: resolverAddress,
     data: encodeSetAddr({ namehash: namehash(name), coin, value }),
@@ -54,13 +54,13 @@ export const makeFunctionData = <
 /**
  * Sets an address record for a name on a resolver.
  * @param wallet - {@link WalletWithEns}
- * @param parameters - {@link SetAddrParameters}
- * @returns Transaction hash. {@link SetAddrReturnType}
+ * @param parameters - {@link SetAddressRecordParameters}
+ * @returns Transaction hash. {@link SetAddressRecordReturnType}
  *
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, setAddr } from '@ensdomains/ensjs'
+ * import { addContracts, setAddressRecord } from '@ensdomains/ensjs'
  *
  * const [mainnetWithEns] = addContracts([mainnet])
  * const client = createPublicClient({
@@ -71,7 +71,7 @@ export const makeFunctionData = <
  *   chain: mainnetWithEns,
  *   transport: custom(window.ethereum),
  * })
- * const hash = await setAddr(wallet, {
+ * const hash = await setAddressRecord(wallet, {
  *   name: 'ens.eth',
  *   coin: 'ETH',
  *   value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
@@ -79,7 +79,7 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function setAddr<
+async function setAddressRecord<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -91,8 +91,8 @@ async function setAddr<
     value,
     resolverAddress,
     ...txArgs
-  }: SetAddrParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetAddrReturnType> {
+  }: SetAddressRecordParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetAddressRecordReturnType> {
   const data = makeFunctionData(wallet, {
     name,
     coin,
@@ -106,6 +106,6 @@ async function setAddr<
   return wallet.sendTransaction(writeArgs)
 }
 
-setAddr.makeFunctionData = makeFunctionData
+setAddressRecord.makeFunctionData = makeFunctionData
 
-export default setAddr
+export default setAddressRecord

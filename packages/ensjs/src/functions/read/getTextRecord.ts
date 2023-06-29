@@ -11,13 +11,13 @@ import _getText, {
 } from './_getText'
 import universalWrapper from './universalWrapper'
 
-export type GetTextParameters = Prettify<InternalGetTextParameters>
+export type GetTextRecordParameters = Prettify<InternalGetTextParameters>
 
-export type GetTextReturnType = Prettify<InternalGetTextReturnType>
+export type GetTextRecordReturnType = Prettify<InternalGetTextReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, key }: GetTextParameters,
+  { name, key }: GetTextRecordParameters,
 ): SimpleTransactionRequest => {
   const prData = _getText.encode(client, { name, key })
   return universalWrapper.encode(client, { name, data: prData.data })
@@ -26,7 +26,7 @@ const encode = (
 const decode = async (
   client: ClientWithEns,
   data: Hex,
-): Promise<GetTextReturnType> => {
+): Promise<GetTextRecordReturnType> => {
   const urData = await universalWrapper.decode(client, data)
   if (!urData) return null
   return _getText.decode(client, urData.data)
@@ -37,26 +37,26 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
 /**
  * Gets a text record for a name.
  * @param client - {@link ClientWithEns}
- * @param parameters - {@link GetTextParameters}
- * @returns Text record string, or null if none is found. {@link GetTextReturnType}
+ * @param parameters - {@link GetTextRecordParameters}
+ * @returns Text record string, or null if none is found. {@link GetTextRecordReturnType}
  *
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getText } from '@ensdomains/ensjs'
+ * import { addContracts, getTextRecord } from '@ensdomains/ensjs'
  *
  * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),
  * })
- * const result = await getText(client, { name: 'ens.eth', key: 'com.twitter' })
+ * const result = await getTextRecord(client, { name: 'ens.eth', key: 'com.twitter' })
  * // ensdomains
  */
-const getText = generateFunction({ encode, decode }) as ((
+const getTextRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name, key }: GetTextParameters,
-) => Promise<GetTextReturnType>) &
+  { name, key }: GetTextRecordParameters,
+) => Promise<GetTextRecordReturnType>) &
   BatchableFunctionObject
 
-export default getText
+export default getTextRecord

@@ -18,7 +18,7 @@ import {
 } from '../../utils/encoders/encodeSetAbi'
 import { namehash } from '../../utils/normalise'
 
-export type SetAbiDataParameters = {
+export type SetAbiRecordDataParameters = {
   /** Name to set ABI for */
   name: string
   /** Encoded ABI data to set */
@@ -27,26 +27,26 @@ export type SetAbiDataParameters = {
   resolverAddress: Address
 }
 
-export type SetAbiDataReturnType = SimpleTransactionRequest
+export type SetAbiRecordDataReturnType = SimpleTransactionRequest
 
-export type SetAbiParameters<
+export type SetAbiRecordParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  SetAbiDataParameters &
+  SetAbiRecordDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type SetAbiReturnType = Hash
+export type SetAbiRecordReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, encodedAbi, resolverAddress }: SetAbiDataParameters,
-): SetAbiDataReturnType => {
+  { name, encodedAbi, resolverAddress }: SetAbiRecordDataParameters,
+): SetAbiRecordDataReturnType => {
   const encodedAbi_ = encodedAbi || { contentType: 0, encodedData: null }
   return {
     to: resolverAddress,
@@ -60,14 +60,14 @@ export const makeFunctionData = <
 /**
  * Sets the ABI for a name on a resolver.
  * @param wallet - {@link WalletWithEns}
- * @param parameters - {@link SetAbiParameters}
- * @returns Transaction hash. {@link SetAbiReturnType}
+ * @param parameters - {@link SetAbiRecordParameters}
+ * @returns Transaction hash. {@link SetAbiRecordReturnType}
  *
  * @example
  * import abi from './abi.json'
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, encodeAbi, setAbi } from '@ensdomains/ensjs'
+ * import { addContracts, encodeAbi, setAbiRecord } from '@ensdomains/ensjs'
  *
  * const [mainnetWithEns] = addContracts([mainnet])
  * const client = createPublicClient({
@@ -80,14 +80,14 @@ export const makeFunctionData = <
  * })
  *
  * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
- * const hash = await setAbi(wallet, {
+ * const hash = await setAbiRecord(wallet, {
  *   name: 'ens.eth',
  *   encodedAbi,
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
  * // 0x...
  */
-async function setAbi<
+async function setAbiRecord<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -98,8 +98,8 @@ async function setAbi<
     encodedAbi,
     resolverAddress,
     ...txArgs
-  }: SetAbiParameters<TChain, TAccount, TChainOverride>,
-): Promise<SetAbiReturnType> {
+  }: SetAbiRecordParameters<TChain, TAccount, TChainOverride>,
+): Promise<SetAbiRecordReturnType> {
   const data = makeFunctionData(wallet, {
     name,
     encodedAbi,
@@ -112,6 +112,6 @@ async function setAbi<
   return wallet.sendTransaction(writeArgs)
 }
 
-setAbi.makeFunctionData = makeFunctionData
+setAbiRecord.makeFunctionData = makeFunctionData
 
-export default setAbi
+export default setAbiRecord

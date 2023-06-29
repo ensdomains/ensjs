@@ -23,22 +23,26 @@ export {
   RenewNamesReturnType,
   default as renewNames,
 } from './renewNames'
-export { SetAbiParameters, SetAbiReturnType, default as setAbi } from './setAbi'
 export {
-  SetAddrParameters,
-  SetAddrReturnType,
-  default as setAddr,
-} from './setAddr'
+  SetAbiRecordParameters,
+  SetAbiRecordReturnType,
+  default as setAbiRecord,
+} from './setAbiRecord'
+export {
+  SetAddressRecordParameters,
+  SetAddressRecordReturnType,
+  default as setAddressRecord,
+} from './setAddressRecord'
 export {
   SetChildFusesParameters,
   SetChildFusesReturnType,
   default as setChildFuses,
 } from './setChildFuses'
 export {
-  SetContentHashParameters,
-  SetContentHashReturnType,
-  default as setContentHash,
-} from './setContentHash'
+  SetContentHashRecordParameters,
+  SetContentHashRecordReturnType,
+  default as setContentHashRecord,
+} from './setContentHashRecord'
 export {
   SetFusesParameters,
   SetFusesReturnType,
@@ -60,10 +64,10 @@ export {
   default as setResolver,
 } from './setResolver'
 export {
-  SetTextParameters,
-  SetTextReturnType,
-  default as setText,
-} from './setText'
+  SetTextRecordParameters,
+  SetTextRecordReturnType,
+  default as setTextRecord,
+} from './setTextRecord'
 export {
   TransferNameParameters,
   TransferNameReturnType,

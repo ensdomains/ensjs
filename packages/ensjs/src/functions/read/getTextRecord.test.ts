@@ -1,9 +1,9 @@
 import { publicClient } from '../../tests/addTestContracts'
-import getText from './getText'
+import getTextRecord from './getTextRecord'
 
-describe('getText()', () => {
+describe('getTextRecord()', () => {
   it('should return a record from a key', async () => {
-    const result = await getText(publicClient, {
+    const result = await getTextRecord(publicClient, {
       name: 'with-profile.eth',
       key: 'description',
     })
@@ -11,7 +11,7 @@ describe('getText()', () => {
   })
 
   it('should return null for a non-existent key', async () => {
-    const result = await getText(publicClient, {
+    const result = await getTextRecord(publicClient, {
       name: 'with-profile.eth',
       key: 'thiskeydoesntexist',
     })

@@ -2,9 +2,9 @@ import { createPublicClient, http } from 'viem'
 import { goerli } from 'viem/chains'
 import { addContracts } from '../../contracts/addContracts'
 import batch from './batch'
-import getAddr from './getAddr'
+import getAddressRecord from './getAddressRecord'
 import getRecords from './getRecords'
-import getText from './getText'
+import getText from './getTextRecord'
 
 const [goerliWithEns] = addContracts([goerli])
 const transport = http('https://web3.ens.domains/v1/goerli')
@@ -51,8 +51,8 @@ describe('CCIP', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
         goerliPublicClient,
-        getAddr.batch({ name: '1.offchainexample.eth' }),
-        getAddr.batch({ name: '1.offchainexample.eth', coin: 'LTC' }),
+        getAddressRecord.batch({ name: '1.offchainexample.eth' }),
+        getAddressRecord.batch({ name: '1.offchainexample.eth', coin: 'LTC' }),
         getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
       )
       if (!result) throw new Error('No result')
@@ -70,7 +70,7 @@ describe('CCIP', () => {
     it('allows nested batch ccip', async () => {
       const result = await batch(
         goerliPublicClient,
-        batch.batch(getAddr.batch({ name: '1.offchainexample.eth' })),
+        batch.batch(getAddressRecord.batch({ name: '1.offchainexample.eth' })),
       )
       if (!result) throw new Error('No result')
       expect(result[0]![0].value).toBe(
