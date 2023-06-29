@@ -50,7 +50,7 @@ describe('eth 2ld', () => {
   it('should return a wrap name transaction and succeed', async () => {
     const tx = await wrapName(walletClient, {
       name: 'test123.eth',
-      wrappedOwner: accounts[2],
+      newOwnerAddress: accounts[2],
       account: accounts[1],
     })
     expect(tx).toBeTruthy()
@@ -66,7 +66,7 @@ describe('eth 2ld', () => {
   it('should allow initial fuses', async () => {
     const tx = await wrapName(walletClient, {
       name: 'test123.eth',
-      wrappedOwner: accounts[2],
+      newOwnerAddress: accounts[2],
       fuses: {
         named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
       },
@@ -84,7 +84,7 @@ describe('eth 2ld', () => {
   it('should allow a non-default resolver address', async () => {
     const tx = await wrapName(walletClient, {
       name: 'test123.eth',
-      wrappedOwner: accounts[2],
+      newOwnerAddress: accounts[2],
       resolverAddress: '0x42D63ae25990889E35F215bC95884039Ba354115',
       account: accounts[1],
     })
@@ -102,7 +102,7 @@ describe('eth 2ld', () => {
     await expect(
       wrapName(walletClient, {
         name: `${label}.eth`,
-        wrappedOwner: accounts[2],
+        newOwnerAddress: accounts[2],
         account: accounts[1],
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
@@ -124,7 +124,7 @@ describe('other', () => {
   it('should return a wrap name transaction and succeed', async () => {
     const tx = await wrapName(walletClient, {
       name: 'test.with-subnames.eth',
-      wrappedOwner: accounts[2],
+      newOwnerAddress: accounts[2],
       account: accounts[2],
     })
     expect(tx).toBeTruthy()
@@ -140,7 +140,7 @@ describe('other', () => {
   it('should allow a non-default resolver address', async () => {
     const tx = await wrapName(walletClient, {
       name: 'test.with-subnames.eth',
-      wrappedOwner: accounts[2],
+      newOwnerAddress: accounts[2],
       resolverAddress: '0x42D63ae25990889E35F215bC95884039Ba354115',
       account: accounts[2],
     })
@@ -157,7 +157,7 @@ describe('other', () => {
     await expect(
       wrapName(walletClient, {
         name: 'test.with-subnames.eth',
-        wrappedOwner: accounts[2],
+        newOwnerAddress: accounts[2],
         fuses: {
           named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
         } as any,
@@ -178,7 +178,7 @@ describe('other', () => {
     await expect(
       wrapName(walletClient, {
         name: `${label}.with-subnames.eth`,
-        wrappedOwner: accounts[2],
+        newOwnerAddress: accounts[2],
         account: accounts[2],
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`

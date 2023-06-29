@@ -31,11 +31,15 @@ export type WrapNameDataParameters<
   TName extends string,
   TNameOption extends GetNameType<TName> = GetNameType<TName>,
 > = {
+  /** The name to wrap */
   name: TName
-  wrappedOwner: Address
+  /** The recipient of the wrapped name */
+  newOwnerAddress: Address
+  /** Fuses to set on wrap (eth-2ld only) */
   fuses?: TNameOption extends Eth2ldNameSpecifier
     ? CombinedFuseInput['child']
     : never
+  /** The resolver address to set on wrap */
   resolverAddress?: Address
 }
 
@@ -61,7 +65,7 @@ export const makeFunctionData = <
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   {
     name,
-    wrappedOwner,
+    newOwnerAddress,
     fuses,
     resolverAddress = getChainContractAddress({
       client: wallet,
@@ -89,7 +93,7 @@ export const makeFunctionData = <
         { name: 'ownerControlledFuses', type: 'uint16' },
         { name: 'resolverAddress', type: 'address' },
       ],
-      [labels[0], wrappedOwner, encodedFuses, resolverAddress],
+      [labels[0], newOwnerAddress, encodedFuses, resolverAddress],
     )
 
     return {
@@ -118,11 +122,37 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: wrapSnippet,
       functionName: 'wrap',
-      args: [toHex(packetToBytes(name)), wrappedOwner, resolverAddress],
+      args: [toHex(packetToBytes(name)), newOwnerAddress, resolverAddress],
     }),
   }
 }
 
+/**
+ * Wraps a name.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link WrapNameParameters}
+ * @returns Transaction hash. {@link WrapNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, wrapName } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await wrapName(wallet, {
+ *   name: 'ens.eth',
+ *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ * })
+ * // 0x...
+ */
 async function wrapName<
   TName extends string,
   TChain extends ChainWithEns,
@@ -132,7 +162,7 @@ async function wrapName<
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   {
     name,
-    wrappedOwner,
+    newOwnerAddress,
     fuses,
     resolverAddress,
     ...txArgs
@@ -143,7 +173,7 @@ async function wrapName<
       ...wallet,
       account: parseAccount((txArgs.account || wallet.account)!),
     } as WalletWithEns<Transport, TChain, Account>,
-    { name, wrappedOwner, fuses, resolverAddress },
+    { name, newOwnerAddress, fuses, resolverAddress },
   )
   const writeArgs = {
     ...data,

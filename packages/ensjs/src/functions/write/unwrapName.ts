@@ -24,8 +24,11 @@ import { getNameType } from '../../utils/getNameType'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
 
 type BaseUnwrapNameDataParameters<TName extends string> = {
+  /** The name to unwrap */
   name: TName
+  /** The recipient of the unwrapped name */
   newOwnerAddress: Address
+  /** The registrant of the unwrapped name (eth-2ld only) */
   newRegistrantAddress?: Address
 }
 
@@ -112,6 +115,33 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Unwraps a name.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link UnwrapNameParameters}
+ * @returns Transaction hash. {@link UnwrapNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, unwrapName } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await unwrapName(wallet, {
+ *   name: 'example.eth',
+ *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *   newRegistrantAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ * })
+ * // 0x...
+ */
 async function unwrapName<
   TName extends string,
   TChain extends ChainWithEns,
