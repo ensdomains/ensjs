@@ -105,7 +105,7 @@ it('should allow a transfer on the namewrapper', async () => {
   })
   expect(owner!.owner).toBe(accounts[2])
 })
-it('should error if unknown contract', async () => {
+it('errors if unknown contract', async () => {
   await expect(
     transferName(walletClient, {
       name: 'test123.eth',
@@ -121,7 +121,7 @@ it('should error if unknown contract', async () => {
     Version: @ensdomains/ensjs@3.0.0-alpha.62"
   `)
 })
-it('should error if reclaim is specified but contract is not registrar', async () => {
+it('errors when reclaim is specified and contract is not registrar', async () => {
   await expect(
     transferName(walletClient, {
       name: 'test123.eth',
@@ -139,4 +139,62 @@ it('should error if reclaim is specified but contract is not registrar', async (
 
     Version: @ensdomains/ensjs@3.0.0-alpha.62"
   `)
+})
+
+describe('subnames/asParent', () => {
+  it('allows transferring a subname on the registry', async () => {
+    const tx = await transferName(walletClient, {
+      name: 'test.with-subnames.eth',
+      contract: 'registry',
+      newOwnerAddress: accounts[1],
+      asParent: true,
+      account: accounts[1],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const owner = await getOwner(publicClient, {
+      name: 'test.with-subnames.eth',
+      contract: 'registry',
+    })
+    expect(owner!.owner).toBe(accounts[1])
+  })
+  it('allows transferring a subname on the namewrapper', async () => {
+    const tx = await transferName(walletClient, {
+      name: 'test.wrapped-with-subnames.eth',
+      contract: 'nameWrapper',
+      newOwnerAddress: accounts[1],
+      asParent: true,
+      account: accounts[1],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
+
+    const owner = await getOwner(publicClient, {
+      name: 'test.wrapped-with-subnames.eth',
+      contract: 'nameWrapper',
+    })
+    expect(owner!.owner).toBe(accounts[1])
+  })
+  it('erorrs when asParent is specified and contract is registrar', async () => {
+    await expect(
+      transferName(walletClient, {
+        name: 'test123.eth',
+        newOwnerAddress: accounts[2],
+        contract: 'registrar',
+        asParent: true,
+        account: accounts[1],
+      } as any),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "Additional parameter specified: asParent
+
+      - Allowed parameters: name, newOwnerAddress, contract, reclaim
+
+      Details: Can't transfer a name as the parent owner on the registrar
+
+      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    `)
+  })
 })

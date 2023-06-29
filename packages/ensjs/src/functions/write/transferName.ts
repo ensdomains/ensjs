@@ -13,7 +13,11 @@ import { reclaimSnippet } from '../../contracts/baseRegistrar'
 import { safeTransferFromSnippet as erc1155SafeTransferFromSnippet } from '../../contracts/erc1155'
 import { safeTransferFromSnippet as erc721SafeTransferFromSnippet } from '../../contracts/erc721'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setOwnerSnippet } from '../../contracts/registry'
+import { setSubnodeOwnerSnippet as nameWrapperSetSubnodeOwnerSnippet } from '../../contracts/nameWrapper'
+import {
+  setSubnodeOwnerSnippet as registrySetSubnodeOwnerSnippet,
+  setOwnerSnippet,
+} from '../../contracts/registry'
 import {
   AdditionalParameterSpecifiedError,
   InvalidContractTypeError,
@@ -25,13 +29,20 @@ import {
   WriteTransactionParameters,
 } from '../../types'
 import { getNameType } from '../../utils/getNameType'
+import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
 import { namehash } from '../../utils/normalise'
 
 type BaseTransferNameDataParameters = {
+  /** Name to transfer */
   name: string
+  /** Transfer recipient */
   newOwnerAddress: Address
+  /** Contract to use for transfer */
   contract: 'registry' | 'nameWrapper' | 'registrar'
+  /** Reclaim ownership as registrant (registrar only) */
   reclaim?: boolean
+  /** Transfer name as the parent owner */
+  asParent?: boolean
 }
 
 type RegistryOrNameWrapperTransferNameDataParameters = {
@@ -42,6 +53,7 @@ type RegistryOrNameWrapperTransferNameDataParameters = {
 type BaseRegistrarTransferNameDataParameters = {
   contract: 'registrar'
   reclaim?: boolean
+  asParent?: never
 }
 
 type TransferNameDataParameters = BaseTransferNameDataParameters &
@@ -68,7 +80,13 @@ export const makeFunctionData = <
   TAccount extends Account,
 >(
   wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, newOwnerAddress, contract, reclaim }: TransferNameDataParameters,
+  {
+    name,
+    newOwnerAddress,
+    contract,
+    reclaim,
+    asParent,
+  }: TransferNameDataParameters,
 ): TransferNameDataReturnType => {
   if (reclaim && contract !== 'registrar')
     throw new AdditionalParameterSpecifiedError({
@@ -78,19 +96,39 @@ export const makeFunctionData = <
         "Can't reclaim a name from any contract other than the registrar",
     })
   switch (contract) {
-    case 'registry':
+    case 'registry': {
+      const registryAddress = getChainContractAddress({
+        client: wallet,
+        contract: 'ensRegistry',
+      })
+      if (asParent) {
+        const { labelhash: labelhashId, parentNode } =
+          makeLabelNodeAndParent(name)
+        return {
+          to: registryAddress,
+          data: encodeFunctionData({
+            abi: registrySetSubnodeOwnerSnippet,
+            functionName: 'setSubnodeOwner',
+            args: [parentNode, labelhashId, newOwnerAddress],
+          }),
+        }
+      }
       return {
-        to: getChainContractAddress({
-          client: wallet,
-          contract: 'ensRegistry',
-        }),
+        to: registryAddress,
         data: encodeFunctionData({
           abi: setOwnerSnippet,
           functionName: 'setOwner',
           args: [namehash(name), newOwnerAddress],
         }),
       }
+    }
     case 'registrar': {
+      if (asParent)
+        throw new AdditionalParameterSpecifiedError({
+          parameter: 'asParent',
+          allowedParameters: ['name', 'newOwnerAddress', 'contract', 'reclaim'],
+          details: "Can't transfer a name as the parent owner on the registrar",
+        })
       const nameType = getNameType(name)
       if (nameType !== 'eth-2ld')
         throw new UnsupportedNameTypeError({
@@ -119,12 +157,24 @@ export const makeFunctionData = <
             }),
       }
     }
-    case 'nameWrapper':
+    case 'nameWrapper': {
+      const nameWrapperAddress = getChainContractAddress({
+        client: wallet,
+        contract: 'ensNameWrapper',
+      })
+      if (asParent) {
+        const { label, parentNode } = makeLabelNodeAndParent(name)
+        return {
+          to: nameWrapperAddress,
+          data: encodeFunctionData({
+            abi: nameWrapperSetSubnodeOwnerSnippet,
+            functionName: 'setSubnodeOwner',
+            args: [parentNode, label, newOwnerAddress, 0, BigInt(0)],
+          }),
+        }
+      }
       return {
-        to: getChainContractAddress({
-          client: wallet,
-          contract: 'ensNameWrapper',
-        }),
+        to: nameWrapperAddress,
         data: encodeFunctionData({
           abi: erc1155SafeTransferFromSnippet,
           functionName: 'safeTransferFrom',
@@ -137,6 +187,7 @@ export const makeFunctionData = <
           ],
         }),
       }
+    }
     default:
       throw new InvalidContractTypeError({
         contractType: contract,
@@ -145,6 +196,33 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Transfers a name to a new owner.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link TransferNameParameters}
+ * @returns Transaction hash. {@link TransferNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, transferName } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await transferName(wallet, {
+ *   name: 'ens.eth',
+ *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *   contract: 'registry',
+ * })
+ * // 0x...
+ */
 async function transferName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
@@ -156,6 +234,7 @@ async function transferName<
     newOwnerAddress,
     contract,
     reclaim,
+    asParent,
     ...txArgs
   }: TransferNameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<TransferNameReturnType> {
@@ -164,7 +243,13 @@ async function transferName<
       ...wallet,
       account: parseAccount((txArgs.account || wallet.account)!),
     } as WalletWithEns<Transport, TChain, Account>,
-    { name, newOwnerAddress, contract, reclaim } as TransferNameDataParameters,
+    {
+      name,
+      newOwnerAddress,
+      contract,
+      reclaim,
+      asParent,
+    } as TransferNameDataParameters,
   )
   const writeArgs = {
     ...data,

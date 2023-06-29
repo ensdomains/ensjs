@@ -21,7 +21,9 @@ import {
 import { namehash } from '../../utils/normalise'
 
 export type SetRecordsDataParameters = {
+  /** The name to set records for */
   name: string
+  /** The resolver address to set records on */
   resolverAddress: Address
 } & RecordOptions
 
@@ -65,6 +67,39 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets multiple records for a name on a resolver.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetRecordsParameters}
+ * @returns Transaction hash. {@link SetRecordsReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, setRecords } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await setRecords(wallet, {
+ *   name: 'ens.eth',
+ *   coins: [
+ *     {
+ *       coin: 'ETH',
+ *       value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *     },
+ *   ],
+ *   texts: [{ key: 'foo', value: 'bar' }],
+ *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ * })
+ * // 0x...
+ */
 async function setRecords<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

@@ -17,8 +17,11 @@ import {
 import { namehash } from '../../utils/normalise'
 
 export type SetResolverDataParameters = {
+  /** Name to set resolver for */
   name: string
+  /** Contract to set resolver on */
   contract: 'registry' | 'nameWrapper'
+  /** Resolver address to set */
   resolverAddress: Address
 }
 
@@ -58,6 +61,33 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets a resolver for a name.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetResolverParameters}
+ * @returns Transaction hash. {@link SetResolverReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, setResolver } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await setResolver(wallet, {
+ *   name: 'ens.eth',
+ *   contract: 'registry',
+ *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ * })
+ * // 0x...
+ */
 async function setResolver<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

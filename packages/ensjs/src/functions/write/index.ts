@@ -74,11 +74,6 @@ export {
   default as transferName,
 } from './transferName'
 export {
-  TransferSubnameParameters,
-  TransferSubnameReturnType,
-  default as transferSubname,
-} from './transferSubname'
-export {
   UnwrapNameParameters,
   UnwrapNameReturnType,
   default as unwrapName,

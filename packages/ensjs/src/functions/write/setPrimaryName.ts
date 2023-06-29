@@ -20,8 +20,11 @@ import {
 } from '../../types'
 
 type BaseSetPrimaryNameDataParameters = {
+  /** The name to set as primary */
   name: string
+  /** The address to set the primary name for */
   address?: Address
+  /** The resolver address to use */
   resolverAddress?: Address
 }
 
@@ -99,6 +102,31 @@ export const makeFunctionData = <
   }
 }
 
+/**
+ * Sets a primary name for an address.
+ * @param wallet - {@link WalletWithEns}
+ * @param parameters - {@link SetPrimaryNameParameters}
+ * @returns Transaction hash. {@link SetPrimaryNameReturnType}
+ *
+ * @example
+ * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addContracts, setPrimaryName } from '@ensdomains/ensjs'
+ *
+ * const [mainnetWithEns] = addContracts([mainnet])
+ * const client = createPublicClient({
+ *   chain: mainnetWithEns,
+ *   transport: http(),
+ * })
+ * const wallet = createWalletClient({
+ *   chain: mainnetWithEns,
+ *   transport: custom(window.ethereum),
+ * })
+ * const hash = await setPrimaryName(wallet, {
+ *   name: 'ens.eth',
+ * })
+ * // 0x...
+ */
 async function setPrimaryName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
