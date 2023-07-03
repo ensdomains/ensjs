@@ -2,7 +2,8 @@ import { DNSProver, ProvableAnswer, SignedSet } from '@ensdomains/dnsprovejs'
 import type * as packet from 'dns-packet'
 import { toType } from 'dns-packet/types'
 import { keccak256, toBytes, toHex } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { readContract } from 'viem/actions'
+import { ClientWithEns } from '../../contracts/consts'
 import { anchorsSnippet, rrDataSnippet } from '../../contracts/dnssecImpl'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { DnsNewerRecordTypeAvailableError } from '../../errors/dns'
@@ -85,7 +86,7 @@ const prepareDnsImport = async (
     const hexEncodedName = toHex(packetToBytes(proof.signature.name))
     const type = toType(proof.signature.data.typeCovered)
     // eslint-disable-next-line no-await-in-loop
-    const [inception, expiration, hash] = await client.readContract({
+    const [inception, expiration, hash] = await readContract(client, {
       abi: rrDataSnippet,
       address: ensDnssecImplAddress,
       functionName: 'rrdata',
@@ -115,7 +116,7 @@ const prepareDnsImport = async (
   return {
     rrsets: encodeProofs(allProofs),
     proof: toBytes(
-      await client.readContract({
+      await readContract(client, {
         abi: anchorsSnippet,
         address: ensDnssecImplAddress,
         functionName: 'anchors',

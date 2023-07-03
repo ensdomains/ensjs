@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 import { Address, getAddress, labelhash } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { UnsupportedNameTypeError } from '../../errors/general'
 import { getNameType } from '../../utils/getNameType'
 import { createSubgraphClient } from './client'
@@ -39,11 +39,10 @@ type SubgraphResult = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getSubgraphRegistrant } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getSubgraphRegistrant } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getSubgraphRegistrant(client, { name: 'ens.eth' })

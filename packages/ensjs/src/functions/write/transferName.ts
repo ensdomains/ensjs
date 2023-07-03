@@ -8,8 +8,8 @@ import {
   labelhash,
 } from 'viem'
 import { parseAccount } from 'viem/utils'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
 import { reclaimSnippet } from '../../contracts/baseRegistrar'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import { safeTransferFromSnippet as erc1155SafeTransferFromSnippet } from '../../contracts/erc1155'
 import { safeTransferFromSnippet as erc721SafeTransferFromSnippet } from '../../contracts/erc721'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
@@ -203,17 +203,12 @@ export const makeFunctionData = <
  * @returns Transaction hash. {@link TransferNameReturnType}
  *
  * @example
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, transferName } from '@ensdomains/ensjs'
+ * import { addEnsContracts, transferName } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
- * const client = createPublicClient({
- *   chain: mainnetWithEns,
- *   transport: http(),
- * })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await transferName(wallet, {

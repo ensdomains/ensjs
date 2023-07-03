@@ -1,5 +1,5 @@
 import { Hex } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { Prettify, SimpleTransactionRequest } from '../../types'
 import {
   GeneratedFunction,
@@ -44,11 +44,10 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getAddressRecord } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getAddressRecord } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getAddressRecord(client, { name: 'ens.eth', coin: 'ETH' })

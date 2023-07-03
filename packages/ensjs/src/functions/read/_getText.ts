@@ -1,5 +1,5 @@
 import { Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { textSnippet } from '../../contracts/publicResolver'
 import { SimpleTransactionRequest } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'

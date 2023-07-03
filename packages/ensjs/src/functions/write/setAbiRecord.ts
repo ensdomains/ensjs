@@ -5,7 +5,7 @@ import {
   SendTransactionParameters,
   Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import {
   Prettify,
   SimpleTransactionRequest,
@@ -65,17 +65,12 @@ export const makeFunctionData = <
  *
  * @example
  * import abi from './abi.json'
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, encodeAbi, setAbiRecord } from '@ensdomains/ensjs'
+ * import { addEnsContracts, encodeAbi, setAbiRecord } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
- * const client = createPublicClient({
- *   chain: mainnetWithEns,
- *   transport: http(),
- * })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  *

@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import {
   checkIsDecrypted,
   decodeLabelhash,
@@ -32,11 +32,10 @@ type SubgraphResult = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getDecodedName } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getDecodedName } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getDecodedName(client, { name: '[5cee339e13375638553bdf5a6e36ba80fb9f6a4f0783680884d92b558aa471da].eth' })

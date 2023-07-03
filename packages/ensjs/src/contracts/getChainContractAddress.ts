@@ -1,5 +1,5 @@
 import { getChainContractAddress as _getChainContractAddress } from 'viem/utils'
-import { ChainWithEns } from './addContracts'
+import { ChainWithEns } from './consts'
 
 type ChainClient<TChain extends ChainWithEns> = {
   chain: TChain

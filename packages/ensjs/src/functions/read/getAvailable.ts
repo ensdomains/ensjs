@@ -1,6 +1,6 @@
 import { Hex, decodeFunctionResult, encodeFunctionData, labelhash } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
 import { availableSnippet } from '../../contracts/baseRegistrar'
+import { ClientWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { UnsupportedNameTypeError } from '../../errors/general'
 import { SimpleTransactionRequest } from '../../types'
@@ -66,11 +66,10 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getAvailable } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getAvailable } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getAvailable(client, { name: 'ens.eth' })

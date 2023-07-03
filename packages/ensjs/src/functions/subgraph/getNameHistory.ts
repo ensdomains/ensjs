@@ -1,6 +1,6 @@
 import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { decodeContenthash } from '../../utils/contentHash'
 import { namehash } from '../../utils/normalise'
 import { createSubgraphClient } from './client'
@@ -71,11 +71,10 @@ export type GetNameHistoryReturnType = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getNameHistory } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getNameHistory } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getNameHistory(client, { name: 'ens.eth' })

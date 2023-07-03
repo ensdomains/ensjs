@@ -6,7 +6,7 @@ import {
   Transport,
   encodeFunctionData,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { setSubnodeRecordSnippet as nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper'
 import { setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet } from '../../contracts/registry'
@@ -156,17 +156,12 @@ export const makeFunctionData = <
  * @returns Transaction hash. {@link CreateSubnameReturnType}
  *
  * @example
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, createSubname } from '@ensdomains/ensjs'
+ * import { addEnsContracts, createSubname } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
- * const client = createPublicClient({
- *   chain: mainnetWithEns,
- *   transport: http(),
- * })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await createSubname(wallet, {

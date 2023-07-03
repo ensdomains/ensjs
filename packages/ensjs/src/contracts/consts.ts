@@ -1,15 +1,22 @@
-import type {
-  Account,
-  Chain,
-  PublicClient,
-  Transport,
-  WalletClient,
-} from 'viem'
+import { Account, Chain, Client, Transport, WalletClient } from 'viem'
 import type { ChainContract } from 'viem/src/types/chain'
 
-const supportedChains = ['homestead', 'goerli']
+export const supportedChains = ['homestead', 'goerli'] as const
+export const supportedContracts = [
+  'ensBaseRegistrarImplementation',
+  'ensDnsRegistrar',
+  'ensEthRegistrarController',
+  'ensNameWrapper',
+  'ensPublicResolver',
+  'ensReverseRegistrar',
+  'ensBulkRenewal',
+  'ensDnssecImpl',
+] as const
 
-const addresses = {
+export type SupportedChain = (typeof supportedChains)[number]
+export type SupportedContract = (typeof supportedContracts)[number]
+
+export const addresses = {
   homestead: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
@@ -64,7 +71,19 @@ const addresses = {
   },
 } as const
 
-const subgraphs = {
+// add when this is resolved: https://github.com/kulshekhar/ts-jest/issues/4100
+// } as const satisfies Record<
+//   SupportedChain,
+//   Record<SupportedContract, { address: Address }>
+// >
+
+type Subgraphs = {
+  ens: {
+    url: string
+  }
+}
+
+export const subgraphs = {
   homestead: {
     ens: {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
@@ -77,11 +96,8 @@ const subgraphs = {
   },
 } as const
 
-type Subgraphs = {
-  ens: {
-    url: string
-  }
-}
+// add when this is resolved: https://github.com/kulshekhar/ts-jest/issues/4100
+// } as const satisfies Record<SupportedChain, Subgraphs>
 
 type EnsChainContracts = {
   ensBaseRegistrarImplementation: ChainContract
@@ -105,43 +121,21 @@ export type ChainWithEns<TChain extends Chain = Chain> = TChain & {
   subgraphs: Subgraphs
 }
 
+export type CheckedChainWithEns<TChain extends Chain> =
+  TChain['network'] extends SupportedChain
+    ? TChain & {
+        contracts: (typeof addresses)[TChain['network']]
+        subgraphs: (typeof subgraphs)[TChain['network']]
+      }
+    : never
+
 export type ClientWithEns<
   TTransport extends Transport = Transport,
   TChain extends ChainWithEns = ChainWithEns,
-> = PublicClient<TTransport, TChain>
+> = Client<TTransport, TChain>
 
 export type WalletWithEns<
   TTransport extends Transport = Transport,
   TChain extends ChainWithEns = ChainWithEns,
   TAccount extends Account | undefined = Account | undefined,
 > = WalletClient<TTransport, TChain, TAccount>
-
-/**
- * Adds the ENS contracts to a viem chain object
- * @param chains - The {@link Chain} objects to add the ENS contracts to
- * @returns A {@link Chain} array with ENS contracts added
- *
- * @example
- * import { mainnet } from 'viem/chains'
- * import { addContracts } from '@ensdomains/ensjs'
- *
- * const [mainnetWithEns] = addContracts([mainnet])
- */
-export const addContracts = <TChain extends Chain = Chain>(
-  chains: TChain[],
-): ChainWithEns<TChain>[] =>
-  chains
-    .filter((chain) => supportedChains.includes(chain.network))
-    .map(
-      (chain) =>
-        ({
-          ...chain,
-          contracts: {
-            ...chain.contracts,
-            ...addresses[chain.network as keyof typeof addresses],
-          },
-          subgraphs: {
-            ...subgraphs[chain.network as keyof typeof subgraphs],
-          },
-        } as ChainWithEns<TChain>),
-    )

@@ -1,5 +1,5 @@
 import { Hex, decodeFunctionResult, encodeFunctionData, hexToBytes } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { namesSnippet } from '../../contracts/nameWrapper'
 import { SimpleTransactionRequest } from '../../types'
@@ -55,11 +55,10 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getWrapperName } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getWrapperName } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getWrapperName(client, { name: '[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth' })

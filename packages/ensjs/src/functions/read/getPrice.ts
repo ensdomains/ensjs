@@ -1,6 +1,6 @@
 import { Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
 import { rentPriceSnippet as bulkRentPriceSnippet } from '../../contracts/bulkRenewal'
+import { ClientWithEns } from '../../contracts/consts'
 import { rentPriceSnippet as controllerRentPriceSnippet } from '../../contracts/ethRegistrarController'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { UnsupportedNameTypeError } from '../../errors/general'
@@ -123,11 +123,10 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getPrice } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getPrice } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getPrice(client, { nameOrNames: 'ens.eth' })

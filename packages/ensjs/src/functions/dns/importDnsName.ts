@@ -8,7 +8,7 @@ import {
   encodeFunctionData,
   toHex,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import {
   proveAndClaimSnippet,
   proveAndClaimWithResolverSnippet,

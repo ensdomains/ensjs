@@ -10,7 +10,7 @@ import {
   toHex,
 } from 'viem'
 import { parseAccount } from 'viem/utils'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import { safeTransferFromWithDataSnippet } from '../../contracts/erc721'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { wrapSnippet } from '../../contracts/nameWrapper'
@@ -134,17 +134,12 @@ export const makeFunctionData = <
  * @returns Transaction hash. {@link WrapNameReturnType}
  *
  * @example
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, wrapName } from '@ensdomains/ensjs'
+ * import { addEnsContracts, wrapName } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
- * const client = createPublicClient({
- *   chain: mainnetWithEns,
- *   transport: http(),
- * })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await wrapName(wallet, {

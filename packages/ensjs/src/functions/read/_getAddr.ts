@@ -2,7 +2,7 @@ import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
 import { Hex, decodeFunctionResult, encodeFunctionData, trim } from 'viem'
 import { namehash } from '../../utils/normalise'
 
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import {
   multiAddrSnippet,
   singleAddrSnippet,
@@ -98,7 +98,7 @@ const decode = async (
   if (!response) return null
 
   const trimmed = trim(response)
-  if (trimmed === '0x' || trimmed === '0x0') {
+  if (trimmed === '0x' || trimmed === '0x0' || trimmed === '0x00') {
     return null
   }
 

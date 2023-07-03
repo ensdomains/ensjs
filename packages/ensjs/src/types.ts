@@ -1,9 +1,10 @@
 import type {
   Account,
+  Client,
   SendTransactionParameters,
   TransactionRequest,
 } from 'viem'
-import { ChainWithEns } from './contracts/addContracts'
+import { ChainWithEns } from './contracts/consts'
 
 export type Prettify<T> = {
   [K in keyof T]: T[K]
@@ -17,18 +18,25 @@ export type TransactionRequestWithPassthrough = SimpleTransactionRequest & {
   passthrough?: any
 }
 
-export type WriteTransactionParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
-> = Pick<
-  SendTransactionParameters<TChain, TAccount, TChainOverride>,
+export type Extended = { [K in keyof Client]?: undefined } & {
+  [key: string]: unknown
+}
+
+type AllowedWriteParameters =
   | 'gas'
   | 'gasPrice'
   | 'maxFeePerGas'
   | 'maxPriorityFeePerGas'
   | 'nonce'
   | 'account'
+
+export type WriteTransactionParameters<
+  TChain extends ChainWithEns,
+  TAccount extends Account | undefined,
+  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+> = Pick<
+  SendTransactionParameters<TChain, TAccount, TChainOverride>,
+  AllowedWriteParameters
 >
 
 export type DateWithValue<T> = {

@@ -1,15 +1,12 @@
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addContracts } from '../../contracts/addContracts'
+import { addEnsContracts } from '../../contracts'
 import { publicClient } from '../../tests/addTestContracts'
 import getAddressRecord from './getAddressRecord'
 
-const [mainnetWithEns] = addContracts([mainnet])
-const transport = http('https://web3.ens.domains/v1/mainnet')
-
 const mainnetPublicClient = createPublicClient({
-  chain: mainnetWithEns,
-  transport,
+  chain: addEnsContracts(mainnet),
+  transport: http('https://web3.ens.domains/v1/mainnet'),
 })
 
 describe('getAddressRecord()', () => {

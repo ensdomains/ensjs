@@ -1,5 +1,5 @@
 import type { Hex } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { FunctionNotBatchableError } from '../../errors/read'
 import {
   SimpleTransactionRequest,
@@ -11,6 +11,18 @@ import {
   generateFunction,
 } from '../../utils/generateFunction'
 import multicallWrapper from './multicallWrapper'
+
+type ExtractResult<TFunction extends BatchFunctionResult> = TFunction extends {
+  decode: (...args: any[]) => Promise<infer U>
+}
+  ? U
+  : never
+
+export type BatchParameters = BatchFunctionResult[]
+
+export type BatchReturnType<TFunctions extends BatchFunctionResult[]> = {
+  [TFunctionName in keyof TFunctions]: ExtractResult<TFunctions[TFunctionName]>
+}
 
 const encode = (
   client: ClientWithEns,
@@ -28,24 +40,14 @@ const encode = (
   return { ...response, passthrough: rawDataArr }
 }
 
-type ExtractResult<TFunction extends BatchFunctionResult> = TFunction extends {
-  decode: (...args: any[]) => Promise<infer U>
-}
-  ? U
-  : never
-
-type BatchReturnType<TFunctions extends BatchFunctionResult[]> = {
-  [TFunctionName in keyof TFunctions]: ExtractResult<TFunctions[TFunctionName]>
-}
-
 const decode = async <I extends BatchFunctionResult[]>(
   client: ClientWithEns,
   data: Hex,
   passthrough: TransactionRequestWithPassthrough[],
   ...items: I
-): Promise<BatchReturnType<I> | undefined> => {
+): Promise<BatchReturnType<I>> => {
   const response = await multicallWrapper.decode(client, data, passthrough)
-  if (!response) return
+  if (!response) throw new Error('No response from multicall')
 
   return Promise.all(
     response.map((ret, i: number) => {
@@ -73,16 +75,15 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, batch, getText, getAddressRecord } from '@ensdomains/ensjs'
+ * import { addEnsContracts, batch, getTextRecord, getAddressRecord } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await batch(
  *   client,
- *   getText.batch({ name: 'ens.eth', key: 'com.twitter' }),
+ *   getTextRecord.batch({ name: 'ens.eth', key: 'com.twitter' }),
  *   getAddressRecord.batch({ name: 'ens.eth', coin: 'ETH' }),
  * )
  * // ['ensdomains', { id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 }]
@@ -93,7 +94,7 @@ const batch = generateFunction({
 }) as (<I extends BatchFunctionResult[]>(
   client: ClientWithEns,
   ...args: I
-) => Promise<BatchReturnType<I> | undefined>) &
+) => Promise<BatchReturnType<I>>) &
   BatchableFunctionObject
 
 export default batch

@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 import type { Address } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { DateWithValue } from '../../types'
 import { namehash } from '../../utils/normalise'
 import { createSubgraphClient } from './client'
@@ -82,11 +82,10 @@ type CustomResolverSubgraphResult = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getSubgraphRecords } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getSubgraphRecords } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getSubgraphRecords(client, { name: 'ens.eth' })

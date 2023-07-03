@@ -7,7 +7,7 @@ import {
   toBytes,
   toHex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { resolveSnippet } from '../../contracts/universalResolver'
 import { SimpleTransactionRequest } from '../../types'

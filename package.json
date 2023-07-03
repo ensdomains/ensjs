@@ -18,7 +18,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.0",
+    "prettier": "^2.8.8",
     "ts-node": "^10.7.0",
     "typescript": "^5.0.4"
   },

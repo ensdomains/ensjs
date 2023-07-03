@@ -5,7 +5,7 @@ import {
   encodeFunctionData,
   toHex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { findResolverSnippet } from '../../contracts/universalResolver'
 import { SimpleTransactionRequest } from '../../types'
@@ -63,11 +63,10 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getResolver } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getResolver } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getResolver(client, { name: 'ens.eth' })

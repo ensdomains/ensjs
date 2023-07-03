@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { InvalidOrderByError } from '../../errors/subgraph'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts'
 import { namehash } from '../../utils/normalise'
@@ -48,11 +48,10 @@ type SubgraphResult = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getSubnames } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getSubnames } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getSubnames(client, { name: 'ens.eth' })

@@ -3,7 +3,7 @@ import { GraphQLClient } from 'graphql-request'
 import { RequestMiddleware, Response } from 'graphql-request/dist/types'
 import { parse, print, visit } from 'graphql/language/index'
 import traverse from 'traverse'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { namehash } from '../../utils/normalise'
 
 const generateSelection = (selection: string): SelectionNode => ({

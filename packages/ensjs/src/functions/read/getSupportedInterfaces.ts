@@ -1,5 +1,5 @@
 import { Address, Hex, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { supportsInterfaceSnippet } from '../../contracts/erc165'
 import {
   SimpleTransactionRequest,

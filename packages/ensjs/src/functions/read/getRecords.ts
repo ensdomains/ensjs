@@ -8,7 +8,7 @@ import {
   stringToBytes,
   toHex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { resolveArraySnippet } from '../../contracts/universalResolver'
 import {
@@ -321,11 +321,10 @@ type BatchableFunctionObject = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getRecords } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getRecords } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getRecords(client, {

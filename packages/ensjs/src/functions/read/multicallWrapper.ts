@@ -4,7 +4,7 @@ import {
   encodeFunctionData,
   offchainLookup,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { tryAggregateSnippet } from '../../contracts/multicall'
 import {

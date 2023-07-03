@@ -108,13 +108,13 @@
     "jest-environment-node": "^29.5.0",
     "jest-localstorage-mock": "^2.4.21",
     "solc": "^0.8.13",
-    "ts-jest": "^29.1.0",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.7.0",
     "typescript": "^5.0.4",
     "wait-on": "^6.0.1",
-    "viem": "^0.3.24"
+    "viem": "^1.2.9"
   },
   "peerDependencies": {
-    "viem": "^0.3.24"
+    "viem": "^1.2.9"
   }
 }

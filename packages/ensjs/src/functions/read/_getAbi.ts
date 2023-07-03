@@ -5,7 +5,7 @@ import {
   hexToBytes,
   hexToString,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import { abiSnippet } from '../../contracts/publicResolver'
 import { DecodedAbi, Prettify, SimpleTransactionRequest } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'

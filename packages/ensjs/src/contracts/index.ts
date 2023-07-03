@@ -1,2 +1,2 @@
-export { addContracts } from './addContracts'
+export { addEnsContracts } from './addEnsContracts'
 export { getChainContractAddress } from './getChainContractAddress'

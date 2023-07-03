@@ -5,7 +5,7 @@ import {
   Transport,
   encodeFunctionData,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import { registerSnippet } from '../../contracts/ethRegistrarController'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress'
 import { UnsupportedNameTypeError } from '../../errors/general'
@@ -82,9 +82,9 @@ export const makeFunctionData = <
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, commitName, randomSecret, getPrice, registerName } from '@ensdomains/ensjs'
+ * import { addEnsContracts, commitName, randomSecret, getPrice, registerName } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
+ * const mainnetWithEns = addEnsContracts(mainnet)
  * const client = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),

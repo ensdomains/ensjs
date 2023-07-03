@@ -1,17 +1,14 @@
 import { createPublicClient, http } from 'viem'
 import { goerli } from 'viem/chains'
-import { addContracts } from '../../contracts/addContracts'
+import { addEnsContracts } from '../../contracts'
 import batch from './batch'
 import getAddressRecord from './getAddressRecord'
 import getRecords from './getRecords'
 import getText from './getTextRecord'
 
-const [goerliWithEns] = addContracts([goerli])
-const transport = http('https://web3.ens.domains/v1/goerli')
-
 const goerliPublicClient = createPublicClient({
-  chain: goerliWithEns,
-  transport,
+  chain: addEnsContracts(goerli),
+  transport: http('https://web3.ens.domains/v1/goerli'),
 })
 
 jest.setTimeout(30000)

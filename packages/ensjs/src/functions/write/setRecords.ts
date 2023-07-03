@@ -6,7 +6,7 @@ import {
   Transport,
   encodeFunctionData,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/addContracts'
+import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import { multicallSnippet } from '../../contracts/publicResolver'
 import { NoRecordsSpecifiedError } from '../../errors/read'
 import {
@@ -74,17 +74,12 @@ export const makeFunctionData = <
  * @returns Transaction hash. {@link SetRecordsReturnType}
  *
  * @example
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, setRecords } from '@ensdomains/ensjs'
+ * import { addEnsContracts, setRecords } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
- * const client = createPublicClient({
- *   chain: mainnetWithEns,
- *   transport: http(),
- * })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await setRecords(wallet, {

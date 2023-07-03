@@ -1,5 +1,5 @@
 import { Hex, encodeFunctionData, labelhash } from 'viem'
-import { ClientWithEns } from '../contracts/addContracts'
+import { ClientWithEns } from '../contracts/consts'
 import { ownerOfSnippet } from '../contracts/erc721'
 import { getChainContractAddress } from '../contracts/getChainContractAddress'
 import { ownerSnippet } from '../contracts/registry'

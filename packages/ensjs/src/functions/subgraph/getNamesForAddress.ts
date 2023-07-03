@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 import { Address } from 'viem'
-import { ClientWithEns } from '../../contracts/addContracts'
+import { ClientWithEns } from '../../contracts/consts'
 import {
   FilterKeyRequiredError,
   InvalidFilterKeyError,
@@ -74,11 +74,10 @@ type SubgraphResult = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, getNamesForAddress } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getNamesForAddress } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getNamesForAddress(client, { address: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' })
