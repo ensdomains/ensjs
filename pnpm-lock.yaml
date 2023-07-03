@@ -110,7 +110,7 @@ importers:
       pako: ^2.1.0
       solc: ^0.8.13
       traverse: ^0.6.6
-      ts-jest: ^29.1.0
+      ts-jest: ^29.1.1
       ts-node: ^10.7.0
       typescript: ^5.0.4
       viem: ^1.2.9
@@ -152,7 +152,7 @@ importers:
       jest-environment-node: 29.5.0
       jest-localstorage-mock: 2.4.22
       solc: 0.8.16
-      ts-jest: 29.1.0_k4loywzeyoudxba33oezutz7em
+      ts-jest: 29.1.1_k4loywzeyoudxba33oezutz7em
       ts-node: 10.9.1_k7iguhqbtoao35i6waebqvypgi
       typescript: 5.0.4
       viem: 1.2.9_typescript@5.0.4
@@ -6554,7 +6554,7 @@ packages:
       jest-util: 29.5.0
       natural-compare: 1.4.0
       pretty-format: 29.5.0
-      semver: 7.3.7
+      semver: 7.5.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8356,6 +8356,14 @@ packages:
       lru-cache: 6.0.0
     dev: true
 
+  /semver/7.5.3:
+    resolution: {integrity: sha512-QBlUtyVk/5EeHbi7X0fw6liDZc7BBmEaSYn01fMU1OUYbf6GPsbTtd8WmnqbI20SeycoHSeiybkE/q1Q+qlThQ==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      lru-cache: 6.0.0
+    dev: true
+
   /send/0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
@@ -8955,8 +8963,8 @@ packages:
     resolution: {integrity: sha512-0z3j8R7MCjy10kc/g+qg7Ln3alJTodw9aDuVWZa3uiWqfuBMKeAeP2ocWcxoyM3D73yz3Jt/Pu4qPr4wHSdB/Q==}
     dev: true
 
-  /ts-jest/29.1.0_k4loywzeyoudxba33oezutz7em:
-    resolution: {integrity: sha512-ZhNr7Z4PcYa+JjMl62ir+zPiNJfXJN6E8hSLnaUKhOgqcn8vb3e537cpkd0FuAfRK3sR1LSqM1MOhliXNgOFPA==}
+  /ts-jest/29.1.1_k4loywzeyoudxba33oezutz7em:
+    resolution: {integrity: sha512-D6xjnnbP17cC85nliwGiL+tpoKN0StpgE0TeOjXQTU6MVCfsB4v7aW05CgQ/1OywGb0x/oy9hHFnN+sczTiRaA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
     peerDependencies:
@@ -8984,7 +8992,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.3.7
+      semver: 7.5.3
       typescript: 5.0.4
       yargs-parser: 21.1.1
     dev: true
