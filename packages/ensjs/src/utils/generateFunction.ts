@@ -1,4 +1,5 @@
-import { ClientWithEns } from '../contracts/addContracts'
+import { call } from 'viem/actions'
+import { ClientWithEns } from '../contracts/consts'
 import { TransactionRequestWithPassthrough } from '../types'
 
 export type EncoderFunction = (
@@ -61,7 +62,7 @@ export const generateFunction = <
 }) => {
   const single = async function (client, ...args) {
     const { passthrough, ...encodedData } = encode(client, ...args)
-    const { data: result } = await client.call(encodedData)
+    const { data: result } = await call(client, encodedData)
     if (!result) return null
     if (passthrough) return decode(client, result, passthrough, ...args)
     return decode(client, result, ...args)

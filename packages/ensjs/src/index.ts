@@ -1,3 +1,3 @@
-export { addContracts, getChainContractAddress } from './contracts'
+export { addEnsContracts, getChainContractAddress } from './contracts'
 export * from './functions'
 export * from './utils'
