@@ -1,4 +1,4 @@
-import { DNSProver, ProvableAnswer, SignedSet } from '@ensdomains/dnsprovejs'
+import { type ProvableAnswer, type SignedSet } from '@ensdomains/dnsprovejs'
 import type * as packet from 'dns-packet'
 import { toType } from 'dns-packet/types'
 import { keccak256, toBytes, toHex } from 'viem'
@@ -66,6 +66,8 @@ const prepareDnsImport = async (
     endpoint = 'https://cloudflare-dns.com/dns-query',
   }: PrepareDnsImportParameters,
 ): Promise<PrepareDnsImportReturnType> => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { DNSProver } = await import('@ensdomains/dnsprovejs')
   const prover = DNSProver.create(endpoint)
   const result = (await prover.queryWithProof(
     'TXT',

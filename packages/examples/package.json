@@ -1,0 +1,20 @@
+{
+  "name": "ensjs-examples",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "start": "ts-node --esm --experimentalSpecifierResolution node src/index.ts"
+  },
+  "dependencies": {
+    "@ensdomains/ensjs": "workspace:*",
+    "ts-node": "^10.7.0",
+    "typescript": "^5.0.4",
+    "viem": "^1.2.9",
+    "node-fetch": "2.6.7"
+  },
+  "pnpm": {
+    "overrides": {
+      "node-fetch": "2.6.7"
+    }
+  }
+}
