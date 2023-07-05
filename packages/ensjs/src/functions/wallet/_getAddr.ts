@@ -7,7 +7,7 @@ import {
   multiAddrSnippet,
   singleAddrSnippet,
 } from '../../contracts/publicResolver'
-import { CoinFormatterNotFoundError } from '../../errors/read'
+import { CoinFormatterNotFoundError } from '../../errors/public'
 import { DecodedAddr, Prettify, SimpleTransactionRequest } from '../../types'
 import { EMPTY_ADDRESS } from '../../utils/consts'
 import { generateFunction } from '../../utils/generateFunction'

@@ -5,7 +5,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getOwner from '../read/getOwner'
+import getOwner from '../wallet/getOwner'
 import transferName from './transferName'
 
 let snapshot: Hex

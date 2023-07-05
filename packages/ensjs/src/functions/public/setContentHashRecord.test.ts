@@ -5,9 +5,9 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getResolver from '../read/getResolver'
-import getText from '../read/getTextRecord'
-import setTextRecord from './setTextRecord'
+import getContentHashRecord from '../wallet/getContentHashRecord'
+import getResolver from '../wallet/getResolver'
+import setContentHashRecord from './setContentHashRecord'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -24,11 +24,11 @@ afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
 
-it('should allow a text record to be set', async () => {
-  const tx = await setTextRecord(walletClient, {
+it('should allow a contenthash record to be set', async () => {
+  const tx = await setContentHashRecord(walletClient, {
     name: 'test123.eth',
-    key: 'foo',
-    value: 'bar',
+    contentHash:
+      'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
     }))!,
@@ -38,18 +38,21 @@ it('should allow a text record to be set', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getText(publicClient, {
+  const response = await getContentHashRecord(publicClient, {
     name: 'test123.eth',
-    key: 'foo',
   })
-  expect(response).toBe('bar')
+  expect(response).toMatchInlineSnapshot(`
+    {
+      "decoded": "k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150",
+      "protocolType": "ipns",
+    }
+  `)
 })
 
-it('should allow a text record to be set to blank', async () => {
-  const tx = await setTextRecord(walletClient, {
-    name: 'test123.eth',
-    key: 'url',
-    value: null,
+it('should allow a contenthash record to be set to blank', async () => {
+  const tx = await setContentHashRecord(walletClient, {
+    name: 'with-contenthash.eth',
+    contentHash: null,
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
     }))!,
@@ -59,9 +62,8 @@ it('should allow a text record to be set to blank', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getText(publicClient, {
+  const response = await getContentHashRecord(publicClient, {
     name: 'test123.eth',
-    key: 'url',
   })
   expect(response).toBeNull()
 })

@@ -3,59 +3,59 @@ import type { ChainWithEns } from '../../contracts/consts'
 import batch, {
   type BatchParameters,
   type BatchReturnType,
-} from '../../functions/read/batch'
+} from '../../functions/wallet/batch'
 import getAbiRecord, {
   type GetAbiRecordParameters,
   type GetAbiRecordReturnType,
-} from '../../functions/read/getAbiRecord'
+} from '../../functions/wallet/getAbiRecord'
 import getAddressRecord, {
   type GetAddressRecordParameters,
   type GetAddressRecordReturnType,
-} from '../../functions/read/getAddressRecord'
+} from '../../functions/wallet/getAddressRecord'
 import getAvailable, {
   type GetAvailableParameters,
   type GetAvailableReturnType,
-} from '../../functions/read/getAvailable'
+} from '../../functions/wallet/getAvailable'
 import getContentHashRecord, {
   type GetContentHashRecordParameters,
   type GetContentHashRecordReturnType,
-} from '../../functions/read/getContentHashRecord'
+} from '../../functions/wallet/getContentHashRecord'
 import getExpiry, {
   type GetExpiryParameters,
   type GetExpiryReturnType,
-} from '../../functions/read/getExpiry'
+} from '../../functions/wallet/getExpiry'
 import getName, {
   type GetNameParameters,
   type GetNameReturnType,
-} from '../../functions/read/getName'
+} from '../../functions/wallet/getName'
 import getOwner, {
   type GetOwnerParameters,
   type GetOwnerReturnType,
-} from '../../functions/read/getOwner'
+} from '../../functions/wallet/getOwner'
 import getPrice, {
   type GetPriceParameters,
   type GetPriceReturnType,
-} from '../../functions/read/getPrice'
+} from '../../functions/wallet/getPrice'
 import getRecords, {
   type GetRecordsParameters,
   type GetRecordsReturnType,
-} from '../../functions/read/getRecords'
+} from '../../functions/wallet/getRecords'
 import getResolver, {
   type GetResolverParameters,
   type GetResolverReturnType,
-} from '../../functions/read/getResolver'
+} from '../../functions/wallet/getResolver'
 import getTextRecord, {
   type GetTextRecordParameters,
   type GetTextRecordReturnType,
-} from '../../functions/read/getTextRecord'
+} from '../../functions/wallet/getTextRecord'
 import getWrapperData, {
   type GetWrapperDataParameters,
   type GetWrapperDataReturnType,
-} from '../../functions/read/getWrapperData'
+} from '../../functions/wallet/getWrapperData'
 import getWrapperName, {
   type GetWrapperNameParameters,
   type GetWrapperNameReturnType,
-} from '../../functions/read/getWrapperName'
+} from '../../functions/wallet/getWrapperName'
 
 export type EnsPublicActions = {
   /**

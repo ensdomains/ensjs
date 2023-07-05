@@ -8,7 +8,7 @@ import {
 } from 'viem'
 import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
 import { multicallSnippet } from '../../contracts/publicResolver'
-import { NoRecordsSpecifiedError } from '../../errors/read'
+import { NoRecordsSpecifiedError } from '../../errors/public'
 import {
   Prettify,
   SimpleTransactionRequest,

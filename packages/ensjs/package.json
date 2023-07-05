@@ -1,10 +1,11 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "3.0.0-alpha.62",
+  "version": "3.0.0-beta.0",
   "description": "ENS javascript library for contract interaction",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.mjs",
   "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -33,11 +34,14 @@
   },
   "typesVersions": {
     "*": {
-      "static": [
-        "./dist/types/static.d.ts"
+      "clients/*": [
+        "./dist/types/clients/*"
       ],
       "contracts/*": [
         "./dist/types/contracts/*"
+      ],
+      "errors/*": [
+        "./dist/types/errors/*"
       ],
       "functions/*": [
         "./dist/types/functions/*"

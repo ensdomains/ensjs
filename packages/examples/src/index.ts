@@ -1,4 +1,8 @@
-import { createEnsPublicClient } from '@ensdomains/ensjs'
+import {
+  createEnsPublicClient,
+  getAddressRecord,
+  getTextRecord,
+} from '@ensdomains/ensjs'
 import { http } from 'viem'
 import { mainnet } from 'viem/chains'
 
@@ -18,6 +22,12 @@ const main = async () => {
     },
   })
   console.log(recordData)
+
+  const batchData = await client.ensBatch(
+    getTextRecord.batch({ name: 'ens.eth', key: 'com.twitter' }),
+    getAddressRecord.batch({ name: 'ens.eth', coin: 'ETH' }),
+  )
+  console.log(batchData)
 }
 
 main()

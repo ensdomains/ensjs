@@ -1,6 +1,6 @@
 import type { Hex } from 'viem'
 import { ClientWithEns } from '../../contracts/consts'
-import { FunctionNotBatchableError } from '../../errors/read'
+import { FunctionNotBatchableError } from '../../errors/public'
 import {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
