@@ -7,7 +7,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getPrice from '../wallet/getPrice'
+import getPrice from '../public/getPrice'
 import renewNames from './renewNames'
 
 let snapshot: Hex

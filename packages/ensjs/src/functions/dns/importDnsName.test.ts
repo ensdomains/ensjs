@@ -6,8 +6,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getOwner from '../wallet/getOwner'
-import getResolver from '../wallet/getResolver'
+import getOwner from '../public/getOwner'
+import getResolver from '../public/getResolver'
 import importDnsName from './importDnsName'
 import prepareDnsImport from './prepareDnsImport'
 

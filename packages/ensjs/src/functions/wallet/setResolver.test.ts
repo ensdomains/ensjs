@@ -5,7 +5,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getResolver from '../wallet/getResolver'
+import getResolver from '../public/getResolver'
 import setResolver from './setResolver'
 
 let snapshot: Hex

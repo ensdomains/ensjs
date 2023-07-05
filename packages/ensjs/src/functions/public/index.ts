@@ -1,85 +1,96 @@
 export {
-  CommitNameParameters,
-  CommitNameReturnType,
-  default as commitName,
-} from './commitName'
+  InternalGetAbiParameters,
+  InternalGetAbiReturnType,
+  default as _getAbi,
+} from './_getAbi'
 export {
-  CreateSubnameParameters,
-  CreateSubnameReturnType,
-  default as createSubname,
-} from './createSubname'
+  InternalGetAddrParameters,
+  InternalGetAddrReturnType,
+  default as _getAddr,
+} from './_getAddr'
 export {
-  DeleteSubnameParameters,
-  DeleteSubnameReturnType,
-  default as deleteSubname,
-} from './deleteSubname'
+  InternalGetContentHashParameters,
+  InternalGetContentHashReturnType,
+  default as _getContentHash,
+} from './_getContentHash'
 export {
-  RegisterNameParameters,
-  RegisterNameReturnType,
-  default as registerName,
-} from './registerName'
+  InternalGetTextParameters,
+  InternalGetTextReturnType,
+  default as _getText,
+} from './_getText'
+export { default as batch } from './batch'
 export {
-  RenewNamesParameters,
-  RenewNamesReturnType,
-  default as renewNames,
-} from './renewNames'
+  GetAbiRecordParameters,
+  GetAbiRecordReturnType,
+  default as getAbiRecord,
+} from './getAbiRecord'
 export {
-  SetAbiRecordParameters,
-  SetAbiRecordReturnType,
-  default as setAbiRecord,
-} from './setAbiRecord'
+  GetAddressRecordParameters,
+  GetAddressRecordReturnType,
+  default as getAddressRecord,
+} from './getAddressRecord'
 export {
-  SetAddressRecordParameters,
-  SetAddressRecordReturnType,
-  default as setAddressRecord,
-} from './setAddressRecord'
+  GetAvailableParameters,
+  GetAvailableReturnType,
+  default as getAvailable,
+} from './getAvailable'
 export {
-  SetChildFusesParameters,
-  SetChildFusesReturnType,
-  default as setChildFuses,
-} from './setChildFuses'
+  GetContentHashRecordParameters,
+  GetContentHashRecordReturnType,
+  default as getContentHashRecord,
+} from './getContentHashRecord'
 export {
-  SetContentHashRecordParameters,
-  SetContentHashRecordReturnType,
-  default as setContentHashRecord,
-} from './setContentHashRecord'
+  GetExpiryParameters,
+  GetExpiryReturnType,
+  default as getExpiry,
+} from './getExpiry'
 export {
-  SetFusesParameters,
-  SetFusesReturnType,
-  default as setFuses,
-} from './setFuses'
+  GetNameParameters,
+  GetNameReturnType,
+  default as getName,
+} from './getName'
 export {
-  SetPrimaryNameParameters,
-  SetPrimaryNameReturnType,
-  default as setPrimaryName,
-} from './setPrimaryName'
+  GetOwnerParameters,
+  GetOwnerReturnType,
+  default as getOwner,
+} from './getOwner'
 export {
-  SetRecordsParameters,
-  SetRecordsReturnType,
-  default as setRecords,
-} from './setRecords'
+  GetPriceParameters,
+  GetPriceReturnType,
+  default as getPrice,
+} from './getPrice'
 export {
-  SetResolverParameters,
-  SetResolverReturnType,
-  default as setResolver,
-} from './setResolver'
+  GetRecordsParameters,
+  GetRecordsReturnType,
+  default as getRecords,
+} from './getRecords'
 export {
-  SetTextRecordParameters,
-  SetTextRecordReturnType,
-  default as setTextRecord,
-} from './setTextRecord'
+  GetResolverParameters,
+  GetResolverReturnType,
+  default as getResolver,
+} from './getResolver'
 export {
-  TransferNameParameters,
-  TransferNameReturnType,
-  default as transferName,
-} from './transferName'
+  GetSupportedInterfacesParameters,
+  GetSupportedInterfacesReturnType,
+  default as getSupportedInterfaces,
+} from './getSupportedInterfaces'
 export {
-  UnwrapNameParameters,
-  UnwrapNameReturnType,
-  default as unwrapName,
-} from './unwrapName'
+  GetTextRecordParameters,
+  GetTextRecordReturnType,
+  default as getTextRecord,
+} from './getTextRecord'
 export {
-  WrapNameParameters,
-  WrapNameReturnType,
-  default as wrapName,
-} from './wrapName'
+  GetWrapperDataParameters,
+  GetWrapperDataReturnType,
+  default as getWrapperData,
+} from './getWrapperData'
+export {
+  MulticallWrapperParameters,
+  MulticallWrapperReturnType,
+  default as multicallWrapper,
+} from './multicallWrapper'
+export {
+  UniversalWrapperParameters,
+  UniversalWrapperReturnType,
+  default as universalWrapper,
+} from './universalWrapper'

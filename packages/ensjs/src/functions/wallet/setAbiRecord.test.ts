@@ -6,8 +6,8 @@ import {
   walletClient,
 } from '../../tests/addTestContracts'
 import { encodeAbi } from '../../utils/encoders/encodeAbi'
-import getAbiRecord from '../wallet/getAbiRecord'
-import getResolver from '../wallet/getResolver'
+import getAbiRecord from '../public/getAbiRecord'
+import getResolver from '../public/getResolver'
 import setAbiRecord from './setAbiRecord'
 
 let snapshot: Hex

@@ -3,71 +3,71 @@ import { type ChainWithEns } from '../../contracts/consts'
 import commitName, {
   type CommitNameParameters,
   type CommitNameReturnType,
-} from '../../functions/public/commitName'
+} from '../../functions/wallet/commitName'
 import createSubname, {
   type CreateSubnameParameters,
   type CreateSubnameReturnType,
-} from '../../functions/public/createSubname'
+} from '../../functions/wallet/createSubname'
 import deleteSubname, {
   type DeleteSubnameParameters,
   type DeleteSubnameReturnType,
-} from '../../functions/public/deleteSubname'
+} from '../../functions/wallet/deleteSubname'
 import registerName, {
   type RegisterNameParameters,
   type RegisterNameReturnType,
-} from '../../functions/public/registerName'
+} from '../../functions/wallet/registerName'
 import renewNames, {
   type RenewNamesParameters,
   type RenewNamesReturnType,
-} from '../../functions/public/renewNames'
+} from '../../functions/wallet/renewNames'
 import setAbiRecord, {
   type SetAbiRecordParameters,
   type SetAbiRecordReturnType,
-} from '../../functions/public/setAbiRecord'
+} from '../../functions/wallet/setAbiRecord'
 import setAddressRecord, {
   type SetAddressRecordParameters,
   type SetAddressRecordReturnType,
-} from '../../functions/public/setAddressRecord'
+} from '../../functions/wallet/setAddressRecord'
 import setChildFuses, {
   type SetChildFusesParameters,
   type SetChildFusesReturnType,
-} from '../../functions/public/setChildFuses'
+} from '../../functions/wallet/setChildFuses'
 import setContentHashRecord, {
   type SetContentHashRecordParameters,
   type SetContentHashRecordReturnType,
-} from '../../functions/public/setContentHashRecord'
+} from '../../functions/wallet/setContentHashRecord'
 import setFuses, {
   type SetFusesParameters,
   type SetFusesReturnType,
-} from '../../functions/public/setFuses'
+} from '../../functions/wallet/setFuses'
 import setPrimaryName, {
   type SetPrimaryNameParameters,
   type SetPrimaryNameReturnType,
-} from '../../functions/public/setPrimaryName'
+} from '../../functions/wallet/setPrimaryName'
 import setRecords, {
   type SetRecordsParameters,
   type SetRecordsReturnType,
-} from '../../functions/public/setRecords'
+} from '../../functions/wallet/setRecords'
 import setResolver, {
   type SetResolverParameters,
   type SetResolverReturnType,
-} from '../../functions/public/setResolver'
+} from '../../functions/wallet/setResolver'
 import setTextRecord, {
   type SetTextRecordParameters,
   type SetTextRecordReturnType,
-} from '../../functions/public/setTextRecord'
+} from '../../functions/wallet/setTextRecord'
 import transferName, {
   type TransferNameParameters,
   type TransferNameReturnType,
-} from '../../functions/public/transferName'
+} from '../../functions/wallet/transferName'
 import unwrapName, {
   type UnwrapNameParameters,
   type UnwrapNameReturnType,
-} from '../../functions/public/unwrapName'
+} from '../../functions/wallet/unwrapName'
 import wrapName, {
   type WrapNameParameters,
   type WrapNameReturnType,
-} from '../../functions/public/wrapName'
+} from '../../functions/wallet/wrapName'
 
 export type EnsWalletActions<
   TChain extends ChainWithEns,

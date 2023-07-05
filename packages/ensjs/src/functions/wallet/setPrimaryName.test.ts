@@ -7,7 +7,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts'
-import getName from '../wallet/getName'
+import getName from '../public/getName'
 import setPrimaryName from './setPrimaryName'
 
 let snapshot: Hex
