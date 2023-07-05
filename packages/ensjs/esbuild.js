@@ -4,7 +4,7 @@ const { renameSync } = require('fs')
 
 const base = {
   entryPoints: [
-    ...glob.sync('./src/**/!(*.test.ts)', {
+    ...glob.sync('./src/**/!(*.test.ts|types.ts)', {
       nodir: true,
       ignore: ['./src/@types/**/*', './src/tests/**/*', './src/ABIs/**/*'],
     }),
@@ -29,11 +29,6 @@ esbuild.build({
       setup(build) {
         build.onResolve({ filter: /.*/ }, (args) => {
           if (args.importer) {
-            if (args.path.match(/^@ethersproject\/.*\//))
-              return {
-                path: args.path.replace('/lib/', '/lib.esm/') + '.js',
-                external: true,
-              }
             if (args.path.startsWith('./') || args.path.startsWith('../'))
               return { path: args.path + '.mjs', external: true }
             return { path: args.path, external: true }
@@ -58,11 +53,7 @@ esbuild.build({
       setup(build) {
         build.onResolve({ filter: /.*/ }, (args) => {
           if (args.importer) {
-            if (
-              args.path.match(/^@ethersproject\/.*\//) ||
-              args.path.startsWith('./') ||
-              args.path.startsWith('../')
-            )
+            if (args.path.startsWith('./') || args.path.startsWith('../'))
               return { path: args.path + '.js', external: true }
             return { path: args.path, external: true }
           }
