@@ -1,4 +1,4 @@
-import { namehash } from './normalise'
+import { namehash } from './normalise.js'
 
 describe('namehash()', () => {
   it('returns namehash for name', () => {
@@ -18,7 +18,7 @@ describe('namehash()', () => {
 })
 
 it('exports functions from ens-normalize', async () => {
-  const modules = await import('./normalise')
+  const modules = await import('./normalise.js')
   expect(modules).toMatchInlineSnapshot(`
     {
       "beautify": [Function],

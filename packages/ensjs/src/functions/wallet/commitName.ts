@@ -1,25 +1,25 @@
 import {
-  Account,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { commitSnippet } from '../../contracts/ethRegistrarController'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { UnsupportedNameTypeError } from '../../errors/general'
-import {
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { ethRegistrarControllerCommitSnippet } from '../../contracts/ethRegistrarController.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { getNameType } from '../../utils/getNameType'
+} from '../../types.js'
+import { getNameType } from '../../utils/getNameType.js'
 import {
-  RegistrationParameters,
   makeCommitment,
-} from '../../utils/registerHelpers'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper'
+  type RegistrationParameters,
+} from '../../utils/registerHelpers.js'
+import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
 export type CommitNameDataParameters = RegistrationParameters
 
@@ -58,7 +58,7 @@ export const makeFunctionData = <
       contract: 'ensEthRegistrarController',
     }),
     data: encodeFunctionData({
-      abi: commitSnippet,
+      abi: ethRegistrarControllerCommitSnippet,
       functionName: 'commit',
       args: [makeCommitment(args)],
     }),

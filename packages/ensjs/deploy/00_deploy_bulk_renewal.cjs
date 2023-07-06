@@ -1,23 +1,24 @@
 /* eslint-disable import/no-extraneous-dependencies */
-
-import { Interface } from 'ethers/lib/utils'
-import { ethers } from 'hardhat'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { namehash } from '../src/utils/normalise'
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { Interface } = require('ethers/lib/utils')
+const { ethers } = require('hardhat')
+const { namehash, labelhash } = require('viem/ens')
 
 const { makeInterfaceId } = require('@openzeppelin/test-helpers')
 
-function computeInterfaceId(iface: Interface) {
+/**
+ * @param {import('ethers/lib/utils').Interface} iface
+ */
+function computeInterfaceId(iface) {
   return makeInterfaceId.ERC165(
     Object.values(iface.functions).map((frag) => frag.format('sighash')),
   )
 }
 
-const labelHash = (label: string) =>
-  ethers.utils.keccak256(ethers.utils.toUtf8Bytes(label))
-
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts, deployments, network } = hre
   const { deploy } = deployments
   const { deployer, owner } = await getNamedAccounts()
@@ -49,7 +50,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   })
 
   console.log('Temporarily setting owner of eth tld to owner ')
-  const tx = await root.setSubnodeOwner(labelHash('eth'), owner)
+  const tx = await root.setSubnodeOwner(labelhash('eth'), owner)
   await tx.wait()
 
   console.log('Set default resolver for eth tld to public resolver')
@@ -81,7 +82,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await tx4.wait()
 
   console.log('Set owner of eth tld back to registrar')
-  const tx11 = await root.setSubnodeOwner(labelHash('eth'), registrar.address)
+  const tx11 = await root.setSubnodeOwner(labelhash('eth'), registrar.address)
   await tx11.wait()
 
   return true
@@ -97,4 +98,4 @@ func.dependencies = [
   'ETHRegistrarController',
 ]
 
-export default func
+module.exports = func

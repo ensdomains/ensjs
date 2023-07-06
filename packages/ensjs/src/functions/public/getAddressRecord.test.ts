@@ -1,8 +1,8 @@
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts } from '../../contracts'
-import { publicClient } from '../../tests/addTestContracts'
-import getAddressRecord from './getAddressRecord'
+import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getAddressRecord from './getAddressRecord.js'
 
 const mainnetPublicClient = createPublicClient({
   chain: addEnsContracts(mainnet),

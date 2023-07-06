@@ -1,21 +1,21 @@
 import {
-  Account,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { renewAllSnippet } from '../../contracts/bulkRenewal'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { renewSnippet } from '../../contracts/ethRegistrarController'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { UnsupportedNameTypeError } from '../../errors/general'
-import {
+import { bulkRenewalRenewAllSnippet } from '../../contracts/bulkRenewal.js'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { ethRegistrarControllerRenewSnippet } from '../../contracts/ethRegistrarController.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { getNameType } from '../../utils/getNameType'
+} from '../../types.js'
+import { getNameType } from '../../utils/getNameType.js'
 
 export type RenewNamesDataParameters = {
   /** Name or names to renew */
@@ -68,7 +68,7 @@ export const makeFunctionData = <
         contract: 'ensEthRegistrarController',
       }),
       data: encodeFunctionData({
-        abi: renewSnippet,
+        abi: ethRegistrarControllerRenewSnippet,
         functionName: 'renew',
         args: [labels[0], BigInt(duration)],
       }),
@@ -82,7 +82,7 @@ export const makeFunctionData = <
       contract: 'ensBulkRenewal',
     }),
     data: encodeFunctionData({
-      abi: renewAllSnippet,
+      abi: bulkRenewalRenewAllSnippet,
       functionName: 'renewAll',
       args: [labels, BigInt(duration)],
     }),

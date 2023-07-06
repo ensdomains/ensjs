@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { parseInput, validateName } from './validation'
+import { parseInput, validateName } from './validation.js'
 
 declare namespace localStorage {
   const getItem: jest.MockedFn<Storage['getItem']>

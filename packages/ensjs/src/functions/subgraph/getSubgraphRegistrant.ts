@@ -1,9 +1,9 @@
 import { gql } from 'graphql-request'
-import { Address, getAddress, labelhash } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { UnsupportedNameTypeError } from '../../errors/general'
-import { getNameType } from '../../utils/getNameType'
-import { createSubgraphClient } from './client'
+import { getAddress, labelhash, type Address } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import { getNameType } from '../../utils/getNameType.js'
+import { createSubgraphClient } from './client.js'
 
 export type GetSubgraphRegistrantParameters = {
   /** Name to get registrant for */

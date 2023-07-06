@@ -1,9 +1,10 @@
 {
-  "name": "ensjs-examples",
+  "name": "basic-tsnode-esm",
   "private": true,
+  "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "start": "ts-node --esm --experimentalSpecifierResolution node src/index.ts"
+    "start": "ts-node-esm src/index.ts"
   },
   "dependencies": {
     "@ensdomains/ensjs": "workspace:*",

@@ -1,24 +1,21 @@
 {
-  "extends": "../../tsconfig.json",
+  // This configuration is used for local development and type checking.
+  "extends": "./tsconfig.base.json",
   "ts-node": {
     "compilerOptions": {
-      "target": "es2020",
-      "module": "commonjs",
-      "strict": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "module": "CommonJS",
+      "allowSyntheticDefaultImports": true
     }
   },
+  "include": ["src"],
+  "exclude": [],
+  "references": [{ "path": "./tsconfig.node.json" }],
   "compilerOptions": {
     "types": ["jest"],
-    "outDir": "./dist",
-    "declaration": true,
-    "importsNotUsedAsValues": "remove",
-    "lib": ["ES2022", "DOM"],
-    "module": "ES2020",
-    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "paths": {
       "abitype": ["./node_modules/abitype/dist"]
     }
-  },
-  "include": ["src/**/*.ts", "./hardhat.config.ts", "./deploy"]
+  }
 }

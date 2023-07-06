@@ -1,29 +1,29 @@
-import { type Account, type Client, type Transport } from 'viem'
-import { type ChainWithEns } from '../../contracts/consts'
+import type { Account, Client, Transport } from 'viem'
+import type { ChainWithEns } from '../../contracts/consts.js'
 import getDecodedName, {
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
-} from '../../functions/subgraph/getDecodedName'
+} from '../../functions/subgraph/getDecodedName.js'
 import getNameHistory, {
   type GetNameHistoryParameters,
   type GetNameHistoryReturnType,
-} from '../../functions/subgraph/getNameHistory'
+} from '../../functions/subgraph/getNameHistory.js'
 import getNamesForAddress, {
   type GetNamesForAddressParameters,
   type GetNamesForAddressReturnType,
-} from '../../functions/subgraph/getNamesForAddress'
+} from '../../functions/subgraph/getNamesForAddress.js'
 import getSubgraphRecords, {
   type GetSubgraphRecordsParameters,
   type GetSubgraphRecordsReturnType,
-} from '../../functions/subgraph/getSubgraphRecords'
+} from '../../functions/subgraph/getSubgraphRecords.js'
 import getSubgraphRegistrant, {
   type GetSubgraphRegistrantParameters,
   type GetSubgraphRegistrantReturnType,
-} from '../../functions/subgraph/getSubgraphRegistrant'
+} from '../../functions/subgraph/getSubgraphRegistrant.js'
 import getSubnames, {
   type GetSubnamesParameters,
   type GetSubnamesReturnType,
-} from '../../functions/subgraph/getSubnames'
+} from '../../functions/subgraph/getSubnames.js'
 
 export type EnsSubgraphActions = {
   /**

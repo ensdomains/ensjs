@@ -1,21 +1,21 @@
 import {
-  Address,
-  Hex,
   encodeAbiParameters,
   keccak256,
   labelhash,
   pad,
   toBytes,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
-import { CampaignReferenceTooLargeError } from '../errors/utils'
-import { EMPTY_ADDRESS } from './consts'
-import { CombinedFuseInput, encodeFuses, hasFuses } from './fuses'
+import { CampaignReferenceTooLargeError } from '../errors/utils.js'
+import { EMPTY_ADDRESS } from './consts.js'
+import { encodeFuses, hasFuses, type CombinedFuseInput } from './fuses.js'
 import {
-  RecordOptions,
   generateRecordCallArray,
-} from './generateRecordCallArray'
-import { namehash } from './normalise'
+  type RecordOptions,
+} from './generateRecordCallArray.js'
+import { namehash } from './normalise.js'
 
 export type RegistrationParameters = {
   /** Name to register */

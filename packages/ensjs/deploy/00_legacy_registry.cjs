@@ -1,17 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
-
-import { ethers } from 'hardhat'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { labelhash } from 'viem'
-import { namehash } from '../src/utils/normalise'
+const { ethers } = require('hardhat')
+const { labelhash, namehash } = require('viem/ens')
 
 const ZERO_HASH =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const names = ['legacy']
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts } = hre
   const { owner } = await getNamedAccounts()
 
@@ -43,7 +42,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 func.id = 'legacy-registry-names'
 func.tags = ['legacy-registry-names']
 func.dependencies = ['ENSRegistry']
-func.skip = async function (hre: HardhatRuntimeEnvironment) {
+func.skip = async function (hre) {
   const { getNamedAccounts } = hre
   const { owner } = await getNamedAccounts()
 
@@ -57,4 +56,4 @@ func.skip = async function (hre: HardhatRuntimeEnvironment) {
 }
 func.runAtTheEnd = true
 
-export default func
+module.exports = func

@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getAvailable from './getAvailable'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getAvailable from './getAvailable.js'
 
 describe('getAvailable', () => {
   it('should return false for a name that is unavailable', async () => {

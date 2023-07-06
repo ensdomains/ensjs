@@ -1,19 +1,19 @@
 import {
-  Address,
-  Hex,
   decodeFunctionResult,
   encodeFunctionData,
   labelhash,
   toBytes,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { resolveSnippet } from '../../contracts/universalResolver'
-import { SimpleTransactionRequest } from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
-import { packetToBytes } from '../../utils/hexEncodedName'
-import { encodeLabelhash } from '../../utils/labels'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { universalResolverResolveSnippet } from '../../contracts/universalResolver.js'
+import type { SimpleTransactionRequest } from '../../types.js'
+import { generateFunction } from '../../utils/generateFunction.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
+import { encodeLabelhash } from '../../utils/labels.js'
 
 export type UniversalWrapperParameters = {
   name: string
@@ -42,7 +42,7 @@ const encode = (
   return {
     to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
     data: encodeFunctionData({
-      abi: resolveSnippet,
+      abi: universalResolverResolveSnippet,
       functionName: 'resolve',
       args: [toHex(packetToBytes(nameWithSizedLabels)), data],
     }),
@@ -54,7 +54,7 @@ const decode = async (
   data: Hex,
 ): Promise<UniversalWrapperReturnType> => {
   const result = decodeFunctionResult({
-    abi: resolveSnippet,
+    abi: universalResolverResolveSnippet,
     functionName: 'resolve',
     data,
   })

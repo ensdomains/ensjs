@@ -1,21 +1,30 @@
-import { Hex, decodeFunctionResult, encodeFunctionData, labelhash } from 'viem'
 import {
-  gracePeriodSnippet,
-  nameExpiresSnippet,
-} from '../../contracts/baseRegistrar'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { getCurrentBlockTimestampSnippet } from '../../contracts/multicall'
-import { getDataSnippet } from '../../contracts/nameWrapper'
-import { DateWithValue, Prettify, SimpleTransactionRequest } from '../../types'
+  decodeFunctionResult,
+  encodeFunctionData,
+  labelhash,
+  type Hex,
+} from 'viem'
 import {
-  GeneratedFunction,
+  baseRegistrarGracePeriodSnippet,
+  baseRegistrarNameExpiresSnippet,
+} from '../../contracts/baseRegistrar.js'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { multicallGetCurrentBlockTimestampSnippet } from '../../contracts/multicall.js'
+import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
+import type {
+  DateWithValue,
+  Prettify,
+  SimpleTransactionRequest,
+} from '../../types.js'
+import {
   generateFunction,
-} from '../../utils/generateFunction'
-import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate'
-import { namehash } from '../../utils/normalise'
-import { checkIsDotEth } from '../../utils/validation'
-import multicallWrapper from './multicallWrapper'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate.js'
+import { namehash } from '../../utils/normalise.js'
+import { checkIsDotEth } from '../../utils/validation.js'
+import multicallWrapper from './multicallWrapper.js'
 
 type ContractOption = 'registrar' | 'nameWrapper'
 type ExpiryStatus = 'active' | 'expired' | 'gracePeriod'
@@ -59,7 +68,7 @@ const encode = (
     {
       to: getChainContractAddress({ client, contract: 'multicall3' }),
       data: encodeFunctionData({
-        abi: getCurrentBlockTimestampSnippet,
+        abi: multicallGetCurrentBlockTimestampSnippet,
         functionName: 'getCurrentBlockTimestamp',
       }),
     },
@@ -69,7 +78,7 @@ const encode = (
     calls.push({
       to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
       data: encodeFunctionData({
-        abi: getDataSnippet,
+        abi: nameWrapperGetDataSnippet,
         functionName: 'getData',
         args: [BigInt(namehash(labels.join('.')))],
       }),
@@ -82,7 +91,7 @@ const encode = (
     calls.push({
       to: baseRegistrarImplementationAddress,
       data: encodeFunctionData({
-        abi: nameExpiresSnippet,
+        abi: baseRegistrarNameExpiresSnippet,
         functionName: 'nameExpires',
         args: [BigInt(labelhash(labels[0]))],
       }),
@@ -90,7 +99,7 @@ const encode = (
     calls.push({
       to: baseRegistrarImplementationAddress,
       data: encodeFunctionData({
-        abi: gracePeriodSnippet,
+        abi: baseRegistrarGracePeriodSnippet,
         functionName: 'GRACE_PERIOD',
       }),
     })
@@ -108,7 +117,7 @@ const decode = async (
   const result = await multicallWrapper.decode(client, data, [])
 
   const blockTimestamp = decodeFunctionResult({
-    abi: getCurrentBlockTimestampSnippet,
+    abi: multicallGetCurrentBlockTimestampSnippet,
     functionName: 'getCurrentBlockTimestamp',
     data: result[0].returnData,
   })
@@ -120,18 +129,18 @@ const decode = async (
 
   if (contractToUse === 'nameWrapper') {
     ;[, , expiry] = decodeFunctionResult({
-      abi: getDataSnippet,
+      abi: nameWrapperGetDataSnippet,
       functionName: 'getData',
       data: result[1].returnData,
     })
   } else {
     expiry = decodeFunctionResult({
-      abi: nameExpiresSnippet,
+      abi: baseRegistrarNameExpiresSnippet,
       functionName: 'nameExpires',
       data: result[1].returnData,
     })
     gracePeriod = decodeFunctionResult({
-      abi: gracePeriodSnippet,
+      abi: baseRegistrarGracePeriodSnippet,
       functionName: 'GRACE_PERIOD',
       data: result[2].returnData,
     })

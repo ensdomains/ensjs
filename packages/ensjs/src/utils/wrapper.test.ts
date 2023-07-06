@@ -1,4 +1,4 @@
-import { expiryToBigInt, wrappedLabelLengthCheck } from './wrapper'
+import { expiryToBigInt, wrappedLabelLengthCheck } from './wrapper.js'
 
 describe('expiryToBigInt', () => {
   it('returns default value when expiry is undefined', () => {

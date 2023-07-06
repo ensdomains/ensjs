@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getTextRecord from './getTextRecord'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getTextRecord from './getTextRecord.js'
 
 describe('getTextRecord()', () => {
   it('should return a record from a key', async () => {

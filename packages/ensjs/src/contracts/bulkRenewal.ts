@@ -1,4 +1,4 @@
-export const rentPriceSnippet = [
+export const bulkRenewalRentPriceSnippet = [
   {
     inputs: [
       {
@@ -22,7 +22,7 @@ export const rentPriceSnippet = [
   },
 ] as const
 
-export const renewAllSnippet = [
+export const bulkRenewalRenewAllSnippet = [
   {
     inputs: [
       {

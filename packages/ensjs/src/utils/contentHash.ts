@@ -1,5 +1,5 @@
 import contentHash from '@ensdomains/content-hash'
-import { Hex, isHex } from 'viem'
+import { isHex, type Hex } from 'viem'
 
 export type ProtocolType =
   | 'ipfs'
@@ -75,6 +75,7 @@ export function isValidContenthash(encoded: any) {
   } catch (e) {
     console.log(e)
   }
+  return false
 }
 
 export function getProtocolType(encoded: any) {
@@ -92,6 +93,7 @@ export function getProtocolType(encoded: any) {
   } catch (e) {
     console.log(e)
   }
+  return
 }
 
 export function encodeContenthash(text: string) {

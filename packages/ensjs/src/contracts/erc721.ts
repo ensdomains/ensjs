@@ -1,4 +1,4 @@
-export const ownerOfSnippet = [
+export const erc721OwnerOfSnippet = [
   {
     inputs: [
       {
@@ -18,7 +18,7 @@ export const ownerOfSnippet = [
   },
 ] as const
 
-export const safeTransferFromSnippet = [
+export const erc721SafeTransferFromSnippet = [
   {
     inputs: [
       {
@@ -41,7 +41,7 @@ export const safeTransferFromSnippet = [
   },
 ] as const
 
-export const safeTransferFromWithDataSnippet = [
+export const erc721SafeTransferFromWithDataSnippet = [
   {
     inputs: [
       {

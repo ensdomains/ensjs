@@ -1,16 +1,16 @@
 import type { Hex } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { FunctionNotBatchableError } from '../../errors/public'
-import {
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { FunctionNotBatchableError } from '../../errors/public.js'
+import type {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
-} from '../../types'
+} from '../../types.js'
 import {
-  BatchFunctionResult,
-  GeneratedFunction,
   generateFunction,
-} from '../../utils/generateFunction'
-import multicallWrapper from './multicallWrapper'
+  type BatchFunctionResult,
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import multicallWrapper from './multicallWrapper.js'
 
 type ExtractResult<TFunction extends BatchFunctionResult> = TFunction extends {
   decode: (...args: any[]) => Promise<infer U>

@@ -1,14 +1,19 @@
-import { Hex, decodeFunctionResult, encodeFunctionData, hexToBytes } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { namesSnippet } from '../../contracts/nameWrapper'
-import { SimpleTransactionRequest } from '../../types'
 import {
-  GeneratedFunction,
+  decodeFunctionResult,
+  encodeFunctionData,
+  hexToBytes,
+  type Hex,
+} from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperNamesSnippet } from '../../contracts/nameWrapper.js'
+import type { SimpleTransactionRequest } from '../../types.js'
+import {
   generateFunction,
-} from '../../utils/generateFunction'
-import { bytesToPacket } from '../../utils/hexEncodedName'
-import { namehash } from '../../utils/normalise'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { bytesToPacket } from '../../utils/hexEncodedName.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type GetWrapperNameParameters = {
   /** Name with unknown labels, e.g. "[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth" */
@@ -24,7 +29,7 @@ const encode = (
   return {
     to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
     data: encodeFunctionData({
-      abi: namesSnippet,
+      abi: nameWrapperNamesSnippet,
       functionName: 'names',
       args: [namehash(name)],
     }),
@@ -36,7 +41,7 @@ const decode = async (
   data: Hex,
 ): Promise<GetWrapperNameReturnType> => {
   const result = decodeFunctionResult({
-    abi: namesSnippet,
+    abi: nameWrapperNamesSnippet,
     functionName: 'names',
     data,
   })

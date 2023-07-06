@@ -7,7 +7,7 @@ import {
   FusesOutOfRangeError,
   FusesRestrictionNotAllowedError,
   FusesValueRequiredError,
-} from '../errors/utils'
+} from '../errors/utils.js'
 
 // child named fuses
 const CANNOT_UNWRAP = 1

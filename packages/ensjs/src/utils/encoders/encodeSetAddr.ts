@@ -1,6 +1,6 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
-import { Address, Hex, bytesToHex, encodeFunctionData } from 'viem'
-import { setAddrSnippet } from '../../contracts/publicResolver'
+import { bytesToHex, encodeFunctionData, type Address, type Hex } from 'viem'
+import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
 
 export type EncodeSetAddrParameters = {
   namehash: Hex
@@ -36,7 +36,7 @@ export const encodeSetAddr = ({
   }
 
   return encodeFunctionData({
-    abi: setAddrSnippet,
+    abi: publicResolverSetAddrSnippet,
     functionName: 'setAddr',
     args: [namehash, BigInt(inputCoinType), encodedAddress],
   })

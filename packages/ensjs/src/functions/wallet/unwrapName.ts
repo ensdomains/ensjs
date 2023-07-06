@@ -1,27 +1,30 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { unwrapEth2ldSnippet, unwrapSnippet } from '../../contracts/nameWrapper'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import {
+  nameWrapperUnwrapEth2ldSnippet,
+  nameWrapperUnwrapSnippet,
+} from '../../contracts/nameWrapper.js'
 import {
   AdditionalParameterSpecifiedError,
   RequiredParameterNotSpecifiedError,
-} from '../../errors/general'
-import {
+} from '../../errors/general.js'
+import type {
   Eth2ldName,
   Eth2ldNameSpecifier,
   GetNameType,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { getNameType } from '../../utils/getNameType'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
+} from '../../types.js'
+import { getNameType } from '../../utils/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
 
 type BaseUnwrapNameDataParameters<TName extends string> = {
   /** The name to unwrap */
@@ -91,7 +94,7 @@ export const makeFunctionData = <
     return {
       to: nameWrapperAddress,
       data: encodeFunctionData({
-        abi: unwrapEth2ldSnippet,
+        abi: nameWrapperUnwrapEth2ldSnippet,
         functionName: 'unwrapETH2LD',
         args: [labelhash, newRegistrantAddress, newOwnerAddress],
       }),
@@ -108,7 +111,7 @@ export const makeFunctionData = <
   return {
     to: nameWrapperAddress,
     data: encodeFunctionData({
-      abi: unwrapSnippet,
+      abi: nameWrapperUnwrapSnippet,
       functionName: 'unwrap',
       args: [parentNode, labelhash, newOwnerAddress],
     }),

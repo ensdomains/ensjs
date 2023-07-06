@@ -1,4 +1,78 @@
-export const rentPriceSnippet = [
+export const ethRegistrarControllerErrors = [
+  {
+    inputs: [
+      {
+        name: 'commitment',
+        type: 'bytes32',
+      },
+    ],
+    name: 'CommitmentTooNew',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'commitment',
+        type: 'bytes32',
+      },
+    ],
+    name: 'CommitmentTooOld',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'duration',
+        type: 'uint256',
+      },
+    ],
+    name: 'DurationTooShort',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InsufficientValue',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MaxCommitmentAgeTooHigh',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MaxCommitmentAgeTooLow',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'string',
+      },
+    ],
+    name: 'NameNotAvailable',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ResolverRequiredWhenDataSupplied',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'commitment',
+        type: 'bytes32',
+      },
+    ],
+    name: 'UnexpiredCommitmentExists',
+    type: 'error',
+  },
+] as const
+
+export const ethRegistrarControllerRentPriceSnippet = [
+  ...ethRegistrarControllerErrors,
   {
     inputs: [
       {
@@ -32,7 +106,8 @@ export const rentPriceSnippet = [
   },
 ] as const
 
-export const commitSnippet = [
+export const ethRegistrarControllerCommitSnippet = [
+  ...ethRegistrarControllerErrors,
   {
     inputs: [
       {
@@ -47,7 +122,8 @@ export const commitSnippet = [
   },
 ] as const
 
-export const commitmentsSnippet = [
+export const ethRegistrarControllerCommitmentsSnippet = [
+  ...ethRegistrarControllerErrors,
   {
     inputs: [
       {
@@ -67,7 +143,8 @@ export const commitmentsSnippet = [
   },
 ] as const
 
-export const registerSnippet = [
+export const ethRegistrarControllerRegisterSnippet = [
+  ...ethRegistrarControllerErrors,
   {
     inputs: [
       {
@@ -110,7 +187,8 @@ export const registerSnippet = [
   },
 ] as const
 
-export const renewSnippet = [
+export const ethRegistrarControllerRenewSnippet = [
+  ...ethRegistrarControllerErrors,
   {
     inputs: [
       {

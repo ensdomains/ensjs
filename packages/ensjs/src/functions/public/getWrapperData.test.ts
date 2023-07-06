@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getWrapperData from './getWrapperData'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getWrapperData from './getWrapperData.js'
 
 describe('getWrapperData', () => {
   it('should return null for an unwrapped name', async () => {

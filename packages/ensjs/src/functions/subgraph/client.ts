@@ -1,10 +1,10 @@
 import type { Kind, SelectionNode, SelectionSetNode } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
-import { RequestMiddleware, Response } from 'graphql-request/dist/types'
-import { parse, print, visit } from 'graphql/language/index'
+import type { RequestMiddleware, Response } from 'graphql-request/dist/types.js'
+import { parse, print, visit } from 'graphql/language/index.js'
 import traverse from 'traverse'
-import { ClientWithEns } from '../../contracts/consts'
-import { namehash } from '../../utils/normalise'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { namehash } from '../../utils/normalise.js'
 
 const generateSelection = (selection: string): SelectionNode => ({
   kind: 'Field' as Kind.FIELD,
@@ -34,6 +34,8 @@ const enter = (node: SelectionSetNode) => {
     node.selections = [...node.selections, generateSelection('id')]
     return node
   }
+
+  return undefined
 }
 
 export const requestMiddleware: RequestMiddleware = (request) => {

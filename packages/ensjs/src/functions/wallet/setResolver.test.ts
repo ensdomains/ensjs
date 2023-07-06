@@ -1,12 +1,12 @@
-import { Address, Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import getResolver from '../public/getResolver'
-import setResolver from './setResolver'
+} from '../../tests/addTestContracts.js'
+import getResolver from '../public/getResolver.js'
+import setResolver from './setResolver.js'
 
 let snapshot: Hex
 let accounts: Address[]

@@ -1,33 +1,33 @@
 import {
-  Account,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
-  setSubnodeRecordSnippet as nameWrapperSetSubnodeRecordSnippet,
-  setRecordSnippet,
-} from '../../contracts/nameWrapper'
+  nameWrapperSetRecordSnippet,
+  nameWrapperSetSubnodeRecordSnippet,
+} from '../../contracts/nameWrapper.js'
 import {
-  setRecordSnippet as registrySetRecordSnippet,
-  setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet,
-} from '../../contracts/registry'
+  registrySetRecordSnippet,
+  registrySetSubnodeRecordSnippet,
+} from '../../contracts/registry.js'
 import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
-} from '../../errors/general'
-import {
+} from '../../errors/general.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { getNameType } from '../../utils/getNameType'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
-import { namehash } from '../../utils/normalise'
+} from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import { getNameType } from '../../utils/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type DeleteSubnameDataParameters = {
   /** Subname to delete */
@@ -107,7 +107,7 @@ export const makeFunctionData = <
         return {
           to: nameWrapperAddress,
           data: encodeFunctionData({
-            abi: setRecordSnippet,
+            abi: nameWrapperSetRecordSnippet,
             functionName: 'setRecord',
             args: [namehash(name), EMPTY_ADDRESS, EMPTY_ADDRESS, BigInt(0)],
           }),

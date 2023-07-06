@@ -1,20 +1,20 @@
 import {
-  Account,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setFusesSnippet } from '../../contracts/nameWrapper'
-import {
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperSetFusesSnippet } from '../../contracts/nameWrapper.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
-import { namehash } from '../../utils/normalise'
+} from '../../types.js'
+import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type SetFusesDataParameters = {
   /** Name to set fuses for */
@@ -47,7 +47,7 @@ export const makeFunctionData = <
   return {
     to: getChainContractAddress({ client: wallet, contract: 'ensNameWrapper' }),
     data: encodeFunctionData({
-      abi: setFusesSnippet,
+      abi: nameWrapperSetFusesSnippet,
       functionName: 'setFuses',
       args: [namehash(name), encodedFuses],
     }),

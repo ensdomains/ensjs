@@ -1,4 +1,95 @@
-export const getDataSnippet = [
+import { erc1155SafeTransferFromSnippet } from './erc1155.js'
+import { erc721OwnerOfSnippet } from './erc721.js'
+import { registrySetResolverSnippet } from './registry.js'
+
+export const nameWrapperErrors = [
+  {
+    inputs: [],
+    name: 'CannotUpgrade',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IncompatibleParent',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'IncorrectTargetOwner',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IncorrectTokenType',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'labelHash',
+        type: 'bytes32',
+      },
+      {
+        name: 'expectedLabelhash',
+        type: 'bytes32',
+      },
+    ],
+    name: 'LabelMismatch',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'label',
+        type: 'string',
+      },
+    ],
+    name: 'LabelTooLong',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'LabelTooShort',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NameIsNotWrapped',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+    ],
+    name: 'OperationProhibited',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'addr',
+        type: 'address',
+      },
+    ],
+    name: 'Unauthorised',
+    type: 'error',
+  },
+] as const
+
+export const nameWrapperGetDataSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -26,7 +117,8 @@ export const getDataSnippet = [
   },
 ] as const
 
-export const setFusesSnippet = [
+export const nameWrapperSetFusesSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -50,7 +142,8 @@ export const setFusesSnippet = [
   },
 ] as const
 
-export const setChildFusesSnippet = [
+export const nameWrapperSetChildFusesSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -77,7 +170,8 @@ export const setChildFusesSnippet = [
   },
 ] as const
 
-export const setSubnodeRecordSnippet = [
+export const nameWrapperSetSubnodeRecordSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -121,7 +215,8 @@ export const setSubnodeRecordSnippet = [
   },
 ] as const
 
-export const setRecordSnippet = [
+export const nameWrapperSetRecordSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -148,7 +243,8 @@ export const setRecordSnippet = [
   },
 ] as const
 
-export const setSubnodeOwnerSnippet = [
+export const nameWrapperSetSubnodeOwnerSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -184,7 +280,8 @@ export const setSubnodeOwnerSnippet = [
   },
 ] as const
 
-export const wrapSnippet = [
+export const nameWrapperWrapSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -207,7 +304,8 @@ export const wrapSnippet = [
   },
 ] as const
 
-export const unwrapSnippet = [
+export const nameWrapperUnwrapSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -230,7 +328,8 @@ export const unwrapSnippet = [
   },
 ] as const
 
-export const unwrapEth2ldSnippet = [
+export const nameWrapperUnwrapEth2ldSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -253,7 +352,8 @@ export const unwrapEth2ldSnippet = [
   },
 ] as const
 
-export const namesSnippet = [
+export const nameWrapperNamesSnippet = [
+  ...nameWrapperErrors,
   {
     inputs: [
       {
@@ -271,4 +371,19 @@ export const namesSnippet = [
     stateMutability: 'view',
     type: 'function',
   },
+] as const
+
+export const nameWrapperSafeTransferFromSnippet = [
+  ...nameWrapperErrors,
+  ...erc1155SafeTransferFromSnippet,
+] as const
+
+export const nameWrapperOwnerOfSnippet = [
+  ...nameWrapperErrors,
+  ...erc721OwnerOfSnippet,
+] as const
+
+export const nameWrapperSetResolverSnippet = [
+  ...nameWrapperErrors,
+  ...registrySetResolverSnippet,
 ] as const

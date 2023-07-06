@@ -1,6 +1,6 @@
-import { Hex, encodeFunctionData } from 'viem'
-import { setContenthashSnippet } from '../../contracts/publicResolver'
-import { encodeContenthash } from '../contentHash'
+import { encodeFunctionData, type Hex } from 'viem'
+import { publicResolverSetContenthashSnippet } from '../../contracts/publicResolver.js'
+import { encodeContenthash } from '../contentHash.js'
 
 export type EncodeSetContentHashParameters = {
   namehash: Hex
@@ -20,7 +20,7 @@ export const encodeSetContentHash = ({
     encodedHash = encodedObject.encoded as Hex
   }
   return encodeFunctionData({
-    abi: setContenthashSnippet,
+    abi: publicResolverSetContenthashSnippet,
     functionName: 'setContenthash',
     args: [namehash, encodedHash],
   })

@@ -1,16 +1,16 @@
-import { Address, Hex } from 'viem'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { getDataSnippet } from '../../contracts/nameWrapper'
+import type { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import { userSettableFuseEnum } from '../../utils/fuses'
-import { namehash } from '../../utils/normalise'
-import setChildFuses from './setChildFuses'
-import setFuses from './setFuses'
+} from '../../tests/addTestContracts.js'
+import { userSettableFuseEnum } from '../../utils/fuses.js'
+import { namehash } from '../../utils/normalise.js'
+import setChildFuses from './setChildFuses.js'
+import setFuses from './setFuses.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -55,7 +55,7 @@ const checkFuses = (
 
 const getFuses = async (name: string) => {
   const [, fuses] = await publicClient.readContract({
-    abi: getDataSnippet,
+    abi: nameWrapperGetDataSnippet,
     address: getChainContractAddress({
       client: publicClient,
       contract: 'ensNameWrapper',

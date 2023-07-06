@@ -1,20 +1,21 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setResolverSnippet } from '../../contracts/registry'
-import {
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
+import { registrySetResolverSnippet } from '../../contracts/registry.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { namehash } from '../../utils/normalise'
+} from '../../types.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type SetResolverDataParameters = {
   /** Name to set resolver for */
@@ -48,15 +49,30 @@ export const makeFunctionData = <
   if (contract !== 'registry' && contract !== 'nameWrapper')
     throw new Error(`Unknown contract: ${contract}`)
 
+  const to = getChainContractAddress({
+    client: wallet,
+    contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
+  })
+
+  const args = [namehash(name), resolverAddress] as const
+  const functionName = 'setResolver'
+
+  if (contract === 'nameWrapper')
+    return {
+      to,
+      data: encodeFunctionData({
+        abi: nameWrapperSetResolverSnippet,
+        functionName,
+        args,
+      }),
+    }
+
   return {
-    to: getChainContractAddress({
-      client: wallet,
-      contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
-    }),
+    to,
     data: encodeFunctionData({
-      abi: setResolverSnippet,
-      functionName: 'setResolver',
-      args: [namehash(name), resolverAddress],
+      abi: registrySetResolverSnippet,
+      functionName,
+      args,
     }),
   }
 }

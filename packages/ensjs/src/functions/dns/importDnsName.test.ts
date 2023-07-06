@@ -1,15 +1,15 @@
-import { Address, Hex, parseEther } from 'viem'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { parseEther, type Address, type Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import getOwner from '../public/getOwner'
-import getResolver from '../public/getResolver'
-import importDnsName from './importDnsName'
-import prepareDnsImport from './prepareDnsImport'
+} from '../../tests/addTestContracts.js'
+import getOwner from '../public/getOwner.js'
+import getResolver from '../public/getResolver.js'
+import importDnsName from './importDnsName.js'
+import prepareDnsImport from './prepareDnsImport.js'
 
 const name = 'taytems.xyz'
 const address = '0x8e8Db5CcEF88cca9d624701Db544989C996E3216'

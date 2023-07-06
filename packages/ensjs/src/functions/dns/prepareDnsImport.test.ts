@@ -1,13 +1,13 @@
 import { SignedSet } from '@ensdomains/dnsprovejs'
-import { Address, Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import importDnsName from './importDnsName'
-import prepareDnsImport, { RrSetWithSig } from './prepareDnsImport'
+} from '../../tests/addTestContracts.js'
+import importDnsName from './importDnsName.js'
+import prepareDnsImport, { type RrSetWithSig } from './prepareDnsImport.js'
 
 let snapshot: Hex
 let accounts: Address[]

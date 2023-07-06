@@ -1,4 +1,4 @@
-import { BaseError } from './base'
+import { BaseError } from './base.js'
 
 export class UnsupportedNetworkError extends BaseError {
   network: string

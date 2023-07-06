@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable import/no-extraneous-dependencies */
-import { readFile } from 'fs/promises'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { resolve } from 'path'
-import { labelhash } from 'viem'
+const { readFile } = require('fs/promises')
+const { resolve } = require('path')
+const { labelhash } = require('viem')
 
 const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 const mainnetArtifactsPath = resolve(ensContractsPath, './deployments/mainnet')
@@ -14,7 +12,10 @@ const constructorArgs = [
   '0x00002b000100000e1000244a5c080249aac11d7b6f6446702e54a1607371607a1a41855200fd2ce1cdde32f24e8fb500002b000100000e1000244f660802e06d44b80b8f1d39a95c0b0d7c65d08458e880409bbc683457104237c7f8ec8d',
 ]
 
-const getMainnetArtifact = async (name: string) => {
+/**
+ * @param {string} name
+ */
+const getMainnetArtifact = async (name) => {
   const deployment = JSON.parse(
     await readFile(resolve(mainnetArtifactsPath, `${name}.json`), 'utf8'),
   )
@@ -30,7 +31,10 @@ const getMainnetArtifact = async (name: string) => {
   return artifact
 }
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts, deployments } = hre
   const { deploy } = deployments
   const { deployer, owner } = await getNamedAccounts()
@@ -47,13 +51,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const dnssec = await hre.ethers.getContract('LegacyDNSSECImpl')
 
-  const algorithms: Record<number, string> = {
+  const algorithms = {
     5: 'RSASHA1Algorithm',
     7: 'RSASHA1Algorithm',
     8: 'RSASHA256Algorithm',
     13: 'P256SHA256Algorithm',
   }
-  const digests: Record<number, string> = {
+  const digests = {
     1: 'SHA1Digest',
     2: 'SHA256Digest',
   }
@@ -113,4 +117,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 func.dependencies = ['Root']
 
-export default func
+module.exports = func

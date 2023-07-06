@@ -1,5 +1,8 @@
-import { deploymentAddresses, publicClient } from '../../tests/addTestContracts'
-import getResolver from './getResolver'
+import {
+  deploymentAddresses,
+  publicClient,
+} from '../../tests/addTestContracts.js'
+import getResolver from './getResolver.js'
 
 describe('getResolver', () => {
   it('should find the resolver for a name with a resolver', async () => {

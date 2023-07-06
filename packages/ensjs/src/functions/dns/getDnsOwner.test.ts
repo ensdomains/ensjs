@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RequestListener } from 'http'
-import { createHttpServer } from '../../tests/createHttpServer'
-import getDnsOwner from './getDnsOwner'
+import { createHttpServer } from '../../tests/createHttpServer.js'
+import getDnsOwner from './getDnsOwner.js'
 
 const handler: jest.MockedFunction<RequestListener> = jest.fn()
 let closeServer: () => Promise<unknown>
@@ -75,7 +75,7 @@ it('throws error if >2ld', async () => {
   `)
 })
 it('returns error if DnsResponseStatus is not NOERROR', async () => {
-  handler.mockImplementation((req, res) => {
+  handler.mockImplementation((_req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/dns-json' })
     res.end(
       JSON.stringify({
@@ -94,7 +94,7 @@ it('returns error if DnsResponseStatus is not NOERROR', async () => {
   `)
 })
 it('returns error if AD is false', async () => {
-  handler.mockImplementation((req, res) => {
+  handler.mockImplementation((_req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/dns-json' })
     res.end(
       JSON.stringify({
@@ -113,7 +113,7 @@ it('returns error if AD is false', async () => {
   `)
 })
 it('returns error if no TXT record', async () => {
-  handler.mockImplementation((req, res) => {
+  handler.mockImplementation((_req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/dns-json' })
     res.end(
       JSON.stringify({
@@ -133,7 +133,7 @@ it('returns error if no TXT record', async () => {
   `)
 })
 it('returns error if TXT record is not formatted correctly', async () => {
-  handler.mockImplementation((req, res) => {
+  handler.mockImplementation((_req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/dns-json' })
     res.end(
       JSON.stringify({
@@ -160,7 +160,7 @@ it('returns error if TXT record is not formatted correctly', async () => {
   `)
 })
 it('returns error if address is not checksummed', async () => {
-  handler.mockImplementation((req, res) => {
+  handler.mockImplementation((_req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/dns-json' })
     res.end(
       JSON.stringify({

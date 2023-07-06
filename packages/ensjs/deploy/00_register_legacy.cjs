@@ -1,12 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import cbor from 'cbor'
-import { ethers } from 'hardhat'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import pako from 'pako'
-import { labelhash, toBytes } from 'viem'
-import { namehash } from '../src/utils/normalise'
+const cbor = require('cbor')
+const { ethers } = require('hardhat')
+const pako = require('pako')
+const { labelhash, namehash, toBytes } = require('viem')
 
 const dummyABI = [
   {
@@ -127,33 +124,38 @@ const dummyABI = [
   },
 ]
 
-type Subname = {
-  label: string
-  namedOwner: string
-}
+/**
+ * @typedef {{
+ *  label: string
+ *  namedOwner: string
+ * }} Subname
+ */
 
-const names: {
-  label: string
-  namedOwner: string
-  namedAddr: string
-  records?: {
-    text?: {
-      key: string
-      value: string
-    }[]
-    addr?: {
-      key: number
-      value: string
-    }[]
-    contenthash?: string
-    abi?: {
-      contentType: 1 | 2 | 4 | 8 | 256
-      data: object | string
-    }
-  }
-  duration?: number
-  subnames?: Subname[]
-}[] = [
+/**
+ * @type {{
+ *  label: string
+ *  namedOwner: string
+ *  namedAddr: string
+ *  records?: {
+ *    text?: {
+ *      key: string
+ *      value: string
+ *    }[]
+ *    addr?: {
+ *      key: number
+ *      value: string
+ *    }[]
+ *    contenthash?: string
+ *    abi?: {
+ *      contentType: 1 | 2 | 4 | 8 | 256
+ *      data: object | string
+ *    }
+ *  }
+ *  duration?: number
+ *  subnames?: Subname[]
+ * }[]}
+ */
+const names = [
   {
     label: 'test123',
     namedOwner: 'owner',
@@ -314,7 +316,10 @@ const names: {
   })),
 ]
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
 
@@ -408,7 +413,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       }
       if (records.abi) {
         console.log('ABI')
-        let data: string | Buffer | Uint8Array
+        /**
+         * @type {string | Buffer | Uint8Array}
+         */
+        let data
         if (records.abi.contentType === 1 || records.abi.contentType === 256) {
           data = JSON.stringify(records.abi.data)
         } else if (records.abi.contentType === 2) {
@@ -416,7 +424,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         } else if (records.abi.contentType === 4) {
           data = cbor.encode(records.abi.data)
         } else {
-          data = records.abi.data as string
+          data = records.abi.data
         }
         if (typeof data === 'string') data = toBytes(data)
         const setABITx = await _publicResolver.setABI(
@@ -461,4 +469,4 @@ func.tags = ['register-unwrapped-names']
 func.dependencies = ['LegacyETHRegistrarController']
 func.runAtTheEnd = true
 
-export default func
+module.exports = func

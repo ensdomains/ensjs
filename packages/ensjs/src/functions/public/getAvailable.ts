@@ -1,14 +1,19 @@
-import { Hex, decodeFunctionResult, encodeFunctionData, labelhash } from 'viem'
-import { availableSnippet } from '../../contracts/baseRegistrar'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { UnsupportedNameTypeError } from '../../errors/general'
-import { SimpleTransactionRequest } from '../../types'
 import {
-  GeneratedFunction,
+  decodeFunctionResult,
+  encodeFunctionData,
+  labelhash,
+  type Hex,
+} from 'viem'
+import { baseRegistrarAvailableSnippet } from '../../contracts/baseRegistrar.js'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { SimpleTransactionRequest } from '../../types.js'
+import {
   generateFunction,
-} from '../../utils/generateFunction'
-import { getNameType } from '../../utils/getNameType'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { getNameType } from '../../utils/getNameType.js'
 
 export type GetAvailableParameters = {
   /** Name to check availability for, only compatible for eth 2ld */
@@ -36,7 +41,7 @@ const encode = (
       contract: 'ensBaseRegistrarImplementation',
     }),
     data: encodeFunctionData({
-      abi: availableSnippet,
+      abi: baseRegistrarAvailableSnippet,
       functionName: 'available',
       args: [BigInt(labelhash(labels[0]))],
     }),
@@ -48,7 +53,7 @@ const decode = async (
   data: Hex,
 ): Promise<GetAvailableReturnType> => {
   const result = decodeFunctionResult({
-    abi: availableSnippet,
+    abi: baseRegistrarAvailableSnippet,
     functionName: 'available',
     data,
   })

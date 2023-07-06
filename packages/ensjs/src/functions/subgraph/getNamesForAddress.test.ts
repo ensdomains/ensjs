@@ -1,8 +1,10 @@
 /* eslint-disable no-await-in-loop */
 
-import { Address } from 'viem'
-import { publicClient, walletClient } from '../../tests/addTestContracts'
-import getNamesForAddress, { NameWithRelation } from './getNamesForAddress'
+import type { Address } from 'viem'
+import { publicClient, walletClient } from '../../tests/addTestContracts.js'
+import getNamesForAddress, {
+  type NameWithRelation,
+} from './getNamesForAddress.js'
 
 let accounts: Address[]
 

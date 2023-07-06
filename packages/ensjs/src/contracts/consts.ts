@@ -1,5 +1,16 @@
-import { Account, Chain, Client, Transport, WalletClient } from 'viem'
-import type { ChainContract } from 'viem/src/types/chain'
+import type {
+  Account,
+  Address,
+  Chain,
+  Client,
+  Transport,
+  WalletClient,
+} from 'viem'
+
+type ChainContract = {
+  address: Address
+  blockCreated?: number
+}
 
 export const supportedChains = ['homestead', 'goerli'] as const
 export const supportedContracts = [

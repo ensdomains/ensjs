@@ -1,12 +1,12 @@
-import { Address, Hex, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { supportsInterfaceSnippet } from '../../contracts/erc165'
-import {
+import { encodeFunctionData, type Address, type Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'
+import type {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
-} from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
-import multicallWrapper from './multicallWrapper'
+} from '../../types.js'
+import { generateFunction } from '../../utils/generateFunction.js'
+import multicallWrapper from './multicallWrapper.js'
 
 export type GetSupportedInterfacesParameters = {
   address: Address
@@ -17,7 +17,7 @@ export type GetSupportedInterfacesReturnType = boolean[]
 
 const encodeInterface = (interfaceId: Hex): Hex =>
   encodeFunctionData({
-    abi: supportsInterfaceSnippet,
+    abi: erc165SupportsInterfaceSnippet,
     functionName: 'supportsInterface',
     args: [interfaceId],
   })

@@ -1,16 +1,25 @@
-import { Address, Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { getDataSnippet } from '../../contracts/nameWrapper'
-import { DateWithValue, Prettify, SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { decodeFuses } from '../../utils/fuses'
 import {
-  GeneratedFunction,
+  decodeFunctionResult,
+  encodeFunctionData,
+  type Address,
+  type Hex,
+} from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
+import type {
+  DateWithValue,
+  Prettify,
+  SimpleTransactionRequest,
+} from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import { decodeFuses } from '../../utils/fuses.js'
+import {
   generateFunction,
-} from '../../utils/generateFunction'
-import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate'
-import { namehash } from '../../utils/normalise'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */
@@ -35,7 +44,7 @@ const encode = (
   return {
     to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
     data: encodeFunctionData({
-      abi: getDataSnippet,
+      abi: nameWrapperGetDataSnippet,
       functionName: 'getData',
       args: [BigInt(namehash(name))],
     }),
@@ -47,7 +56,7 @@ const decode = async (
   data: Hex,
 ): Promise<GetWrapperDataReturnType> => {
   const [owner, fuses, expiry] = decodeFunctionResult({
-    abi: getDataSnippet,
+    abi: nameWrapperGetDataSnippet,
     functionName: 'getData',
     data,
   })

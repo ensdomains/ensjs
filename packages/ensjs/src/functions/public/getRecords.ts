@@ -1,32 +1,32 @@
 import {
-  Address,
-  Hex,
   decodeAbiParameters,
   decodeFunctionResult,
   encodeFunctionData,
   labelhash,
   stringToBytes,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { resolveArraySnippet } from '../../contracts/universalResolver'
-import {
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { universalResolverResolveArraySnippet } from '../../contracts/universalResolver.js'
+import type {
   DecodedAddr,
   DecodedText,
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
-} from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
-import { packetToBytes } from '../../utils/hexEncodedName'
-import { encodeLabelhash } from '../../utils/labels'
-import _getAbi, { InternalGetAbiReturnType } from './_getAbi'
-import _getAddr from './_getAddr'
+} from '../../types.js'
+import { generateFunction } from '../../utils/generateFunction.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
+import { encodeLabelhash } from '../../utils/labels.js'
+import _getAbi, { type InternalGetAbiReturnType } from './_getAbi.js'
+import _getAddr from './_getAddr.js'
 import _getContentHash, {
-  InternalGetContentHashReturnType,
-} from './_getContentHash'
-import _getText from './_getText'
-import multicallWrapper from './multicallWrapper'
+  type InternalGetContentHashReturnType,
+} from './_getContentHash.js'
+import _getText from './_getText.js'
+import multicallWrapper from './multicallWrapper.js'
 
 export type GetRecordsParameters = {
   /** Name to get records for */
@@ -163,7 +163,7 @@ const encode = (
     .join('.')
 
   const encoded = encodeFunctionData({
-    abi: resolveArraySnippet,
+    abi: universalResolverResolveArraySnippet,
     functionName: 'resolve',
     args: [
       toHex(packetToBytes(formattedName)),
@@ -198,7 +198,7 @@ const decode = async <TParams extends GetRecordsParameters>(
     recordData = result.map((r) => r.returnData)
   } else {
     const result = decodeFunctionResult({
-      abi: resolveArraySnippet,
+      abi: universalResolverResolveArraySnippet,
       functionName: 'resolve',
       data,
     })
@@ -226,7 +226,7 @@ const decode = async <TParams extends GetRecordsParameters>(
         const baseItem = { key, type }
         if (type === 'contentHash') {
           const decodedFromAbi = decodeAbiParameters(
-            [{ type: 'bytes' }],
+            [{ type: 'bytes' }] as const,
             item,
           )[0]
           if (BigInt(decodedFromAbi) === 0n) {

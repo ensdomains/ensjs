@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 
-import { publicClient } from '../../tests/addTestContracts'
-import getSubnames from './getSubnames'
-import { Name } from './utils'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getSubnames from './getSubnames.js'
+import type { Name } from './utils.js'
 
 it('returns with default values', async () => {
   const result = await getSubnames(publicClient, {

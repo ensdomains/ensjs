@@ -1,16 +1,19 @@
-import { Hex, encodeFunctionData } from 'viem'
-import { clearRecordsSnippet } from '../contracts/publicResolver'
-import { Prettify } from '../types'
-import { EncodeSetAbiParameters, encodeSetAbi } from './encoders/encodeSetAbi'
+import { encodeFunctionData, type Hex } from 'viem'
+import { publicResolverClearRecordsSnippet } from '../contracts/publicResolver.js'
+import type { Prettify } from '../types.js'
 import {
-  EncodeSetAddrParameters,
+  encodeSetAbi,
+  type EncodeSetAbiParameters,
+} from './encoders/encodeSetAbi.js'
+import {
   encodeSetAddr,
-} from './encoders/encodeSetAddr'
-import { encodeSetContentHash } from './encoders/encodeSetContentHash'
+  type EncodeSetAddrParameters,
+} from './encoders/encodeSetAddr.js'
+import { encodeSetContentHash } from './encoders/encodeSetContentHash.js'
 import {
-  EncodeSetTextParameters,
   encodeSetText,
-} from './encoders/encodeSetText'
+  type EncodeSetTextParameters,
+} from './encoders/encodeSetText.js'
 
 export type RecordOptions = Prettify<{
   /** Clears all current records */
@@ -38,7 +41,7 @@ export const generateRecordCallArray = ({
   if (clearRecords) {
     calls.push(
       encodeFunctionData({
-        abi: clearRecordsSnippet,
+        abi: publicResolverClearRecordsSnippet,
         functionName: 'clearRecords',
         args: [namehash],
       }),

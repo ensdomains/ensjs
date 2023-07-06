@@ -1,26 +1,40 @@
 import { config } from 'dotenv'
 import { resolve } from 'path'
 import {
-  Account,
-  Address,
-  Hash,
-  PublicClient,
-  TestClient,
-  TransactionReceipt,
   TransactionReceiptNotFoundError,
-  WalletClient,
   createPublicClient,
   createTestClient,
   createWalletClient,
   http,
+  type Account,
+  type Address,
+  type Hash,
+  type PublicClient,
+  type TestClient,
+  type TransactionReceipt,
+  type WalletClient,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
-import { ContractName } from '../contracts/types'
 
 config({
   path: resolve(__dirname, '../../.env.local'),
   override: true,
 })
+
+type ContractName =
+  | 'BaseRegistrarImplementation'
+  | 'ETHRegistrarController'
+  | 'Multicall'
+  | 'NameWrapper'
+  | 'DNSRegistrar'
+  | 'PublicResolver'
+  | 'ENSRegistry'
+  | 'ReverseRegistrar'
+  | 'UniversalResolver'
+  | 'BulkRenewal'
+  | 'DNSSECImpl'
+  | 'LegacyDNSRegistrar'
+  | 'LegacyDNSSECImpl'
 
 export const deploymentAddresses = JSON.parse(
   process.env.DEPLOYMENT_ADDRESSES!,
@@ -75,20 +89,16 @@ export const localhost = {
 
 const transport = http('http://localhost:8545')
 
-export const publicClient: PublicClient<
-  typeof transport,
-  typeof localhost,
-  true
-> = createPublicClient({
-  chain: localhost,
-  transport,
-})
+export const publicClient: PublicClient<typeof transport, typeof localhost> =
+  createPublicClient({
+    chain: localhost,
+    transport,
+  })
 
 export const testClient: TestClient<
   'anvil',
   typeof transport,
-  typeof localhost,
-  true
+  typeof localhost
 > = createTestClient({
   chain: localhost,
   transport,
@@ -98,8 +108,7 @@ export const testClient: TestClient<
 export const walletClient: WalletClient<
   typeof transport,
   typeof localhost,
-  Account,
-  true
+  Account
 > = createWalletClient({
   chain: localhost,
   transport,

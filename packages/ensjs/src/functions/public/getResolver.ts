@@ -1,20 +1,20 @@
 import {
-  Address,
-  Hex,
   decodeFunctionResult,
   encodeFunctionData,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { findResolverSnippet } from '../../contracts/universalResolver'
-import { SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
+import type { SimpleTransactionRequest } from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import {
-  GeneratedFunction,
   generateFunction,
-} from '../../utils/generateFunction'
-import { packetToBytes } from '../../utils/hexEncodedName'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
 
 export type GetResolverParameters = {
   /** Name to get resolver for */
@@ -30,7 +30,7 @@ const encode = (
   return {
     to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
     data: encodeFunctionData({
-      abi: findResolverSnippet,
+      abi: universalResolverFindResolverSnippet,
       functionName: 'findResolver',
       args: [toHex(packetToBytes(name))],
     }),
@@ -42,7 +42,7 @@ const decode = async (
   data: Hex,
 ): Promise<GetResolverReturnType> => {
   const response = decodeFunctionResult({
-    abi: findResolverSnippet,
+    abi: universalResolverFindResolverSnippet,
     functionName: 'findResolver',
     data,
   })

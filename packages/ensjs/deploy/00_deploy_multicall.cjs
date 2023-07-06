@@ -1,15 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { existsSync, mkdirSync } from 'fs'
-import { readFile, writeFile } from 'fs/promises'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { resolve } from 'path'
+const { existsSync, mkdirSync } = require('fs')
+const { readFile, writeFile } = require('fs/promises')
+const { resolve } = require('path')
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts } = hre
   const { deployer } = await getNamedAccounts()
 
-  let contractJson: any
+  let contractJson
 
   const jsonPath = resolve(__dirname, '../cache/multicall.json')
 
@@ -35,4 +36,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 func.id = 'multicall'
 
-export default func
+module.exports = func

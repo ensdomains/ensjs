@@ -1,14 +1,14 @@
-import { Address, getAddress } from 'viem'
+import { getAddress, type Address } from 'viem'
 import {
   DnsDnssecVerificationFailedError,
   DnsInvalidAddressChecksumError,
   DnsInvalidTxtRecordError,
   DnsNoTxtRecordError,
   DnsResponseStatusError,
-} from '../../errors/dns'
-import { UnsupportedNameTypeError } from '../../errors/general'
-import { getNameType } from '../../utils/getNameType'
-import { Endpoint } from './types'
+} from '../../errors/dns.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import { getNameType } from '../../utils/getNameType.js'
+import type { Endpoint } from './types.js'
 
 export type GetDnsOwnerParameters = {
   /** Name to get the owner for */

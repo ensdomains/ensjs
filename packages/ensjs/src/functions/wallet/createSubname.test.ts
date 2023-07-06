@@ -1,15 +1,15 @@
-import { Address, Hex } from 'viem'
-import { ownerOfSnippet } from '../../contracts/erc721'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { ownerSnippet } from '../../contracts/registry'
+import type { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
+import { registryOwnerSnippet } from '../../contracts/registry.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import { namehash } from '../../utils/normalise'
-import createSubname from './createSubname'
+} from '../../tests/addTestContracts.js'
+import { namehash } from '../../utils/normalise.js'
+import createSubname from './createSubname.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -38,7 +38,7 @@ it('should allow creating a subname on the registry', async () => {
   expect(receipt.status).toBe('success')
 
   const owner = await publicClient.readContract({
-    abi: ownerSnippet,
+    abi: registryOwnerSnippet,
     functionName: 'owner',
     address: getChainContractAddress({
       client: publicClient,
@@ -61,7 +61,7 @@ it('should allow creating a subname on the namewrapper', async () => {
   expect(receipt.status).toBe('success')
 
   const owner = await publicClient.readContract({
-    abi: ownerOfSnippet,
+    abi: nameWrapperOwnerOfSnippet,
     functionName: 'ownerOf',
     address: getChainContractAddress({
       client: publicClient,

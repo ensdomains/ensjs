@@ -1,5 +1,8 @@
-import { deploymentAddresses, publicClient } from '../../tests/addTestContracts'
-import getSubgraphRecords from './getSubgraphRecords'
+import {
+  deploymentAddresses,
+  publicClient,
+} from '../../tests/addTestContracts.js'
+import getSubgraphRecords from './getSubgraphRecords.js'
 
 it('gets basic records', async () => {
   const result = await getSubgraphRecords(publicClient, {

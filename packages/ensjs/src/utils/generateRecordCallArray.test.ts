@@ -1,5 +1,5 @@
-import { generateRecordCallArray } from './generateRecordCallArray'
-import { namehash } from './normalise'
+import { generateRecordCallArray } from './generateRecordCallArray.js'
+import { namehash } from './normalise.js'
 
 it('generates a record call array', () => {
   expect(

@@ -1,17 +1,17 @@
 import {
-  Hex,
   decodeFunctionResult,
   encodeFunctionData,
   offchainLookup,
+  type Hex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { tryAggregateSnippet } from '../../contracts/multicall'
-import {
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { multicallTryAggregateSnippet } from '../../contracts/multicall.js'
+import type {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
-} from '../../types'
-import { generateFunction } from '../../utils/generateFunction'
+} from '../../types.js'
+import { generateFunction } from '../../utils/generateFunction.js'
 
 export type MulticallWrapperParameters = {
   transactions: SimpleTransactionRequest[]
@@ -30,7 +30,7 @@ const encode = (
   return {
     to: getChainContractAddress({ client, contract: 'multicall3' }),
     data: encodeFunctionData({
-      abi: tryAggregateSnippet,
+      abi: multicallTryAggregateSnippet,
       functionName: 'tryAggregate',
       args: [
         requireSuccess,
@@ -46,7 +46,7 @@ const decode = async (
   transactions: TransactionRequestWithPassthrough[],
 ): Promise<MulticallWrapperReturnType> => {
   const result = decodeFunctionResult({
-    abi: tryAggregateSnippet,
+    abi: multicallTryAggregateSnippet,
     functionName: 'tryAggregate',
     data,
   })

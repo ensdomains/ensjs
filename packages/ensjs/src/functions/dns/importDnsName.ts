@@ -1,27 +1,27 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   bytesToHex,
   encodeFunctionData,
   toHex,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
 import {
-  proveAndClaimSnippet,
-  proveAndClaimWithResolverSnippet,
-} from '../../contracts/dnsRegistrar'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { AdditionalParameterSpecifiedError } from '../../errors/general'
-import {
+  dnsRegistrarProveAndClaimSnippet,
+  dnsRegistrarProveAndClaimWithResolverSnippet,
+} from '../../contracts/dnsRegistrar.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { packetToBytes } from '../../utils/hexEncodedName'
-import { PrepareDnsImportReturnType } from './prepareDnsImport'
+} from '../../types.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
+import type { PrepareDnsImportReturnType } from './prepareDnsImport.js'
 
 type BaseImportDnsNameDataParameters = {
   /** Name to import */
@@ -88,7 +88,7 @@ export const makeFunctionData = <
     return {
       to: dnsRegistrarAddress,
       data: encodeFunctionData({
-        abi: proveAndClaimSnippet,
+        abi: dnsRegistrarProveAndClaimSnippet,
         functionName: 'proveAndClaim',
         args: [hexEncodedName, data, bytesToHex(preparedData.proof)],
       }),
@@ -102,7 +102,7 @@ export const makeFunctionData = <
   return {
     to: dnsRegistrarAddress,
     data: encodeFunctionData({
-      abi: proveAndClaimWithResolverSnippet,
+      abi: dnsRegistrarProveAndClaimWithResolverSnippet,
       functionName: 'proveAndClaimWithResolver',
       args: [
         hexEncodedName,

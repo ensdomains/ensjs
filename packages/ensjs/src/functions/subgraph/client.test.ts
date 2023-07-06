@@ -1,5 +1,5 @@
 import { namehash } from 'viem'
-import { requestMiddleware, responseMiddleware } from './client'
+import { requestMiddleware, responseMiddleware } from './client.js'
 
 const queryWithoutId = `
 query getNames($id: ID!, $expiryDate: Int) {

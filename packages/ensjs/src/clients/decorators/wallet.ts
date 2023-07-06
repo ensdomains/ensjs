@@ -1,73 +1,73 @@
-import { type Account, type Transport, type WalletClient } from 'viem'
-import { type ChainWithEns } from '../../contracts/consts'
+import type { Account, Transport, WalletClient } from 'viem'
+import type { ChainWithEns } from '../../contracts/consts.js'
 import commitName, {
   type CommitNameParameters,
   type CommitNameReturnType,
-} from '../../functions/wallet/commitName'
+} from '../../functions/wallet/commitName.js'
 import createSubname, {
   type CreateSubnameParameters,
   type CreateSubnameReturnType,
-} from '../../functions/wallet/createSubname'
+} from '../../functions/wallet/createSubname.js'
 import deleteSubname, {
   type DeleteSubnameParameters,
   type DeleteSubnameReturnType,
-} from '../../functions/wallet/deleteSubname'
+} from '../../functions/wallet/deleteSubname.js'
 import registerName, {
   type RegisterNameParameters,
   type RegisterNameReturnType,
-} from '../../functions/wallet/registerName'
+} from '../../functions/wallet/registerName.js'
 import renewNames, {
   type RenewNamesParameters,
   type RenewNamesReturnType,
-} from '../../functions/wallet/renewNames'
+} from '../../functions/wallet/renewNames.js'
 import setAbiRecord, {
   type SetAbiRecordParameters,
   type SetAbiRecordReturnType,
-} from '../../functions/wallet/setAbiRecord'
+} from '../../functions/wallet/setAbiRecord.js'
 import setAddressRecord, {
   type SetAddressRecordParameters,
   type SetAddressRecordReturnType,
-} from '../../functions/wallet/setAddressRecord'
+} from '../../functions/wallet/setAddressRecord.js'
 import setChildFuses, {
   type SetChildFusesParameters,
   type SetChildFusesReturnType,
-} from '../../functions/wallet/setChildFuses'
+} from '../../functions/wallet/setChildFuses.js'
 import setContentHashRecord, {
   type SetContentHashRecordParameters,
   type SetContentHashRecordReturnType,
-} from '../../functions/wallet/setContentHashRecord'
+} from '../../functions/wallet/setContentHashRecord.js'
 import setFuses, {
   type SetFusesParameters,
   type SetFusesReturnType,
-} from '../../functions/wallet/setFuses'
+} from '../../functions/wallet/setFuses.js'
 import setPrimaryName, {
   type SetPrimaryNameParameters,
   type SetPrimaryNameReturnType,
-} from '../../functions/wallet/setPrimaryName'
+} from '../../functions/wallet/setPrimaryName.js'
 import setRecords, {
   type SetRecordsParameters,
   type SetRecordsReturnType,
-} from '../../functions/wallet/setRecords'
+} from '../../functions/wallet/setRecords.js'
 import setResolver, {
   type SetResolverParameters,
   type SetResolverReturnType,
-} from '../../functions/wallet/setResolver'
+} from '../../functions/wallet/setResolver.js'
 import setTextRecord, {
   type SetTextRecordParameters,
   type SetTextRecordReturnType,
-} from '../../functions/wallet/setTextRecord'
+} from '../../functions/wallet/setTextRecord.js'
 import transferName, {
   type TransferNameParameters,
   type TransferNameReturnType,
-} from '../../functions/wallet/transferName'
+} from '../../functions/wallet/transferName.js'
 import unwrapName, {
   type UnwrapNameParameters,
   type UnwrapNameReturnType,
-} from '../../functions/wallet/unwrapName'
+} from '../../functions/wallet/unwrapName.js'
 import wrapName, {
   type WrapNameParameters,
   type WrapNameReturnType,
-} from '../../functions/wallet/wrapName'
+} from '../../functions/wallet/wrapName.js'
 
 export type EnsWalletActions<
   TChain extends ChainWithEns,

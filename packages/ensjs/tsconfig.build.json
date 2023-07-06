@@ -1,11 +1,12 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "module": "ESNext",
-    "outDir": "dist/types",
-    "declaration": true,
-    "emitDeclarationOnly": true
-  },
   "include": ["./src"],
-  "exclude": ["src/**/*.test.ts", "src/tests/**/*", "./src/ABIs/**/*"]
+  "exclude": ["src/**/*.test.ts", "src/tests/**/*", "./src/ABIs/**/*"],
+  "compilerOptions": {
+    "sourceMap": true,
+    "rootDir": "./src",
+    "paths": {
+      "abitype": ["../node_modules/abitype/dist"]
+    }
+  }
 }

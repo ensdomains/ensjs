@@ -1,11 +1,11 @@
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts } from '../../contracts'
-import { publicClient } from '../../tests/addTestContracts'
-import batch from './batch'
-import getAddressRecord from './getAddressRecord'
-import getName from './getName'
-import getText from './getTextRecord'
+import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { publicClient } from '../../tests/addTestContracts.js'
+import batch from './batch.js'
+import getAddressRecord from './getAddressRecord.js'
+import getName from './getName.js'
+import getText from './getTextRecord.js'
 
 const mainnetPublicClient = createPublicClient({
   chain: addEnsContracts(mainnet),

@@ -1,15 +1,15 @@
-import { Hex } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { Prettify, SimpleTransactionRequest } from '../../types'
+import type { Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import type { Prettify, SimpleTransactionRequest } from '../../types.js'
 import {
-  GeneratedFunction,
   generateFunction,
-} from '../../utils/generateFunction'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
 import _getAddr, {
-  InternalGetAddrParameters,
-  InternalGetAddrReturnType,
-} from './_getAddr'
-import universalWrapper from './universalWrapper'
+  type InternalGetAddrParameters,
+  type InternalGetAddrReturnType,
+} from './_getAddr.js'
+import universalWrapper from './universalWrapper.js'
 
 export type GetAddressRecordParameters = Prettify<InternalGetAddrParameters>
 

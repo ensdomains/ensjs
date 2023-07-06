@@ -1,10 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { writeFile } from 'fs/promises'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { resolve } from 'path'
+const { writeFile } = require('fs/promises')
+const { resolve } = require('path')
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const allDeployments = await hre.deployments.all()
   const deploymentAddressMap = Object.fromEntries(
     Object.keys(allDeployments).map((dkey) => [
@@ -25,4 +26,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 func.runAtTheEnd = true
 func.dependencies = ['set-legacy-resolver']
 
-export default func
+module.exports = func

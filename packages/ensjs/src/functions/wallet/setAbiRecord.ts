@@ -1,22 +1,22 @@
-import {
+import type {
   Account,
   Address,
   Hash,
   SendTransactionParameters,
   Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import {
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { EncodedAbi } from '../../utils/encoders/encodeAbi'
+} from '../../types.js'
+import type { EncodedAbi } from '../../utils/encoders/encodeAbi.js'
 import {
-  EncodeSetAbiParameters,
   encodeSetAbi,
-} from '../../utils/encoders/encodeSetAbi'
-import { namehash } from '../../utils/normalise'
+  type EncodeSetAbiParameters,
+} from '../../utils/encoders/encodeSetAbi.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type SetAbiRecordDataParameters = {
   /** Name to set ABI for */

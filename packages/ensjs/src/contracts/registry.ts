@@ -1,6 +1,5 @@
-export const ownerSnippet = [
+export const registryOwnerSnippet = [
   {
-    constant: true,
     inputs: [
       {
         name: 'node',
@@ -14,15 +13,13 @@ export const ownerSnippet = [
         type: 'address',
       },
     ],
-    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
 ] as const
 
-export const setSubnodeRecordSnippet = [
+export const registrySetSubnodeRecordSnippet = [
   {
-    constant: false,
     inputs: [
       {
         name: 'node',
@@ -47,15 +44,13 @@ export const setSubnodeRecordSnippet = [
     ],
     name: 'setSubnodeRecord',
     outputs: [],
-    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const
 
-export const resolverSnippet = [
+export const registryResolverSnippet = [
   {
-    constant: true,
     inputs: [
       {
         name: 'node',
@@ -69,15 +64,13 @@ export const resolverSnippet = [
         type: 'address',
       },
     ],
-    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
 ] as const
 
-export const setApprovalForAllSnippet = [
+export const registrySetApprovalForAllSnippet = [
   {
-    constant: false,
     inputs: [
       {
         name: 'operator',
@@ -90,15 +83,13 @@ export const setApprovalForAllSnippet = [
     ],
     name: 'setApprovalForAll',
     outputs: [],
-    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const
 
-export const setResolverSnippet = [
+export const registrySetResolverSnippet = [
   {
-    constant: false,
     inputs: [
       {
         name: 'node',
@@ -111,13 +102,12 @@ export const setResolverSnippet = [
     ],
     name: 'setResolver',
     outputs: [],
-    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const
 
-export const setOwnerSnippet = [
+export const registrySetOwnerSnippet = [
   {
     inputs: [
       {
@@ -136,7 +126,7 @@ export const setOwnerSnippet = [
   },
 ] as const
 
-export const setSubnodeOwnerSnippet = [
+export const registrySetSubnodeOwnerSnippet = [
   {
     inputs: [
       {
@@ -164,9 +154,8 @@ export const setSubnodeOwnerSnippet = [
   },
 ] as const
 
-export const setRecordSnippet = [
+export const registrySetRecordSnippet = [
   {
-    constant: false,
     inputs: [
       {
         name: 'node',
@@ -187,7 +176,6 @@ export const setRecordSnippet = [
     ],
     name: 'setRecord',
     outputs: [],
-    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },

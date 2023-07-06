@@ -1,23 +1,23 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
 import { parseAccount } from 'viem/utils'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
-  setNameForAddrSnippet,
-  setNameSnippet,
-} from '../../contracts/reverseRegistrar'
-import {
+  reverseRegistrarSetNameForAddrSnippet,
+  reverseRegistrarSetNameSnippet,
+} from '../../contracts/reverseRegistrar.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
+} from '../../types.js'
 
 type BaseSetPrimaryNameDataParameters = {
   /** The name to set as primary */
@@ -76,7 +76,7 @@ export const makeFunctionData = <
     return {
       to: reverseRegistrarAddress,
       data: encodeFunctionData({
-        abi: setNameForAddrSnippet,
+        abi: reverseRegistrarSetNameForAddrSnippet,
         functionName: 'setNameForAddr',
         args: [
           address,
@@ -95,7 +95,7 @@ export const makeFunctionData = <
   return {
     to: reverseRegistrarAddress,
     data: encodeFunctionData({
-      abi: setNameSnippet,
+      abi: reverseRegistrarSetNameSnippet,
       functionName: 'setName',
       args: [name],
     }),

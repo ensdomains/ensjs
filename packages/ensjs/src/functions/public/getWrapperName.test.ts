@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getWrapperName from './getWrapperName'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getWrapperName from './getWrapperName.js'
 
 describe('getWrapperName()', () => {
   it('should return name for existing name', async () => {

@@ -1,4 +1,4 @@
-import { MAX_DATE_INT } from './consts'
+import { MAX_DATE_INT } from './consts.js'
 
 export const makeSafeSecondsDate = (seconds: number | bigint) => {
   const milliseconds = BigInt(seconds) * 1000n

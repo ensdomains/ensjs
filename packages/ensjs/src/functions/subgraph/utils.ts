@@ -1,9 +1,9 @@
-import { Address, Hex, getAddress } from 'viem'
-import { DateWithValue } from '../../types'
-import { truncateFormat } from '../../utils/format'
-import { AllCurrentFuses, decodeFuses } from '../../utils/fuses'
-import { decryptName } from '../../utils/labels'
-import { SubgraphDomain } from './fragments'
+import { getAddress, type Address, type Hex } from 'viem'
+import type { DateWithValue } from '../../types.js'
+import { truncateFormat } from '../../utils/format.js'
+import { decodeFuses, type AllCurrentFuses } from '../../utils/fuses.js'
+import { decryptName } from '../../utils/labels.js'
+import type { SubgraphDomain } from './fragments.js'
 
 export type Name = {
   /** Id of the name, equal to namehash */

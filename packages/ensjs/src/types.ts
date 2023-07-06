@@ -4,7 +4,7 @@ import type {
   SendTransactionParameters,
   TransactionRequest,
 } from 'viem'
-import { ChainWithEns } from './contracts/consts'
+import type { ChainWithEns } from './contracts/consts.js'
 
 export type Prettify<T> = {
   [K in keyof T]: T[K]

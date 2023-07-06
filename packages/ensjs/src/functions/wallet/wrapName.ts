@@ -1,31 +1,31 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeAbiParameters,
   encodeFunctionData,
   labelhash,
   toHex,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
 import { parseAccount } from 'viem/utils'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { safeTransferFromWithDataSnippet } from '../../contracts/erc721'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { wrapSnippet } from '../../contracts/nameWrapper'
-import { AdditionalParameterSpecifiedError } from '../../errors/general'
-import {
+import { baseRegistrarSafeTransferFromWithDataSnippet } from '../../contracts/baseRegistrar.js'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
+import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
+import type {
   Eth2ldNameSpecifier,
   GetNameType,
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
-import { packetToBytes } from '../../utils/hexEncodedName'
-import { checkIsDotEth } from '../../utils/validation'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper'
+} from '../../types.js'
+import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
+import { checkIsDotEth } from '../../utils/validation.js'
+import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
 export type WrapNameDataParameters<
   TName extends string,
@@ -102,7 +102,7 @@ export const makeFunctionData = <
         contract: 'ensBaseRegistrarImplementation',
       }),
       data: encodeFunctionData({
-        abi: safeTransferFromWithDataSnippet,
+        abi: baseRegistrarSafeTransferFromWithDataSnippet,
         functionName: 'safeTransferFrom',
         args: [wallet.account.address, nameWrapperAddress, tokenId, data],
       }),
@@ -120,7 +120,7 @@ export const makeFunctionData = <
   return {
     to: nameWrapperAddress,
     data: encodeFunctionData({
-      abi: wrapSnippet,
+      abi: nameWrapperWrapSnippet,
       functionName: 'wrap',
       args: [toHex(packetToBytes(name)), newOwnerAddress, resolverAddress],
     }),

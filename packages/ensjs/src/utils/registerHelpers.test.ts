@@ -1,13 +1,13 @@
 import { labelhash } from 'viem'
-import { namehash } from './normalise'
+import { namehash } from './normalise.js'
 import {
-  RegistrationParameters,
   makeCommitment,
   makeCommitmentFromTuple,
   makeCommitmentTuple,
   makeRegistrationTuple,
   randomSecret,
-} from './registerHelpers'
+  type RegistrationParameters,
+} from './registerHelpers.js'
 
 describe('randomSecret()', () => {
   it('generates a random secret with no args', () => {

@@ -1,10 +1,10 @@
-import { Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { textSnippet } from '../../contracts/publicResolver'
-import { SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { generateFunction } from '../../utils/generateFunction'
-import { namehash } from '../../utils/normalise'
+import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { publicResolverTextSnippet } from '../../contracts/publicResolver.js'
+import type { SimpleTransactionRequest } from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import { generateFunction } from '../../utils/generateFunction.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type InternalGetTextParameters = {
   /** Name to get text record for */
@@ -22,7 +22,7 @@ const encode = (
   return {
     to: EMPTY_ADDRESS,
     data: encodeFunctionData({
-      abi: textSnippet,
+      abi: publicResolverTextSnippet,
       functionName: 'text',
       args: [namehash(name), key],
     }),
@@ -34,7 +34,7 @@ const decode = async (
   data: Hex,
 ): Promise<InternalGetTextReturnType> => {
   const response = decodeFunctionResult({
-    abi: textSnippet,
+    abi: publicResolverTextSnippet,
     functionName: 'text',
     data,
   })

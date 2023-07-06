@@ -1,6 +1,11 @@
-export const availableSnippet = [
+import {
+  erc721OwnerOfSnippet,
+  erc721SafeTransferFromSnippet,
+  erc721SafeTransferFromWithDataSnippet,
+} from './erc721.js'
+
+export const baseRegistrarAvailableSnippet = [
   {
-    constant: true,
     inputs: [
       {
         name: 'id',
@@ -14,15 +19,13 @@ export const availableSnippet = [
         type: 'bool',
       },
     ],
-    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
 ] as const
 
-export const nameExpiresSnippet = [
+export const baseRegistrarNameExpiresSnippet = [
   {
-    constant: true,
     inputs: [
       {
         name: 'id',
@@ -36,15 +39,13 @@ export const nameExpiresSnippet = [
         type: 'uint256',
       },
     ],
-    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
 ] as const
 
-export const gracePeriodSnippet = [
+export const baseRegistrarGracePeriodSnippet = [
   {
-    constant: true,
     inputs: [],
     name: 'GRACE_PERIOD',
     outputs: [
@@ -53,13 +54,12 @@ export const gracePeriodSnippet = [
         type: 'uint256',
       },
     ],
-    payable: false,
     stateMutability: 'view',
     type: 'function',
   },
 ] as const
 
-export const reclaimSnippet = [
+export const baseRegistrarReclaimSnippet = [
   {
     inputs: [
       {
@@ -77,3 +77,13 @@ export const reclaimSnippet = [
     type: 'function',
   },
 ] as const
+
+export const baseRegistrarSafeTransferFromSnippet = [
+  ...erc721SafeTransferFromSnippet,
+] as const
+
+export const baseRegistrarSafeTransferFromWithDataSnippet = [
+  ...erc721SafeTransferFromWithDataSnippet,
+] as const
+
+export const baseRegistrarOwnerOfSnippet = [...erc721OwnerOfSnippet] as const

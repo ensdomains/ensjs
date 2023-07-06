@@ -1,16 +1,20 @@
 import {
-  Hex,
   decodeFunctionResult,
   encodeFunctionData,
   hexToBytes,
   hexToString,
+  type Hex,
 } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { abiSnippet } from '../../contracts/publicResolver'
-import { DecodedAbi, Prettify, SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { generateFunction } from '../../utils/generateFunction'
-import { namehash } from '../../utils/normalise'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'
+import type {
+  DecodedAbi,
+  Prettify,
+  SimpleTransactionRequest,
+} from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import { generateFunction } from '../../utils/generateFunction.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type InternalGetAbiParameters = {
   /** Name to get ABI record for */
@@ -33,7 +37,7 @@ const encode = (
   return {
     to: EMPTY_ADDRESS,
     data: encodeFunctionData({
-      abi: abiSnippet,
+      abi: publicResolverAbiSnippet,
       functionName: 'ABI',
       args: [namehash(name), supportedContentTypes],
     }),
@@ -45,7 +49,7 @@ const decode = async (
   data: Hex,
 ): Promise<InternalGetAbiReturnType> => {
   const [bigintContentType, encodedAbiData] = decodeFunctionResult({
-    abi: abiSnippet,
+    abi: publicResolverAbiSnippet,
     functionName: 'ABI',
     data,
   })

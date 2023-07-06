@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getAbiRecord from './getAbiRecord'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getAbiRecord from './getAbiRecord.js'
 
 const dummyABI = [
   {

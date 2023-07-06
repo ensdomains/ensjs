@@ -1,16 +1,19 @@
-import { Address, Hex } from 'viem'
-import { ownerOfSnippet } from '../../contracts/erc721'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { ownerSnippet, resolverSnippet } from '../../contracts/registry'
+import type { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
+import {
+  registryOwnerSnippet,
+  registryResolverSnippet,
+} from '../../contracts/registry.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { namehash } from '../../utils/normalise'
-import deleteSubname from './deleteSubname'
+} from '../../tests/addTestContracts.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import { namehash } from '../../utils/normalise.js'
+import deleteSubname from './deleteSubname.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -29,7 +32,7 @@ afterEach(async () => {
 
 const getOwner = async (name: string) => {
   return publicClient.readContract({
-    abi: ownerSnippet,
+    abi: registryOwnerSnippet,
     functionName: 'owner',
     address: getChainContractAddress({
       client: publicClient,
@@ -41,7 +44,7 @@ const getOwner = async (name: string) => {
 
 const getNameWrapperOwner = async (name: string) => {
   return publicClient.readContract({
-    abi: ownerOfSnippet,
+    abi: nameWrapperOwnerOfSnippet,
     functionName: 'ownerOf',
     address: getChainContractAddress({
       client: publicClient,
@@ -53,7 +56,7 @@ const getNameWrapperOwner = async (name: string) => {
 
 const getResolver = async (name: string) => {
   return publicClient.readContract({
-    abi: resolverSnippet,
+    abi: registryResolverSnippet,
     functionName: 'resolver',
     address: getChainContractAddress({
       client: publicClient,

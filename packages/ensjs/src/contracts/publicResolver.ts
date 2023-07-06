@@ -1,4 +1,4 @@
-export const singleAddrSnippet = [
+export const publicResolverSingleAddrSnippet = [
   {
     inputs: [
       {
@@ -18,7 +18,7 @@ export const singleAddrSnippet = [
   },
 ] as const
 
-export const multiAddrSnippet = [
+export const publicResolverMultiAddrSnippet = [
   {
     inputs: [
       {
@@ -42,7 +42,7 @@ export const multiAddrSnippet = [
   },
 ] as const
 
-export const textSnippet = [
+export const publicResolverTextSnippet = [
   {
     inputs: [
       {
@@ -66,7 +66,7 @@ export const textSnippet = [
   },
 ] as const
 
-export const contenthashSnippet = [
+export const publicResolverContenthashSnippet = [
   {
     inputs: [
       {
@@ -88,7 +88,7 @@ export const contenthashSnippet = [
   },
 ] as const
 
-export const abiSnippet = [
+export const publicResolverAbiSnippet = [
   {
     inputs: [
       {
@@ -116,7 +116,7 @@ export const abiSnippet = [
   },
 ] as const
 
-export const setTextSnippet = [
+export const publicResolverSetTextSnippet = [
   {
     inputs: [
       {
@@ -139,7 +139,7 @@ export const setTextSnippet = [
   },
 ] as const
 
-export const setAddrSnippet = [
+export const publicResolverSetAddrSnippet = [
   {
     inputs: [
       {
@@ -162,7 +162,7 @@ export const setAddrSnippet = [
   },
 ] as const
 
-export const setAbiSnippet = [
+export const publicResolverSetAbiSnippet = [
   {
     inputs: [
       {
@@ -185,7 +185,7 @@ export const setAbiSnippet = [
   },
 ] as const
 
-export const setContenthashSnippet = [
+export const publicResolverSetContenthashSnippet = [
   {
     inputs: [
       {
@@ -204,7 +204,7 @@ export const setContenthashSnippet = [
   },
 ] as const
 
-export const clearRecordsSnippet = [
+export const publicResolverClearRecordsSnippet = [
   {
     inputs: [
       {
@@ -220,7 +220,7 @@ export const clearRecordsSnippet = [
   },
 ] as const
 
-export const multicallSnippet = [
+export const publicResolverMulticallSnippet = [
   {
     inputs: [
       {

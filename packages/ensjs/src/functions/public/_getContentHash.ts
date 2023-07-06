@@ -1,11 +1,14 @@
-import { Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { contenthashSnippet } from '../../contracts/publicResolver'
-import { Prettify, SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { DecodedContentHash, decodeContenthash } from '../../utils/contentHash'
-import { generateFunction } from '../../utils/generateFunction'
-import { namehash } from '../../utils/normalise'
+import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
+import type { Prettify, SimpleTransactionRequest } from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import {
+  decodeContenthash,
+  type DecodedContentHash,
+} from '../../utils/contentHash.js'
+import { generateFunction } from '../../utils/generateFunction.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type InternalGetContentHashParameters = {
   /** Name to get content hash record for */
@@ -22,7 +25,7 @@ const encode = (
   return {
     to: EMPTY_ADDRESS,
     data: encodeFunctionData({
-      abi: contenthashSnippet,
+      abi: publicResolverContenthashSnippet,
       functionName: 'contenthash',
       args: [namehash(name)],
     }),
@@ -34,7 +37,7 @@ const decode = async (
   data: Hex,
 ): Promise<InternalGetContentHashReturnType> => {
   const response = decodeFunctionResult({
-    abi: contenthashSnippet,
+    abi: publicResolverContenthashSnippet,
     functionName: 'contenthash',
     data,
   })

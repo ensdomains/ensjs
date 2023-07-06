@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getExpiry from './getExpiry'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getExpiry from './getExpiry.js'
 
 describe('getExpiry', () => {
   it('should get the expiry for a .eth name with no other args', async () => {

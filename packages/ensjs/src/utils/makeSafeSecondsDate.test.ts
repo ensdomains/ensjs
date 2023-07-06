@@ -1,5 +1,5 @@
-import { MAX_DATE_INT } from './consts'
-import { makeSafeSecondsDate } from './makeSafeSecondsDate'
+import { MAX_DATE_INT } from './consts.js'
+import { makeSafeSecondsDate } from './makeSafeSecondsDate.js'
 
 it('makes date from seconds', () => {
   expect(makeSafeSecondsDate(21000)).toEqual(new Date(21000000))

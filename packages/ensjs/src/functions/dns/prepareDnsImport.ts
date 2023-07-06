@@ -1,14 +1,17 @@
-import { type ProvableAnswer, type SignedSet } from '@ensdomains/dnsprovejs'
+import type { ProvableAnswer, SignedSet } from '@ensdomains/dnsprovejs'
 import type * as packet from 'dns-packet'
-import { toType } from 'dns-packet/types'
+import { toType } from 'dns-packet/types.js'
 import { keccak256, toBytes, toHex } from 'viem'
 import { readContract } from 'viem/actions'
-import { ClientWithEns } from '../../contracts/consts'
-import { anchorsSnippet, rrDataSnippet } from '../../contracts/dnssecImpl'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { DnsNewerRecordTypeAvailableError } from '../../errors/dns'
-import { packetToBytes } from '../../utils/hexEncodedName'
-import { Endpoint } from './types'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import {
+  dnssecImplAnchorsSnippet,
+  dnssecImplRrDataSnippet,
+} from '../../contracts/dnssecImpl.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { DnsNewerRecordTypeAvailableError } from '../../errors/dns.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
+import type { Endpoint } from './types.js'
 
 export type PrepareDnsImportParameters = {
   /** Name to prepare for DNS import */
@@ -89,7 +92,7 @@ const prepareDnsImport = async (
     const type = toType(proof.signature.data.typeCovered)
     // eslint-disable-next-line no-await-in-loop
     const [inception, expiration, hash] = await readContract(client, {
-      abi: rrDataSnippet,
+      abi: dnssecImplRrDataSnippet,
       address: ensDnssecImplAddress,
       functionName: 'rrdata',
       args: [type, hexEncodedName],
@@ -119,7 +122,7 @@ const prepareDnsImport = async (
     rrsets: encodeProofs(allProofs),
     proof: toBytes(
       await readContract(client, {
-        abi: anchorsSnippet,
+        abi: dnssecImplAnchorsSnippet,
         address: ensDnssecImplAddress,
         functionName: 'anchors',
       }),

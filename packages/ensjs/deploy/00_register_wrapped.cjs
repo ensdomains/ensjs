@@ -1,27 +1,29 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import { BigNumber } from 'ethers'
-import { ethers } from 'hardhat'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { MAX_DATE_INT } from '../src/utils/consts'
-import { encodeFuses } from '../src/utils/fuses'
-import { namehash } from '../src/utils/normalise'
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { BigNumber } = require('ethers')
+const { ethers } = require('hardhat')
+const { namehash } = require('viem/ens')
+const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
+const { encodeFuses } = require('../dist/cjs/utils/fuses')
 
-export const names: {
-  label: string
-  namedOwner: string
-  data?: any[]
-  reverseRecord?: boolean
-  fuses?: number
-  subnames?: {
-    label: string
-    namedOwner: string
-    fuses?: number
-    expiry?: number
-  }[]
-  duration?: number | BigNumber
-}[] = [
+/**
+ * @type {{
+ *  label: string
+ *  namedOwner: string
+ *  data?: any[]
+ *  reverseRecord?: boolean
+ *  fuses?: number
+ *  subnames?: {
+ *    label: string
+ *    namedOwner: string
+ *    fuses?: number
+ *    expiry?: number
+ *  }[]
+ *  duration?: number | BigNumber
+ * }[]}
+ */
+const names = [
   {
     label: 'wrapped',
     namedOwner: 'owner',
@@ -92,7 +94,10 @@ export const names: {
   },
 ]
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
 
@@ -189,4 +194,4 @@ func.tags = ['register-wrapped-names']
 func.dependencies = ['ETHRegistrarController']
 func.runAtTheEnd = true
 
-export default func
+module.exports = func

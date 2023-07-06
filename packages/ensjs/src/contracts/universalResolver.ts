@@ -1,4 +1,18 @@
-export const reverseSnippet = [
+export const universalResolverErrors = [
+  {
+    inputs: [],
+    name: 'ResolverNotFound',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ResolverWildcardNotSupported',
+    type: 'error',
+  },
+] as const
+
+export const universalResolverReverseSnippet = [
+  ...universalResolverErrors,
   {
     inputs: [
       {
@@ -18,7 +32,8 @@ export const reverseSnippet = [
   },
 ] as const
 
-export const resolveSnippet = [
+export const universalResolverResolveSnippet = [
+  ...universalResolverErrors,
   {
     inputs: [
       {
@@ -46,7 +61,8 @@ export const resolveSnippet = [
   },
 ] as const
 
-export const resolveArraySnippet = [
+export const universalResolverResolveArraySnippet = [
+  ...universalResolverErrors,
   {
     inputs: [
       {
@@ -74,7 +90,8 @@ export const resolveArraySnippet = [
   },
 ] as const
 
-export const findResolverSnippet = [
+export const universalResolverFindResolverSnippet = [
+  ...universalResolverErrors,
   {
     inputs: [
       {

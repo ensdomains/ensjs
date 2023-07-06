@@ -1,9 +1,9 @@
 import { gql } from 'graphql-request'
 import type { Address } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { DateWithValue } from '../../types'
-import { namehash } from '../../utils/normalise'
-import { createSubgraphClient } from './client'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import type { DateWithValue } from '../../types.js'
+import { namehash } from '../../utils/normalise.js'
+import { createSubgraphClient } from './client.js'
 
 export type GetSubgraphRecordsParameters = {
   /** Name to get records for */
@@ -127,9 +127,9 @@ const getSubgraphRecords = async (
         },
       )
     if (!response || !response.domain) return null
-    ;({
-      domain: { resolver: resolverResult, ...domainResult },
-    } = response)
+    const { resolver, ...domain_ } = response.domain
+    resolverResult = resolver
+    domainResult = domain_
   }
 
   const { isMigrated, createdAt: stringCreatedAt } = domainResult

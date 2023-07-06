@@ -1,10 +1,10 @@
 import { createPublicClient, http } from 'viem'
 import { goerli } from 'viem/chains'
-import { addEnsContracts } from '../../contracts'
-import batch from './batch'
-import getAddressRecord from './getAddressRecord'
-import getRecords from './getRecords'
-import getText from './getTextRecord'
+import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import batch from './batch.js'
+import getAddressRecord from './getAddressRecord.js'
+import getRecords from './getRecords.js'
+import getText from './getTextRecord.js'
 
 const goerliPublicClient = createPublicClient({
   chain: addEnsContracts(goerli),

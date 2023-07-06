@@ -1,16 +1,16 @@
-import { Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
-import { rentPriceSnippet as bulkRentPriceSnippet } from '../../contracts/bulkRenewal'
-import { ClientWithEns } from '../../contracts/consts'
-import { rentPriceSnippet as controllerRentPriceSnippet } from '../../contracts/ethRegistrarController'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { UnsupportedNameTypeError } from '../../errors/general'
-import { SimpleTransactionRequest } from '../../types'
+import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
+import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { SimpleTransactionRequest } from '../../types.js'
 import {
-  GeneratedFunction,
   generateFunction,
-} from '../../utils/generateFunction'
-import { getNameType } from '../../utils/getNameType'
-import multicallWrapper from './multicallWrapper'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { getNameType } from '../../utils/getNameType.js'
+import multicallWrapper from './multicallWrapper.js'
 
 export type GetPriceParameters = {
   /** Name, or array of names, to get price for */
@@ -54,7 +54,7 @@ const encode = (
         {
           to: bulkRenewalAddress,
           data: encodeFunctionData({
-            abi: bulkRentPriceSnippet,
+            abi: bulkRenewalRentPriceSnippet,
             functionName: 'rentPrice',
             args: [names, BigInt(duration)],
           }),
@@ -62,7 +62,7 @@ const encode = (
         {
           to: bulkRenewalAddress,
           data: encodeFunctionData({
-            abi: bulkRentPriceSnippet,
+            abi: bulkRenewalRentPriceSnippet,
             functionName: 'rentPrice',
             args: [names, 0n],
           }),
@@ -76,7 +76,7 @@ const encode = (
       contract: 'ensEthRegistrarController',
     }),
     data: encodeFunctionData({
-      abi: controllerRentPriceSnippet,
+      abi: ethRegistrarControllerRentPriceSnippet,
       functionName: 'rentPrice',
       args: [names[0], BigInt(duration)],
     }),
@@ -92,12 +92,12 @@ const decode = async (
   if (isBulkRenewal) {
     const result = await multicallWrapper.decode(client, data, [])
     const price = decodeFunctionResult({
-      abi: bulkRentPriceSnippet,
+      abi: bulkRenewalRentPriceSnippet,
       functionName: 'rentPrice',
       data: result[0].returnData,
     })
     const premium = decodeFunctionResult({
-      abi: bulkRentPriceSnippet,
+      abi: bulkRenewalRentPriceSnippet,
       functionName: 'rentPrice',
       data: result[1].returnData,
     })
@@ -106,7 +106,7 @@ const decode = async (
   }
 
   return decodeFunctionResult({
-    abi: controllerRentPriceSnippet,
+    abi: ethRegistrarControllerRentPriceSnippet,
     functionName: 'rentPrice',
     data,
   })

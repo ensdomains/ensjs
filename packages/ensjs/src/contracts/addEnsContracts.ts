@@ -1,12 +1,12 @@
-import { Chain } from 'viem'
-import { NoChainError, UnsupportedNetworkError } from '../errors/contracts'
+import type { Chain } from 'viem'
+import { NoChainError, UnsupportedNetworkError } from '../errors/contracts.js'
 import {
-  ChainWithEns,
-  SupportedChain,
   addresses,
   subgraphs,
   supportedChains,
-} from './consts'
+  type ChainWithEns,
+  type SupportedChain,
+} from './consts.js'
 
 /**
  * Adds ENS contract addresses to the viem chain

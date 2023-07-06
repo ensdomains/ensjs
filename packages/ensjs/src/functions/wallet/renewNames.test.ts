@@ -1,14 +1,14 @@
-import { Address, Hex, labelhash } from 'viem'
-import { nameExpiresSnippet } from '../../contracts/baseRegistrar'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import { labelhash, type Address, type Hex } from 'viem'
+import { baseRegistrarNameExpiresSnippet } from '../../contracts/baseRegistrar.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import getPrice from '../public/getPrice'
-import renewNames from './renewNames'
+} from '../../tests/addTestContracts.js'
+import getPrice from '../public/getPrice.js'
+import renewNames from './renewNames.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -27,7 +27,7 @@ afterEach(async () => {
 
 const getExpiry = async (name: string) => {
   return publicClient.readContract({
-    abi: nameExpiresSnippet,
+    abi: baseRegistrarNameExpiresSnippet,
     functionName: 'nameExpires',
     address: getChainContractAddress({
       client: publicClient,

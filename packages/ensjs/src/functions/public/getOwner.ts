@@ -1,16 +1,19 @@
-import { Address, Hex, decodeAbiParameters } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
+import { decodeAbiParameters, type Address, type Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import type { SimpleTransactionRequest } from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import {
-  GeneratedFunction,
   generateFunction,
-} from '../../utils/generateFunction'
-import { namehash as makeNamehash } from '../../utils/normalise'
-import { OwnerContract, ownerFromContract } from '../../utils/ownerFromContract'
-import { checkIsDotEth } from '../../utils/validation'
-import multicallWrapper from './multicallWrapper'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
+import { namehash as makeNamehash } from '../../utils/normalise.js'
+import {
+  ownerFromContract,
+  type OwnerContract,
+} from '../../utils/ownerFromContract.js'
+import { checkIsDotEth } from '../../utils/validation.js'
+import multicallWrapper from './multicallWrapper.js'
 
 export type GetOwnerParameters = {
   /** Name to get owner for */

@@ -1,4 +1,4 @@
-export const tryAggregateSnippet = [
+export const multicallTryAggregateSnippet = [
   {
     inputs: [
       {
@@ -42,7 +42,7 @@ export const tryAggregateSnippet = [
   },
 ] as const
 
-export const getCurrentBlockTimestampSnippet = [
+export const multicallGetCurrentBlockTimestampSnippet = [
   {
     inputs: [],
     name: 'getCurrentBlockTimestamp',

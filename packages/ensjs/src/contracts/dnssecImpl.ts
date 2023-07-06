@@ -1,4 +1,4 @@
-export const rrDataSnippet = [
+export const dnssecImplRrDataSnippet = [
   {
     inputs: [
       {
@@ -30,7 +30,7 @@ export const rrDataSnippet = [
   },
 ] as const
 
-export const anchorsSnippet = [
+export const dnssecImplAnchorsSnippet = [
   {
     inputs: [],
     name: 'anchors',

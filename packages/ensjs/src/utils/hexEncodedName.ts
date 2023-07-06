@@ -1,5 +1,5 @@
 // Adapted from https://github.com/mafintosh/dns-packet
-import { ByteArray, bytesToString, stringToBytes } from 'viem'
+import { bytesToString, stringToBytes, type ByteArray } from 'viem'
 
 /*
  * @description Encodes a DNS packet into a ByteArray containing a UDP payload.

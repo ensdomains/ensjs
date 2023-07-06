@@ -1,8 +1,5 @@
-import {
-  createEnsPublicClient,
-  getAddressRecord,
-  getTextRecord,
-} from '@ensdomains/ensjs'
+import { createEnsPublicClient } from '@ensdomains/ensjs'
+import { getAddressRecord, getTextRecord } from '@ensdomains/ensjs/public'
 import { http } from 'viem'
 import { mainnet } from 'viem/chains'
 

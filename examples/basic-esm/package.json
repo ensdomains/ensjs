@@ -1,0 +1,13 @@
+{
+  "name": "basic-esm",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@ensdomains/ensjs": "workspace:*",
+    "viem": "^1.2.9"
+  }
+}

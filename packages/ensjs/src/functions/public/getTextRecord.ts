@@ -1,15 +1,15 @@
-import { Hex } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
-import { Prettify, SimpleTransactionRequest } from '../../types'
+import type { Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import type { Prettify, SimpleTransactionRequest } from '../../types.js'
 import {
-  GeneratedFunction,
   generateFunction,
-} from '../../utils/generateFunction'
+  type GeneratedFunction,
+} from '../../utils/generateFunction.js'
 import _getText, {
-  InternalGetTextParameters,
-  InternalGetTextReturnType,
-} from './_getText'
-import universalWrapper from './universalWrapper'
+  type InternalGetTextParameters,
+  type InternalGetTextReturnType,
+} from './_getText.js'
+import universalWrapper from './universalWrapper.js'
 
 export type GetTextRecordParameters = Prettify<InternalGetTextParameters>
 

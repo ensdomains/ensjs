@@ -1,17 +1,17 @@
 import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
-import { ClientWithEns } from '../../contracts/consts'
-import { decodeContenthash } from '../../utils/contentHash'
-import { namehash } from '../../utils/normalise'
-import { createSubgraphClient } from './client'
-import {
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { decodeContenthash } from '../../utils/contentHash.js'
+import { namehash } from '../../utils/normalise.js'
+import { createSubgraphClient } from './client.js'
+import type {
   BaseResolverEvent,
   ContenthashChanged,
   DomainEvent,
   MulticoinAddrChanged,
   RegistrationEvent,
   ResolverEvent,
-} from './events'
+} from './events.js'
 
 export type GetNameHistoryParameters = {
   /** Name to get history for */

@@ -1,20 +1,20 @@
 import { gql } from 'graphql-request'
-import { Address } from 'viem'
-import { ClientWithEns } from '../../contracts/consts'
+import type { Address } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
 import {
   FilterKeyRequiredError,
   InvalidFilterKeyError,
   InvalidOrderByError,
-} from '../../errors/subgraph'
-import { GRACE_PERIOD_SECONDS } from '../../utils/consts'
-import { createSubgraphClient } from './client'
+} from '../../errors/subgraph.js'
+import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { createSubgraphClient } from './client.js'
 import {
-  SubgraphDomain,
   domainDetailsFragment,
   registrationDetailsFragment,
   wrappedDomainDetailsFragment,
-} from './fragments'
-import { Name, makeNameObject } from './utils'
+  type SubgraphDomain,
+} from './fragments.js'
+import { makeNameObject, type Name } from './utils.js'
 
 type GetNamesForAddressOrderBy =
   | 'expiryDate'

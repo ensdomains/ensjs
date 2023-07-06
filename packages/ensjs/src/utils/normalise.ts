@@ -1,25 +1,25 @@
 import {
-  DisallowedToken,
-  EmojiToken,
   ens_beautify,
   ens_emoji,
   ens_normalize,
   ens_normalize_fragment,
   ens_split,
   ens_tokenize,
-  IgnoredToken,
   is_combining_mark,
-  Label,
-  MappedToken,
-  NFCToken,
   should_escape,
-  StopToken,
-  TextToken,
-  Token,
-  ValidToken,
+  type DisallowedToken,
+  type EmojiToken,
+  type IgnoredToken,
+  type Label,
+  type MappedToken,
+  type NFCToken,
+  type StopToken,
+  type TextToken,
+  type Token,
+  type ValidToken,
 } from '@adraffy/ens-normalize'
 import { bytesToHex, concat, hexToBytes, keccak256, stringToBytes } from 'viem'
-import { decodeLabelhash, isEncodedLabelhash } from './labels'
+import { decodeLabelhash, isEncodedLabelhash } from './labels.js'
 
 const zeros = new Uint8Array(32)
 zeros.fill(0)

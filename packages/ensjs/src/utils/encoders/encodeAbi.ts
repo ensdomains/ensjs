@@ -1,5 +1,5 @@
-import { Hex, bytesToHex, stringToHex } from 'viem'
-import { Prettify } from '../../types'
+import { bytesToHex, stringToHex, type Hex } from 'viem'
+import type { Prettify } from '../../types.js'
 
 type AbiEncodeAs = 'json' | 'zlib' | 'cbor' | 'uri'
 

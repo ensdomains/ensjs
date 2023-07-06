@@ -5,7 +5,7 @@ import {
   isEncodedLabelhash,
   saveLabel,
   saveName,
-} from './labels'
+} from './labels.js'
 
 describe('decodeLabelhash()', () => {
   it('decodes labelhash', () => {

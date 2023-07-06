@@ -1,16 +1,16 @@
 import { gql } from 'graphql-request'
-import { ClientWithEns } from '../../contracts/consts'
-import { InvalidOrderByError } from '../../errors/subgraph'
-import { GRACE_PERIOD_SECONDS } from '../../utils/consts'
-import { namehash } from '../../utils/normalise'
-import { createSubgraphClient } from './client'
+import type { ClientWithEns } from '../../contracts/consts.js'
+import { InvalidOrderByError } from '../../errors/subgraph.js'
+import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { namehash } from '../../utils/normalise.js'
+import { createSubgraphClient } from './client.js'
 import {
-  SubgraphDomain,
   domainDetailsWithoutParentFragment,
   registrationDetailsFragment,
   wrappedDomainDetailsFragment,
-} from './fragments'
-import { Name, makeNameObject } from './utils'
+  type SubgraphDomain,
+} from './fragments.js'
+import { makeNameObject, type Name } from './utils.js'
 
 type GetSubnamesOrderBy = 'expiryDate' | 'name' | 'labelName' | 'createdAt'
 

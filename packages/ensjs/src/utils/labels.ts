@@ -1,8 +1,8 @@
-import { Hex, labelhash } from 'viem'
+import { labelhash, type Hex } from 'viem'
 import {
   InvalidEncodedLabelError,
   InvalidLabelhashError,
-} from '../errors/utils'
+} from '../errors/utils.js'
 
 const hasLocalStorage = typeof localStorage !== 'undefined'
 

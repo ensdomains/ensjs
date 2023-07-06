@@ -1,8 +1,10 @@
-import '@nomiclabs/hardhat-ethers'
-import 'dotenv/config'
-import 'hardhat-deploy'
-import { HardhatUserConfig } from 'hardhat/config'
-import { resolve } from 'path'
+require('@nomiclabs/hardhat-ethers')
+require('dotenv/config')
+require('hardhat-deploy')
+const { resolve } = require('path')
+
+const { execSync } = require('child_process')
+const { existsSync } = require('fs')
 
 process.env.BATCH_GATEWAY_URLS = JSON.stringify([
   'https://universal-offchain-unwrapper.ens-cf.workers.dev/',
@@ -10,7 +12,15 @@ process.env.BATCH_GATEWAY_URLS = JSON.stringify([
 
 const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 
-const config: HardhatUserConfig = {
+// check if built package exists
+// this is required to use ensjs functions in the deploy scripts (which are written in cjs)
+const builtCjsExists = existsSync('./dist/cjs/utils/index.js')
+if (!builtCjsExists) execSync('pnpm build', { stdio: 'inherit' })
+
+/**
+ * @type {import('hardhat/config').HardhatUserConfig}
+ */
+const config = {
   solidity: {
     compilers: [
       {
@@ -63,4 +73,4 @@ const config: HardhatUserConfig = {
   },
 }
 
-export default config
+module.exports = config

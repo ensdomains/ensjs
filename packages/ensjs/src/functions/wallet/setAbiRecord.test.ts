@@ -1,14 +1,14 @@
-import { Address, Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import { encodeAbi } from '../../utils/encoders/encodeAbi'
-import getAbiRecord from '../public/getAbiRecord'
-import getResolver from '../public/getResolver'
-import setAbiRecord from './setAbiRecord'
+} from '../../tests/addTestContracts.js'
+import { encodeAbi } from '../../utils/encoders/encodeAbi.js'
+import getAbiRecord from '../public/getAbiRecord.js'
+import getResolver from '../public/getResolver.js'
+import setAbiRecord from './setAbiRecord.js'
 
 let snapshot: Hex
 let accounts: Address[]

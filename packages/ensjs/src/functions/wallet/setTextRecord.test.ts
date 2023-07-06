@@ -1,13 +1,13 @@
-import { Address, Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import getResolver from '../public/getResolver'
-import getText from '../public/getTextRecord'
-import setTextRecord from './setTextRecord'
+} from '../../tests/addTestContracts.js'
+import getResolver from '../public/getResolver.js'
+import getText from '../public/getTextRecord.js'
+import setTextRecord from './setTextRecord.js'
 
 let snapshot: Hex
 let accounts: Address[]

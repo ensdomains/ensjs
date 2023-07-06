@@ -1,4 +1,4 @@
-export const supportsInterfaceSnippet = [
+export const erc165SupportsInterfaceSnippet = [
   {
     inputs: [
       {

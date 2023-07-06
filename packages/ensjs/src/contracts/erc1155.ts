@@ -1,4 +1,4 @@
-export const safeTransferFromSnippet = [
+export const erc1155SafeTransferFromSnippet = [
   {
     inputs: [
       {

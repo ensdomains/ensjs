@@ -1,61 +1,61 @@
-import { type Account, type Client, type Transport } from 'viem'
-import type { ChainWithEns } from '../../contracts/consts'
+import type { Account, Client, Transport } from 'viem'
+import type { ChainWithEns } from '../../contracts/consts.js'
 import batch, {
   type BatchParameters,
   type BatchReturnType,
-} from '../../functions/public/batch'
+} from '../../functions/public/batch.js'
 import getAbiRecord, {
   type GetAbiRecordParameters,
   type GetAbiRecordReturnType,
-} from '../../functions/public/getAbiRecord'
+} from '../../functions/public/getAbiRecord.js'
 import getAddressRecord, {
   type GetAddressRecordParameters,
   type GetAddressRecordReturnType,
-} from '../../functions/public/getAddressRecord'
+} from '../../functions/public/getAddressRecord.js'
 import getAvailable, {
   type GetAvailableParameters,
   type GetAvailableReturnType,
-} from '../../functions/public/getAvailable'
+} from '../../functions/public/getAvailable.js'
 import getContentHashRecord, {
   type GetContentHashRecordParameters,
   type GetContentHashRecordReturnType,
-} from '../../functions/public/getContentHashRecord'
+} from '../../functions/public/getContentHashRecord.js'
 import getExpiry, {
   type GetExpiryParameters,
   type GetExpiryReturnType,
-} from '../../functions/public/getExpiry'
+} from '../../functions/public/getExpiry.js'
 import getName, {
   type GetNameParameters,
   type GetNameReturnType,
-} from '../../functions/public/getName'
+} from '../../functions/public/getName.js'
 import getOwner, {
   type GetOwnerParameters,
   type GetOwnerReturnType,
-} from '../../functions/public/getOwner'
+} from '../../functions/public/getOwner.js'
 import getPrice, {
   type GetPriceParameters,
   type GetPriceReturnType,
-} from '../../functions/public/getPrice'
+} from '../../functions/public/getPrice.js'
 import getRecords, {
   type GetRecordsParameters,
   type GetRecordsReturnType,
-} from '../../functions/public/getRecords'
+} from '../../functions/public/getRecords.js'
 import getResolver, {
   type GetResolverParameters,
   type GetResolverReturnType,
-} from '../../functions/public/getResolver'
+} from '../../functions/public/getResolver.js'
 import getTextRecord, {
   type GetTextRecordParameters,
   type GetTextRecordReturnType,
-} from '../../functions/public/getTextRecord'
+} from '../../functions/public/getTextRecord.js'
 import getWrapperData, {
   type GetWrapperDataParameters,
   type GetWrapperDataReturnType,
-} from '../../functions/public/getWrapperData'
+} from '../../functions/public/getWrapperData.js'
 import getWrapperName, {
   type GetWrapperNameParameters,
   type GetWrapperNameReturnType,
-} from '../../functions/public/getWrapperName'
+} from '../../functions/public/getWrapperName.js'
 
 export type EnsPublicActions = {
   /**

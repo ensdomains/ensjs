@@ -1,12 +1,12 @@
 import { gql } from 'graphql-request'
-import { ClientWithEns } from '../../contracts/consts'
+import type { ClientWithEns } from '../../contracts/consts.js'
 import {
   checkIsDecrypted,
   decodeLabelhash,
   isEncodedLabelhash,
-} from '../../utils/labels'
-import { namehash } from '../../utils/normalise'
-import { createSubgraphClient } from './client'
+} from '../../utils/labels.js'
+import { namehash } from '../../utils/normalise.js'
+import { createSubgraphClient } from './client.js'
 
 export type GetDecodedNameParameters = {
   /** Name with unknown labels */

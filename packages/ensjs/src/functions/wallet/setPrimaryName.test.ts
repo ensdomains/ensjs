@@ -1,14 +1,14 @@
-import { Address, Hex } from 'viem'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setApprovalForAllSnippet } from '../../contracts/registry'
+import type { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import getName from '../public/getName'
-import setPrimaryName from './setPrimaryName'
+} from '../../tests/addTestContracts.js'
+import getName from '../public/getName.js'
+import setPrimaryName from './setPrimaryName.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -42,7 +42,7 @@ it('should return a transaction for a name and set successfully', async () => {
 
 it("should return a transaction for setting another address' name and succeed", async () => {
   const setApprovedForAllTx = await walletClient.writeContract({
-    abi: setApprovalForAllSnippet,
+    abi: registrySetApprovalForAllSnippet,
     functionName: 'setApprovalForAll',
     address: getChainContractAddress({
       client: walletClient,

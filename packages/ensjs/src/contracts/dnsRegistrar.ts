@@ -1,4 +1,4 @@
-export const proveAndClaimSnippet = [
+export const dnsRegistrarProveAndClaimSnippet = [
   {
     inputs: [
       {
@@ -31,7 +31,7 @@ export const proveAndClaimSnippet = [
   },
 ] as const
 
-export const proveAndClaimWithResolverSnippet = [
+export const dnsRegistrarProveAndClaimWithResolverSnippet = [
   {
     inputs: [
       {

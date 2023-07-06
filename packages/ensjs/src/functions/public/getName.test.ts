@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getName from './getName'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getName from './getName.js'
 
 describe('getName', () => {
   it('should get a primary name from an address', async () => {

@@ -1,4 +1,4 @@
-import { makeLabelNodeAndParent } from './makeLabelNodeAndParent'
+import { makeLabelNodeAndParent } from './makeLabelNodeAndParent.js'
 
 it('makes label node and parent', () => {
   expect(makeLabelNodeAndParent('test.eth')).toMatchInlineSnapshot(`

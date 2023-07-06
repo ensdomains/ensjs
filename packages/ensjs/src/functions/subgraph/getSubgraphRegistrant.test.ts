@@ -1,5 +1,8 @@
-import { deploymentAddresses, publicClient } from '../../tests/addTestContracts'
-import getSubgraphRegistrant from './getSubgraphRegistrant'
+import {
+  deploymentAddresses,
+  publicClient,
+} from '../../tests/addTestContracts.js'
+import getSubgraphRegistrant from './getSubgraphRegistrant.js'
 
 it('gets the registrant for a 2ld .eth name', async () => {
   const result = await getSubgraphRegistrant(publicClient, {

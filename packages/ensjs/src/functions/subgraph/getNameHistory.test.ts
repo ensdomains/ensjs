@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getNameHistory from './getNameHistory'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getNameHistory from './getNameHistory.js'
 
 it('returns null for a non-existent name', async () => {
   const result = await getNameHistory(publicClient, {

@@ -1,6 +1,6 @@
-import { publicClient } from '../tests/addTestContracts'
-import { namehash } from './normalise'
-import { ownerFromContract } from './ownerFromContract'
+import { publicClient } from '../tests/addTestContracts.js'
+import { namehash } from './normalise.js'
+import { ownerFromContract } from './ownerFromContract.js'
 
 const baseParams = {
   client: publicClient,

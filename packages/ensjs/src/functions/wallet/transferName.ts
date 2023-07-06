@@ -1,36 +1,40 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
   labelhash,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
 import { parseAccount } from 'viem/utils'
-import { reclaimSnippet } from '../../contracts/baseRegistrar'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { safeTransferFromSnippet as erc1155SafeTransferFromSnippet } from '../../contracts/erc1155'
-import { safeTransferFromSnippet as erc721SafeTransferFromSnippet } from '../../contracts/erc721'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setSubnodeOwnerSnippet as nameWrapperSetSubnodeOwnerSnippet } from '../../contracts/nameWrapper'
 import {
-  setSubnodeOwnerSnippet as registrySetSubnodeOwnerSnippet,
-  setOwnerSnippet,
-} from '../../contracts/registry'
+  baseRegistrarReclaimSnippet,
+  baseRegistrarSafeTransferFromSnippet,
+} from '../../contracts/baseRegistrar.js'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import {
+  nameWrapperSafeTransferFromSnippet,
+  nameWrapperSetSubnodeOwnerSnippet,
+} from '../../contracts/nameWrapper.js'
+import {
+  registrySetOwnerSnippet,
+  registrySetSubnodeOwnerSnippet,
+} from '../../contracts/registry.js'
 import {
   AdditionalParameterSpecifiedError,
   InvalidContractTypeError,
   UnsupportedNameTypeError,
-} from '../../errors/general'
-import {
+} from '../../errors/general.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { getNameType } from '../../utils/getNameType'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
-import { namehash } from '../../utils/normalise'
+} from '../../types.js'
+import { getNameType } from '../../utils/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
+import { namehash } from '../../utils/normalise.js'
 
 type BaseTransferNameDataParameters = {
   /** Name to transfer */
@@ -116,7 +120,7 @@ export const makeFunctionData = <
       return {
         to: registryAddress,
         data: encodeFunctionData({
-          abi: setOwnerSnippet,
+          abi: registrySetOwnerSnippet,
           functionName: 'setOwner',
           args: [namehash(name), newOwnerAddress],
         }),
@@ -146,12 +150,12 @@ export const makeFunctionData = <
         }),
         data: reclaim
           ? encodeFunctionData({
-              abi: reclaimSnippet,
+              abi: baseRegistrarReclaimSnippet,
               functionName: 'reclaim',
               args: [tokenId, newOwnerAddress],
             })
           : encodeFunctionData({
-              abi: erc721SafeTransferFromSnippet,
+              abi: baseRegistrarSafeTransferFromSnippet,
               functionName: 'safeTransferFrom',
               args: [wallet.account.address, newOwnerAddress, tokenId],
             }),
@@ -176,7 +180,7 @@ export const makeFunctionData = <
       return {
         to: nameWrapperAddress,
         data: encodeFunctionData({
-          abi: erc1155SafeTransferFromSnippet,
+          abi: nameWrapperSafeTransferFromSnippet,
           functionName: 'safeTransferFrom',
           args: [
             wallet.account.address,

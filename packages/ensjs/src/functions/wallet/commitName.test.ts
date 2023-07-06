@@ -1,17 +1,17 @@
-import { Address, Hex } from 'viem'
-import { commitmentsSnippet } from '../../contracts/ethRegistrarController'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import type { Address, Hex } from 'viem'
+import { ethRegistrarControllerCommitmentsSnippet } from '../../contracts/ethRegistrarController.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
+} from '../../tests/addTestContracts.js'
 import {
-  RegistrationParameters,
   makeCommitment,
-} from '../../utils/registerHelpers'
-import commitName from './commitName'
+  type RegistrationParameters,
+} from '../../utils/registerHelpers.js'
+import commitName from './commitName.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -46,7 +46,7 @@ it('should return a commit transaction and succeed', async () => {
   expect(receipt.status).toBe('success')
 
   const commitment = await publicClient.readContract({
-    abi: commitmentsSnippet,
+    abi: ethRegistrarControllerCommitmentsSnippet,
     functionName: 'commitments',
     address: getChainContractAddress({
       client: publicClient,

@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getOwner from './getOwner'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getOwner from './getOwner.js'
 
 describe('getOwner', () => {
   it('should return correct ownership level and values for a wrapped .eth name', async () => {

@@ -1,24 +1,24 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { multicallSnippet } from '../../contracts/publicResolver'
-import { NoRecordsSpecifiedError } from '../../errors/public'
-import {
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
+import { NoRecordsSpecifiedError } from '../../errors/public.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
+} from '../../types.js'
 import {
-  RecordOptions,
   generateRecordCallArray,
-} from '../../utils/generateRecordCallArray'
-import { namehash } from '../../utils/normalise'
+  type RecordOptions,
+} from '../../utils/generateRecordCallArray.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type SetRecordsDataParameters = {
   /** The name to set records for */
@@ -60,7 +60,7 @@ export const makeFunctionData = <
   return {
     to: resolverAddress,
     data: encodeFunctionData({
-      abi: multicallSnippet,
+      abi: publicResolverMulticallSnippet,
       functionName: 'multicall',
       args: [callArray],
     }),

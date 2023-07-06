@@ -1,5 +1,5 @@
 import { labelhash } from 'viem'
-import { namehash } from './normalise'
+import { namehash } from './normalise.js'
 
 export const makeLabelNodeAndParent = (name: string) => {
   const labels = name.split('.')

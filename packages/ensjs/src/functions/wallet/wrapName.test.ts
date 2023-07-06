@@ -1,16 +1,16 @@
-import { Address, Hex } from 'viem'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setApprovalForAllSnippet } from '../../contracts/registry'
+import type { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import getOwner from '../public/getOwner'
-import getResolver from '../public/getResolver'
-import getWrapperData from '../public/getWrapperData'
-import wrapName from './wrapName'
+} from '../../tests/addTestContracts.js'
+import getOwner from '../public/getOwner.js'
+import getResolver from '../public/getResolver.js'
+import getWrapperData from '../public/getWrapperData.js'
+import wrapName from './wrapName.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -29,7 +29,7 @@ afterEach(async () => {
 
 const approve = async () => {
   return walletClient.writeContract({
-    abi: setApprovalForAllSnippet,
+    abi: registrySetApprovalForAllSnippet,
     address: getChainContractAddress({
       client: walletClient,
       contract: 'ensRegistry',

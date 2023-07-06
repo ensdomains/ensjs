@@ -1,18 +1,18 @@
-import {
+import type {
   Account,
   Address,
   Hash,
   SendTransactionParameters,
   Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import {
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { encodeSetText } from '../../utils/encoders/encodeSetText'
-import { namehash } from '../../utils/normalise'
+} from '../../types.js'
+import { encodeSetText } from '../../utils/encoders/encodeSetText.js'
+import { namehash } from '../../utils/normalise.js'
 
 export type SetTextRecordDataParameters = {
   /** The name to set a text record for */

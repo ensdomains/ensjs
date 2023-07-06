@@ -1,8 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import { ethers } from 'hardhat'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
+const { ethers } = require('hardhat')
 
 const names = [
   {
@@ -11,7 +9,10 @@ const names = [
   },
 ]
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts } = hre
   const allNamedAccts = await getNamedAccounts()
 
@@ -35,4 +36,4 @@ func.id = 'set-primary'
 func.tags = ['set-primary']
 func.runAtTheEnd = true
 
-export default func
+module.exports = func

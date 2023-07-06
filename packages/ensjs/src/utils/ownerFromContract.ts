@@ -1,9 +1,10 @@
-import { Hex, encodeFunctionData, labelhash } from 'viem'
-import { ClientWithEns } from '../contracts/consts'
-import { ownerOfSnippet } from '../contracts/erc721'
-import { getChainContractAddress } from '../contracts/getChainContractAddress'
-import { ownerSnippet } from '../contracts/registry'
-import { InvalidContractTypeError } from '../errors/general'
+import { encodeFunctionData, labelhash, type Hex } from 'viem'
+import { baseRegistrarOwnerOfSnippet } from '../contracts/baseRegistrar.js'
+import type { ClientWithEns } from '../contracts/consts.js'
+import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
+import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
+import { registryOwnerSnippet } from '../contracts/registry.js'
+import { InvalidContractTypeError } from '../errors/general.js'
 
 export type OwnerContract = 'nameWrapper' | 'registry' | 'registrar'
 
@@ -34,7 +35,7 @@ export const ownerFromContract = ({
       return {
         to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
         data: encodeFunctionData({
-          abi: ownerOfSnippet,
+          abi: nameWrapperOwnerOfSnippet,
           functionName: 'ownerOf',
           args: [BigInt(namehash)],
         }),
@@ -43,7 +44,7 @@ export const ownerFromContract = ({
       return {
         to: getChainContractAddress({ client, contract: 'ensRegistry' }),
         data: encodeFunctionData({
-          abi: ownerSnippet,
+          abi: registryOwnerSnippet,
           functionName: 'owner',
           args: [namehash],
         }),
@@ -55,7 +56,7 @@ export const ownerFromContract = ({
           contract: 'ensBaseRegistrarImplementation',
         }),
         data: encodeFunctionData({
-          abi: ownerOfSnippet,
+          abi: baseRegistrarOwnerOfSnippet,
           functionName: 'ownerOf',
           args: [BigInt(labelhash(labels[0]))],
         }),

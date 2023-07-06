@@ -1,6 +1,6 @@
 import { stringToBytes } from 'viem'
-import { WrappedLabelTooLargeError } from '../errors/utils'
-import { AnyDate } from '../types'
+import { WrappedLabelTooLargeError } from '../errors/utils.js'
+import type { AnyDate } from '../types.js'
 
 export const MAX_EXPIRY = 2n ** 64n - 1n
 

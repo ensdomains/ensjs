@@ -1,16 +1,20 @@
 import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
-import { Hex, decodeFunctionResult, encodeFunctionData, trim } from 'viem'
-import { namehash } from '../../utils/normalise'
+import { decodeFunctionResult, encodeFunctionData, trim, type Hex } from 'viem'
+import { namehash } from '../../utils/normalise.js'
 
-import { ClientWithEns } from '../../contracts/consts'
+import type { ClientWithEns } from '../../contracts/consts.js'
 import {
-  multiAddrSnippet,
-  singleAddrSnippet,
-} from '../../contracts/publicResolver'
-import { CoinFormatterNotFoundError } from '../../errors/public'
-import { DecodedAddr, Prettify, SimpleTransactionRequest } from '../../types'
-import { EMPTY_ADDRESS } from '../../utils/consts'
-import { generateFunction } from '../../utils/generateFunction'
+  publicResolverMultiAddrSnippet,
+  publicResolverSingleAddrSnippet,
+} from '../../contracts/publicResolver.js'
+import { CoinFormatterNotFoundError } from '../../errors/public.js'
+import type {
+  DecodedAddr,
+  Prettify,
+  SimpleTransactionRequest,
+} from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
+import { generateFunction } from '../../utils/generateFunction.js'
 
 export type InternalGetAddrParameters = {
   /** Name to get the address record for */
@@ -31,7 +35,7 @@ const encode = (
     return {
       to: EMPTY_ADDRESS,
       data: encodeFunctionData({
-        abi: singleAddrSnippet,
+        abi: publicResolverSingleAddrSnippet,
         functionName: 'addr',
         args: [namehash(name)],
       }),
@@ -42,7 +46,7 @@ const encode = (
     return {
       to: EMPTY_ADDRESS,
       data: encodeFunctionData({
-        abi: multiAddrSnippet,
+        abi: publicResolverMultiAddrSnippet,
         functionName: 'addr',
         args: [namehash(name), BigInt(coin)],
       }),
@@ -58,7 +62,7 @@ const encode = (
   return {
     to: EMPTY_ADDRESS,
     data: encodeFunctionData({
-      abi: multiAddrSnippet,
+      abi: publicResolverMultiAddrSnippet,
       functionName: 'addr',
       args: [namehash(name), BigInt(formatter.coinType)],
     }),
@@ -83,13 +87,13 @@ const decode = async (
 
   if (coin === 60 || coin === '60') {
     response = decodeFunctionResult({
-      abi: singleAddrSnippet,
+      abi: publicResolverSingleAddrSnippet,
       functionName: 'addr',
       data,
     })
   } else {
     response = decodeFunctionResult({
-      abi: multiAddrSnippet,
+      abi: publicResolverMultiAddrSnippet,
       functionName: 'addr',
       data,
     })

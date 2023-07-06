@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getContentHashRecord from './getContentHashRecord'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getContentHashRecord from './getContentHashRecord.js'
 
 describe('getContentHashRecord', () => {
   it('should return null for a non-existent name', async () => {

@@ -1,17 +1,17 @@
-import { Address, Hex } from 'viem'
-import { ownerOfSnippet } from '../../contracts/erc721'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
+import type { Address, Hex } from 'viem'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts'
-import { namehash } from '../../utils/normalise'
-import { RegistrationParameters } from '../../utils/registerHelpers'
-import getPrice from '../public/getPrice'
-import commitName from './commitName'
-import registerName from './registerName'
+} from '../../tests/addTestContracts.js'
+import { namehash } from '../../utils/normalise.js'
+import type { RegistrationParameters } from '../../utils/registerHelpers.js'
+import getPrice from '../public/getPrice.js'
+import commitName from './commitName.js'
+import registerName from './registerName.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -32,7 +32,7 @@ const secret = `0x${'a'.repeat(64)}` as Hex
 
 const getNameWrapperOwner = async (name: string) => {
   return publicClient.readContract({
-    abi: ownerOfSnippet,
+    abi: nameWrapperOwnerOfSnippet,
     functionName: 'ownerOf',
     address: getChainContractAddress({
       client: publicClient,

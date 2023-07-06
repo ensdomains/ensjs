@@ -5,13 +5,13 @@ import {
   type ClientConfig,
   type Transport,
 } from 'viem'
-import { addEnsContracts } from '../contracts/addEnsContracts'
-import { type ChainWithEns } from '../contracts/consts'
-import { type Prettify } from '../types'
+import { addEnsContracts } from '../contracts/addEnsContracts.js'
+import type { ChainWithEns } from '../contracts/consts.js'
+import type { Prettify } from '../types.js'
 import {
   ensSubgraphActions,
   type EnsSubgraphActions,
-} from './decorators/subgraph'
+} from './decorators/subgraph.js'
 
 export type EnsSubgraphClientConfig<
   TTransport extends Transport = Transport,

@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getPrice from './getPrice'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getPrice from './getPrice.js'
 
 const yearCost = BigInt('8561643835626')
 

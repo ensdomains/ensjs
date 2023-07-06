@@ -1,11 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import fs from 'fs/promises'
-import { ethers } from 'hardhat'
-import { DeployFunction } from 'hardhat-deploy/types'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { resolve } from 'path'
-import { namehash } from '../src/utils/normalise'
+const fs = require('fs/promises')
+const { ethers } = require('hardhat')
+const { resolve } = require('path')
+const { namehash } = require('viem')
 
 const names = [
   {
@@ -15,7 +13,10 @@ const names = [
   },
 ]
 
-const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+/**
+ * @type {import('hardhat-deploy/types').DeployFunction}
+ */
+const func = async function (hre) {
   const { getNamedAccounts, deployments } = hre
   const allNamedAccts = await getNamedAccounts()
 
@@ -67,4 +68,4 @@ func.id = 'set-legacy-resolver'
 func.tags = ['set-legacy-resolver']
 func.runAtTheEnd = true
 
-export default func
+module.exports = func

@@ -1,5 +1,5 @@
-import { publicClient } from '../../tests/addTestContracts'
-import getRecords from './getRecords'
+import { publicClient } from '../../tests/addTestContracts.js'
+import getRecords from './getRecords.js'
 
 describe('getRecords()', () => {
   it('works', async () => {

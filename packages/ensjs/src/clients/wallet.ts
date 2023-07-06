@@ -1,19 +1,19 @@
 import {
-  Account,
-  Address,
-  ParseAccount,
-  WalletActions,
-  WalletRpcSchema,
   createWalletClient,
+  type Account,
+  type Address,
   type Chain,
   type Client,
   type ClientConfig,
+  type ParseAccount,
   type Transport,
+  type WalletActions,
+  type WalletRpcSchema,
 } from 'viem'
-import { addEnsContracts } from '../contracts/addEnsContracts'
-import { type ChainWithEns } from '../contracts/consts'
-import { type Prettify } from '../types'
-import { ensWalletActions, type EnsWalletActions } from './decorators/wallet'
+import { addEnsContracts } from '../contracts/addEnsContracts.js'
+import type { ChainWithEns } from '../contracts/consts.js'
+import type { Prettify } from '../types.js'
+import { ensWalletActions, type EnsWalletActions } from './decorators/wallet.js'
 
 export type EnsWalletClientConfig<
   TTransport extends Transport,

@@ -1,6 +1,6 @@
 import { call } from 'viem/actions'
-import { ClientWithEns } from '../contracts/consts'
-import { TransactionRequestWithPassthrough } from '../types'
+import type { ClientWithEns } from '../contracts/consts.js'
+import type { TransactionRequestWithPassthrough } from '../types.js'
 
 export type EncoderFunction = (
   ...args: any[]

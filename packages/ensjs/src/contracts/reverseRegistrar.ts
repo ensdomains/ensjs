@@ -1,4 +1,4 @@
-export const setNameForAddrSnippet = [
+export const reverseRegistrarSetNameForAddrSnippet = [
   {
     inputs: [
       {
@@ -30,7 +30,7 @@ export const setNameForAddrSnippet = [
   },
 ] as const
 
-export const setNameSnippet = [
+export const reverseRegistrarSetNameSnippet = [
   {
     inputs: [
       {

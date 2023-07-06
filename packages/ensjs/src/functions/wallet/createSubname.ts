@@ -1,33 +1,33 @@
 import {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
   encodeFunctionData,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
-import { ChainWithEns, WalletWithEns } from '../../contracts/consts'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress'
-import { setSubnodeRecordSnippet as nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper'
-import { setSubnodeRecordSnippet as registrySetSubnodeRecordSnippet } from '../../contracts/registry'
+import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
+import { registrySetSubnodeRecordSnippet } from '../../contracts/registry.js'
 import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
-} from '../../errors/general'
-import {
+} from '../../errors/general.js'
+import type {
   AnyDate,
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
-} from '../../types'
-import { CombinedFuseInput, encodeFuses } from '../../utils/fuses'
-import { getNameType } from '../../utils/getNameType'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent'
+} from '../../types.js'
+import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import { getNameType } from '../../utils/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
 import {
   MAX_EXPIRY,
   expiryToBigInt,
   wrappedLabelLengthCheck,
-} from '../../utils/wrapper'
+} from '../../utils/wrapper.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */

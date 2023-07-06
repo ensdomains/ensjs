@@ -1,5 +1,5 @@
-import { Hex, encodeFunctionData } from 'viem'
-import { setTextSnippet } from '../../contracts/publicResolver'
+import { encodeFunctionData, type Hex } from 'viem'
+import { publicResolverSetTextSnippet } from '../../contracts/publicResolver.js'
 
 export type EncodeSetTextParameters = {
   namehash: Hex
@@ -15,7 +15,7 @@ export const encodeSetText = ({
   value,
 }: EncodeSetTextParameters): EncodeSetTextReturnType => {
   return encodeFunctionData({
-    abi: setTextSnippet,
+    abi: publicResolverSetTextSnippet,
     functionName: 'setText',
     args: [namehash, key, value ?? ''],
   })
