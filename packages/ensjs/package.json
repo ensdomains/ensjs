@@ -92,8 +92,8 @@
     "build": "pnpm run clean && pnpm run build:cjs && pnpm run build:esm && pnpm run build:types",
     "tsn": "ts-node-esm --project tsconfig.node.json",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
-    "prepublishOnly": "tsn ./scripts/prepublishOnly.ts",
-    "ver": "pnpm version --no-workspaces-update && tsn ./scripts/updateVersion.ts"
+    "prepublishOnly": "pnpm tsn ./scripts/prepublishOnly.ts",
+    "ver": "pnpm tsn ./scripts/updateVersion.ts"
   },
   "dependencies": {
     "@adraffy/ens-normalize": "1.9.0",
