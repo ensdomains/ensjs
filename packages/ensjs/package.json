@@ -90,9 +90,10 @@
     "build:esm": "tsc --project tsconfig.build.json --module es2022 --outDir ./dist/esm && echo > ./dist/esm/package.json '{\"type\":\"module\",\"sideEffects\":false}'",
     "build:types": "tsc --project tsconfig.build.json --module esnext --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
     "build": "pnpm run clean && pnpm run build:cjs && pnpm run build:esm && pnpm run build:types",
+    "tsn": "ts-node-esm --project tsconfig.node.json",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
-    "prepublishOnly": "ts-node-esm ./scripts/prepublishOnly.ts",
-    "ver": "pnpm version --no-workspaces-update"
+    "prepublishOnly": "tsn ./scripts/prepublishOnly.ts",
+    "ver": "pnpm version --no-workspaces-update && tsn ./scripts/updateVersion.ts"
   },
   "dependencies": {
     "@adraffy/ens-normalize": "1.9.0",
