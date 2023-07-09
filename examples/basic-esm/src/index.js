@@ -13,9 +13,10 @@ const main = async () => {
   const recordData = await client.getRecords({
     name: 'ens.eth',
     records: {
-      abi: true,
+      coins: [...(records?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
+      texts: [...(records?.texts || []), 'avatar', 'email', 'description'],
       contentHash: true,
-      ...(records || {}),
+      abi: true,
     },
   })
   console.log(recordData)
