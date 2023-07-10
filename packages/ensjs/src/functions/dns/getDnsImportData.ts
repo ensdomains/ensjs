@@ -13,7 +13,7 @@ import { DnsNewerRecordTypeAvailableError } from '../../errors/dns.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 import type { Endpoint } from './types.js'
 
-export type PrepareDnsImportParameters = {
+export type GetDnsImportDataParameters = {
   /** Name to prepare for DNS import */
   name: string
   /** An RFC-1035 compatible DNS endpoint to use (default: `https://cloudflare-dns.com/dns-query`) */
@@ -25,7 +25,7 @@ export type RrSetWithSig = {
   sig: Uint8Array
 }
 
-export type PrepareDnsImportReturnType = {
+export type GetDnsImportDataReturnType = {
   rrsets: RrSetWithSig[]
   proof: Uint8Array
 }
@@ -43,32 +43,31 @@ const encodeProofs = (
   }))
 
 /**
- * Creates prepared data for `importDnsName()`
+ * Gets DNS import data, used for `importDnsName()`
  * @param client - {@link ClientWithEns}
- * @param parameters - {@link PrepareDnsImportParameters}
- * @returns Prepared data object
+ * @param parameters - {@link GetDnsImportDataParameters}
+ * @returns DNS import data object, used for proving the value of the `_ens` TXT record
  *
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, prepareDnsImport } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getDnsImportData } from '@ensdomains/ensjs'
  *
- * const mainnetWithEns = addContracts([mainnet])
  * const client = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
- * const preparedData = await prepareDnsImport(client, {
+ * const data = await getDnsImportData(client, {
  *   name: 'example.eth',
  * })
  */
-const prepareDnsImport = async (
+const getDnsImportData = async (
   client: ClientWithEns,
   {
     name,
     endpoint = 'https://cloudflare-dns.com/dns-query',
-  }: PrepareDnsImportParameters,
-): Promise<PrepareDnsImportReturnType> => {
+  }: GetDnsImportDataParameters,
+): Promise<GetDnsImportDataReturnType> => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { DNSProver } = await import('@ensdomains/dnsprovejs')
   const prover = DNSProver.create(endpoint)
@@ -130,4 +129,4 @@ const prepareDnsImport = async (
   }
 }
 
-export default prepareDnsImport
+export default getDnsImportData

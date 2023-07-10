@@ -6,8 +6,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../tests/addTestContracts.js'
+import getDnsImportData, { type RrSetWithSig } from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'
-import prepareDnsImport, { type RrSetWithSig } from './prepareDnsImport.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -36,7 +36,7 @@ const wait = async (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))
 
 it('returns all rrsets when no proofs are known', async () => {
-  const result = await prepareDnsImport(publicClient, {
+  const result = await getDnsImportData(publicClient, {
     name: 'taytems.xyz',
   })
   expect(result.rrsets.length).toBeGreaterThan(0)
@@ -59,7 +59,9 @@ it('returns rrsets up to the first unknown proof', async () => {
   const tx = await importDnsName(walletClient, {
     name: 'taytems.xyz',
     account: accounts[0],
-    preparedData: await prepareDnsImport(publicClient, { name: 'taytems.xyz' }),
+    dnsImportData: await getDnsImportData(publicClient, {
+      name: 'taytems.xyz',
+    }),
   })
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
@@ -67,7 +69,7 @@ it('returns rrsets up to the first unknown proof', async () => {
 
   await wait(5000)
 
-  const result = await prepareDnsImport(publicClient, {
+  const result = await getDnsImportData(publicClient, {
     name: 'lenster.xyz',
   })
   const decodedProofs = decodeProofs(result.rrsets)
@@ -88,7 +90,9 @@ it('returns empty rrsets for all known proofs when the last proof is known', asy
   const tx = await importDnsName(walletClient, {
     name: 'taytems.xyz',
     account: accounts[0],
-    preparedData: await prepareDnsImport(publicClient, { name: 'taytems.xyz' }),
+    dnsImportData: await getDnsImportData(publicClient, {
+      name: 'taytems.xyz',
+    }),
   })
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
@@ -96,7 +100,7 @@ it('returns empty rrsets for all known proofs when the last proof is known', asy
 
   await wait(5000)
 
-  const result = await prepareDnsImport(publicClient, {
+  const result = await getDnsImportData(publicClient, {
     name: 'taytems.xyz',
   })
   const decodedProofs = decodeProofs(result.rrsets)

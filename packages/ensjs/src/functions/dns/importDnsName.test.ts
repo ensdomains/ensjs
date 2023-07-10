@@ -9,8 +9,8 @@ import {
 } from '../../tests/addTestContracts.js'
 import getOwner from '../public/getOwner.js'
 import getResolver from '../public/getResolver.js'
+import getDnsImportData from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'
-import prepareDnsImport from './prepareDnsImport.js'
 
 const name = 'taytems.xyz'
 const address = '0x8e8Db5CcEF88cca9d624701Db544989C996E3216'
@@ -33,7 +33,7 @@ afterEach(async () => {
 it('should import a DNS name with no address', async () => {
   const tx = await importDnsName(walletClient, {
     name,
-    preparedData: await prepareDnsImport(publicClient, { name }),
+    dnsImportData: await getDnsImportData(publicClient, { name }),
     account: accounts[0],
   })
   expect(tx).toBeTruthy()
@@ -53,7 +53,7 @@ it('should import a DNS name with an address, using default resolver', async () 
   const tx = await importDnsName(walletClient, {
     name,
     address,
-    preparedData: await prepareDnsImport(publicClient, { name }),
+    dnsImportData: await getDnsImportData(publicClient, { name }),
     account: address,
   })
   expect(tx).toBeTruthy()
@@ -84,7 +84,7 @@ it('should import a DNS name with an address, using a custom resolver', async ()
   const tx = await importDnsName(walletClient, {
     name,
     address,
-    preparedData: await prepareDnsImport(publicClient, { name }),
+    dnsImportData: await getDnsImportData(publicClient, { name }),
     account: address,
     resolverAddress: legacyResolverAddress,
   })
@@ -102,13 +102,13 @@ it('should throw error if resolver is specified when claiming without an address
     importDnsName(walletClient, {
       name,
       resolverAddress: address,
-      preparedData: await prepareDnsImport(publicClient, { name }),
+      dnsImportData: await getDnsImportData(publicClient, { name }),
       account: accounts[0],
     } as any),
   ).rejects.toThrowErrorMatchingInlineSnapshot(`
     "Additional parameter specified: resolverAddress
 
-    - Allowed parameters: name, preparedData
+    - Allowed parameters: name, dnsImportData
 
     Details: resolverAddress cannot be specified when claiming without an address
 

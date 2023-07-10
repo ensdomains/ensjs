@@ -21,13 +21,13 @@ import type {
   WriteTransactionParameters,
 } from '../../types.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
-import type { PrepareDnsImportReturnType } from './prepareDnsImport.js'
+import type { GetDnsImportDataReturnType } from './getDnsImportData.js'
 
 type BaseImportDnsNameDataParameters = {
   /** Name to import */
   name: string
-  /** Data returned from `prepareDnsImport()` */
-  preparedData: PrepareDnsImportReturnType
+  /** Data returned from `getDnsImportData()` */
+  dnsImportData: GetDnsImportDataReturnType
   /** Address to claim the name for */
   address?: Address
   /** Address of the resolver to use (default: `ensPublicResolver`) */
@@ -65,9 +65,14 @@ export const makeFunctionData = <
   TAccount extends Account | undefined,
 >(
   wallet: WalletWithEns<Transport, TChain, TAccount>,
-  { name, preparedData, address, resolverAddress }: ImportDnsNameDataParameters,
+  {
+    name,
+    dnsImportData,
+    address,
+    resolverAddress,
+  }: ImportDnsNameDataParameters,
 ): ImportDnsNameDataReturnType => {
-  const data = preparedData.rrsets.map((rrset) => ({
+  const data = dnsImportData.rrsets.map((rrset) => ({
     rrset: bytesToHex(rrset.rrset),
     sig: bytesToHex(rrset.sig),
   }))
@@ -81,7 +86,7 @@ export const makeFunctionData = <
     if (resolverAddress)
       throw new AdditionalParameterSpecifiedError({
         parameter: 'resolverAddress',
-        allowedParameters: ['name', 'preparedData'],
+        allowedParameters: ['name', 'dnsImportData'],
         details:
           'resolverAddress cannot be specified when claiming without an address',
       })
@@ -90,7 +95,7 @@ export const makeFunctionData = <
       data: encodeFunctionData({
         abi: dnsRegistrarProveAndClaimSnippet,
         functionName: 'proveAndClaim',
-        args: [hexEncodedName, data, bytesToHex(preparedData.proof)],
+        args: [hexEncodedName, data, bytesToHex(dnsImportData.proof)],
       }),
     }
   }
@@ -107,7 +112,7 @@ export const makeFunctionData = <
       args: [
         hexEncodedName,
         data,
-        bytesToHex(preparedData.proof),
+        bytesToHex(dnsImportData.proof),
         resolverAddress_,
         address,
       ],
@@ -124,9 +129,9 @@ export const makeFunctionData = <
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addContracts, prepareDnsImport, importDnsName } from '@ensdomains/ensjs'
+ * import { addEnsContracts, getDnsImportData, importDnsName } from '@ensdomains/ensjs'
  *
- * const [mainnetWithEns] = addContracts([mainnet])
+ * const mainnetWithEns = addEnsContracts(mainnet)
  * const client = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),
@@ -135,12 +140,12 @@ export const makeFunctionData = <
  *   chain: mainnetWithEns,
  *   transport: custom(window.ethereum),
  * })
- * const preparedData = await prepareDnsImport(client, {
+ * const dnsImportData = await getDnsImportData(client, {
  *   name: 'example.com',
  * })
- * const hash = await importDnsName(client, {
+ * const hash = await importDnsName(wallet, {
  *   name: 'example.com',
- *   preparedData,
+ *   dnsImportData,
  * })
  */
 async function importDnsName<
@@ -152,7 +157,7 @@ async function importDnsName<
   {
     name,
     address,
-    preparedData,
+    dnsImportData,
     resolverAddress,
     ...txArgs
   }: ImportDnsNameParameters<TChain, TAccount, TChainOverride>,
@@ -160,7 +165,7 @@ async function importDnsName<
   const data = makeFunctionData(wallet, {
     name,
     address,
-    preparedData,
+    dnsImportData,
     resolverAddress,
   } as ImportDnsNameDataParameters)
   const writeArgs = {
