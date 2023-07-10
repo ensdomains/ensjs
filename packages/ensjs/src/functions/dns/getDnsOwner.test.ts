@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RequestListener } from 'http'
+import { getVersion } from '../../errors/error-utils.js'
 import { createHttpServer } from '../../tests/createHttpServer.js'
 import getDnsOwner from './getDnsOwner.js'
 
@@ -61,7 +62,7 @@ it('throws error if .eth', async () => {
 
     - Supported name types: other-2ld
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('throws error if >2ld', async () => {
@@ -71,7 +72,7 @@ it('throws error if >2ld', async () => {
 
     - Supported name types: other-2ld
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('returns error if DnsResponseStatus is not NOERROR', async () => {
@@ -90,7 +91,7 @@ it('returns error if DnsResponseStatus is not NOERROR', async () => {
     .rejects.toThrowErrorMatchingInlineSnapshot(`
     "DNS query failed with status: NXDOMAIN
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('returns error if AD is false', async () => {
@@ -109,7 +110,7 @@ it('returns error if AD is false', async () => {
     .rejects.toThrowErrorMatchingInlineSnapshot(`
     "DNSSEC verification failed
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('returns error if no TXT record', async () => {
@@ -129,7 +130,7 @@ it('returns error if no TXT record', async () => {
     .rejects.toThrowErrorMatchingInlineSnapshot(`
     "No TXT record found
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('returns error if TXT record is not formatted correctly', async () => {
@@ -156,7 +157,7 @@ it('returns error if TXT record is not formatted correctly', async () => {
     .rejects.toThrowErrorMatchingInlineSnapshot(`
     "Invalid TXT record: 0x8e8Db5CcEF88cca9d624701Db544989C996E3216
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('returns error if address is not checksummed', async () => {
@@ -183,7 +184,7 @@ it('returns error if address is not checksummed', async () => {
     .rejects.toThrowErrorMatchingInlineSnapshot(`
     "Invalid address checksum: 0x8e8db5CcEF88cca9d624701Db544989C996E3216
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('real test', async () => {

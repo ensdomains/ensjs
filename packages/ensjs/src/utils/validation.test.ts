@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { getVersion } from '../errors/error-utils.js'
 import { parseInput, validateName } from './validation.js'
 
 declare namespace localStorage {
@@ -42,7 +43,7 @@ describe('validateName()', () => {
 
       - Supplied name: foo.[root].bar
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 

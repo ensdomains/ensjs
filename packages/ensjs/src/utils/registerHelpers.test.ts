@@ -1,4 +1,5 @@
 import { labelhash } from 'viem'
+import { getVersion } from '../errors/error-utils.js'
 import { namehash } from './normalise.js'
 import {
   makeCommitment,
@@ -32,7 +33,7 @@ describe('randomSecret()', () => {
 
       - Max campaign reference: 4294967295
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })

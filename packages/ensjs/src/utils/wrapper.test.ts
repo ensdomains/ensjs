@@ -1,3 +1,4 @@
+import { getVersion } from '../errors/error-utils.js'
 import { expiryToBigInt, wrappedLabelLengthCheck } from './wrapper.js'
 
 describe('expiryToBigInt', () => {
@@ -39,7 +40,7 @@ describe('wrappedLabelLengthCheck', () => {
       - Max byte length: 255
       - Actual byte length: 256
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })

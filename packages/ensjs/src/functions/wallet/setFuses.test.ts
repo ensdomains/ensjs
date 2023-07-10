@@ -1,6 +1,7 @@
 import type { Address, Hex } from 'viem'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
+import { getVersion } from '../../errors/error-utils.js'
 import {
   publicClient,
   testClient,
@@ -183,7 +184,7 @@ describe('Array', () => {
 
       - If you are trying to set a named fuse, use the named property
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('should throw an error when trying to burn an unnamed fuse in a named fuse array', async () => {
@@ -197,7 +198,7 @@ describe('Array', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       "COOL_SWAG_FUSE is not a valid named fuse
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })
@@ -241,7 +242,7 @@ describe('Number', () => {
 
       Details: Fuse number must be limited to uint32, the supplied value was too high
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('should throw an error if the number is too low', async () => {
@@ -262,7 +263,7 @@ describe('Number', () => {
 
       Details: Fuse number must be limited to uint32, the supplied value was too low
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('should throw an error if the number is not an integer', async () => {
@@ -280,7 +281,7 @@ describe('Number', () => {
 
       - Fuse value: 7.5
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })

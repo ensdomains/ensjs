@@ -1,5 +1,6 @@
 import { parseEther, type Address, type Hex } from 'viem'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { getVersion } from '../../errors/error-utils.js'
 import {
   publicClient,
   testClient,
@@ -111,6 +112,6 @@ it('should throw error if resolver is specified when claiming without an address
 
     Details: resolverAddress cannot be specified when claiming without an address
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })

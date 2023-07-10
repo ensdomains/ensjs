@@ -1,3 +1,4 @@
+import { getVersion } from '../../errors/error-utils.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -28,6 +29,6 @@ it('throws an error for other name', async () => {
 
     Details: Registrant can only be fetched for eth-2ld names
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })

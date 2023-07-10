@@ -1,3 +1,4 @@
+import { getVersion } from '../errors/error-utils.js'
 import { publicClient } from '../tests/addTestContracts.js'
 import { namehash } from './normalise.js'
 import { ownerFromContract } from './ownerFromContract.js'
@@ -46,6 +47,6 @@ it('throws when contract is not nameWrapper, registry, or registrar', () => {
 
     - Supported contract types: nameWrapper, registry, registrar
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })

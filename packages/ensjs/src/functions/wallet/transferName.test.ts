@@ -1,4 +1,5 @@
 import type { Address, Hex } from 'viem'
+import { getVersion } from '../../errors/error-utils.js'
 import {
   publicClient,
   testClient,
@@ -118,7 +119,7 @@ it('errors if unknown contract', async () => {
 
     - Supported contract types: registry, registrar, nameWrapper
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('errors when reclaim is specified and contract is not registrar', async () => {
@@ -137,7 +138,7 @@ it('errors when reclaim is specified and contract is not registrar', async () =>
 
     Details: Can't reclaim a name from any contract other than the registrar
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 
@@ -194,7 +195,7 @@ describe('subnames/asParent', () => {
 
       Details: Can't transfer a name as the parent owner on the registrar
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })

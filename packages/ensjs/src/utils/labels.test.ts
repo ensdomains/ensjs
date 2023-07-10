@@ -1,4 +1,5 @@
 import { labelhash } from 'viem'
+import { getVersion } from '../errors/error-utils.js'
 import {
   decodeLabelhash,
   encodeLabelhash,
@@ -29,7 +30,7 @@ describe('decodeLabelhash()', () => {
 
       Details: Expected encoded labelhash to start and end with square brackets
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('throws error when label does not end with ]', () => {
@@ -44,7 +45,7 @@ describe('decodeLabelhash()', () => {
 
       Details: Expected encoded labelhash to start and end with square brackets
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('throws error when label length is not 66', () => {
@@ -59,7 +60,7 @@ describe('decodeLabelhash()', () => {
 
       Details: Expected encoded labelhash to have a length of 66
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })
@@ -86,7 +87,7 @@ describe('encodeLabelhash()', () => {
 
       Details: Expected labelhash to start with 0x
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('throws error when labelhash length is not 66', () => {
@@ -101,7 +102,7 @@ describe('encodeLabelhash()', () => {
 
       Details: Expected labelhash to have a length of 66
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })

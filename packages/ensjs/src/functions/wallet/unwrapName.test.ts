@@ -1,4 +1,5 @@
 import type { Address, Hex } from 'viem'
+import { getVersion } from '../../errors/error-utils.js'
 import {
   publicClient,
   testClient,
@@ -69,7 +70,7 @@ it('should error if newRegistrantAddress is not specified for .eth', async () =>
 
     Details: Must provide newRegistrantAddress for eth-2ld names
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })
 it('should error if newRegistrantAddress is specified for non .eth', async () => {
@@ -87,6 +88,6 @@ it('should error if newRegistrantAddress is specified for non .eth', async () =>
 
     Details: newRegistrantAddress can only be specified for eth-2ld names
 
-    Version: @ensdomains/ensjs@3.0.0-alpha.62"
+    Version: ${getVersion()}"
   `)
 })

@@ -1,6 +1,7 @@
 import type { Address, Hex } from 'viem'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
+import { getVersion } from '../../errors/error-utils.js'
 import {
   publicClient,
   testClient,
@@ -112,7 +113,7 @@ describe('eth 2ld', () => {
       - Max byte length: 255
       - Actual byte length: 256
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })
@@ -170,7 +171,7 @@ describe('other', () => {
 
       Details: Fuses cannot be initially set when wrapping non eth-2ld names
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
   it('should error for a label longer than 255 bytes', async () => {
@@ -188,7 +189,7 @@ describe('other', () => {
       - Max byte length: 255
       - Actual byte length: 256
 
-      Version: @ensdomains/ensjs@3.0.0-alpha.62"
+      Version: ${getVersion()}"
     `)
   })
 })
