@@ -1,6 +1,9 @@
 import {
+  BaseError,
+  decodeErrorResult,
   decodeFunctionResult,
   encodeFunctionData,
+  getContractError,
   labelhash,
   toBytes,
   toHex,
@@ -10,8 +13,13 @@ import {
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { universalResolverResolveSnippet } from '../../contracts/universalResolver.js'
-import type { SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  TransactionRequestWithPassthrough,
+} from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
+import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 import { encodeLabelhash } from '../../utils/labels.js'
 
@@ -28,7 +36,7 @@ export type UniversalWrapperReturnType = {
 const encode = (
   client: ClientWithEns,
   { name, data }: UniversalWrapperParameters,
-): SimpleTransactionRequest => {
+): TransactionRequestWithPassthrough => {
   const nameWithSizedLabels = name
     .split('.')
     .map((label) => {
@@ -39,20 +47,54 @@ const encode = (
       return label
     })
     .join('.')
+  const to = getChainContractAddress({
+    client,
+    contract: 'ensUniversalResolver',
+  })
+  const args = [toHex(packetToBytes(nameWithSizedLabels)), data] as const
   return {
     to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
     data: encodeFunctionData({
       abi: universalResolverResolveSnippet,
       functionName: 'resolve',
-      args: [toHex(packetToBytes(nameWithSizedLabels)), data],
+      args,
     }),
+    passthrough: {
+      args,
+      address: to,
+    },
   }
 }
 
 const decode = async (
   _client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
 ): Promise<UniversalWrapperReturnType> => {
+  if (typeof data === 'object') {
+    const errorData = getRevertErrorData(data)
+    if (errorData) {
+      const decodedError = decodeErrorResult({
+        abi: universalResolverResolveSnippet,
+        data: errorData,
+      })
+      if (
+        decodedError.errorName === 'ResolverNotFound' ||
+        decodedError.errorName === 'ResolverWildcardNotSupported'
+      )
+        return {
+          data: '0x',
+          resolver: EMPTY_ADDRESS,
+        }
+    }
+    throw getContractError(data, {
+      abi: universalResolverResolveSnippet,
+      functionName: 'resolve',
+      args: passthrough.args,
+      address: passthrough.address,
+    })
+  }
+
   const result = decodeFunctionResult({
     abi: universalResolverResolveSnippet,
     functionName: 'resolve',

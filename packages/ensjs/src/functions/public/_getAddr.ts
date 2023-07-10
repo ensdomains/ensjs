@@ -74,6 +74,7 @@ const decode = async (
   data: Hex,
   { coin }: InternalGetAddrParameters,
 ): Promise<InternalGetAddrReturnType> => {
+  if (data === '0x') return null
   if (!coin) {
     coin = 60
   }

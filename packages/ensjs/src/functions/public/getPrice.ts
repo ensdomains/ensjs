@@ -1,4 +1,9 @@
-import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
+import {
+  BaseError,
+  decodeFunctionResult,
+  encodeFunctionData,
+  type Hex,
+} from 'viem'
 import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
@@ -85,9 +90,10 @@ const encode = (
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   { nameOrNames }: GetPriceParameters,
 ): Promise<GetPriceReturnType> => {
+  if (typeof data === 'object') throw data
   const isBulkRenewal = Array.isArray(nameOrNames) && nameOrNames.length > 1
   if (isBulkRenewal) {
     const result = await multicallWrapper.decode(client, data, [])

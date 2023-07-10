@@ -1,4 +1,7 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import {
+  deploymentAddresses,
+  publicClient,
+} from '../../tests/addTestContracts.js'
 import getOwner from './getOwner.js'
 
 describe('getOwner', () => {
@@ -15,7 +18,7 @@ describe('getOwner', () => {
     const result = await getOwner(publicClient, { name: 'expired-wrapped.eth' })
     expect(result).toMatchInlineSnapshot(`
       {
-        "owner": "0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E",
+        "owner": "${deploymentAddresses.NameWrapper}",
         "ownershipLevel": "registrar",
         "registrant": null,
       }

@@ -1,9 +1,10 @@
 import {
+  BaseError,
   decodeAbiParameters,
+  decodeErrorResult,
   decodeFunctionResult,
   encodeFunctionData,
-  labelhash,
-  stringToBytes,
+  getContractError,
   toHex,
   type Address,
   type Hex,
@@ -17,9 +18,10 @@ import type {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
 } from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
+import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
-import { encodeLabelhash } from '../../utils/labels.js'
 import _getAbi, { type InternalGetAbiReturnType } from './_getAbi.js'
 import _getAddr from './_getAddr.js'
 import _getContentHash, {
@@ -152,21 +154,11 @@ const encode = (
     }
   }
 
-  // allow names larger than 255 bytes to be resolved
-  const formattedName = name
-    .split('.')
-    .map((label) =>
-      stringToBytes(label).byteLength > 255
-        ? encodeLabelhash(labelhash(label))
-        : label,
-    )
-    .join('.')
-
   const encoded = encodeFunctionData({
     abi: universalResolverResolveArraySnippet,
     functionName: 'resolve',
     args: [
-      toHex(packetToBytes(formattedName)),
+      toHex(packetToBytes(name)),
       calls.filter((c) => c).map((c) => c!.call.data),
     ],
   })
@@ -180,7 +172,7 @@ const encode = (
 
 const decode = async <TParams extends GetRecordsParameters>(
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   passthrough: (CallObj | null)[],
   { name, resolver }: TParams,
 ): Promise<GetRecordsReturnType<TParams>> => {
@@ -197,6 +189,50 @@ const decode = async <TParams extends GetRecordsParameters>(
     resolverAddress = resolver.address
     recordData = result.map((r) => r.returnData)
   } else {
+    if (typeof data === 'object') {
+      const errorData = getRevertErrorData(data)
+      if (errorData) {
+        const decodedError = decodeErrorResult({
+          abi: universalResolverResolveArraySnippet,
+          data: errorData,
+        })
+        if (
+          decodedError.errorName === 'ResolverNotFound' ||
+          decodedError.errorName === 'ResolverWildcardNotSupported'
+        )
+          return passthrough.reduce(
+            (prev, curr) => {
+              if (!curr) return prev
+              if (curr.type === 'coin' && !('coin' in prev)) {
+                return { ...prev, coins: [] }
+              }
+              if (curr.type === 'text' && !('texts' in prev)) {
+                return { ...prev, texts: [] }
+              }
+              if (curr.type === 'contentHash' && !('contentHash' in prev)) {
+                return { ...prev, contentHash: null }
+              }
+              // abi
+              return { ...prev, abi: null }
+            },
+            {
+              resolverAddress: EMPTY_ADDRESS,
+            } as unknown as GetRecordsReturnType<TParams>,
+          )
+      }
+      throw getContractError(data, {
+        abi: universalResolverResolveArraySnippet,
+        functionName: 'resolve',
+        args: [
+          toHex(packetToBytes(name)),
+          calls.filter((c) => c).map((c) => c!.call.data),
+        ],
+        address: getChainContractAddress({
+          client,
+          contract: 'ensUniversalResolver',
+        }),
+      })
+    }
     const result = decodeFunctionResult({
       abi: universalResolverResolveArraySnippet,
       functionName: 'resolve',

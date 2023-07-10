@@ -1,4 +1,5 @@
 import {
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
   labelhash,
@@ -50,8 +51,9 @@ const encode = (
 
 const decode = async (
   _client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
 ): Promise<GetAvailableReturnType> => {
+  if (typeof data === 'object') throw data
   const result = decodeFunctionResult({
     abi: baseRegistrarAvailableSnippet,
     functionName: 'available',

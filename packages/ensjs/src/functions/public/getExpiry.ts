@@ -1,4 +1,5 @@
 import {
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
   labelhash,
@@ -110,9 +111,10 @@ const encode = (
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   { name, contract }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> => {
+  if (typeof data === 'object') throw data
   const labels = name.split('.')
   const result = await multicallWrapper.decode(client, data, [])
 

@@ -31,7 +31,7 @@ type ContractName =
   | 'ENSRegistry'
   | 'ReverseRegistrar'
   | 'UniversalResolver'
-  | 'BulkRenewal'
+  | 'StaticBulkRenewal'
   | 'DNSSECImpl'
   | 'LegacyDNSRegistrar'
   | 'LegacyDNSSECImpl'
@@ -74,7 +74,7 @@ export const localhost = {
       address: deploymentAddresses.ReverseRegistrar,
     },
     ensBulkRenewal: {
-      address: deploymentAddresses.BulkRenewal,
+      address: deploymentAddresses.StaticBulkRenewal,
     },
     ensDnssecImpl: {
       address: deploymentAddresses.LegacyDNSSECImpl,

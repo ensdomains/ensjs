@@ -1,6 +1,10 @@
-import type { Hex } from 'viem'
+import type { BaseError, Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import type { Prettify, SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  Prettify,
+  SimpleTransactionRequest,
+} from '../../types.js'
 import {
   generateFunction,
   type GeneratedFunction,
@@ -25,10 +29,10 @@ const encode = (
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
 ): Promise<GetTextRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data)
-  if (!urData) return null
+  const urData = await universalWrapper.decode(client, data, passthrough)
   return _getText.decode(client, urData.data)
 }
 

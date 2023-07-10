@@ -1,3 +1,4 @@
+import { BaseError } from 'viem'
 import { call } from 'viem/actions'
 import type { ClientWithEns } from '../contracts/consts.js'
 import type { TransactionRequestWithPassthrough } from '../types.js'
@@ -62,8 +63,12 @@ export const generateFunction = <
 }) => {
   const single = async function (client, ...args) {
     const { passthrough, ...encodedData } = encode(client, ...args)
-    const { data: result } = await call(client, encodedData)
-    if (!result) return null
+    const result = await call(client, encodedData)
+      .then((ret) => ret.data)
+      .catch((e) => {
+        if (!(e instanceof BaseError)) throw e
+        return e
+      })
     if (passthrough) return decode(client, result, passthrough, ...args)
     return decode(client, result, ...args)
   } as TFunction

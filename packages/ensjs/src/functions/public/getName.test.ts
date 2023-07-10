@@ -1,5 +1,28 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import type { Address, Hex } from 'viem'
+import {
+  deploymentAddresses,
+  publicClient,
+  testClient,
+  waitForTransaction,
+  walletClient,
+} from '../../tests/addTestContracts.js'
+import setPrimaryName from '../wallet/setPrimaryName.js'
 import getName from './getName.js'
+
+let snapshot: Hex
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
+})
+
+beforeEach(async () => {
+  snapshot = await testClient.snapshot()
+})
+
+afterEach(async () => {
+  await testClient.revert({ id: snapshot })
+})
 
 describe('getName', () => {
   it('should get a primary name from an address', async () => {
@@ -10,37 +33,34 @@ describe('getName', () => {
       {
         "match": true,
         "name": "with-profile.eth",
-        "resolverAddress": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
-        "reverseResolverAddress": "0x70e0bA845a1A0F2DA3359C97E0285013525FFC49",
+        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
+        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
       }
     `)
-    // expect(result).toBeTruthy()
-    // if (result) {
-    //   expect(result.name).toBe('with-profile.eth')
-    //   expect(result.match).toBeTruthy()
-    // }
   })
-  it.todo(
-    'should return null for an address with no primary name',
-    // async () => {
-    //   const result = await getName(testClient, {
-    //     address: '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0',
-    //   })
-    //   expect(result).toMatchInlineSnapshot(``)
-    // },
-  )
-  it.todo(
-    'should return with a false match for a name with no forward resolution',
-    // async () => {
-    //   const tx = await ensInstance.setName('with-profile.eth')
-    //   await tx?.wait()
+  it('should return null for an address with no primary name', async () => {
+    const result = await getName(publicClient, {
+      address: '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0',
+    })
+    expect(result).toBeNull()
+  })
+  it('should return with a false match for a name with no forward resolution', async () => {
+    const tx = await setPrimaryName(walletClient, {
+      name: 'with-profile.eth',
+      account: accounts[0],
+    })
+    await waitForTransaction(tx)
 
-    //   const result = await ensInstance.getName(accounts[0])
-    //   expect(result).toBeTruthy()
-    //   if (result) {
-    //     expect(result.name).toBe('with-profile.eth')
-    //     expect(result.match).toBeFalsy()
-    //   }
-    // },
-  )
+    const result = await getName(publicClient, {
+      address: accounts[0],
+    })
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "match": false,
+        "name": "with-profile.eth",
+        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
+        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
+      }
+    `)
+  })
 })

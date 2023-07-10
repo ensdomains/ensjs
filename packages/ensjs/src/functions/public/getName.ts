@@ -1,6 +1,9 @@
 import {
+  BaseError,
+  decodeErrorResult,
   decodeFunctionResult,
   encodeFunctionData,
+  getContractError,
   toHex,
   type Address,
   type Hex,
@@ -8,11 +11,15 @@ import {
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { universalResolverReverseSnippet } from '../../contracts/universalResolver.js'
-import type { SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  TransactionRequestWithPassthrough,
+} from '../../types.js'
 import {
   generateFunction,
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
+import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 
 export type GetNameParameters = {
@@ -34,23 +41,50 @@ export type GetNameReturnType = {
 const encode = (
   client: ClientWithEns,
   { address }: GetNameParameters,
-): SimpleTransactionRequest => {
+): TransactionRequestWithPassthrough => {
   const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
+  const to = getChainContractAddress({
+    client,
+    contract: 'ensUniversalResolver',
+  })
+  const args = [toHex(packetToBytes(reverseNode))] as const
   return {
-    to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
+    to,
     data: encodeFunctionData({
       abi: universalResolverReverseSnippet,
       functionName: 'reverse',
-      args: [toHex(packetToBytes(reverseNode))],
+      args,
     }),
+    passthrough: { address, args },
   }
 }
 
 const decode = async (
   _client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
   { address }: GetNameParameters,
 ): Promise<GetNameReturnType | null> => {
+  if (typeof data === 'object') {
+    const errorData = getRevertErrorData(data)
+    if (errorData) {
+      const decodedError = decodeErrorResult({
+        abi: universalResolverReverseSnippet,
+        data: errorData,
+      })
+      if (
+        decodedError.errorName === 'ResolverNotFound' ||
+        decodedError.errorName === 'ResolverWildcardNotSupported'
+      )
+        return null
+    }
+    throw getContractError(data, {
+      abi: universalResolverReverseSnippet,
+      functionName: 'reverse',
+      args: passthrough.args,
+      address: passthrough.address,
+    })
+  }
   const result = decodeFunctionResult({
     abi: universalResolverReverseSnippet,
     functionName: 'reverse',

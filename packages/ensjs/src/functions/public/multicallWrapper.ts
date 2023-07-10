@@ -1,6 +1,8 @@
 import {
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
+  getContractError,
   offchainLookup,
   type Hex,
 } from 'viem'
@@ -42,9 +44,16 @@ const encode = (
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   transactions: TransactionRequestWithPassthrough[],
 ): Promise<MulticallWrapperReturnType> => {
+  if (typeof data === 'object') {
+    throw getContractError(data, {
+      abi: multicallTryAggregateSnippet,
+      functionName: 'tryAggregate',
+      args: [],
+    })
+  }
   const result = decodeFunctionResult({
     abi: multicallTryAggregateSnippet,
     functionName: 'tryAggregate',

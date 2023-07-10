@@ -1,6 +1,8 @@
 import {
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
+  getContractError,
   toHex,
   type Address,
   type Hex,
@@ -8,7 +10,10 @@ import {
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
-import type { SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  TransactionRequestWithPassthrough,
+} from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import {
   generateFunction,
@@ -26,21 +31,35 @@ export type GetResolverReturnType = Address | null
 const encode = (
   client: ClientWithEns,
   { name }: GetResolverParameters,
-): SimpleTransactionRequest => {
+): TransactionRequestWithPassthrough => {
+  const address = getChainContractAddress({
+    client,
+    contract: 'ensUniversalResolver',
+  })
+  const args = [toHex(packetToBytes(name))] as const
   return {
-    to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
+    to: address,
     data: encodeFunctionData({
       abi: universalResolverFindResolverSnippet,
       functionName: 'findResolver',
-      args: [toHex(packetToBytes(name))],
+      args,
     }),
+    passthrough: { address, args },
   }
 }
 
 const decode = async (
   _client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
 ): Promise<GetResolverReturnType> => {
+  if (typeof data === 'object')
+    throw getContractError(data, {
+      abi: universalResolverFindResolverSnippet,
+      functionName: 'findResolver',
+      args: passthrough.args,
+      address: passthrough.address,
+    })
   const response = decodeFunctionResult({
     abi: universalResolverFindResolverSnippet,
     functionName: 'findResolver',

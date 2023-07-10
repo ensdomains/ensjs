@@ -1,13 +1,18 @@
 import {
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
+  getContractError,
   hexToBytes,
   type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperNamesSnippet } from '../../contracts/nameWrapper.js'
-import type { SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  TransactionRequestWithPassthrough,
+} from '../../types.js'
 import {
   generateFunction,
   type GeneratedFunction,
@@ -25,21 +30,35 @@ export type GetWrapperNameReturnType = string | null
 const encode = (
   client: ClientWithEns,
   { name }: GetWrapperNameParameters,
-): SimpleTransactionRequest => {
+): TransactionRequestWithPassthrough => {
+  const address = getChainContractAddress({
+    client,
+    contract: 'ensNameWrapper',
+  })
+  const args = [namehash(name)] as const
   return {
-    to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
+    to: address,
     data: encodeFunctionData({
       abi: nameWrapperNamesSnippet,
       functionName: 'names',
-      args: [namehash(name)],
+      args,
     }),
+    passthrough: { address, args },
   }
 }
 
 const decode = async (
   _client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
 ): Promise<GetWrapperNameReturnType> => {
+  if (typeof data === 'object')
+    throw getContractError(data, {
+      abi: nameWrapperNamesSnippet,
+      functionName: 'names',
+      args: passthrough.args,
+      address: passthrough.address,
+    })
   const result = decodeFunctionResult({
     abi: nameWrapperNamesSnippet,
     functionName: 'names',

@@ -1,6 +1,10 @@
-import type { Hex } from 'viem'
+import type { BaseError, Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import type { Prettify, SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  Prettify,
+  TransactionRequestWithPassthrough,
+} from '../../types.js'
 import {
   generateFunction,
   type GeneratedFunction,
@@ -20,17 +24,17 @@ export type GetContentHashRecordReturnType =
 const encode = (
   client: ClientWithEns,
   { name }: GetContentHashRecordParameters,
-): SimpleTransactionRequest => {
+): TransactionRequestWithPassthrough => {
   const prData = _getContentHash.encode(client, { name })
   return universalWrapper.encode(client, { name, data: prData.data })
 }
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
 ): Promise<GetContentHashRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data)
-  if (!urData) return null
+  const urData = await universalWrapper.decode(client, data, passthrough)
   return _getContentHash.decode(client, urData.data)
 }
 

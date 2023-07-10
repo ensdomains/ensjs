@@ -1,4 +1,7 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import {
+  deploymentAddresses,
+  publicClient,
+} from '../../tests/addTestContracts.js'
 import getRecords from './getRecords.js'
 
 describe('getRecords()', () => {
@@ -29,7 +32,7 @@ describe('getRecords()', () => {
             "value": "bc1qjqg9slurvjukfl92wp58y94480fvh4uc2pwa6n",
           },
         ],
-        "resolverAddress": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
+        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
         "texts": [
           {
             "key": "description",

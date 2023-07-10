@@ -1,6 +1,8 @@
 import {
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
+  getContractError,
   type Address,
   type Hex,
 } from 'viem'
@@ -9,8 +11,9 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
 import type {
   DateWithValue,
+  GenericPassthrough,
   Prettify,
-  SimpleTransactionRequest,
+  TransactionRequestWithPassthrough,
 } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { decodeFuses } from '../../utils/fuses.js'
@@ -40,21 +43,35 @@ export type GetWrapperDataReturnType = Prettify<{
 const encode = (
   client: ClientWithEns,
   { name }: GetWrapperDataParameters,
-): SimpleTransactionRequest => {
+): TransactionRequestWithPassthrough => {
+  const address = getChainContractAddress({
+    client,
+    contract: 'ensNameWrapper',
+  })
+  const args = [BigInt(namehash(name))] as const
   return {
-    to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
+    to: address,
     data: encodeFunctionData({
       abi: nameWrapperGetDataSnippet,
       functionName: 'getData',
-      args: [BigInt(namehash(name))],
+      args,
     }),
+    passthrough: { address, args },
   }
 }
 
 const decode = async (
   _client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
+  passthrough: GenericPassthrough,
 ): Promise<GetWrapperDataReturnType> => {
+  if (typeof data === 'object')
+    throw getContractError(data, {
+      abi: nameWrapperGetDataSnippet,
+      functionName: 'getData',
+      args: passthrough.args,
+      address: passthrough.address,
+    })
   const [owner, fuses, expiry] = decodeFunctionResult({
     abi: nameWrapperGetDataSnippet,
     functionName: 'getData',

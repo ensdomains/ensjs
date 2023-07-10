@@ -1,4 +1,4 @@
-import { decodeAbiParameters, type Address, type Hex } from 'viem'
+import { BaseError, decodeAbiParameters, type Address, type Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import type { SimpleTransactionRequest } from '../../types.js'
@@ -106,9 +106,10 @@ const addressDecode = (data: Hex) =>
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   { name, contract }: GetOwnerParameters,
 ): Promise<GetOwnerReturnType> => {
+  if (typeof data === 'object') throw data
   const labels = name.split('.')
   if (contract || labels.length === 1) {
     const singleOwner = addressDecode(data)

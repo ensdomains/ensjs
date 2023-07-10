@@ -36,6 +36,8 @@ const decode = async (
   _client: ClientWithEns,
   data: Hex,
 ): Promise<InternalGetContentHashReturnType> => {
+  if (data === '0x') return null
+
   const response = decodeFunctionResult({
     abi: publicResolverContenthashSnippet,
     functionName: 'contenthash',

@@ -102,7 +102,7 @@ importers:
       '@ensdomains/buffer': ^0.0.13
       '@ensdomains/content-hash': ^2.5.7
       '@ensdomains/dnsprovejs': ^0.4.1
-      '@ensdomains/ens-contracts': 0.0.17
+      '@ensdomains/ens-contracts': 0.0.22
       '@ensdomains/ens-test-env': workspace:*
       '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
       '@openzeppelin/contracts': ^4.5.0
@@ -156,7 +156,7 @@ importers:
       traverse: 0.6.6
     devDependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.16.1
-      '@ensdomains/ens-contracts': 0.0.17_hardhat@2.16.1
+      '@ensdomains/ens-contracts': 0.0.22
       '@ensdomains/ens-test-env': link:../ens-test-env
       '@nomiclabs/hardhat-ethers': /hardhat-deploy-ethers/0.3.0-beta.13_drbn5rr2wg6skrabufgggpzpcu
       '@openzeppelin/contracts': 4.7.3
@@ -629,6 +629,10 @@ packages:
       - web3-utils
     dev: true
 
+  /@ensdomains/buffer/0.1.1:
+    resolution: {integrity: sha512-92SfSiNS8XorgU7OUBHo/i1ZU7JV7iz/6bKuLPNVsMxV79/eI7fJR6jfJJc40zAHjs3ha+Xo965Idomlq3rqnw==}
+    dev: true
+
   /@ensdomains/content-hash/2.5.7:
     resolution: {integrity: sha512-WNdGKCeubMIAfyPYTMlKeX6cgXKIEo42OcWPOLBiclzJwMibkVqpaGgWKVH9dniJq7bLXLa2tQ0k/F1pt6gUxA==}
     dependencies:
@@ -646,25 +650,13 @@ packages:
       typescript-logging: 1.0.1
     dev: false
 
-  /@ensdomains/ens-contracts/0.0.17_hardhat@2.16.1:
-    resolution: {integrity: sha512-Dv4y8V5UhswWk/GMwJVu4gV17uoAvSVmzjG4DVSbP7DF3ITtVGwDYclejMQ9JIg8jn84pHSKawzExiC+xJrT3g==}
+  /@ensdomains/ens-contracts/0.0.22:
+    resolution: {integrity: sha512-kNu7pp68/5KfJ5wkswnUS4NfI9Ek4zGi0nnNSmGf1WXs6BHU9NYRVR6NnoVzb1B+cZ658e1v2srTtvmBYYIYzg==}
     dependencies:
-      '@ensdomains/buffer': 0.0.13_hardhat@2.16.1
+      '@ensdomains/buffer': 0.1.1
       '@ensdomains/solsha1': 0.0.3
       '@openzeppelin/contracts': 4.7.3
       dns-packet: 5.4.0
-    transitivePeerDependencies:
-      - '@nomiclabs/hardhat-web3'
-      - bufferutil
-      - encoding
-      - hardhat
-      - supports-color
-      - utf-8-validate
-      - web3
-      - web3-core-helpers
-      - web3-core-promievent
-      - web3-eth-abi
-      - web3-utils
     dev: true
 
   /@ensdomains/ens/0.4.5:

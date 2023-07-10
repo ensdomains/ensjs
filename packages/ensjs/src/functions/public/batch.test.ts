@@ -1,7 +1,10 @@
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
-import { publicClient } from '../../tests/addTestContracts.js'
+import {
+  deploymentAddresses,
+  publicClient,
+} from '../../tests/addTestContracts.js'
 import batch from './batch.js'
 import getAddressRecord from './getAddressRecord.js'
 import getName from './getName.js'
@@ -31,8 +34,8 @@ describe('batch', () => {
         {
           "match": true,
           "name": "with-profile.eth",
-          "resolverAddress": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
-          "reverseResolverAddress": "0x70e0bA845a1A0F2DA3359C97E0285013525FFC49",
+          "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
+          "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
         },
       ]
     `)

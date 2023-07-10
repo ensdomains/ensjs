@@ -1,6 +1,10 @@
 import type { Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import type { Prettify, SimpleTransactionRequest } from '../../types.js'
+import type {
+  GenericPassthrough,
+  Prettify,
+  SimpleTransactionRequest,
+} from '../../types.js'
 import {
   generateFunction,
   type GeneratedFunction,
@@ -26,9 +30,9 @@ const encode = (
 const decode = async (
   client: ClientWithEns,
   data: Hex,
+  passthrough: GenericPassthrough,
 ): Promise<GetAbiRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data)
-  if (!urData) return null
+  const urData = await universalWrapper.decode(client, data, passthrough)
   return _getAbi.decode(client, urData.data)
 }
 

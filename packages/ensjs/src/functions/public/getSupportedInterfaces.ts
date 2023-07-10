@@ -1,4 +1,4 @@
-import { encodeFunctionData, type Address, type Hex } from 'viem'
+import { BaseError, encodeFunctionData, type Address, type Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'
 import type {
@@ -41,9 +41,10 @@ const encode = (
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   passthrough: SimpleTransactionRequest[],
 ): Promise<GetSupportedInterfacesReturnType> => {
+  if (typeof data === 'object') throw data
   const result = await multicallWrapper.decode(client, data, passthrough)
   return result.map((r) => r.success && r.returnData === '0x01')
 }

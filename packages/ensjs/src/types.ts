@@ -1,5 +1,6 @@
 import type {
   Account,
+  Address,
   Client,
   SendTransactionParameters,
   TransactionRequest,
@@ -17,6 +18,8 @@ export type SimpleTransactionRequest = Prettify<
 export type TransactionRequestWithPassthrough = SimpleTransactionRequest & {
   passthrough?: any
 }
+
+export type GenericPassthrough = { args: any; address: Address }
 
 export type Extended = { [K in keyof Client]?: undefined } & {
   [key: string]: unknown

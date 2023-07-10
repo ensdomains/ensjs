@@ -33,6 +33,8 @@ const decode = async (
   _client: ClientWithEns,
   data: Hex,
 ): Promise<InternalGetTextReturnType> => {
+  if (data === '0x') return null
+
   const response = decodeFunctionResult({
     abi: publicResolverTextSnippet,
     functionName: 'text',

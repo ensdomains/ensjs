@@ -48,6 +48,8 @@ const decode = async (
   _client: ClientWithEns,
   data: Hex,
 ): Promise<InternalGetAbiReturnType> => {
+  if (data === '0x') return null
+
   const [bigintContentType, encodedAbiData] = decodeFunctionResult({
     abi: publicResolverAbiSnippet,
     functionName: 'ABI',
