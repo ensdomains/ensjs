@@ -207,7 +207,11 @@ const getNamesForAddress = async (
       : ownerWhereFilters[0]
   const whereFilters: DomainFilter[] = [ownerWhereFilter]
 
-  const orderByFilter: DomainFilter = getOrderByFilter(previousPage, orderDirection, orderBy)
+  const orderByFilter: DomainFilter = getOrderByFilter(
+    previousPage,
+    orderDirection,
+    orderBy,
+  )
 
   if (previousPage?.length) {
     whereFilters.push(orderByFilter)
