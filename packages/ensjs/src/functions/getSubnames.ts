@@ -52,7 +52,7 @@ type Params = {
 }
 
 const largeQuery = async (
-  { gqlInstance }: ENSArgs<'gqlInstance'>,
+  { gqlInstance, contracts }: ENSArgs<'gqlInstance' | 'contracts'>,
   {
     name,
     pageSize = 10,
@@ -62,6 +62,9 @@ const largeQuery = async (
     search = '',
   }: Params,
 ) => {
+  const nameWrapper = await contracts?.getNameWrapper()
+  const nameWrapperAddress = nameWrapper?.address.toLowerCase()
+
   const { client } = gqlInstance
 
   const lastSubname = lastSubnames?.[lastSubnames.length - 1]
@@ -165,7 +168,8 @@ const largeQuery = async (
         type: 'domain',
       } as Subname
 
-      if (wrappedDomain) {
+      // If the subname is wrapped, we need to verfiy that it is wrapped by checking the registry owner
+      if (wrappedDomain && obj.owner === nameWrapperAddress) {
         obj.type = 'wrappedDomain'
         const expiryDateAsDate =
           wrappedDomain.expiryDate && wrappedDomain.expiryDate !== '0'
@@ -194,7 +198,7 @@ const largeQuery = async (
 }
 
 const getSubnames = (
-  injected: ENSArgs<'gqlInstance'>,
+  injected: ENSArgs<'gqlInstance' | 'contracts'>,
   functionArgs: Params,
 ): Promise<ReturnData> => {
   return largeQuery(injected, functionArgs)

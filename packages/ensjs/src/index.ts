@@ -510,7 +510,7 @@ export class ENS {
 
   public getSubnames = this.generateFunction<FunctionTypes['getSubnames']>(
     'initialGetters',
-    ['gqlInstance'],
+    ['gqlInstance', 'contracts'],
     'getSubnames',
   )
 
