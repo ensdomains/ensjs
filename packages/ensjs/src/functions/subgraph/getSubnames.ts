@@ -41,6 +41,68 @@ type SubgraphResult = {
   }
 }
 
+const getOrderByFilter = (
+  previousPage: GetSubnamesParameters['previousPage'],
+  orderDirection: GetSubnamesParameters['orderDirection'],
+  orderBy: GetSubnamesParameters['orderBy'],
+  name: GetSubnamesParameters['name'],
+) => {
+  if (!previousPage?.length) return {}
+
+  const lastDomain = previousPage[previousPage.length - 1]
+  const operator = orderDirection === 'asc' ? 'gt' : 'lt'
+
+  switch (orderBy) {
+    case 'expiryDate': {
+      let lastExpiryDate = lastDomain.expiryDate?.value
+        ? lastDomain.expiryDate.value / 1000
+        : 0
+      if (name === 'eth' && lastExpiryDate) {
+        lastExpiryDate += GRACE_PERIOD_SECONDS
+      }
+
+      if (orderDirection === 'asc' && lastExpiryDate === 0) {
+        return {
+          and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
+        }
+      }
+      if (orderDirection === 'desc' && lastExpiryDate !== 0) {
+        return {
+          [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+        }
+      }
+      return {
+        or: [
+          {
+            [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+          },
+          { expiryDate: null },
+        ],
+      }
+    }
+    case 'name': {
+      return {
+        [`name_${operator}`]: lastDomain.name ?? '',
+      }
+    }
+    case 'labelName': {
+      return {
+        [`labelName_${operator}`]: lastDomain.labelName ?? '',
+      }
+    }
+    case 'createdAt': {
+      return {
+        [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
+      }
+    }
+    default:
+      throw new InvalidOrderByError({
+        orderBy: orderBy || '<no orderBy provided>',
+        supportedOrderBys: ['expiryDate', 'name', 'labelName', 'createdAt'],
+      })
+  }
+}
+
 /**
  * Gets the subnames for a name from the subgraph.
  * @param client - {@link ClientWithEns}
@@ -74,63 +136,14 @@ const getSubnames = async (
 
   const whereFilters: DomainFilter[] = []
 
-  let orderByFilter: DomainFilter = {}
+  const orderByFilter: DomainFilter = getOrderByFilter(
+    previousPage,
+    orderDirection,
+    orderBy,
+    name,
+  )
 
-  if (previousPage && previousPage.length > 0) {
-    const lastDomain = previousPage[previousPage.length - 1]
-    const operator = orderDirection === 'asc' ? 'gt' : 'lt'
-    switch (orderBy) {
-      case 'expiryDate': {
-        let lastExpiryDate = lastDomain.expiryDate?.value
-          ? lastDomain.expiryDate.value / 1000
-          : 0
-        if (name === 'eth' && lastExpiryDate) {
-          lastExpiryDate += GRACE_PERIOD_SECONDS
-        }
-        if (orderDirection === 'asc' && lastExpiryDate === 0) {
-          orderByFilter = {
-            and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
-          }
-        } else if (orderDirection === 'desc' && lastExpiryDate !== 0) {
-          orderByFilter = {
-            [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-          }
-        } else {
-          orderByFilter = {
-            or: [
-              {
-                [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-              },
-              { expiryDate: null },
-            ],
-          }
-        }
-        break
-      }
-      case 'name': {
-        orderByFilter = {
-          [`name_${operator}`]: lastDomain.name ?? '',
-        }
-        break
-      }
-      case 'labelName': {
-        orderByFilter = {
-          [`labelName_${operator}`]: lastDomain.labelName ?? '',
-        }
-        break
-      }
-      case 'createdAt': {
-        orderByFilter = {
-          [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
-        }
-        break
-      }
-      default:
-        throw new InvalidOrderByError({
-          orderBy,
-          supportedOrderBys: ['expiryDate', 'name', 'labelName', 'createdAt'],
-        })
-    }
+  if (previousPage?.length) {
     whereFilters.push(orderByFilter)
   }
 
