@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { gql } from 'graphql-request'
 import type { Address } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
@@ -8,6 +9,7 @@ import {
 } from '../../errors/subgraph.js'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'
+import type { DomainFilter } from './filters.js'
 import {
   domainDetailsFragment,
   registrationDetailsFragment,
@@ -15,6 +17,13 @@ import {
   type SubgraphDomain,
 } from './fragments.js'
 import { makeNameObject, type Name } from './utils.js'
+
+const supportedOwnerFilters = [
+  'owner',
+  'registrant',
+  'wrappedOwner',
+  'resolvedAddress',
+] as const
 
 type GetNamesForAddressOrderBy =
   | 'expiryDate'
@@ -102,72 +111,42 @@ const getNamesForAddress = async (
 ): Promise<GetNamesForAddressReturnType> => {
   const subgraphClient = createSubgraphClient({ client })
 
-  let ownerWhereFilter = `
-    or: [
-  `
-  let hasFilterApplied = false
   const { allowExpired, allowReverseRecord, ...filters } = filter
-  for (const [key, value] of Object.entries(filters)) {
-    if (value) {
-      hasFilterApplied = true
-      switch (key) {
-        case 'owner': {
-          ownerWhereFilter += `
-            { owner: $address }
-          `
-          break
-        }
-        case 'registrant': {
-          ownerWhereFilter += `
-            { registrant: $address }
-          `
-          break
-        }
-        case 'wrappedOwner': {
-          ownerWhereFilter += `
-            { wrappedOwner: $address }
-          `
-          break
-        }
-        case 'resolvedAddress': {
-          ownerWhereFilter += `
-            { resolvedAddress: $address }
-          `
-          break
-        }
-        default:
+  const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
+    (prev, [key, value]) => {
+      if (value) {
+        if (!supportedOwnerFilters.includes(key as any))
           throw new InvalidFilterKeyError({
             filterKey: key,
-            supportedFilterKeys: [
-              'owner',
-              'registrant',
-              'wrappedOwner',
-              'resolvedAddress',
-            ],
+            supportedFilterKeys: supportedOwnerFilters,
           })
+        return [
+          ...prev,
+          {
+            [key]: address.toLowerCase(),
+          },
+        ]
       }
-    }
-  }
+      return prev
+    },
+    [] as DomainFilter[],
+  )
+
+  const hasFilterApplied = ownerWhereFilters.length > 0
 
   if (!hasFilterApplied)
     throw new FilterKeyRequiredError({
-      supportedFilterKeys: [
-        'owner',
-        'registrant',
-        'wrappedOwner',
-        'resolvedAddress',
-      ],
+      supportedFilterKeys: supportedOwnerFilters,
       details: 'At least one ownership filter must be enabled',
     })
 
-  ownerWhereFilter += `
-    ]
-  `
+  const ownerWhereFilter: DomainFilter =
+    ownerWhereFilters.length > 1
+      ? { or: ownerWhereFilters }
+      : ownerWhereFilters[0]
+  const whereFilters: DomainFilter[] = [ownerWhereFilter]
 
-  const whereFilters = [ownerWhereFilter]
-
-  let orderByFilter = ''
-  let orderByStringVar = ''
+  let orderByFilter: DomainFilter = {}
 
   if (previousPage && previousPage.length > 0) {
     const lastDomain = previousPage[previousPage.length - 1]
@@ -181,58 +160,41 @@ const getNamesForAddress = async (
           lastExpiryDate += GRACE_PERIOD_SECONDS
         }
         if (orderDirection === 'asc' && lastExpiryDate === 0) {
-          orderByFilter = `
-              {
-                and: [
-                  { expiryDate: null }
-                  { id_${operator}: "${lastDomain.id}" }
-                ]
-              }
-            `
+          orderByFilter = {
+            and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
+          }
         } else if (orderDirection === 'desc' && lastExpiryDate !== 0) {
-          orderByFilter = `
-            {
-              expiryDate_${operator}: ${lastExpiryDate}
-            }
-          `
+          orderByFilter = {
+            [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+          }
         } else {
-          orderByFilter = `
-            {
-              or: [
-                {
-                  expiryDate_${operator}: ${lastExpiryDate}
-                }
-                { expiryDate: null }
-              ]
-            }
-          `
+          orderByFilter = {
+            or: [
+              {
+                [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+              },
+              { expiryDate: null },
+            ],
+          }
         }
         break
       }
       case 'name': {
-        orderByFilter = `
-          {
-            name_${operator}: $orderByStringVar
-          }
-        `
-        orderByStringVar = lastDomain.name ?? ''
+        orderByFilter = {
+          [`name_${operator}`]: lastDomain.name ?? '',
+        }
         break
       }
       case 'labelName': {
-        orderByFilter = `
-          {
-            labelName_${operator}: $orderByStringVar
-          }
-        `
-        orderByStringVar = lastDomain.labelName ?? ''
+        orderByFilter = {
+          [`labelName_${operator}`]: lastDomain.labelName ?? '',
+        }
         break
       }
       case 'createdAt': {
-        orderByFilter = `
-          {
-            createdAt_${operator}: ${lastDomain.createdAt.value / 1000}
-          }
-        `
+        orderByFilter = {
+          [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
+        }
         break
       }
       default:
@@ -247,86 +209,66 @@ const getNamesForAddress = async (
   if (!allowReverseRecord) {
     // Exclude domains with parent addr.reverse
     // namehash of addr.reverse = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2
-    whereFilters.push(`
-      {
-        parent_not: "0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2"
-      }
-    `)
+    whereFilters.push({
+      parent_not:
+        '0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2',
+    })
   }
 
   if (!allowExpired) {
     // Exclude domains that are expired
     // if expiryDate is null, there is no expiry on the domain (registration or wrapped)
-    whereFilters.push(`
-      {
-        or: [
-          { expiryDate_gt: $expiryDate }
-          { expiryDate: null }
-        ]
-      }
-    `)
+    whereFilters.push({
+      or: [
+        { expiryDate_gt: `${Math.floor(Date.now() / 1000)}` },
+        { expiryDate: null },
+      ],
+    })
   }
 
-  const whereFilter =
-    whereFilters.length > 1
-      ? `
-    and: [
-      {
-        ${whereFilters.shift()}
-      }
-      ${whereFilters.join('\n')}
-    ]
-  `
-      : whereFilters[0]
+  const whereFilter: DomainFilter =
+    whereFilters.length > 1 ? { and: whereFilters } : whereFilters[0]
 
   const query = gql`
-      query getNamesForAddress(
-        $address: String!
-        $orderBy: Domain_orderBy
-        $orderDirection: OrderDirection
-        $first: Int
-        $expiryDate: Int
-        $orderByStringVar: String
+    query getNamesForAddress(
+      $orderBy: Domain_orderBy
+      $orderDirection: OrderDirection
+      $first: Int
+      $whereFilter: Domain_filter
+    ) {
+      domains(
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        first: $first
+        where: $whereFilter
       ) {
-        domains(
-          orderBy: $orderBy
-          orderDirection: $orderDirection
-          first: $first
-          where: {
-            ${whereFilter}
-          }
-        ) {
-          ...DomainDetails
-          registration {
-            ...RegistrationDetails
-          }
-          wrappedDomain {
-            ...WrappedDomainDetails
-          }
+        ...DomainDetails
+        registration {
+          ...RegistrationDetails
+        }
+        wrappedDomain {
+          ...WrappedDomainDetails
         }
       }
-      ${domainDetailsFragment}
-      ${registrationDetailsFragment}
-      ${wrappedDomainDetailsFragment}
-    `
+    }
+    ${domainDetailsFragment}
+    ${registrationDetailsFragment}
+    ${wrappedDomainDetailsFragment}
+  `
 
   const result = await subgraphClient.request<
     SubgraphResult,
     {
-      address: string
       orderBy: string
       orderDirection: string
       first: number
-      expiryDate: number
-      orderByStringVar: string
+      whereFilter: DomainFilter
     }
   >(query, {
-    address: address.toLowerCase(),
     orderBy,
     orderDirection,
     first: pageSize,
-    expiryDate: Math.floor(Date.now() / 1000),
-    orderByStringVar,
+    whereFilter,
   })
 
   if (!result) return []

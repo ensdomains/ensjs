@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { gql } from 'graphql-request'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 import { namehash } from '../../utils/normalise.js'
 import { createSubgraphClient } from './client.js'
+import type { DomainFilter } from './filters.js'
 import {
   domainDetailsWithoutParentFragment,
   registrationDetailsFragment,
@@ -70,10 +72,9 @@ const getSubnames = async (
 ): Promise<GetSubnamesReturnType> => {
   const subgraphClient = createSubgraphClient({ client })
 
-  const whereFilters: string[] = []
+  const whereFilters: DomainFilter[] = []
 
-  let orderByFilter = ''
-  let orderByStringVar = ''
+  let orderByFilter: DomainFilter = {}
 
   if (previousPage && previousPage.length > 0) {
     const lastDomain = previousPage[previousPage.length - 1]
@@ -87,58 +88,41 @@ const getSubnames = async (
           lastExpiryDate += GRACE_PERIOD_SECONDS
         }
         if (orderDirection === 'asc' && lastExpiryDate === 0) {
-          orderByFilter = `
-              {
-                and: [
-                  { expiryDate: null }
-                  { id_${operator}: "${lastDomain.id}" }
-                ]
-              }
-            `
+          orderByFilter = {
+            and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
+          }
         } else if (orderDirection === 'desc' && lastExpiryDate !== 0) {
-          orderByFilter = `
-            {
-              expiryDate_${operator}: ${lastExpiryDate}
-            }
-          `
+          orderByFilter = {
+            [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+          }
         } else {
-          orderByFilter = `
-            {
-              or: [
-                {
-                  expiryDate_${operator}: ${lastExpiryDate}
-                }
-                { expiryDate: null }
-              ]
-            }
-          `
+          orderByFilter = {
+            or: [
+              {
+                [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+              },
+              { expiryDate: null },
+            ],
+          }
         }
         break
       }
       case 'name': {
-        orderByFilter = `
-          {
-            name_${operator}: $orderByStringVar
-          }
-        `
-        orderByStringVar = lastDomain.name ?? ''
+        orderByFilter = {
+          [`name_${operator}`]: lastDomain.name ?? '',
+        }
         break
       }
       case 'labelName': {
-        orderByFilter = `
-          {
-            labelName_${operator}: $orderByStringVar
-          }
-        `
-        orderByStringVar = lastDomain.labelName ?? ''
+        orderByFilter = {
+          [`labelName_${operator}`]: lastDomain.labelName ?? '',
+        }
         break
       }
       case 'createdAt': {
-        orderByFilter = `
-          {
-            createdAt_${operator}: ${lastDomain.createdAt.value / 1000}
-          }
-        `
+        orderByFilter = {
+          [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
+        }
         break
       }
       default:
@@ -153,36 +137,30 @@ const getSubnames = async (
   if (!allowExpired) {
     // Exclude domains that are expired
     // if expiryDate is null, there is no expiry on the domain (registration or wrapped)
-    whereFilters.push(`
-      {
-        or: [
-          { expiryDate_gt: $expiryDate }
-          { expiryDate: null }
-        ]
-      }
-    `)
+    whereFilters.push({
+      or: [
+        { expiryDate_gt: `${Math.floor(Date.now() / 1000)}` },
+        { expiryDate: null },
+      ],
+    })
   }
 
   if (searchString) {
     // using labelName_contains instead of name_contains because name_contains
     // includes the parent name
-    whereFilters.push(`
-      {
-        labelName_contains: $searchString
-      }
-    `)
+    whereFilters.push({
+      labelName_contains: searchString,
+    })
   }
 
-  let whereFilter = ''
+  let whereFilter: DomainFilter = {}
 
   if (whereFilters.length > 1) {
-    whereFilter = `
-      and: [
-        ${whereFilters.join('\n')}
-      ]
-    `
+    whereFilter = {
+      and: whereFilters,
+    }
   } else if (whereFilters.length === 1) {
-    whereFilter = whereFilters[0].replace(/{(.*)}/gs, '$1')
+    ;[whereFilter] = whereFilters
   }
 
   const query = gql`
@@ -190,24 +168,15 @@ const getSubnames = async (
       $id: String!
       $orderBy: Domain_orderBy
       $orderDirection: OrderDirection
+      $whereFilter: Domain_filter
       $first: Int
-      $expiryDate: Int
-      $searchString: String
-      $orderByStringVar: String
     ) {
       domain(id: $id) {
         subdomains(
           orderBy: $orderBy
           orderDirection: $orderDirection
           first: $first
-          ${
-            whereFilter &&
-            `
-          where: {
-            ${whereFilter}
-          }
-          `
-          }
+          where: $whereFilter
         ) {
           ...DomainDetailsWithoutParent
           registration {
@@ -229,9 +198,7 @@ const getSubnames = async (
     orderBy,
     orderDirection,
     first: pageSize,
-    expiryDate: Math.floor(Date.now() / 1000),
-    searchString,
-    orderByStringVar,
+    whereFilter,
   }
 
   const result = await subgraphClient.request<SubgraphResult, typeof queryVars>(

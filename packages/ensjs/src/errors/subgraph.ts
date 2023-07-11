@@ -3,7 +3,7 @@ import { BaseError } from './base.js'
 export class InvalidFilterKeyError extends BaseError {
   filterKey: string
 
-  supportedFilterKeys: string[]
+  supportedFilterKeys: readonly string[]
 
   override name = 'InvalidFilterKeyError'
 
@@ -12,7 +12,7 @@ export class InvalidFilterKeyError extends BaseError {
     supportedFilterKeys,
   }: {
     filterKey: string
-    supportedFilterKeys: string[]
+    supportedFilterKeys: readonly string[]
   }) {
     super(`Invalid filter key: ${filterKey}`, {
       metaMessages: [
@@ -25,7 +25,7 @@ export class InvalidFilterKeyError extends BaseError {
 }
 
 export class FilterKeyRequiredError extends BaseError {
-  supportedFilterKeys: string[]
+  supportedFilterKeys: readonly string[]
 
   override name = 'FilterKeyRequiredError'
 
@@ -33,7 +33,7 @@ export class FilterKeyRequiredError extends BaseError {
     supportedFilterKeys,
     details,
   }: {
-    supportedFilterKeys: string[]
+    supportedFilterKeys: readonly string[]
     details?: string
   }) {
     super('At least one filter key is required', {
