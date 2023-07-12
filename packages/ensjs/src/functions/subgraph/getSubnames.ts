@@ -41,14 +41,17 @@ type SubgraphResult = {
   }
 }
 
-const getOrderByFilter = (
-  previousPage: GetSubnamesParameters['previousPage'],
-  orderDirection: GetSubnamesParameters['orderDirection'],
-  orderBy: GetSubnamesParameters['orderBy'],
-  name: GetSubnamesParameters['name'],
-) => {
-  if (!previousPage?.length) return {}
-
+const getOrderByFilter = ({
+  name,
+  orderBy,
+  orderDirection,
+  previousPage,
+}: Required<
+  Pick<
+    GetSubnamesParameters,
+    'name' | 'orderBy' | 'orderDirection' | 'previousPage'
+  >
+>): DomainFilter => {
   const lastDomain = previousPage[previousPage.length - 1]
   const operator = orderDirection === 'asc' ? 'gt' : 'lt'
 
@@ -136,15 +139,15 @@ const getSubnames = async (
 
   const whereFilters: DomainFilter[] = []
 
-  const orderByFilter: DomainFilter = getOrderByFilter(
-    previousPage,
-    orderDirection,
-    orderBy,
-    name,
-  )
-
   if (previousPage?.length) {
-    whereFilters.push(orderByFilter)
+    whereFilters.push(
+      getOrderByFilter({
+        name,
+        orderBy,
+        orderDirection,
+        previousPage,
+      }),
+    )
   }
 
   if (!allowExpired) {
