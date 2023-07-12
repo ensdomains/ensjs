@@ -42,7 +42,7 @@ export {
   type DecodedContentHash,
   type ProtocolType,
 } from './contentHash.js'
-export { bracketFormat, formatHashed, truncateFormat } from './format.js'
+export { truncateFormat } from './format.js'
 export {
   generateRecordCallArray,
   type RecordOptions,

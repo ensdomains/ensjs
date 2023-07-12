@@ -83,7 +83,7 @@
     "start": "ts-node --files src/index.test.ts",
     "test": "jest --runInBand",
     "test:watch": "jest --watch --run-in-band",
-    "test:specific": "ts-node --files ",
+    "test:specific": "jest --testPathPattern=jest --testPathPattern=src/utils/encoders/encodeSetText.test.ts",
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
     "lint": "eslint ./src/* --no-error-on-unmatched-pattern",
     "build:cjs": "tsc --project tsconfig.build.json --module commonjs --outDir ./dist/cjs --removeComments --verbatimModuleSyntax false && echo > ./dist/cjs/package.json '{\"type\":\"commonjs\"}'",

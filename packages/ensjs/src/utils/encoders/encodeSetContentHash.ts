@@ -17,6 +17,7 @@ export const encodeSetContentHash = ({
   if (contentHash) {
     const encodedObject = encodeContenthash(contentHash)
     if (encodedObject.error) throw new Error(encodedObject.error)
+    if (!encodedObject.encoded) throw new Error('Failed to encocde contentHash')
     encodedHash = encodedObject.encoded as Hex
   }
   return encodeFunctionData({
