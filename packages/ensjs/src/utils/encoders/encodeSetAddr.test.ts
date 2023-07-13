@@ -1,6 +1,7 @@
 import { encodeSetAddr, EncodeSetAddrParameters } from './encodeSetAddr'
 
-const namehash = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+const namehash =
+  '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
 
 describe('encodeSetAddr', () => {
   const testCases: Array<[string, EncodeSetAddrParameters, string]> = [

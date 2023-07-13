@@ -12,7 +12,9 @@ describe('encodeAbi', () => {
     const data = { foo: 'bar' }
     const result = await encodeAbi({ encodeAs: 'zlib', data })
     expect(result.contentType).toEqual(2)
-    expect(result.encodedData).toEqual('0x789cab564acbcf57b2524a4a2c52aa05001d7a0434')
+    expect(result.encodedData).toEqual(
+      '0x789cab564acbcf57b2524a4a2c52aa05001d7a0434',
+    )
   })
 
   it('encodes data as cbor', async () => {
