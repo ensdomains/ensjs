@@ -86,7 +86,7 @@ export function getProtocolType(encoded: string) {
   return { protocolType: protocolType as NonNullable<ProtocolType>, decoded }
 }
 
-export function encodeContentHash(text: string) {
+export function encodeContentHash(text: string): Hex {
   const typeData = getProtocolType(text)
   if (!typeData) throw new InvalidContentHashError()
 
