@@ -1,5 +1,11 @@
-import contentHash from '@ensdomains/content-hash'
+import {
+  decode,
+  encode,
+  getCodec,
+  type Codec as InternalCodec,
+} from '@ensdomains/content-hash'
 import { isHex, type Hex } from 'viem'
+import { InvalidContentHashError } from '../errors/utils.js'
 
 export type ProtocolType =
   | 'ipfs'
@@ -16,16 +22,6 @@ export type DecodedContentHash = {
   decoded: string
 }
 
-const supportedCodecs = [
-  'ipns-ns',
-  'ipfs-ns',
-  'swarm-ns',
-  'onion',
-  'onion3',
-  'skynet-ns',
-  'arweave-ns',
-]
-
 function matchProtocol(text: string) {
   return (
     text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave|ar):\/\/(.*)/) ||
@@ -34,117 +30,67 @@ function matchProtocol(text: string) {
   )
 }
 
-export function decodeContenthash(encoded: Hex): DecodedContentHash | null {
+const getDisplayCodec = (encoded: string): ProtocolType => {
+  const codec = getCodec(encoded)
+  switch (codec) {
+    case 'ipfs':
+    case 'ipns':
+    case 'onion':
+    case 'onion3':
+      return codec
+    case 'swarm':
+      return 'bzz'
+    case 'skynet':
+      return 'sia'
+    case 'arweave':
+      return 'ar'
+    default:
+      return null
+  }
+}
+
+const getInternalCodec = (
+  displayCodec: NonNullable<ProtocolType>,
+): InternalCodec => {
+  switch (displayCodec) {
+    case 'bzz':
+      return 'swarm'
+    case 'sia':
+      return 'skynet'
+    case 'ar':
+      return 'arweave'
+    default:
+      return displayCodec
+  }
+}
+
+export function decodeContentHash(encoded: Hex): DecodedContentHash | null {
   if (!encoded || encoded === '0x') {
     return null
   }
-  let decoded = contentHash.decode(encoded)
-  let protocolType: ProtocolType = null
-  const codec = contentHash.getCodec(encoded)
-  if (codec === 'ipfs-ns') {
-    protocolType = 'ipfs'
-  } else if (codec === 'ipns-ns') {
-    protocolType = 'ipns'
-  } else if (codec === 'swarm-ns') {
-    protocolType = 'bzz'
-  } else if (codec === 'onion') {
-    protocolType = 'onion'
-  } else if (codec === 'onion3') {
-    protocolType = 'onion3'
-  } else if (codec === 'skynet-ns') {
-    protocolType = 'sia'
-  } else if (codec === 'arweave-ns') {
-    protocolType = 'ar'
-  } else {
-    decoded = encoded
-  }
+  const decoded = decode(encoded)
+  const protocolType = getDisplayCodec(encoded)
   return { protocolType, decoded }
 }
 
-export function validateContent(encoded: any) {
-  return (
-    contentHash.isHashOfType(encoded, contentHash.Types.ipfs) ||
-    contentHash.isHashOfType(encoded, contentHash.Types.swarm)
-  )
+export function isValidContentHash(encoded: unknown) {
+  if (typeof encoded !== 'string') return false
+  const codec = getCodec(encoded)
+  return Boolean(codec && isHex(encoded))
 }
 
-export function isValidContenthash(encoded: any) {
-  try {
-    const codec = contentHash.getCodec(encoded)
-    return isHex(encoded) && supportedCodecs.includes(codec)
-  } catch (e) {
-    console.log(e)
-  }
-  return false
+export function getProtocolType(encoded: string) {
+  const matched = matchProtocol(encoded)
+  if (!matched) return null
+  const [, protocolType, decoded] = matched
+  return { protocolType: protocolType as NonNullable<ProtocolType>, decoded }
 }
 
-export function getProtocolType(encoded: any) {
-  let protocolType
-  let decoded
-  try {
-    const matched = matchProtocol(encoded)
-    if (matched) {
-      ;[, protocolType, decoded] = matched
-    }
-    return {
-      protocolType,
-      decoded,
-    }
-  } catch (e) {
-    console.log(e)
-  }
-  return
-}
+export function encodeContentHash(text: string) {
+  const typeData = getProtocolType(text)
+  if (!typeData) throw new InvalidContentHashError()
 
-export function encodeContenthash(text: string) {
-  let content = text
-  let contentType
-  let encoded: string | boolean = false
-  let error
-  if (text) {
-    const matched = matchProtocol(text)
-    if (matched) {
-      ;[, contentType, content] = matched
-    }
-    try {
-      if (contentType === 'ipfs') {
-        if (content.length >= 4) {
-          encoded = `0x${contentHash.encode('ipfs-ns', content)}`
-        }
-      } else if (contentType === 'ipns') {
-        encoded = `0x${contentHash.encode('ipns-ns', content)}`
-      } else if (contentType === 'bzz') {
-        if (content.length >= 4) {
-          encoded = `0x${contentHash.fromSwarm(content)}`
-        }
-      } else if (contentType === 'onion') {
-        if (content.length === 16) {
-          encoded = `0x${contentHash.encode('onion', content)}`
-        }
-      } else if (contentType === 'onion3') {
-        if (content.length === 56) {
-          encoded = `0x${contentHash.encode('onion3', content)}`
-        }
-      } else if (contentType === 'sia') {
-        if (content.length === 46) {
-          encoded = `0x${contentHash.encode('skynet-ns', content)}`
-        }
-      } else if (contentType === 'arweave' || contentType === 'ar') {
-        if (content.length === 43) {
-          encoded = `0x${contentHash.encode('arweave-ns', content)}`
-        }
-      } else {
-        console.warn('Unsupported protocol or invalid value', {
-          contentType,
-          text,
-        })
-      }
-    } catch (err) {
-      const errorMessage = 'Error encoding content hash'
-      console.warn(errorMessage, { text, encoded })
-      error = errorMessage
-      // throw 'Error encoding content hash'
-    }
-  }
-  return { encoded, error }
+  const internalCodec = getInternalCodec(typeData.protocolType)
+
+  return `0x${encode(internalCodec, typeData.decoded)}`
 }

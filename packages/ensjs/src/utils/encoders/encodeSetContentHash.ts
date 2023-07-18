@@ -1,6 +1,6 @@
 import { encodeFunctionData, type Hex } from 'viem'
 import { publicResolverSetContenthashSnippet } from '../../contracts/publicResolver.js'
-import { encodeContenthash } from '../contentHash.js'
+import { encodeContentHash } from '../contentHash.js'
 
 export type EncodeSetContentHashParameters = {
   namehash: Hex
@@ -15,9 +15,7 @@ export const encodeSetContentHash = ({
 }: EncodeSetContentHashParameters): EncodeSetContentHashReturnType => {
   let encodedHash: Hex = '0x'
   if (contentHash) {
-    const encodedObject = encodeContenthash(contentHash)
-    if (encodedObject.error) throw new Error(encodedObject.error)
-    encodedHash = encodedObject.encoded as Hex
+    encodedHash = encodeContentHash(contentHash)
   }
   return encodeFunctionData({
     abi: publicResolverSetContenthashSnippet,

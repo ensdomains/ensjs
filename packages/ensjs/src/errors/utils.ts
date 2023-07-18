@@ -159,3 +159,11 @@ export class CampaignReferenceTooLargeError extends BaseError {
     })
   }
 }
+
+export class InvalidContentHashError extends BaseError {
+  override name = 'InvalidContentHashError'
+
+  constructor() {
+    super('Invalid content hash')
+  }
+}

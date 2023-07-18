@@ -1,7 +1,7 @@
 import { formatsByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import { decodeContenthash } from '../../utils/contentHash.js'
+import { decodeContentHash } from '../../utils/contentHash.js'
 import { namehash } from '../../utils/normalise.js'
 import { createSubgraphClient } from './client.js'
 import type {
@@ -300,7 +300,7 @@ const getNameHistory = async (
           }
         }
         case 'ContenthashChanged': {
-          const { decoded: contentHash, protocolType } = decodeContenthash(
+          const { decoded: contentHash, protocolType } = decodeContentHash(
             event.hash,
           ) || { protocolType: null, decoded: null }
           return {

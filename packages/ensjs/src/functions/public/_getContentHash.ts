@@ -4,7 +4,7 @@ import { publicResolverContenthashSnippet } from '../../contracts/publicResolver
 import type { Prettify, SimpleTransactionRequest } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import {
-  decodeContenthash,
+  decodeContentHash,
   type DecodedContentHash,
 } from '../../utils/contentHash.js'
 import { generateFunction } from '../../utils/generateFunction.js'
@@ -44,7 +44,7 @@ const decode = async (
     data,
   })
 
-  return decodeContenthash(response)
+  return decodeContentHash(response)
 }
 
 const _getContentHash = generateFunction({ encode, decode })
