@@ -53,6 +53,9 @@ export const addresses = {
     ensDnssecImpl: {
       address: '0x21745FF62108968fBf5aB1E07961CC0FCBeB2364',
     },
+    ensUniversalResolver: {
+      address: '0x9380F1974D2B7064eA0c0EC251968D8c69f0Ae31',
+    },
   },
   goerli: {
     ensBaseRegistrarImplementation: {
@@ -78,6 +81,9 @@ export const addresses = {
     },
     ensDnssecImpl: {
       address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
+    },
+    ensUniversalResolver: {
+      address: '0x3952Be0b2186f8B113193a84b69bD71ad3fc1ae3',
     },
   },
 } as const
