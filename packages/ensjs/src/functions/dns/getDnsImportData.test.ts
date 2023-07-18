@@ -5,7 +5,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getDnsImportData, { type RrSetWithSig } from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'
 

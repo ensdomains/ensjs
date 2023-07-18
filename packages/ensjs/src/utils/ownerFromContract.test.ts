@@ -1,5 +1,5 @@
 import { getVersion } from '../errors/error-utils.js'
-import { deploymentAddresses, publicClient } from '../tests/addTestContracts.js'
+import { deploymentAddresses, publicClient } from '../test/addTestContracts.js'
 import { namehash } from './normalise.js'
 import { ownerFromContract } from './ownerFromContract.js'
 

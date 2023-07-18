@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
 import type { Address } from 'viem'
-import { publicClient, walletClient } from '../../tests/addTestContracts.js'
+import { publicClient, walletClient } from '../../test/addTestContracts.js'
 import getNamesForAddress, {
   type NameWithRelation,
 } from './getNamesForAddress.js'

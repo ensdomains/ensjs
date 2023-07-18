@@ -4,7 +4,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getContentHashRecord from '../public/getContentHashRecord.js'
 import getResolver from '../public/getResolver.js'
 import setContentHashRecord from './setContentHashRecord.js'

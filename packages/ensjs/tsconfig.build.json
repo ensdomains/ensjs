@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": ["./src"],
-  "exclude": ["src/**/*.test.ts", "src/tests/**/*", "./src/ABIs/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/test/**/*", "./src/ABIs/**/*"],
   "compilerOptions": {
     "sourceMap": true,
     "rootDir": "./src",

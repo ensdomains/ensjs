@@ -1,4 +1,4 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import getNameHistory from './getNameHistory.js'
 
 it('returns null for a non-existent name', async () => {

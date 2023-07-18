@@ -6,7 +6,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import { userSettableFuseEnum } from '../../utils/fuses.js'
 import { namehash } from '../../utils/normalise.js'
 import setChildFuses from './setChildFuses.js'

@@ -1,4 +1,4 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import getContentHashRecord from './getContentHashRecord.js'
 
 describe('getContentHashRecord', () => {

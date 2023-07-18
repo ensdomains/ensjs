@@ -5,7 +5,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import { encodeAbi } from '../../utils/encoders/encodeAbi.js'
 import getRecords from '../public/getRecords.js'
 import getResolver from '../public/getResolver.js'

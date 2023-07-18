@@ -2,7 +2,7 @@ import { getVersion } from '../../errors/error-utils.js'
 import {
   deploymentAddresses,
   publicClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getSubgraphRegistrant from './getSubgraphRegistrant.js'
 
 it('gets the registrant for a 2ld .eth name', async () => {

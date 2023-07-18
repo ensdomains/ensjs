@@ -4,7 +4,7 @@ import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import {
   deploymentAddresses,
   publicClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import batch from './batch.js'
 import getAddressRecord from './getAddressRecord.js'
 import getName from './getName.js'

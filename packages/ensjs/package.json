@@ -71,7 +71,8 @@
   "files": [
     "dist/",
     "src/",
-    "!src/tests"
+    "!src/**/*.test.ts",
+    "!src/test"
   ],
   "repository": "git@github.com:ensdomains/ensjs-v3.git",
   "author": "TateB <yo@taytems.xyz>",

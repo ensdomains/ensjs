@@ -1,7 +1,7 @@
 import {
   deploymentAddresses,
   publicClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getSupportedInterfaces from './getSupportedInterfaces.js'
 
 it('returns true for a single supported interface', async () => {

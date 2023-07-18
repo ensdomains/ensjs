@@ -1,4 +1,4 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import getDecodedName from './getDecodedName.js'
 
 it('should decode a name via namehash lookup', async () => {

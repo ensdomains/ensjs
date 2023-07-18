@@ -4,7 +4,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getAddressRecord from '../public/getAddressRecord.js'
 import getResolver from '../public/getResolver.js'
 import setAddressRecord from './setAddressRecord.js'

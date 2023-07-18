@@ -1,7 +1,7 @@
 import {
   deploymentAddresses,
   publicClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getOwner from './getOwner.js'
 
 describe('getOwner', () => {
