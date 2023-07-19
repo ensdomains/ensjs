@@ -156,6 +156,7 @@ export type EnsSubgraphActions = {
     name,
     searchString,
     allowExpired,
+    allowDeleted,
     orderBy,
     orderDirection,
     pageSize,
