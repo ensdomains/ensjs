@@ -2,7 +2,7 @@
 import { gql } from 'graphql-request'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
-import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { EMPTY_ADDRESS, GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 import { namehash } from '../../utils/normalise.js'
 import { createSubgraphClient } from './client.js'
 import type { DomainFilter } from './filters.js'
@@ -23,6 +23,8 @@ export type GetSubnamesParameters = {
   searchString?: string
   /** Allows expired names to be included (default: false) */
   allowExpired?: boolean
+  /** Allows deleted names to be included (default: false) */
+  allowDeleted?: boolean
   /** Parameter to order names by (default: name) */
   orderBy?: GetSubnamesOrderBy
   /** Direction to order names in (default: asc) */
@@ -129,6 +131,7 @@ const getSubnames = async (
     name,
     searchString,
     allowExpired = false,
+    allowDeleted = false,
     orderBy = 'name',
     orderDirection = 'asc',
     pageSize = 100,
@@ -157,6 +160,28 @@ const getSubnames = async (
       or: [
         { expiryDate_gt: `${Math.floor(Date.now() / 1000)}` },
         { expiryDate: null },
+      ],
+    })
+  }
+
+  if (!allowDeleted) {
+    // exclude "deleted" domains
+    // when owner/resolver/registrant = null
+    whereFilters.push({
+      or: [
+        {
+          owner_not: EMPTY_ADDRESS,
+        },
+        {
+          resolver_not: null,
+        },
+        ...(name.toLowerCase() === 'eth'
+          ? [
+              {
+                registrant_not: EMPTY_ADDRESS,
+              },
+            ]
+          : []),
       ],
     })
   }

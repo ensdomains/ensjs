@@ -7,7 +7,7 @@ import {
   InvalidFilterKeyError,
   InvalidOrderByError,
 } from '../../errors/subgraph.js'
-import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { EMPTY_ADDRESS, GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'
 import type { DomainFilter } from './filters.js'
 import {
@@ -47,6 +47,8 @@ type GetNamesForAddressFilter = GetNamesForAddressRelation & {
   allowExpired?: boolean
   /** Allows reverse record nodes to be included (default: false) */
   allowReverseRecord?: boolean
+  /** Allows deleted names to be included (default: false) */
+  allowDeleted?: boolean
 }
 
 export type GetNamesForAddressParameters = {
@@ -165,6 +167,7 @@ const getNamesForAddress = async (
       resolvedAddress: true,
       wrappedOwner: true,
       allowExpired: false,
+      allowDeleted: false,
       allowReverseRecord: false,
     },
     orderBy = 'name',
@@ -175,7 +178,7 @@ const getNamesForAddress = async (
 ): Promise<GetNamesForAddressReturnType> => {
   const subgraphClient = createSubgraphClient({ client })
 
-  const { allowExpired, allowReverseRecord, ...filters } = filter
+  const { allowExpired, allowDeleted, allowReverseRecord, ...filters } = filter
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
@@ -236,6 +239,31 @@ const getNamesForAddress = async (
       or: [
         { expiryDate_gt: `${Math.floor(Date.now() / 1000)}` },
         { expiryDate: null },
+      ],
+    })
+  }
+
+  if (!allowDeleted) {
+    // exclude "deleted" domains
+    // when owner/resolver/registrant = null
+    whereFilters.push({
+      or: [
+        {
+          owner_not: EMPTY_ADDRESS,
+        },
+        {
+          resolver_not: null,
+        },
+        {
+          and: [
+            {
+              registrant_not: EMPTY_ADDRESS,
+            },
+            {
+              registrant_not: null,
+            },
+          ],
+        },
       ],
     })
   }
