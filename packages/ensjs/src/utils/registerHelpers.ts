@@ -10,7 +10,7 @@ import {
 } from 'viem'
 import { CampaignReferenceTooLargeError } from '../errors/utils.js'
 import { EMPTY_ADDRESS } from './consts.js'
-import { encodeFuses, hasFuses, type CombinedFuseInput } from './fuses.js'
+import { encodeFuses, type EncodeChildFusesInputObject } from './fuses.js'
 import {
   generateRecordCallArray,
   type RecordOptions,
@@ -33,7 +33,7 @@ export type RegistrationParameters = {
   /** Sets primary name upon registration */
   reverseRecord?: boolean
   /** Fuses to set upon registration */
-  fuses?: CombinedFuseInput['child']
+  fuses?: EncodeChildFusesInputObject
 }
 
 export type CommitmentTuple = [
@@ -95,7 +95,9 @@ export const makeCommitmentTuple = ({
 }: RegistrationParameters): CommitmentTuple => {
   const labelHash = labelhash(name.split('.')[0])
   const hash = namehash(name)
-  const fuseData = hasFuses(fuses) ? encodeFuses(fuses!, 'child') : 0
+  const fuseData = fuses
+    ? encodeFuses({ restriction: 'child', input: fuses })
+    : 0
 
   if (
     reverseRecord &&

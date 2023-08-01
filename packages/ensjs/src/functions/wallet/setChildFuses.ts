@@ -14,14 +14,14 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import { encodeFuses, type EncodeFusesInputObject } from '../../utils/fuses.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type SetChildFusesDataParameters = {
   /** Name to set child fuses for */
   name: string
   /** Fuse object or number value to set to */
-  fuses: Partial<CombinedFuseInput> | number
+  fuses: EncodeFusesInputObject
   /** Expiry to set for fuses */
   expiry?: number | bigint
 }
@@ -46,7 +46,7 @@ export const makeFunctionData = <
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   { name, fuses, expiry }: SetChildFusesDataParameters,
 ): SetChildFusesDataReturnType => {
-  const encodedFuses = encodeFuses(fuses)
+  const encodedFuses = encodeFuses({ input: fuses })
   const labels = name.split('.')
   const labelHash = labelhash(labels.shift()!)
   const parentNode = namehash(labels.join('.'))

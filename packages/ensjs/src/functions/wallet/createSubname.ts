@@ -20,7 +20,7 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import { encodeFuses, type EncodeFusesInputObject } from '../../utils/fuses.js'
 import { getNameType } from '../../utils/getNameType.js'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
 import {
@@ -41,7 +41,7 @@ type BaseCreateSubnameDataParameters = {
   /** Expiry to set (only on NameWrapper) */
   expiry?: AnyDate
   /** Fuses to set (only on NameWrapper) */
-  fuses?: CombinedFuseInput
+  fuses?: EncodeFusesInputObject
 }
 
 type RegistryCreateSubnameDataParameters = {
@@ -53,7 +53,7 @@ type RegistryCreateSubnameDataParameters = {
 type NameWrapperCreateSubnameDataParameters = {
   contract: 'nameWrapper'
   expiry?: AnyDate
-  fuses?: CombinedFuseInput
+  fuses?: EncodeFusesInputObject
 }
 
 export type CreateSubnameDataParameters = BaseCreateSubnameDataParameters &
@@ -119,7 +119,7 @@ export const makeFunctionData = <
     }
     case 'nameWrapper': {
       wrappedLabelLengthCheck(label)
-      const generatedFuses = fuses ? encodeFuses(fuses) : 0
+      const generatedFuses = fuses ? encodeFuses({ input: fuses }) : 0
       const generatedExpiry = expiry ? expiryToBigInt(expiry) : MAX_EXPIRY
       return {
         to: getChainContractAddress({

@@ -5,13 +5,13 @@ export class FusesOutOfRangeError extends BaseError {
 
   constructor({
     fuses,
-    minimum = 1,
-    maximum = 2 ** 32,
+    minimum = 0n,
+    maximum = 2n ** 32n,
     details,
   }: {
-    fuses: number
-    minimum?: number
-    maximum?: number
+    fuses: bigint
+    minimum?: bigint
+    maximum?: bigint
     details?: string
   }) {
     super('Fuse value out of range', {
@@ -24,21 +24,16 @@ export class FusesOutOfRangeError extends BaseError {
   }
 }
 
-export class FusesNonIntegerError extends BaseError {
-  override name = 'FusesNonIntegerError'
-
-  constructor({ fuses, details }: { fuses: number; details?: string }) {
-    super('Fuse was not an integer, which is required', {
-      metaMessages: [`- Fuse value: ${fuses}`],
-      details,
-    })
-  }
-}
-
 export class FusesRestrictionNotAllowedError extends BaseError {
   override name = 'FusesRestrictionNotAllowed'
 
-  constructor({ fuses, details }: { fuses: object; details?: string }) {
+  constructor({
+    fuses,
+    details,
+  }: {
+    fuses: object | bigint
+    details?: string
+  }) {
     super('Restriction not allowed', {
       metaMessages: [`- Fuse value: ${fuses}`],
       details,
@@ -76,7 +71,7 @@ export class FusesInvalidNamedFuseError extends BaseError {
 export class FusesFuseNotAllowedError extends BaseError {
   override name = 'FusesFuseNotAllowedError'
 
-  constructor({ fuse }: { fuse: string | number }) {
+  constructor({ fuse }: { fuse: string | bigint }) {
     super(`${fuse} is not allowed for this operation`)
   }
 }

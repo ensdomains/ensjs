@@ -1,7 +1,7 @@
 import { getAddress, type Address, type Hex } from 'viem'
 import type { DateWithValue } from '../../types.js'
 import { truncateFormat } from '../../utils/format.js'
-import { decodeFuses, type AllCurrentFuses } from '../../utils/fuses.js'
+import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
 import { decryptName } from '../../utils/labels.js'
 import type { SubgraphDomain } from './fragments.js'
 
@@ -27,7 +27,7 @@ export type Name = {
   /** Expiry date of name */
   expiryDate: DateWithValue<number> | null
   /** Fuse values for name */
-  fuses: AllCurrentFuses | null
+  fuses: DecodedFuses | null
   /** Owner address */
   owner: Address
   /** Registrant address */
