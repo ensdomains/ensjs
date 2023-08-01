@@ -59,8 +59,10 @@ const names = [
     label: 'wrapped-with-expiring-subnames',
     namedOwner: 'owner',
     fuses: encodeFuses({
-      child: {
-        named: ['CANNOT_UNWRAP'],
+      input: {
+        child: {
+          named: ['CANNOT_UNWRAP'],
+        },
       },
     }),
     subnames: [
@@ -79,7 +81,9 @@ const names = [
         namedOwner: 'owner2',
         expiry: Math.floor(Date.now() / 1000),
         fuses: encodeFuses({
-          parent: { named: ['PARENT_CANNOT_CONTROL'] },
+          input: {
+            parent: { named: ['PARENT_CANNOT_CONTROL'] },
+          },
         }),
       },
       {
@@ -87,7 +91,9 @@ const names = [
         namedOwner: 'owner2',
         expiry: MAX_DATE_INT,
         fuses: encodeFuses({
-          parent: { named: ['PARENT_CANNOT_CONTROL'] },
+          input: {
+            parent: { named: ['PARENT_CANNOT_CONTROL'] },
+          },
         }),
       },
     ],
