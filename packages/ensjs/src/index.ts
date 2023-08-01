@@ -59,7 +59,6 @@ export {
   FusesInvalidFuseObjectError,
   FusesInvalidNamedFuseError,
   FusesInvalidUnnamedFuseError,
-  FusesNonIntegerError,
   FusesOutOfRangeError,
   FusesRestrictionNotAllowedError,
   FusesValueRequiredError,
