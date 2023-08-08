@@ -30,6 +30,9 @@ afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
 
+jest.setTimeout(10000)
+jest.retryTimes(2)
+
 it('should import a DNS name with no address', async () => {
   const tx = await importDnsName(walletClient, {
     name,

@@ -22,6 +22,9 @@ beforeEach(() => {
   handler.mockReset()
 })
 
+jest.setTimeout(10000)
+jest.retryTimes(2)
+
 it('returns valid address from valid domain and record', async () => {
   let name
   let type

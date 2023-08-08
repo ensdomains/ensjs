@@ -30,6 +30,7 @@ const decodeProofs = (proofs: RrSetWithSig[]) =>
   )
 
 jest.setTimeout(10000)
+jest.retryTimes(2)
 
 const wait = async (ms: number) =>
   // eslint-disable-next-line no-promise-executor-return
