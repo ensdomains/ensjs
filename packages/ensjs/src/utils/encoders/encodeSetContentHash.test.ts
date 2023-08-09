@@ -1,7 +1,8 @@
+import { getVersion } from '../../errors/error-utils.js'
 import {
   encodeSetContentHash,
-  EncodeSetContentHashParameters,
-} from './encodeSetContentHash'
+  type EncodeSetContentHashParameters,
+} from './encodeSetContentHash.js'
 
 describe('encodeSetContentHash', () => {
   const namehash =
@@ -30,8 +31,11 @@ describe('encodeSetContentHash', () => {
       namehash,
       contentHash: 'invalid-content-hash',
     }
-    expect(() => encodeSetContentHash(params)).toThrowError(
-      'Failed to encocde contentHash',
-    )
+    expect(() => encodeSetContentHash(params))
+      .toThrowErrorMatchingInlineSnapshot(`
+      "Invalid content hash
+
+      Version: ${getVersion()}"
+    `)
   })
 })

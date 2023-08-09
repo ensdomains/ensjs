@@ -7,7 +7,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getOwner from '../public/getOwner.js'
 import getResolver from '../public/getResolver.js'
 import getWrapperData from '../public/getWrapperData.js'

@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 
-import { publicClient } from '../../tests/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import getSubnames from './getSubnames.js'
 import type { Name } from './utils.js'
 
@@ -90,6 +90,21 @@ it('allows including expired names - other', async () => {
     (name) => name.expiryDate && name.expiryDate.value < Date.now(),
   )
   expect(expiredNames.length).toBeGreaterThan(0)
+})
+it('does not include deleted names by default', async () => {
+  const result = await getSubnames(publicClient, {
+    name: 'deletable.eth',
+  })
+  if (!result.length) throw new Error('No names found')
+  expect(result.length).toBe(2)
+})
+it('allows including deleted names', async () => {
+  const result = await getSubnames(publicClient, {
+    name: 'deletable.eth',
+    allowDeleted: true,
+  })
+  if (!result.length) throw new Error('No names found')
+  expect(result.length).toBe(4)
 })
 
 describe.each([

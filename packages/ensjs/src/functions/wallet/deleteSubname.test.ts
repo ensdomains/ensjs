@@ -10,7 +10,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { namehash } from '../../utils/normalise.js'
 import deleteSubname from './deleteSubname.js'

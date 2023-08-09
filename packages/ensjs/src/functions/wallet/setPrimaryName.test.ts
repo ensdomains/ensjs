@@ -6,7 +6,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getName from '../public/getName.js'
 import setPrimaryName from './setPrimaryName.js'
 

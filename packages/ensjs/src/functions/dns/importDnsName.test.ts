@@ -6,7 +6,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getOwner from '../public/getOwner.js'
 import getResolver from '../public/getResolver.js'
 import getDnsImportData from './getDnsImportData.js'
@@ -29,6 +29,9 @@ beforeEach(async () => {
 afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
+
+jest.setTimeout(10000)
+jest.retryTimes(2)
 
 it('should import a DNS name with no address', async () => {
   const tx = await importDnsName(walletClient, {

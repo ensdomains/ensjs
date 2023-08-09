@@ -1,4 +1,4 @@
-import { encodeSetAddr, EncodeSetAddrParameters } from './encodeSetAddr'
+import { encodeSetAddr, type EncodeSetAddrParameters } from './encodeSetAddr.js'
 
 const namehash =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'

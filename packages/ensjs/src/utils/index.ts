@@ -34,11 +34,10 @@ export {
 } from './consts.js'
 
 export {
-  decodeContenthash,
-  encodeContenthash,
+  decodeContentHash,
+  encodeContentHash,
   getProtocolType,
-  isValidContenthash,
-  validateContent,
+  isValidContentHash,
   type DecodedContentHash,
   type ProtocolType,
 } from './contentHash.js'

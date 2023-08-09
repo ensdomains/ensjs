@@ -16,7 +16,7 @@ import type {
   TransactionRequestWithPassthrough,
 } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import { decodeFuses } from '../../utils/fuses.js'
+import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
 import {
   generateFunction,
   type GeneratedFunction,
@@ -31,7 +31,7 @@ export type GetWrapperDataParameters = {
 
 export type GetWrapperDataReturnType = Prettify<{
   /** Fuse object */
-  fuses: ReturnType<typeof decodeFuses> & {
+  fuses: DecodedFuses & {
     value: number
   }
   /** Expiry of the name */

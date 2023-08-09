@@ -309,6 +309,17 @@ const names = [
     namedAddr: 'owner',
     duration: 2419200,
   },
+  {
+    label: 'deletable',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    subnames: [
+      { label: 'xyz', namedOwner: 'owner2' },
+      { label: 'test', namedOwner: 'owner' },
+      { label: 'unwrapped-deleted', namedOwner: 'owner' },
+      { label: 'wrapped-deleted', namedOwner: 'owner' },
+    ],
+  },
   ...Array.from({ length: 34 }, (_, i) => ({
     label: `${i}-dummy`,
     namedOwner: 'owner2',

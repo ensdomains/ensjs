@@ -7,10 +7,12 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import {
-  unnamedUserSettableFuses,
-  userSettableFuseEnum,
+  ChildFuses,
+  ParentFuses,
+  UnnamedChildFuses,
+  UnnamedParentFuses,
 } from '../../utils/fuses.js'
 import { namehash } from '../../utils/normalise.js'
 import setFuses from './setFuses.js'
@@ -30,8 +32,15 @@ afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
 
+const userSettableFuseEnum = {
+  ...ChildFuses,
+  ...ParentFuses,
+}
+
+const unnamedUserSettableFuses = [...UnnamedChildFuses, ...UnnamedParentFuses]
+
 const checkFuses = (
-  fuses: number,
+  fuses: bigint,
   expected: (keyof typeof userSettableFuseEnum)[],
 ) => {
   // eslint-disable-next-line guard-for-in
@@ -57,13 +66,13 @@ const checkFuses = (
 }
 
 const checkUnnamedFuses = (
-  fuses: number,
-  expected: (keyof typeof unnamedUserSettableFuses)[],
+  fuses: bigint,
+  expected: (typeof unnamedUserSettableFuses)[number][],
 ) => {
   // eslint-disable-next-line guard-for-in
   for (const fuse of unnamedUserSettableFuses) {
-    const active = (fuses & fuse) > 0
-    if (expected.includes(fuse as keyof typeof unnamedUserSettableFuses)) {
+    const active = (fuses & fuse) > 0n
+    if (expected.includes(fuse as (typeof unnamedUserSettableFuses)[number])) {
       try {
         expect(active).toBeTruthy()
       } catch {
@@ -89,7 +98,7 @@ const getFuses = async (name: string) => {
     functionName: 'getData',
     args: [BigInt(namehash(name))],
   })
-  return fuses
+  return BigInt(fuses)
 }
 
 describe('Array', () => {
@@ -132,7 +141,7 @@ describe('Array', () => {
     const tx = await setFuses(walletClient, {
       name: 'wrapped.eth',
       fuses: {
-        unnamed: [128, 256, 512],
+        unnamed: [128n, 256n, 512n],
       },
       account: accounts[1],
     })
@@ -140,7 +149,7 @@ describe('Array', () => {
     expect(receipt.status).toBe('success')
 
     const fuses = await getFuses('wrapped.eth')
-    checkUnnamedFuses(fuses, [128, 256, 512])
+    checkUnnamedFuses(fuses, [128n, 256n, 512n])
   })
   it('should return a setFuses transaction from both an unnamed and named fuse array and succeed', async () => {
     const tx = await setFuses(walletClient, {
@@ -152,7 +161,7 @@ describe('Array', () => {
           'CANNOT_SET_TTL',
           'CANNOT_APPROVE',
         ],
-        unnamed: [128, 256, 512],
+        unnamed: [128n, 256n, 512n],
       },
       account: accounts[1],
     })
@@ -167,7 +176,7 @@ describe('Array', () => {
       'PARENT_CANNOT_CONTROL',
       'CANNOT_APPROVE',
     ])
-    checkUnnamedFuses(fuses, [128, 256, 512])
+    checkUnnamedFuses(fuses, [128n, 256n, 512n])
   })
   it('should throw an error when trying to burn a named fuse in an unnamed fuse array', async () => {
     await expect(
@@ -207,7 +216,7 @@ describe('Number', () => {
     const tx = await setFuses(walletClient, {
       name: 'wrapped.eth',
       fuses: {
-        number: 113,
+        number: 113n,
       },
       account: accounts[1],
     })
@@ -229,7 +238,7 @@ describe('Number', () => {
       setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
-          number: 4294967297,
+          number: 4294967297n,
         },
 
         account: accounts[1],
@@ -238,7 +247,7 @@ describe('Number', () => {
       "Fuse value out of range
 
       - Fuse value: 4294967297
-      - Allowed range: 1-4294967296
+      - Allowed range: 0-4294967296
 
       Details: Fuse number must be limited to uint32, the supplied value was too high
 
@@ -250,7 +259,7 @@ describe('Number', () => {
       setFuses(walletClient, {
         name: 'wrapped.eth',
         fuses: {
-          number: -1,
+          number: -1n,
         },
 
         account: accounts[1],
@@ -259,27 +268,9 @@ describe('Number', () => {
       "Fuse value out of range
 
       - Fuse value: -1
-      - Allowed range: 1-4294967296
+      - Allowed range: 0-4294967296
 
       Details: Fuse number must be limited to uint32, the supplied value was too low
-
-      Version: ${getVersion()}"
-    `)
-  })
-  it('should throw an error if the number is not an integer', async () => {
-    await expect(
-      setFuses(walletClient, {
-        name: 'wrapped.eth',
-        fuses: {
-          number: 7.5,
-        },
-
-        account: accounts[1],
-      }),
-    ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "Fuse was not an integer, which is required
-
-      - Fuse value: 7.5
 
       Version: ${getVersion()}"
     `)

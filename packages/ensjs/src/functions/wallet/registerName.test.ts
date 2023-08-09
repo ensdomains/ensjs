@@ -6,7 +6,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import { namehash } from '../../utils/normalise.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
 import getPrice from '../public/getPrice.js'

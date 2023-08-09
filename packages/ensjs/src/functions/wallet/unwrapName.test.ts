@@ -5,7 +5,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getOwner from '../public/getOwner.js'
 import unwrapName from './unwrapName.js'
 

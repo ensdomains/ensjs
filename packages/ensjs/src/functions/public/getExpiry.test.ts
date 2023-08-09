@@ -1,4 +1,4 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import getExpiry from './getExpiry.js'
 
 describe('getExpiry', () => {

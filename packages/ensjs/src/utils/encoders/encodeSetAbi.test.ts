@@ -1,4 +1,5 @@
-import { encodeSetAbi, EncodeSetAbiParameters } from './encodeSetAbi'
+import { encodeAbi } from './encodeAbi.js'
+import { encodeSetAbi, type EncodeSetAbiParameters } from './encodeSetAbi.js'
 
 describe('encodeSetAbi', () => {
   const namehash =
@@ -12,22 +13,20 @@ describe('encodeSetAbi', () => {
     encodedData,
   }
 
-  it('encodes the setABI function data correctly', () => {
+  it('encodes the setAbi function data correctly', () => {
     const expected =
       '0x623195b01234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000'
     const result = encodeSetAbi(parameters)
     expect(result).toEqual(expected)
   })
 
-  it('encodes the setABI function data correctly with encodedData', () => {
-    const parametersWithEncodedData: EncodeSetAbiParameters = {
+  it('encodes the setAbi function data correctly with encodedData', async () => {
+    const result = encodeSetAbi({
       namehash,
-      contentType,
-      encodedData: '0xabcdef123456',
-    }
-    const expected =
-      '0x623195b01234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000006abcdef1234560000000000000000000000000000000000000000000000000000'
-    const result = encodeSetAbi(parametersWithEncodedData)
-    expect(result).toEqual(expected)
+      ...(await encodeAbi({ encodeAs: 'json', data: { foo: 'bar' } })),
+    })
+    expect(result).toEqual(
+      '0x623195b01234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d7b22666f6f223a22626172227d00000000000000000000000000000000000000',
+    )
   })
 })

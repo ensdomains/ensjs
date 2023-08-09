@@ -1,4 +1,4 @@
-import { publicClient } from '../../tests/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import getWrapperName from './getWrapperName.js'
 
 describe('getWrapperName()', () => {

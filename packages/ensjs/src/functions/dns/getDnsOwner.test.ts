@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RequestListener } from 'http'
 import { getVersion } from '../../errors/error-utils.js'
-import { createHttpServer } from '../../tests/createHttpServer.js'
+import { createHttpServer } from '../../test/createHttpServer.js'
 import getDnsOwner from './getDnsOwner.js'
 
 const handler: jest.MockedFunction<RequestListener> = jest.fn()
@@ -21,6 +21,9 @@ afterAll(async () => {
 beforeEach(() => {
   handler.mockReset()
 })
+
+jest.setTimeout(10000)
+jest.retryTimes(2)
 
 it('returns valid address from valid domain and record', async () => {
   let name

@@ -1,7 +1,8 @@
 /* eslint-disable no-await-in-loop */
 
 import type { Address } from 'viem'
-import { publicClient, walletClient } from '../../tests/addTestContracts.js'
+import { publicClient, walletClient } from '../../test/addTestContracts.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import getNamesForAddress, {
   type NameWithRelation,
 } from './getNamesForAddress.js'
@@ -131,6 +132,35 @@ describe('filter', () => {
       (x) => x.parentName === 'addr.reverse',
     )
     expect(reverseRecordNames.length).toBeGreaterThan(0)
+  })
+  it('does not include deleted names by default', async () => {
+    const result = await getNamesForAddress(publicClient, {
+      address: accounts[1],
+      pageSize: 1000,
+    })
+    if (!result.length) throw new Error('No names found')
+    const deletedNames = result.filter(
+      (x) => x.parentName === 'deletable.eth' && x.owner === EMPTY_ADDRESS,
+    )
+    expect(deletedNames.length).toBe(0)
+  })
+  it('allows including deleted names', async () => {
+    const result = await getNamesForAddress(publicClient, {
+      address: accounts[1],
+      pageSize: 1000,
+      filter: {
+        owner: true,
+        registrant: true,
+        resolvedAddress: true,
+        wrappedOwner: true,
+        allowDeleted: true,
+      },
+    })
+    if (!result.length) throw new Error('No names found')
+    const deletedNames = result.filter(
+      (x) => x.parentName === 'deletable.eth' && x.owner === EMPTY_ADDRESS,
+    )
+    expect(deletedNames.length).toBe(1)
   })
 })
 

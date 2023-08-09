@@ -22,7 +22,10 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import {
+  encodeFuses,
+  type EncodeChildFusesInputObject,
+} from '../../utils/fuses.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 import { checkIsDotEth } from '../../utils/validation.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
@@ -37,7 +40,7 @@ export type WrapNameDataParameters<
   newOwnerAddress: Address
   /** Fuses to set on wrap (eth-2ld only) */
   fuses?: TNameOption extends Eth2ldNameSpecifier
-    ? CombinedFuseInput['child']
+    ? EncodeChildFusesInputObject
     : never
   /** The resolver address to set on wrap */
   resolverAddress?: Address
@@ -83,7 +86,9 @@ export const makeFunctionData = <
 
   if (isEth2ld) {
     wrappedLabelLengthCheck(labels[0])
-    const encodedFuses = fuses ? encodeFuses(fuses, 'child') : 0
+    const encodedFuses = fuses
+      ? encodeFuses({ restriction: 'child', input: fuses })
+      : 0
     const tokenId = BigInt(labelhash(labels[0]))
 
     const data = encodeAbiParameters(

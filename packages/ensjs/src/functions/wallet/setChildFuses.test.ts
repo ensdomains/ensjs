@@ -6,8 +6,8 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
-import { userSettableFuseEnum } from '../../utils/fuses.js'
+} from '../../test/addTestContracts.js'
+import { ChildFuses, ParentFuses } from '../../utils/fuses.js'
 import { namehash } from '../../utils/normalise.js'
 import setChildFuses from './setChildFuses.js'
 import setFuses from './setFuses.js'
@@ -27,8 +27,13 @@ afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
 
+const userSettableFuseEnum = {
+  ...ChildFuses,
+  ...ParentFuses,
+}
+
 const checkFuses = (
-  fuses: number,
+  fuses: bigint,
   expected: (keyof typeof userSettableFuseEnum)[],
 ) => {
   // eslint-disable-next-line guard-for-in
@@ -80,7 +85,9 @@ it('should return a setChildFuses transaction and succeed', async () => {
 
   const tx = await setChildFuses(walletClient, {
     name: 'test.wrapped-with-subnames.eth',
-    fuses: 65537 + 64,
+    fuses: {
+      number: 65537n + 64n,
+    },
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
@@ -89,7 +96,7 @@ it('should return a setChildFuses transaction and succeed', async () => {
 
   const fuses = await getFuses('test.wrapped-with-subnames.eth')
 
-  checkFuses(fuses, [
+  checkFuses(BigInt(fuses), [
     'CANNOT_UNWRAP',
     'PARENT_CANNOT_CONTROL',
     'CANNOT_APPROVE',

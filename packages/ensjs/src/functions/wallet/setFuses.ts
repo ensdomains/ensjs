@@ -13,14 +13,17 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeFuses, type CombinedFuseInput } from '../../utils/fuses.js'
+import {
+  encodeFuses,
+  type EncodeChildFusesInputObject,
+} from '../../utils/fuses.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type SetFusesDataParameters = {
   /** Name to set fuses for */
   name: string
   /** Fuse object to set to */
-  fuses: Prettify<CombinedFuseInput['child']>
+  fuses: EncodeChildFusesInputObject
 }
 
 export type SetFusesDataReturnType = SimpleTransactionRequest
@@ -43,7 +46,7 @@ export const makeFunctionData = <
   wallet: WalletWithEns<Transport, TChain, TAccount>,
   { name, fuses }: SetFusesDataParameters,
 ): SetFusesDataReturnType => {
-  const encodedFuses = encodeFuses(fuses, 'child')
+  const encodedFuses = encodeFuses({ restriction: 'child', input: fuses })
   return {
     to: getChainContractAddress({ client: wallet, contract: 'ensNameWrapper' }),
     data: encodeFunctionData({

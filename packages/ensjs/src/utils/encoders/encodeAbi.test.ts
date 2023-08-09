@@ -1,4 +1,4 @@
-import { encodeAbi } from './encodeAbi'
+import { encodeAbi } from './encodeAbi.js'
 
 describe('encodeAbi', () => {
   it('encodes data as JSON', async () => {

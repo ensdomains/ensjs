@@ -1,7 +1,7 @@
 import {
   deploymentAddresses,
   publicClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getSubgraphRecords from './getSubgraphRecords.js'
 
 it('gets basic records', async () => {

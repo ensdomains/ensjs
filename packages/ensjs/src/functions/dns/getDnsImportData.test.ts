@@ -5,7 +5,7 @@ import {
   testClient,
   waitForTransaction,
   walletClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getDnsImportData, { type RrSetWithSig } from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'
 
@@ -30,6 +30,7 @@ const decodeProofs = (proofs: RrSetWithSig[]) =>
   )
 
 jest.setTimeout(10000)
+jest.retryTimes(2)
 
 const wait = async (ms: number) =>
   // eslint-disable-next-line no-promise-executor-return

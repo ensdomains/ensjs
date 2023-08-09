@@ -1,7 +1,7 @@
 import {
   deploymentAddresses,
   publicClient,
-} from '../../tests/addTestContracts.js'
+} from '../../test/addTestContracts.js'
 import getRecords from './getRecords.js'
 
 describe('getRecords()', () => {

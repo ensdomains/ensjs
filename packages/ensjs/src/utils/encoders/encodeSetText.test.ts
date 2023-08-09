@@ -1,4 +1,4 @@
-import { encodeSetText, EncodeSetTextParameters } from './encodeSetText'
+import { encodeSetText, type EncodeSetTextParameters } from './encodeSetText.js'
 
 describe('encodeSetText', () => {
   const namehash =
