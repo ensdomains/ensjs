@@ -78,9 +78,9 @@ interface WriteFunction<F extends (...args: any) => any> extends Function {
 /* eslint-disable @typescript-eslint/naming-convention */
 export const graphURIEndpoints: Record<string, string> = {
   1: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-  3: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten',
-  4: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
   5: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
+  11155111:
+    'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
