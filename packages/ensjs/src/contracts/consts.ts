@@ -12,7 +12,7 @@ type ChainContract = {
   blockCreated?: number
 }
 
-export const supportedChains = ['homestead', 'goerli'] as const
+export const supportedChains = ['homestead', 'goerli', 'sepolia'] as const
 export const supportedContracts = [
   'ensBaseRegistrarImplementation',
   'ensDnsRegistrar',
@@ -22,6 +22,8 @@ export const supportedContracts = [
   'ensReverseRegistrar',
   'ensBulkRenewal',
   'ensDnssecImpl',
+  'ensUniversalResolver',
+  'ensRegistry',
 ] as const
 
 export type SupportedChain = (typeof supportedChains)[number]
@@ -29,6 +31,9 @@ export type SupportedContract = (typeof supportedContracts)[number]
 
 export const addresses = {
   homestead: {
+    ensRegistry: {
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
     },
@@ -58,6 +63,9 @@ export const addresses = {
     },
   },
   goerli: {
+    ensRegistry: {
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
     },
@@ -86,13 +94,42 @@ export const addresses = {
       address: '0x3952Be0b2186f8B113193a84b69bD71ad3fc1ae3',
     },
   },
-} as const
-
-// add when this is resolved: https://github.com/kulshekhar/ts-jest/issues/4100
-// } as const satisfies Record<
-//   SupportedChain,
-//   Record<SupportedContract, { address: Address }>
-// >
+  sepolia: {
+    ensRegistry: {
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    ensBaseRegistrarImplementation: {
+      address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
+    },
+    ensDnsRegistrar: {
+      address: '0x537625B0D7901FD20C57850d61580Bf1624Ef146',
+    },
+    ensEthRegistrarController: {
+      address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
+    },
+    ensNameWrapper: {
+      address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
+    },
+    ensPublicResolver: {
+      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
+    },
+    ensReverseRegistrar: {
+      address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
+    },
+    ensBulkRenewal: {
+      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
+    },
+    ensDnssecImpl: {
+      address: '0x7b3ada1c8f012bae747cf99d6cbbf70d040b84cf',
+    },
+    ensUniversalResolver: {
+      address: '0x21B000Fd62a880b2125A61e36a284BB757b76025',
+    },
+  },
+} as const satisfies Record<
+  SupportedChain,
+  Record<SupportedContract, { address: Address }>
+>
 
 type Subgraphs = {
   ens: {
@@ -111,10 +148,12 @@ export const subgraphs = {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
     },
   },
-} as const
-
-// add when this is resolved: https://github.com/kulshekhar/ts-jest/issues/4100
-// } as const satisfies Record<SupportedChain, Subgraphs>
+  sepolia: {
+    ens: {
+      url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
+    },
+  },
+} as const satisfies Record<SupportedChain, Subgraphs>
 
 type EnsChainContracts = {
   ensBaseRegistrarImplementation: ChainContract
