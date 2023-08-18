@@ -32,6 +32,28 @@ export {
   MAX_INT_64,
   MINIMUM_DOT_ETH_CHARS,
 } from './consts.js'
+export {
+  ChildFuseKeys,
+  ChildFuses,
+  FullParentFuseKeys,
+  FullParentFuses,
+  FuseRanges,
+  ParentFuseKeys,
+  ParentFuses,
+  UnnamedChildFuseKeys,
+  UnnamedChildFuses,
+  UnnamedParentFuseKeys,
+  UnnamedParentFuses,
+  UserSettableFuseKeys,
+  UserSettableFuses,
+  checkPccBurned,
+  decodeFuses,
+  encodeFuses,
+  type DecodedFuses,
+  type EncodeChildFusesInputObject,
+  type EncodeFusesInputObject,
+  type EncodeParentFusesInputObject,
+} from './fuses.js'
 
 export {
   decodeContentHash,

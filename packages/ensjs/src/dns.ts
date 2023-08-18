@@ -10,6 +10,8 @@ export {
 } from './functions/dns/getDnsOwner.js'
 export {
   default as importDnsName,
+  type ImportDnsNameDataParameters,
+  type ImportDnsNameDataReturnType,
   type ImportDnsNameParameters,
   type ImportDnsNameReturnType,
 } from './functions/dns/importDnsName.js'

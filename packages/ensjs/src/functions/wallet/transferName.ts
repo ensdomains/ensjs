@@ -60,7 +60,7 @@ type BaseRegistrarTransferNameDataParameters = {
   asParent?: never
 }
 
-type TransferNameDataParameters = BaseTransferNameDataParameters &
+export type TransferNameDataParameters = BaseTransferNameDataParameters &
   (
     | RegistryOrNameWrapperTransferNameDataParameters
     | BaseRegistrarTransferNameDataParameters
