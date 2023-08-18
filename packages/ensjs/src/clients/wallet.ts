@@ -26,7 +26,7 @@ export type EnsWalletClientConfig<
   ClientConfig<TTransport, TChain, TAccountOrAddress>,
   'account' | 'chain' | 'key' | 'name' | 'pollingInterval' | 'transport'
 > & {
-  chain: Exclude<ClientConfig<TTransport, TChain>['chain'], undefined>
+  chain: TChain
 }
 
 export type EnsWalletClient<

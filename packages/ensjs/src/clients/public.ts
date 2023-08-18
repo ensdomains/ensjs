@@ -21,7 +21,7 @@ export type EnsPublicClientConfig<
   ClientConfig<TTransport, TChain>,
   'batch' | 'key' | 'name' | 'pollingInterval' | 'transport'
 > & {
-  chain: Exclude<ClientConfig<TTransport, TChain>['chain'], undefined>
+  chain: TChain
 }
 
 export type EnsPublicClient<
