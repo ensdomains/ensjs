@@ -1,4 +1,8 @@
-import { encodeAbi } from './encodeAbi.js'
+import {
+  contentTypeToEncodeAs,
+  encodeAbi,
+  encodeAsToContentType,
+} from './encodeAbi.js'
 
 describe('encodeAbi', () => {
   it('encodes data as JSON', async () => {
@@ -29,5 +33,45 @@ describe('encodeAbi', () => {
     const result = await encodeAbi({ encodeAs: 'uri', data })
     expect(result.contentType).toEqual(8)
     expect(result.encodedData).toEqual('0x666f6f3d626172')
+  })
+})
+
+describe('encodeAsToContentType', () => {
+  it('returns the correct content type for json', () => {
+    expect(encodeAsToContentType('json')).toEqual(1)
+  })
+  it('returns the correct content type for zlib', () => {
+    expect(encodeAsToContentType('zlib')).toEqual(2)
+  })
+  it('returns the correct content type for cbor', () => {
+    expect(encodeAsToContentType('cbor')).toEqual(4)
+  })
+  it('returns the correct content type for uri', () => {
+    expect(encodeAsToContentType('uri')).toEqual(8)
+  })
+  it('throws an error for an unknown content type', () => {
+    expect(() => encodeAsToContentType('foo' as any)).toThrow(
+      'Unknown content type: foo',
+    )
+  })
+})
+
+describe('contentTypeToEncodeAs', () => {
+  it('returns the correct encodeAs for json', () => {
+    expect(contentTypeToEncodeAs(1)).toEqual('json')
+  })
+  it('returns the correct encodeAs for zlib', () => {
+    expect(contentTypeToEncodeAs(2)).toEqual('zlib')
+  })
+  it('returns the correct encodeAs for cbor', () => {
+    expect(contentTypeToEncodeAs(4)).toEqual('cbor')
+  })
+  it('returns the correct encodeAs for uri', () => {
+    expect(contentTypeToEncodeAs(8)).toEqual('uri')
+  })
+  it('throws an error for an unknown content type', () => {
+    expect(() => contentTypeToEncodeAs(3 as any)).toThrow(
+      'Unknown content type: 3',
+    )
   })
 })

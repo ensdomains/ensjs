@@ -1,5 +1,7 @@
 export {
+  contentTypeToEncodeAs,
   encodeAbi,
+  encodeAsToContentType,
   type EncodeAbiParameters,
   type EncodeAbiReturnType,
   type EncodedAbi,

@@ -1,16 +1,18 @@
 import { bytesToHex, stringToHex, type Hex } from 'viem'
+import { UnknownContentTypeError } from '../../errors/utils.js'
 import type { Prettify } from '../../types.js'
 
 type AbiEncodeAs = 'json' | 'zlib' | 'cbor' | 'uri'
 
 type AbiContentType = 1 | 2 | 4 | 8
 
-type AbiEncodeMap = {
-  json: 1
-  zlib: 2
-  cbor: 4
-  uri: 8
-}
+const abiEncodeMap = {
+  json: 1,
+  zlib: 2,
+  cbor: 4,
+  uri: 8,
+} as const
+type AbiEncodeMap = typeof abiEncodeMap
 
 type GetAbiContentType<TEncodeAs extends AbiEncodeAs> = AbiEncodeMap[TEncodeAs]
 
@@ -32,6 +34,33 @@ export type EncodedAbi<TContentType extends AbiContentType = AbiContentType> = {
 
 export type EncodeAbiReturnType<TContentType extends AbiContentType> =
   EncodedAbi<TContentType>
+
+export const contentTypeToEncodeAs = (
+  contentType: AbiContentType,
+): AbiEncodeAs => {
+  switch (contentType) {
+    case 1:
+      return 'json'
+    case 2:
+      return 'zlib'
+    case 4:
+      return 'cbor'
+    case 8:
+      return 'uri'
+    default:
+      throw new UnknownContentTypeError({ contentType })
+  }
+}
+
+export const encodeAsToContentType = (
+  encodeAs: AbiEncodeAs,
+): AbiContentType => {
+  const contentType = abiEncodeMap[encodeAs]
+  if (contentType === undefined) {
+    throw new UnknownContentTypeError({ contentType: encodeAs })
+  }
+  return contentType
+}
 
 export const encodeAbi = async <
   TEncodeAs extends AbiEncodeAs,

@@ -162,3 +162,11 @@ export class InvalidContentHashError extends BaseError {
     super('Invalid content hash')
   }
 }
+
+export class UnknownContentTypeError extends BaseError {
+  override name = 'UnknownContentTypeError'
+
+  constructor({ contentType }: { contentType: string }) {
+    super(`Unknown content type: ${contentType}`)
+  }
+}
