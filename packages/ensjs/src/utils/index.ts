@@ -6,6 +6,7 @@ export {
   type EncodeAbiReturnType,
   type EncodedAbi,
 } from './encoders/encodeAbi.js'
+export { encodeClearRecords } from './encoders/encodeClearRecords.js'
 export {
   encodeSetAbi,
   type EncodeSetAbiParameters,

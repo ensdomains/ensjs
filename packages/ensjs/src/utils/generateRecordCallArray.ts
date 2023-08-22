@@ -1,6 +1,6 @@
-import { encodeFunctionData, type Hex } from 'viem'
-import { publicResolverClearRecordsSnippet } from '../contracts/publicResolver.js'
+import { type Hex } from 'viem'
 import type { Prettify } from '../types.js'
+import { encodeClearRecords } from './encoders/encodeClearRecords.js'
 import {
   encodeSetAbi,
   type EncodeSetAbiParameters,
@@ -39,13 +39,7 @@ export const generateRecordCallArray = ({
   const calls: Hex[] = []
 
   if (clearRecords) {
-    calls.push(
-      encodeFunctionData({
-        abi: publicResolverClearRecordsSnippet,
-        functionName: 'clearRecords',
-        args: [namehash],
-      }),
-    )
+    calls.push(encodeClearRecords(namehash))
   }
 
   if (typeof contentHash === 'string') {

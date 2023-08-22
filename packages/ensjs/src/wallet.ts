@@ -1,4 +1,11 @@
 export {
+  default as clearRecords,
+  type ClearRecordsDataParameters,
+  type ClearRecordsDataReturnType,
+  type ClearRecordsParameters,
+  type ClearRecordsReturnType,
+} from './functions/wallet/clearRecords.js'
+export {
   default as commitName,
   type CommitNameDataParameters,
   type CommitNameDataReturnType,
