@@ -1,5 +1,6 @@
+import type { GraphQLClient } from 'graphql-request'
 import { gql } from 'graphql-request'
-import type { Address } from 'viem'
+import type { Address, Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import type { DateWithValue } from '../../types.js'
 import { namehash } from '../../utils/normalise.js'
@@ -73,6 +74,59 @@ type CustomResolverSubgraphResult = {
   resolver?: ResolverResult
 }
 
+type GetResolverResultReturnType = {
+  domain: DomainResult
+  resolver: ResolverResult | undefined
+} | null
+
+const getCustomResolverResult = async (
+  subgraphClient: GraphQLClient,
+  {
+    id,
+    resolverAddress,
+  }: {
+    id: Hex
+    resolverAddress: Address
+  },
+): Promise<GetResolverResultReturnType> => {
+  const resolverId = `${resolverAddress.toLowerCase()}-${id}`
+  const response = await subgraphClient.request<CustomResolverSubgraphResult>(
+    customResolverQuery,
+    {
+      id,
+      resolverId,
+    },
+  )
+  if (!response || !response.domain) return null
+  return {
+    domain: response.domain,
+    resolver: response.resolver,
+  }
+}
+
+const getInheritedResolverResult = async (
+  subgraphClient: GraphQLClient,
+  {
+    id,
+  }: {
+    id: Hex
+  },
+): Promise<GetResolverResultReturnType> => {
+  const response =
+    await subgraphClient.request<InheritedResolverSubgraphResult>(
+      inheritedResolverQuery,
+      {
+        id,
+      },
+    )
+  if (!response || !response.domain) return null
+  const { resolver, ...domain } = response.domain
+  return {
+    domain,
+    resolver,
+  }
+}
+
 /**
  * Gets the records for a name from the subgraph
  * @param client - {@link ClientWithEns}
@@ -104,39 +158,16 @@ const getSubgraphRecords = async (
   const subgraphClient = createSubgraphClient({ client })
   const id = namehash(name)
 
-  let domainResult: DomainResult
-  let resolverResult: ResolverResult | undefined
+  const result = resolverAddress
+    ? await getCustomResolverResult(subgraphClient, { id, resolverAddress })
+    : await getInheritedResolverResult(subgraphClient, { id })
+  if (!result) return null
+  const { domain, resolver } = result
 
-  if (resolverAddress) {
-    const resolverId = `${resolverAddress.toLowerCase()}-${id}`
-    const response = await subgraphClient.request<CustomResolverSubgraphResult>(
-      customResolverQuery,
-      {
-        id,
-        resolverId,
-      },
-    )
-    if (!response || !response.domain) return null
-    domainResult = response.domain
-    resolverResult = response.resolver
-  } else {
-    const response =
-      await subgraphClient.request<InheritedResolverSubgraphResult>(
-        inheritedResolverQuery,
-        {
-          id,
-        },
-      )
-    if (!response || !response.domain) return null
-    const { resolver, ...domain_ } = response.domain
-    resolverResult = resolver
-    domainResult = domain_
-  }
-
-  const { isMigrated, createdAt: stringCreatedAt } = domainResult
+  const { isMigrated, createdAt: stringCreatedAt } = domain
   const intCreatedAt = parseInt(stringCreatedAt) * 1000
-  const texts = resolverResult?.texts || []
-  const coins = resolverResult?.coinTypes || []
+  const texts = resolver?.texts || []
+  const coins = resolver?.coinTypes || []
 
   return {
     isMigrated,
