@@ -148,7 +148,8 @@ export const makeFunctionData = <
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, deleteSubname } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { deleteSubname } from '@ensdomains/ensjs/wallet'
  *
  * const wallet = createWalletClient({
  *   chain: mainnetWithEns,

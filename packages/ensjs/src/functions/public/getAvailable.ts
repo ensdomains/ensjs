@@ -73,7 +73,8 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, getAvailable } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getAvailable } from '@ensdomains/ensjs/public'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

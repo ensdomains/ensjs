@@ -82,7 +82,7 @@ type DnsResponse = {
  * @returns Address of DNS owner. {@link GetDnsOwnerReturnType}
  *
  * @example
- * import { getDnsOwner } from '@ensdomains/ensjs'
+ * import { getDnsOwner } from '@ensdomains/ensjs/dns'
  *
  * const owner = await getDnsOwner({ name: 'ens.domains' })
  * // '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'

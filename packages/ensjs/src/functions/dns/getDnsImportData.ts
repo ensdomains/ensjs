@@ -51,7 +51,8 @@ const encodeProofs = (
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, getDnsImportData } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getDnsImportData } from '@ensdomains/ensjs/dns'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

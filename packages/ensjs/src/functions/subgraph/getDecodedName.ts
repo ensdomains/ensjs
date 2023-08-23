@@ -32,7 +32,8 @@ type SubgraphResult = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, getDecodedName } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getDecodedName } from '@ensdomains/ensjs/subgraph'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

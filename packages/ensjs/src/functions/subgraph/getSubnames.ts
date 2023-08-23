@@ -117,7 +117,8 @@ const getOrderByFilter = ({
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, getSubnames } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getSubnames } from '@ensdomains/ensjs/subgraph'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

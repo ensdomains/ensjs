@@ -13,13 +13,12 @@ If you want to customise the set of methods that are added to the Viem client in
 ```ts
 import { http, createClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts } from '@ensdomains/ensjs'
-import { ensSubgraphActions } from '@ensdomains/ensjs'
+import { addEnsContracts, ensSubgraphActions } from '@ensdomains/ensjs'
 
 const client = createClient({
   chain: addEnsContracts(mainnet),
   transport: http(),
 }).extend(ensSubgraphActions)
 
-const ethAddress = client.getSubgraphRecords({ name: 'ens.eth' })
+const subgraphRecords = await client.getSubgraphRecords({ name: 'ens.eth' })
 ```

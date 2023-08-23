@@ -1,5 +1,9 @@
 import type { Account, Transport, WalletClient } from 'viem'
 import type { ChainWithEns } from '../../contracts/consts.js'
+import clearRecords, {
+  type ClearRecordsParameters,
+  type ClearRecordsReturnType,
+} from '../../functions/wallet/clearRecords.js'
 import commitName, {
   type CommitNameParameters,
   type CommitNameReturnType,
@@ -74,6 +78,35 @@ export type EnsWalletActions<
   TAccount extends Account | undefined,
 > = {
   /**
+   * Clears the records for a name on a resolver.
+   * @param parameters - {@link ClearRecordsParameters}
+   * @returns Transaction hash. {@link ClearRecordsReturnType}
+   *
+   * @example
+   * import { createWalletClient, custom } from 'viem'
+   * import { mainnet } from 'viem/chains'
+   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+   *
+   * const wallet = createWalletClient({
+   *   chain: addEnsContracts(mainnet),
+   *   transport: custom(window.ethereum),
+   * }).extend(ensWalletActions)
+   * const hash = await wallet.clearRecords({
+   *   name: 'ens.eth',
+   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+   * })
+   * // 0x...
+   */
+  clearRecords: ({
+    name,
+    resolverAddress,
+    ...txArgs
+  }: ClearRecordsParameters<
+    TChain,
+    TAccount,
+    TChain
+  >) => Promise<ClearRecordsReturnType>
+  /**
    * Commits a name to be registered
    * @param parameters - {@link CommitNameParameters}
    * @returns Transaction hash. {@link CommitNameReturnType}
@@ -81,7 +114,8 @@ export type EnsWalletActions<
    * @example
    * import { createWalletClient, custom } from 'viem'
    * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions, randomSecret } from '@ensdomains/ensjs'
+   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+   * import { randomSecret } from '@ensdomains/ensjs/utils'
    *
    * const wallet = createWalletClient({
    *   chain: addEnsContracts(mainnet),
@@ -183,7 +217,8 @@ export type EnsWalletActions<
    * @example
    * import { createPublicClient, createWalletClient, http, custom } from 'viem'
    * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensPublicActions, ensWalletActions, randomSecret } from '@ensdomains/ensjs'
+   * import { addEnsContracts, ensPublicActions, ensWalletActions } from '@ensdomains/ensjs'
+   * import { randomSecret } from '@ensdomains/ensjs/utils'
    *
    * const mainnetWithEns = addEnsContracts(mainnet)
    * const client = createPublicClient({
@@ -279,7 +314,8 @@ export type EnsWalletActions<
    * import abi from './abi.json'
    * import { createWalletClient, custom } from 'viem'
    * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions, encodeAbi } from '@ensdomains/ensjs'
+   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+   * import { encodeAbi } from '@ensdomains/ensjs/utils'
    *
    * const wallet = createWalletClient({
    *   chain: addEnsContracts(mainnet),
@@ -492,6 +528,7 @@ export type EnsWalletActions<
   setRecords: ({
     name,
     resolverAddress,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     clearRecords,
     contentHash,
     texts,
@@ -687,6 +724,7 @@ export const ensWalletActions = <
 >(
   client: WalletClient<TTransport, TChain, TAccount>,
 ): EnsWalletActions<TChain, TAccount> => ({
+  clearRecords: (parameters) => clearRecords(client, parameters),
   commitName: (parameters) => commitName(client, parameters),
   createSubname: (parameters) => createSubname(client, parameters),
   deleteSubname: (parameters) => deleteSubname(client, parameters),

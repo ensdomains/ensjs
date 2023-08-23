@@ -67,7 +67,9 @@ export const makeFunctionData = <
  * import abi from './abi.json'
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, encodeAbi, setAbiRecord } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { encodeAbi } from '@ensdomains/ensjs/utils'
+ * import { setAbiRecord } from '@ensdomains/ensjs/wallet'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

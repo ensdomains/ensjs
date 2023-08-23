@@ -71,7 +71,8 @@ export type GetNameHistoryReturnType = {
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, getNameHistory } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getNameHistory } from '@ensdomains/ensjs/subgraph'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

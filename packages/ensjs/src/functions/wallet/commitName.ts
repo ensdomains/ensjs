@@ -74,7 +74,9 @@ export const makeFunctionData = <
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, commitName, randomSecret } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { commitName } from '@ensdomains/ensjs/wallet'
+ * import { randomSecret } from '@ensdomains/ensjs/utils'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

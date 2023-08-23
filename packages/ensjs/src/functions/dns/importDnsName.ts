@@ -129,7 +129,8 @@ export const makeFunctionData = <
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts, getDnsImportData, importDnsName } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getDnsImportData, importDnsName } from '@ensdomains/ensjs/dns'
  *
  * const mainnetWithEns = addEnsContracts(mainnet)
  * const client = createPublicClient({

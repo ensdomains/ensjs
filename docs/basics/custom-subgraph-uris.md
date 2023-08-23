@@ -25,5 +25,5 @@ const client = createClient({
   transport: http(),
 })
 
-const ethAddress = getSubgraphRecords(client, { name: 'ens.eth' })
+const subgraphRecords = await getSubgraphRecords(client, { name: 'ens.eth' })
 ```
