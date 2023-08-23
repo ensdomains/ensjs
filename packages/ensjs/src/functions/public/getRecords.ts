@@ -255,82 +255,81 @@ const decode = async <TParams extends GetRecordsParameters>(
   const filteredCalls = calls.filter((x) => x) as CallObj[]
   const filteredRecordData = recordData.filter((x) => x) as Hex[]
 
-  const returnedRecords: GetRecordsReturnType<GetRecordsParameters> =
-    await Promise.all(
-      filteredRecordData.map(async (item, i) => {
-        const { key, type } = filteredCalls[i]
-        const baseItem = { key, type }
-        if (type === 'contentHash') {
-          const decodedFromAbi = decodeAbiParameters(
-            [{ type: 'bytes' }] as const,
-            item,
-          )[0]
-          if (BigInt(decodedFromAbi) === 0n) {
-            return { ...baseItem, value: null }
-          }
+  const decodedRecords = await Promise.all(
+    filteredRecordData.map(async (item, i) => {
+      const { key, type } = filteredCalls[i]
+      const baseItem = { key, type }
+      if (type === 'contentHash') {
+        const decodedFromAbi = decodeAbiParameters(
+          [{ type: 'bytes' }] as const,
+          item,
+        )[0]
+        if (BigInt(decodedFromAbi) === 0n) {
+          return { ...baseItem, value: null }
         }
-        if (type === 'text') {
-          const decodedFromAbi = await _getText.decode(client, item)
-          return { ...baseItem, value: decodedFromAbi }
-        }
-        if (type === 'coin') {
-          const decodedFromAbi = await _getAddr.decode(client, item, {
-            name,
-            coin: key,
-          })
-          return { ...baseItem, value: decodedFromAbi }
-        }
-        if (type === 'contentHash') {
-          const decodedFromAbi = await _getContentHash.decode(client, item)
-          return { ...baseItem, value: decodedFromAbi }
-        }
-        // abi
-        const decodedFromAbi = await _getAbi.decode(client, item)
+      }
+      if (type === 'text') {
+        const decodedFromAbi = await _getText.decode(client, item)
         return { ...baseItem, value: decodedFromAbi }
-      }),
-    ).then((results) =>
-      results.reduce(
-        (prev, curr) => {
-          if (curr.type === 'text' || curr.type === 'coin') {
-            if (!curr.value) {
-              return prev
-            }
-          }
-          if (curr.type === 'text') {
-            return {
-              ...prev,
-              texts: [
-                ...(prev.texts || []),
-                { key: curr.key, value: curr.value } as DecodedText,
-              ],
-            }
-          }
-          if (curr.type === 'coin') {
-            return {
-              ...prev,
-              coins: [...(prev.coins || []), curr.value as DecodedAddr],
-            }
-          }
-          if (curr.type === 'contentHash') {
-            return {
-              ...prev,
-              contentHash: curr.value as InternalGetContentHashReturnType,
-            }
-          }
-          // abi
-          return { ...prev, abi: curr.value as InternalGetAbiReturnType }
-        },
-        {
-          resolverAddress,
-        } as GetRecordsReturnType<
-          GetRecordsParameters & {
-            records: Required<GetRecordsParameters['records']>
-          }
-        >,
-      ),
-    )
+      }
+      if (type === 'coin') {
+        const decodedFromAbi = await _getAddr.decode(client, item, {
+          name,
+          coin: key,
+        })
+        return { ...baseItem, value: decodedFromAbi }
+      }
+      if (type === 'contentHash') {
+        const decodedFromAbi = await _getContentHash.decode(client, item)
+        return { ...baseItem, value: decodedFromAbi }
+      }
+      // abi
+      const decodedFromAbi = await _getAbi.decode(client, item)
+      return { ...baseItem, value: decodedFromAbi }
+    }),
+  )
 
-  return returnedRecords as GetRecordsReturnType<TParams>
+  const records = decodedRecords.reduce(
+    (prev, curr) => {
+      if (curr.type === 'text' || curr.type === 'coin') {
+        if (!curr.value) {
+          return prev
+        }
+      }
+      if (curr.type === 'text') {
+        return {
+          ...prev,
+          texts: [
+            ...(prev.texts || []),
+            { key: curr.key, value: curr.value } as DecodedText,
+          ],
+        }
+      }
+      if (curr.type === 'coin') {
+        return {
+          ...prev,
+          coins: [...(prev.coins || []), curr.value as DecodedAddr],
+        }
+      }
+      if (curr.type === 'contentHash') {
+        return {
+          ...prev,
+          contentHash: curr.value as InternalGetContentHashReturnType,
+        }
+      }
+      // abi
+      return { ...prev, abi: curr.value as InternalGetAbiReturnType }
+    },
+    {
+      resolverAddress,
+    } as GetRecordsReturnType<
+      GetRecordsParameters & {
+        records: Required<GetRecordsParameters['records']>
+      }
+    >,
+  )
+
+  return records as GetRecordsReturnType<TParams>
 }
 
 type EncoderFunction = typeof encode
