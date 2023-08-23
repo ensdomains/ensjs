@@ -15,7 +15,8 @@ Gets the primary name for an address
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getName } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getName } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -31,7 +32,7 @@ const result = await getName(client, {
 
 | Parameter    | Type                | Description       |
 | :----------- | :------------------ | :---------------- |
-| `client`     | `Object`            | ClientWithEns     |
+| `client`     | `ClientWithEns`     | ClientWithEns     |
 | `parameters` | `GetNameParameters` | GetNameParameters |
 
 ## Returns
@@ -42,7 +43,7 @@ Name data object, or `null` if no primary name is set. GetNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getName.ts:88](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getName.ts#L88)
+[packages/ensjs/src/functions/public/getName.ts:123](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getName.ts#L123)
 
 > **getName**(`client`, ...`args`): `Promise`\< `null` \| `GetNameReturnType` \>
 
@@ -53,7 +54,8 @@ Gets the primary name for an address
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getName } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getName } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -69,7 +71,7 @@ const result = await getName(client, {
 
 | Parameter | Type                  | Description   |
 | :-------- | :-------------------- | :------------ |
-| `client`  | `Object`              | ClientWithEns |
+| `client`  | `ClientWithEns`       | ClientWithEns |
 | ...`args` | [`GetNameParameters`] | -             |
 
 ## Returns
@@ -80,7 +82,7 @@ Name data object, or `null` if no primary name is set. GetNameReturnType
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:40](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/utils/generateFunction.ts#L40)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 

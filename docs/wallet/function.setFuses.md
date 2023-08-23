@@ -15,7 +15,8 @@ Sets the fuses for a name.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, setFuses } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { setFuses } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -40,12 +41,12 @@ const hash = await setFuses(wallet, {
 
 ## Parameters
 
-| Parameter          | Type                                                                                                                                                                                                                                                                                             | Description           |
-| :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------- |
-| `wallet`           | `object`                                                                                                                                                                                                                                                                                         | WalletWithEns         |
-| `parameters`       | `object`                                                                                                                                                                                                                                                                                         | SetFusesParameters    |
-| `parameters.fuses` | `Prettify`\< `InputFuses`\< `"CANNOT_UNWRAP"` \| `"CANNOT_BURN_FUSES"` \| `"CANNOT_TRANSFER"` \| `"CANNOT_SET_RESOLVER"` \| `"CANNOT_SET_TTL"` \| `"CANNOT_CREATE_SUBDOMAIN"` \| `"CANNOT_APPROVE"`, `128` \| `256` \| `512` \| `1024` \| `2048` \| `4096` \| `8192` \| `16384` \| `32768` \> \> | Fuse object to set to |
-| `parameters.name`  | `string`                                                                                                                                                                                                                                                                                         | Name to set fuses for |
+| Parameter          | Type                          | Description           |
+| :----------------- | :---------------------------- | :-------------------- |
+| `wallet`           | `object`                      | WalletWithEns         |
+| `parameters`       | `object`                      | SetFusesParameters    |
+| `parameters.fuses` | `EncodeChildFusesInputObject` | Fuse object to set to |
+| `parameters.name`  | `string`                      | Name to set fuses for |
 
 ## Returns
 
@@ -55,7 +56,7 @@ Transaction hash. SetFusesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setFuses.ts:80](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setFuses.ts#L80)
+[packages/ensjs/src/functions/wallet/setFuses.ts:84](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setFuses.ts#L84)
 
 ---
 

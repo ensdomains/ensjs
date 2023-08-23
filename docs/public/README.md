@@ -19,6 +19,7 @@
 - [getPrice](function.getPrice.md)
 - [getRecords](function.getRecords.md)
 - [getResolver](function.getResolver.md)
+- [getSupportedInterfaces](function.getSupportedInterfaces.md)
 - [getTextRecord](function.getTextRecord.md)
 - [getWrapperData](function.getWrapperData.md)
 

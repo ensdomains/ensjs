@@ -15,13 +15,10 @@ Creates a transaction to import a DNS name to ENS.
 ```ts
 import { createPublicClient, createWalletClient, http, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import {
-  addContracts,
-  prepareDnsImport,
-  importDnsName,
-} from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getDnsImportData, importDnsName } from '@ensdomains/ensjs/dns'
 
-const [mainnetWithEns] = addContracts([mainnet])
+const mainnetWithEns = addEnsContracts(mainnet)
 const client = createPublicClient({
   chain: mainnetWithEns,
   transport: http(),
@@ -30,12 +27,12 @@ const wallet = createWalletClient({
   chain: mainnetWithEns,
   transport: custom(window.ethereum),
 })
-const preparedData = await prepareDnsImport(client, {
+const dnsImportData = await getDnsImportData(client, {
   name: 'example.com',
 })
-const hash = await importDnsName(client, {
+const hash = await importDnsName(wallet, {
   name: 'example.com',
-  preparedData,
+  dnsImportData,
 })
 ```
 
@@ -62,7 +59,7 @@ A transaction hash. ImportDnsNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/dns/importDnsName.ts:146](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/dns/importDnsName.ts#L146)
+[packages/ensjs/src/functions/dns/importDnsName.ts:152](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/dns/importDnsName.ts#L152)
 
 ---
 

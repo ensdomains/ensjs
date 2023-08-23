@@ -15,7 +15,8 @@ Unwraps a name.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, unwrapName } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { unwrapName } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -53,7 +54,7 @@ Transaction hash. UnwrapNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/unwrapName.ts:143](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/unwrapName.ts#L143)
+[packages/ensjs/src/functions/wallet/unwrapName.ts:144](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/unwrapName.ts#L144)
 
 ---
 

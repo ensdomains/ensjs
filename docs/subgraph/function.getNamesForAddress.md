@@ -15,7 +15,8 @@ Gets the names for an address from the subgraph.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getNamesForAddress } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getNamesForAddress } from '@ensdomains/ensjs/subgraph'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -30,7 +31,7 @@ const result = await getNamesForAddress(client, {
 
 | Parameter    | Type                           | Description                  |
 | :----------- | :----------------------------- | :--------------------------- |
-| `client`     | `Object`                       | ClientWithEns                |
+| `client`     | `ClientWithEns`                | ClientWithEns                |
 | `parameters` | `GetNamesForAddressParameters` | GetNamesForAddressParameters |
 
 ## Returns
@@ -41,7 +42,7 @@ Name array. GetNamesForAddressReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getNamesForAddress.ts:85](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/subgraph/getNamesForAddress.ts#L85)
+[packages/ensjs/src/functions/subgraph/getNamesForAddress.ts:161](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getNamesForAddress.ts#L161)
 
 ---
 

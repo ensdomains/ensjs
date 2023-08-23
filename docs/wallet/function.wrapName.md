@@ -15,7 +15,8 @@ Wraps a name.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, wrapName } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { wrapName } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -39,14 +40,14 @@ const hash = await wrapName(wallet, {
 
 ## Parameters
 
-| Parameter                     | Type                                                                                                                                                                                                                                                                                                                                          | Description                         |
-| :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
-| `wallet`                      | `object`                                                                                                                                                                                                                                                                                                                                      | WalletWithEns                       |
-| `parameters`                  | `object`                                                                                                                                                                                                                                                                                                                                      | WrapNameParameters                  |
-| `parameters.fuses`?           | `GetNameType`\< `TName` \> _extends_ `"eth-2ld"` ? `InputFuses`\< `"CANNOT_UNWRAP"` \| `"CANNOT_BURN_FUSES"` \| `"CANNOT_TRANSFER"` \| `"CANNOT_SET_RESOLVER"` \| `"CANNOT_SET_TTL"` \| `"CANNOT_CREATE_SUBDOMAIN"` \| `"CANNOT_APPROVE"`, `128` \| `256` \| `512` \| `1024` \| `2048` \| `4096` \| `8192` \| `16384` \| `32768` \> : `never` | Fuses to set on wrap (eth-2ld only) |
-| `parameters.name`             | `TName`                                                                                                                                                                                                                                                                                                                                       | The name to wrap                    |
-| `parameters.newOwnerAddress`  | \`0x$\{string}\`                                                                                                                                                                                                                                                                                                                              | The recipient of the wrapped name   |
-| `parameters.resolverAddress`? | \`0x$\{string}\`                                                                                                                                                                                                                                                                                                                              | The resolver address to set on wrap |
+| Parameter                     | Type                                                                                       | Description                         |
+| :---------------------------- | :----------------------------------------------------------------------------------------- | :---------------------------------- |
+| `wallet`                      | `object`                                                                                   | WalletWithEns                       |
+| `parameters`                  | `object`                                                                                   | WrapNameParameters                  |
+| `parameters.fuses`?           | `GetNameType`\< `TName` \> _extends_ `"eth-2ld"` ? `EncodeChildFusesInputObject` : `never` | Fuses to set on wrap (eth-2ld only) |
+| `parameters.name`             | `TName`                                                                                    | The name to wrap                    |
+| `parameters.newOwnerAddress`  | \`0x$\{string}\`                                                                           | The recipient of the wrapped name   |
+| `parameters.resolverAddress`? | \`0x$\{string}\`                                                                           | The resolver address to set on wrap |
 
 ## Returns
 
@@ -56,7 +57,7 @@ Transaction hash. WrapNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/wrapName.ts:151](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/wrapName.ts#L151)
+[packages/ensjs/src/functions/wallet/wrapName.ts:157](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/wrapName.ts#L157)
 
 ---
 

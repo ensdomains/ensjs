@@ -15,7 +15,8 @@ Gets the expiry for a name
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getExpiry } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getExpiry } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getExpiry(client, { name: 'ens.eth' })
 
 | Parameter              | Type             | Description                                     |
 | :--------------------- | :--------------- | :---------------------------------------------- |
-| `client`               | `Object`         | ClientWithEns                                   |
+| `client`               | `ClientWithEns`  | ClientWithEns                                   |
 | `parameters`           | `object`         | GetExpiryParameters                             |
 | `parameters.contract`? | `ContractOption` | Optional specific contract to use to get expiry |
 | `parameters.name`      | `string`         | Name to get expiry for                          |
@@ -42,7 +43,7 @@ Expiry object, or `null` if no expiry. GetExpiryReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getExpiry.ts:191](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getExpiry.ts#L191)
+[packages/ensjs/src/functions/public/getExpiry.ts:194](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getExpiry.ts#L194)
 
 ---
 

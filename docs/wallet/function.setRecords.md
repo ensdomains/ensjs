@@ -15,7 +15,8 @@ Sets multiple records for a name on a resolver.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, setRecords } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { setRecords } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -65,7 +66,7 @@ Transaction hash. SetRecordsReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setRecords.ts:98](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setRecords.ts#L98)
+[packages/ensjs/src/functions/wallet/setRecords.ts:99](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setRecords.ts#L99)
 
 ---
 

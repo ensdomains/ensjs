@@ -15,7 +15,8 @@ Gets the resolver address for a name.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getResolver } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getResolver } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getResolver(client, { name: 'ens.eth' })
 
 | Parameter    | Type                    | Description           |
 | :----------- | :---------------------- | :-------------------- |
-| `client`     | `Object`                | ClientWithEns         |
+| `client`     | `ClientWithEns`         | ClientWithEns         |
 | `parameters` | `GetResolverParameters` | GetResolverParameters |
 
 ## Returns
@@ -40,7 +41,7 @@ Resolver address, or null if none is found. GetResolverReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getResolver.ts:75](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getResolver.ts#L75)
+[packages/ensjs/src/functions/public/getResolver.ts:95](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getResolver.ts#L95)
 
 ---
 

@@ -15,13 +15,10 @@ Registers a name on ENS
 ```ts
 import { createPublicClient, createWalletClient, http, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import {
-  addEnsContracts,
-  commitName,
-  randomSecret,
-  getPrice,
-  registerName,
-} from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getPrice } from '@ensdomains/ensjs/public'
+import { randomSecret } from '@ensdomains/ensjs/utils'
+import { commitName, registerName } from '@ensdomains/ensjs/wallet'
 
 const mainnetWithEns = addEnsContracts(mainnet)
 const client = createPublicClient({
@@ -63,19 +60,19 @@ const hash = await registerName(wallet, { ...params, value })
 
 ## Parameters
 
-| Parameter                     | Type                                                                                                                                                                                                                                                                             | Description                                                             |
-| :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------ | -------------------------- | ------------- | -------------------------------- |
-| `wallet`                      | `object`                                                                                                                                                                                                                                                                         | WalletWithEns                                                           |
-| `parameters`                  | `object`                                                                                                                                                                                                                                                                         | RegisterNameParameters                                                  |
-| `parameters.duration`         | `number`                                                                                                                                                                                                                                                                         | Duration of registration                                                |
-| `parameters.fuses`?           | `InputFuses`\< `"CANNOT_UNWRAP"` \| `"CANNOT_BURN_FUSES"` \| `"CANNOT_TRANSFER"` \| `"CANNOT_SET_RESOLVER"` \| `"CANNOT_SET_TTL"` \| `"CANNOT_CREATE_SUBDOMAIN"` \| `"CANNOT_APPROVE"`, `128` \| `256` \| `512` \| `1024` \| `2048` \| `4096` \| `8192` \| `16384` \| `32768` \> | Fuses to set upon registration                                          |
-| `parameters.name`             | `string`                                                                                                                                                                                                                                                                         | Name to register                                                        |
-| `parameters.owner`            | \`0x$\{string}\`                                                                                                                                                                                                                                                                 | Address to set owner to                                                 |
-| `parameters.records`?         | `{ clearRecords?: boolean                                                                                                                                                                                                                                                        | undefined; contentHash?: string                                         | undefined; texts?: Omit<EncodeSetTextParameters, "namehash">[] | undefined; coins?: Omit<...>[] | undefined; abi?: Omit<...> | undefined; }` | Records to set upon registration |
-| `parameters.resolverAddress`? | \`0x$\{string}\`                                                                                                                                                                                                                                                                 | Custom resolver address, defaults to current public resolver deployment |
-| `parameters.reverseRecord`?   | `boolean`                                                                                                                                                                                                                                                                        | Sets primary name upon registration                                     |
-| `parameters.secret`           | \`0x$\{string}\`                                                                                                                                                                                                                                                                 | Random 32 bytes to use for registration                                 |
-| `parameters.value`            | `bigint`                                                                                                                                                                                                                                                                         | Value of registration                                                   |
+| Parameter                     | Type                          | Description                                                             |
+| :---------------------------- | :---------------------------- | :---------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------ | -------------------------- | ------------- | -------------------------------- |
+| `wallet`                      | `object`                      | WalletWithEns                                                           |
+| `parameters`                  | `object`                      | RegisterNameParameters                                                  |
+| `parameters.duration`         | `number`                      | Duration of registration                                                |
+| `parameters.fuses`?           | `EncodeChildFusesInputObject` | Fuses to set upon registration                                          |
+| `parameters.name`             | `string`                      | Name to register                                                        |
+| `parameters.owner`            | \`0x$\{string}\`              | Address to set owner to                                                 |
+| `parameters.records`?         | `{ clearRecords?: boolean     | undefined; contentHash?: string                                         | undefined; texts?: Omit<EncodeSetTextParameters, "namehash">[] | undefined; coins?: Omit<...>[] | undefined; abi?: Omit<...> | undefined; }` | Records to set upon registration |
+| `parameters.resolverAddress`? | \`0x$\{string}\`              | Custom resolver address, defaults to current public resolver deployment |
+| `parameters.reverseRecord`?   | `boolean`                     | Sets primary name upon registration                                     |
+| `parameters.secret`           | \`0x$\{string}\`              | Random 32 bytes to use for registration                                 |
+| `parameters.value`            | `bigint`                      | Value of registration                                                   |
 
 ## Returns
 
@@ -85,7 +82,7 @@ Transaction hash. RegisterNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/registerName.ts:113](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/registerName.ts#L113)
+[packages/ensjs/src/functions/wallet/registerName.ts:116](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/registerName.ts#L116)
 
 ---
 

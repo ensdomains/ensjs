@@ -15,7 +15,8 @@ Gets arbitrary records for a name
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getRecords } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getRecords } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -40,10 +41,10 @@ const result = await getRecords(client, {
 
 ## Parameters
 
-| Parameter    | Type      | Description          |
-| :----------- | :-------- | :------------------- |
-| `client`     | `Object`  | ClientWithEns        |
-| `parameters` | `TParams` | GetRecordsParameters |
+| Parameter    | Type            | Description          |
+| :----------- | :-------------- | :------------------- |
+| `client`     | `ClientWithEns` | ClientWithEns        |
+| `parameters` | `TParams`       | GetRecordsParameters |
 
 ## Returns
 
@@ -53,7 +54,7 @@ Records data object. GetRecordsReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getRecords.ts:340](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getRecords.ts#L340)
+[packages/ensjs/src/functions/public/getRecords.ts:377](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getRecords.ts#L377)
 
 ---
 

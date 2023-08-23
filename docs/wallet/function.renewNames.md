@@ -15,7 +15,9 @@ Renews a name or names for a specified duration.
 ```ts
 import { createPublicClient, createWalletClient, http, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, renewNames, getPrice } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getPrice } from '@ensdomains/ensjs/public'
+import { renewNames } from '@ensdomains/ensjs/wallet'
 
 const mainnetWithEns = addEnsContracts(mainnet)
 const client = createPublicClient({
@@ -67,7 +69,7 @@ Transaction hash. RenewNamesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/renewNames.ts:127](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/renewNames.ts#L127)
+[packages/ensjs/src/functions/wallet/renewNames.ts:129](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/renewNames.ts#L129)
 
 ---
 

@@ -15,7 +15,8 @@ Sets an address record for a name on a resolver.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, setAddressRecord } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { setAddressRecord } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -57,7 +58,7 @@ Transaction hash. SetAddressRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setAddressRecord.ts:77](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setAddressRecord.ts#L77)
+[packages/ensjs/src/functions/wallet/setAddressRecord.ts:78](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setAddressRecord.ts#L78)
 
 ---
 

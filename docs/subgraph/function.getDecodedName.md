@@ -15,7 +15,8 @@ Gets the full name for a name with unknown labels from the subgraph.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getDecodedName } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getDecodedName } from '@ensdomains/ensjs/subgraph'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -31,7 +32,7 @@ const result = await getDecodedName(client, {
 
 | Parameter    | Type                       | Description              |
 | :----------- | :------------------------- | :----------------------- |
-| `client`     | `Object`                   | ClientWithEns            |
+| `client`     | `ClientWithEns`            | ClientWithEns            |
 | `parameters` | `GetDecodedNameParameters` | GetDecodedNameParameters |
 
 ## Returns
@@ -42,7 +43,7 @@ Full name, or null if name was could not be filled. GetDecodedNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getDecodedName.ts:44](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/subgraph/getDecodedName.ts#L44)
+[packages/ensjs/src/functions/subgraph/getDecodedName.ts:45](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getDecodedName.ts#L45)
 
 ---
 

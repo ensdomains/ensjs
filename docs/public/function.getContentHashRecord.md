@@ -15,7 +15,8 @@ Gets the content hash record for a name
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getContentHashRecord } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getContentHashRecord } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -27,11 +28,11 @@ const result = await getContentHashRecord(client, { name: 'ens.eth' })
 
 ## Parameters
 
-| Parameter         | Type     | Description                         |
-| :---------------- | :------- | :---------------------------------- |
-| `client`          | `Object` | ClientWithEns                       |
-| `parameters`      | `object` | GetContentHashRecordParameters      |
-| `parameters.name` | `string` | Name to get content hash record for |
+| Parameter         | Type            | Description                         |
+| :---------------- | :-------------- | :---------------------------------- |
+| `client`          | `ClientWithEns` | ClientWithEns                       |
+| `parameters`      | `object`        | GetContentHashRecordParameters      |
+| `parameters.name` | `string`        | Name to get content hash record for |
 
 ## Returns
 
@@ -41,7 +42,7 @@ Content hash object, or `null` if not found. GetContentHashRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getContentHashRecord.ts:57](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getContentHashRecord.ts#L57)
+[packages/ensjs/src/functions/public/getContentHashRecord.ts:62](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getContentHashRecord.ts#L62)
 
 ---
 

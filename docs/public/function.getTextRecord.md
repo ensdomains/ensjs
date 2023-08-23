@@ -15,7 +15,8 @@ Gets a text record for a name.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getTextRecord } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getTextRecord } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -30,12 +31,12 @@ const result = await getTextRecord(client, {
 
 ## Parameters
 
-| Parameter         | Type     | Description                 |
-| :---------------- | :------- | :-------------------------- |
-| `client`          | `Object` | ClientWithEns               |
-| `parameters`      | `object` | GetTextRecordParameters     |
-| `parameters.key`  | `string` | Text record key to get      |
-| `parameters.name` | `string` | Name to get text record for |
+| Parameter         | Type            | Description                 |
+| :---------------- | :-------------- | :-------------------------- |
+| `client`          | `ClientWithEns` | ClientWithEns               |
+| `parameters`      | `object`        | GetTextRecordParameters     |
+| `parameters.key`  | `string`        | Text record key to get      |
+| `parameters.name` | `string`        | Name to get text record for |
 
 ## Returns
 
@@ -45,7 +46,7 @@ Text record string, or null if none is found. GetTextRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getTextRecord.ts:55](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getTextRecord.ts#L55)
+[packages/ensjs/src/functions/public/getTextRecord.ts:60](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getTextRecord.ts#L60)
 
 ---
 

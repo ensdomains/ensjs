@@ -15,7 +15,8 @@ Gets the name registrant from the subgraph.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getSubgraphRegistrant } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getSubgraphRegistrant } from '@ensdomains/ensjs/subgraph'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getSubgraphRegistrant(client, { name: 'ens.eth' })
 
 | Parameter    | Type                              | Description                     |
 | :----------- | :-------------------------------- | :------------------------------ |
-| `client`     | `Object`                          | ClientWithEns                   |
+| `client`     | `ClientWithEns`                   | ClientWithEns                   |
 | `parameters` | `GetSubgraphRegistrantParameters` | GetSubgraphRegistrantParameters |
 
 ## Returns
@@ -40,7 +41,7 @@ Registrant address, or null if name was not found. GetSubgraphRegistrantReturnTy
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts:51](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts#L51)
+[packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts:52](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts#L52)
 
 ---
 

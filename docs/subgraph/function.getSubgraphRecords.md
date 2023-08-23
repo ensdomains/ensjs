@@ -15,7 +15,8 @@ Gets the records for a name from the subgraph
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getSubgraphRecords } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getSubgraphRecords } from '@ensdomains/ensjs/subgraph'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -34,7 +35,7 @@ const result = await getSubgraphRecords(client, { name: 'ens.eth' })
 
 | Parameter    | Type                           | Description                  |
 | :----------- | :----------------------------- | :--------------------------- |
-| `client`     | `Object`                       | ClientWithEns                |
+| `client`     | `ClientWithEns`                | ClientWithEns                |
 | `parameters` | `GetSubgraphRecordsParameters` | GetSubgraphRecordsParameters |
 
 ## Returns
@@ -45,7 +46,7 @@ Record object, or null if name was not found. GetSubgraphRecordsReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts:99](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts#L99)
+[packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts:100](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts#L100)
 
 ---
 

@@ -15,7 +15,8 @@ Creates a subname
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, createSubname } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { createSubname } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -52,7 +53,7 @@ Transaction hash. CreateSubnameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/createSubname.ts:174](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/createSubname.ts#L174)
+[packages/ensjs/src/functions/wallet/createSubname.ts:175](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/createSubname.ts#L175)
 
 ---
 

@@ -735,7 +735,7 @@ Full name, or null if name was not found. GetWrapperNameReturnType
 
 ## Source
 
-[packages/ensjs/src/clients/public.ts:56](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/clients/public.ts#L56)
+[packages/ensjs/src/clients/public.ts:56](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/clients/public.ts#L56)
 
 ---
 

@@ -15,7 +15,8 @@ Sets a resolver for a name.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, setResolver } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { setResolver } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -55,7 +56,7 @@ Transaction hash. SetResolverReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setResolver.ts:102](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setResolver.ts#L102)
+[packages/ensjs/src/functions/wallet/setResolver.ts:103](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setResolver.ts#L103)
 
 ---
 

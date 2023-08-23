@@ -15,7 +15,8 @@ Gets an address record for a name and specified coin
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getAddressRecord } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getAddressRecord } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getAddressRecord(client, { name: 'ens.eth', coin: 'ETH' })
 
 | Parameter                  | Type                 | Description                                                                                          |
 | :------------------------- | :------------------- | :--------------------------------------------------------------------------------------------------- |
-| `client`                   | `Object`             | ClientWithEns                                                                                        |
+| `client`                   | `ClientWithEns`      | ClientWithEns                                                                                        |
 | `parameters`               | `object`             | GetAddressRecordParameters                                                                           |
 | `parameters.bypassFormat`? | `boolean`            | Optionally return raw bytes value of address record (default: false)                                 |
 | `parameters.coin`?         | `string` \| `number` | Coin to get the address record for, can be either symbol (string) or coinId (number) (default: `60`) |
@@ -43,7 +44,7 @@ Coin value object, or `null` if not found. GetAddressRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getAddressRecord.ts:56](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getAddressRecord.ts#L56)
+[packages/ensjs/src/functions/public/getAddressRecord.ts:61](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getAddressRecord.ts#L61)
 
 ---
 

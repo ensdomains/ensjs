@@ -16,7 +16,9 @@ Sets the ABI for a name on a resolver.
 import abi from './abi.json'
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, encodeAbi, setAbiRecord } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { encodeAbi } from '@ensdomains/ensjs/utils'
+import { setAbiRecord } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -58,7 +60,7 @@ Transaction hash. SetAbiRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setAbiRecord.ts:85](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setAbiRecord.ts#L85)
+[packages/ensjs/src/functions/wallet/setAbiRecord.ts:87](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setAbiRecord.ts#L87)
 
 ---
 

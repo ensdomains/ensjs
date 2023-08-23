@@ -8,9 +8,9 @@
 
 ## Index
 
+- [getDnsImportData](function.getDnsImportData.md)
 - [getDnsOwner](function.getDnsOwner.md)
 - [importDnsName](function.importDnsName.md)
-- [prepareDnsImport](function.prepareDnsImport.md)
 
 ---
 

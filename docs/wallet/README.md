@@ -8,6 +8,7 @@
 
 ## Index
 
+- [clearRecords](function.clearRecords.md)
 - [commitName](function.commitName.md)
 - [createSubname](function.createSubname.md)
 - [deleteSubname](function.deleteSubname.md)

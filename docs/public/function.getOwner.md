@@ -15,7 +15,8 @@ Gets the owner(s) of a name.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getOwner } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getOwner } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getOwner(client, { name: 'ens.eth' })
 
 | Parameter    | Type                 | Description        |
 | :----------- | :------------------- | :----------------- |
-| `client`     | `Object`             | ClientWithEns      |
+| `client`     | `ClientWithEns`      | ClientWithEns      |
 | `parameters` | `GetOwnerParameters` | GetOwnerParameters |
 
 ## Returns
@@ -40,7 +41,7 @@ Owner data object, or `null` if no owners exist. GetOwnerReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getOwner.ts:243](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getOwner.ts#L243)
+[packages/ensjs/src/functions/public/getOwner.ts:245](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getOwner.ts#L245)
 
 ---
 

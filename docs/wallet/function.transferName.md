@@ -15,7 +15,8 @@ Transfers a name to a new owner.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, transferName } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { transferName } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -52,7 +53,7 @@ Transaction hash. TransferNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/transferName.ts:225](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/transferName.ts#L225)
+[packages/ensjs/src/functions/wallet/transferName.ts:226](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/transferName.ts#L226)
 
 ---
 

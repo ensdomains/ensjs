@@ -15,7 +15,8 @@ Sets the fuses for a name as the parent.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, setChildFuses } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { setChildFuses } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -42,13 +43,13 @@ const hash = await setChildFuses(wallet, {
 
 ## Parameters
 
-| Parameter            | Type                                           | Description                           |
-| :------------------- | :--------------------------------------------- | :------------------------------------ |
-| `wallet`             | `object`                                       | WalletWithEns                         |
-| `parameters`         | `object`                                       | SetChildFusesParameters               |
-| `parameters.expiry`? | `number` \| `bigint`                           | Expiry to set for fuses               |
-| `parameters.fuses`   | `number` \| `Partial`\< `CombinedFuseInput` \> | Fuse object or number value to set to |
-| `parameters.name`    | `string`                                       | Name to set child fuses for           |
+| Parameter            | Type                     | Description                           |
+| :------------------- | :----------------------- | :------------------------------------ |
+| `wallet`             | `object`                 | WalletWithEns                         |
+| `parameters`         | `object`                 | SetChildFusesParameters               |
+| `parameters.expiry`? | `number` \| `bigint`     | Expiry to set for fuses               |
+| `parameters.fuses`   | `EncodeFusesInputObject` | Fuse object or number value to set to |
+| `parameters.name`    | `string`                 | Name to set child fuses for           |
 
 ## Returns
 
@@ -58,7 +59,7 @@ Transaction hash. SetChildFusesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setChildFuses.ts:88](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setChildFuses.ts#L88)
+[packages/ensjs/src/functions/wallet/setChildFuses.ts:89](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setChildFuses.ts#L89)
 
 ---
 

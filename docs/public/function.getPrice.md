@@ -15,7 +15,8 @@ Gets the price of a name, or array of names, for a given duration.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getPrice } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getPrice } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getPrice(client, { nameOrNames: 'ens.eth' })
 
 | Parameter    | Type                 | Description        |
 | :----------- | :------------------- | :----------------- |
-| `client`     | `Object`             | ClientWithEns      |
+| `client`     | `ClientWithEns`      | ClientWithEns      |
 | `parameters` | `GetPriceParameters` | GetPriceParameters |
 
 ## Returns
@@ -40,7 +41,7 @@ Price data object. GetPriceReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getPrice.ts:135](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getPrice.ts#L135)
+[packages/ensjs/src/functions/public/getPrice.ts:142](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getPrice.ts#L142)
 
 > **getPrice**(`client`, ...`args`): `Promise`\< `null` \| `GetPriceReturnType` \>
 
@@ -51,7 +52,8 @@ Gets the price of a name, or array of names, for a given duration.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getPrice } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getPrice } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -65,7 +67,7 @@ const result = await getPrice(client, { nameOrNames: 'ens.eth' })
 
 | Parameter | Type                   | Description   |
 | :-------- | :--------------------- | :------------ |
-| `client`  | `Object`               | ClientWithEns |
+| `client`  | `ClientWithEns`        | ClientWithEns |
 | ...`args` | [`GetPriceParameters`] | -             |
 
 ## Returns
@@ -76,7 +78,7 @@ Price data object. GetPriceReturnType
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:40](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/utils/generateFunction.ts#L40)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 

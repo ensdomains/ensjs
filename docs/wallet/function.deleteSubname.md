@@ -15,7 +15,8 @@ Deletes a subname
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, deleteSubname } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { deleteSubname } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: mainnetWithEns,
@@ -54,7 +55,7 @@ Transaction hash. DeleteSubnameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/deleteSubname.ts:163](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/deleteSubname.ts#L163)
+[packages/ensjs/src/functions/wallet/deleteSubname.ts:164](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/deleteSubname.ts#L164)
 
 ---
 

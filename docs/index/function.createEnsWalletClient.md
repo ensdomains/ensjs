@@ -41,6 +41,42 @@ const client = createEnsWalletClient({
 
 An ENS Wallet Client. EnsWalletClient
 
+### clearRecords
+
+**clearRecords**: (`parameters`) => `Promise`\< \`0x$\{string}\` \>
+
+Clears the records for a name on a resolver.
+
+#### Example
+
+```ts
+import { createWalletClient, custom } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+
+const wallet = createWalletClient({
+  chain: addEnsContracts(mainnet),
+  transport: custom(window.ethereum),
+}).extend(ensWalletActions)
+const hash = await wallet.clearRecords({
+  name: 'ens.eth',
+  resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+})
+// 0x...
+```
+
+#### Parameters
+
+| Parameter    | Type                                                                                                                                                                         | Description                                                                |
+| :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------- | ------------- | ---------------------- |
+| `parameters` | `{ name: string; resolverAddress: `0x${string}`; account?: SendTransactionParameters<ChainWithEns<TChain>, ParseAccount<TAccountOrAddress>, ChainWithEns<TChain>>["account"] | undefined; ... 4 more ...; nonce?: SendTransactionParameters<...>["nonce"] | undefined; }` | ClearRecordsParameters |
+
+#### Returns
+
+`Promise`\< \`0x$\{string}\` \>
+
+Transaction hash. ClearRecordsReturnType
+
 ### commitName
 
 **commitName**: (`parameters`) => `Promise`\< \`0x$\{string}\` \>
@@ -52,11 +88,8 @@ Commits a name to be registered
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import {
-  addEnsContracts,
-  ensWalletActions,
-  randomSecret,
-} from '@ensdomains/ensjs'
+import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+import { randomSecret } from '@ensdomains/ensjs/utils'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -172,8 +205,8 @@ import {
   addEnsContracts,
   ensPublicActions,
   ensWalletActions,
-  randomSecret,
 } from '@ensdomains/ensjs'
+import { randomSecret } from '@ensdomains/ensjs/utils'
 
 const mainnetWithEns = addEnsContracts(mainnet)
 const client = createPublicClient({
@@ -282,7 +315,8 @@ Sets the ABI for a name on a resolver.
 import abi from './abi.json'
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, ensWalletActions, encodeAbi } from '@ensdomains/ensjs'
+import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+import { encodeAbi } from '@ensdomains/ensjs/utils'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -378,9 +412,9 @@ const hash = await wallet.setChildFuses({
 
 #### Parameters
 
-| Parameter    | Type                           | Description                                 |
-| :----------- | :----------------------------- | :------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------- | ----------------------- |
-| `parameters` | `{ name: string; fuses: number | Partial<CombinedFuseInput>; expiry?: number | bigint | undefined; account?: SendTransactionParameters<ChainWithEns<TChain>, ParseAccount<...>, ChainWithEns<...>>["account"] | undefined; ... 4 more ...; nonce?: SendTransactionParameters<...>["nonce"] | undefined; }` | SetChildFusesParameters |
+| Parameter    | Type                                                            | Description |
+| :----------- | :-------------------------------------------------------------- | :---------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------- | ----------------------- |
+| `parameters` | `{ name: string; fuses: EncodeFusesInputObject; expiry?: number | bigint      | undefined; account?: SendTransactionParameters<ChainWithEns<TChain>, ParseAccount<TAccountOrAddress>, ChainWithEns<...>>["account"] | undefined; ... 4 more ...; nonce?: SendTransactionParameters<...>["nonce"] | undefined; }` | SetChildFusesParameters |
 
 #### Returns
 
@@ -454,9 +488,9 @@ const hash = await wallet.setFuses({
 
 #### Parameters
 
-| Parameter    | Type                                                        | Description         |
-| :----------- | :---------------------------------------------------------- | :------------------ | ----------------- | --------------------- | ---------------- | ------------------------- | --------------------- | -------------- | ------------------------------------------------------------------------ | ------------- | ------------------ |
-| `parameters` | `{ name: string; fuses: Prettify<InputFuses<"CANNOT_UNWRAP" | "CANNOT_BURN_FUSES" | "CANNOT_TRANSFER" | "CANNOT_SET_RESOLVER" | "CANNOT_SET_TTL" | "CANNOT_CREATE_SUBDOMAIN" | "CANNOT_APPROVE", 128 | ... 7 more ... | 32768>>; ... 5 more ...; nonce?: SendTransactionParameters<...>["nonce"] | undefined; }` | SetFusesParameters |
+| Parameter    | Type                                                                                                                                                                          | Description                                                                |
+| :----------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------- | ------------- | ------------------ |
+| `parameters` | `{ name: string; fuses: EncodeChildFusesInputObject; account?: SendTransactionParameters<ChainWithEns<TChain>, ParseAccount<TAccountOrAddress>, ChainWithEns<...>>["account"] | undefined; ... 4 more ...; nonce?: SendTransactionParameters<...>["nonce"] | undefined; }` | SetFusesParameters |
 
 #### Returns
 
@@ -729,9 +763,9 @@ const hash = await wallet.wrapName({
 
 #### Parameters
 
-| Parameter    | Type                                                                                                                       | Description         |
-| :----------- | :------------------------------------------------------------------------------------------------------------------------- | :------------------ | ----------------- | --------------------- | ---------------- | ------------------------- | --------------------- | -------------- | --------------- | ------------------------- | ------------------ |
-| `parameters` | `{ name: TName; newOwnerAddress: `0x${string}`; fuses?: (GetNameType<TName> extends "eth-2ld" ? InputFuses<"CANNOT_UNWRAP" | "CANNOT_BURN_FUSES" | "CANNOT_TRANSFER" | "CANNOT_SET_RESOLVER" | "CANNOT_SET_TTL" | "CANNOT_CREATE_SUBDOMAIN" | "CANNOT_APPROVE", 128 | ... 7 more ... | 32768> : never) | undefined; ... 6 more...` | WrapNameParameters |
+| Parameter    | Type                                                                                                                                 | Description                                                                |
+| :----------- | :----------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------- | ------------- | ------------------ |
+| `parameters` | `{ name: TName; newOwnerAddress: `0x${string}`; fuses?: (GetNameType<TName> extends "eth-2ld" ? EncodeChildFusesInputObject : never) | undefined; ... 6 more ...; nonce?: SendTransactionParameters<...>["nonce"] | undefined; }` | WrapNameParameters |
 
 #### Returns
 
@@ -741,7 +775,7 @@ Transaction hash. WrapNameReturnType
 
 ## Source
 
-[packages/ensjs/src/clients/wallet.ts:62](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/clients/wallet.ts#L62)
+[packages/ensjs/src/clients/wallet.ts:62](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/clients/wallet.ts#L62)
 
 ---
 

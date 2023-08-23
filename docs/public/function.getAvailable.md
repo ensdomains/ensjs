@@ -15,7 +15,8 @@ Gets the availability of a name to register
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getAvailable } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getAvailable } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -29,7 +30,7 @@ const result = await getAvailable(client, { name: 'ens.eth' })
 
 | Parameter    | Type                     | Description            |
 | :----------- | :----------------------- | :--------------------- |
-| `client`     | `Object`                 | ClientWithEns          |
+| `client`     | `ClientWithEns`          | ClientWithEns          |
 | `parameters` | `GetAvailableParameters` | GetAvailableParameters |
 
 ## Returns
@@ -40,7 +41,7 @@ Availability as boolean. GetAvailableReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getAvailable.ts:83](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getAvailable.ts#L83)
+[packages/ensjs/src/functions/public/getAvailable.ts:86](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getAvailable.ts#L86)
 
 > **getAvailable**(`client`, ...`args`): `Promise`\< `null` \| `boolean` \>
 
@@ -51,7 +52,8 @@ Gets the availability of a name to register
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getAvailable } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getAvailable } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -65,7 +67,7 @@ const result = await getAvailable(client, { name: 'ens.eth' })
 
 | Parameter | Type                       | Description   |
 | :-------- | :------------------------- | :------------ |
-| `client`  | `Object`                   | ClientWithEns |
+| `client`  | `ClientWithEns`            | ClientWithEns |
 | ...`args` | [`GetAvailableParameters`] | -             |
 
 ## Returns
@@ -76,7 +78,7 @@ Availability as boolean. GetAvailableReturnType
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:40](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/utils/generateFunction.ts#L40)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 

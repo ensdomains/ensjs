@@ -33,9 +33,9 @@ const clientWithEns = createPublicClient({
 
 ## Parameters
 
-| Parameter | Type     | Description                                             |
-| :-------- | :------- | :------------------------------------------------------ |
-| `client`  | `Object` | The viem Client object to add the ENS public actions to |
+| Parameter | Type                                             | Description                                             |
+| :-------- | :----------------------------------------------- | :------------------------------------------------------ |
+| `client`  | `Client`\< `TTransport`, `TChain`, `TAccount` \> | The viem Client object to add the ENS public actions to |
 
 ## Returns
 
@@ -43,7 +43,7 @@ const clientWithEns = createPublicClient({
 
 ## Source
 
-[packages/ensjs/src/clients/decorators/public.ts:372](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/clients/decorators/public.ts#L372)
+[packages/ensjs/src/clients/decorators/public.ts:372](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/clients/decorators/public.ts#L372)
 
 ---
 

@@ -13,7 +13,7 @@ Gets the DNS owner of a name, via DNS record lookup
 ## Example
 
 ```ts
-import { getDnsOwner } from '@ensdomains/ensjs'
+import { getDnsOwner } from '@ensdomains/ensjs/dns'
 
 const owner = await getDnsOwner({ name: 'ens.domains' })
 // '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
@@ -33,7 +33,7 @@ Address of DNS owner. GetDnsOwnerReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/dns/getDnsOwner.ts:90](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/dns/getDnsOwner.ts#L90)
+[packages/ensjs/src/functions/dns/getDnsOwner.ts:90](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/dns/getDnsOwner.ts#L90)
 
 ---
 

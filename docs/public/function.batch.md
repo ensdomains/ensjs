@@ -15,12 +15,12 @@ Batches multiple read functions into a single call.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import {
-  addEnsContracts,
   batch,
   getTextRecord,
   getAddressRecord,
-} from '@ensdomains/ensjs'
+} from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -42,10 +42,10 @@ const result = await batch(
 
 ## Parameters
 
-| Parameter | Type     | Description   |
-| :-------- | :------- | :------------ |
-| `client`  | `Object` | ClientWithEns |
-| ...`args` | `I`      | -             |
+| Parameter | Type            | Description   |
+| :-------- | :-------------- | :------------ |
+| `client`  | `ClientWithEns` | ClientWithEns |
+| ...`args` | `I`             | -             |
 
 ## Returns
 
@@ -55,7 +55,7 @@ Array of return values from each function
 
 ## Source
 
-[packages/ensjs/src/functions/public/batch.ts:94](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/batch.ts#L94)
+[packages/ensjs/src/functions/public/batch.ts:95](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/batch.ts#L95)
 
 > **batch**(`client`, ...`args`): `Promise`\< `null` \| `any`[] \>
 
@@ -66,12 +66,12 @@ Batches multiple read functions into a single call.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import {
-  addEnsContracts,
   batch,
   getTextRecord,
   getAddressRecord,
-} from '@ensdomains/ensjs'
+} from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -89,7 +89,7 @@ const result = await batch(
 
 | Parameter | Type                    | Description   |
 | :-------- | :---------------------- | :------------ |
-| `client`  | `Object`                | ClientWithEns |
+| `client`  | `ClientWithEns`         | ClientWithEns |
 | ...`args` | `BatchFunctionResult`[] | -             |
 
 ## Returns
@@ -100,7 +100,7 @@ Array of return values from each function
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:40](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/utils/generateFunction.ts#L40)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 

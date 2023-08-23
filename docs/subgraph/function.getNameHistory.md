@@ -15,7 +15,8 @@ Gets the history of a name from the subgraph.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getNameHistory } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getNameHistory } from '@ensdomains/ensjs/subgraph'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -28,7 +29,7 @@ const result = await getNameHistory(client, { name: 'ens.eth' })
 
 | Parameter    | Type                       | Description              |
 | :----------- | :------------------------- | :----------------------- |
-| `client`     | `Object`                   | ClientWithEns            |
+| `client`     | `ClientWithEns`            | ClientWithEns            |
 | `parameters` | `GetNameHistoryParameters` | GetNameHistoryParameters |
 
 ## Returns
@@ -39,7 +40,7 @@ History object, or null if name could not be found. GetNameHistoryReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getNameHistory.ts:82](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/subgraph/getNameHistory.ts#L82)
+[packages/ensjs/src/functions/subgraph/getNameHistory.ts:83](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getNameHistory.ts#L83)
 
 ---
 

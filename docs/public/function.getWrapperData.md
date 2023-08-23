@@ -15,7 +15,8 @@ Gets the wrapper data for a name.
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, getWrapperData } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getWrapperData } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -28,7 +29,7 @@ const result = await getWrapperData(client, { name: 'ilikelasagna.eth' })
 
 | Parameter    | Type                       | Description              |
 | :----------- | :------------------------- | :----------------------- |
-| `client`     | `Object`                   | ClientWithEns            |
+| `client`     | `ClientWithEns`            | ClientWithEns            |
 | `parameters` | `GetWrapperDataParameters` | GetWrapperDataParameters |
 
 ## Returns
@@ -39,7 +40,7 @@ Wrapper data object, or null if name is not wrapped. GetWrapperDataReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getWrapperData.ts:105](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/public/getWrapperData.ts#L105)
+[packages/ensjs/src/functions/public/getWrapperData.ts:123](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getWrapperData.ts#L123)
 
 ---
 

@@ -15,7 +15,8 @@ Sets the content hash record for a name on a resolver.
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts, setContentHashRecord } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { setContentHashRecord } from '@ensdomains/ensjs/wallet'
 
 const wallet = createWalletClient({
   chain: addEnsContracts(mainnet),
@@ -56,7 +57,7 @@ Transaction hash. SetContentHashRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setContentHashRecord.ts:74](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/functions/wallet/setContentHashRecord.ts#L74)
+[packages/ensjs/src/functions/wallet/setContentHashRecord.ts:75](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setContentHashRecord.ts#L75)
 
 ---
 

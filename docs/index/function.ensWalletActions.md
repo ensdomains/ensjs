@@ -43,7 +43,7 @@ const clientWithEns = createWalletClient({
 
 ## Source
 
-[packages/ensjs/src/clients/decorators/wallet.ts:683](https://github.com/ensdomains/ensjs-v3/blob/278f5349/packages/ensjs/src/clients/decorators/wallet.ts#L683)
+[packages/ensjs/src/clients/decorators/wallet.ts:720](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/clients/decorators/wallet.ts#L720)
 
 ---
 
