@@ -1,5 +1,4 @@
 import {
-  bytesToHex,
   encodeFunctionData,
   toHex,
   type Account,
@@ -72,10 +71,6 @@ export const makeFunctionData = <
     resolverAddress,
   }: ImportDnsNameDataParameters,
 ): ImportDnsNameDataReturnType => {
-  const data = dnsImportData.rrsets.map((rrset) => ({
-    rrset: bytesToHex(rrset.rrset),
-    sig: bytesToHex(rrset.sig),
-  }))
   const hexEncodedName = toHex(packetToBytes(name))
   const dnsRegistrarAddress = getChainContractAddress({
     client: wallet,
@@ -95,7 +90,7 @@ export const makeFunctionData = <
       data: encodeFunctionData({
         abi: dnsRegistrarProveAndClaimSnippet,
         functionName: 'proveAndClaim',
-        args: [hexEncodedName, data, bytesToHex(dnsImportData.proof)],
+        args: [hexEncodedName, dnsImportData],
       }),
     }
   }
@@ -109,13 +104,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: dnsRegistrarProveAndClaimWithResolverSnippet,
       functionName: 'proveAndClaimWithResolver',
-      args: [
-        hexEncodedName,
-        data,
-        bytesToHex(dnsImportData.proof),
-        resolverAddress_,
-        address,
-      ],
+      args: [hexEncodedName, dnsImportData, resolverAddress_, address],
     }),
   }
 }
