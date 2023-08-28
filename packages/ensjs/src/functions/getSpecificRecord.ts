@@ -245,10 +245,14 @@ export const getAddr = {
 const supportedContentTypes = '0xf'
 
 export const _getABI = {
-  raw: async ({ contracts }: ENSArgs<'contracts'>, name: string) => {
+  raw: async (
+    { contracts }: ENSArgs<'contracts'>,
+    name: string,
+    resolverAddress?: string,
+  ) => {
     const publicResolver = await contracts?.getPublicResolver()!
     return {
-      to: '0x0000000000000000000000000000000000000000',
+      to: resolverAddress || '0x0000000000000000000000000000000000000000',
       data: publicResolver.interface.encodeFunctionData('ABI', [
         namehash(name),
         supportedContentTypes,
