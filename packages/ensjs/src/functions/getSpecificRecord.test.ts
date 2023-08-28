@@ -238,4 +238,21 @@ describe('getSpecificRecord', () => {
       expect(result).toBeUndefined()
     })
   })
+
+  describe('_getABI', () => {
+    it('should return if resolver address is included', async () => {
+      const profile = await ensInstance.getProfile('with-type-1-abi.eth')
+      expect(profile?.resolverAddress).toBeTruthy()
+      const result = await ensInstance._getABI(
+        'with-type-1-abi.eth',
+        profile?.resolverAddress,
+      )
+      expect(result).toBeTruthy()
+      if (result) {
+        expect(result.contentType).toBe(1)
+        expect(result.decoded).toBe(true)
+        expect(result.abi).toMatchObject(dummyABI)
+      }
+    })
+  })
 })
