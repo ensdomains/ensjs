@@ -114,7 +114,7 @@ type GenericFuseEnum<TGroupName extends FuseRestriction = FuseRestriction> = {
   Maximum: bigint
 }
 
-const ChildReference = {
+export const ChildFuseReference = {
   Name: 'child',
   Object: ChildFuses,
   Keys: ChildFuseKeys,
@@ -124,12 +124,12 @@ const ChildReference = {
   Minimum: 0n,
   Maximum: 2n ** 16n - 1n,
 } as const
-type ChildReference = typeof ChildReference & {
-  Key: keyof ChildReference['Object']
-  UnnamedKey: ChildReference['Unnamed'][number]
+type ChildFuseReference = typeof ChildFuseReference & {
+  Key: keyof ChildFuseReference['Object']
+  UnnamedKey: ChildFuseReference['Unnamed'][number]
 }
 
-const ParentReference = {
+export const ParentFuseReference = {
   Name: 'parent',
   Object: ParentFuses,
   Keys: ParentFuseKeys,
@@ -139,12 +139,12 @@ const ParentReference = {
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
 } as const
-type ParentReference = typeof ParentReference & {
-  Key: keyof ParentReference['Object']
-  UnnamedKey: ParentReference['Unnamed'][number]
+type ParentFuseReference = typeof ParentFuseReference & {
+  Key: keyof ParentFuseReference['Object']
+  UnnamedKey: ParentFuseReference['Unnamed'][number]
 }
 
-const FullParentReference = {
+export const FullParentFuseReference = {
   Name: 'parent',
   Object: FullParentFuses,
   Keys: FullParentFuseKeys,
@@ -154,9 +154,9 @@ const FullParentReference = {
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
 } as const
-type FullParentReference = typeof FullParentReference & {
-  Key: keyof FullParentReference['Object']
-  UnnamedKey: ParentReference['Unnamed'][number]
+type FullParentFuseReference = typeof FullParentFuseReference & {
+  Key: keyof FullParentFuseReference['Object']
+  UnnamedKey: ParentFuseReference['Unnamed'][number]
 }
 
 type InputFuses<NamedFuse extends string, UnnamedFuse extends bigint> =
@@ -177,12 +177,12 @@ type InputFuses<NamedFuse extends string, UnnamedFuse extends bigint> =
     }
 
 export type EncodeChildFusesInputObject = InputFuses<
-  ChildReference['Key'],
-  ChildReference['UnnamedKey']
+  ChildFuseReference['Key'],
+  ChildFuseReference['UnnamedKey']
 >
 export type EncodeParentFusesInputObject = InputFuses<
-  ParentReference['Key'],
-  ParentReference['UnnamedKey']
+  ParentFuseReference['Key'],
+  ParentFuseReference['UnnamedKey']
 >
 
 export type EncodeFusesInputObject =
@@ -293,7 +293,8 @@ export const encodeFuses = ({
       })
     return checkFuseObject({
       object: input,
-      reference: restriction === 'child' ? ChildReference : ParentReference,
+      reference:
+        restriction === 'child' ? ChildFuseReference : ParentFuseReference,
     })
   }
 
@@ -310,11 +311,14 @@ export const encodeFuses = ({
 
   const childFuses =
     'child' in input
-      ? checkFuseObject({ object: input.child, reference: ChildReference })
+      ? checkFuseObject({ object: input.child, reference: ChildFuseReference })
       : 0
   const parentFuses =
     'parent' in input
-      ? checkFuseObject({ object: input.parent, reference: ParentReference })
+      ? checkFuseObject({
+          object: input.parent,
+          reference: ParentFuseReference,
+        })
       : 0
 
   return Number(childFuses | parentFuses)
@@ -328,10 +332,10 @@ type DecodedFuseGroup<TFuseReference extends GenericFuseEnum> = {
   }
 }
 
-type DecodedChildFuses = DecodedFuseGroup<ChildReference> & {
+type DecodedChildFuses = DecodedFuseGroup<ChildFuseReference> & {
   CAN_DO_EVERYTHING: boolean
 }
-type DecodedParentFuses = DecodedFuseGroup<FullParentReference>
+type DecodedParentFuses = DecodedFuseGroup<FullParentFuseReference>
 
 export type DecodedFuses = {
   child: DecodedChildFuses
@@ -364,12 +368,12 @@ export const decodeFuses = (fuses: number): DecodedFuses => {
   return {
     parent: decodeFusesFromReference({
       input: fusesBigInt,
-      reference: FullParentReference,
+      reference: FullParentFuseReference,
     }),
     child: {
       ...decodeFusesFromReference({
         input: fusesBigInt,
-        reference: ChildReference,
+        reference: ChildFuseReference,
       }),
       CAN_DO_EVERYTHING:
         (fusesBigInt & FuseRanges.CHILD_CONTROLLED_FUSES) === 0n,

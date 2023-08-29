@@ -37,11 +37,14 @@ export {
 } from './consts.js'
 export {
   ChildFuseKeys,
+  ChildFuseReference,
   ChildFuses,
   FullParentFuseKeys,
+  FullParentFuseReference,
   FullParentFuses,
   FuseRanges,
   ParentFuseKeys,
+  ParentFuseReference,
   ParentFuses,
   UnnamedChildFuseKeys,
   UnnamedChildFuses,
