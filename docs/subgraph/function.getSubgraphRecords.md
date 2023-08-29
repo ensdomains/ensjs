@@ -46,7 +46,7 @@ Record object, or null if name was not found. GetSubgraphRecordsReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts:100](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts#L100)
+[packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts:154](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubgraphRecords.ts#L154)
 
 ---
 

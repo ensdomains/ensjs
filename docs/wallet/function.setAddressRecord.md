@@ -58,7 +58,7 @@ Transaction hash. SetAddressRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setAddressRecord.ts:78](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setAddressRecord.ts#L78)
+[packages/ensjs/src/functions/wallet/setAddressRecord.ts:78](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/setAddressRecord.ts#L78)
 
 ---
 

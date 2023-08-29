@@ -22,7 +22,10 @@ const client = createPublicClient({
   chain: addEnsContracts(mainnet),
   transport: http(),
 })
-const result = await getPrice(client, { nameOrNames: 'ens.eth' })
+const result = await getPrice(client, {
+  nameOrNames: 'ens.eth',
+  duration: 31536000,
+})
 // { base: 352828971668930335n, premium: 0n }
 ```
 
@@ -41,7 +44,7 @@ Price data object. GetPriceReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getPrice.ts:142](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getPrice.ts#L142)
+[packages/ensjs/src/functions/public/getPrice.ts:142](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getPrice.ts#L142)
 
 > **getPrice**(`client`, ...`args`): `Promise`\< `null` \| `GetPriceReturnType` \>
 
@@ -59,7 +62,10 @@ const client = createPublicClient({
   chain: addEnsContracts(mainnet),
   transport: http(),
 })
-const result = await getPrice(client, { nameOrNames: 'ens.eth' })
+const result = await getPrice(client, {
+  nameOrNames: 'ens.eth',
+  duration: 31536000,
+})
 // { base: 352828971668930335n, premium: 0n }
 ```
 
@@ -78,7 +84,7 @@ Price data object. GetPriceReturnType
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/utils/generateFunction.ts#L41)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 

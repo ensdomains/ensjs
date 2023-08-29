@@ -41,7 +41,7 @@ const clientWithEns = createPublicClient({
 
 ## Source
 
-[packages/ensjs/src/contracts/addEnsContracts.ts:25](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/contracts/addEnsContracts.ts#L25)
+[packages/ensjs/src/contracts/addEnsContracts.ts:25](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/contracts/addEnsContracts.ts#L25)
 
 ---
 

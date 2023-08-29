@@ -136,7 +136,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
- * const result = await getPrice(client, { nameOrNames: 'ens.eth' })
+ * const result = await getPrice(client, { nameOrNames: 'ens.eth', duration: 31536000 })
  * // { base: 352828971668930335n, premium: 0n }
  */
 const getPrice = generateFunction({ encode, decode }) as ((

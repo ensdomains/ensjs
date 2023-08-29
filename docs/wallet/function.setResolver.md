@@ -56,7 +56,7 @@ Transaction hash. SetResolverReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setResolver.ts:103](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/setResolver.ts#L103)
+[packages/ensjs/src/functions/wallet/setResolver.ts:103](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/setResolver.ts#L103)
 
 ---
 

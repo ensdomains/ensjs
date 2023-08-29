@@ -44,7 +44,7 @@ Coin value object, or `null` if not found. GetAddressRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getAddressRecord.ts:61](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getAddressRecord.ts#L61)
+[packages/ensjs/src/functions/public/getAddressRecord.ts:61](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getAddressRecord.ts#L61)
 
 ---
 

@@ -43,7 +43,7 @@ Full name, or null if name was could not be filled. GetDecodedNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getDecodedName.ts:45](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getDecodedName.ts#L45)
+[packages/ensjs/src/functions/subgraph/getDecodedName.ts:45](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getDecodedName.ts#L45)
 
 ---
 

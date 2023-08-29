@@ -53,7 +53,7 @@ Transaction hash. TransferNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/transferName.ts:226](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/transferName.ts#L226)
+[packages/ensjs/src/functions/wallet/transferName.ts:226](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/transferName.ts#L226)
 
 ---
 

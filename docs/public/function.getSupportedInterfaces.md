@@ -50,7 +50,7 @@ Array of booleans matching the input array GetSupportedInterfacesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getSupportedInterfaces.ts:106](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getSupportedInterfaces.ts#L106)
+[packages/ensjs/src/functions/public/getSupportedInterfaces.ts:106](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getSupportedInterfaces.ts#L106)
 
 ---
 

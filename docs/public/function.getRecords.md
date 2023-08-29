@@ -54,7 +54,7 @@ Records data object. GetRecordsReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getRecords.ts:377](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getRecords.ts#L377)
+[packages/ensjs/src/functions/public/getRecords.ts:376](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getRecords.ts#L376)
 
 ---
 

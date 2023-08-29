@@ -41,7 +41,7 @@ Registrant address, or null if name was not found. GetSubgraphRegistrantReturnTy
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts:52](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts#L52)
+[packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts:52](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts#L52)
 
 ---
 

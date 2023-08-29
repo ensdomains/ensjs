@@ -42,7 +42,7 @@ DNS import data object, used for proving the value of the `_ens` TXT record
 
 ## Source
 
-[packages/ensjs/src/functions/dns/getDnsImportData.ts:65](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/dns/getDnsImportData.ts#L65)
+[packages/ensjs/src/functions/dns/getDnsImportData.ts:65](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/dns/getDnsImportData.ts#L65)
 
 ---
 

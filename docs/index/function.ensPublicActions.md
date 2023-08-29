@@ -43,7 +43,7 @@ const clientWithEns = createPublicClient({
 
 ## Source
 
-[packages/ensjs/src/clients/decorators/public.ts:372](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/clients/decorators/public.ts#L372)
+[packages/ensjs/src/clients/decorators/public.ts:372](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/clients/decorators/public.ts#L372)
 
 ---
 

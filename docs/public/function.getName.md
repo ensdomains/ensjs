@@ -43,7 +43,7 @@ Name data object, or `null` if no primary name is set. GetNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getName.ts:123](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/public/getName.ts#L123)
+[packages/ensjs/src/functions/public/getName.ts:123](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getName.ts#L123)
 
 > **getName**(`client`, ...`args`): `Promise`\< `null` \| `GetNameReturnType` \>
 
@@ -82,7 +82,7 @@ Name data object, or `null` if no primary name is set. GetNameReturnType
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/utils/generateFunction.ts#L41)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 

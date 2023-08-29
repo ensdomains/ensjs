@@ -57,7 +57,7 @@ Transaction hash. WrapNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/wrapName.ts:157](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/wallet/wrapName.ts#L157)
+[packages/ensjs/src/functions/wallet/wrapName.ts:157](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/wrapName.ts#L157)
 
 ---
 

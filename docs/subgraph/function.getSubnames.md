@@ -40,7 +40,7 @@ Subname array. GetSubnamesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubnames.ts:129](https://github.com/ensdomains/ensjs-v3/blob/62fd2c82/packages/ensjs/src/functions/subgraph/getSubnames.ts#L129)
+[packages/ensjs/src/functions/subgraph/getSubnames.ts:129](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubnames.ts#L129)
 
 ---
 
