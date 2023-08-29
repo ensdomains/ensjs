@@ -55,10 +55,13 @@ export {
   checkPccBurned,
   decodeFuses,
   encodeFuses,
+  type ChildFuseReferenceType,
   type DecodedFuses,
   type EncodeChildFusesInputObject,
   type EncodeFusesInputObject,
   type EncodeParentFusesInputObject,
+  type FullParentFuseReferenceType,
+  type ParentFuseReferenceType,
 } from './fuses.js'
 
 export {

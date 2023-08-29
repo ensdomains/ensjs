@@ -124,9 +124,9 @@ export const ChildFuseReference = {
   Minimum: 0n,
   Maximum: 2n ** 16n - 1n,
 } as const
-type ChildFuseReference = typeof ChildFuseReference & {
-  Key: keyof ChildFuseReference['Object']
-  UnnamedKey: ChildFuseReference['Unnamed'][number]
+export type ChildFuseReferenceType = typeof ChildFuseReference & {
+  Key: keyof ChildFuseReferenceType['Object']
+  UnnamedKey: ChildFuseReferenceType['Unnamed'][number]
 }
 
 export const ParentFuseReference = {
@@ -139,9 +139,9 @@ export const ParentFuseReference = {
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
 } as const
-type ParentFuseReference = typeof ParentFuseReference & {
-  Key: keyof ParentFuseReference['Object']
-  UnnamedKey: ParentFuseReference['Unnamed'][number]
+export type ParentFuseReferenceType = typeof ParentFuseReference & {
+  Key: keyof ParentFuseReferenceType['Object']
+  UnnamedKey: ParentFuseReferenceType['Unnamed'][number]
 }
 
 export const FullParentFuseReference = {
@@ -154,9 +154,9 @@ export const FullParentFuseReference = {
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
 } as const
-type FullParentFuseReference = typeof FullParentFuseReference & {
-  Key: keyof FullParentFuseReference['Object']
-  UnnamedKey: ParentFuseReference['Unnamed'][number]
+export type FullParentFuseReferenceType = typeof FullParentFuseReference & {
+  Key: keyof FullParentFuseReferenceType['Object']
+  UnnamedKey: ParentFuseReferenceType['Unnamed'][number]
 }
 
 type InputFuses<NamedFuse extends string, UnnamedFuse extends bigint> =
@@ -177,12 +177,12 @@ type InputFuses<NamedFuse extends string, UnnamedFuse extends bigint> =
     }
 
 export type EncodeChildFusesInputObject = InputFuses<
-  ChildFuseReference['Key'],
-  ChildFuseReference['UnnamedKey']
+  ChildFuseReferenceType['Key'],
+  ChildFuseReferenceType['UnnamedKey']
 >
 export type EncodeParentFusesInputObject = InputFuses<
-  ParentFuseReference['Key'],
-  ParentFuseReference['UnnamedKey']
+  ParentFuseReferenceType['Key'],
+  ParentFuseReferenceType['UnnamedKey']
 >
 
 export type EncodeFusesInputObject =
@@ -332,10 +332,10 @@ type DecodedFuseGroup<TFuseReference extends GenericFuseEnum> = {
   }
 }
 
-type DecodedChildFuses = DecodedFuseGroup<ChildFuseReference> & {
+type DecodedChildFuses = DecodedFuseGroup<ChildFuseReferenceType> & {
   CAN_DO_EVERYTHING: boolean
 }
-type DecodedParentFuses = DecodedFuseGroup<FullParentFuseReference>
+type DecodedParentFuses = DecodedFuseGroup<FullParentFuseReferenceType>
 
 export type DecodedFuses = {
   child: DecodedChildFuses
