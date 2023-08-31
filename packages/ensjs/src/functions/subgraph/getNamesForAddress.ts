@@ -43,6 +43,8 @@ type GetNamesForAddressRelation = {
 }
 
 type GetNamesForAddressFilter = GetNamesForAddressRelation & {
+  /** Search string filter for subname label */
+  searchString?: string
   /** Allows expired names to be included (default: false) */
   allowExpired?: boolean
   /** Allows reverse record nodes to be included (default: false) */
@@ -162,24 +164,33 @@ const getNamesForAddress = async (
   client: ClientWithEns,
   {
     address,
-    filter = {
-      owner: true,
-      registrant: true,
-      resolvedAddress: true,
-      wrappedOwner: true,
-      allowExpired: false,
-      allowDeleted: false,
-      allowReverseRecord: false,
-    },
+    filter: _filter,
     orderBy = 'name',
     orderDirection = 'asc',
     pageSize = 100,
     previousPage,
   }: GetNamesForAddressParameters,
 ): Promise<GetNamesForAddressReturnType> => {
+  const filter = {
+    owner: true,
+    registrant: true,
+    resolvedAddress: true,
+    wrappedOwner: true,
+    allowExpired: false,
+    allowDeleted: false,
+    allowReverseRecord: false,
+    ..._filter,
+  }
+
   const subgraphClient = createSubgraphClient({ client })
 
-  const { allowExpired, allowDeleted, allowReverseRecord, ...filters } = filter
+  const {
+    allowExpired,
+    allowDeleted,
+    allowReverseRecord,
+    searchString,
+    ...filters
+  } = filter
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
@@ -266,6 +277,14 @@ const getNamesForAddress = async (
           ],
         },
       ],
+    })
+  }
+
+  if (searchString) {
+    // using labelName_contains instead of name_contains because name_contains
+    // includes the parent name
+    whereFilters.push({
+      labelName_contains: searchString,
     })
   }
 

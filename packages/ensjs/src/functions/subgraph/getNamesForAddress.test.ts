@@ -162,6 +162,24 @@ describe('filter', () => {
     )
     expect(deletedNames.length).toBe(1)
   })
+  it('filters by search string', async () => {
+    const result = await getNamesForAddress(publicClient, {
+      address: accounts[1],
+      pageSize: 1000,
+      filter: {
+        owner: true,
+        registrant: true,
+        resolvedAddress: true,
+        wrappedOwner: true,
+        searchString: 'test123',
+      },
+    })
+
+    if (!result.length) throw new Error('No names found')
+    for (const name of result) {
+      expect(name.labelName).toContain('test123')
+    }
+  })
 })
 
 describe.each([
