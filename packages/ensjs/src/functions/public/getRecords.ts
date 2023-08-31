@@ -106,39 +106,55 @@ const encode = (
   client: ClientWithEns,
   { name, resolver, records }: GetRecordsParameters,
 ): TransactionRequestWithPassthrough => {
-  const calls: (CallObj | null)[] = []
-  if (records.texts) {
-    for (const key of records.texts) {
-      calls.push({
-        key,
-        call: _getText.encode(client, { name, key }),
-        type: 'text',
-      })
+  const calls = Object.keys(records).reduce((prev, key) => {
+    if (key === 'texts') {
+      return [
+        ...prev,
+        ...records.texts!.map(
+          (text) =>
+            ({
+              key: text,
+              call: _getText.encode(client, { name, key: text }),
+              type: 'text',
+            } as const),
+        ),
+      ]
     }
-  }
-  if (records.coins) {
-    for (const coin of records.coins) {
-      calls.push({
-        key: coin,
-        call: _getAddr.encode(client, { name, coin }),
-        type: 'coin',
-      })
+    if (key === 'coins') {
+      return [
+        ...prev,
+        ...records.coins!.map(
+          (coin) =>
+            ({
+              key: coin,
+              call: _getAddr.encode(client, { name, coin }),
+              type: 'coin',
+            } as const),
+        ),
+      ]
     }
-  }
-  if (records.contentHash) {
-    calls.push({
-      key: 'contentHash',
-      call: _getContentHash.encode(client, { name }),
-      type: 'contentHash',
-    })
-  }
-  if (records.abi) {
-    calls.push({
-      key: 'abi',
-      call: _getAbi.encode(client, { name }),
-      type: 'abi',
-    })
-  }
+    if (key === 'contentHash') {
+      return [
+        ...prev,
+        {
+          key: 'contentHash',
+          call: _getContentHash.encode(client, { name }),
+          type: 'contentHash',
+        } as const,
+      ]
+    }
+    if (key === 'abi') {
+      return [
+        ...prev,
+        {
+          key: 'abi',
+          call: _getAbi.encode(client, { name }),
+          type: 'abi',
+        } as const,
+      ]
+    }
+    return prev
+  }, [] as (CallObj | null)[])
 
   const passthrough = calls
 
