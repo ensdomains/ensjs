@@ -63,3 +63,8 @@ export {
   type GetSubnamesParameters,
   type GetSubnamesReturnType,
 } from './functions/subgraph/getSubnames.js'
+export {
+  getChecksumAddressOrNull,
+  makeNameObject,
+  type Name,
+} from './functions/subgraph/utils.js'
