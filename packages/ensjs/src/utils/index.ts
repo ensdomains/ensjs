@@ -67,6 +67,8 @@ export {
 export {
   decodeContentHash,
   encodeContentHash,
+  getDisplayCodec,
+  getInternalCodec,
   getProtocolType,
   isValidContentHash,
   type DecodedContentHash,

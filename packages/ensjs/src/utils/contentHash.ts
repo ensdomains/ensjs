@@ -30,7 +30,7 @@ function matchProtocol(text: string) {
   )
 }
 
-const getDisplayCodec = (encoded: string): ProtocolType => {
+export const getDisplayCodec = (encoded: string): ProtocolType => {
   const codec = getCodec(encoded)
   switch (codec) {
     case 'ipfs':
@@ -49,7 +49,7 @@ const getDisplayCodec = (encoded: string): ProtocolType => {
   }
 }
 
-const getInternalCodec = (
+export const getInternalCodec = (
   displayCodec: NonNullable<ProtocolType>,
 ): InternalCodec => {
   switch (displayCodec) {
