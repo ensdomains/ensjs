@@ -31,7 +31,7 @@ const encode = (
   _client: ClientWithEns,
   { name, coin = 60, bypassFormat }: InternalGetAddrParameters,
 ): SimpleTransactionRequest => {
-  if (coin === 60 || coin === '60') {
+  if (coin === 60 || coin === '60' || coin === 'eth') {
     return {
       to: EMPTY_ADDRESS,
       data: encodeFunctionData({
@@ -86,7 +86,7 @@ const decode = async (
 
   let response: Hex
 
-  if (coin === 60 || coin === '60') {
+  if (coin === 60 || coin === '60' || coin === 'eth') {
     response = decodeFunctionResult({
       abi: publicResolverSingleAddrSnippet,
       functionName: 'addr',
