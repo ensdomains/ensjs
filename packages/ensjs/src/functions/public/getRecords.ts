@@ -5,6 +5,7 @@ import {
   decodeFunctionResult,
   encodeFunctionData,
   getContractError,
+  hexToBigInt,
   toHex,
   type Address,
   type Hex,
@@ -190,7 +191,7 @@ const decode = async <TParams extends GetRecordsParameters>(
   client: ClientWithEns,
   data: Hex | BaseError,
   passthrough: (CallObj | null)[],
-  { name, resolver }: TParams,
+  { name, resolver, records: recordsParams }: TParams,
 ): Promise<GetRecordsReturnType<TParams>> => {
   const calls = passthrough
   let recordData: (Hex | null)[] = []
@@ -280,7 +281,7 @@ const decode = async <TParams extends GetRecordsParameters>(
           [{ type: 'bytes' }] as const,
           item,
         )[0]
-        if (BigInt(decodedFromAbi) === 0n) {
+        if (decodedFromAbi === '0x' || hexToBigInt(decodedFromAbi) === 0n) {
           return { ...baseItem, value: null }
         }
       }
@@ -338,6 +339,9 @@ const decode = async <TParams extends GetRecordsParameters>(
     },
     {
       resolverAddress,
+      ...('texts' in recordsParams ? { texts: [] } : {}),
+      ...('coins' in recordsParams ? { coins: [] } : {}),
+      ...('contentHash' in recordsParams ? { contentHash: null } : {}),
     } as GetRecordsReturnType<
       GetRecordsParameters & {
         records: Required<GetRecordsParameters['records']>

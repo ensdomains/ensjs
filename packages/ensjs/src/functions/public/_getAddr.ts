@@ -15,6 +15,7 @@ import type {
 } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
+import { normaliseCoinId } from '../../utils/normaliseCoinId.js'
 
 export type InternalGetAddrParameters = {
   /** Name to get the address record for */
@@ -31,7 +32,11 @@ const encode = (
   _client: ClientWithEns,
   { name, coin = 60, bypassFormat }: InternalGetAddrParameters,
 ): SimpleTransactionRequest => {
-  if (coin === 60 || coin === '60' || coin === 'eth') {
+  const normalisedCoin = normaliseCoinId(coin)
+  if (
+    (normalisedCoin.type === 'id' && normalisedCoin.value === 60) ||
+    (normalisedCoin.type === 'name' && normalisedCoin.value === 'ETH')
+  ) {
     return {
       to: EMPTY_ADDRESS,
       data: encodeFunctionData({
@@ -53,11 +58,12 @@ const encode = (
     }
   }
   const formatter =
-    typeof coin === 'string' && Number.isNaN(parseInt(coin))
-      ? formatsByName[coin]
-      : formatsByCoinType[typeof coin === 'number' ? coin : parseInt(coin)]
+    normalisedCoin.type === 'name'
+      ? formatsByName[normalisedCoin.value]
+      : formatsByCoinType[normalisedCoin.value]
 
-  if (!formatter) throw new CoinFormatterNotFoundError({ coinType: coin })
+  if (!formatter)
+    throw new CoinFormatterNotFoundError({ coinType: normalisedCoin.value })
 
   return {
     to: EMPTY_ADDRESS,
@@ -72,21 +78,23 @@ const encode = (
 const decode = async (
   _client: ClientWithEns,
   data: Hex,
-  { coin }: InternalGetAddrParameters,
+  { coin = 60 }: InternalGetAddrParameters,
 ): Promise<InternalGetAddrReturnType> => {
   if (data === '0x') return null
-  if (!coin) {
-    coin = 60
-  }
+
+  const normalisedCoin = normaliseCoinId(coin)
 
   const formatter =
-    typeof coin === 'string' && Number.isNaN(parseInt(coin))
-      ? formatsByName[coin]
-      : formatsByCoinType[typeof coin === 'number' ? coin : parseInt(coin)]
+    normalisedCoin.type === 'name'
+      ? formatsByName[normalisedCoin.value]
+      : formatsByCoinType[normalisedCoin.value]
 
   let response: Hex
 
-  if (coin === 60 || coin === '60' || coin === 'eth') {
+  if (
+    (normalisedCoin.type === 'id' && normalisedCoin.value === 60) ||
+    (normalisedCoin.type === 'name' && normalisedCoin.value === 'ETH')
+  ) {
     response = decodeFunctionResult({
       abi: publicResolverSingleAddrSnippet,
       functionName: 'addr',
