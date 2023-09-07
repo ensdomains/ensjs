@@ -79,7 +79,7 @@ export const addresses = {
       address: '0x114D4603199df73e7D157787f8778E21fCd13066',
     },
     ensPublicResolver: {
-      address: '0xd7a4F6473f32aC2Af804B3686AE8F19E48B8fF5f',
+      address: '0xd7a4F6473f32aC2Af804B3686AE8F1932bC35750',
     },
     ensReverseRegistrar: {
       address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
