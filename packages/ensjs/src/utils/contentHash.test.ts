@@ -129,4 +129,10 @@ describe('encodeContentHash', () => {
   it.each(displayArray)('$input => $encoded', ({ input, encoded }) => {
     expect(encodeContentHash(input)).toEqual(encoded)
   })
+  it('fails to encode onion with invalid length', () => {
+    expect(() => encodeContentHash('onion://123')).toThrow()
+  })
+  it('fails to encode onion3 with invalid length', () => {
+    expect(() => encodeContentHash('onion3://123')).toThrow()
+  })
 })

@@ -92,5 +92,11 @@ export function encodeContentHash(text: string): Hex {
 
   const internalCodec = getInternalCodec(typeData.protocolType)
 
+  // manual exceptions for onion/onion3 which are just utf8 encoded
+  if (internalCodec === 'onion' && typeData.decoded.length !== 16)
+    throw new InvalidContentHashError()
+  if (internalCodec === 'onion3' && typeData.decoded.length !== 56)
+    throw new InvalidContentHashError()
+
   return `0x${encode(internalCodec, typeData.decoded)}`
 }
