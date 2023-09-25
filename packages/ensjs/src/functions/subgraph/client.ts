@@ -1,6 +1,6 @@
 import type { Kind, SelectionNode, SelectionSetNode } from 'graphql'
+import type { RequestMiddleware, ResponseMiddleware } from 'graphql-request'
 import { GraphQLClient } from 'graphql-request'
-import type { RequestMiddleware, Response } from 'graphql-request/dist/types.js'
 import { parse, print, visit } from 'graphql/language/index.js'
 import traverse from 'traverse'
 import type { ClientWithEns } from '../../contracts/consts.js'
@@ -56,7 +56,7 @@ export const requestMiddleware: RequestMiddleware = (request) => {
   }
 }
 
-export const responseMiddleware = (response: Response<unknown> | Error) => {
+export const responseMiddleware: ResponseMiddleware = (response) => {
   traverse(response).forEach(function (responseItem: unknown) {
     if (
       responseItem instanceof Object &&

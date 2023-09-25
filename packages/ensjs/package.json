@@ -105,7 +105,7 @@
     "cbor": "^8.1.0",
     "dns-packet": "^5.3.1",
     "graphql": "^16.3.0",
-    "graphql-request": "5.1.0",
+    "graphql-request": "6.1.0",
     "pako": "^2.1.0",
     "traverse": "^0.6.6"
   },
@@ -143,10 +143,10 @@
     "typedoc": "^0.24.8",
     "typedoc-plugin-markdown": "^4.0.0-next.16",
     "typescript": "^5.1.6",
-    "viem": "^1.6.0",
+    "viem": "^1.12.2",
     "wait-on": "^6.0.1"
   },
   "peerDependencies": {
-    "viem": "^1.6.0"
+    "viem": "^1.12.2"
   }
 }
