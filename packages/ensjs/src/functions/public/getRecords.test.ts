@@ -10,7 +10,7 @@ describe('getRecords()', () => {
       name: 'with-profile.eth',
       records: {
         texts: ['description', 'url'],
-        coins: ['60', 'ETC_LEGACY', '0'],
+        coins: ['60', 'etcLegacy', '0'],
       },
     })
     expect(result).toMatchInlineSnapshot(`
@@ -18,17 +18,17 @@ describe('getRecords()', () => {
         "coins": [
           {
             "id": 60,
-            "name": "ETH",
+            "name": "eth",
             "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
           },
           {
             "id": 61,
-            "name": "ETC_LEGACY",
+            "name": "etcLegacy",
             "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
           },
           {
             "id": 0,
-            "name": "BTC",
+            "name": "btc",
             "value": "bc1qjqg9slurvjukfl92wp58y94480fvh4uc2pwa6n",
           },
         ],

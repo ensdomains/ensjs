@@ -1,5 +1,6 @@
-import { formatsByCoinType } from '@ensdomains/address-encoder'
+import { getCoderByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
+import { hexToBytes } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { decodeContentHash } from '../../utils/contentHash.js'
 import { namehash } from '../../utils/normalise.js'
@@ -276,7 +277,7 @@ const getNameHistory = async (
         }
         case 'MulticoinAddrChanged': {
           const { multiaddr, ...event_ } = event
-          const format = formatsByCoinType[parseInt(event.coinType)]
+          const format = getCoderByCoinType(parseInt(event.coinType))
           if (!format) {
             return {
               ...event_,
@@ -297,7 +298,7 @@ const getNameHistory = async (
             ...event_,
             coinName: format.name,
             decoded: true,
-            addr: format.encoder(Buffer.from(multiaddr.slice(2), 'hex')),
+            addr: format.encode(hexToBytes(multiaddr)),
           }
         }
         case 'ContenthashChanged': {

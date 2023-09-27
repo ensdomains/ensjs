@@ -1,5 +1,10 @@
-import { formatsByCoinType, formatsByName } from '@ensdomains/address-encoder'
-import { decodeFunctionResult, encodeFunctionData, trim, type Hex } from 'viem'
+import {
+  decodeFunctionResult,
+  encodeFunctionData,
+  hexToBytes,
+  trim,
+  type Hex,
+} from 'viem'
 import { namehash } from '../../utils/normalise.js'
 
 import type { ClientWithEns } from '../../contracts/consts.js'
@@ -7,7 +12,6 @@ import {
   publicResolverMultiAddrSnippet,
   publicResolverSingleAddrSnippet,
 } from '../../contracts/publicResolver.js'
-import { CoinFormatterNotFoundError } from '../../errors/public.js'
 import type {
   DecodedAddr,
   Prettify,
@@ -15,7 +19,7 @@ import type {
 } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
-import { normaliseCoinId } from '../../utils/normaliseCoinId.js'
+import { getCoderFromCoin } from '../../utils/normaliseCoinId.js'
 
 export type InternalGetAddrParameters = {
   /** Name to get the address record for */
@@ -32,11 +36,8 @@ const encode = (
   _client: ClientWithEns,
   { name, coin = 60, bypassFormat }: InternalGetAddrParameters,
 ): SimpleTransactionRequest => {
-  const normalisedCoin = normaliseCoinId(coin)
-  if (
-    (normalisedCoin.type === 'id' && normalisedCoin.value === 60) ||
-    (normalisedCoin.type === 'name' && normalisedCoin.value === 'ETH')
-  ) {
+  const coder = getCoderFromCoin(coin)
+  if (coder.coinType === 60) {
     return {
       to: EMPTY_ADDRESS,
       data: encodeFunctionData({
@@ -57,20 +58,13 @@ const encode = (
       }),
     }
   }
-  const formatter =
-    normalisedCoin.type === 'name'
-      ? formatsByName[normalisedCoin.value]
-      : formatsByCoinType[normalisedCoin.value]
-
-  if (!formatter)
-    throw new CoinFormatterNotFoundError({ coinType: normalisedCoin.value })
 
   return {
     to: EMPTY_ADDRESS,
     data: encodeFunctionData({
       abi: publicResolverMultiAddrSnippet,
       functionName: 'addr',
-      args: [namehash(name), BigInt(formatter.coinType)],
+      args: [namehash(name), BigInt(coder.coinType)],
     }),
   }
 }
@@ -82,19 +76,10 @@ const decode = async (
 ): Promise<InternalGetAddrReturnType> => {
   if (data === '0x') return null
 
-  const normalisedCoin = normaliseCoinId(coin)
-
-  const formatter =
-    normalisedCoin.type === 'name'
-      ? formatsByName[normalisedCoin.value]
-      : formatsByCoinType[normalisedCoin.value]
-
+  const coder = getCoderFromCoin(coin)
   let response: Hex
 
-  if (
-    (normalisedCoin.type === 'id' && normalisedCoin.value === 60) ||
-    (normalisedCoin.type === 'name' && normalisedCoin.value === 'ETH')
-  ) {
+  if (coder.coinType === 60) {
     response = decodeFunctionResult({
       abi: publicResolverSingleAddrSnippet,
       functionName: 'addr',
@@ -115,13 +100,13 @@ const decode = async (
     return null
   }
 
-  const decodedAddr = formatter.encoder(Buffer.from(response.slice(2), 'hex'))
+  const decodedAddr = coder.encode(hexToBytes(response))
 
   if (!decodedAddr) {
     return null
   }
 
-  return { id: formatter.coinType, name: formatter.name, value: decodedAddr }
+  return { id: coder.coinType, name: coder.name, value: decodedAddr }
 }
 
 const _getAddr = generateFunction({ encode, decode })

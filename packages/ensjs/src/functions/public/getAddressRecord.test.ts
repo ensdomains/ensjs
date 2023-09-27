@@ -17,7 +17,7 @@ describe('getAddressRecord()', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "id": 60,
-        "name": "ETH",
+        "name": "eth",
         "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
@@ -30,7 +30,7 @@ describe('getAddressRecord()', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "id": 61,
-        "name": "ETC_LEGACY",
+        "name": "etcLegacy",
         "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
@@ -43,7 +43,7 @@ describe('getAddressRecord()', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "id": 61,
-        "name": "ETC_LEGACY",
+        "name": "etcLegacy",
         "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
@@ -51,12 +51,12 @@ describe('getAddressRecord()', () => {
   it('should return the correct address based on a coin name', async () => {
     const result = await getAddressRecord(publicClient, {
       name: 'with-profile.eth',
-      coin: 'ETC_LEGACY',
+      coin: 'etcLegacy',
     })
     expect(result).toMatchInlineSnapshot(`
       {
         "id": 61,
-        "name": "ETC_LEGACY",
+        "name": "etcLegacy",
         "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
       }
     `)
@@ -75,7 +75,7 @@ describe('getAddressRecord()', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "id": 60,
-        "name": "ETH",
+        "name": "eth",
         "value": "0xde9ba5F62D6047C4a9cCF24455AA733cCC5B8F41",
       }
     `)

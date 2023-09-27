@@ -98,7 +98,7 @@
   },
   "dependencies": {
     "@adraffy/ens-normalize": "1.9.0",
-    "@ensdomains/address-encoder": "^0.2.18",
+    "@ensdomains/address-encoder": "1.0.0-rc.2",
     "@ensdomains/content-hash": "^3.0.0-beta.5",
     "@ensdomains/dnsprovejs": "^0.4.1",
     "abitype": "^0.8.0",

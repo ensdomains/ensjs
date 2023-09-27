@@ -54,7 +54,7 @@ it('should return a transaction to the resolver and set successfully', async () 
     }))!,
     coins: [
       {
-        coin: 'ETC_LEGACY',
+        coin: 'etcLegacy',
         value: '0x42D63ae25990889E35F215bC95884039Ba354115',
       },
     ],
@@ -69,7 +69,7 @@ it('should return a transaction to the resolver and set successfully', async () 
   const records = await getRecords(publicClient, {
     name: 'test123.eth',
     records: {
-      coins: ['ETC_LEGACY'],
+      coins: ['etcLegacy'],
       texts: ['foo'],
       abi: true,
     },
@@ -79,7 +79,7 @@ it('should return a transaction to the resolver and set successfully', async () 
     [
       {
         "id": 61,
-        "name": "ETC_LEGACY",
+        "name": "etcLegacy",
         "value": "0x42D63ae25990889E35F215bC95884039Ba354115",
       },
     ]
@@ -117,7 +117,7 @@ it('should not wrap with multicall if only setting a single record', async () =>
     }))!,
     coins: [
       {
-        coin: 'ETC_LEGACY',
+        coin: 'etcLegacy',
         value: '0x42D63ae25990889E35F215bC95884039Ba354115',
       },
     ],

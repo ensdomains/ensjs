@@ -28,7 +28,7 @@ describe('batch', () => {
         "Hello2",
         {
           "id": 60,
-          "name": "ETH",
+          "name": "eth",
           "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         },
         {

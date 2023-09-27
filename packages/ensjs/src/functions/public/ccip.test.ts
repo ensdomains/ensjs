@@ -21,11 +21,11 @@ describe('CCIP', () => {
         records: {
           texts: ['email', 'description'],
           contentHash: true,
-          coins: ['LTC', '60'],
+          coins: ['ltc', '60'],
         },
       })
       if (!result) throw new Error('No result')
-      expect(result.coins.find((x) => x.name === 'ETH')!.value).toBe(
+      expect(result.coins.find((x) => x.name === 'eth')!.value).toBe(
         '0x41563129cDbbD0c5D3e1c86cf9563926b243834d',
       )
     })
@@ -35,11 +35,11 @@ describe('CCIP', () => {
         records: {
           texts: ['email', 'description'],
           contentHash: true,
-          coins: ['LTC', '60'],
+          coins: ['ltc', '60'],
         },
       })
       if (!result) throw new Error('No result')
-      expect(result.coins.find((x) => x.name === 'ETH')!.value).toBe(
+      expect(result.coins.find((x) => x.name === 'eth')!.value).toBe(
         '0xA5313060f9FA6B607AC8Ca8728a851166c9f6127',
       )
     })
@@ -49,7 +49,7 @@ describe('CCIP', () => {
       const result = await batch(
         goerliPublicClient,
         getAddressRecord.batch({ name: '1.offchainexample.eth' }),
-        getAddressRecord.batch({ name: '1.offchainexample.eth', coin: 'LTC' }),
+        getAddressRecord.batch({ name: '1.offchainexample.eth', coin: 'ltc' }),
         getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
       )
       if (!result) throw new Error('No result')
@@ -58,7 +58,7 @@ describe('CCIP', () => {
       )
       expect(result[1]).toStrictEqual({
         id: 2,
-        name: 'LTC',
+        name: 'ltc',
         value: 'MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441',
       })
       expect(result[2]).toBe('nick@ens.domains')
