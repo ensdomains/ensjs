@@ -59,7 +59,7 @@ const decode = async (
       functionName: 'findResolver',
       args: passthrough.args,
       address: passthrough.address,
-    })
+    }) as BaseError
   const response = decodeFunctionResult({
     abi: universalResolverFindResolverSnippet,
     functionName: 'findResolver',

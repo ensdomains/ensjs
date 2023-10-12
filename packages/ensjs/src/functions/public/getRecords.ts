@@ -248,7 +248,7 @@ const decode = async <TParams extends GetRecordsParameters>(
           client,
           contract: 'ensUniversalResolver',
         }),
-      })
+      }) as BaseError
     }
     const result = decodeFunctionResult({
       abi: universalResolverResolveArraySnippet,

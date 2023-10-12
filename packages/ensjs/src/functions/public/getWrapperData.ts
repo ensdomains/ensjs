@@ -71,7 +71,7 @@ const decode = async (
       functionName: 'getData',
       args: passthrough.args,
       address: passthrough.address,
-    })
+    }) as BaseError
   const [owner, fuses, expiry] = decodeFunctionResult({
     abi: nameWrapperGetDataSnippet,
     functionName: 'getData',

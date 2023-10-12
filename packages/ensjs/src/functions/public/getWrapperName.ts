@@ -58,7 +58,7 @@ const decode = async (
       functionName: 'names',
       args: passthrough.args,
       address: passthrough.address,
-    })
+    }) as BaseError
   const result = decodeFunctionResult({
     abi: nameWrapperNamesSnippet,
     functionName: 'names',

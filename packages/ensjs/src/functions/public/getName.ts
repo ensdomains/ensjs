@@ -83,7 +83,7 @@ const decode = async (
       functionName: 'reverse',
       args: passthrough.args,
       address: passthrough.address,
-    })
+    }) as BaseError
   }
   const result = decodeFunctionResult({
     abi: universalResolverReverseSnippet,

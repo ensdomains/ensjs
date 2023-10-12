@@ -92,7 +92,7 @@ const decode = async (
       functionName: 'resolve',
       args: passthrough.args,
       address: passthrough.address,
-    })
+    }) as BaseError
   }
 
   const result = decodeFunctionResult({

@@ -52,7 +52,7 @@ const decode = async (
       abi: multicallTryAggregateSnippet,
       functionName: 'tryAggregate',
       args: [],
-    })
+    }) as BaseError
   }
   const result = decodeFunctionResult({
     abi: multicallTryAggregateSnippet,
