@@ -3,6 +3,7 @@ import {
   type Chain,
   type Client,
   type ClientConfig,
+  type PublicRpcSchema,
   type Transport,
 } from 'viem'
 import { addEnsContracts } from '../contracts/addEnsContracts.js'
@@ -32,7 +33,7 @@ export type EnsPublicClient<
     TTransport,
     TChain,
     undefined,
-    undefined,
+    PublicRpcSchema,
     EnsPublicActions & EnsSubgraphActions
   >
 >

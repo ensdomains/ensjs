@@ -3,6 +3,7 @@ import {
   type Chain,
   type Client,
   type ClientConfig,
+  type PublicRpcSchema,
   type Transport,
 } from 'viem'
 import { addEnsContracts } from '../contracts/addEnsContracts.js'
@@ -27,7 +28,7 @@ export type EnsSubgraphClient<
   TTransport extends Transport = Transport,
   TChain extends ChainWithEns = ChainWithEns,
 > = Prettify<
-  Client<TTransport, TChain, undefined, undefined, EnsSubgraphActions>
+  Client<TTransport, TChain, undefined, PublicRpcSchema, EnsSubgraphActions>
 >
 
 /**

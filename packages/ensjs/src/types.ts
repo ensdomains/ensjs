@@ -11,9 +11,12 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
-export type SimpleTransactionRequest = Prettify<
-  Required<Pick<TransactionRequest, 'to' | 'data'>>
->
+export type SimpleTransactionRequest = {
+  [P in keyof Pick<TransactionRequest, 'to' | 'data'>]-?: Exclude<
+    TransactionRequest[P],
+    null
+  >
+}
 
 export type TransactionRequestWithPassthrough = SimpleTransactionRequest & {
   passthrough?: any
