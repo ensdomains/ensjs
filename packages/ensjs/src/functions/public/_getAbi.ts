@@ -84,8 +84,8 @@ const decode = async (
     }
     // CBOR
     case 4: {
-      const { decodeFirst } = await import('cbor')
-      abiData = await decodeFirst(hexToBytes(encodedAbiData))
+      const { cborDecode } = await import('@ensdomains/address-encoder/utils')
+      abiData = await cborDecode(hexToBytes(encodedAbiData).buffer)
       decoded = true
       break
     }
