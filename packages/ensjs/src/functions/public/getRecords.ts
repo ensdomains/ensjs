@@ -256,17 +256,13 @@ const decode = async <TParams extends GetRecordsParameters>(
       data,
     })
     ;[, resolverAddress] = result
-    recordData = [...result[0]]
-    for (let i = 0; i < recordData.length; i += 1) {
-      // error code for reverted call in batch
-      // this is expected when using offchain resolvers, so should be ignored
-      // Error((uint16, string)[])
-      // or if data is 0x, clear the call so there is no decoding errors
-      if (recordData[i]!.startsWith('0x0d1947a9') || recordData[i] === '0x') {
+    recordData = result[0].map((item, i) => {
+      if (!item.success) {
         calls[i] = null
-        recordData[i] = null
+        return null
       }
-    }
+      return item.returnData
+    })
   }
 
   const filteredCalls = calls.filter((x) => x) as CallObj[]

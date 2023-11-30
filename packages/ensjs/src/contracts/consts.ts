@@ -91,7 +91,7 @@ export const addresses = {
       address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
     },
     ensUniversalResolver: {
-      address: '0x3952Be0b2186f8B113193a84b69bD71ad3fc1ae3',
+      address: '0xF872D2CeC3E6cC72904E23130d8D73064322fBd8',
     },
   },
   sepolia: {
