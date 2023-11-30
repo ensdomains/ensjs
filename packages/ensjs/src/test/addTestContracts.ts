@@ -39,7 +39,11 @@ type ContractName =
 export const deploymentAddresses = JSON.parse(
   process.env.DEPLOYMENT_ADDRESSES!,
 ) as Record<
-  ContractName | 'ENSRegistry' | 'LegacyPublicResolver' | 'NoMulticallResolver',
+  | ContractName
+  | 'ENSRegistry'
+  | 'LegacyPublicResolver'
+  | 'NoMulticallResolver'
+  | 'OldestResolver',
   Address
 >
 

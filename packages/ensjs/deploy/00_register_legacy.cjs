@@ -192,6 +192,11 @@ const names = [
     namedAddr: 'owner',
   },
   {
+    label: 'with-oldest-resolver',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+  },
+  {
     label: 'with-profile',
     namedOwner: 'owner2',
     namedAddr: 'owner2',

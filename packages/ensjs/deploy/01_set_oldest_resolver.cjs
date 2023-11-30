@@ -8,8 +8,8 @@ const { namehash } = require('viem')
 const names = [
   {
     namedOwner: 'owner',
-    name: 'with-legacy-resolver.eth',
-    addr: [{ key: 60, value: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' }],
+    name: 'with-oldest-resolver.eth',
+    addr: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
   },
 ]
 
@@ -22,17 +22,20 @@ const func = async function (hre) {
 
   const registry = await ethers.getContract('ENSRegistry')
 
-  await deployments.deploy('NoMulticallResolver', {
+  await deployments.deploy('OldestResolver', {
     from: allNamedAccts.deployer,
     contract: JSON.parse(
-      await fs.readFile(resolve(__dirname, '../contracts/OldResolver.json'), {
-        encoding: 'utf8',
-      }),
+      await fs.readFile(
+        resolve(__dirname, '../contracts/OldestResolver.json'),
+        {
+          encoding: 'utf8',
+        },
+      ),
     ),
     args: [registry.address],
   })
 
-  const resolver = await ethers.getContract('NoMulticallResolver')
+  const resolver = await ethers.getContract('OldestResolver')
 
   for (const { namedOwner, name, addr } of names) {
     const owner = allNamedAccts[namedOwner]
@@ -45,25 +48,22 @@ const func = async function (hre) {
     )
     await tx.wait()
 
-    for (const { key, value } of addr) {
-      const tx2 = await _resolver['setAddr(bytes32,uint256,bytes)'](
-        namehash(name),
-        key,
-        value,
-        {
-          gasLimit: 100000,
-        },
-      )
-      console.log(`Setting address for ${key} to ${value} (tx: ${tx.hash})...`)
-      await tx2.wait()
-    }
+    const tx2 = await _resolver['setAddr(bytes32,address)'](
+      namehash(name),
+      addr,
+      {
+        gasLimit: 100000,
+      },
+    )
+    console.log(`Setting address for 60 to ${addr} (tx: ${tx.hash})...`)
+    await tx2.wait()
   }
 
   return true
 }
 
-func.id = 'set-legacy-resolver'
-func.tags = ['set-legacy-resolver']
+func.id = 'set-oldest-resolver'
+func.tags = ['set-oldest-resolver']
 func.runAtTheEnd = true
 
 module.exports = func
