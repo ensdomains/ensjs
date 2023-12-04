@@ -113,6 +113,11 @@ async function decompressToOutput() {
         extractProgressBar.stop()
         reject(err.message)
       })
+
+    const readMePath = `${dataPath}/ipfs/blocks/_README`
+    if (fs.existsSync(readMePath)) {
+      await fs.rm(readMePath, {force: true})
+    }
   })
 }
 
