@@ -20,6 +20,7 @@ import {
   type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
+import { log } from 'console'
 
 export type RegisterNameDataParameters = RegistrationParameters & {
   /** Value of registration */
@@ -58,7 +59,6 @@ export const makeFunctionData = <
 
   const labels = args.name.split('.')
   wrappedLabelLengthCheck(labels[0])
-
   return {
     to: getChainContractAddress({
       client: wallet,
