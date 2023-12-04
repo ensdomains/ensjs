@@ -20,7 +20,6 @@ import {
   type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
-import { log } from 'console'
 
 export type RegisterNameDataParameters = RegistrationParameters & {
   /** Value of registration */
