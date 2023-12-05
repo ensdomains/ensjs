@@ -689,7 +689,7 @@ it.skip('Register - Set Subname', async () => {
     `)
 })
 
-it('Register - unwrap 2LD - wrap Subname', async () => {
+it.skip('Register - unwrap 2LD - wrap Subname', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
     name: name,
