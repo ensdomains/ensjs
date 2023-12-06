@@ -105,8 +105,14 @@ async function decompressToOutput() {
     })
 
     await streamPipeline(input, progressStream, decoder, unarchiver)
-      .then(() => {
+      .then(async () => {
         extractProgressBar.stop()
+
+        const readmeFilePath = `${dataPath}/ipfs/blocks/_README`;
+        if (fs.existsSync(readmeFilePath)) {
+          await fs.unlink(readmeFilePath);
+        }
+
         resolve()
       })
       .catch((err) => {
