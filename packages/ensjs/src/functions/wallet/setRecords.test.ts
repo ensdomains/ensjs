@@ -125,3 +125,120 @@ it('should not wrap with multicall if only setting a single record', async () =>
   // 0x8b95dd71 is the function selector for setAddr(bytes32,uint256,bytes)
   expect(encodedData.data.startsWith('0x8b95dd71')).toBe(true)
 })
+it('should return a transaction to the resolver and update successfully', async () => {
+  const tx = await setRecords(walletClient, {
+    name: 'test123.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'test123.eth',
+    }))!,
+    coins: [
+      {
+        coin: 'etcLegacy',
+        value: '0x42D63ae25990889E35F215bC95884039Ba354115',
+      },
+    ],
+    texts: [{ key: 'foo', value: 'bar' }],
+    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    account: accounts[1],
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await waitForTransaction(tx)
+  expect(receipt.status).toBe('success')
+  await testClient.mine({ blocks: 1 })
+
+
+  const utx = await setRecords(walletClient, {
+    name: 'test123.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'test123.eth',
+    }))!,
+    coins: [
+      {
+        coin: 'etcLegacy',
+        value: accounts[1],
+      },
+    ],
+    texts: [{ key: 'foo', value: 'bars' }],
+    abi: await encodeAbi({ encodeAs: 'json', data: [...dummyABI,{stateMutability: 'readonly',}] }),
+    account: accounts[1],
+  })
+  expect(utx).toBeTruthy()
+  const ureceipt = await waitForTransaction(utx)
+  expect(ureceipt.status).toBe('success')
+
+  const records = await getRecords(publicClient, {
+    name: 'test123.eth',
+    records: {
+      coins: ['etcLegacy'],
+      texts: ['foo'],
+      abi: true,
+    },
+  })
+  expect(records.abi!.abi).toStrictEqual([...dummyABI,{stateMutability: 'readonly',}])
+  expect(records.coins).toMatchInlineSnapshot(`
+    [
+      {
+        "id": 61,
+        "name": "etcLegacy",
+        "value": "${accounts[1]}",
+      },
+    ]
+  `)
+  expect(records.texts).toMatchInlineSnapshot(`
+    [
+      {
+        "key": "foo",
+        "value": "bars",
+      },
+    ]
+  `)
+})
+it.only('should return a transaction to the resolver and remove successfully', async () => {
+  const tx = await setRecords(walletClient, {
+    name: 'test123.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'test123.eth',
+    }))!,
+    coins: [
+      {
+        coin: 'etcLegacy',
+        value: '0x42D63ae25990889E35F215bC95884039Ba354115',
+      },
+    ],
+    texts: [{ key: 'foo', value: 'bar' }],
+    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    account: accounts[1],
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await waitForTransaction(tx)
+  expect(receipt.status).toBe('success')
+  await testClient.mine({ blocks: 1 })
+
+
+  const utx = await setRecords(walletClient, {
+    name: 'test123.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'test123.eth',
+    }))!,
+    coins: [],
+    texts: [],
+    abi: null,
+    account: accounts[1],
+  })
+  expect(utx).toBeTruthy()
+  const ureceipt = await waitForTransaction(utx)
+  expect(ureceipt.status).toBe('success')
+
+  const records = await getRecords(publicClient, {
+    name: 'test123.eth',
+    records: {
+      coins: [],
+      texts: [],
+      abi: true,
+    },
+  })
+  expect(records.abi!.abi).toMatchInlineSnapshot(`abi: { contentType: 1, decoded: true, abi: [ [Object] ] }`)
+  expect(records.coins).toMatchInlineSnapshot(`[]`)
+  expect(records.texts).toMatchInlineSnapshot(`[]`)
+  console.log(records)
+})

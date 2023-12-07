@@ -136,7 +136,7 @@ const commitAndRegisterName = async (params: RegistrationParameters) => {
 
 
 
-it.skip('Register - unwrapped 2LD', async () => {
+it('Register - unwrapped 2LD', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
     name: name,
@@ -200,7 +200,7 @@ it.skip('Register - unwrapped 2LD', async () => {
   
 })
 
-it.skip('Register - wrapped 2LD', async () => {``
+it('Register - wrapped 2LD', async () => {``
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
     name: name,
@@ -274,7 +274,7 @@ it.skip('Register - wrapped 2LD', async () => {``
   expect(transferMgrTxReceipt.status).toBe('success')
 })
 
-it.skip('Register - unwrapped 2LD - unwrapped subname', async () => {``
+it('Register - unwrapped 2LD - unwrapped subname', async () => {``
   const name = 'cool-swag-wrap.eth'
   const subname = 'subname.cool-swag-wrap.eth'
   const params: RegistrationParameters = {

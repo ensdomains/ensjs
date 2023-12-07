@@ -108,7 +108,7 @@ const dummyABI = [
   },
 ]
 
-it.skip('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get Expiry - Renew Name', async () => {
+it('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get Expiry - Renew Name', async () => {
   const params: RegistrationParameters = {
     name: 'coolest-swag.eth',
     duration: 31536000,
@@ -208,7 +208,7 @@ it.skip('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get 
 
 })
 
-it.skip('Register - Get Expiry - Advance time - Renew Name', async () => {
+it('Register - Get Expiry - Advance time - Renew Name', async () => {
   const params: RegistrationParameters = {
     name: 'coolest-swag.eth',
     duration: 31536000,
@@ -376,7 +376,7 @@ it.skip('Register - Get Expiry - Advance time - Renew Name', async () => {
   
 })
 
-it.skip('Register - Set other as primary name', async () => {
+it('Register - Set other as primary name', async () => {
   const params: RegistrationParameters = {
     name: 'other-eth-record-2.eth',
     duration: 31536000,
@@ -472,7 +472,7 @@ it.skip('Register - Set other as primary name', async () => {
   
 })
 
-it.skip('Register - Set other manager as primary name', async () => {
+it('Register - Set other manager as primary name', async () => {
   const params: RegistrationParameters = {
     name: 'other-eth-record-2.eth',
     duration: 31536000,
@@ -584,7 +584,7 @@ it.skip('Register - Set other manager as primary name', async () => {
   
 })
 
-it.skip('Register - Set Subname', async () => {
+it('Register - Set Subname', async () => {
   const params: RegistrationParameters = {
     name: 'cool-swag-wrap.eth',
     duration: 31536000,
@@ -689,7 +689,7 @@ it.skip('Register - Set Subname', async () => {
     `)
 })
 
-it.skip('Register - unwrap 2LD - wrap Subname', async () => {
+it('Register - unwrap 2LD - wrap Subname', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
     name: name,
