@@ -202,7 +202,7 @@ it('should return a transaction to the resolver and update successfully', async 
     ]
   `)
 })
-it('should return a transaction to the resolver and remove successfully', async () => {
+it.only('should return a transaction to the resolver and remove successfully', async () => {
   const tx = await setRecords(walletClient, {
     name: 'test123.eth',
     resolverAddress: (await getResolver(publicClient, {
@@ -233,6 +233,7 @@ it('should return a transaction to the resolver and remove successfully', async 
     coins: [],
     texts: [],
     abi: null,
+    contentHash: null,
     account: accounts[1],
   })
   expect(utx).toBeTruthy()
@@ -248,6 +249,8 @@ it('should return a transaction to the resolver and remove successfully', async 
       contentHash: true,
     },
   })
+  console.log(records)
+  expect(records.contentHash).toBeNull()
   expect(records.abi!.abi).toMatchInlineSnapshot(`abi: { contentType: 1, decoded: true, abi: [ [Object] ] }`)
   expect(records.coins).toMatchInlineSnapshot(`[]`)
   expect(records.texts).toMatchInlineSnapshot(`[]`)
