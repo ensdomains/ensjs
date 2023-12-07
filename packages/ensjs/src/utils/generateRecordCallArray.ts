@@ -20,7 +20,7 @@ export type RecordOptions = Prettify<{
   /** Clears all current records */
   clearRecords?: boolean
   /** ContentHash value */
-  contentHash?: string
+  contentHash?: string | null
   /** Array of text records */
   texts?: Omit<EncodeSetTextParameters, 'namehash'>[]
   /** Array of coin records */
@@ -43,7 +43,7 @@ export const generateRecordCallArray = ({
     calls.push(encodeClearRecords(namehash))
   }
 
-  if (typeof contentHash === 'string') {
+  if (contentHash !== undefined) {
     const data = encodeSetContentHash({ namehash, contentHash })
     if (data) calls.push(data)
   }
