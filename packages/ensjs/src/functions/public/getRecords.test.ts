@@ -46,4 +46,26 @@ describe('getRecords()', () => {
       }
     `)
   })
+  it('works with oldest resolver', async () => {
+    const result = await getRecords(publicClient, {
+      name: 'with-oldest-resolver.eth',
+      records: {
+        texts: ['description', 'url'],
+        coins: ['60', 'etcLegacy', '0'],
+      },
+    })
+    expect(result).toMatchInlineSnapshot(`
+    {
+      "coins": [
+        {
+          "id": 60,
+          "name": "eth",
+          "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        },
+      ],
+      "resolverAddress": "${deploymentAddresses.OldestResolver}",
+      "texts": [],
+    }
+  `)
+  })
 })
