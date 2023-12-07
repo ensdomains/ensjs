@@ -139,6 +139,7 @@ it('should return a transaction to the resolver and update successfully', async 
     ],
     texts: [{ key: 'foo', value: 'bar' }],
     abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    contentHash: 'ipfs://bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y',
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
@@ -160,6 +161,7 @@ it('should return a transaction to the resolver and update successfully', async 
     ],
     texts: [{ key: 'foo', value: 'bars' }],
     abi: await encodeAbi({ encodeAs: 'json', data: [...dummyABI,{stateMutability: 'readonly',}] }),
+    contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
     account: accounts[1],
   })
   expect(utx).toBeTruthy()
@@ -171,9 +173,16 @@ it('should return a transaction to the resolver and update successfully', async 
     records: {
       coins: ['etcLegacy'],
       texts: ['foo'],
+      contentHash: true,
       abi: true,
     },
   })
+  expect(records.contentHash).toMatchInlineSnapshot(`
+  {
+    "decoded": "k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150",
+    "protocolType": "ipns",
+  }
+`)
   expect(records.abi!.abi).toStrictEqual([...dummyABI,{stateMutability: 'readonly',}])
   expect(records.coins).toMatchInlineSnapshot(`
     [
@@ -193,7 +202,7 @@ it('should return a transaction to the resolver and update successfully', async 
     ]
   `)
 })
-it.only('should return a transaction to the resolver and remove successfully', async () => {
+it('should return a transaction to the resolver and remove successfully', async () => {
   const tx = await setRecords(walletClient, {
     name: 'test123.eth',
     resolverAddress: (await getResolver(publicClient, {
@@ -207,6 +216,7 @@ it.only('should return a transaction to the resolver and remove successfully', a
     ],
     texts: [{ key: 'foo', value: 'bar' }],
     abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    contentHash: 'ipfs://bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y',
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
@@ -235,10 +245,10 @@ it.only('should return a transaction to the resolver and remove successfully', a
       coins: [],
       texts: [],
       abi: true,
+      contentHash: true,
     },
   })
   expect(records.abi!.abi).toMatchInlineSnapshot(`abi: { contentType: 1, decoded: true, abi: [ [Object] ] }`)
   expect(records.coins).toMatchInlineSnapshot(`[]`)
   expect(records.texts).toMatchInlineSnapshot(`[]`)
-  console.log(records)
 })
