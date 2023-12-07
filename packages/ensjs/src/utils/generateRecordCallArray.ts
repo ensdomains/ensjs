@@ -1,5 +1,6 @@
 import { type Hex } from 'viem'
 import type { Prettify } from '../types.js'
+import type { EncodedAbi } from './encoders/encodeAbi.js'
 import { encodeClearRecords } from './encoders/encodeClearRecords.js'
 import {
   encodeSetAbi,
@@ -25,7 +26,7 @@ export type RecordOptions = Prettify<{
   /** Array of coin records */
   coins?: Omit<EncodeSetAddrParameters, 'namehash'>[]
   /** ABI value */
-  abi?: Omit<EncodeSetAbiParameters, 'namehash'>
+  abi?: EncodedAbi | null
 }>
 
 export const generateRecordCallArray = ({
@@ -47,8 +48,9 @@ export const generateRecordCallArray = ({
     if (data) calls.push(data)
   }
 
-  if (abi) {
-    const data = encodeSetAbi({ namehash, ...abi } as EncodeSetAbiParameters)
+  if (abi !== undefined) {
+    const abi_ = abi ?? { contentType: 0, encodedData: null }
+    const data = encodeSetAbi({ namehash, ...abi_ } as EncodeSetAbiParameters)
     if (data) calls.push(data)
   }
 
