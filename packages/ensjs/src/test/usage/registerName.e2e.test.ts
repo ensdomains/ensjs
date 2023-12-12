@@ -25,6 +25,8 @@ import transferName from '../../functions/wallet/transferName.js'
 import createSubname from '../../functions/wallet/createSubname.js'
 import { registryOwnerSnippet, registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
 import wrapName from '../../functions/wallet/wrapName.js'
+import setRecords from '../../functions/wallet/setRecords.js'
+import { encodeAbi } from '../../utils/index.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -689,7 +691,7 @@ it('Register - Set Subname', async () => {
     `)
 })
 
-it('Register - unwrap 2LD - wrap Subname', async () => {
+it.only('Register - unwrap 2LD - wrap Subname', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
     name: name,
@@ -770,6 +772,27 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
   console.log(resolver)
 
   await approve(accounts[2])
+
+  const utx = await setRecords(walletClient, {
+    name: subName,
+    resolverAddress: (await getResolver(publicClient, {
+      name: name,
+    }))!,
+    coins: [
+      {
+        coin: 'eth',
+        value: accounts[2],
+      },
+    ],
+    texts: [{ key: 'foo', value: 'bars' }],
+    abi: await encodeAbi({ encodeAs: 'json', data: [...dummyABI,{stateMutability: 'readonly',}] }),
+    contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
+    account: accounts[2],
+  })
+  expect(utx).toBeTruthy()
+  const ureceipt = await waitForTransaction(utx)
+  expect(ureceipt.status).toBe('success')
+
 
   const wrapNameTx = await wrapName(walletClient, {
     name: subName,
