@@ -102,7 +102,7 @@ importers:
       '@ensdomains/buffer': ^0.0.13
       '@ensdomains/content-hash': 3.1.0-rc.0
       '@ensdomains/dnsprovejs': ^0.5.0
-      '@ensdomains/ens-contracts': 0.0.22
+      '@ensdomains/ens-contracts': 1.0.0
       '@ensdomains/ens-test-env': workspace:*
       '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
       '@openzeppelin/contracts': ^4.5.0
@@ -156,7 +156,7 @@ importers:
       traverse: 0.6.6
     devDependencies:
       '@ensdomains/buffer': 0.0.13_hardhat@2.16.1
-      '@ensdomains/ens-contracts': 0.0.22
+      '@ensdomains/ens-contracts': 1.0.0
       '@ensdomains/ens-test-env': link:../ens-test-env
       '@nomiclabs/hardhat-ethers': /hardhat-deploy-ethers/0.3.0-beta.13_drbn5rr2wg6skrabufgggpzpcu
       '@openzeppelin/contracts': 4.7.3
@@ -655,13 +655,13 @@ packages:
       typescript-logging: 1.0.1
     dev: false
 
-  /@ensdomains/ens-contracts/0.0.22:
-    resolution: {integrity: sha512-kNu7pp68/5KfJ5wkswnUS4NfI9Ek4zGi0nnNSmGf1WXs6BHU9NYRVR6NnoVzb1B+cZ658e1v2srTtvmBYYIYzg==}
+  /@ensdomains/ens-contracts/1.0.0:
+    resolution: {integrity: sha512-NB5fig+TuaAkdW3uVshO/vuI/BNWus8MkpdDCzx6S797j7gRrDbKfcVHHDH5rBmj8Yp0/jCR1LU4DHaU5oxO0Q==}
     dependencies:
       '@ensdomains/buffer': 0.1.1
       '@ensdomains/solsha1': 0.0.3
       '@openzeppelin/contracts': 4.7.3
-      dns-packet: 5.4.0
+      dns-packet: 5.6.1
     dev: true
 
   /@ensdomains/ens/0.4.5:
@@ -4191,13 +4191,13 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       '@leichtgewicht/ip-codec': 2.0.4
+    dev: false
 
   /dns-packet/5.6.1:
     resolution: {integrity: sha512-l4gcSouhcgIKRvyy99RNVOgxXiicE+2jZoNmaNmZ6JXiGajBOJAesk1OBlJuM5k2c+eudGdLxDqXuPCKIj6kpw==}
     engines: {node: '>=6'}
     dependencies:
       '@leichtgewicht/ip-codec': 2.0.4
-    dev: false
 
   /docker-compose/0.23.17:
     resolution: {integrity: sha512-YJV18YoYIcxOdJKeFcCFihE6F4M2NExWM/d4S1ITcS9samHKnNUihz9kjggr0dNtsrbpFNc7/Yzd19DWs+m1xg==}
