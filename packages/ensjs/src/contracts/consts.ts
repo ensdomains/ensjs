@@ -59,7 +59,7 @@ export const addresses = {
       address: '0x21745FF62108968fBf5aB1E07961CC0FCBeB2364',
     },
     ensUniversalResolver: {
-      address: '0x9380F1974D2B7064eA0c0EC251968D8c69f0Ae31',
+      address: '0x20814C8e689187DfF7C93A9239ea22385d13b9F1',
     },
   },
   goerli: {
