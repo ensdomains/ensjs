@@ -29,7 +29,8 @@ describe('CCIP', () => {
         '0x41563129cDbbD0c5D3e1c86cf9563926b243834d',
       )
     })
-    it('should return a profile from arb-resolver.eth', async () => {
+    // arb-resolver.eth no longer working...
+    it.skip('should return a profile from arb-resolver.eth', async () => {
       const result = await getRecords(goerliPublicClient, {
         name: 'arb-resolver.eth',
         records: {

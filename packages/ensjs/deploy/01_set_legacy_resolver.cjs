@@ -22,8 +22,6 @@ const func = async function (hre) {
 
   const registry = await ethers.getContract('ENSRegistry')
 
-  console.log(registry.address)
-
   await deployments.deploy('NoMulticallResolver', {
     from: allNamedAccts.deployer,
     contract: JSON.parse(

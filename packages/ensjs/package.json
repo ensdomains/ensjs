@@ -110,7 +110,7 @@
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
-    "@ensdomains/ens-contracts": "0.0.22",
+    "@ensdomains/ens-contracts": "1.0.0",
     "@ensdomains/ens-test-env": "workspace:*",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/contracts": "^4.5.0",
@@ -122,8 +122,8 @@
     "@types/jest": "^27.4.1",
     "@types/node": "^20.3.3",
     "@types/pako": "^2.0.0",
-    "cbor": "^8.1.0",
     "@types/traverse": "^0.6.32",
+    "cbor": "^8.1.0",
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.6",
     "eslint-plugin-jest": "^27.0.1",

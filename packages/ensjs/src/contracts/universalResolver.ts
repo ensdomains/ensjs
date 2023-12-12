@@ -9,6 +9,41 @@ export const universalResolverErrors = [
     name: 'ResolverWildcardNotSupported',
     type: 'error',
   },
+  {
+    inputs: [],
+    name: 'ResolverNotContract',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        name: 'returnData',
+        type: 'bytes',
+      },
+    ],
+    name: 'ResolverError',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            name: 'status',
+            type: 'uint16',
+          },
+          {
+            name: 'message',
+            type: 'string',
+          },
+        ],
+        name: 'errors',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'HttpError',
+    type: 'error',
+  },
 ] as const
 
 export const universalResolverReverseSnippet = [
@@ -77,8 +112,18 @@ export const universalResolverResolveArraySnippet = [
     name: 'resolve',
     outputs: [
       {
+        components: [
+          {
+            name: 'success',
+            type: 'bool',
+          },
+          {
+            name: 'returnData',
+            type: 'bytes',
+          },
+        ],
         name: '',
-        type: 'bytes[]',
+        type: 'tuple[]',
       },
       {
         name: '',
