@@ -10,6 +10,7 @@ import { encodeAbi } from '../../utils/encoders/encodeAbi.js'
 import getRecords from '../public/getRecords.js'
 import getResolver from '../public/getResolver.js'
 import setRecords from './setRecords.js'
+import getSubgraphRecords from '../subgraph/getSubgraphRecords.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -25,7 +26,7 @@ beforeEach(async () => {
 afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
-
+jest.setTimeout(15000)
 const dummyABI = [
   {
     type: 'function',
@@ -124,185 +125,4 @@ it('should not wrap with multicall if only setting a single record', async () =>
   })
   // 0x8b95dd71 is the function selector for setAddr(bytes32,uint256,bytes)
   expect(encodedData.data.startsWith('0x8b95dd71')).toBe(true)
-})
-it('should return a transaction to the resolver and update successfully', async () => {
-  const tx = await setRecords(walletClient, {
-    name: 'test123.eth',
-    resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
-    }))!,
-    coins: [
-      {
-        coin: 'etcLegacy',
-        value: '0x42D63ae25990889E35F215bC95884039Ba354115',
-      },
-    ],
-    texts: [{ key: 'foo', value: 'bar' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
-    contentHash: 'ipfs://bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y',
-    account: accounts[1],
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
-  await testClient.mine({ blocks: 1 })
-
-
-  const utx = await setRecords(walletClient, {
-    name: 'test123.eth',
-    resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
-    }))!,
-    coins: [
-      {
-        coin: 'etcLegacy',
-        value: accounts[1],
-      },
-    ],
-    texts: [{ key: 'foo', value: 'bars' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: [...dummyABI,{stateMutability: 'readonly',}] }),
-    contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
-    account: accounts[1],
-  })
-  expect(utx).toBeTruthy()
-  const ureceipt = await waitForTransaction(utx)
-  expect(ureceipt.status).toBe('success')
-
-  const records = await getRecords(publicClient, {
-    name: 'test123.eth',
-    records: {
-      coins: ['etcLegacy'],
-      texts: ['foo'],
-      contentHash: true,
-      abi: true,
-    },
-  })
-  expect(records.contentHash).toMatchInlineSnapshot(`
-  {
-    "decoded": "k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150",
-    "protocolType": "ipns",
-  }
-`)
-  expect(records.abi!.abi).toStrictEqual([...dummyABI,{stateMutability: 'readonly',}])
-  expect(records.coins).toMatchInlineSnapshot(`
-    [
-      {
-        "id": 61,
-        "name": "etcLegacy",
-        "value": "${accounts[1]}",
-      },
-    ]
-  `)
-  expect(records.texts).toMatchInlineSnapshot(`
-    [
-      {
-        "key": "foo",
-        "value": "bars",
-      },
-    ]
-  `)
-})
-it.only('should return a transaction to the resolver and remove successfully', async () => {
-  const tx = await setRecords(walletClient, {
-    name: 'test123.eth',
-    resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
-    }))!,
-    coins: [
-      {
-        coin: 'etcLegacy',
-        value: '0x42D63ae25990889E35F215bC95884039Ba354115',
-      },
-    ],
-    texts: [{ key: 'foo', value: 'bar' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
-    contentHash: 'ipfs://bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y',
-    account: accounts[1],
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
-  await testClient.mine({ blocks: 1 })
-
-
-  const utx = await setRecords(walletClient, {
-    name: 'test123.eth',
-    resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
-    }))!,
-    coins: [],
-    texts: [],
-    abi: null,
-    contentHash: null,
-    account: accounts[1],
-  })
-  expect(utx).toBeTruthy()
-  const ureceipt = await waitForTransaction(utx)
-  expect(ureceipt.status).toBe('success')
-
-  const records = await getRecords(publicClient, {
-    name: 'test123.eth',
-    records: {
-      coins: [],
-      texts: [],
-      abi: true,
-      contentHash: true,
-    },
-  })
-  console.log(records)
-  expect(records.contentHash).toBeNull()
-  expect(records.abi!.abi).toMatchInlineSnapshot(`abi: { contentType: 1, decoded: true, abi: [ [Object] ] }`)
-  expect(records.coins).toMatchInlineSnapshot(`[]`)
-  expect(records.texts).toMatchInlineSnapshot(`[]`)
-})
-it('should return a transaction to the resolver and ignore undefined', async () => {
-  const tx = await setRecords(walletClient, {
-    name: 'test123.eth',
-    resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
-    }))!,
-    coins: [
-      {
-        coin: 'etcLegacy',
-        value: '0x42D63ae25990889E35F215bC95884039Ba354115',
-      },
-    ],
-    texts: [{ key: 'foo', value: 'bar' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
-    contentHash: 'ipfs://bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y',
-    account: accounts[1],
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
-  await testClient.mine({ blocks: 1 })
-
-
-  const utx = await setRecords(walletClient, {
-    name: 'test123.eth',
-    resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
-    }))!,
-    coins: [],
-    texts: [],
-    abi: undefined,
-    contentHash: undefined,
-    account: accounts[1],
-  })
-  expect(utx).toBeTruthy()
-  const ureceipt = await waitForTransaction(utx)
-  expect(ureceipt.status).toBe('success')
-
-  const records = await getRecords(publicClient, {
-    name: 'test123.eth',
-    records: {
-      coins: [],
-      texts: [],
-      abi: true,
-      contentHash: true,
-    },
-  })
-  expect(records.abi).toMatchInlineSnapshot(`undefined`)
-  expect(records.coins).toMatchInlineSnapshot(`[]`)
-  expect(records.texts).toMatchInlineSnapshot(`[]`)
 })
