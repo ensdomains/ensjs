@@ -9,7 +9,7 @@ import type { RegistrationParameters } from '../../utils/registerHelpers.js'
 
 // const accounts = await walletClient.getAddresses()
 // type accountType = typeof accounts[0]
-export const commitAndRegisterName = async (params: RegistrationParameters, account: any) => {
+export const commitAndRegisterName = async (params: RegistrationParameters, account: any): Promise<string> => {
     const commitTx = await commitName(walletClient, {
       ...params,
       account: account,
@@ -36,4 +36,6 @@ export const commitAndRegisterName = async (params: RegistrationParameters, acco
     expect(tx).toBeTruthy()
     const receipt = await waitForTransaction(tx)
     expect(receipt.status).toBe('success')
+
+    return tx
   }

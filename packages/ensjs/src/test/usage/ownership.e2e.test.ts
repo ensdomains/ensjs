@@ -1,22 +1,17 @@
-import { labelhash, type Address, type Hex } from 'viem'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
+import { type Address, type Hex } from 'viem'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/normalise.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
-import { baseRegistrarNameExpiresSnippet } from '../../contracts/baseRegistrar.js'
 import setAddressRecord from '../../functions/wallet/setAddressRecord.js'
 import getResolver from '../../functions/public/getResolver.js'
 import getOwner from '../../functions/public/getOwner.js'
 import unwrapName from '../../functions/wallet/unwrapName.js'
 import transferName from '../../functions/wallet/transferName.js'
 import createSubname from '../../functions/wallet/createSubname.js'
-import { registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
 import { encodeAbi } from '../../utils/index.js'
 import setRecords from '../../functions/wallet/setRecords.js'
 import { commitAndRegisterName } from './helper.js'
@@ -39,49 +34,6 @@ afterEach(async () => {
 })
 
 const secret = `0x${'a'.repeat(64)}` as Hex
-
-const getNameWrapperOwner = async (name: string) => {
-  return publicClient.readContract({
-    abi: nameWrapperOwnerOfSnippet,
-    functionName: 'ownerOf',
-    address: getChainContractAddress({
-      client: publicClient,
-      contract: 'ensNameWrapper',
-    }),
-    args: [BigInt(namehash(name))],
-  })
-}
-
-const getExpiry = async (name: string) => {
-  return publicClient.readContract({
-    abi: baseRegistrarNameExpiresSnippet,
-    functionName: 'nameExpires',
-    address: getChainContractAddress({
-      client: publicClient,
-      contract: 'ensBaseRegistrarImplementation',
-    }),
-    args: [BigInt(labelhash(name.split('.')[0]))],
-  })
-}
-
-const approve = async (address: Address) => {
-  return walletClient.writeContract({
-    abi: registrySetApprovalForAllSnippet,
-    address: getChainContractAddress({
-      client: walletClient,
-      contract: 'ensRegistry',
-    }),
-    functionName: 'setApprovalForAll',
-    args: [
-      getChainContractAddress({
-        client: walletClient,
-        contract: 'ensNameWrapper',
-      }),
-      true,
-    ],
-    account: address,
-  })
-}
 
 const dummyABI = [
   {

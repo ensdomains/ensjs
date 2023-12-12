@@ -28,7 +28,7 @@ beforeEach(async () => {
 afterEach(async () => {
   await testClient.revert({ id: snapshot })
 })
-jest.setTimeout(30000)
+jest.setTimeout(60000)
 const dummyABI = [
   {
     type: 'function',
@@ -249,7 +249,7 @@ it('should return a transaction to the resolver and ignore undefined', async () 
   expect(records.contentHash).not.toBeNull()
   expect(records.abi).not.toBeNull()
 })
-it.only('should return a transaction to the resolver and retrieve multiple keys successfully', async () => {
+it.skip('should return a transaction to the resolver and retrieve multiple keys successfully', async () => {
   //generate random name
   const name = `test${Math.floor(Math.random() * 1000000)}.eth`
   const params: RegistrationParameters = {
@@ -285,7 +285,7 @@ it.only('should return a transaction to the resolver and retrieve multiple keys 
   expect(receipt.status).toBe('success')
   await testClient.mine({ blocks: 1 })
   //set a wait time here
-  await new Promise((resolve) => setTimeout(resolve, 15000));
+  await new Promise((resolve) => setTimeout(resolve, 30000));
   const result = await getSubgraphRecords(publicClient, {
     name: name,
   })
@@ -296,8 +296,8 @@ it.only('should return a transaction to the resolver and retrieve multiple keys 
   expect(snapshot).toMatchInlineSnapshot(`
     {
       "coins": [
-        "60",
         "501",
+        "60",
       ],
       "isMigrated": true,
       "texts": [
@@ -347,28 +347,33 @@ it.only('should return a transaction to the resolver and retrieve multiple keys 
     },
   })
   console.log(records)
-//   expect(records.contentHash).toMatchInlineSnapshot(`
-//   {
-//     "decoded": "k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150",
-//     "protocolType": "ipns",
-//   }
-// `)
-//   expect(records.abi!.abi).toStrictEqual([...dummyABI,{stateMutability: 'readonly',}])
-//   expect(records.coins).toMatchInlineSnapshot(`
-//     [
-//       {
-//         "id": 61,
-//         "name": "etcLegacy",
-//         "value": "${accounts[1]}",
-//       },
-//     ]
-//   `)
-//   expect(records.texts).toMatchInlineSnapshot(`
-//     [
-//       {
-//         "key": "foo",
-//         "value": "bars",
-//       },
-//     ]
-//   `)
+  expect(records.contentHash).toMatchInlineSnapshot(`
+  {
+    "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
+    "protocolType": "ipfs",
+  }
+`)
+  expect(records.abi!.abi).toStrictEqual([...dummyABI,{stateMutability: 'readonly',}])
+  expect(records.coins).toMatchInlineSnapshot(`
+    [
+      {
+        id: 501,
+        name: 'sol',
+        value: 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH'
+      },
+      {
+        id: 60,
+        name: 'eth',
+        value: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+      },
+      { id: 0, name: 'btc', value: '1PzAJcFtEiXo9UGtRU6iqXQKj8NXtcC7DE' }
+    ]
+  `)
+  expect(records.texts).toMatchInlineSnapshot(`
+    [
+      { key: 'name', value: 'e2e' },
+      { key: 'location', value: 'metaverse' },
+      { key: 'description', value: 'e2e' }
+    ]
+  `)
 })

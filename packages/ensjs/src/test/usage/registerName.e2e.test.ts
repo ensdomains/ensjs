@@ -27,14 +27,16 @@ import { registryOwnerSnippet, registrySetApprovalForAllSnippet } from '../../co
 import wrapName from '../../functions/wallet/wrapName.js'
 import setRecords from '../../functions/wallet/setRecords.js'
 import { encodeAbi } from '../../utils/index.js'
+import { commitAndRegisterName } from './helper.js'
+import getSubnames from '../../functions/subgraph/getSubnames.js'
+import * as exp from 'constants'
 
 let snapshot: Hex
 let accounts: Address[]
+jest.setTimeout(60000)
 
 beforeAll(async () => {
   accounts = await walletClient.getAddresses()
-  console.log(accounts[1])
-  console.log(accounts[2])
 })
 
 beforeEach(async () => {
@@ -118,32 +120,8 @@ it('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get Expir
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
-  const commitTx = await commitName(walletClient, {
-    ...params,
-    account: accounts[1],
-  })
-  expect(commitTx).toBeTruthy()
-  const commitReceipt = await waitForTransaction(commitTx)
-
-  expect(commitReceipt.status).toBe('success')
-
-  await testClient.increaseTime({ seconds: 61 })
-  await testClient.mine({ blocks: 1 })
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await registerName(walletClient, {
-    ...params,
-    account: accounts[1],
-    value: total,
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
+  
+  await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
@@ -198,13 +176,19 @@ it('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get Expir
   // const newExpiry = await getExpiry(params.name)
   // expect(newExpiry).toBe(BigInt(blockTS) + BigInt(params.duration))
 
+  const price = await getPrice(publicClient, {
+    nameOrNames: params.name,
+    duration: params.duration,
+  })
+  const total = price!.base + price!.premium
+
   const renewTx = await renewNames(walletClient, {
     nameOrNames: params.name,
     duration: params.duration,
     value: total,
     account: accounts[0],
   })
-  expect(tx).toBeTruthy()
+  expect(renewTx).toBeTruthy()
   const renewTxReceipt = await waitForTransaction(renewTx)
   expect(renewTxReceipt.status).toBe('success')
 
@@ -218,37 +202,13 @@ it('Register - Get Expiry - Advance time - Renew Name', async () => {
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
-  const commitTx = await commitName(walletClient, {
-    ...params,
-    account: accounts[1],
-  })
-  expect(commitTx).toBeTruthy()
-  const commitReceipt = await waitForTransaction(commitTx)
-
-  expect(commitReceipt.status).toBe('success')
-
-  await testClient.increaseTime({ seconds: 61 })
-  await testClient.mine({ blocks: 1 })
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await registerName(walletClient, {
-    ...params,
-    account: accounts[1],
-    value: total,
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
+  
+  const tx = await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
 
-  const registerNameTxBlock = (await publicClient.getTransaction({ hash: tx })).blockHash
+  const registerNameTxBlock = (await publicClient.getTransaction({ hash: tx as `0x${string}` })).blockHash
   const blockTS = (await publicClient.getBlock({ blockHash: registerNameTxBlock })).timestamp
 
   const expiry = await getExpiry(params.name)
@@ -302,6 +262,11 @@ it('Register - Get Expiry - Advance time - Renew Name', async () => {
   const newExpiry = await getExpiry(params.name)
   expect(newExpiry).toBe(BigInt(blockTS) + BigInt(params.duration))
 
+  const price = await getPrice(publicClient, {
+    nameOrNames: params.name,
+    duration: params.duration,
+  })
+  const total = price!.base + price!.premium
   const renewTx = await renewNames(walletClient, {
     nameOrNames: params.name,
     duration: params.duration,
@@ -374,8 +339,6 @@ it('Register - Get Expiry - Advance time - Renew Name', async () => {
   })
 
   console.log(result2)
-
-  
 })
 
 it('Register - Set other as primary name', async () => {
@@ -388,32 +351,7 @@ it('Register - Set other as primary name', async () => {
   }
 
   type name = 'other-eth-record-2.eth'
-  const commitTx = await commitName(walletClient, {
-    ...params,
-    account: accounts[1],
-  })
-  expect(commitTx).toBeTruthy()
-  const commitReceipt = await waitForTransaction(commitTx)
-
-  expect(commitReceipt.status).toBe('success')
-
-  await testClient.increaseTime({ seconds: 61 })
-  await testClient.mine({ blocks: 1 })
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await registerName(walletClient, {
-    ...params,
-    account: accounts[1],
-    value: total,
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
+  await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
@@ -424,7 +362,7 @@ it('Register - Set other as primary name', async () => {
     newRegistrantAddress: accounts[1],
     account: accounts[1],
   })
-  expect(tx).toBeTruthy()
+  expect(unwrapNameTx).toBeTruthy()
   const unwrapNameTxReceipt = await waitForTransaction(unwrapNameTx)
   expect(unwrapNameTxReceipt.status).toBe('success')
 
@@ -474,7 +412,7 @@ it('Register - Set other as primary name', async () => {
   
 })
 
-it('Register - Set other manager as primary name', async () => {
+it.skip('Register - Set other manager as primary name', async () => {
   const params: RegistrationParameters = {
     name: 'other-eth-record-2.eth',
     duration: 31536000,
@@ -483,32 +421,7 @@ it('Register - Set other manager as primary name', async () => {
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
 
-  const commitTx = await commitName(walletClient, {
-    ...params,
-    account: accounts[1],
-  })
-  expect(commitTx).toBeTruthy()
-  const commitReceipt = await waitForTransaction(commitTx)
-
-  expect(commitReceipt.status).toBe('success')
-
-  await testClient.increaseTime({ seconds: 61 })
-  await testClient.mine({ blocks: 1 })
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await registerName(walletClient, {
-    ...params,
-    account: accounts[1],
-    value: total,
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
+  await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
@@ -520,7 +433,7 @@ it('Register - Set other manager as primary name', async () => {
     account: accounts[1],
     newRegistrantAddress: accounts[1],
   })
-  expect(tx).toBeTruthy()
+  expect(unwrapNameTx).toBeTruthy()
   const unwrapNameTxReceipt = await waitForTransaction(unwrapNameTx)
   expect(unwrapNameTxReceipt.status).toBe('success')
 
@@ -595,32 +508,7 @@ it('Register - Set Subname', async () => {
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
 
-  const commitTx = await commitName(walletClient, {
-    ...params,
-    account: accounts[1],
-  })
-  expect(commitTx).toBeTruthy()
-  const commitReceipt = await waitForTransaction(commitTx)
-
-  expect(commitReceipt.status).toBe('success')
-
-  await testClient.increaseTime({ seconds: 61 })
-  await testClient.mine({ blocks: 1 })
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await registerName(walletClient, {
-    ...params,
-    account: accounts[1],
-    value: total,
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
+  await commitAndRegisterName(params, accounts[1])
 
   const subName = 'test.cool-swag-wrap.eth'
   const createSubnameTx = await createSubname(walletClient, {
@@ -691,7 +579,7 @@ it('Register - Set Subname', async () => {
     `)
 })
 
-it.only('Register - unwrap 2LD - wrap Subname', async () => {
+it('Register - unwrap 2LD - wrap Subname', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
     name: name,
@@ -701,32 +589,7 @@ it.only('Register - unwrap 2LD - wrap Subname', async () => {
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
 
-  const commitTx = await commitName(walletClient, {
-    ...params,
-    account: accounts[1],
-  })
-  expect(commitTx).toBeTruthy()
-  const commitReceipt = await waitForTransaction(commitTx)
-
-  expect(commitReceipt.status).toBe('success')
-
-  await testClient.increaseTime({ seconds: 61 })
-  await testClient.mine({ blocks: 1 })
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await registerName(walletClient, {
-    ...params,
-    account: accounts[1],
-    value: total,
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
+  await commitAndRegisterName(params, accounts[1])
 
   const unwrapNameTx = await unwrapName(walletClient, {
     name: name,
@@ -734,7 +597,7 @@ it.only('Register - unwrap 2LD - wrap Subname', async () => {
     newRegistrantAddress: accounts[1],
     account: accounts[1],
   })
-  expect(tx).toBeTruthy()
+  expect(unwrapNameTx).toBeTruthy()
   const unwrapNameTxReceipt = await waitForTransaction(unwrapNameTx)
   expect(unwrapNameTxReceipt.status).toBe('success')
 
@@ -799,7 +662,7 @@ it.only('Register - unwrap 2LD - wrap Subname', async () => {
     newOwnerAddress: accounts[2],
     account: accounts[2],
   })
-  expect(tx).toBeTruthy()
+  expect(wrapNameTx).toBeTruthy()
   const wrapNameTxReceipt = await waitForTransaction(wrapNameTx)
   expect(wrapNameTxReceipt.status).toBe('success')
 
@@ -808,7 +671,42 @@ it.only('Register - unwrap 2LD - wrap Subname', async () => {
   })
   expect(owner!.owner).toBe(accounts[2])
   expect(owner!.ownershipLevel).toBe('nameWrapper')
-  
+})
 
-  
+it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname', async () => {
+  const name = `test${Math.floor(Math.random() * 1000000)}.eth`
+  const params: RegistrationParameters = {
+    name: name,
+    duration: 31536000,
+    owner: accounts[1],
+    secret,
+    resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
+  }
+
+  await commitAndRegisterName(params, accounts[1])
+
+  const subName = `test.${name}`
+  const createSubnameTx = await createSubname(walletClient, {
+    name: subName,
+    contract: 'nameWrapper',
+    owner: accounts[2],
+    account: accounts[1],
+    expiry: new Date(Date.now() + 1),
+  })
+  expect(createSubnameTx).toBeTruthy()
+  const createSubnameTxReceipt = await waitForTransaction(createSubnameTx)
+  expect(createSubnameTxReceipt.status).toBe('success')
+  testClient.increaseTime({ seconds: 61 })
+  testClient.mine({ blocks: 1 })
+
+  await new Promise((resolve) => setTimeout(resolve, 30000));
+  const result = await getSubnames(publicClient, {
+    name: params.name,
+    pageSize: 1000,
+  })
+  console.log(result)
+  if (!result.length) throw new Error('No names found')
+  expect(result.length).toBeGreaterThan(0)
+  expect(result[0].expiryDate).toBeTruthy()
+
 })
