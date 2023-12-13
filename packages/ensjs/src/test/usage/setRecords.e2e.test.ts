@@ -11,7 +11,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../addTestContracts.js'
-import { commitAndRegisterName, wait } from './helper.js'
+import { commitAndRegisterName, syncSubgraphBlock } from './helper.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -23,6 +23,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   snapshot = await testClient.snapshot()
+  await syncSubgraphBlock()
 })
 
 afterEach(async () => {
@@ -81,6 +82,8 @@ it('should return a transaction to the resolver and update successfully', async 
   expect(receipt.status).toBe('success')
   await testClient.mine({ blocks: 1 })
 
+  const newAbi = [...dummyABI, { stateMutability: 'readonly' }] as const
+
   const utx = await setRecords(walletClient, {
     name,
     resolverAddress: (await getResolver(publicClient, {
@@ -95,7 +98,7 @@ it('should return a transaction to the resolver and update successfully', async 
     texts: [{ key: 'foo', value: 'bars' }],
     abi: await encodeAbi({
       encodeAs: 'json',
-      data: [...dummyABI, { stateMutability: 'readonly' }],
+      data: newAbi,
     }),
     contentHash:
       'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
@@ -115,21 +118,18 @@ it('should return a transaction to the resolver and update successfully', async 
     },
   })
   expect(records.contentHash).toMatchInlineSnapshot(`
-  {
-    "decoded": "k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150",
-    "protocolType": "ipns",
-  }
-`)
-  expect(records.abi!.abi).toStrictEqual([
-    ...dummyABI,
-    { stateMutability: 'readonly' },
-  ])
+      {
+        "decoded": "k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150",
+        "protocolType": "ipns",
+      }
+  `)
+  expect(records.abi!.abi).toStrictEqual(newAbi)
   expect(records.coins).toMatchInlineSnapshot(`
     [
       {
         "id": 61,
         "name": "etcLegacy",
-        "value": "${accounts[1]}",
+        "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
       },
     ]
   `)
@@ -197,7 +197,6 @@ it('should return a transaction to the resolver and remove successfully', async 
       contentHash: true,
     },
   })
-  console.log(records)
   expect(records.contentHash).toBeNull()
   // expect(records.abi!.abi).toMatchInlineSnapshot(`abi: { contentType: 1, decoded: true, abi: [ [Object] ] }`)
   expect(records.coins).toMatchInlineSnapshot(`[]`)
@@ -255,13 +254,12 @@ it('should return a transaction to the resolver and ignore undefined', async () 
       contentHash: true,
     },
   })
-  console.log(records)
   expect(records.coins).toMatchInlineSnapshot(`[]`)
   expect(records.texts).toMatchInlineSnapshot(`[]`)
   expect(records.contentHash).not.toBeNull()
   expect(records.abi).not.toBeNull()
 })
-it.skip('should return a transaction to the resolver and retrieve multiple keys successfully', async () => {
+it('should return a transaction to the resolver and retrieve multiple keys successfully', async () => {
   // generate random name
   const name = `test${Math.floor(Math.random() * 1000000)}.eth`
   const params: RegistrationParameters = {
@@ -299,16 +297,13 @@ it.skip('should return a transaction to the resolver and retrieve multiple keys 
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
-  await testClient.mine({ blocks: 1 })
-  // set a wait time here
-  await wait(30000)
+  await syncSubgraphBlock()
   const result = await getSubgraphRecords(publicClient, {
     name,
   })
   expect(result).toBeTruthy()
 
   const { createdAt, ...rest } = result!
-  console.log(rest)
   expect(rest).toMatchInlineSnapshot(`
     {
       "coins": [
@@ -344,14 +339,11 @@ it.skip('should return a transaction to the resolver and retrieve multiple keys 
   const ureceipt = await waitForTransaction(utx)
   expect(ureceipt.status).toBe('success')
 
-  // set a wait time here
-  await wait(5000)
+  await syncSubgraphBlock()
   const newResult = await getSubgraphRecords(publicClient, {
     name,
   })
   expect(result).toBeTruthy()
-
-  console.log(newResult)
 
   const records = await getRecords(publicClient, {
     name,
@@ -362,37 +354,46 @@ it.skip('should return a transaction to the resolver and retrieve multiple keys 
       abi: true,
     },
   })
-  console.log(records)
   expect(records.contentHash).toMatchInlineSnapshot(`
-  {
-    "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-    "protocolType": "ipfs",
-  }
-`)
-  expect(records.abi!.abi).toStrictEqual([
-    ...dummyABI,
-    { stateMutability: 'readonly' },
-  ])
+      {
+        "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
+        "protocolType": "ipfs",
+      }
+  `)
+  expect(records.abi!.abi).toStrictEqual(dummyABI)
   expect(records.coins).toMatchInlineSnapshot(`
     [
       {
-        id: 501,
-        name: 'sol',
-        value: 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH'
+        "id": 501,
+        "name": "sol",
+        "value": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
       },
       {
-        id: 60,
-        name: 'eth',
-        value: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+        "id": 60,
+        "name": "eth",
+        "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
       },
-      { id: 0, name: 'btc', value: '1PzAJcFtEiXo9UGtRU6iqXQKj8NXtcC7DE' }
+      {
+        "id": 0,
+        "name": "btc",
+        "value": "1PzAJcFtEiXo9UGtRU6iqXQKj8NXtcC7DE",
+      },
     ]
   `)
   expect(records.texts).toMatchInlineSnapshot(`
     [
-      { key: 'name', value: 'e2e' },
-      { key: 'location', value: 'metaverse' },
-      { key: 'description', value: 'e2e' }
+      {
+        "key": "name",
+        "value": "e2e",
+      },
+      {
+        "key": "location",
+        "value": "metaverse",
+      },
+      {
+        "key": "description",
+        "value": "e2e",
+      },
     ]
   `)
 })

@@ -159,6 +159,7 @@ export const main = async (_config, _options, justKill) => {
   opts.env = {
     ...process.env,
     DATA_FOLDER: config.paths.data,
+    GRAPH_CONFIG_FILE: config.paths.graphConfigFile,
     GRAPH_LOG_LEVEL: 'info',
     ANVIL_EXTRA_ARGS: '',
     BLOCK_TIMESTAMP: Math.floor(new Date().getTime() / 1000),

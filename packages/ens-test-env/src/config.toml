@@ -1,0 +1,19 @@
+[store]
+[store.primary]
+connection = "postgresql://graph-node:let-me-in@postgres:5432/graph-node"
+pool_size = 10
+
+[deployment]
+[[deployment.rule]]
+indexers = ["index_node_1"]
+
+[chains]
+ingestor = "index_0"
+[chains.mainnet]
+shard = "primary"
+provider = [
+  { label = "mainnet-rpc-0", url = "http://anvil:8545", features = [
+    "archive",
+    "traces",
+  ] },
+]
