@@ -1,19 +1,19 @@
 import { type Address, type Hex } from 'viem'
+import getOwner from '../../functions/public/getOwner.js'
+import getResolver from '../../functions/public/getResolver.js'
+import createSubname from '../../functions/wallet/createSubname.js'
+import setAddressRecord from '../../functions/wallet/setAddressRecord.js'
+import setRecords from '../../functions/wallet/setRecords.js'
+import transferName from '../../functions/wallet/transferName.js'
+import unwrapName from '../../functions/wallet/unwrapName.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import type { RegistrationParameters } from '../../utils/registerHelpers.js'
-import setAddressRecord from '../../functions/wallet/setAddressRecord.js'
-import getResolver from '../../functions/public/getResolver.js'
-import getOwner from '../../functions/public/getOwner.js'
-import unwrapName from '../../functions/wallet/unwrapName.js'
-import transferName from '../../functions/wallet/transferName.js'
-import createSubname from '../../functions/wallet/createSubname.js'
 import { encodeAbi } from '../../utils/index.js'
-import setRecords from '../../functions/wallet/setRecords.js'
+import type { RegistrationParameters } from '../../utils/registerHelpers.js'
 import { commitAndRegisterName } from './helper.js'
 
 let snapshot: Hex
@@ -58,7 +58,7 @@ const dummyABI = [
 it('Register - unwrapped 2LD', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -67,7 +67,7 @@ it('Register - unwrapped 2LD', async () => {
   await commitAndRegisterName(params, accounts[1])
 
   const unwrapNameTx = await unwrapName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[1],
     newRegistrantAddress: accounts[1],
     account: accounts[1],
@@ -77,17 +77,16 @@ it('Register - unwrapped 2LD', async () => {
   expect(unwrapNameTxReceipt.status).toBe('success')
 
   const nameOwner = await getOwner(publicClient, {
-    name: name,
+    name,
   })
   expect(nameOwner!.owner).toBe(accounts[1])
   expect(nameOwner!.registrant).toBe(accounts[1])
   expect(nameOwner!.ownershipLevel).toBe('registrar')
 
-
-  const resolver = await getResolver(publicClient, { name: name })
+  const resolver = await getResolver(publicClient, { name })
 
   const setAddressRecordTx = await setAddressRecord(walletClient, {
-    name: name,
+    name,
     coin: 'eth',
     value: accounts[2],
     resolverAddress: resolver as Address,
@@ -98,7 +97,7 @@ it('Register - unwrapped 2LD', async () => {
   expect(setAddressRecordTxReceipt.status).toBe('success')
 
   const transferMgrTx = await transferName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[2],
     contract: 'registrar',
     account: accounts[1],
@@ -108,7 +107,7 @@ it('Register - unwrapped 2LD', async () => {
   expect(transferMgrTxReceipt.status).toBe('success')
 
   const transferOwnerTx = await transferName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[2],
     contract: 'registry',
     account: accounts[1],
@@ -116,13 +115,12 @@ it('Register - unwrapped 2LD', async () => {
   expect(transferOwnerTx).toBeTruthy()
   const transferOwnerTxReceipt = await waitForTransaction(transferOwnerTx)
   expect(transferOwnerTxReceipt.status).toBe('success')
-  
 })
 
-it('Register - wrapped 2LD', async () => {``
+it('Register - wrapped 2LD', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -140,27 +138,27 @@ it('Register - wrapped 2LD', async () => {``
         {
           coin: 'sol',
           value: 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH',
-        }
+        },
       ],
       texts: [{ key: 'foo', value: 'bar' }],
       abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
-      contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150'
-    }
+      contentHash:
+        'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
+    },
   }
   await commitAndRegisterName(params, accounts[1])
 
   const nameOwner = await getOwner(publicClient, {
-    name: name,
+    name,
   })
   expect(nameOwner!.owner).toBe(accounts[1])
   // expect(nameOwner!.registrant).toBe(accounts[1])
   expect(nameOwner!.ownershipLevel).toBe('nameWrapper')
 
-
-  const resolver = await getResolver(publicClient, { name: name })
+  const resolver = await getResolver(publicClient, { name })
 
   const setAddressRecordTx = await setAddressRecord(walletClient, {
-    name: name,
+    name,
     coin: 'eth',
     value: accounts[2],
     resolverAddress: resolver as Address,
@@ -171,9 +169,9 @@ it('Register - wrapped 2LD', async () => {``
   expect(setAddressRecordTxReceipt.status).toBe('success')
 
   const tx = await setRecords(walletClient, {
-    name: name,
+    name,
     resolverAddress: (await getResolver(publicClient, {
-      name: name,
+      name,
     }))!,
     clearRecords: true,
     account: accounts[1],
@@ -183,7 +181,7 @@ it('Register - wrapped 2LD', async () => {``
   expect(receipt.status).toBe('success')
 
   const transferMgrTx = await transferName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[2],
     contract: 'nameWrapper',
     account: accounts[1],
@@ -193,11 +191,11 @@ it('Register - wrapped 2LD', async () => {``
   expect(transferMgrTxReceipt.status).toBe('success')
 })
 
-it('Register - unwrapped 2LD - unwrapped subname', async () => {``
+it('Register - unwrapped 2LD - unwrapped subname', async () => {
   const name = 'cool-swag-wrap.eth'
   const subname = 'subname.cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -215,25 +213,26 @@ it('Register - unwrapped 2LD - unwrapped subname', async () => {``
         {
           coin: 'sol',
           value: 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH',
-        }
+        },
       ],
       texts: [{ key: 'foo', value: 'bar' }],
       abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
-      contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150'
-    }
+      contentHash:
+        'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
+    },
   }
   await commitAndRegisterName(params, accounts[1])
 
   const nameOwner = await getOwner(publicClient, {
-    name: name,
+    name,
   })
   expect(nameOwner!.owner).toBe(accounts[1])
   // expect(nameOwner!.registrant).toBe(accounts[1])
   expect(nameOwner!.ownershipLevel).toBe('nameWrapper')
-  const resolver = await getResolver(publicClient, { name: name })
+  const resolver = await getResolver(publicClient, { name })
 
   const unwrapNameTx = await unwrapName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[1],
     newRegistrantAddress: accounts[1],
     account: accounts[1],
@@ -242,10 +241,10 @@ it('Register - unwrapped 2LD - unwrapped subname', async () => {``
   const unwrapNameTxReceipt = await waitForTransaction(unwrapNameTx)
   expect(unwrapNameTxReceipt.status).toBe('success')
 
-  //get resolver
-  const resolverAddress = await getResolver(publicClient, { name: name })
+  // get resolver
+  const resolverAddress = await getResolver(publicClient, { name })
 
-  //add subname
+  // add subname
   const createSubnameTx = await createSubname(walletClient, {
     name: subname,
     contract: 'registry',
@@ -273,18 +272,19 @@ it('Register - unwrapped 2LD - unwrapped subname', async () => {``
       {
         coin: 'sol',
         value: 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH',
-      }
+      },
     ],
     texts: [{ key: 'foo', value: 'bar' }],
     abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
-    contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
+    contentHash:
+      'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
     account: accounts[2],
   })
   const setRecordsTxReceipt = await waitForTransaction(setRecordsTx)
   expect(setRecordsTxReceipt.status).toBe('success')
 
   const setAddressRecordTx = await setAddressRecord(walletClient, {
-    name:subname,
+    name: subname,
     coin: 'eth',
     value: accounts[1],
     resolverAddress: resolver as Address,
@@ -312,14 +312,16 @@ it('Register - unwrapped 2LD - unwrapped subname', async () => {``
     asParent: true,
   })
   expect(transferMgrAsParentTx).toBeTruthy()
-  const transferMgrAsParentTxReceipt = await waitForTransaction(transferMgrAsParentTx)
+  const transferMgrAsParentTxReceipt = await waitForTransaction(
+    transferMgrAsParentTx,
+  )
   expect(transferMgrAsParentTxReceipt.status).toBe('success')
 })
 
 it('Register - wrapped 2LD - wrapped 3LD', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -327,7 +329,7 @@ it('Register - wrapped 2LD - wrapped 3LD', async () => {
   }
   await commitAndRegisterName(params, accounts[1])
 
- //create subname
+  // create subname
   const subname = 'subname.cool-swag-wrap.eth'
   const createSubnameTx = await createSubname(walletClient, {
     name: subname,
@@ -340,7 +342,7 @@ it('Register - wrapped 2LD - wrapped 3LD', async () => {
   const createSubnameTxReceipt = await waitForTransaction(createSubnameTx)
   expect(createSubnameTxReceipt.status).toBe('success')
 
-  const resolver = await getResolver(publicClient, { name: name })
+  const resolver = await getResolver(publicClient, { name })
 
   const setAddressRecordTx = await setAddressRecord(walletClient, {
     name: subname,
@@ -362,26 +364,23 @@ it('Register - wrapped 2LD - wrapped 3LD', async () => {
   expect(transferMgrTx).toBeTruthy()
   const transferMgrTxReceipt = await waitForTransaction(transferMgrTx)
   expect(transferMgrTxReceipt.status).toBe('success')
-  
 })
 
 it('Register - wrapped 2LD - wrapped 3LD - PCC Burned', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
     fuses: {
-      named: [
-        'CANNOT_UNWRAP',
-      ],
-    }
+      named: ['CANNOT_UNWRAP'],
+    },
   }
   await commitAndRegisterName(params, accounts[1])
 
- //create subname
+  // create subname
   const subname = 'subname.cool-swag-wrap.eth'
   const createSubnameTx = await createSubname(walletClient, {
     name: subname,
@@ -389,19 +388,15 @@ it('Register - wrapped 2LD - wrapped 3LD - PCC Burned', async () => {
     owner: accounts[2],
     account: accounts[1],
     fuses: {
-      parent: { 
-        named: [
-          'PARENT_CANNOT_CONTROL',
-        ],
+      parent: {
+        named: ['PARENT_CANNOT_CONTROL'],
       },
-    }
+    },
   })
 
   expect(createSubnameTx).toBeTruthy()
   const createSubnameTxReceipt = await waitForTransaction(createSubnameTx)
   expect(createSubnameTxReceipt.status).toBe('success')
-
-  const resolver = await getResolver(publicClient, { name: name })
 
   const transferMgrByParentTx = await transferName(walletClient, {
     name: subname,
@@ -410,7 +405,9 @@ it('Register - wrapped 2LD - wrapped 3LD - PCC Burned', async () => {
     account: accounts[1],
   })
   expect(transferMgrByParentTx).toBeTruthy()
-  const transferMgrByParentTxReceipt = await waitForTransaction(transferMgrByParentTx)
+  const transferMgrByParentTxReceipt = await waitForTransaction(
+    transferMgrByParentTx,
+  )
   expect(transferMgrByParentTxReceipt.status).toBe('reverted')
 
   const transferMgrTx = await transferName(walletClient, {
@@ -422,26 +419,23 @@ it('Register - wrapped 2LD - wrapped 3LD - PCC Burned', async () => {
   expect(transferMgrTx).toBeTruthy()
   const transferMgrTxReceipt = await waitForTransaction(transferMgrTx)
   expect(transferMgrTxReceipt.status).toBe('success')
-  
 })
 
 it('Register - wrapped 2LD - wrapped 3LD - wrapped 4LD - PCC Burned', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
     fuses: {
-      named: [
-        'CANNOT_UNWRAP',
-      ],
-    }
+      named: ['CANNOT_UNWRAP'],
+    },
   }
   await commitAndRegisterName(params, accounts[1])
 
- //create subname
+  // create subname
   const subname = 'subname.cool-swag-wrap.eth'
   const createSubnameTx = await createSubname(walletClient, {
     name: subname,
@@ -450,19 +444,19 @@ it('Register - wrapped 2LD - wrapped 3LD - wrapped 4LD - PCC Burned', async () =
     account: accounts[1],
     fuses: {
       parent: {
-        named: [ 'PARENT_CANNOT_CONTROL' ],
+        named: ['PARENT_CANNOT_CONTROL'],
       },
       child: {
-        named: [ 'CANNOT_UNWRAP' ],
+        named: ['CANNOT_UNWRAP'],
       },
-    }
+    },
   })
 
   expect(createSubnameTx).toBeTruthy()
   const createSubnameTxReceipt = await waitForTransaction(createSubnameTx)
   expect(createSubnameTxReceipt.status).toBe('success')
 
-  //create subname
+  // create subname
   const subname2 = 'subname.subname.cool-swag-wrap.eth'
   const createSubnameTx2 = await createSubname(walletClient, {
     name: subname2,
@@ -470,12 +464,10 @@ it('Register - wrapped 2LD - wrapped 3LD - wrapped 4LD - PCC Burned', async () =
     owner: accounts[3],
     account: accounts[2],
     fuses: {
-      parent: { 
-        named: [
-          'PARENT_CANNOT_CONTROL',
-        ],
+      parent: {
+        named: ['PARENT_CANNOT_CONTROL'],
       },
-    }
+    },
   })
 
   expect(createSubnameTx2).toBeTruthy()
@@ -489,7 +481,9 @@ it('Register - wrapped 2LD - wrapped 3LD - wrapped 4LD - PCC Burned', async () =
     account: accounts[1],
   })
   expect(transferMgrByParentTx).toBeTruthy()
-  const transferMgrByParentTxReceipt = await waitForTransaction(transferMgrByParentTx)
+  const transferMgrByParentTxReceipt = await waitForTransaction(
+    transferMgrByParentTx,
+  )
   expect(transferMgrByParentTxReceipt.status).toBe('reverted')
 
   const transferMgrTx = await transferName(walletClient, {

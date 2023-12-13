@@ -1,35 +1,37 @@
 import { labelhash, type Address, type Hex } from 'viem'
+import { baseRegistrarNameExpiresSnippet } from '../../contracts/baseRegistrar.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
+import {
+  registryOwnerSnippet,
+  registrySetApprovalForAllSnippet,
+} from '../../contracts/registry.js'
+import getAddressRecord from '../../functions/public/getAddressRecord.js'
+import getName from '../../functions/public/getName.js'
+import getOwner from '../../functions/public/getOwner.js'
+import getPrice from '../../functions/public/getPrice.js'
+import getResolver from '../../functions/public/getResolver.js'
+import getSubnames from '../../functions/subgraph/getSubnames.js'
+import commitName from '../../functions/wallet/commitName.js'
+import createSubname from '../../functions/wallet/createSubname.js'
+import registerName from '../../functions/wallet/registerName.js'
+import renewNames from '../../functions/wallet/renewNames.js'
+import setAddressRecord from '../../functions/wallet/setAddressRecord.js'
+import setPrimaryName from '../../functions/wallet/setPrimaryName.js'
+import setRecords from '../../functions/wallet/setRecords.js'
+import transferName from '../../functions/wallet/transferName.js'
+import unwrapName from '../../functions/wallet/unwrapName.js'
+import wrapName from '../../functions/wallet/wrapName.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
+import { encodeAbi } from '../../utils/index.js'
 import { namehash } from '../../utils/normalise.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
-import getPrice from '../../functions/public/getPrice.js'
-import commitName from '../../functions/wallet/commitName.js'
-import registerName from '../../functions/wallet/registerName.js'
-import { baseRegistrarNameExpiresSnippet } from '../../contracts/baseRegistrar.js'
-import renewNames from '../../functions/wallet/renewNames.js'
-import getName from '../../functions/public/getName.js'
-import setPrimaryName from '../../functions/wallet/setPrimaryName.js'
-import setAddressRecord from '../../functions/wallet/setAddressRecord.js'
-import getResolver from '../../functions/public/getResolver.js'
-import getAddressRecord from '../../functions/public/getAddressRecord.js'
-import getOwner from '../../functions/public/getOwner.js'
-import unwrapName from '../../functions/wallet/unwrapName.js'
-import transferName from '../../functions/wallet/transferName.js'
-import createSubname from '../../functions/wallet/createSubname.js'
-import { registryOwnerSnippet, registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
-import wrapName from '../../functions/wallet/wrapName.js'
-import setRecords from '../../functions/wallet/setRecords.js'
-import { encodeAbi } from '../../utils/index.js'
-import { commitAndRegisterName } from './helper.js'
-import getSubnames from '../../functions/subgraph/getSubnames.js'
-import * as exp from 'constants'
+import { commitAndRegisterName, wait } from './helper.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -120,7 +122,7 @@ it('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get Expir
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
-  
+
   await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
@@ -191,7 +193,6 @@ it('Register - Add Eth Address - Set Primary Name - Get Primary Name - Get Expir
   expect(renewTx).toBeTruthy()
   const renewTxReceipt = await waitForTransaction(renewTx)
   expect(renewTxReceipt.status).toBe('success')
-
 })
 
 it('Register - Get Expiry - Advance time - Renew Name', async () => {
@@ -202,14 +203,18 @@ it('Register - Get Expiry - Advance time - Renew Name', async () => {
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
   }
-  
+
   const tx = await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
 
-  const registerNameTxBlock = (await publicClient.getTransaction({ hash: tx as `0x${string}` })).blockHash
-  const blockTS = (await publicClient.getBlock({ blockHash: registerNameTxBlock })).timestamp
+  const registerNameTxBlock = (
+    await publicClient.getTransaction({ hash: tx as `0x${string}` })
+  ).blockHash
+  const blockTS = (
+    await publicClient.getBlock({ blockHash: registerNameTxBlock })
+  ).timestamp
 
   const expiry = await getExpiry(params.name)
   expect(expiry).toBe(BigInt(blockTS) + BigInt(params.duration))
@@ -277,13 +282,16 @@ it('Register - Get Expiry - Advance time - Renew Name', async () => {
   const renewTxReceipt = await waitForTransaction(renewTx)
   expect(renewTxReceipt.status).toBe('success')
 
-  const renewTxTxBlock = (await publicClient.getTransaction({ hash: renewTx })).blockHash
-  const renewTxTxBlockTS = (await publicClient.getBlock({ blockHash: renewTxTxBlock })).timestamp
+  const renewTxTxBlock = (await publicClient.getTransaction({ hash: renewTx }))
+    .blockHash
+  const renewTxTxBlockTS = (
+    await publicClient.getBlock({ blockHash: renewTxTxBlock })
+  ).timestamp
 
   const nextExpiry = await getExpiry(params.name)
   expect(nextExpiry).toBeGreaterThan(BigInt(renewTxTxBlockTS))
 
-  testClient.increaseTime({ seconds: params.duration * 3})
+  testClient.increaseTime({ seconds: params.duration * 3 })
   testClient.mine({ blocks: 1 })
 
   const params2: RegistrationParameters = {
@@ -342,22 +350,21 @@ it('Register - Get Expiry - Advance time - Renew Name', async () => {
 })
 
 it('Register - Set other as primary name', async () => {
-  const params: RegistrationParameters = {
+  const params = {
     name: 'other-eth-record-2.eth',
     duration: 31536000,
     owner: accounts[1],
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
-  }
+  } as const
 
-  type name = 'other-eth-record-2.eth'
   await commitAndRegisterName(params, accounts[1])
 
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
 
   const unwrapNameTx = await unwrapName(walletClient, {
-    name: params.name as name,
+    name: params.name,
     newOwnerAddress: accounts[1],
     newRegistrantAddress: accounts[1],
     account: accounts[1],
@@ -409,7 +416,6 @@ it('Register - Set other as primary name', async () => {
         "reverseResolverAddress": "${testClient.chain.contracts.ensPublicResolver.address}",
       }
     `)
-  
 })
 
 it.skip('Register - Set other manager as primary name', async () => {
@@ -428,7 +434,7 @@ it.skip('Register - Set other manager as primary name', async () => {
 
   const name = 'other-eth-record-2.eth'
   const unwrapNameTx = await unwrapName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[1],
     account: accounts[1],
     newRegistrantAddress: accounts[1],
@@ -440,7 +446,7 @@ it.skip('Register - Set other manager as primary name', async () => {
   const resolver = await getResolver(publicClient, { name: params.name })
 
   const transferNameTx = await transferName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[3],
     contract: 'registrar',
     account: accounts[1],
@@ -496,7 +502,6 @@ it.skip('Register - Set other manager as primary name', async () => {
         "reverseResolverAddress": "${testClient.chain.contracts.ensPublicResolver.address}",
       }
     `)
-  
 })
 
 it('Register - Set Subname', async () => {
@@ -582,7 +587,7 @@ it('Register - Set Subname', async () => {
 it('Register - unwrap 2LD - wrap Subname', async () => {
   const name = 'cool-swag-wrap.eth'
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -592,7 +597,7 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
   await commitAndRegisterName(params, accounts[1])
 
   const unwrapNameTx = await unwrapName(walletClient, {
-    name: name,
+    name,
     newOwnerAddress: accounts[1],
     newRegistrantAddress: accounts[1],
     account: accounts[1],
@@ -602,7 +607,7 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
   expect(unwrapNameTxReceipt.status).toBe('success')
 
   const nameOwner = await getOwner(publicClient, {
-    name: name,
+    name,
   })
   expect(nameOwner!.owner).toBe(accounts[1])
   expect(nameOwner!.registrant).toBe(accounts[1])
@@ -639,7 +644,7 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
   const utx = await setRecords(walletClient, {
     name: subName,
     resolverAddress: (await getResolver(publicClient, {
-      name: name,
+      name,
     }))!,
     coins: [
       {
@@ -648,14 +653,17 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
       },
     ],
     texts: [{ key: 'foo', value: 'bars' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: [...dummyABI,{stateMutability: 'readonly',}] }),
-    contentHash: 'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
+    abi: await encodeAbi({
+      encodeAs: 'json',
+      data: [...dummyABI, { stateMutability: 'readonly' }],
+    }),
+    contentHash:
+      'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
     account: accounts[2],
   })
   expect(utx).toBeTruthy()
   const ureceipt = await waitForTransaction(utx)
   expect(ureceipt.status).toBe('success')
-
 
   const wrapNameTx = await wrapName(walletClient, {
     name: subName,
@@ -676,11 +684,12 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
 it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname', async () => {
   const name = `test${Math.floor(Math.random() * 1000000)}.eth`
   const params: RegistrationParameters = {
-    name: name,
+    name,
     duration: 31536000,
     owner: accounts[1],
     secret,
     resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
+    fuses: { named: ['CANNOT_UNWRAP'] },
   }
 
   await commitAndRegisterName(params, accounts[1])
@@ -691,7 +700,11 @@ it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname',
     contract: 'nameWrapper',
     owner: accounts[2],
     account: accounts[1],
-    expiry: new Date(Date.now() + 1),
+    expiry: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+    fuses: {
+      parent: { named: ['PARENT_CANNOT_CONTROL'] },
+      child: { named: ['CANNOT_UNWRAP'] },
+    },
   })
   expect(createSubnameTx).toBeTruthy()
   const createSubnameTxReceipt = await waitForTransaction(createSubnameTx)
@@ -699,7 +712,7 @@ it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname',
   testClient.increaseTime({ seconds: 61 })
   testClient.mine({ blocks: 1 })
 
-  await new Promise((resolve) => setTimeout(resolve, 30000));
+  await wait(30_000)
   const result = await getSubnames(publicClient, {
     name: params.name,
     pageSize: 1000,
@@ -708,5 +721,4 @@ it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname',
   if (!result.length) throw new Error('No names found')
   expect(result.length).toBeGreaterThan(0)
   expect(result[0].expiryDate).toBeTruthy()
-
 })
