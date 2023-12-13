@@ -31,7 +31,7 @@ import {
 import { encodeAbi } from '../../utils/index.js'
 import { namehash } from '../../utils/normalise.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
-import { commitAndRegisterName, wait } from './helper.js'
+import { commitAndRegisterName, syncSubgraphBlock } from './helper.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -43,6 +43,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   snapshot = await testClient.snapshot()
+  await syncSubgraphBlock()
 })
 
 afterEach(async () => {
@@ -712,7 +713,8 @@ it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname',
   testClient.increaseTime({ seconds: 61 })
   testClient.mine({ blocks: 1 })
 
-  await wait(30_000)
+  await syncSubgraphBlock()
+
   const result = await getSubnames(publicClient, {
     name: params.name,
     pageSize: 1000,

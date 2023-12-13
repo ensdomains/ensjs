@@ -12,6 +12,8 @@ const config = {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^multiformats$': '<rootDir>/node_modules/multiformats/src/index.js',
     '^multiformats/(.*)$': '<rootDir>/node_modules/multiformats/src/$1',
+    '^@ensdomains/ens-test-env$':
+      '<rootDir>/node_modules/@ensdomains/ens-test-env/src/execute.cjs',
   },
 }
 

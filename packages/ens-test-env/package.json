@@ -5,7 +5,8 @@
   "files": [
     "src"
   ],
-  "types": "src/index.d.ts",
+  "types": "src/execute.d.ts",
+  "module": "src/execute.js",
   "scripts": {
     "prepublish": "cp ../../LICENSE ./",
     "ver": "pnpm version --no-workspaces-update"

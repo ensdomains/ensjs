@@ -31,6 +31,8 @@ services:
       GRAPH_ETHEREUM_CLEANUP_BLOCKS: 'true'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    volumes:
+      - $GRAPH_CONFIG_FILE:/opt/graph-node/config.toml
   ipfs:
     image: ipfs/kubo:v0.16.0
     ports:

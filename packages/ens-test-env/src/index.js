@@ -56,6 +56,7 @@ program
       data: path.resolve(cwd, './data'),
       archive: path.resolve(cwd, './archive'),
       composeFile: path.resolve(__dirname, './docker-compose.yml'),
+      graphConfigFile: path.resolve(__dirname, './config.toml'),
     }
     const configPaths = config.paths || {}
     for (const [key, value] of Object.entries(configPaths)) {

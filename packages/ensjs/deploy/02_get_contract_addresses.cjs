@@ -14,9 +14,14 @@ const func = async function (hre) {
     ]),
   )
 
+  const block = await hre.ethers.provider.getBlock()
+
   await writeFile(
     resolve(__dirname, '../.env.local'),
-    `DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'`,
+    `DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'
+DEPLOYMENT_FINISHED_AT_BLOCK=${block.number}
+DEPLOYMENT_FINISHED_AT_HASH=${block.hash}
+`,
   )
   console.log('Wrote contract addresses to .env.local')
 
