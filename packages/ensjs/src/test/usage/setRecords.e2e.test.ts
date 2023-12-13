@@ -249,7 +249,7 @@ it('should return a transaction to the resolver and ignore undefined', async () 
   expect(records.contentHash).not.toBeNull()
   expect(records.abi).not.toBeNull()
 })
-it.skip('should return a transaction to the resolver and retrieve multiple keys successfully', async () => {
+it('should return a transaction to the resolver and retrieve multiple keys successfully', async () => {
   //generate random name
   const name = `test${Math.floor(Math.random() * 1000000)}.eth`
   const params: RegistrationParameters = {
@@ -353,27 +353,38 @@ it.skip('should return a transaction to the resolver and retrieve multiple keys 
     "protocolType": "ipfs",
   }
 `)
-  expect(records.abi!.abi).toStrictEqual([...dummyABI,{stateMutability: 'readonly',}])
+  expect(records.abi!.abi).toStrictEqual(dummyABI)
   expect(records.coins).toMatchInlineSnapshot(`
     [
       {
-        id: 501,
-        name: 'sol',
-        value: 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH'
+        "id": 501,
+        "name": "sol",
+        "value": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH"
       },
       {
-        id: 60,
-        name: 'eth',
-        value: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+        "id": 60,
+        "name": "eth",
+        "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
-      { id: 0, name: 'btc', value: '1PzAJcFtEiXo9UGtRU6iqXQKj8NXtcC7DE' }
+      { "id": 0, 
+        "name": "btc", 
+        "value": "1PzAJcFtEiXo9UGtRU6iqXQKj8NXtcC7DE" }
     ]
   `)
   expect(records.texts).toMatchInlineSnapshot(`
     [
-      { key: 'name', value: 'e2e' },
-      { key: 'location', value: 'metaverse' },
-      { key: 'description', value: 'e2e' }
+      {
+        "key": "name",
+        "value": "e2e",
+        },
+        {
+        "key": "location",
+        "value": "metaverse",
+        },
+        {
+        "key": "description",
+        "value": "e2e",
+        },
     ]
   `)
 })

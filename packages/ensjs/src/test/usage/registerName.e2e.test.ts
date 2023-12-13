@@ -1,4 +1,4 @@
-import { labelhash, type Address, type Hex } from 'viem'
+import { labelhash, type Address, type Hex, hexToString, bytesToString, hexToBigInt } from 'viem'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
 import {
@@ -29,7 +29,11 @@ import setRecords from '../../functions/wallet/setRecords.js'
 import { encodeAbi } from '../../utils/index.js'
 import { commitAndRegisterName } from './helper.js'
 import getSubnames from '../../functions/subgraph/getSubnames.js'
+import {decodeLabelhash, decryptName, isEncodedLabelhash} from '../../utils/labels.js'
+import { hexToBytes } from 'viem'
+// import {namehash} from '../../utils/normalise.js'
 import * as exp from 'constants'
+import getDecodedName from '../../functions/subgraph/getDecodedName.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -673,7 +677,7 @@ it('Register - unwrap 2LD - wrap Subname', async () => {
   expect(owner!.ownershipLevel).toBe('nameWrapper')
 })
 
-it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname', async () => {
+it('Register - Renew Name - Add Subname - Expire Subname - Create Subname', async () => {
   const name = `test${Math.floor(Math.random() * 1000000)}.eth`
   const params: RegistrationParameters = {
     name: name,
@@ -709,4 +713,93 @@ it.only('Register - Renew Name - Add Subname - Expire Subname - Create Subname',
   expect(result.length).toBeGreaterThan(0)
   expect(result[0].expiryDate).toBeTruthy()
 
+})
+
+it('Register - Set Subname - Decode enrypted subname', async () => {
+  const params: RegistrationParameters = {
+    name: 'cool-swag-wrap.eth',
+    duration: 31536000,
+    owner: accounts[1],
+    secret,
+    resolverAddress: testClient.chain.contracts.ensPublicResolver.address,
+  }
+
+  await commitAndRegisterName(params, accounts[1])
+  const label = `unknown-label-${Date.now()}`
+  const subName = `${label}.${params.name}`
+  const _labelhash = labelhash(label)
+
+  const createSubnameTx = await createSubname(walletClient, {
+    name: subName,
+    contract: 'nameWrapper',
+    owner: accounts[2],
+    account: accounts[1],
+  })
+  expect(createSubnameTx).toBeTruthy()
+  const createSubnameTxReceipt = await waitForTransaction(createSubnameTx)
+  expect(createSubnameTxReceipt.status).toBe('success')
+
+  await new Promise((resolve) => setTimeout(resolve, 30000));
+  const esubname = `[${_labelhash.slice(2)}]`
+  const ename = `${esubname}.${params.name}`
+  const dsubname = await getDecodedName(publicClient, {
+    name: ename,
+  })
+
+  const owner = await publicClient.readContract({
+    abi: nameWrapperOwnerOfSnippet,
+    functionName: 'ownerOf',
+    address: getChainContractAddress({
+      client: publicClient,
+      contract: 'ensNameWrapper',
+    }),
+    args: [BigInt(namehash(dsubname!))],
+  })
+  expect(owner).toBe(accounts[2])
+
+  const resolver = await getResolver(publicClient, { name: subName })
+
+  console.log(resolver)
+
+  const setAddressRecordTx = await setAddressRecord(walletClient, {
+    name: subName,
+    coin: 'eth',
+    value: accounts[2],
+    resolverAddress: resolver as Address,
+    account: accounts[2],
+  })
+  expect(setAddressRecordTx).toBeTruthy()
+  const setAddressRecordTxReceipt = await waitForTransaction(setAddressRecordTx)
+  expect(setAddressRecordTxReceipt.status).toBe('success')
+
+  testClient.mine({ blocks: 1 })
+
+  const getAddressRecordResult = await getAddressRecord(publicClient, {
+    name: subName,
+  })
+
+  console.log(getAddressRecordResult)
+
+  const setPrimaryNameTx = await setPrimaryName(walletClient, {
+    name: subName,
+    account: accounts[2],
+  })
+  expect(setPrimaryNameTx).toBeTruthy()
+  const setPrimaryNameTxReceipt = await waitForTransaction(setPrimaryNameTx)
+  expect(setPrimaryNameTxReceipt.status).toBe('success')
+
+  await testClient.mine({ blocks: 1 })
+
+  const result = await getName(publicClient, {
+    address: accounts[2],
+  })
+
+  expect(result).toMatchInlineSnapshot(`
+      {
+        "match": true,
+        "name": "${subName}",
+        "resolverAddress": "${testClient.chain.contracts.ensPublicResolver.address}",
+        "reverseResolverAddress": "${testClient.chain.contracts.ensPublicResolver.address}",
+      }
+    `)
 })
