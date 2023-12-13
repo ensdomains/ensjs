@@ -1,8 +1,16 @@
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addEnsContracts } from '../../index.js'
 import {
   deploymentAddresses,
   publicClient,
 } from '../../test/addTestContracts.js'
 import getRecords from './getRecords.js'
+
+const mainnetPublicClient = createPublicClient({
+  chain: addEnsContracts(mainnet),
+  transport: http('https://web3.ens.domains/v1/mainnet'),
+})
 
 describe('getRecords()', () => {
   it('works', async () => {
@@ -67,5 +75,27 @@ describe('getRecords()', () => {
       "texts": [],
     }
   `)
+  })
+  it('works with oldest resolver - jessesum.eth', async () => {
+    const result = await getRecords(mainnetPublicClient, {
+      name: 'jessesum.eth',
+      records: {
+        texts: ['description', 'url'],
+        coins: ['60', 'etcLegacy', '0'],
+      },
+    })
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "coins": [
+          {
+            "id": 60,
+            "name": "eth",
+            "value": "0x8c4Eb6988A199DAbcae0Ce31052b3f3aC591787e",
+          },
+        ],
+        "resolverAddress": "0x1da022710dF5002339274AaDEe8D58218e9D6AB5",
+        "texts": [],
+      }
+    `)
   })
 })
