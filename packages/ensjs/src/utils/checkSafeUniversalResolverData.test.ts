@@ -72,6 +72,34 @@ describe('checkSafeUniversalResolverData', () => {
     `)
   })
 
+  it('throws error with args as a function', () => {
+    expect(() => {
+      checkSafeUniversalResolverData(
+        new RawContractError({
+          data: '0x7199966d', // ResolverNotFound()
+        }),
+        {
+          strict: true,
+          abi: universalResolverResolveSnippet,
+          args: () => ['ab', 'cd'],
+          functionName: 'resolve',
+          address: '0x1234567890abcdef',
+        },
+      )
+    }).toThrowErrorMatchingInlineSnapshot(`
+      "The contract function "resolve" reverted.
+
+      Error: ResolverNotFound()
+       
+      Contract Call:
+        address:   0x1234567890abcdef
+        function:  resolve(bytes name, bytes data)
+        args:             (ab, cd)
+
+      Version: viem@1.16.3"
+    `)
+  })
+
   it('throws error when the data is an unknown error and strict is false', () => {
     expect(() => {
       checkSafeUniversalResolverData(

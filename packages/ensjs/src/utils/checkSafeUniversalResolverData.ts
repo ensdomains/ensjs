@@ -10,7 +10,8 @@ import { getRevertErrorData } from './getRevertErrorData.js'
 type CheckSafeUniversalResolverDataParameters = Prettify<
   {
     strict: boolean | undefined
-  } & Parameters<typeof getContractError>[1]
+    args: any[] | (() => any[])
+  } & Omit<Parameters<typeof getContractError>[1], 'args'>
 >
 
 /**
@@ -48,7 +49,7 @@ export const checkSafeUniversalResolverData = (
     }
     throw getContractError(data, {
       abi,
-      args,
+      args: typeof args === 'function' ? args() : args,
       functionName,
       address,
       docsPath,

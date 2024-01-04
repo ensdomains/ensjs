@@ -1,10 +1,8 @@
 import {
   BaseError,
   decodeAbiParameters,
-  decodeErrorResult,
   decodeFunctionResult,
   encodeFunctionData,
-  getContractError,
   hexToBigInt,
   toHex,
   type Address,
@@ -19,9 +17,9 @@ import type {
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
 } from '../../types.js'
+import { checkSafeUniversalResolverData } from '../../utils/checkSafeUniversalResolverData.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
-import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 import _getAbi, { type InternalGetAbiReturnType } from './_getAbi.js'
 import _getAddr from './_getAddr.js'
@@ -206,50 +204,41 @@ const decode = async <TParams extends GetRecordsParameters>(
     resolverAddress = resolver.address
     recordData = result.map((r) => r.returnData)
   } else {
-    if (typeof data === 'object') {
-      const errorData = getRevertErrorData(data)
-      if (errorData) {
-        const decodedError = decodeErrorResult({
-          abi: universalResolverResolveArraySnippet,
-          data: errorData,
-        })
-        if (
-          decodedError.errorName === 'ResolverNotFound' ||
-          decodedError.errorName === 'ResolverWildcardNotSupported'
-        )
-          return passthrough.reduce(
-            (prev, curr) => {
-              if (!curr) return prev
-              if (curr.type === 'coin' && !('coin' in prev)) {
-                return { ...prev, coins: [] }
-              }
-              if (curr.type === 'text' && !('texts' in prev)) {
-                return { ...prev, texts: [] }
-              }
-              if (curr.type === 'contentHash' && !('contentHash' in prev)) {
-                return { ...prev, contentHash: null }
-              }
-              // abi
-              return { ...prev, abi: null }
-            },
-            {
-              resolverAddress: EMPTY_ADDRESS,
-            } as unknown as GetRecordsReturnType<TParams>,
-          )
-      }
-      throw getContractError(data, {
-        abi: universalResolverResolveArraySnippet,
-        functionName: 'resolve',
-        args: [
-          toHex(packetToBytes(name)),
-          calls.filter((c) => c).map((c) => c!.call.data),
-        ],
-        address: getChainContractAddress({
-          client,
-          contract: 'ensUniversalResolver',
-        }),
-      }) as BaseError
-    }
+    const isSafe = checkSafeUniversalResolverData(data, {
+      strict: false,
+      abi: universalResolverResolveArraySnippet,
+      args: () => [
+        toHex(packetToBytes(name)),
+        calls.filter((c) => c).map((c) => c!.call.data),
+      ],
+      functionName: 'resolve',
+      address: getChainContractAddress({
+        client,
+        contract: 'ensUniversalResolver',
+      }),
+    })
+
+    if (!isSafe)
+      return passthrough.reduce(
+        (prev, curr) => {
+          if (!curr) return prev
+          if (curr.type === 'coin' && !('coin' in prev)) {
+            return { ...prev, coins: [] }
+          }
+          if (curr.type === 'text' && !('texts' in prev)) {
+            return { ...prev, texts: [] }
+          }
+          if (curr.type === 'contentHash' && !('contentHash' in prev)) {
+            return { ...prev, contentHash: null }
+          }
+          // abi
+          return { ...prev, abi: null }
+        },
+        {
+          resolverAddress: EMPTY_ADDRESS,
+        } as unknown as GetRecordsReturnType<TParams>,
+      )
+
     const result = decodeFunctionResult({
       abi: universalResolverResolveArraySnippet,
       functionName: 'resolve',
