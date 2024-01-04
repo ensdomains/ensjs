@@ -1,4 +1,4 @@
-import type { Hex } from 'viem'
+import type { BaseError, Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import type {
   GenericPassthrough,
@@ -21,7 +21,7 @@ export type GetAddressRecordReturnType = Prettify<InternalGetAddrReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, coin }: GetAddressRecordParameters,
+  { name, coin }: Omit<GetAddressRecordParameters, 'strict' | 'bypassFormat'>,
 ): SimpleTransactionRequest => {
   const prData = _getAddr.encode(client, { name, coin })
   return universalWrapper.encode(client, { name, data: prData.data })
@@ -29,12 +29,15 @@ const encode = (
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   passthrough: GenericPassthrough,
-  args: GetAddressRecordParameters,
+  { coin, strict }: Pick<GetAddressRecordParameters, 'coin' | 'strict'>,
 ): Promise<GetAddressRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough)
-  return _getAddr.decode(client, urData.data, args)
+  const urData = await universalWrapper.decode(client, data, passthrough, {
+    strict,
+  })
+  if (!urData) return null
+  return _getAddr.decode(client, urData.data, { coin, strict })
 }
 
 type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
@@ -60,7 +63,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  */
 const getAddressRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name, coin, bypassFormat }: GetAddressRecordParameters,
+  { name, coin, bypassFormat, strict }: GetAddressRecordParameters,
 ) => Promise<GetAddressRecordReturnType>) &
   BatchableFunctionObject
 

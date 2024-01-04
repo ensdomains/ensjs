@@ -23,7 +23,7 @@ export type GetContentHashRecordReturnType =
 
 const encode = (
   client: ClientWithEns,
-  { name }: GetContentHashRecordParameters,
+  { name }: Omit<GetContentHashRecordParameters, 'strict'>,
 ): TransactionRequestWithPassthrough => {
   const prData = _getContentHash.encode(client, { name })
   return universalWrapper.encode(client, { name, data: prData.data })
@@ -33,9 +33,13 @@ const decode = async (
   client: ClientWithEns,
   data: Hex | BaseError,
   passthrough: GenericPassthrough,
+  { strict }: Pick<GetContentHashRecordParameters, 'strict'>,
 ): Promise<GetContentHashRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough)
-  return _getContentHash.decode(client, urData.data)
+  const urData = await universalWrapper.decode(client, data, passthrough, {
+    strict,
+  })
+  if (!urData) return null
+  return _getContentHash.decode(client, urData.data, { strict })
 }
 
 type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
@@ -61,7 +65,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  */
 const getContentHashRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name }: GetContentHashRecordParameters,
+  { name, strict }: GetContentHashRecordParameters,
 ) => Promise<GetContentHashRecordReturnType>) &
   BatchableFunctionObject
 

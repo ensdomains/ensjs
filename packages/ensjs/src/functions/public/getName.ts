@@ -1,9 +1,7 @@
 import {
   BaseError,
-  decodeErrorResult,
   decodeFunctionResult,
   encodeFunctionData,
-  getContractError,
   toHex,
   type Address,
   type Hex,
@@ -15,16 +13,20 @@ import type {
   GenericPassthrough,
   TransactionRequestWithPassthrough,
 } from '../../types.js'
+import { checkSafeUniversalResolverData } from '../../utils/checkSafeUniversalResolverData.js'
 import {
   generateFunction,
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
-import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 
 export type GetNameParameters = {
   /** Address to get name for */
   address: Address
+  /** Whether or not to allow mismatched forward resolution */
+  allowMismatch?: boolean
+  /** Whether or not to throw decoding errors */
+  strict?: boolean
 }
 
 export type GetNameReturnType = {
@@ -40,7 +42,7 @@ export type GetNameReturnType = {
 
 const encode = (
   client: ClientWithEns,
-  { address }: GetNameParameters,
+  { address }: Pick<GetNameParameters, 'address'>,
 ): TransactionRequestWithPassthrough => {
   const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
   const to = getChainContractAddress({
@@ -63,39 +65,35 @@ const decode = async (
   _client: ClientWithEns,
   data: Hex | BaseError,
   passthrough: GenericPassthrough,
-  { address }: GetNameParameters,
+  { address, allowMismatch, strict }: GetNameParameters,
 ): Promise<GetNameReturnType | null> => {
-  if (typeof data === 'object') {
-    const errorData = getRevertErrorData(data)
-    if (errorData) {
-      const decodedError = decodeErrorResult({
-        abi: universalResolverReverseSnippet,
-        data: errorData,
-      })
-      if (
-        decodedError.errorName === 'ResolverNotFound' ||
-        decodedError.errorName === 'ResolverWildcardNotSupported'
-      )
-        return null
-    }
-    throw getContractError(data, {
+  const isSafe = checkSafeUniversalResolverData(data, {
+    strict,
+    abi: universalResolverReverseSnippet,
+    args: passthrough.args,
+    functionName: 'reverse',
+    address: passthrough.address,
+  })
+  if (!isSafe) return null
+
+  try {
+    const result = decodeFunctionResult({
       abi: universalResolverReverseSnippet,
       functionName: 'reverse',
-      args: passthrough.args,
-      address: passthrough.address,
-    }) as BaseError
-  }
-  const result = decodeFunctionResult({
-    abi: universalResolverReverseSnippet,
-    functionName: 'reverse',
-    data,
-  })
-  if (!result[0]) return null
-  return {
-    name: result[0],
-    match: result[1].toLowerCase() === address.toLowerCase(),
-    reverseResolverAddress: result[2],
-    resolverAddress: result[3],
+      data,
+    })
+    if (!result[0]) return null
+    const match = result[1].toLowerCase() === address.toLowerCase()
+    if (!match && !allowMismatch) return null
+    return {
+      name: result[0],
+      match: result[1].toLowerCase() === address.toLowerCase(),
+      reverseResolverAddress: result[2],
+      resolverAddress: result[3],
+    }
+  } catch (error) {
+    if (strict) throw error
+    return null
   }
 }
 
@@ -122,7 +120,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  */
 const getName = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { address }: GetNameParameters,
+  { address, allowMismatch, strict }: GetNameParameters,
 ) => Promise<GetNameReturnType>) &
   BatchableFunctionObject
 

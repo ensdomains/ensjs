@@ -273,31 +273,41 @@ const decode = async <TParams extends GetRecordsParameters>(
       const { key, type } = filteredCalls[i]
       const baseItem = { key, type }
       if (type === 'contentHash') {
-        const decodedFromAbi = decodeAbiParameters(
-          [{ type: 'bytes' }] as const,
-          item,
-        )[0]
-        if (decodedFromAbi === '0x' || hexToBigInt(decodedFromAbi) === 0n) {
-          return { ...baseItem, value: null }
+        try {
+          const decodedFromAbi = decodeAbiParameters(
+            [{ type: 'bytes' }] as const,
+            item,
+          )[0]
+          if (decodedFromAbi === '0x' || hexToBigInt(decodedFromAbi) === 0n) {
+            return { ...baseItem, value: null }
+          }
+        } catch {
+          // ignore
         }
       }
       if (type === 'text') {
-        const decodedFromAbi = await _getText.decode(client, item)
+        const decodedFromAbi = await _getText.decode(client, item, {
+          strict: false,
+        })
         return { ...baseItem, value: decodedFromAbi }
       }
       if (type === 'coin') {
         const decodedFromAbi = await _getAddr.decode(client, item, {
-          name,
           coin: key,
+          strict: false,
         })
         return { ...baseItem, value: decodedFromAbi }
       }
       if (type === 'contentHash') {
-        const decodedFromAbi = await _getContentHash.decode(client, item)
+        const decodedFromAbi = await _getContentHash.decode(client, item, {
+          strict: false,
+        })
         return { ...baseItem, value: decodedFromAbi }
       }
       // abi
-      const decodedFromAbi = await _getAbi.decode(client, item)
+      const decodedFromAbi = await _getAbi.decode(client, item, {
+        strict: false,
+      })
       return { ...baseItem, value: decodedFromAbi }
     }),
   )
