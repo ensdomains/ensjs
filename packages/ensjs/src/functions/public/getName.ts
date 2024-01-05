@@ -27,6 +27,8 @@ export type GetNameParameters = {
   allowMismatch?: boolean
   /** Whether or not to throw decoding errors */
   strict?: boolean
+  /** Batch gateway URLs to use for resolving CCIP-read requests. */
+  gatewayUrls?: string[]
 }
 
 export type GetNameReturnType = {
@@ -42,7 +44,7 @@ export type GetNameReturnType = {
 
 const encode = (
   client: ClientWithEns,
-  { address }: Pick<GetNameParameters, 'address'>,
+  { address, gatewayUrls }: Omit<GetNameParameters, 'allowMismatch' | 'strict'>,
 ): TransactionRequestWithPassthrough => {
   const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
   const to = getChainContractAddress({
@@ -50,14 +52,32 @@ const encode = (
     contract: 'ensUniversalResolver',
   })
   const args = [toHex(packetToBytes(reverseNode))] as const
+
   return {
     to,
-    data: encodeFunctionData({
-      abi: universalResolverReverseSnippet,
-      functionName: 'reverse',
-      args,
-    }),
-    passthrough: { address, args },
+    ...(gatewayUrls?.length
+      ? {
+          data: encodeFunctionData({
+            abi: universalResolverReverseSnippet,
+            functionName: 'reverse',
+            args: [...args, gatewayUrls] as const,
+          }),
+          passthrough: {
+            args: [...args, gatewayUrls],
+            address: to,
+          },
+        }
+      : {
+          data: encodeFunctionData({
+            abi: universalResolverReverseSnippet,
+            functionName: 'reverse',
+            args,
+          }),
+          passthrough: {
+            args,
+            address: to,
+          },
+        }),
   }
 }
 

@@ -15,16 +15,25 @@ import _getAbi, {
 } from './_getAbi.js'
 import universalWrapper from './universalWrapper.js'
 
-export type GetAbiRecordParameters = Prettify<InternalGetAbiParameters>
+export type GetAbiRecordParameters = Prettify<
+  InternalGetAbiParameters & {
+    /** Batch gateway URLs to use for resolving CCIP-read requests. */
+    gatewayUrls?: string[]
+  }
+>
 
 export type GetAbiRecordReturnType = Prettify<InternalGetAbiReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name }: Omit<GetAbiRecordParameters, 'strict'>,
+  { name, gatewayUrls }: Omit<GetAbiRecordParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   const prData = _getAbi.encode(client, { name })
-  return universalWrapper.encode(client, { name, data: prData.data })
+  return universalWrapper.encode(client, {
+    name,
+    data: prData.data,
+    gatewayUrls,
+  })
 }
 
 const decode = async (

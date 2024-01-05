@@ -15,16 +15,29 @@ import _getAddr, {
 } from './_getAddr.js'
 import universalWrapper from './universalWrapper.js'
 
-export type GetAddressRecordParameters = Prettify<InternalGetAddrParameters>
+export type GetAddressRecordParameters = Prettify<
+  InternalGetAddrParameters & {
+    /** Batch gateway URLs to use for resolving CCIP-read requests. */
+    gatewayUrls?: string[]
+  }
+>
 
 export type GetAddressRecordReturnType = Prettify<InternalGetAddrReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, coin }: Omit<GetAddressRecordParameters, 'strict' | 'bypassFormat'>,
+  {
+    name,
+    coin,
+    gatewayUrls,
+  }: Omit<GetAddressRecordParameters, 'strict' | 'bypassFormat'>,
 ): SimpleTransactionRequest => {
   const prData = _getAddr.encode(client, { name, coin })
-  return universalWrapper.encode(client, { name, data: prData.data })
+  return universalWrapper.encode(client, {
+    name,
+    data: prData.data,
+    gatewayUrls,
+  })
 }
 
 const decode = async (

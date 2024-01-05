@@ -24,6 +24,7 @@ export type UniversalWrapperParameters = {
   name: string
   data: Hex
   strict?: boolean
+  gatewayUrls?: string[]
 }
 
 export type UniversalWrapperReturnType = {
@@ -33,7 +34,7 @@ export type UniversalWrapperReturnType = {
 
 const encode = (
   client: ClientWithEns,
-  { name, data }: Omit<UniversalWrapperParameters, 'strict'>,
+  { name, data, gatewayUrls }: Omit<UniversalWrapperParameters, 'strict'>,
 ): TransactionRequestWithPassthrough => {
   const nameWithSizedLabels = name
     .split('.')
@@ -50,17 +51,32 @@ const encode = (
     contract: 'ensUniversalResolver',
   })
   const args = [toHex(packetToBytes(nameWithSizedLabels)), data] as const
+
   return {
-    to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
-    data: encodeFunctionData({
-      abi: universalResolverResolveSnippet,
-      functionName: 'resolve',
-      args,
-    }),
-    passthrough: {
-      args,
-      address: to,
-    },
+    to,
+    ...(gatewayUrls?.length
+      ? {
+          data: encodeFunctionData({
+            abi: universalResolverResolveSnippet,
+            functionName: 'resolve',
+            args: [...args, gatewayUrls] as const,
+          }),
+          passthrough: {
+            args: [...args, gatewayUrls],
+            address: to,
+          },
+        }
+      : {
+          data: encodeFunctionData({
+            abi: universalResolverResolveSnippet,
+            functionName: 'resolve',
+            args,
+          }),
+          passthrough: {
+            args,
+            address: to,
+          },
+        }),
   }
 }
 

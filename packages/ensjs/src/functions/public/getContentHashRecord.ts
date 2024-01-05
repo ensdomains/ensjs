@@ -15,18 +15,26 @@ import _getContentHash, {
 } from './_getContentHash.js'
 import universalWrapper from './universalWrapper.js'
 
-export type GetContentHashRecordParameters =
-  Prettify<InternalGetContentHashParameters>
+export type GetContentHashRecordParameters = Prettify<
+  InternalGetContentHashParameters & {
+    /** Batch gateway URLs to use for resolving CCIP-read requests. */
+    gatewayUrls?: string[]
+  }
+>
 
 export type GetContentHashRecordReturnType =
   Prettify<InternalGetContentHashReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name }: Omit<GetContentHashRecordParameters, 'strict'>,
+  { name, gatewayUrls }: Omit<GetContentHashRecordParameters, 'strict'>,
 ): TransactionRequestWithPassthrough => {
   const prData = _getContentHash.encode(client, { name })
-  return universalWrapper.encode(client, { name, data: prData.data })
+  return universalWrapper.encode(client, {
+    name,
+    data: prData.data,
+    gatewayUrls,
+  })
 }
 
 const decode = async (

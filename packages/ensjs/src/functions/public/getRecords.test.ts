@@ -16,10 +16,8 @@ describe('getRecords()', () => {
   it('works', async () => {
     const result = await getRecords(publicClient, {
       name: 'with-profile.eth',
-      records: {
-        texts: ['description', 'url'],
-        coins: ['60', 'etcLegacy', '0'],
-      },
+      texts: ['description', 'url'],
+      coins: ['60', 'etcLegacy', '0'],
     })
     expect(result).toMatchInlineSnapshot(`
       {
@@ -57,10 +55,8 @@ describe('getRecords()', () => {
   it('works with oldest resolver', async () => {
     const result = await getRecords(publicClient, {
       name: 'with-oldest-resolver.eth',
-      records: {
-        texts: ['description', 'url'],
-        coins: ['60', 'etcLegacy', '0'],
-      },
+      texts: ['description', 'url'],
+      coins: ['60', 'etcLegacy', '0'],
     })
     expect(result).toMatchInlineSnapshot(`
     {
@@ -79,10 +75,8 @@ describe('getRecords()', () => {
   it('works with oldest resolver - jessesum.eth', async () => {
     const result = await getRecords(mainnetPublicClient, {
       name: 'jessesum.eth',
-      records: {
-        texts: ['description', 'url'],
-        coins: ['60', 'etcLegacy', '0'],
-      },
+      texts: ['description', 'url'],
+      coins: ['60', 'etcLegacy', '0'],
     })
     expect(result).toMatchInlineSnapshot(`
       {
@@ -106,8 +100,12 @@ describe('getRecords()', () => {
         new RawContractError({
           data: '0x7199966d', // ResolverNotFound()
         }),
-        [{ type: 'coin', key: 60, call: { to: '0x1234', data: '0x5678' } }],
-        { name: 'test.eth' },
+        {
+          calls: [
+            { type: 'coin', key: 60, call: { to: '0x1234', data: '0x5678' } },
+          ],
+        },
+        { name: 'test.eth', coins: [60] },
       ),
     ).resolves.toMatchInlineSnapshot(`
       {
@@ -124,8 +122,14 @@ describe('getRecords()', () => {
         new RawContractError({
           data: '0x4ced43fb', // SwagError()
         }),
-        [{ type: 'coin', key: 60, call: { to: '0x1234', data: '0x5678' } }],
-        { name: 'test.eth' },
+        {
+          calls: [
+            { type: 'coin', key: 60, call: { to: '0x1234', data: '0x5678' } },
+          ],
+          address: '0x1234',
+          args: ['0x04746573740365746800', ['0x5678']],
+        },
+        { name: 'test.eth', coins: [60] },
       ),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       "The contract function "resolve" reverted with the following signature:
@@ -136,7 +140,7 @@ describe('getRecords()', () => {
       You can look up the decoded signature here: https://openchain.xyz/signatures?query=0x4ced43fb.
        
       Contract Call:
-        address:   ${deploymentAddresses.UniversalResolver}
+        address:   0x1234
         function:  resolve(bytes name, bytes[] data)
         args:             (0x04746573740365746800, ["0x5678"])
 
