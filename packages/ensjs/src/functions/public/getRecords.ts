@@ -197,9 +197,10 @@ const encode = (
 
   if (resolver?.address && !resolver.fallbackOnly) {
     const encoded = multicallWrapper.encode(client, {
-      transactions: calls
-        .filter((c) => c)
-        .map((c) => ({ to: resolver.address, data: c!.call.data })),
+      transactions: calls.map((c) => ({
+        to: resolver.address,
+        data: c.call.data,
+      })),
     })
     return {
       ...encoded,
@@ -213,7 +214,7 @@ const encode = (
   })
   const args = [
     toHex(packetToBytes(name)),
-    calls.filter((c) => c).map((c) => c!.call.data),
+    calls.map((c) => c.call.data),
   ] as const
 
   return {
