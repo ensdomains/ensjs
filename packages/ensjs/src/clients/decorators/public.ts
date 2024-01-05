@@ -100,6 +100,8 @@ export type EnsPublicActions = {
    */
   getAbiRecord: ({
     name,
+    gatewayUrls,
+    strict,
   }: GetAbiRecordParameters) => Promise<GetAbiRecordReturnType>
   /**
    * Gets an address record for a name and specified coin
@@ -122,6 +124,8 @@ export type EnsPublicActions = {
     name,
     coin,
     bypassFormat,
+    gatewayUrls,
+    strict,
   }: GetAddressRecordParameters) => Promise<GetAddressRecordReturnType>
   /**
    * Gets the availability of a name to register
@@ -162,6 +166,8 @@ export type EnsPublicActions = {
    */
   getContentHashRecord: ({
     name,
+    gatewayUrls,
+    strict,
   }: GetContentHashRecordParameters) => Promise<GetContentHashRecordReturnType>
   /**
    * Gets the expiry for a name
@@ -201,7 +207,12 @@ export type EnsPublicActions = {
    * const result = await client.getName({ address: '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5' })
    * // { name: 'nick.eth', match: true, reverseResolverAddress: '0xa2c122be93b0074270ebee7f6b7292c7deb45047', resolverAddress: '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41' }
    */
-  getName: ({ address }: GetNameParameters) => Promise<GetNameReturnType>
+  getName: ({
+    address,
+    allowMismatch,
+    gatewayUrls,
+    strict,
+  }: GetNameParameters) => Promise<GetNameReturnType>
   /**
    * Gets the owner(s) of a name.
    * @param parameters - {@link GetOwnerParameters}
@@ -268,11 +279,25 @@ export type EnsPublicActions = {
    * })
    * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
    */
-  getRecords: ({
+  getRecords: <
+    const TTexts extends readonly string[] = readonly string[],
+    const TCoins extends readonly (string | number)[] = readonly (
+      | string
+      | number
+    )[],
+    const TContentHash extends boolean = true,
+    const TAbi extends boolean = true,
+  >({
     name,
-    records,
+    texts,
+    coins,
+    contentHash,
+    abi,
     resolver,
-  }: GetRecordsParameters) => Promise<GetRecordsReturnType>
+    gatewayUrls,
+  }: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>) => Promise<
+    GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
+  >
   /**
    * Gets the resolver address for a name.
    * @param parameters - {@link GetResolverParameters}
@@ -313,6 +338,8 @@ export type EnsPublicActions = {
   getTextRecord: ({
     name,
     key,
+    gatewayUrls,
+    strict,
   }: GetTextRecordParameters) => Promise<GetTextRecordReturnType>
   /**
    * Gets the wrapper data for a name.
