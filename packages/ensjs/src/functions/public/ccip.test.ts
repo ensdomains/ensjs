@@ -23,11 +23,9 @@ describe('CCIP', () => {
     it('should return records from a ccip-read name', async () => {
       const result = await getRecords(goerliPublicClient, {
         name: '1.offchainexample.eth',
-        records: {
-          texts: ['email', 'description'],
-          contentHash: true,
-          coins: ['ltc', '60'],
-        },
+        texts: ['email', 'description'],
+        contentHash: true,
+        coins: ['ltc', '60'],
       })
       expect(result).toMatchInlineSnapshot(`
         {
@@ -64,13 +62,10 @@ describe('CCIP', () => {
     it('should return records from a ccip-read name with incompliant resolver', async () => {
       const result = await getRecords(mainnetPublicClient, {
         name: 'alisha.beam.eco',
-        records: {
-          texts: ['email', 'description'],
-          contentHash: true,
-          coins: ['ltc', '60'],
-        },
+        texts: ['email', 'description'],
+        contentHash: true,
+        coins: ['ltc', '60'],
       })
-      if (!result) throw new Error('No result')
       expect(result).toMatchInlineSnapshot(`
         {
           "coins": [
