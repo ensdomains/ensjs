@@ -59,7 +59,7 @@ export const addresses = {
       address: '0x21745FF62108968fBf5aB1E07961CC0FCBeB2364',
     },
     ensUniversalResolver: {
-      address: '0x20814C8e689187DfF7C93A9239ea22385d13b9F1',
+      address: '0x8cab227b1162f03b8338331adaad7aadc83b895e',
     },
   },
   goerli: {
@@ -91,7 +91,7 @@ export const addresses = {
       address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
     },
     ensUniversalResolver: {
-      address: '0xaac727b9451268d7779F699dbaF6c2eAE571C369',
+      address: '0xfc4AC75C46C914aF5892d6d3eFFcebD7917293F1',
     },
   },
   sepolia: {
@@ -123,7 +123,7 @@ export const addresses = {
       address: '0x7b3ada1c8f012bae747cf99d6cbbf70d040b84cf',
     },
     ensUniversalResolver: {
-      address: '0x64da0719987c29e0CEC0113D605996c6a4D4aB0c',
+      address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',
     },
   },
 } as const satisfies Record<
