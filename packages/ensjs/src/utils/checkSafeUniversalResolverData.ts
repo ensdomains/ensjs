@@ -1,4 +1,5 @@
 import {
+  CallExecutionError,
   decodeErrorResult,
   getContractError,
   type BaseError,
@@ -47,6 +48,7 @@ export const checkSafeUniversalResolverData = (
         } catch (error) {}
       }
     }
+    if (data instanceof CallExecutionError) throw data
     throw getContractError(data, {
       abi,
       args: typeof args === 'function' ? args() : args,
