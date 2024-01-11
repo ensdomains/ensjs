@@ -1,28 +1,30 @@
-export const dnssecImplRrDataSnippet = [
+export const dnssecImplVerifyRrSetSnippet = [
   {
     inputs: [
       {
-        name: 'dnstype',
-        type: 'uint16',
-      },
-      {
-        name: 'name',
-        type: 'bytes',
+        components: [
+          {
+            name: 'rrset',
+            type: 'bytes',
+          },
+          {
+            name: 'sig',
+            type: 'bytes',
+          },
+        ],
+        name: 'input',
+        type: 'tuple[]',
       },
     ],
-    name: 'rrdata',
+    name: 'verifyRRSet',
     outputs: [
       {
-        name: '',
-        type: 'uint32',
+        name: 'rrs',
+        type: 'bytes',
       },
       {
-        name: '',
+        name: 'inception',
         type: 'uint32',
-      },
-      {
-        name: '',
-        type: 'bytes20',
       },
     ],
     stateMutability: 'view',

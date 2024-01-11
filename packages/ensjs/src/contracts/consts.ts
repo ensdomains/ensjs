@@ -102,7 +102,7 @@ export const addresses = {
       address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
     },
     ensDnsRegistrar: {
-      address: '0x537625B0D7901FD20C57850d61580Bf1624Ef146',
+      address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
     },
     ensEthRegistrarController: {
       address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
@@ -120,7 +120,7 @@ export const addresses = {
       address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
     },
     ensDnssecImpl: {
-      address: '0x7b3ada1c8f012bae747cf99d6cbbf70d040b84cf',
+      address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
     },
     ensUniversalResolver: {
       address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',

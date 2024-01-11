@@ -63,7 +63,7 @@ export const localhost = {
       address: deploymentAddresses.BaseRegistrarImplementation,
     },
     ensDnsRegistrar: {
-      address: deploymentAddresses.LegacyDNSRegistrar,
+      address: deploymentAddresses.DNSRegistrar,
     },
     ensEthRegistrarController: {
       address: deploymentAddresses.ETHRegistrarController,
@@ -81,7 +81,7 @@ export const localhost = {
       address: deploymentAddresses.StaticBulkRenewal,
     },
     ensDnssecImpl: {
-      address: deploymentAddresses.LegacyDNSSECImpl,
+      address: deploymentAddresses.DNSSECImpl,
     },
   },
   subgraphs: {
