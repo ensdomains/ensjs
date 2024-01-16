@@ -98,9 +98,9 @@ importers:
   packages/ensjs:
     specifiers:
       '@adraffy/ens-normalize': 1.9.0
-      '@ensdomains/address-encoder': 1.0.0-rc.2
+      '@ensdomains/address-encoder': 1.0.0-rc.3
       '@ensdomains/buffer': ^0.0.13
-      '@ensdomains/content-hash': 3.1.0-rc.0
+      '@ensdomains/content-hash': 3.1.0-rc.1
       '@ensdomains/dnsprovejs': ^0.5.1
       '@ensdomains/ens-contracts': 1.0.0
       '@ensdomains/ens-test-env': workspace:*
@@ -145,8 +145,8 @@ importers:
       wait-on: ^6.0.1
     dependencies:
       '@adraffy/ens-normalize': 1.9.0
-      '@ensdomains/address-encoder': 1.0.0-rc.2
-      '@ensdomains/content-hash': 3.1.0-rc.0
+      '@ensdomains/address-encoder': 1.0.0-rc.3
+      '@ensdomains/content-hash': 3.1.0-rc.1
       '@ensdomains/dnsprovejs': 0.5.1
       abitype: 0.8.0_typescript@5.1.6
       dns-packet: 5.4.0
@@ -607,13 +607,12 @@ packages:
       ripemd160: 2.0.2
     dev: true
 
-  /@ensdomains/address-encoder/1.0.0-rc.2:
-    resolution: {integrity: sha512-ePVRVk6o1CaDW0WJkoG7JLDUd+vHfIkM/szQezK1B00MZu/Hnr9fOuf2bf4gu/Aqjy1u2eqn1vsoereGd1jkmg==}
+  /@ensdomains/address-encoder/1.0.0-rc.3:
+    resolution: {integrity: sha512-8o6zH69rObIqDY4PusEWuN9jvVOct+9jj9AOPO7ifc3ev8nmsly0e8TE1sHkhk0iKFbd3DlSsUnJ+yuRWmdLCQ==}
     dependencies:
       '@noble/curves': 1.2.0
       '@noble/hashes': 1.3.2
-      '@scure/base': 1.1.3
-      bech32: 2.0.0
+      '@scure/base': 1.1.5
     dev: false
 
   /@ensdomains/buffer/0.0.13_hardhat@2.16.1:
@@ -638,12 +637,12 @@ packages:
     resolution: {integrity: sha512-92SfSiNS8XorgU7OUBHo/i1ZU7JV7iz/6bKuLPNVsMxV79/eI7fJR6jfJJc40zAHjs3ha+Xo965Idomlq3rqnw==}
     dev: true
 
-  /@ensdomains/content-hash/3.1.0-rc.0:
-    resolution: {integrity: sha512-TK+ug8axECoT6sEMhgD9EhpLAFEqGM1UpvGLVapXYqt+VhBSDpUrg5udP9G0irRFBGsHZItYSJTnBHuy4EpmQg==}
+  /@ensdomains/content-hash/3.1.0-rc.1:
+    resolution: {integrity: sha512-OzdkXgdFmduzcJKU4KRkkJkQHnm5p7m7FkX8k+bHOEoOIzc0ueGT/Jay4nnb60wNk1wSHRmzY+hHBMpFDiGReg==}
     dependencies:
-      '@ensdomains/address-encoder': 1.0.0-rc.2
+      '@ensdomains/address-encoder': 1.0.0-rc.3
       '@noble/curves': 1.2.0
-      '@scure/base': 1.1.3
+      '@scure/base': 1.1.5
     dev: false
 
   /@ensdomains/dnsprovejs/0.5.1:
@@ -1917,6 +1916,11 @@ packages:
 
   /@scure/base/1.1.3:
     resolution: {integrity: sha512-/+SgoRjLq7Xlf0CWuLHq2LUZeL/w65kfzAPG5NH9pcmBhs+nunQTn4gvdwgMTIXnt9b2C/1SeL2XiysZEyIC9Q==}
+    dev: true
+
+  /@scure/base/1.1.5:
+    resolution: {integrity: sha512-Brj9FiG2W1MRQSTB212YVPRrcbjkv48FoZi/u4l/zds/ieRrqsh7aUf6CLwkAq61oKXr/ZlTzlY66gLIj3TFTQ==}
+    dev: false
 
   /@scure/bip32/1.1.0:
     resolution: {integrity: sha512-ftTW3kKX54YXLCxH6BB7oEEoJfoE2pIgw7MINKAs5PsS6nqKPuKk1haTF/EuHmYqG330t5GSrdmtRuHaY1a62Q==}
@@ -3160,10 +3164,6 @@ packages:
   /bech32/1.1.4:
     resolution: {integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==}
     dev: true
-
-  /bech32/2.0.0:
-    resolution: {integrity: sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg==}
-    dev: false
 
   /big-integer/1.6.36:
     resolution: {integrity: sha512-t70bfa7HYEA1D9idDbmuv7YbsbVkQ+Hp+8KFSul4aE5e/i1bjCNIRYJZlA8Q8p0r9T8cF/RVvwUgRA//FydEyg==}
