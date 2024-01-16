@@ -100,7 +100,7 @@
     "@adraffy/ens-normalize": "1.9.0",
     "@ensdomains/address-encoder": "1.0.0-rc.2",
     "@ensdomains/content-hash": "3.1.0-rc.0",
-    "@ensdomains/dnsprovejs": "^0.5.0",
+    "@ensdomains/dnsprovejs": "^0.5.1",
     "abitype": "^0.8.0",
     "dns-packet": "^5.3.1",
     "graphql": "^16.3.0",
