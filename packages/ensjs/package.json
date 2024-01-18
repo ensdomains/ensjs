@@ -92,7 +92,7 @@
     "build": "pnpm run clean && pnpm run build:cjs && pnpm run build:esm && pnpm run build:types",
     "tsn": "TS_NODE_PROJECT=tsconfig.node.json node --loader ts-node/esm",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
-    "prepublishOnly": "pnpm tsn ./scripts/prepublishOnly.ts",
+    "prepack": "pnpm tsn ./scripts/prepack.ts",
     "ver": "pnpm tsn ./scripts/updateVersion.ts",
     "generateDocs": "pnpm tsn ./scripts/generateDocs.ts"
   },
