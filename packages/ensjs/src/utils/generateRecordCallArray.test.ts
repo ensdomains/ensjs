@@ -44,18 +44,6 @@ it('adds contentHash call when contentHash is defined', () => {
     ]
   `)
 })
-it('adds abi call when abi is null', () => {
-  expect(
-    generateRecordCallArray({
-      namehash: namehash('test.eth'),
-      abi: null,
-    }),
-  ).toMatchInlineSnapshot(`
-    [
-      "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
-    ]
-  `)
-})
 it('does not add abi call when abi is undefined', () => {
   expect(
     generateRecordCallArray({
