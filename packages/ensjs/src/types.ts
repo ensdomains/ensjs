@@ -18,9 +18,10 @@ export type SimpleTransactionRequest = {
   >
 }
 
-export type TransactionRequestWithPassthrough = SimpleTransactionRequest & {
-  passthrough?: any
-}
+export type TransactionRequestWithPassthrough<TPassthrough = any> =
+  SimpleTransactionRequest & {
+    passthrough?: TPassthrough
+  }
 
 export type GenericPassthrough = { args: any; address: Address }
 

@@ -1,10 +1,8 @@
 import {
   BaseError,
   decodeAbiParameters,
-  decodeErrorResult,
   decodeFunctionResult,
   encodeFunctionData,
-  getContractError,
   hexToBigInt,
   toHex,
   type Address,
@@ -16,12 +14,13 @@ import { universalResolverResolveArraySnippet } from '../../contracts/universalR
 import type {
   DecodedAddr,
   DecodedText,
+  Prettify,
   SimpleTransactionRequest,
   TransactionRequestWithPassthrough,
 } from '../../types.js'
+import { checkSafeUniversalResolverData } from '../../utils/checkSafeUniversalResolverData.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
-import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 import _getAbi, { type InternalGetAbiReturnType } from './_getAbi.js'
 import _getAddr from './_getAddr.js'
@@ -31,9 +30,25 @@ import _getContentHash, {
 import _getText from './_getText.js'
 import multicallWrapper from './multicallWrapper.js'
 
-export type GetRecordsParameters = {
+export type GetRecordsParameters<
+  TTexts extends readonly string[] | undefined = readonly string[],
+  TCoins extends readonly (string | number)[] | undefined = readonly (
+    | string
+    | number
+  )[],
+  TContentHash extends boolean | undefined = true,
+  TAbi extends boolean | undefined = true,
+> = {
   /** Name to get records for */
   name: string
+  /** Text record key array */
+  texts?: TTexts
+  /** Coin record id/symbol array */
+  coins?: TCoins
+  /** If true, will fetch content hash */
+  contentHash?: TContentHash
+  /** If true, will fetch ABI */
+  abi?: TAbi
   /** Optional specific resolver address, for fallback or for all results */
   resolver?: {
     /** Resolver address */
@@ -41,17 +56,8 @@ export type GetRecordsParameters = {
     /** If true, will only use resolver if main fetch fails */
     fallbackOnly?: boolean
   }
-  /** Records to fetch */
-  records: {
-    /** Text record key array */
-    texts?: string[]
-    /** Coin record id/symbol array */
-    coins?: (string | number)[]
-    /** If true, will fetch content hash */
-    contentHash?: boolean
-    /** If true, will fetch ABI */
-    abi?: boolean
-  }
+  /** Batch gateway URLs to use for resolving CCIP-read requests. */
+  gatewayUrls?: string[]
 }
 
 type WithContentHashResult = {
@@ -74,182 +80,321 @@ type WithCoinsResult = {
   coins: DecodedAddr[]
 }
 
-type BaseGetRecordsReturnType = Partial<
-  WithContentHashResult & WithAbiResult & WithTextsResult & WithCoinsResult
-> & {
-  /** Resolver address used for fetch */
-  resolverAddress: Address
-}
-
 export type GetRecordsReturnType<
-  TParams extends GetRecordsParameters = GetRecordsParameters,
-> = TParams['records'] extends undefined
-  ? BaseGetRecordsReturnType
-  : (TParams['records']['contentHash'] extends true
-      ? WithContentHashResult
-      : {}) &
-      (TParams['records']['abi'] extends true ? WithAbiResult : {}) &
-      (TParams['records']['texts'] extends string[] ? WithTextsResult : {}) &
-      (TParams['records']['coins'] extends (string | number)[]
-        ? WithCoinsResult
-        : {}) & {
-        /** Resolver address used for fetch */
-        resolverAddress: Address
-      }
+  TTexts extends readonly string[] = readonly [string, ...string[]],
+  TCoins extends readonly (string | number)[] = readonly [
+    string | number,
+    ...(string | number)[],
+  ],
+  TContentHash extends boolean = true,
+  TAbi extends boolean = true,
+> = Prettify<
+  (TContentHash extends true ? WithContentHashResult : {}) &
+    (TAbi extends true ? WithAbiResult : {}) &
+    (TTexts extends readonly [string, ...string[]] ? WithTextsResult : {}) &
+    (TCoins extends readonly [string | number, ...(string | number)[]]
+      ? WithCoinsResult
+      : {}) & {
+      /** Resolver address used for fetch */
+      resolverAddress: Address
+    }
+>
 
-type CallObj = {
-  key: string | number
-  call: SimpleTransactionRequest
-  type: 'coin' | 'text' | 'contentHash' | 'abi'
-}
+type CallObj =
+  | {
+      key: string
+      call: SimpleTransactionRequest
+      type: 'text'
+    }
+  | {
+      key: string | number
+      call: SimpleTransactionRequest
+      type: 'coin'
+    }
+  | {
+      key: 'contentHash'
+      call: SimpleTransactionRequest
+      type: 'contentHash'
+    }
+  | {
+      key: 'abi'
+      call: SimpleTransactionRequest
+      type: 'abi'
+    }
 
-const encode = (
+type EncodeReturnType = Required<
+  TransactionRequestWithPassthrough<{
+    calls: (CallObj | null)[]
+    address?: Address
+    args?: any
+  }>
+>
+
+const createCalls = (
   client: ClientWithEns,
-  { name, resolver, records }: GetRecordsParameters,
-): TransactionRequestWithPassthrough => {
-  const calls = Object.keys(records).reduce((prev, key) => {
-    if (key === 'texts') {
-      return [
-        ...prev,
-        ...records.texts!.map(
-          (text) =>
-            ({
-              key: text,
-              call: _getText.encode(client, { name, key: text }),
-              type: 'text',
-            } as const),
-        ),
-      ]
-    }
-    if (key === 'coins') {
-      return [
-        ...prev,
-        ...records.coins!.map(
-          (coin) =>
-            ({
-              key: coin,
-              call: _getAddr.encode(client, { name, coin }),
-              type: 'coin',
-            } as const),
-        ),
-      ]
-    }
-    if (key === 'contentHash') {
-      return [
-        ...prev,
+  {
+    name,
+    texts,
+    coins,
+    abi,
+    contentHash,
+  }: Pick<
+    GetRecordsParameters,
+    'name' | 'texts' | 'coins' | 'abi' | 'contentHash'
+  >,
+) => [
+  ...(texts ?? []).map(
+    (text) =>
+      ({
+        key: text,
+        call: _getText.encode(client, { name, key: text }),
+        type: 'text',
+      } as const),
+  ),
+  ...(coins ?? []).map(
+    (coin) =>
+      ({
+        key: coin,
+        call: _getAddr.encode(client, { name, coin }),
+        type: 'coin',
+      } as const),
+  ),
+  ...(contentHash
+    ? ([
         {
           key: 'contentHash',
           call: _getContentHash.encode(client, { name }),
           type: 'contentHash',
-        } as const,
-      ]
-    }
-    if (key === 'abi') {
-      return [
-        ...prev,
-        {
-          key: 'abi',
-          call: _getAbi.encode(client, { name }),
-          type: 'abi',
-        } as const,
-      ]
-    }
-    return prev
-  }, [] as (CallObj | null)[])
+        },
+      ] as const)
+    : []),
+  ...(abi
+    ? ([
+        { key: 'abi', call: _getAbi.encode(client, { name }), type: 'abi' },
+      ] as const)
+    : []),
+]
 
-  const passthrough = calls
+const encode = (
+  client: ClientWithEns,
+  {
+    name,
+    resolver,
+    texts,
+    coins,
+    contentHash,
+    abi,
+    gatewayUrls,
+  }: GetRecordsParameters,
+): EncodeReturnType => {
+  const calls = createCalls(client, {
+    name,
+    texts,
+    coins,
+    contentHash,
+    abi,
+  })
 
   if (resolver?.address && !resolver.fallbackOnly) {
     const encoded = multicallWrapper.encode(client, {
-      transactions: calls
-        .filter((c) => c)
-        .map((c) => ({ to: resolver.address, data: c!.call.data })),
+      transactions: calls.map((c) => ({
+        to: resolver.address,
+        data: c.call.data,
+      })),
     })
     return {
       ...encoded,
-      passthrough,
+      passthrough: { calls },
     }
   }
 
-  const encoded = encodeFunctionData({
-    abi: universalResolverResolveArraySnippet,
-    functionName: 'resolve',
-    args: [
-      toHex(packetToBytes(name)),
-      calls.filter((c) => c).map((c) => c!.call.data),
-    ],
+  const to = getChainContractAddress({
+    client,
+    contract: 'ensUniversalResolver',
   })
+  const args = [
+    toHex(packetToBytes(name)),
+    calls.map((c) => c.call.data),
+  ] as const
 
   return {
-    to: getChainContractAddress({ client, contract: 'ensUniversalResolver' }),
-    data: encoded,
-    passthrough,
+    to,
+    ...(gatewayUrls?.length
+      ? {
+          data: encodeFunctionData({
+            abi: universalResolverResolveArraySnippet,
+            functionName: 'resolve',
+            args: [...args, gatewayUrls] as const,
+          }),
+          passthrough: {
+            calls,
+            args: [...args, gatewayUrls],
+            address: to,
+          },
+        }
+      : {
+          data: encodeFunctionData({
+            abi: universalResolverResolveArraySnippet,
+            functionName: 'resolve',
+            args,
+          }),
+          passthrough: {
+            calls,
+            args,
+            address: to,
+          },
+        }),
   }
 }
 
-const decode = async <TParams extends GetRecordsParameters>(
+const createEmptyResult = <
+  TTexts extends readonly string[] | undefined,
+  TCoins extends readonly (string | number)[] | undefined,
+  TContentHash extends boolean | undefined,
+  TAbi extends boolean | undefined,
+>({
+  texts,
+  coins,
+  abi,
+  contentHash,
+}: Pick<
+  GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>,
+  'texts' | 'coins' | 'abi' | 'contentHash'
+>) => ({
+  ...(texts && texts.length > 0 ? { texts: [] as DecodedText[] } : {}),
+  ...(coins && coins.length > 0 ? { coins: [] as DecodedAddr[] } : {}),
+  ...(contentHash ? { contentHash: null } : {}),
+  ...(abi ? { abi: null } : {}),
+})
+
+const decodeRecord = async (
+  client: ClientWithEns,
+  { item, call }: { item: Hex; call: CallObj },
+) => {
+  const { key, type } = call
+  const baseItem = { key, type }
+  if (type === 'contentHash') {
+    try {
+      const decodedFromAbi = decodeAbiParameters(
+        [{ type: 'bytes' }] as const,
+        item,
+      )[0]
+      if (decodedFromAbi === '0x' || hexToBigInt(decodedFromAbi) === 0n) {
+        return { ...baseItem, value: null }
+      }
+    } catch {
+      // ignore
+    }
+  }
+  if (type === 'text') {
+    const decodedFromAbi = await _getText.decode(client, item, {
+      strict: false,
+    })
+    return { ...baseItem, value: decodedFromAbi }
+  }
+  if (type === 'coin') {
+    const decodedFromAbi = await _getAddr.decode(client, item, {
+      coin: key,
+      strict: false,
+    })
+    return { ...baseItem, value: decodedFromAbi }
+  }
+  if (type === 'contentHash') {
+    const decodedFromAbi = await _getContentHash.decode(client, item, {
+      strict: false,
+    })
+    return { ...baseItem, value: decodedFromAbi }
+  }
+  // abi
+  const decodedFromAbi = await _getAbi.decode(client, item, {
+    strict: false,
+  })
+  return { ...baseItem, value: decodedFromAbi }
+}
+
+const createRecordResult = (
+  prev: GetRecordsReturnType,
+  curr: Awaited<ReturnType<typeof decodeRecord>>,
+) => {
+  if (curr.type === 'text' || curr.type === 'coin') {
+    if (!curr.value) {
+      return prev
+    }
+  }
+  if (curr.type === 'text') {
+    return {
+      ...prev,
+      texts: [
+        ...(prev.texts || []),
+        { key: curr.key, value: curr.value } as DecodedText,
+      ],
+    }
+  }
+  if (curr.type === 'coin') {
+    return {
+      ...prev,
+      coins: [...(prev.coins || []), curr.value as DecodedAddr],
+    }
+  }
+  if (curr.type === 'contentHash') {
+    return {
+      ...prev,
+      contentHash: curr.value as InternalGetContentHashReturnType,
+    }
+  }
+  // abi
+  return { ...prev, abi: curr.value as InternalGetAbiReturnType }
+}
+
+const decode = async <
+  const TTexts extends readonly string[] = readonly string[],
+  const TCoins extends readonly (string | number)[] = readonly (
+    | string
+    | number
+  )[],
+  const TContentHash extends boolean = true,
+  const TAbi extends boolean = true,
+>(
   client: ClientWithEns,
   data: Hex | BaseError,
-  passthrough: (CallObj | null)[],
-  { name, resolver, records: recordsParams }: TParams,
-): Promise<GetRecordsReturnType<TParams>> => {
-  const calls = passthrough
+  passthrough: EncodeReturnType['passthrough'],
+  {
+    resolver,
+    texts,
+    coins,
+    contentHash,
+    abi,
+  }: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>,
+): Promise<GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>> => {
+  const { calls } = passthrough
   let recordData: (Hex | null)[] = []
   let resolverAddress: Address
+
+  const emptyResult = createEmptyResult({ texts, coins, contentHash, abi })
 
   if (resolver?.address && !resolver.fallbackOnly) {
     const result = await multicallWrapper.decode(
       client,
       data,
-      passthrough.filter((c) => c).map((c) => c!.call),
+      passthrough.calls.filter((c) => c).map((c) => c!.call),
     )
     resolverAddress = resolver.address
     recordData = result.map((r) => r.returnData)
   } else {
-    if (typeof data === 'object') {
-      const errorData = getRevertErrorData(data)
-      if (errorData) {
-        const decodedError = decodeErrorResult({
-          abi: universalResolverResolveArraySnippet,
-          data: errorData,
-        })
-        if (
-          decodedError.errorName === 'ResolverNotFound' ||
-          decodedError.errorName === 'ResolverWildcardNotSupported'
-        )
-          return passthrough.reduce(
-            (prev, curr) => {
-              if (!curr) return prev
-              if (curr.type === 'coin' && !('coin' in prev)) {
-                return { ...prev, coins: [] }
-              }
-              if (curr.type === 'text' && !('texts' in prev)) {
-                return { ...prev, texts: [] }
-              }
-              if (curr.type === 'contentHash' && !('contentHash' in prev)) {
-                return { ...prev, contentHash: null }
-              }
-              // abi
-              return { ...prev, abi: null }
-            },
-            {
-              resolverAddress: EMPTY_ADDRESS,
-            } as unknown as GetRecordsReturnType<TParams>,
-          )
-      }
-      throw getContractError(data, {
-        abi: universalResolverResolveArraySnippet,
-        functionName: 'resolve',
-        args: [
-          toHex(packetToBytes(name)),
-          calls.filter((c) => c).map((c) => c!.call.data),
-        ],
-        address: getChainContractAddress({
-          client,
-          contract: 'ensUniversalResolver',
-        }),
-      }) as BaseError
-    }
+    const isSafe = checkSafeUniversalResolverData(data, {
+      strict: false,
+      abi: universalResolverResolveArraySnippet,
+      args: passthrough.args,
+      functionName: 'resolve',
+      address: passthrough.address,
+    })
+
+    if (!isSafe)
+      return {
+        ...emptyResult,
+        resolverAddress: EMPTY_ADDRESS,
+      } as GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
+
     const result = decodeFunctionResult({
       abi: universalResolverResolveArraySnippet,
       functionName: 'resolve',
@@ -269,83 +414,17 @@ const decode = async <TParams extends GetRecordsParameters>(
   const filteredRecordData = recordData.filter((x) => x) as Hex[]
 
   const decodedRecords = await Promise.all(
-    filteredRecordData.map(async (item, i) => {
-      const { key, type } = filteredCalls[i]
-      const baseItem = { key, type }
-      if (type === 'contentHash') {
-        const decodedFromAbi = decodeAbiParameters(
-          [{ type: 'bytes' }] as const,
-          item,
-        )[0]
-        if (decodedFromAbi === '0x' || hexToBigInt(decodedFromAbi) === 0n) {
-          return { ...baseItem, value: null }
-        }
-      }
-      if (type === 'text') {
-        const decodedFromAbi = await _getText.decode(client, item)
-        return { ...baseItem, value: decodedFromAbi }
-      }
-      if (type === 'coin') {
-        const decodedFromAbi = await _getAddr.decode(client, item, {
-          name,
-          coin: key,
-        })
-        return { ...baseItem, value: decodedFromAbi }
-      }
-      if (type === 'contentHash') {
-        const decodedFromAbi = await _getContentHash.decode(client, item)
-        return { ...baseItem, value: decodedFromAbi }
-      }
-      // abi
-      const decodedFromAbi = await _getAbi.decode(client, item)
-      return { ...baseItem, value: decodedFromAbi }
-    }),
+    filteredRecordData.map(async (item, i) =>
+      decodeRecord(client, { item, call: filteredCalls[i] }),
+    ),
   )
 
-  const records = decodedRecords.reduce(
-    (prev, curr) => {
-      if (curr.type === 'text' || curr.type === 'coin') {
-        if (!curr.value) {
-          return prev
-        }
-      }
-      if (curr.type === 'text') {
-        return {
-          ...prev,
-          texts: [
-            ...(prev.texts || []),
-            { key: curr.key, value: curr.value } as DecodedText,
-          ],
-        }
-      }
-      if (curr.type === 'coin') {
-        return {
-          ...prev,
-          coins: [...(prev.coins || []), curr.value as DecodedAddr],
-        }
-      }
-      if (curr.type === 'contentHash') {
-        return {
-          ...prev,
-          contentHash: curr.value as InternalGetContentHashReturnType,
-        }
-      }
-      // abi
-      return { ...prev, abi: curr.value as InternalGetAbiReturnType }
-    },
-    {
-      resolverAddress,
-      ...('texts' in recordsParams ? { texts: [] } : {}),
-      ...('coins' in recordsParams ? { coins: [] } : {}),
-      ...('contentHash' in recordsParams ? { contentHash: null } : {}),
-    } as GetRecordsReturnType<
-      GetRecordsParameters & {
-        records: Required<GetRecordsParameters['records']>
-      }
-    >,
-  )
+  const records = decodedRecords.reduce(createRecordResult, {
+    ...emptyResult,
+    resolverAddress,
+  } as GetRecordsReturnType)
 
-  return records as GetRecordsReturnType<TParams>
+  return records as GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
 }
 
 type EncoderFunction = typeof encode
@@ -354,12 +433,20 @@ type DecoderFunction = typeof decode<any>
 type BatchableFunctionObject = {
   encode: EncoderFunction
   decode: DecoderFunction
-  batch: <TParams extends GetRecordsParameters>(
-    args: TParams,
+  batch: <
+    const TTexts extends readonly string[] = readonly string[],
+    const TCoins extends readonly (string | number)[] = readonly (
+      | string
+      | number
+    )[],
+    const TContentHash extends boolean = true,
+    const TAbi extends boolean = true,
+  >(
+    args: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>,
   ) => {
-    args: [TParams]
+    args: [GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>]
     encode: EncoderFunction
-    decode: typeof decode<TParams>
+    decode: typeof decode<TTexts, TCoins, TContentHash, TAbi>
   }
 }
 
@@ -390,11 +477,25 @@ type BatchableFunctionObject = {
  * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
  */
 const getRecords = generateFunction({ encode, decode }) as (<
-  TParams extends GetRecordsParameters,
+  const TTexts extends readonly string[] = readonly string[],
+  const TCoins extends readonly (string | number)[] = readonly (
+    | string
+    | number
+  )[],
+  const TContentHash extends boolean = true,
+  const TAbi extends boolean = true,
 >(
   client: ClientWithEns,
-  { name, records, resolver }: TParams,
-) => Promise<GetRecordsReturnType<TParams>>) &
+  {
+    name,
+    texts,
+    coins,
+    contentHash,
+    abi,
+    resolver,
+    gatewayUrls,
+  }: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>,
+) => Promise<GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>>) &
   BatchableFunctionObject
 
 export default getRecords

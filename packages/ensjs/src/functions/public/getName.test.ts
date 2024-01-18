@@ -1,4 +1,5 @@
-import type { Address, Hex } from 'viem'
+import { RawContractError, type Address, type Hex } from 'viem'
+import type { ClientWithEns } from '../../contracts/consts.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -44,7 +45,7 @@ describe('getName', () => {
     })
     expect(result).toBeNull()
   })
-  it('should return with a false match for a name with no forward resolution', async () => {
+  it('should return null for a name with no forward resolution when allowMismatch is false', async () => {
     const tx = await setPrimaryName(walletClient, {
       name: 'with-profile.eth',
       account: accounts[0],
@@ -54,6 +55,19 @@ describe('getName', () => {
     const result = await getName(publicClient, {
       address: accounts[0],
     })
+    expect(result).toBeNull()
+  })
+  it('should return with a false match for a name with no forward resolution when allowMismatch is true', async () => {
+    const tx = await setPrimaryName(walletClient, {
+      name: 'with-profile.eth',
+      account: accounts[0],
+    })
+    await waitForTransaction(tx)
+
+    const result = await getName(publicClient, {
+      address: accounts[0],
+      allowMismatch: true,
+    })
     expect(result).toMatchInlineSnapshot(`
       {
         "match": false,
@@ -61,6 +75,48 @@ describe('getName', () => {
         "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
         "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
       }
+    `)
+  })
+  it('should return null on error when strict is false', async () => {
+    await expect(
+      getName.decode(
+        {} as ClientWithEns,
+        new RawContractError({
+          data: '0x7199966d', // ResolverNotFound()
+        }),
+        {
+          address: '0x1234567890abcdef',
+          args: ['0x', '0x'],
+        },
+        { address: accounts[0], allowMismatch: true, strict: false },
+      ),
+    ).resolves.toBeNull()
+  })
+  it('should throw on error when strict is true', async () => {
+    await expect(
+      getName.decode(
+        {} as ClientWithEns,
+        new RawContractError({
+          data: '0x7199966d', // ResolverNotFound()
+        }),
+        {
+          address: '0x1234567890abcdef',
+          args: ['0x'],
+        },
+
+        { address: accounts[0], allowMismatch: true, strict: true },
+      ),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      "The contract function "reverse" reverted.
+
+      Error: ResolverNotFound()
+       
+      Contract Call:
+        address:   0x1234567890abcdef
+        function:  reverse(bytes reverseName)
+        args:             (0x)
+
+      Version: viem@1.16.3"
     `)
   })
 })

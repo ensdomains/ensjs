@@ -11,13 +11,15 @@ export type InternalGetTextParameters = {
   name: string
   /** Text record key to get */
   key: string
+  /** Whether or not to throw decoding errors */
+  strict?: boolean
 }
 
 export type InternalGetTextReturnType = string | null
 
 const encode = (
   _client: ClientWithEns,
-  { name, key }: InternalGetTextParameters,
+  { name, key }: Omit<InternalGetTextParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   return {
     to: EMPTY_ADDRESS,
@@ -32,18 +34,24 @@ const encode = (
 const decode = async (
   _client: ClientWithEns,
   data: Hex,
+  { strict }: Pick<InternalGetTextParameters, 'strict'>,
 ): Promise<InternalGetTextReturnType> => {
   if (data === '0x') return null
 
-  const response = decodeFunctionResult({
-    abi: publicResolverTextSnippet,
-    functionName: 'text',
-    data,
-  })
+  try {
+    const response = decodeFunctionResult({
+      abi: publicResolverTextSnippet,
+      functionName: 'text',
+      data,
+    })
 
-  if (!response) return null
+    if (!response) return null
 
-  return response
+    return response
+  } catch (error) {
+    if (strict) throw error
+    return null
+  }
 }
 
 const _getText = generateFunction({ encode, decode })

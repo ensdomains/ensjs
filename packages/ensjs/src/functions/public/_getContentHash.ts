@@ -13,6 +13,8 @@ import { namehash } from '../../utils/normalise.js'
 export type InternalGetContentHashParameters = {
   /** Name to get content hash record for */
   name: string
+  /** Whether or not to throw decoding errors */
+  strict?: boolean
 }
 
 export type InternalGetContentHashReturnType =
@@ -20,7 +22,7 @@ export type InternalGetContentHashReturnType =
 
 const encode = (
   _client: ClientWithEns,
-  { name }: InternalGetContentHashParameters,
+  { name }: Omit<InternalGetContentHashParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   return {
     to: EMPTY_ADDRESS,
@@ -35,16 +37,22 @@ const encode = (
 const decode = async (
   _client: ClientWithEns,
   data: Hex,
+  { strict }: Pick<InternalGetContentHashParameters, 'strict'>,
 ): Promise<InternalGetContentHashReturnType> => {
   if (data === '0x') return null
 
-  const response = decodeFunctionResult({
-    abi: publicResolverContenthashSnippet,
-    functionName: 'contenthash',
-    data,
-  })
+  try {
+    const response = decodeFunctionResult({
+      abi: publicResolverContenthashSnippet,
+      functionName: 'contenthash',
+      data,
+    })
 
-  return decodeContentHash(response)
+    return decodeContentHash(response)
+  } catch (error) {
+    if (strict) throw error
+    return null
+  }
 }
 
 const _getContentHash = generateFunction({ encode, decode })

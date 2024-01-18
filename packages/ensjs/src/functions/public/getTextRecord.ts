@@ -15,25 +15,38 @@ import _getText, {
 } from './_getText.js'
 import universalWrapper from './universalWrapper.js'
 
-export type GetTextRecordParameters = Prettify<InternalGetTextParameters>
+export type GetTextRecordParameters = Prettify<
+  InternalGetTextParameters & {
+    /** Batch gateway URLs to use for resolving CCIP-read requests. */
+    gatewayUrls?: string[]
+  }
+>
 
 export type GetTextRecordReturnType = Prettify<InternalGetTextReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, key }: GetTextRecordParameters,
+  { name, key, gatewayUrls }: Omit<GetTextRecordParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   const prData = _getText.encode(client, { name, key })
-  return universalWrapper.encode(client, { name, data: prData.data })
+  return universalWrapper.encode(client, {
+    name,
+    data: prData.data,
+    gatewayUrls,
+  })
 }
 
 const decode = async (
   client: ClientWithEns,
   data: Hex | BaseError,
   passthrough: GenericPassthrough,
+  { strict }: Pick<GetTextRecordParameters, 'strict'>,
 ): Promise<GetTextRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough)
-  return _getText.decode(client, urData.data)
+  const urData = await universalWrapper.decode(client, data, passthrough, {
+    strict,
+  })
+  if (!urData) return null
+  return _getText.decode(client, urData.data, { strict })
 }
 
 type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
@@ -59,7 +72,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  */
 const getTextRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name, key }: GetTextRecordParameters,
+  { name, key, strict }: GetTextRecordParameters,
 ) => Promise<GetTextRecordReturnType>) &
   BatchableFunctionObject
 
