@@ -20,11 +20,11 @@ export type EncodeAbiParameters<TEncodeAs extends AbiEncodeAs = AbiEncodeAs> =
   TEncodeAs extends 'uri'
     ? {
         encodeAs: TEncodeAs
-        data: string
+        data: string | null
       }
     : {
         encodeAs: TEncodeAs
-        data: Record<any, any>
+        data: Record<any, any> | null
       }
 
 export type EncodedAbi<TContentType extends AbiContentType = AbiContentType> = {
@@ -76,23 +76,23 @@ export const encodeAbi = async <
   switch (encodeAs) {
     case 'json':
       contentType = 1
-      encodedData = stringToHex(JSON.stringify(data))
+      encodedData = data ? stringToHex(JSON.stringify(data)) : '0x'
       break
     case 'zlib': {
       contentType = 2
       const { deflate } = await import('pako/dist/pako_deflate.min.js')
-      encodedData = bytesToHex(deflate(JSON.stringify(data)))
+      encodedData = data ? bytesToHex(deflate(JSON.stringify(data))) : '0x'
       break
     }
     case 'cbor': {
       contentType = 4
       const { cborEncode } = await import('@ensdomains/address-encoder/utils')
-      encodedData = bytesToHex(new Uint8Array(cborEncode(data)))
+      encodedData = data ? bytesToHex(new Uint8Array(cborEncode(data))) : '0x'
       break
     }
     default: {
       contentType = 8
-      encodedData = stringToHex(data as string)
+      encodedData = data ? stringToHex(data as string) : '0x'
       break
     }
   }

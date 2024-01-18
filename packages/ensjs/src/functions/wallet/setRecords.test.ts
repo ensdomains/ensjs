@@ -93,6 +93,63 @@ it('should return a transaction to the resolver and set successfully', async () 
     ]
   `)
 })
+it('should return a transaction to the resolver and delete successfully', async () => {
+  const setupTx = await setRecords(walletClient, {
+    name: 'test123.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'test123.eth',
+    }))!,
+    coins: [
+      {
+        coin: 'etcLegacy',
+        value: '0x42D63ae25990889E35F215bC95884039Ba354115',
+      },
+    ],
+    texts: [{ key: 'foo', value: 'bar' }],
+    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    account: accounts[1],
+  })
+  await waitForTransaction(setupTx)
+  const checkRecords = await getRecords(publicClient, {
+    name: 'test123.eth',
+    records: {
+      coins: ['etcLegacy'],
+      texts: ['foo'],
+      abi: true,
+    },
+  })
+  expect(checkRecords.abi!.abi).not.toBeNull()
+  expect(checkRecords.coins).toHaveLength(1)
+  expect(checkRecords.texts).toHaveLength(1)
+  const tx = await setRecords(walletClient, {
+    name: 'test123.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'test123.eth',
+    }))!,
+    coins: [
+      {
+        coin: 'etcLegacy',
+        value: '',
+      },
+    ],
+    texts: [{ key: 'foo', value: '' }],
+    abi: await encodeAbi({ encodeAs: 'json', data: null }),
+    account: accounts[1],
+  })
+  await waitForTransaction(tx)
+
+  const records = await getRecords(publicClient, {
+    name: 'test123.eth',
+    records: {
+      coins: ['etcLegacy'],
+      texts: ['foo'],
+      abi: true,
+    },
+  })
+  expect(records.abi).toBeNull()
+  expect(records.coins).toHaveLength(0)
+  expect(records.texts).toHaveLength(0)
+})
 it('should error if there are no records to set', async () => {
   await expect(
     setRecords(walletClient, {

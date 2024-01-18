@@ -22,7 +22,7 @@ export type SetAbiRecordDataParameters = {
   /** Name to set ABI for */
   name: string
   /** Encoded ABI data to set */
-  encodedAbi: EncodedAbi | null
+  encodedAbi: EncodedAbi
   /** Resolver address to set ABI on */
   resolverAddress: Address
 }
@@ -47,12 +47,11 @@ export const makeFunctionData = <
   _wallet: WalletWithEns<Transport, TChain, TAccount>,
   { name, encodedAbi, resolverAddress }: SetAbiRecordDataParameters,
 ): SetAbiRecordDataReturnType => {
-  const encodedAbi_ = encodedAbi || { contentType: 0, encodedData: null }
   return {
     to: resolverAddress,
     data: encodeSetAbi({
       namehash: namehash(name),
-      ...encodedAbi_,
+      ...encodedAbi,
     } as EncodeSetAbiParameters),
   }
 }
