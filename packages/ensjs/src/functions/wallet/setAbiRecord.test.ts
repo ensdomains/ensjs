@@ -137,27 +137,14 @@ it('should allow an abi record to be set with uri content type', async () => {
 })
 
 type EncodeAs = Parameters<typeof encodeAbi>[0]['encodeAs']
-const ABI_TEST_CASES: { encodeAs: EncodeAs; name: string }[] = [
-  {
-    encodeAs: 'json',
-    name: 'with-type-1-abi.eth',
-  },
-  {
-    encodeAs: 'zlib',
-    name: 'with-type-2-abi.eth',
-  },
-  {
-    encodeAs: 'cbor',
-    name: 'with-type-4-abi.eth',
-  },
-  {
-    encodeAs: 'uri',
-    name: 'with-type-8-abi.eth',
-  },
-]
-
-ABI_TEST_CASES.forEach(({ encodeAs, name }) => {
-  it(`should allow an abi record to be set to null with ${encodeAs} content type`, async () => {
+it.each([
+  ['json', 'with-type-1-abi.eth'],
+  ['zlib', 'with-type-2-abi.eth'],
+  ['cbor', 'with-type-4-abi.eth'],
+  ['uri', 'with-type-8-abi.eth'],
+] as [EncodeAs, string][])(
+  `should allow an abi record to be set to null with %s content type`,
+  async (encodeAs, name) => {
     const encodedAbi = await encodeAbi({
       encodeAs,
       data: null,
@@ -178,5 +165,5 @@ ABI_TEST_CASES.forEach(({ encodeAs, name }) => {
       name,
     })
     expect(response).toBeNull()
-  })
-})
+  },
+)

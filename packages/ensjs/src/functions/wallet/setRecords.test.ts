@@ -110,11 +110,9 @@ it('should return a transaction to the resolver and delete successfully', async 
   await waitForTransaction(setupTx)
   const checkRecords = await getRecords(publicClient, {
     name: 'test123.eth',
-    records: {
-      coins: ['etcLegacy'],
-      texts: ['foo'],
-      abi: true,
-    },
+    coins: ['etcLegacy'],
+    texts: ['foo'],
+    abi: true,
   })
   expect(checkRecords.abi!.abi).not.toBeNull()
   expect(checkRecords.coins).toHaveLength(1)
@@ -138,11 +136,9 @@ it('should return a transaction to the resolver and delete successfully', async 
 
   const records = await getRecords(publicClient, {
     name: 'test123.eth',
-    records: {
-      coins: ['etcLegacy'],
-      texts: ['foo'],
-      abi: true,
-    },
+    coins: ['etcLegacy'],
+    texts: ['foo'],
+    abi: true,
   })
   expect(records.abi).toBeNull()
   expect(records.coins).toHaveLength(0)

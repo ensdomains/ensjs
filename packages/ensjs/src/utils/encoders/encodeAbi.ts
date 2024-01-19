@@ -72,27 +72,31 @@ export const encodeAbi = async <
   Prettify<EncodeAbiReturnType<TContentType>>
 > => {
   let contentType: AbiContentType
-  let encodedData: Hex
+  let encodedData: Hex = '0x'
   switch (encodeAs) {
     case 'json':
       contentType = 1
-      encodedData = data ? stringToHex(JSON.stringify(data)) : '0x'
+      if (data) encodedData = stringToHex(JSON.stringify(data))
       break
     case 'zlib': {
       contentType = 2
-      const { deflate } = await import('pako/dist/pako_deflate.min.js')
-      encodedData = data ? bytesToHex(deflate(JSON.stringify(data))) : '0x'
+      if (data) {
+        const { deflate } = await import('pako/dist/pako_deflate.min.js')
+        encodedData = bytesToHex(deflate(JSON.stringify(data)))
+      }
       break
     }
     case 'cbor': {
       contentType = 4
-      const { cborEncode } = await import('@ensdomains/address-encoder/utils')
-      encodedData = data ? bytesToHex(new Uint8Array(cborEncode(data))) : '0x'
+      if (data) {
+        const { cborEncode } = await import('@ensdomains/address-encoder/utils')
+        encodedData = bytesToHex(new Uint8Array(cborEncode(data)))
+      }
       break
     }
     default: {
       contentType = 8
-      encodedData = data ? stringToHex(data as string) : '0x'
+      if (data) encodedData = stringToHex(data as string)
       break
     }
   }
