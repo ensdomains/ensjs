@@ -19,6 +19,8 @@ import { namehash } from '../../utils/normalise.js'
 export type InternalGetAbiParameters = {
   /** Name to get ABI record for */
   name: string
+  /** Whether or not to throw decoding errors */
+  strict?: boolean
 }
 
 export type InternalGetAbiReturnType = Prettify<DecodedAbi | null>
@@ -28,11 +30,11 @@ export type InternalGetAbiReturnType = Prettify<DecodedAbi | null>
 // ID 2: zlib compressed JSON
 // ID 4: CBOR
 // ID 8: URI
-const supportedContentTypes = BigInt('0xf')
+const supportedContentTypes = 0xfn
 
 const encode = (
   _client: ClientWithEns,
-  { name }: InternalGetAbiParameters,
+  { name }: Omit<InternalGetAbiParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   return {
     to: EMPTY_ADDRESS,
@@ -47,66 +49,72 @@ const encode = (
 const decode = async (
   _client: ClientWithEns,
   data: Hex,
+  { strict }: Pick<InternalGetAbiParameters, 'strict'>,
 ): Promise<InternalGetAbiReturnType> => {
   if (data === '0x') return null
 
-  const [bigintContentType, encodedAbiData] = decodeFunctionResult({
-    abi: publicResolverAbiSnippet,
-    functionName: 'ABI',
-    data,
-  })
+  try {
+    const [bigintContentType, encodedAbiData] = decodeFunctionResult({
+      abi: publicResolverAbiSnippet,
+      functionName: 'ABI',
+      data,
+    })
 
-  if (!bigintContentType || !encodedAbiData) {
-    return null
-  }
-
-  const contentType = Number(bigintContentType)
-  if (!contentType) {
-    return null
-  }
-
-  let abiData: string | object
-  let decoded = false
-  switch (contentType) {
-    // JSON
-    case 1:
-      abiData = JSON.parse(hexToString(encodedAbiData))
-      decoded = true
-      break
-    // zlib compressed JSON
-    case 2: {
-      const { inflate } = await import('pako/dist/pako_inflate.min.js')
-      abiData = JSON.parse(
-        inflate(hexToBytes(encodedAbiData), { to: 'string' }),
-      )
-      decoded = true
-      break
+    if (!bigintContentType || !encodedAbiData) {
+      return null
     }
-    // CBOR
-    case 4: {
-      const { cborDecode } = await import('@ensdomains/address-encoder/utils')
-      abiData = await cborDecode(hexToBytes(encodedAbiData).buffer)
-      decoded = true
-      break
+
+    const contentType = Number(bigintContentType)
+    if (!contentType) {
+      return null
     }
-    // URI
-    case 8:
-      abiData = hexToString(encodedAbiData)
-      decoded = true
-      break
-    default:
-      try {
+
+    let abiData: string | object
+    let decoded = false
+    switch (contentType) {
+      // JSON
+      case 1:
+        abiData = JSON.parse(hexToString(encodedAbiData))
+        decoded = true
+        break
+      // zlib compressed JSON
+      case 2: {
+        const { inflate } = await import('pako/dist/pako_inflate.min.js')
+        abiData = JSON.parse(
+          inflate(hexToBytes(encodedAbiData), { to: 'string' }),
+        )
+        decoded = true
+        break
+      }
+      // CBOR
+      case 4: {
+        const { cborDecode } = await import('@ensdomains/address-encoder/utils')
+        abiData = await cborDecode(hexToBytes(encodedAbiData).buffer)
+        decoded = true
+        break
+      }
+      // URI
+      case 8:
         abiData = hexToString(encodedAbiData)
         decoded = true
-      } catch {
-        abiData = encodedAbiData
-      }
-  }
+        break
+      default:
+        try {
+          abiData = hexToString(encodedAbiData)
+          decoded = true
+        } catch {
+          abiData = encodedAbiData
+        }
+    }
 
-  return {
-    contentType,
-    decoded,
-    abi: abiData,
+    return {
+      contentType,
+      decoded,
+      abi: abiData,
+    }
+  } catch (error) {
+    if (strict) throw error
+    return null
   }
 }
 

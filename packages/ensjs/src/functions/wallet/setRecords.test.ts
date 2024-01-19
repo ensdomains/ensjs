@@ -68,11 +68,9 @@ it('should return a transaction to the resolver and set successfully', async () 
 
   const records = await getRecords(publicClient, {
     name: 'test123.eth',
-    records: {
-      coins: ['etcLegacy'],
-      texts: ['foo'],
-      abi: true,
-    },
+    coins: ['etcLegacy'],
+    texts: ['foo'],
+    abi: true,
   })
   expect(records.abi!.abi).toStrictEqual(dummyABI)
   expect(records.coins).toMatchInlineSnapshot(`

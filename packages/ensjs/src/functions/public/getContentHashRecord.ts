@@ -15,27 +15,39 @@ import _getContentHash, {
 } from './_getContentHash.js'
 import universalWrapper from './universalWrapper.js'
 
-export type GetContentHashRecordParameters =
-  Prettify<InternalGetContentHashParameters>
+export type GetContentHashRecordParameters = Prettify<
+  InternalGetContentHashParameters & {
+    /** Batch gateway URLs to use for resolving CCIP-read requests. */
+    gatewayUrls?: string[]
+  }
+>
 
 export type GetContentHashRecordReturnType =
   Prettify<InternalGetContentHashReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name }: GetContentHashRecordParameters,
+  { name, gatewayUrls }: Omit<GetContentHashRecordParameters, 'strict'>,
 ): TransactionRequestWithPassthrough => {
   const prData = _getContentHash.encode(client, { name })
-  return universalWrapper.encode(client, { name, data: prData.data })
+  return universalWrapper.encode(client, {
+    name,
+    data: prData.data,
+    gatewayUrls,
+  })
 }
 
 const decode = async (
   client: ClientWithEns,
   data: Hex | BaseError,
   passthrough: GenericPassthrough,
+  { strict }: Pick<GetContentHashRecordParameters, 'strict'>,
 ): Promise<GetContentHashRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough)
-  return _getContentHash.decode(client, urData.data)
+  const urData = await universalWrapper.decode(client, data, passthrough, {
+    strict,
+  })
+  if (!urData) return null
+  return _getContentHash.decode(client, urData.data, { strict })
 }
 
 type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
@@ -61,7 +73,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  */
 const getContentHashRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name }: GetContentHashRecordParameters,
+  { name, strict }: GetContentHashRecordParameters,
 ) => Promise<GetContentHashRecordReturnType>) &
   BatchableFunctionObject
 

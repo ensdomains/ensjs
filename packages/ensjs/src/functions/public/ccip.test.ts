@@ -1,5 +1,5 @@
 import { createPublicClient, http } from 'viem'
-import { goerli } from 'viem/chains'
+import { goerli, mainnet } from 'viem/chains'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import batch from './batch.js'
 import getAddressRecord from './getAddressRecord.js'
@@ -11,38 +11,75 @@ const goerliPublicClient = createPublicClient({
   transport: http('https://web3.ens.domains/v1/goerli'),
 })
 
+const mainnetPublicClient = createPublicClient({
+  chain: addEnsContracts(mainnet),
+  transport: http('https://web3.ens.domains/v1/mainnet'),
+})
+
 jest.setTimeout(30000)
 
 describe('CCIP', () => {
-  describe('getProfile', () => {
-    it('should return a profile from a ccip-read name', async () => {
+  describe('getRecords', () => {
+    it('should return records from a ccip-read name', async () => {
       const result = await getRecords(goerliPublicClient, {
         name: '1.offchainexample.eth',
-        records: {
-          texts: ['email', 'description'],
-          contentHash: true,
-          coins: ['ltc', '60'],
-        },
+        texts: ['email', 'description'],
+        contentHash: true,
+        coins: ['ltc', '60'],
       })
-      if (!result) throw new Error('No result')
-      expect(result.coins.find((x) => x.name === 'eth')!.value).toBe(
-        '0x41563129cDbbD0c5D3e1c86cf9563926b243834d',
-      )
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "coins": [
+            {
+              "id": 2,
+              "name": "ltc",
+              "value": "MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441",
+            },
+            {
+              "id": 60,
+              "name": "eth",
+              "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+            },
+          ],
+          "contentHash": {
+            "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
+            "protocolType": "ipfs",
+          },
+          "resolverAddress": "0xEE28bdfBB91dE63bfBDA454082Bb1850f7804B09",
+          "texts": [
+            {
+              "key": "email",
+              "value": "nick@ens.domains",
+            },
+            {
+              "key": "description",
+              "value": "hello offchainresolver wildcard record",
+            },
+          ],
+        }
+      `)
     })
-    // arb-resolver.eth no longer working...
-    it.skip('should return a profile from arb-resolver.eth', async () => {
-      const result = await getRecords(goerliPublicClient, {
-        name: 'arb-resolver.eth',
-        records: {
-          texts: ['email', 'description'],
-          contentHash: true,
-          coins: ['ltc', '60'],
-        },
+    it('should return records from a ccip-read name with incompliant resolver', async () => {
+      const result = await getRecords(mainnetPublicClient, {
+        name: 'alisha.beam.eco',
+        texts: ['email', 'description'],
+        contentHash: true,
+        coins: ['ltc', '60'],
       })
-      if (!result) throw new Error('No result')
-      expect(result.coins.find((x) => x.name === 'eth')!.value).toBe(
-        '0xA5313060f9FA6B607AC8Ca8728a851166c9f6127',
-      )
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "coins": [
+            {
+              "id": 60,
+              "name": "eth",
+              "value": "0x3A8C8D374AD15fE43E6239F6C694bff9Ee4CBbbf",
+            },
+          ],
+          "contentHash": null,
+          "resolverAddress": "0x244fE34a508E16E12A221332f63E3a741C759D76",
+          "texts": [],
+        }
+      `)
     })
   })
   describe('batch', () => {
@@ -53,27 +90,38 @@ describe('CCIP', () => {
         getAddressRecord.batch({ name: '1.offchainexample.eth', coin: 'ltc' }),
         getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
       )
-      if (!result) throw new Error('No result')
-      expect(result[0]!.value).toBe(
-        '0x41563129cDbbD0c5D3e1c86cf9563926b243834d',
-      )
-      expect(result[1]).toStrictEqual({
-        id: 2,
-        name: 'ltc',
-        value: 'MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441',
-      })
-      expect(result[2]).toBe('nick@ens.domains')
-      expect(result).toBeTruthy()
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "id": 60,
+            "name": "eth",
+            "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+          },
+          {
+            "id": 2,
+            "name": "ltc",
+            "value": "MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441",
+          },
+          "nick@ens.domains",
+        ]
+      `)
     })
     it('allows nested batch ccip', async () => {
       const result = await batch(
         goerliPublicClient,
         batch.batch(getAddressRecord.batch({ name: '1.offchainexample.eth' })),
       )
-      if (!result) throw new Error('No result')
-      expect(result[0]![0].value).toBe(
-        '0x41563129cDbbD0c5D3e1c86cf9563926b243834d',
-      )
+      expect(result).toMatchInlineSnapshot(`
+        [
+          [
+            {
+              "id": 60,
+              "name": "eth",
+              "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+            },
+          ],
+        ]
+      `)
     })
   })
 })

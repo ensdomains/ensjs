@@ -1,4 +1,4 @@
-import type { Hex } from 'viem'
+import type { BaseError, Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import type {
   GenericPassthrough,
@@ -15,25 +15,38 @@ import _getAbi, {
 } from './_getAbi.js'
 import universalWrapper from './universalWrapper.js'
 
-export type GetAbiRecordParameters = Prettify<InternalGetAbiParameters>
+export type GetAbiRecordParameters = Prettify<
+  InternalGetAbiParameters & {
+    /** Batch gateway URLs to use for resolving CCIP-read requests. */
+    gatewayUrls?: string[]
+  }
+>
 
 export type GetAbiRecordReturnType = Prettify<InternalGetAbiReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name }: GetAbiRecordParameters,
+  { name, gatewayUrls }: Omit<GetAbiRecordParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   const prData = _getAbi.encode(client, { name })
-  return universalWrapper.encode(client, { name, data: prData.data })
+  return universalWrapper.encode(client, {
+    name,
+    data: prData.data,
+    gatewayUrls,
+  })
 }
 
 const decode = async (
   client: ClientWithEns,
-  data: Hex,
+  data: Hex | BaseError,
   passthrough: GenericPassthrough,
+  { strict }: Pick<GetAbiRecordParameters, 'strict'>,
 ): Promise<GetAbiRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough)
-  return _getAbi.decode(client, urData.data)
+  const urData = await universalWrapper.decode(client, data, passthrough, {
+    strict,
+  })
+  if (!urData) return null
+  return _getAbi.decode(client, urData.data, { strict })
 }
 
 type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
@@ -59,7 +72,7 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  */
 const getAbiRecord = generateFunction({ encode, decode }) as ((
   client: ClientWithEns,
-  { name }: GetAbiRecordParameters,
+  { name, strict }: GetAbiRecordParameters,
 ) => Promise<GetAbiRecordReturnType>) &
   BatchableFunctionObject
 
