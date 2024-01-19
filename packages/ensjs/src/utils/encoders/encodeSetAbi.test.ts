@@ -13,7 +13,7 @@ describe('encodeSetAbi', () => {
     encodedData,
   }
 
-  it('encodes the setAbi function data correctly', () => {
+  it('encodes the setAbi function data correctly with null encodedData', async () => {
     const expected =
       '0x623195b01234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000'
     const result = encodeSetAbi(parameters)
