@@ -12,6 +12,13 @@ describe('encodeAbi', () => {
     expect(result.encodedData).toEqual('0x7b22666f6f223a22626172227d')
   })
 
+  // Null JSON data
+  it('encodes null JSON data', async () => {
+    const result = await encodeAbi({ encodeAs: 'json', data: null })
+    expect(result.contentType).toEqual(1)
+    expect(result.encodedData).toEqual('0x')
+  })
+
   it('encodes data as zlib', async () => {
     const data = { foo: 'bar' }
     const result = await encodeAbi({ encodeAs: 'zlib', data })
@@ -21,6 +28,13 @@ describe('encodeAbi', () => {
     )
   })
 
+  // Null zlib data
+  it('encodes null zlib data', async () => {
+    const result = await encodeAbi({ encodeAs: 'zlib', data: null })
+    expect(result.contentType).toEqual(2)
+    expect(result.encodedData).toEqual('0x')
+  })
+
   it('encodes data as cbor', async () => {
     const data = { foo: 'bar' }
     const result = await encodeAbi({ encodeAs: 'cbor', data })
@@ -28,11 +42,25 @@ describe('encodeAbi', () => {
     expect(result.encodedData).toEqual('0xa163666f6f63626172')
   })
 
+  // Null CBOR data
+  it('encodes null CBOR data', async () => {
+    const result = await encodeAbi({ encodeAs: 'cbor', data: null })
+    expect(result.contentType).toEqual(4)
+    expect(result.encodedData).toEqual('0x')
+  })
+
   it('encodes data as uri', async () => {
     const data = 'foo=bar'
     const result = await encodeAbi({ encodeAs: 'uri', data })
     expect(result.contentType).toEqual(8)
     expect(result.encodedData).toEqual('0x666f6f3d626172')
+  })
+
+  // Null URI data
+  it('encodes null URI data', async () => {
+    const result = await encodeAbi({ encodeAs: 'uri', data: null })
+    expect(result.contentType).toEqual(8)
+    expect(result.encodedData).toEqual('0x')
   })
 })
 
