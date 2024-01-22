@@ -11,6 +11,16 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
+type AssignI<T, U> = {
+  [K in keyof T as K extends keyof U
+    ? U[K] extends void
+      ? never
+      : K
+    : K]: K extends keyof U ? U[K] : T[K]
+}
+
+export type Assign<T, U> = AssignI<T, U> & U
+
 export type SimpleTransactionRequest = {
   [P in keyof Pick<TransactionRequest, 'to' | 'data'>]-?: Exclude<
     TransactionRequest[P],

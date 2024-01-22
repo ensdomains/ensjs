@@ -2,7 +2,6 @@ import {
   createWalletClient,
   type Account,
   type Address,
-  type Chain,
   type Client,
   type ClientConfig,
   type ParseAccount,
@@ -11,23 +10,30 @@ import {
   type WalletRpcSchema,
 } from 'viem'
 import { addEnsContracts } from '../contracts/addEnsContracts.js'
-import type { ChainWithEns } from '../contracts/consts.js'
-import type { Prettify } from '../types.js'
+import type {
+  ChainWithBaseContracts,
+  ChainWithEns,
+  CheckedChainWithEns,
+} from '../contracts/consts.js'
+import type { Assign, Prettify } from '../types.js'
 import { ensWalletActions, type EnsWalletActions } from './decorators/wallet.js'
 
 export type EnsWalletClientConfig<
   TTransport extends Transport,
-  TChain extends Chain,
+  TChain extends ChainWithBaseContracts,
   TAccountOrAddress extends Account | Address | undefined =
     | Account
     | Address
     | undefined,
-> = Pick<
-  ClientConfig<TTransport, TChain, TAccountOrAddress>,
-  'account' | 'chain' | 'key' | 'name' | 'pollingInterval' | 'transport'
-> & {
-  chain: TChain
-}
+> = Assign<
+  Pick<
+    ClientConfig<TTransport, TChain, TAccountOrAddress>,
+    'account' | 'chain' | 'key' | 'name' | 'pollingInterval' | 'transport'
+  >,
+  {
+    chain: TChain
+  }
+>
 
 export type EnsWalletClient<
   TTransport extends Transport = Transport,
@@ -61,7 +67,7 @@ export type EnsWalletClient<
  */
 export const createEnsWalletClient = <
   TTransport extends Transport,
-  TChain extends Chain,
+  TChain extends ChainWithBaseContracts,
   TAccountOrAddress extends Account | Address | undefined = undefined,
 >({
   account,
@@ -76,12 +82,12 @@ export const createEnsWalletClient = <
   TAccountOrAddress
 >): EnsWalletClient<
   TTransport,
-  ChainWithEns<TChain>,
+  CheckedChainWithEns<TChain>,
   ParseAccount<TAccountOrAddress>
 > => {
   return createWalletClient({
     account,
-    chain: addEnsContracts<TChain>(chain),
+    chain: addEnsContracts(chain),
     key,
     name,
     pollingInterval,
