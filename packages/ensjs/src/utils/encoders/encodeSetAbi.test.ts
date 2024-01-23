@@ -4,8 +4,8 @@ import { encodeSetAbi, type EncodeSetAbiParameters } from './encodeSetAbi.js'
 describe('encodeSetAbi', () => {
   const namehash =
     '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
-  const contentType = 0
-  const encodedData = null
+  const contentType = 1
+  const encodedData = '0x'
 
   const parameters: EncodeSetAbiParameters = {
     namehash,
@@ -13,9 +13,9 @@ describe('encodeSetAbi', () => {
     encodedData,
   }
 
-  it('encodes the setAbi function data correctly', () => {
+  it('encodes the setAbi function data correctly with null encodedData', async () => {
     const expected =
-      '0x623195b01234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000'
+      '0x623195b01234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000'
     const result = encodeSetAbi(parameters)
     expect(result).toEqual(expected)
   })

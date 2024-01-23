@@ -1,13 +1,18 @@
+import type { Chain } from 'viem'
 import { getChainContractAddress as _getChainContractAddress } from 'viem/utils'
-import type { ChainWithEns } from './consts.js'
 
-type ChainClient<TChain extends ChainWithEns> = {
-  chain: TChain
+type ExtractContract<TClient> = TClient extends {
+  chain: { contracts: infer C }
 }
+  ? C extends Record<string, { address: string }>
+    ? C
+    : never
+  : never
 
 export const getChainContractAddress = <
-  TChain extends ChainWithEns,
-  TClient extends ChainClient<TChain>,
+  const TClient extends { chain: Chain },
+  TContracts extends ExtractContract<TClient> = ExtractContract<TClient>,
+  TContract extends keyof TContracts = keyof TContracts,
 >({
   blockNumber,
   client,
@@ -15,5 +20,10 @@ export const getChainContractAddress = <
 }: {
   blockNumber?: bigint
   client: TClient
-  contract: Extract<keyof TChain['contracts'], string>
-}) => _getChainContractAddress({ blockNumber, chain: client.chain, contract })
+  contract: TContract
+}) =>
+  _getChainContractAddress({
+    blockNumber,
+    chain: client.chain,
+    contract: contract as string,
+  }) as TContracts[TContract]['address']

@@ -6,6 +6,7 @@ import type {
   Transport,
   WalletClient,
 } from 'viem'
+import type { Assign, Prettify } from '../types.js'
 
 type ChainContract = {
   address: Address
@@ -177,12 +178,21 @@ export type ChainWithEns<TChain extends Chain = Chain> = TChain & {
   subgraphs: Subgraphs
 }
 
+export type ChainWithBaseContracts = Assign<
+  Omit<Chain, 'contracts'>,
+  {
+    contracts: BaseChainContracts
+  }
+>
+
 export type CheckedChainWithEns<TChain extends Chain> =
   TChain['network'] extends SupportedChain
-    ? TChain & {
-        contracts: (typeof addresses)[TChain['network']]
-        subgraphs: (typeof subgraphs)[TChain['network']]
-      }
+    ? TChain['contracts'] extends BaseChainContracts
+      ? TChain & {
+          contracts: Prettify<(typeof addresses)[TChain['network']]>
+          subgraphs: (typeof subgraphs)[TChain['network']]
+        }
+      : never
     : never
 
 export type ClientWithEns<

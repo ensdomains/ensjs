@@ -1,4 +1,5 @@
 import { generateRecordCallArray } from './generateRecordCallArray.js'
+import { encodeAbi } from './index.js'
 import { namehash } from './normalise.js'
 
 it('generates a record call array', () => {
@@ -44,18 +45,6 @@ it('adds contentHash call when contentHash is defined', () => {
     ]
   `)
 })
-it('adds abi call when abi is null', () => {
-  expect(
-    generateRecordCallArray({
-      namehash: namehash('test.eth'),
-      abi: null,
-    }),
-  ).toMatchInlineSnapshot(`
-    [
-      "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
-    ]
-  `)
-})
 it('does not add abi call when abi is undefined', () => {
   expect(
     generateRecordCallArray({
@@ -87,6 +76,32 @@ it('adds coin calls when coins array is defined and not empty', () => {
   ).toMatchInlineSnapshot(`
     [
       "0x8b95dd71eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000014f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000",
+    ]
+  `)
+})
+it('adds abi call when data is null', async () => {
+  const result = await encodeAbi({ encodeAs: 'uri', data: null })
+  expect(
+    generateRecordCallArray({
+      namehash: namehash('test.eth'),
+      abi: result,
+    }),
+  ).toMatchInlineSnapshot(`
+    [
+      "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+    ]
+  `)
+})
+it('adds abi call when data is not empty', async () => {
+  const result = await encodeAbi({ encodeAs: 'json', data: { foo: 'bar' } })
+  expect(
+    generateRecordCallArray({
+      namehash: namehash('test.eth'),
+      abi: result,
+    }),
+  ).toMatchInlineSnapshot(`
+    [
+      "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d7b22666f6f223a22626172227d00000000000000000000000000000000000000",
     ]
   `)
 })

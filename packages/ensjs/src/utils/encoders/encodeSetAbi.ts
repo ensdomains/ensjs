@@ -4,7 +4,7 @@ import type { EncodedAbi } from './encodeAbi.js'
 
 export type EncodeSetAbiParameters = {
   namehash: Hex
-} & (EncodedAbi | { contentType: 0; encodedData: null })
+} & EncodedAbi
 
 export type EncodeSetAbiReturnType = Hex
 
@@ -16,6 +16,6 @@ export const encodeSetAbi = ({
   return encodeFunctionData({
     abi: publicResolverSetAbiSnippet,
     functionName: 'setABI',
-    args: [namehash, BigInt(contentType), encodedData ?? '0x'],
+    args: [namehash, BigInt(contentType), encodedData],
   })
 }
