@@ -35,6 +35,7 @@ type ContractName =
   | 'DNSSECImpl'
   | 'LegacyDNSRegistrar'
   | 'LegacyDNSSECImpl'
+  | 'Root'
 
 export const deploymentAddresses = JSON.parse(
   process.env.DEPLOYMENT_ADDRESSES!,
@@ -91,6 +92,50 @@ export const localhost = {
   },
 } as const
 
+export const localhostWithLegacyDns = {
+  ..._localhost,
+  contracts: {
+    ensRegistry: {
+      address: deploymentAddresses.ENSRegistry,
+    },
+    ensUniversalResolver: {
+      address: deploymentAddresses.UniversalResolver,
+    },
+    multicall3: {
+      address: deploymentAddresses.Multicall,
+    },
+    ensBaseRegistrarImplementation: {
+      address: deploymentAddresses.BaseRegistrarImplementation,
+    },
+    ensLegacyDnsRegistrar: {
+      address: deploymentAddresses.LegacyDNSRegistrar,
+    },
+    ensEthRegistrarController: {
+      address: deploymentAddresses.ETHRegistrarController,
+    },
+    ensNameWrapper: {
+      address: deploymentAddresses.NameWrapper,
+    },
+    ensPublicResolver: {
+      address: deploymentAddresses.PublicResolver,
+    },
+    ensReverseRegistrar: {
+      address: deploymentAddresses.ReverseRegistrar,
+    },
+    ensBulkRenewal: {
+      address: deploymentAddresses.StaticBulkRenewal,
+    },
+    ensLegacyDnssecImpl: {
+      address: deploymentAddresses.LegacyDNSSECImpl,
+    },
+  },
+  subgraphs: {
+    ens: {
+      url: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+    },
+  },
+} as const
+
 const transport = http('http://localhost:8545')
 
 export const publicClient: PublicClient<typeof transport, typeof localhost> =
@@ -98,6 +143,14 @@ export const publicClient: PublicClient<typeof transport, typeof localhost> =
     chain: localhost,
     transport,
   })
+
+export const publicClientWithLegacyDns: PublicClient<
+  typeof transport,
+  typeof localhostWithLegacyDns
+> = createPublicClient({
+  chain: localhostWithLegacyDns,
+  transport,
+})
 
 export const testClient: TestClient<
   'anvil',
@@ -115,6 +168,15 @@ export const walletClient: WalletClient<
   Account
 > = createWalletClient({
   chain: localhost,
+  transport,
+})
+
+export const walletClientWithLegacyDns: WalletClient<
+  typeof transport,
+  typeof localhostWithLegacyDns,
+  Account
+> = createWalletClient({
+  chain: localhostWithLegacyDns,
   transport,
 })
 

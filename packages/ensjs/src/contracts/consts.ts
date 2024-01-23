@@ -17,11 +17,13 @@ export const supportedChains = ['homestead', 'goerli', 'sepolia'] as const
 export const supportedContracts = [
   'ensBaseRegistrarImplementation',
   'ensDnsRegistrar',
+  'ensLegacyDnsRegistrar',
   'ensEthRegistrarController',
   'ensNameWrapper',
   'ensPublicResolver',
   'ensReverseRegistrar',
   'ensBulkRenewal',
+  'ensLegacyDnssecImpl',
   'ensDnssecImpl',
   'ensUniversalResolver',
   'ensRegistry',
@@ -29,6 +31,11 @@ export const supportedContracts = [
 
 export type SupportedChain = (typeof supportedChains)[number]
 export type SupportedContract = (typeof supportedContracts)[number]
+
+type LegacyDnsContracts = 'ensLegacyDnsRegistrar' | 'ensLegacyDnssecImpl'
+type DnsContracts = 'ensDnsRegistrar' | 'ensDnssecImpl'
+type OptionalContracts = LegacyDnsContracts | DnsContracts
+type RequiredContracts = Exclude<SupportedContract, OptionalContracts>
 
 export const addresses = {
   homestead: {
@@ -38,7 +45,7 @@ export const addresses = {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
     },
-    ensDnsRegistrar: {
+    ensLegacyDnsRegistrar: {
       address: '0x58774Bb8acD458A640aF0B88238369A167546ef2',
     },
     ensEthRegistrarController: {
@@ -56,7 +63,7 @@ export const addresses = {
     ensBulkRenewal: {
       address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A',
     },
-    ensDnssecImpl: {
+    ensLegacyDnssecImpl: {
       address: '0x21745FF62108968fBf5aB1E07961CC0FCBeB2364',
     },
     ensUniversalResolver: {
@@ -129,7 +136,11 @@ export const addresses = {
   },
 } as const satisfies Record<
   SupportedChain,
-  Record<SupportedContract, { address: Address }>
+  Record<RequiredContracts, { address: Address }> &
+    (
+      | Record<LegacyDnsContracts, { address: Address }>
+      | Record<DnsContracts, { address: Address }>
+    )
 >
 
 type Subgraphs = {
@@ -158,13 +169,15 @@ export const subgraphs = {
 
 type EnsChainContracts = {
   ensBaseRegistrarImplementation: ChainContract
-  ensDnsRegistrar: ChainContract
+  ensDnsRegistrar?: ChainContract
+  ensLegacyDnsRegistrar?: ChainContract
   ensEthRegistrarController: ChainContract
   ensNameWrapper: ChainContract
   ensPublicResolver: ChainContract
   ensReverseRegistrar: ChainContract
   ensBulkRenewal: ChainContract
-  ensDnssecImpl: ChainContract
+  ensDnssecImpl?: ChainContract
+  ensLegacyDnssecImpl?: ChainContract
 }
 
 type BaseChainContracts = {
@@ -173,7 +186,10 @@ type BaseChainContracts = {
   ensRegistry: ChainContract
 }
 
-export type ChainWithEns<TChain extends Chain = Chain> = TChain & {
+export type ChainWithEns<TChain extends Chain = Chain> = Omit<
+  TChain,
+  'contracts'
+> & {
   contracts: BaseChainContracts & EnsChainContracts
   subgraphs: Subgraphs
 }

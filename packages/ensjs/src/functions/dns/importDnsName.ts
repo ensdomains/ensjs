@@ -6,6 +6,7 @@ import {
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  type WalletClient,
 } from 'viem'
 import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
 import {
@@ -13,6 +14,10 @@ import {
   dnsRegistrarProveAndClaimWithResolverSnippet,
 } from '../../contracts/dnsRegistrar.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import {
+  legacyDnsRegistrarProveAndClaimSnippet,
+  legacyDnsRegistrarProveAndClaimWithResolverSnippet,
+} from '../../contracts/legacyDnsRegistrar.js'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
   Prettify,
@@ -63,7 +68,7 @@ export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
-  wallet: WalletWithEns<Transport, TChain, TAccount>,
+  wallet: WalletClient<Transport, TChain, TAccount>,
   {
     name,
     dnsImportData,
@@ -72,10 +77,15 @@ export const makeFunctionData = <
   }: ImportDnsNameDataParameters,
 ): ImportDnsNameDataReturnType => {
   const hexEncodedName = toHex(packetToBytes(name))
-  const dnsRegistrarAddress = getChainContractAddress({
-    client: wallet,
-    contract: 'ensDnsRegistrar',
-  })
+  const dnsRegistrarAddress = dnsImportData.isLegacy
+    ? getChainContractAddress({
+        client: wallet,
+        contract: 'ensLegacyDnsRegistrar',
+      })
+    : getChainContractAddress({
+        client: wallet,
+        contract: 'ensDnsRegistrar',
+      })
 
   if (!address) {
     if (resolverAddress)
@@ -85,12 +95,25 @@ export const makeFunctionData = <
         details:
           'resolverAddress cannot be specified when claiming without an address',
       })
+    if (dnsImportData.isLegacy)
+      return {
+        to: dnsRegistrarAddress,
+        data: encodeFunctionData({
+          abi: legacyDnsRegistrarProveAndClaimSnippet,
+          functionName: 'proveAndClaim',
+          args: [
+            hexEncodedName,
+            dnsImportData.data.rrsets,
+            toHex(dnsImportData.data.proof),
+          ],
+        }),
+      }
     return {
       to: dnsRegistrarAddress,
       data: encodeFunctionData({
         abi: dnsRegistrarProveAndClaimSnippet,
         functionName: 'proveAndClaim',
-        args: [hexEncodedName, dnsImportData],
+        args: [hexEncodedName, dnsImportData.data],
       }),
     }
   }
@@ -99,12 +122,28 @@ export const makeFunctionData = <
     resolverAddress ||
     getChainContractAddress({ client: wallet, contract: 'ensPublicResolver' })
 
+  if (dnsImportData.isLegacy)
+    return {
+      to: dnsRegistrarAddress,
+      data: encodeFunctionData({
+        abi: legacyDnsRegistrarProveAndClaimWithResolverSnippet,
+        functionName: 'proveAndClaimWithResolver',
+        args: [
+          hexEncodedName,
+          dnsImportData.data.rrsets,
+          toHex(dnsImportData.data.proof),
+          resolverAddress_,
+          address,
+        ],
+      }),
+    }
+
   return {
     to: dnsRegistrarAddress,
     data: encodeFunctionData({
       abi: dnsRegistrarProveAndClaimWithResolverSnippet,
       functionName: 'proveAndClaimWithResolver',
-      args: [hexEncodedName, dnsImportData, resolverAddress_, address],
+      args: [hexEncodedName, dnsImportData.data, resolverAddress_, address],
     }),
   }
 }

@@ -1,4 +1,4 @@
-import type { Chain } from 'viem'
+import type { Address, Chain } from 'viem'
 import { getChainContractAddress as _getChainContractAddress } from 'viem/utils'
 
 type ExtractContract<TClient> = TClient extends {
@@ -12,7 +12,8 @@ type ExtractContract<TClient> = TClient extends {
 export const getChainContractAddress = <
   const TClient extends { chain: Chain },
   TContracts extends ExtractContract<TClient> = ExtractContract<TClient>,
-  TContract extends keyof TContracts = keyof TContracts,
+  TContractName extends keyof TContracts = keyof TContracts,
+  TContract extends TContracts[TContractName] = TContracts[TContractName],
 >({
   blockNumber,
   client,
@@ -20,10 +21,14 @@ export const getChainContractAddress = <
 }: {
   blockNumber?: bigint
   client: TClient
-  contract: TContract
+  contract: TContractName
 }) =>
   _getChainContractAddress({
     blockNumber,
     chain: client.chain,
     contract: contract as string,
-  }) as TContracts[TContract]['address']
+  }) as TContract extends { address: infer A }
+    ? A extends Address
+      ? A
+      : never
+    : Address
