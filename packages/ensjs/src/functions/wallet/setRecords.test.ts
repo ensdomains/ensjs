@@ -144,6 +144,28 @@ it('should return a transaction to the resolver and delete successfully', async 
   expect(records.coins).toHaveLength(0)
   expect(records.texts).toHaveLength(0)
 })
+it('should return a transaction to the resolver and delete all abis successfully', async () => {
+  const tx = await setRecords(walletClient, {
+    name: 'with-type-all-abi.eth',
+    resolverAddress: (await getResolver(publicClient, {
+      name: 'with-type-all-abi.eth',
+    }))!,
+    abi: [
+      await encodeAbi({ encodeAs: 'json', data: null }),
+      await encodeAbi({ encodeAs: 'cbor', data: null }),
+      await encodeAbi({ encodeAs: 'zlib', data: null }),
+      await encodeAbi({ encodeAs: 'uri', data: null }),
+    ],
+    account: accounts[1],
+  })
+  await waitForTransaction(tx)
+
+  const records = await getRecords(publicClient, {
+    name: 'test123.eth',
+    abi: true,
+  })
+  expect(records.abi).toBeNull()
+})
 it('should error if there are no records to set', async () => {
   await expect(
     setRecords(walletClient, {

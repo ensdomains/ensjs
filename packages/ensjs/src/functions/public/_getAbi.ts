@@ -19,22 +19,25 @@ import { namehash } from '../../utils/normalise.js'
 export type InternalGetAbiParameters = {
   /** Name to get ABI record for */
   name: string
+  /** Supported content types as bitwise
+   * ID 1: JSON
+   * ID 2: zlib compressed JSON
+   * ID 4: CBOR
+   * ID 8: URI
+   */
+  supportedContentTypes?: bigint
   /** Whether or not to throw decoding errors */
   strict?: boolean
 }
 
 export type InternalGetAbiReturnType = Prettify<DecodedAbi | null>
 
-// Supported content types as bitwise OR
-// ID 1: JSON
-// ID 2: zlib compressed JSON
-// ID 4: CBOR
-// ID 8: URI
-const supportedContentTypes = 0xfn
-
 const encode = (
   _client: ClientWithEns,
-  { name }: Omit<InternalGetAbiParameters, 'strict'>,
+  {
+    name,
+    supportedContentTypes = 0xfn,
+  }: Omit<InternalGetAbiParameters, 'strict'>,
 ): SimpleTransactionRequest => {
   return {
     to: EMPTY_ADDRESS,

@@ -26,7 +26,7 @@ export type RecordOptions = Prettify<{
   /** Array of coin records */
   coins?: Omit<EncodeSetAddrParameters, 'namehash'>[]
   /** ABI value */
-  abi?: EncodedAbi
+  abi?: EncodedAbi | EncodedAbi[]
 }>
 
 export const generateRecordCallArray = ({
@@ -49,8 +49,11 @@ export const generateRecordCallArray = ({
   }
 
   if (abi !== undefined) {
-    const data = encodeSetAbi({ namehash, ...abi } as EncodeSetAbiParameters)
-    if (data) calls.push(data)
+    const abis = Array.isArray(abi) ? abi : [abi]
+    for (const abi_ of abis) {
+      const data = encodeSetAbi({ namehash, ...abi_ } as EncodeSetAbiParameters)
+      if (data) calls.push(data)
+    }
   }
 
   if (texts && texts.length > 0) {
