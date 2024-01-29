@@ -30,17 +30,6 @@ beforeAll(async () => {
 beforeEach(async () => {
   snapshot = await testClient.snapshot()
 
-  // const tx = await walletClient.writeContract({
-  //   account: accounts[1],
-  //   address: deploymentAddresses.Root,
-  //   abi: parseAbi([
-  //     'function setSubnodeOwner(bytes32 label, address owner) external',
-  //   ] as const),
-  //   functionName: 'setSubnodeOwner',
-  //   args: [labelhash('xyz'), deploymentAddresses.DNSRegistrar],
-  // })
-  // await waitForTransaction(tx)
-
   await testClient.impersonateAccount({ address })
   await testClient.setBalance({
     address,
@@ -115,18 +104,6 @@ it('should import a DNS name with an address, using a custom resolver', async ()
   })
 
   const resolverAddress = deploymentAddresses.PublicResolver
-
-  const approveTx = await walletClient.writeContract({
-    account: address,
-    address: resolverAddress,
-    abi: parseAbi([
-      'function setApprovalForAll(address operator, bool approved) external',
-    ] as const),
-    functionName: 'setApprovalForAll',
-    args: [deploymentAddresses.DNSRegistrar, true],
-  })
-  const approveReceipt = await waitForTransaction(approveTx)
-  expect(approveReceipt.status).toBe('success')
 
   const tx = await importDnsName(walletClient, {
     name,
