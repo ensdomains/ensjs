@@ -103,7 +103,7 @@ export const makeCommitmentTuple = ({
     reverseRecord &&
     !coins.find(
       (c) =>
-        c.coin === 'ETH' ||
+        (typeof c.coin === 'string' && c.coin.toLowerCase() === 'eth') ||
         (typeof c.coin === 'string' ? parseInt(c.coin) === 60 : c.coin === 60),
     )
   ) {
