@@ -1,13 +1,15 @@
 import {
   createClient,
-  type Chain,
   type Client,
   type ClientConfig,
   type PublicRpcSchema,
   type Transport,
 } from 'viem'
 import { addEnsContracts } from '../contracts/addEnsContracts.js'
-import type { ChainWithEns } from '../contracts/consts.js'
+import type {
+  ChainWithBaseContracts,
+  ChainWithEns,
+} from '../contracts/consts.js'
 import type { Prettify } from '../types.js'
 import { ensPublicActions, type EnsPublicActions } from './decorators/public.js'
 import {
@@ -17,7 +19,7 @@ import {
 
 export type EnsPublicClientConfig<
   TTransport extends Transport = Transport,
-  TChain extends Chain = Chain,
+  TChain extends ChainWithBaseContracts = ChainWithBaseContracts,
 > = Pick<
   ClientConfig<TTransport, TChain>,
   'batch' | 'key' | 'name' | 'pollingInterval' | 'transport'
@@ -56,7 +58,7 @@ export type EnsPublicClient<
  */
 export const createEnsPublicClient = <
   TTransport extends Transport,
-  TChain extends Chain,
+  TChain extends ChainWithBaseContracts,
 >({
   batch,
   chain,

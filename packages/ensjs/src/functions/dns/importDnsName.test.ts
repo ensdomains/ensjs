@@ -1,7 +1,8 @@
-import { parseEther, type Address, type Hex } from 'viem'
+import { parseAbi, parseEther, type Address, type Hex } from 'viem'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { getVersion } from '../../errors/error-utils.js'
 import {
+  deploymentAddresses,
   publicClient,
   testClient,
   waitForTransaction,
@@ -9,7 +10,9 @@ import {
 } from '../../test/addTestContracts.js'
 import getOwner from '../public/getOwner.js'
 import getResolver from '../public/getResolver.js'
-import getDnsImportData from './getDnsImportData.js'
+import getDnsImportData, {
+  type GetDnsImportDataReturnType,
+} from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'
 
 const name = 'taytems.xyz'
@@ -17,13 +20,32 @@ const address = '0x8e8Db5CcEF88cca9d624701Db544989C996E3216'
 
 let snapshot: Hex
 let accounts: Address[]
+let dnsImportData: GetDnsImportDataReturnType
 
 beforeAll(async () => {
   accounts = await walletClient.getAddresses()
+  dnsImportData = await getDnsImportData(publicClient, { name })
 })
 
 beforeEach(async () => {
   snapshot = await testClient.snapshot()
+
+  await testClient.impersonateAccount({ address })
+  await testClient.setBalance({
+    address,
+    value: parseEther('1'),
+  })
+  const approveTx = await walletClient.writeContract({
+    account: address,
+    address: deploymentAddresses.PublicResolver,
+    abi: parseAbi([
+      'function setApprovalForAll(address operator, bool approved) external',
+    ] as const),
+    functionName: 'setApprovalForAll',
+    args: [deploymentAddresses.DNSRegistrar, true],
+  })
+  await waitForTransaction(approveTx)
+  await testClient.stopImpersonatingAccount({ address })
 })
 
 afterEach(async () => {
@@ -36,7 +58,7 @@ jest.retryTimes(2)
 it('should import a DNS name with no address', async () => {
   const tx = await importDnsName(walletClient, {
     name,
-    dnsImportData: await getDnsImportData(publicClient, { name }),
+    dnsImportData,
     account: accounts[0],
   })
   expect(tx).toBeTruthy()
@@ -46,6 +68,7 @@ it('should import a DNS name with no address', async () => {
   const owner = await getOwner(publicClient, { name })
   expect(owner!.owner).toBe(address)
 })
+
 it('should import a DNS name with an address, using default resolver', async () => {
   await testClient.impersonateAccount({ address })
   await testClient.setBalance({
@@ -56,7 +79,7 @@ it('should import a DNS name with an address, using default resolver', async () 
   const tx = await importDnsName(walletClient, {
     name,
     address,
-    dnsImportData: await getDnsImportData(publicClient, { name }),
+    dnsImportData,
     account: address,
   })
   expect(tx).toBeTruthy()
@@ -80,16 +103,14 @@ it('should import a DNS name with an address, using a custom resolver', async ()
     value: parseEther('1'),
   })
 
-  const legacyResolverAddress = JSON.parse(
-    process.env.DEPLOYMENT_ADDRESSES!,
-  ).LegacyPublicResolver
+  const resolverAddress = deploymentAddresses.PublicResolver
 
   const tx = await importDnsName(walletClient, {
     name,
     address,
-    dnsImportData: await getDnsImportData(publicClient, { name }),
+    dnsImportData,
     account: address,
-    resolverAddress: legacyResolverAddress,
+    resolverAddress,
   })
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
@@ -98,8 +119,9 @@ it('should import a DNS name with an address, using a custom resolver', async ()
   const owner = await getOwner(publicClient, { name })
   expect(owner!.owner).toBe(address)
   const resolver = await getResolver(publicClient, { name })
-  expect(resolver).toBe(legacyResolverAddress)
+  expect(resolver).toBe(resolverAddress)
 })
+
 it('should throw error if resolver is specified when claiming without an address', async () => {
   await expect(
     importDnsName(walletClient, {

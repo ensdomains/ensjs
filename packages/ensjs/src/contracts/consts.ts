@@ -6,6 +6,7 @@ import type {
   Transport,
   WalletClient,
 } from 'viem'
+import type { Assign, Prettify } from '../types.js'
 
 type ChainContract = {
   address: Address
@@ -56,7 +57,7 @@ export const addresses = {
       address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A',
     },
     ensDnssecImpl: {
-      address: '0x21745FF62108968fBf5aB1E07961CC0FCBeB2364',
+      address: '0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5',
     },
     ensUniversalResolver: {
       address: '0x8cab227b1162f03b8338331adaad7aadc83b895e',
@@ -102,7 +103,7 @@ export const addresses = {
       address: '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85',
     },
     ensDnsRegistrar: {
-      address: '0x537625B0D7901FD20C57850d61580Bf1624Ef146',
+      address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
     },
     ensEthRegistrarController: {
       address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
@@ -120,7 +121,7 @@ export const addresses = {
       address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
     },
     ensDnssecImpl: {
-      address: '0x7b3ada1c8f012bae747cf99d6cbbf70d040b84cf',
+      address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
     },
     ensUniversalResolver: {
       address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',
@@ -172,17 +173,29 @@ type BaseChainContracts = {
   ensRegistry: ChainContract
 }
 
-export type ChainWithEns<TChain extends Chain = Chain> = TChain & {
+export type ChainWithEns<TChain extends Chain = Chain> = Omit<
+  TChain,
+  'contracts'
+> & {
   contracts: BaseChainContracts & EnsChainContracts
   subgraphs: Subgraphs
 }
 
+export type ChainWithBaseContracts = Assign<
+  Omit<Chain, 'contracts'>,
+  {
+    contracts: BaseChainContracts
+  }
+>
+
 export type CheckedChainWithEns<TChain extends Chain> =
   TChain['network'] extends SupportedChain
-    ? TChain & {
-        contracts: (typeof addresses)[TChain['network']]
-        subgraphs: (typeof subgraphs)[TChain['network']]
-      }
+    ? TChain['contracts'] extends BaseChainContracts
+      ? TChain & {
+          contracts: Prettify<(typeof addresses)[TChain['network']]>
+          subgraphs: (typeof subgraphs)[TChain['network']]
+        }
+      : never
     : never
 
 export type ClientWithEns<

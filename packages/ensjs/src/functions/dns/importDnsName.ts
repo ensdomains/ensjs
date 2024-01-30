@@ -1,5 +1,4 @@
 import {
-  bytesToHex,
   encodeFunctionData,
   toHex,
   type Account,
@@ -7,6 +6,7 @@ import {
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  type WalletClient,
 } from 'viem'
 import type { ChainWithEns, WalletWithEns } from '../../contracts/consts.js'
 import {
@@ -64,7 +64,7 @@ export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
-  wallet: WalletWithEns<Transport, TChain, TAccount>,
+  wallet: WalletClient<Transport, TChain, TAccount>,
   {
     name,
     dnsImportData,
@@ -72,10 +72,6 @@ export const makeFunctionData = <
     resolverAddress,
   }: ImportDnsNameDataParameters,
 ): ImportDnsNameDataReturnType => {
-  const data = dnsImportData.rrsets.map((rrset) => ({
-    rrset: bytesToHex(rrset.rrset),
-    sig: bytesToHex(rrset.sig),
-  }))
   const hexEncodedName = toHex(packetToBytes(name))
   const dnsRegistrarAddress = getChainContractAddress({
     client: wallet,
@@ -95,7 +91,7 @@ export const makeFunctionData = <
       data: encodeFunctionData({
         abi: dnsRegistrarProveAndClaimSnippet,
         functionName: 'proveAndClaim',
-        args: [hexEncodedName, data, bytesToHex(dnsImportData.proof)],
+        args: [hexEncodedName, dnsImportData],
       }),
     }
   }
@@ -109,13 +105,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: dnsRegistrarProveAndClaimWithResolverSnippet,
       functionName: 'proveAndClaimWithResolver',
-      args: [
-        hexEncodedName,
-        data,
-        bytesToHex(dnsImportData.proof),
-        resolverAddress_,
-        address,
-      ],
+      args: [hexEncodedName, dnsImportData, resolverAddress_, address],
     }),
   }
 }
