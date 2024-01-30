@@ -13,7 +13,12 @@ type ChainContract = {
   blockCreated?: number
 }
 
-export const supportedChains = ['homestead', 'goerli', 'sepolia'] as const
+export const supportedChains = [
+  'homestead',
+  'goerli',
+  'sepolia',
+  'holesky',
+] as const
 export const supportedContracts = [
   'ensBaseRegistrarImplementation',
   'ensBulkRenewal',
@@ -127,6 +132,38 @@ export const addresses = {
       address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',
     },
   },
+  holesky: {
+    ensBaseRegistrarImplementation: {
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
+    },
+    ensBulkRenewal: {
+      address: '0xbc4cfB363F948E64Cd73Da6438F64CB37E2e33d1',
+    },
+    ensDnsRegistrar: {
+      address: '0x458d278AEd4cE82BAeC384170f39198b01B8351c',
+    },
+    ensDnssecImpl: {
+      address: '0x283af0b28c62c092c9727f1ee09c02ca627eb7f5',
+    },
+    ensEthRegistrarController: {
+      address: '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583',
+    },
+    ensNameWrapper: {
+      address: '0xab50971078225D365994dc1Edcb9b7FD72Bb4862',
+    },
+    ensPublicResolver: {
+      address: '0x9010A27463717360cAD99CEA8bD39b8705CCA238',
+    },
+    ensRegistry: {
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    ensReverseRegistrar: {
+      address: '0x132AC0B116a73add4225029D1951A9A707Ef673f',
+    },
+    ensUniversalResolver: {
+      address: '0x2548a7E09deE955c4d97688dcB6C5b24085725f5',
+    },
+  },
 } as const satisfies Record<
   SupportedChain,
   Record<SupportedContract, { address: Address }>
@@ -152,6 +189,11 @@ export const subgraphs = {
   sepolia: {
     ens: {
       url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
+    },
+  },
+  holesky: {
+    ens: {
+      url: 'https://api.studio.thegraph.com/query/49574/ensholesky/version/latest',
     },
   },
 } as const satisfies Record<SupportedChain, Subgraphs>
