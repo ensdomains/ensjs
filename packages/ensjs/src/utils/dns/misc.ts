@@ -11,8 +11,7 @@ export enum DnsResponseStatus {
   NOTAUTH = 9,
   NOTZONE = 10,
   DSOTYPENI = 11,
-  BADVERS = 16,
-  BADSIG = 16,
+  BADVERS = 16, // also 16 = BADSIG but not important
   BADKEY = 17,
   BADTIME = 18,
   BADMODE = 19,
