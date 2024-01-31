@@ -7,11 +7,8 @@ import {
   DnsResponseStatusError,
 } from '../../errors/dns.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import {
-  DnsRecordType,
-  DnsResponseStatus,
-  type DnsResponse,
-} from '../../utils/dns.js'
+import { getDnsTxtRecords } from '../../utils/dns/getDnsTxtRecords.js'
+import { DnsRecordType, DnsResponseStatus } from '../../utils/dns/misc.js'
 import { getNameType } from '../../utils/getNameType.js'
 import type { Endpoint } from './types.js'
 
@@ -39,7 +36,7 @@ export type GetDnsOwnerReturnType = Address | null
  */
 const getDnsOwner = async ({
   name,
-  endpoint = 'https://cloudflare-dns.com/dns-query',
+  endpoint,
   strict,
 }: GetDnsOwnerParameters): Promise<GetDnsOwnerReturnType> => {
   const nameType = getNameType(name)
@@ -50,54 +47,43 @@ const getDnsOwner = async ({
       supportedNameTypes: ['other-2ld'],
     })
 
-  const response: DnsResponse = await fetch(
-    `${endpoint}?name=_ens.${name}.&type=TXT`,
-    {
-      method: 'GET',
-      headers: {
-        accept: 'application/dns-json',
-      },
-    },
-  ).then((res) => res.json())
+  try {
+    const response = await getDnsTxtRecords({ name: `_ens.${name}`, endpoint })
 
-  if (response.Status !== DnsResponseStatus.NOERROR) {
+    if (response.Status !== DnsResponseStatus.NOERROR)
+      throw new DnsResponseStatusError({
+        responseStatus: DnsResponseStatus[response.Status],
+      })
+
+    const addressRecord = response.Answer?.find(
+      (record) => record.type === DnsRecordType.TXT,
+    )
+    const unwrappedAddressRecord = addressRecord?.data?.replace(
+      /^"(.*)"$/g,
+      '$1',
+    )
+
+    if (response.AD === false)
+      throw new DnsDnssecVerificationFailedError({
+        record: unwrappedAddressRecord,
+      })
+
+    if (!addressRecord?.data) throw new DnsNoTxtRecordError()
+
+    if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g))
+      throw new DnsInvalidTxtRecordError({ record: unwrappedAddressRecord! })
+
+    const address = unwrappedAddressRecord!.slice(2)
+    const checksumAddress = getAddress(address)
+
+    if (address !== checksumAddress)
+      throw new DnsInvalidAddressChecksumError({ address })
+
+    return checksumAddress
+  } catch (error) {
     if (!strict) return null
-    throw new DnsResponseStatusError({
-      responseStatus: DnsResponseStatus[response.Status],
-    })
+    throw error
   }
-
-  const addressRecord = response.Answer?.find(
-    (record) => record.type === DnsRecordType.TXT,
-  )
-  const unwrappedAddressRecord = addressRecord?.data?.replace(/^"(.*)"$/g, '$1')
-
-  if (response.AD === false) {
-    if (!strict) return null
-    throw new DnsDnssecVerificationFailedError({
-      record: unwrappedAddressRecord,
-    })
-  }
-
-  if (!addressRecord?.data) {
-    if (!strict) return null
-    throw new DnsNoTxtRecordError()
-  }
-
-  if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g)) {
-    if (!strict) return null
-    throw new DnsInvalidTxtRecordError({ record: unwrappedAddressRecord! })
-  }
-
-  const address = unwrappedAddressRecord!.slice(2)
-  const checksumAddress = getAddress(address)
-
-  if (address !== checksumAddress) {
-    if (!strict) return null
-    throw new DnsInvalidAddressChecksumError({ address })
-  }
-
-  return checksumAddress
 }
 
 export default getDnsOwner
