@@ -1,4 +1,66 @@
+export const dnsRegistrarErrors = [
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'name',
+        type: 'bytes',
+      },
+    ],
+    name: 'InvalidPublicSuffix',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NoOwnerRecordFound',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'offset',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'length',
+        type: 'uint256',
+      },
+    ],
+    name: 'OffsetOutOfBoundsError',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'caller',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'PermissionDenied',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'PreconditionNotMet',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'StaleProof',
+    type: 'error',
+  },
+] as const
+
 export const dnsRegistrarProveAndClaimSnippet = [
+  ...dnsRegistrarErrors,
   {
     inputs: [
       {
@@ -18,10 +80,6 @@ export const dnsRegistrarProveAndClaimSnippet = [
         ],
         name: 'input',
         type: 'tuple[]',
-      },
-      {
-        name: 'proof',
-        type: 'bytes',
       },
     ],
     name: 'proveAndClaim',
@@ -32,6 +90,7 @@ export const dnsRegistrarProveAndClaimSnippet = [
 ] as const
 
 export const dnsRegistrarProveAndClaimWithResolverSnippet = [
+  ...dnsRegistrarErrors,
   {
     inputs: [
       {
@@ -41,20 +100,18 @@ export const dnsRegistrarProveAndClaimWithResolverSnippet = [
       {
         components: [
           {
+            internalType: 'bytes',
             name: 'rrset',
             type: 'bytes',
           },
           {
+            internalType: 'bytes',
             name: 'sig',
             type: 'bytes',
           },
         ],
         name: 'input',
         type: 'tuple[]',
-      },
-      {
-        name: 'proof',
-        type: 'bytes',
       },
       {
         name: 'resolver',

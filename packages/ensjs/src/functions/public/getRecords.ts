@@ -81,20 +81,18 @@ type WithCoinsResult = {
 }
 
 export type GetRecordsReturnType<
-  TTexts extends readonly string[] = readonly [string, ...string[]],
-  TCoins extends readonly (string | number)[] = readonly [
-    string | number,
-    ...(string | number)[],
-  ],
-  TContentHash extends boolean = true,
-  TAbi extends boolean = true,
+  TTexts extends readonly string[] | undefined = readonly string[],
+  TCoins extends readonly (string | number)[] | undefined = readonly (
+    | string
+    | number
+  )[],
+  TContentHash extends boolean | undefined = true,
+  TAbi extends boolean | undefined = true,
 > = Prettify<
   (TContentHash extends true ? WithContentHashResult : {}) &
     (TAbi extends true ? WithAbiResult : {}) &
-    (TTexts extends readonly [string, ...string[]] ? WithTextsResult : {}) &
-    (TCoins extends readonly [string | number, ...(string | number)[]]
-      ? WithCoinsResult
-      : {}) & {
+    (TTexts extends readonly string[] ? WithTextsResult : {}) &
+    (TCoins extends readonly (string | number)[] ? WithCoinsResult : {}) & {
       /** Resolver address used for fetch */
       resolverAddress: Address
     }
@@ -261,8 +259,8 @@ const createEmptyResult = <
   GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>,
   'texts' | 'coins' | 'abi' | 'contentHash'
 >) => ({
-  ...(texts && texts.length > 0 ? { texts: [] as DecodedText[] } : {}),
-  ...(coins && coins.length > 0 ? { coins: [] as DecodedAddr[] } : {}),
+  ...(texts ? { texts: [] as DecodedText[] } : {}),
+  ...(coins ? { coins: [] as DecodedAddr[] } : {}),
   ...(contentHash ? { contentHash: null } : {}),
   ...(abi ? { abi: null } : {}),
 })
@@ -347,13 +345,13 @@ const createRecordResult = (
 }
 
 const decode = async <
-  const TTexts extends readonly string[] = readonly string[],
-  const TCoins extends readonly (string | number)[] = readonly (
+  const TTexts extends readonly string[] | undefined = readonly string[],
+  const TCoins extends readonly (string | number)[] | undefined = readonly (
     | string
     | number
   )[],
-  const TContentHash extends boolean = true,
-  const TAbi extends boolean = true,
+  const TContentHash extends boolean | undefined = undefined,
+  const TAbi extends boolean | undefined = undefined,
 >(
   client: ClientWithEns,
   data: Hex | BaseError,
@@ -434,13 +432,10 @@ type BatchableFunctionObject = {
   encode: EncoderFunction
   decode: DecoderFunction
   batch: <
-    const TTexts extends readonly string[] = readonly string[],
-    const TCoins extends readonly (string | number)[] = readonly (
-      | string
-      | number
-    )[],
-    const TContentHash extends boolean = true,
-    const TAbi extends boolean = true,
+    const TTexts extends readonly string[] | undefined = undefined,
+    const TCoins extends readonly (string | number)[] | undefined = undefined,
+    const TContentHash extends boolean | undefined = undefined,
+    const TAbi extends boolean | undefined = undefined,
   >(
     args: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>,
   ) => {
@@ -477,13 +472,10 @@ type BatchableFunctionObject = {
  * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
  */
 const getRecords = generateFunction({ encode, decode }) as (<
-  const TTexts extends readonly string[] = readonly string[],
-  const TCoins extends readonly (string | number)[] = readonly (
-    | string
-    | number
-  )[],
-  const TContentHash extends boolean = true,
-  const TAbi extends boolean = true,
+  const TTexts extends readonly string[] | undefined = undefined,
+  const TCoins extends readonly (string | number)[] | undefined = undefined,
+  const TContentHash extends boolean | undefined = undefined,
+  const TAbi extends boolean | undefined = undefined,
 >(
   client: ClientWithEns,
   {

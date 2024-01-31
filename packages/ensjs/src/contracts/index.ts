@@ -24,12 +24,13 @@ export {
   type WalletWithEns,
 } from './consts.js'
 export {
+  dnsRegistrarErrors,
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,
 } from './dnsRegistrar.js'
 export {
   dnssecImplAnchorsSnippet,
-  dnssecImplRrDataSnippet,
+  dnssecImplVerifyRrSetSnippet,
 } from './dnssecImpl.js'
 export { erc165SupportsInterfaceSnippet } from './erc165.js'
 export {

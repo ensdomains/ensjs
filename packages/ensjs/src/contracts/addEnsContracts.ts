@@ -4,7 +4,7 @@ import {
   addresses,
   subgraphs,
   supportedChains,
-  type ChainWithEns,
+  type CheckedChainWithEns,
   type SupportedChain,
 } from './consts.js'
 
@@ -22,7 +22,7 @@ import {
  *   transport: http(),
  * })
  */
-export const addEnsContracts = <TChain extends Chain>(chain: TChain) => {
+export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
   if (!chain) throw new NoChainError()
   if (!supportedChains.includes(chain.network as SupportedChain))
     throw new UnsupportedNetworkError({
@@ -38,5 +38,5 @@ export const addEnsContracts = <TChain extends Chain>(chain: TChain) => {
     subgraphs: {
       ...subgraphs[chain.network as SupportedChain],
     },
-  } as ChainWithEns<TChain>
+  } as unknown as CheckedChainWithEns<TChain>
 }
