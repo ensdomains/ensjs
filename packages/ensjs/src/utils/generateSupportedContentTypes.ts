@@ -1,8 +1,6 @@
-import type { EncodeAbiParameters } from './encoders/encodeAbi.js'
+import type { AbiEncodeAs } from './encoders/encodeAbi.js'
 
-type AbiEncodeAs = EncodeAbiParameters['encodeAs']
-
-const abiEncodeMap: { [key in AbiEncodeAs]: bigint } = {
+const abiEncodeAsMap: { [key in AbiEncodeAs]: bigint } = {
   json: 1n,
   zlib: 2n,
   cbor: 4n,
@@ -16,7 +14,7 @@ export const generateSupportedContentTypes = (
     ? encodeAsItemOrList
     : [encodeAsItemOrList]
   return encodeAsList.reduce<bigint>((result, encodeAs) => {
-    const contentType = abiEncodeMap[encodeAs]
+    const contentType = abiEncodeAsMap[encodeAs]
     if (contentType) result |= contentType
     return result
   }, 0n)
