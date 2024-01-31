@@ -4,6 +4,11 @@ export {
   type GetDnsImportDataReturnType,
 } from './functions/dns/getDnsImportData.js'
 export {
+  default as getDnsOffchainData,
+  type GetDnsOffchainDataParameters,
+  type GetDnsOffchainDataReturnType,
+} from './functions/dns/getDnsOffchainData.js'
+export {
   default as getDnsOwner,
   type GetDnsOwnerParameters,
   type GetDnsOwnerReturnType,

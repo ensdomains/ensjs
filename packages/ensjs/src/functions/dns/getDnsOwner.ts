@@ -7,6 +7,8 @@ import {
   DnsResponseStatusError,
 } from '../../errors/dns.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
+import { getDnsTxtRecords } from '../../utils/dns/getDnsTxtRecords.js'
+import { DnsRecordType, DnsResponseStatus } from '../../utils/dns/misc.js'
 import { getNameType } from '../../utils/getNameType.js'
 import type { Endpoint } from './types.js'
 
@@ -15,66 +17,11 @@ export type GetDnsOwnerParameters = {
   name: string
   /** An RFC-1035 compatible DNS endpoint to use (default: `https://cloudflare-dns.com/dns-query`) */
   endpoint?: Endpoint
-  /** Optional flag to allow the function to fail silently (default: `true`) */
-  allowFailure?: boolean
+  /** Whether or not to throw errors */
+  strict?: boolean
 }
 
-export type GetDnsOwnerReturnType = Address
-
-enum DnsResponseStatus {
-  NOERROR = 0,
-  FORMERR = 1,
-  SERVFAIL = 2,
-  NXDOMAIN = 3,
-  NOTIMP = 4,
-  REFUSED = 5,
-  YXDOMAIN = 6,
-  YXRRSET = 7,
-  NXRRSET = 8,
-  NOTAUTH = 9,
-  NOTZONE = 10,
-  DSOTYPENI = 11,
-  BADVERS = 16,
-  BADSIG = 16,
-  BADKEY = 17,
-  BADTIME = 18,
-  BADMODE = 19,
-  BADNAME = 20,
-  BADALG = 21,
-  BADTRUNC = 22,
-  BADCOOKIE = 23,
-}
-
-enum DnsRecordType {
-  TXT = 16,
-  DS = 43,
-  RRSIG = 46,
-  DNSKEY = 48,
-}
-
-type DnsQuestionItem = {
-  name: string
-  type: DnsRecordType
-}
-
-type DnsResponseItem = DnsQuestionItem & {
-  TTL: number
-  data: string
-}
-
-type DnsResponse = {
-  Status: DnsResponseStatus
-  TC: boolean
-  RD: boolean
-  RA: boolean
-  AD: boolean
-  CD: boolean
-  Question: DnsQuestionItem[]
-  Answer?: DnsResponseItem[]
-  Authority?: DnsResponseItem[]
-  Additional?: DnsResponseItem[]
-  Comment?: string
-}
+export type GetDnsOwnerReturnType = Address | null
 
 /**
  * Gets the DNS owner of a name, via DNS record lookup
@@ -89,7 +36,8 @@ type DnsResponse = {
  */
 const getDnsOwner = async ({
   name,
-  endpoint = 'https://cloudflare-dns.com/dns-query',
+  endpoint,
+  strict,
 }: GetDnsOwnerParameters): Promise<GetDnsOwnerReturnType> => {
   const nameType = getNameType(name)
 
@@ -99,43 +47,43 @@ const getDnsOwner = async ({
       supportedNameTypes: ['other-2ld'],
     })
 
-  const response: DnsResponse = await fetch(
-    `${endpoint}?name=_ens.${name}.&type=TXT`,
-    {
-      method: 'GET',
-      headers: {
-        accept: 'application/dns-json',
-      },
-    },
-  ).then((res) => res.json())
+  try {
+    const response = await getDnsTxtRecords({ name: `_ens.${name}`, endpoint })
 
-  if (response.Status !== DnsResponseStatus.NOERROR)
-    throw new DnsResponseStatusError({
-      responseStatus: DnsResponseStatus[response.Status],
-    })
+    if (response.Status !== DnsResponseStatus.NOERROR)
+      throw new DnsResponseStatusError({
+        responseStatus: DnsResponseStatus[response.Status],
+      })
 
-  const addressRecord = response.Answer?.find(
-    (record) => record.type === DnsRecordType.TXT,
-  )
-  const unwrappedAddressRecord = addressRecord?.data?.replace(/^"(.*)"$/g, '$1')
+    const addressRecord = response.Answer?.find(
+      (record) => record.type === DnsRecordType.TXT,
+    )
+    const unwrappedAddressRecord = addressRecord?.data?.replace(
+      /^"(.*)"$/g,
+      '$1',
+    )
 
-  if (response.AD === false)
-    throw new DnsDnssecVerificationFailedError({
-      record: unwrappedAddressRecord,
-    })
+    if (response.AD === false)
+      throw new DnsDnssecVerificationFailedError({
+        record: unwrappedAddressRecord,
+      })
 
-  if (!addressRecord?.data) throw new DnsNoTxtRecordError()
+    if (!addressRecord?.data) throw new DnsNoTxtRecordError()
 
-  if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g))
-    throw new DnsInvalidTxtRecordError({ record: unwrappedAddressRecord! })
+    if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g))
+      throw new DnsInvalidTxtRecordError({ record: unwrappedAddressRecord! })
 
-  const address = unwrappedAddressRecord!.slice(2)
-  const checksumAddress = getAddress(address)
+    const address = unwrappedAddressRecord!.slice(2)
+    const checksumAddress = getAddress(address)
 
-  if (address !== checksumAddress)
-    throw new DnsInvalidAddressChecksumError({ address })
+    if (address !== checksumAddress)
+      throw new DnsInvalidAddressChecksumError({ address })
 
-  return checksumAddress
+    return checksumAddress
+  } catch (error) {
+    if (!strict) return null
+    throw error
+  }
 }
 
 export default getDnsOwner

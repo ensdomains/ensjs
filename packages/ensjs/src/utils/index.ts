@@ -1,4 +1,16 @@
 export {
+  getDnsTxtRecords,
+  type GetDnsTxtRecordsParameters,
+  type GetDnsTxtRecordsReturnType,
+} from './dns/getDnsTxtRecords.js'
+export {
+  DnsRecordType,
+  DnsResponseStatus,
+  type DnsQuestionItem,
+  type DnsResponse,
+  type DnsResponseItem,
+} from './dns/misc.js'
+export {
   contentTypeToEncodeAs,
   encodeAbi,
   encodeAsToContentType,
