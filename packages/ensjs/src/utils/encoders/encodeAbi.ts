@@ -2,7 +2,7 @@ import { bytesToHex, stringToHex, type Hex } from 'viem'
 import { UnknownContentTypeError } from '../../errors/utils.js'
 import type { Prettify } from '../../types.js'
 
-type AbiEncodeAs = 'json' | 'zlib' | 'cbor' | 'uri'
+export type AbiEncodeAs = 'json' | 'zlib' | 'cbor' | 'uri'
 
 type AbiContentType = 1 | 2 | 4 | 8
 

@@ -2,6 +2,7 @@ import { RawContractError } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicClient } from '../../test/addTestContracts.js'
 import getAbiRecord from './getAbiRecord.js'
+import { generateSupportedContentTypes } from '../../utils/generateSupportedContentTypes.js'
 
 const dummyABI = [
   {
@@ -172,6 +173,53 @@ describe('getAbiRecord()', () => {
       name: 'with-type-256-abi.eth',
     })
     expect(result).toBeNull()
+  })
+  it('should return the result of type 1 abi if the name has multiple abi records', async () => {
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-all-abi.eth',
+    })
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.contentType).toBe(1)
+      expect(result.decoded).toBe(true)
+      expect(result.abi).toMatchObject(dummyABI)
+    }
+  })
+  it('should return the result of type 2 abi if supportedContentTypes is zlib', async () => {
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-all-abi.eth',
+      supportedContentTypes: generateSupportedContentTypes('zlib'),
+    })
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.contentType).toBe(2)
+      expect(result.decoded).toBe(true)
+      expect(result.abi).toMatchObject(dummyABI)
+    }
+  })
+  it('should return the result of type 4 abi if supportedContentTypes is cbor', async () => {
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-all-abi.eth',
+      supportedContentTypes: generateSupportedContentTypes('cbor'),
+    })
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.contentType).toBe(4)
+      expect(result.decoded).toBe(true)
+      expect(result.abi).toMatchObject(dummyABI)
+    }
+  })
+  it('should return the result of type 8 abi if supportedContentTypes is uri', async () => {
+    const result = await getAbiRecord(publicClient, {
+      name: 'with-type-all-abi.eth',
+      supportedContentTypes: generateSupportedContentTypes('uri'),
+    })
+    expect(result).toBeTruthy()
+    if (result) {
+      expect(result.contentType).toBe(8)
+      expect(result.decoded).toBe(true)
+      expect(result.abi).toBe('https://example.com')
+    }
   })
   it('should return null on error when strict is false', async () => {
     await expect(

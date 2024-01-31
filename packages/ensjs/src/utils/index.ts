@@ -133,3 +133,4 @@ export {
   expiryToBigInt,
   wrappedLabelLengthCheck,
 } from './wrapper.js'
+export { generateSupportedContentTypes } from './generateSupportedContentTypes.js'

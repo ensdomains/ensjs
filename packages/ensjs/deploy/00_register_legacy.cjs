@@ -149,7 +149,10 @@ const dummyABI = [
  *    abi?: {
  *      contentType: 1 | 2 | 4 | 8 | 256
  *      data: object | string
- *    }
+ *    } | {
+ *     contentType: 1 | 2 | 4 | 8 | 256
+ *      data: string
+ *    }[]
  *  }
  *  duration?: number
  *  subnames?: Subname[]
@@ -309,6 +312,31 @@ const names = [
     },
   },
   {
+    label: 'with-type-all-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: [
+        {
+          contentType: 1,
+          data: dummyABI,
+        },
+        {
+          contentType: 2,
+          data: dummyABI,
+        },
+        {
+          contentType: 4,
+          data: dummyABI,
+        },
+        {
+          contentType: 8,
+          data: 'https://example.com',
+        },
+      ],
+    },
+  },
+  {
     label: 'expired',
     namedOwner: 'owner',
     namedAddr: 'owner',
@@ -428,28 +456,33 @@ const func = async function (hre) {
         await setContenthashTx.wait()
       }
       if (records.abi) {
-        console.log('ABI')
-        /**
-         * @type {string | Buffer | Uint8Array}
-         */
-        let data
-        if (records.abi.contentType === 1 || records.abi.contentType === 256) {
-          data = JSON.stringify(records.abi.data)
-        } else if (records.abi.contentType === 2) {
-          data = pako.deflate(JSON.stringify(records.abi.data))
-        } else if (records.abi.contentType === 4) {
-          data = cbor.encode(records.abi.data)
-        } else {
-          data = records.abi.data
+        const abis = Array.isArray(records.abi) ? records.abi : [records.abi]
+        for (const abi of abis) {
+          /**
+           * @type {string | Buffer | Uint8Array}
+           */
+          let data
+          if (
+            abi.contentType === 1 ||
+            abi.contentType === 256
+          ) {
+            data = JSON.stringify(abi.data)
+          } else if (abi.contentType === 2) {
+            data = pako.deflate(JSON.stringify(abi.data))
+          } else if (abi.contentType === 4) {
+            data = cbor.encode(abi.data)
+          } else {
+            data = abi.data
+          }
+          if (typeof data === 'string') data = toBytes(data)
+          const setABITx = await _publicResolver.setABI(
+            hash,
+            abi.contentType,
+            data,
+          )
+          console.log(` - ${abi.contentType} (tx: ${setABITx.hash})...`)
+          await setABITx.wait()
         }
-        if (typeof data === 'string') data = toBytes(data)
-        const setABITx = await _publicResolver.setABI(
-          hash,
-          records.abi.contentType,
-          data,
-        )
-        console.log(` - ${records.abi.contentType} (tx: ${setABITx.hash})...`)
-        await setABITx.wait()
       }
     }
 

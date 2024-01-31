@@ -26,9 +26,13 @@ export type GetAbiRecordReturnType = Prettify<InternalGetAbiReturnType>
 
 const encode = (
   client: ClientWithEns,
-  { name, gatewayUrls }: Omit<GetAbiRecordParameters, 'strict'>,
+  {
+    name,
+    supportedContentTypes,
+    gatewayUrls,
+  }: Omit<GetAbiRecordParameters, 'strict'>,
 ): SimpleTransactionRequest => {
-  const prData = _getAbi.encode(client, { name })
+  const prData = _getAbi.encode(client, { name, supportedContentTypes })
   return universalWrapper.encode(client, {
     name,
     data: prData.data,
