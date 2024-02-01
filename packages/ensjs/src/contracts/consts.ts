@@ -44,7 +44,7 @@ export const addresses = {
       address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A',
     },
     ensDnsRegistrar: {
-      address: '0x6BD6e91aDDFd4747baB4BD011590e463296707Aa',
+      address: '0xB32cB5677a7C971689228EC835800432B339bA2B',
     },
     ensDnssecImpl: {
       address: '0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5',
