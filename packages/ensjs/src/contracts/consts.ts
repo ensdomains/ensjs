@@ -13,12 +13,7 @@ type ChainContract = {
   blockCreated?: number
 }
 
-export const supportedChains = [
-  'homestead',
-  'goerli',
-  'sepolia',
-  'holesky',
-] as const
+export const supportedChains = [1, 5, 17000, 11155111] as const
 export const supportedContracts = [
   'ensBaseRegistrarImplementation',
   'ensBulkRenewal',
@@ -36,7 +31,7 @@ export type SupportedChain = (typeof supportedChains)[number]
 export type SupportedContract = (typeof supportedContracts)[number]
 
 export const addresses = {
-  homestead: {
+  1: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -68,7 +63,7 @@ export const addresses = {
       address: '0x8cab227b1162f03b8338331adaad7aadc83b895e',
     },
   },
-  goerli: {
+  5: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -100,39 +95,7 @@ export const addresses = {
       address: '0xfc4AC75C46C914aF5892d6d3eFFcebD7917293F1',
     },
   },
-  sepolia: {
-    ensBaseRegistrarImplementation: {
-      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
-    },
-    ensBulkRenewal: {
-      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
-    },
-    ensDnsRegistrar: {
-      address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
-    },
-    ensDnssecImpl: {
-      address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
-    },
-    ensEthRegistrarController: {
-      address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
-    },
-    ensNameWrapper: {
-      address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
-    },
-    ensPublicResolver: {
-      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
-    },
-    ensRegistry: {
-      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    },
-    ensReverseRegistrar: {
-      address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
-    },
-    ensUniversalResolver: {
-      address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',
-    },
-  },
-  holesky: {
+  17000: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -164,6 +127,38 @@ export const addresses = {
       address: '0x2548a7E09deE955c4d97688dcB6C5b24085725f5',
     },
   },
+  11155111: {
+    ensBaseRegistrarImplementation: {
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
+    },
+    ensBulkRenewal: {
+      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
+    },
+    ensDnsRegistrar: {
+      address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
+    },
+    ensDnssecImpl: {
+      address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
+    },
+    ensEthRegistrarController: {
+      address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
+    },
+    ensNameWrapper: {
+      address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
+    },
+    ensPublicResolver: {
+      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
+    },
+    ensRegistry: {
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    ensReverseRegistrar: {
+      address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
+    },
+    ensUniversalResolver: {
+      address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',
+    },
+  },
 } as const satisfies Record<
   SupportedChain,
   Record<SupportedContract, { address: Address }>
@@ -176,24 +171,24 @@ type Subgraphs = {
 }
 
 export const subgraphs = {
-  homestead: {
+  1: {
     ens: {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
     },
   },
-  goerli: {
+  5: {
     ens: {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
     },
   },
-  sepolia: {
-    ens: {
-      url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
-    },
-  },
-  holesky: {
+  17000: {
     ens: {
       url: 'https://api.studio.thegraph.com/query/49574/ensholesky/version/latest',
+    },
+  },
+  11155111: {
+    ens: {
+      url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
     },
   },
 } as const satisfies Record<SupportedChain, Subgraphs>
@@ -231,11 +226,11 @@ export type ChainWithBaseContracts = Assign<
 >
 
 export type CheckedChainWithEns<TChain extends Chain> =
-  TChain['network'] extends SupportedChain
+  TChain['id'] extends SupportedChain
     ? TChain['contracts'] extends BaseChainContracts
       ? TChain & {
-          contracts: Prettify<(typeof addresses)[TChain['network']]>
-          subgraphs: (typeof subgraphs)[TChain['network']]
+          contracts: Prettify<(typeof addresses)[TChain['id']]>
+          subgraphs: (typeof subgraphs)[TChain['id']]
         }
       : never
     : never

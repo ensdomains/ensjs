@@ -8,7 +8,10 @@ import {
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { universalResolverReverseSnippet } from '../../contracts/universalResolver.js'
+import {
+  universalResolverReverseSnippet,
+  universalResolverReverseWithGatewaysSnippet,
+} from '../../contracts/universalResolver.js'
 import type {
   GenericPassthrough,
   TransactionRequestWithPassthrough,
@@ -58,7 +61,7 @@ const encode = (
     ...(gatewayUrls?.length
       ? {
           data: encodeFunctionData({
-            abi: universalResolverReverseSnippet,
+            abi: universalResolverReverseWithGatewaysSnippet,
             functionName: 'reverse',
             args: [...args, gatewayUrls] as const,
           }),
@@ -85,11 +88,13 @@ const decode = async (
   _client: ClientWithEns,
   data: Hex | BaseError,
   passthrough: GenericPassthrough,
-  { address, allowMismatch, strict }: GetNameParameters,
+  { address, allowMismatch, strict, gatewayUrls }: GetNameParameters,
 ): Promise<GetNameReturnType | null> => {
   const isSafe = checkSafeUniversalResolverData(data, {
     strict,
-    abi: universalResolverReverseSnippet,
+    abi: gatewayUrls
+      ? universalResolverReverseWithGatewaysSnippet
+      : universalResolverReverseSnippet,
     args: passthrough.args,
     functionName: 'reverse',
     address: passthrough.address,

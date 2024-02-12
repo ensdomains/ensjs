@@ -116,7 +116,7 @@ describe('getName', () => {
         function:  reverse(bytes reverseName)
         args:             (0x)
 
-      Version: viem@1.16.3"
+      Version: viem@2.5.0"
     `)
   })
 })

@@ -66,7 +66,7 @@ describe('getContentHashRecord', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: viem@1.16.3"
+      Version: viem@2.5.0"
     `)
   })
 })

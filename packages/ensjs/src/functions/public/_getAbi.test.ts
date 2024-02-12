@@ -16,6 +16,6 @@ it('propagates error when strict is true', async () => {
     Params: (uint256, bytes)
     Data:   0x1234 (2 bytes)
 
-    Version: viem@1.16.3"
+    Version: viem@2.5.0"
   `)
 })

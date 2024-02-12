@@ -144,8 +144,8 @@ describe('getRecords()', () => {
         function:  resolve(bytes name, bytes[] data)
         args:             (0x04746573740365746800, ["0x5678"])
 
-      Docs: https://viem.sh/docs/contract/decodeErrorResult.html
-      Version: viem@1.16.3"
+      Docs: https://viem.sh/docs/contract/decodeErrorResult
+      Version: viem@2.5.0"
     `)
   })
 })

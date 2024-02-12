@@ -28,7 +28,7 @@ export {
 
 export { addEnsContracts } from './contracts/addEnsContracts.js'
 export { BaseError } from './errors/base.js'
-export { NoChainError, UnsupportedNetworkError } from './errors/contracts.js'
+export { NoChainError, UnsupportedChainError } from './errors/contracts.js'
 export {
   DnsDnssecVerificationFailedError,
   DnsInvalidAddressChecksumError,

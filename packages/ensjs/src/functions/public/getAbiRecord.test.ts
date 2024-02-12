@@ -1,8 +1,8 @@
 import { RawContractError } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicClient } from '../../test/addTestContracts.js'
-import getAbiRecord from './getAbiRecord.js'
 import { generateSupportedContentTypes } from '../../utils/generateSupportedContentTypes.js'
+import getAbiRecord from './getAbiRecord.js'
 
 const dummyABI = [
   {
@@ -260,7 +260,7 @@ describe('getAbiRecord()', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: viem@1.16.3"
+      Version: viem@2.5.0"
     `)
   })
 })

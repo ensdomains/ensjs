@@ -102,12 +102,12 @@
     "@ensdomains/address-encoder": "1.0.0",
     "@ensdomains/content-hash": "3.1.0-rc.1",
     "@ensdomains/dnsprovejs": "^0.5.1",
-    "abitype": "^0.8.0",
+    "abitype": "^1.0.0",
     "dns-packet": "^5.3.1",
     "graphql": "^16.3.0",
     "graphql-request": "6.1.0",
     "pako": "^2.1.0",
-    "traverse": "^0.6.6"
+    "traverse": "^0.6.8"
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
@@ -123,7 +123,7 @@
     "@types/jest": "^27.4.1",
     "@types/node": "^20.3.3",
     "@types/pako": "^2.0.0",
-    "@types/traverse": "^0.6.32",
+    "@types/traverse": "^0.6.36",
     "cbor": "^8.1.0",
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.6",
@@ -143,11 +143,11 @@
     "ts-node": "^10.9.2",
     "typedoc": "^0.24.8",
     "typedoc-plugin-markdown": "^4.0.0-next.16",
-    "typescript": "^5.1.6",
-    "viem": "^1.16.4",
+    "typescript": "5.3.2",
+    "viem": "^2.5.0",
     "wait-on": "^6.0.1"
   },
   "peerDependencies": {
-    "viem": "^1.16.4"
+    "viem": "^2.5.0"
   }
 }
