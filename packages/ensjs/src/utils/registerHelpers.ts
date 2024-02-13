@@ -61,7 +61,7 @@ export type RegistrationTuple = [
 const cryptoRef =
   (typeof crypto !== 'undefined' && crypto) ||
   (typeof window !== 'undefined' &&
-    typeof window.crypto !== undefined &&
+    typeof window.crypto !== 'undefined' &&
     window.crypto) ||
   undefined
 
