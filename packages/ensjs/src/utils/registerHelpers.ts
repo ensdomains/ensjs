@@ -58,6 +58,13 @@ export type RegistrationTuple = [
   ownerControlledFuses: number,
 ]
 
+const cryptoRef =
+  (typeof crypto !== 'undefined' && crypto) ||
+  (typeof window !== 'undefined' &&
+    typeof window.crypto !== undefined &&
+    window.crypto) ||
+  undefined
+
 export const randomSecret = ({
   platformDomain,
   campaign,
@@ -65,7 +72,7 @@ export const randomSecret = ({
   platformDomain?: string
   campaign?: number
 } = {}) => {
-  const bytes = crypto.getRandomValues(new Uint8Array(32))
+  const bytes = cryptoRef!.getRandomValues(new Uint8Array(32))
   if (platformDomain) {
     const hash = toBytes(namehash(platformDomain))
     for (let i = 0; i < 4; i += 1) {

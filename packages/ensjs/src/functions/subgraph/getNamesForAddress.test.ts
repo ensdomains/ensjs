@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
 import type { Address } from 'viem'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { publicClient, walletClient } from '../../test/addTestContracts.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import getNamesForAddress, {

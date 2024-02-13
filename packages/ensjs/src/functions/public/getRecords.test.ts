@@ -1,5 +1,6 @@
 import { RawContractError, createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
+import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../index.js'
 import {
   deploymentAddresses,
@@ -132,7 +133,7 @@ describe('getRecords()', () => {
         { name: 'test.eth', coins: [60] },
       ),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "The contract function "resolve" reverted with the following signature:
+      [ContractFunctionExecutionError: The contract function "resolve" reverted with the following signature:
       0x4ced43fb
 
       Unable to decode signature "0x4ced43fb" as it was not found on the provided ABI.
@@ -145,7 +146,7 @@ describe('getRecords()', () => {
         args:             (0x04746573740365746800, ["0x5678"])
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: viem@2.5.0"
+      Version: viem@2.5.0]
     `)
   })
 })

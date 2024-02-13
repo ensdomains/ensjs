@@ -1,4 +1,5 @@
 import { RawContractError, type Address, type Hex } from 'viem'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import {
   deploymentAddresses,
@@ -107,7 +108,7 @@ describe('getName', () => {
         { address: accounts[0], allowMismatch: true, strict: true },
       ),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "The contract function "reverse" reverted.
+      [ContractFunctionExecutionError: The contract function "reverse" reverted.
 
       Error: ResolverNotFound()
        
@@ -116,7 +117,7 @@ describe('getName', () => {
         function:  reverse(bytes reverseName)
         args:             (0x)
 
-      Version: viem@2.5.0"
+      Version: viem@2.5.0]
     `)
   })
 })

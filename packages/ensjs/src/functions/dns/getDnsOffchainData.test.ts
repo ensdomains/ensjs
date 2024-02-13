@@ -2,13 +2,26 @@
 import type { RequestListener } from 'http'
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { getVersion } from '../../errors/error-utils.js'
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type MockedFunction,
+} from 'vitest'
 import { addEnsContracts } from '../../index.js'
 import { createHttpServer } from '../../test/createHttpServer.js'
 import { createHandlerResponse } from '../../test/dns.js'
 import getDnsOffchainData from './getDnsOffchainData.js'
 
-const handler: jest.MockedFunction<RequestListener> = jest.fn()
+vi.setConfig({
+  testTimeout: 10000,
+})
+
+const handler: MockedFunction<RequestListener> = vi.fn()
 let closeServer: () => Promise<unknown>
 let serverUrl: `http://${string}` = 'http://'
 
@@ -25,9 +38,6 @@ afterAll(async () => {
 beforeEach(() => {
   handler.mockReset()
 })
-
-jest.setTimeout(10000)
-jest.retryTimes(2)
 
 const mainnetPublicClient = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -248,11 +258,11 @@ it('throws error when name type is .eth', async () => {
       endpoint: serverUrl,
     }),
   ).rejects.toThrowErrorMatchingInlineSnapshot(`
-    "Unsupported name type: eth-2ld
+    [UnsupportedNameTypeError: Unsupported name type: eth-2ld
 
     - Supported name types: other-2ld, other-subname
 
-    Version: ${getVersion()}"
+    Version: @ensdomains/ensjs@1.0.0-mock.0]
   `)
 })
 
@@ -272,9 +282,9 @@ describe('DnsResponseStatus is not NOERROR', () => {
         strict: true,
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "DNS query failed with status: NXDOMAIN
+      [DnsResponseStatusError: DNS query failed with status: NXDOMAIN
 
-      Version: ${getVersion()}"
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
   })
 
@@ -305,9 +315,9 @@ describe('AD is false', () => {
         strict: true,
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "DNSSEC verification failed
+      [DnsDnssecVerificationFailedError: DNSSEC verification failed
 
-      Version: ${getVersion()}"
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
   })
 
@@ -338,9 +348,9 @@ describe('no TXT records', () => {
         strict: true,
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "No TXT record found
+      [DnsNoTxtRecordError: No TXT record found
 
-      Version: ${getVersion()}"
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
   })
 
@@ -385,9 +395,9 @@ describe('only invalid records', () => {
         strict: true,
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "Invalid TXT record: ENS1 0x238A8F7
+      [DnsInvalidTxtRecordError: Invalid TXT record: ENS1 0x238A8F7
 
-      Version: ${getVersion()}"
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
   })
 
@@ -432,9 +442,9 @@ describe('no eligible invalid records', () => {
         strict: true,
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "No TXT record found
+      [DnsNoTxtRecordError: No TXT record found
 
-      Version: ${getVersion()}"
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
   })
 

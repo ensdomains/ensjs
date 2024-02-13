@@ -1,5 +1,5 @@
 import { labelhash } from 'viem'
-import { getVersion } from '../errors/error-utils.js'
+import { describe, expect, it } from 'vitest'
 import { namehash } from './normalise.js'
 import {
   makeCommitment,
@@ -29,12 +29,12 @@ describe('randomSecret()', () => {
   it('throws when campaign is too large', () => {
     expect(() => randomSecret({ campaign: 0xffffffff + 1 }))
       .toThrowErrorMatchingInlineSnapshot(`
-      "Campaign reference 4294967296 is too large
+        [CampaignReferenceTooLargeError: Campaign reference 4294967296 is too large
 
-      - Max campaign reference: 4294967295
+        - Max campaign reference: 4294967295
 
-      Version: ${getVersion()}"
-    `)
+        Version: @ensdomains/ensjs@1.0.0-mock.0]
+      `)
   })
 })
 

@@ -1,4 +1,5 @@
 import { RawContractError } from 'viem'
+import { describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicClient } from '../../test/addTestContracts.js'
 import { generateSupportedContentTypes } from '../../utils/generateSupportedContentTypes.js'
@@ -251,7 +252,7 @@ describe('getAbiRecord()', () => {
         { strict: true },
       ),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      "The contract function "resolve" reverted.
+      [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
       Error: ResolverNotFound()
        
@@ -260,7 +261,7 @@ describe('getAbiRecord()', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: viem@2.5.0"
+      Version: viem@2.5.0]
     `)
   })
 })
