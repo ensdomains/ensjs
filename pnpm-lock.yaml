@@ -136,8 +136,8 @@ importers:
         specifier: 1.9.0
         version: 1.9.0
       '@ensdomains/address-encoder':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.0
+        version: 1.1.0
       '@ensdomains/content-hash':
         specifier: 3.1.0-rc.1
         version: 3.1.0-rc.1
@@ -694,16 +694,16 @@ packages:
       ripemd160: 2.0.2
     dev: true
 
-  /@ensdomains/address-encoder@1.0.0:
-    resolution: {integrity: sha512-Y1yJMq0tquAPklrzFH3vKM1HaNS6RKAOzJpNA3QU8F8oTF4iJlkFEmjCTkPjfplTi7u16z2OXvdNLItR5ZpHug==}
+  /@ensdomains/address-encoder@1.0.0-rc.3:
+    resolution: {integrity: sha512-8o6zH69rObIqDY4PusEWuN9jvVOct+9jj9AOPO7ifc3ev8nmsly0e8TE1sHkhk0iKFbd3DlSsUnJ+yuRWmdLCQ==}
     dependencies:
       '@noble/curves': 1.2.0
       '@noble/hashes': 1.3.2
       '@scure/base': 1.1.5
     dev: false
 
-  /@ensdomains/address-encoder@1.0.0-rc.3:
-    resolution: {integrity: sha512-8o6zH69rObIqDY4PusEWuN9jvVOct+9jj9AOPO7ifc3ev8nmsly0e8TE1sHkhk0iKFbd3DlSsUnJ+yuRWmdLCQ==}
+  /@ensdomains/address-encoder@1.1.0:
+    resolution: {integrity: sha512-kc+VFq4ml6UB/s1TRjwx/QOeGmvbUWkMDps/nLDco40CpU3//Iw8vscQ12wQzmCzn760kkyOt6nNBP2L3nhtAA==}
     dependencies:
       '@noble/curves': 1.2.0
       '@noble/hashes': 1.3.2
@@ -2033,14 +2033,13 @@ packages:
 
   /@scure/base@1.1.5:
     resolution: {integrity: sha512-Brj9FiG2W1MRQSTB212YVPRrcbjkv48FoZi/u4l/zds/ieRrqsh7aUf6CLwkAq61oKXr/ZlTzlY66gLIj3TFTQ==}
-    dev: false
 
   /@scure/bip32@1.1.0:
     resolution: {integrity: sha512-ftTW3kKX54YXLCxH6BB7oEEoJfoE2pIgw7MINKAs5PsS6nqKPuKk1haTF/EuHmYqG330t5GSrdmtRuHaY1a62Q==}
     dependencies:
       '@noble/hashes': 1.1.2
       '@noble/secp256k1': 1.6.3
-      '@scure/base': 1.1.3
+      '@scure/base': 1.1.5
     dev: true
 
   /@scure/bip32@1.3.0:
@@ -2063,7 +2062,7 @@ packages:
     resolution: {integrity: sha512-pwrPOS16VeTKg98dYXQyIjJEcWfz7/1YJIwxUEPFfQPtc86Ym/1sVgQ2RLoD43AazMk2l/unK4ITySSpW2+82w==}
     dependencies:
       '@noble/hashes': 1.1.2
-      '@scure/base': 1.1.3
+      '@scure/base': 1.1.5
     dev: true
 
   /@scure/bip39@1.2.0:
