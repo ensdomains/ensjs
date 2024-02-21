@@ -5,9 +5,11 @@ export default defineConfig({
     coverage: {
       enabled: true,
       include: ['src/**/*'],
+      exclude: ['data/**/*'],
     },
     environment: 'happy-dom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.ts'],
+    exclude: ['data/**/*'],
   },
 })
