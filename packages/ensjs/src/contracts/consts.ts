@@ -53,7 +53,7 @@ export const addresses = {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensUniversalResolver: {
-      address: '0x8cab227b1162f03b8338331adaad7aadc83b895e',
+      address: '0xce01f8eee7E479C928F8919abD53E553a36CeF67',
     },
   },
   5: {
@@ -85,7 +85,7 @@ export const addresses = {
       address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
     },
     ensUniversalResolver: {
-      address: '0xfc4AC75C46C914aF5892d6d3eFFcebD7917293F1',
+      address: '0x898A1182F3C2BBBF0b16b4DfEf63E9c3e9eB4821',
     },
   },
   17000: {
@@ -117,7 +117,7 @@ export const addresses = {
       address: '0x132AC0B116a73add4225029D1951A9A707Ef673f',
     },
     ensUniversalResolver: {
-      address: '0x2548a7E09deE955c4d97688dcB6C5b24085725f5',
+      address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
     },
   },
   11155111: {
@@ -149,7 +149,7 @@ export const addresses = {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensUniversalResolver: {
-      address: '0xBaBC7678D7A63104f1658c11D6AE9A21cdA09725',
+      address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',
     },
   },
 } as const satisfies Record<

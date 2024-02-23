@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -99,7 +99,7 @@
   },
   "dependencies": {
     "@adraffy/ens-normalize": "1.9.0",
-    "@ensdomains/address-encoder": "1.0.0",
+    "@ensdomains/address-encoder": "1.1.0",
     "@ensdomains/content-hash": "3.1.0-rc.1",
     "@ensdomains/dnsprovejs": "^0.5.1",
     "abitype": "^1.0.0",
