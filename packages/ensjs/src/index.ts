@@ -31,6 +31,7 @@ export { BaseError } from './errors/base.js'
 export { NoChainError, UnsupportedChainError } from './errors/contracts.js'
 export {
   DnsDnssecVerificationFailedError,
+  DnsDnssecWildcardExpansionError,
   DnsInvalidAddressChecksumError,
   DnsInvalidTxtRecordError,
   DnsNewerRecordTypeAvailableError,
@@ -62,9 +63,11 @@ export {
   FusesOutOfRangeError,
   FusesRestrictionNotAllowedError,
   FusesValueRequiredError,
+  InvalidContentHashError,
   InvalidEncodedLabelError,
   InvalidLabelhashError,
   NameWithEmptyLabelsError,
   RootNameIncludesOtherLabelsError,
+  UnknownContentTypeError,
   WrappedLabelTooLargeError,
 } from './errors/utils.js'

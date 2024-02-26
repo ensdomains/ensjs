@@ -55,6 +55,12 @@ it('returns offchain data', async () => {
         TTL: 0,
         data: '"ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01"',
       },
+      {
+        name: 'example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 2',
+      },
     ],
   })
 
@@ -81,6 +87,12 @@ it('returns offchain data with extra data as address', async () => {
         type: 16,
         TTL: 0,
         data: '"ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01 0x8e8Db5CcEF88cca9d624701Db544989C996E3216"',
+      },
+      {
+        name: 'example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 2',
       },
     ],
   })
@@ -109,6 +121,12 @@ it('returns offchain data with extra data as text', async () => {
         TTL: 0,
         data: '"ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01 hello world"',
       },
+      {
+        name: 'example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 2',
+      },
     ],
   })
 
@@ -135,6 +153,12 @@ it('returns offchain data from ens name', async () => {
         type: 16,
         TTL: 0,
         data: '"ENS1 dnsname.ens.eth"',
+      },
+      {
+        name: 'example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 2',
       },
     ],
   })
@@ -168,6 +192,12 @@ it('returns first offchain data from multiple', async () => {
         type: 16,
         TTL: 0,
         data: '"ENS1 0x8e8Db5CcEF88cca9d624701Db544989C996E3216"',
+      },
+      {
+        name: 'example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 2',
       },
     ],
   })
@@ -208,6 +238,12 @@ it('returns first valid offchain data when multiple invalid', async () => {
         TTL: 0,
         data: '"ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01"',
       },
+      {
+        name: 'example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 2',
+      },
     ],
   })
 
@@ -234,6 +270,12 @@ it('allows subname input', async () => {
         type: 16,
         TTL: 0,
         data: '"ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01"',
+      },
+      {
+        name: 'sub.example.com',
+        type: 46,
+        TTL: 0,
+        data: 'TXT ALGORITHM 3',
       },
     ],
   })
@@ -365,6 +407,52 @@ describe('no TXT records', () => {
   })
 })
 
+describe('wildcard expansion', () => {
+  beforeEach(() => {
+    createHandlerResponse(handler, {
+      Status: 0,
+      AD: true,
+      Answer: [
+        {
+          name: 'example.com',
+          type: 16,
+          TTL: 0,
+          data: '"ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01"',
+        },
+        {
+          name: 'example.com',
+          type: 46,
+          TTL: 0,
+          data: 'TXT ALGORITHM 1',
+        },
+      ],
+    })
+  })
+
+  it('strict: throws error', async () => {
+    await expect(
+      getDnsOffchainData(mainnetPublicClient, {
+        name: 'example.com',
+        endpoint: serverUrl,
+        strict: true,
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      [DnsDnssecWildcardExpansionError: DNSSEC wildcard expansion not supported
+
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
+    `)
+  })
+  it('not strict: returns null', async () => {
+    await expect(
+      getDnsOffchainData(mainnetPublicClient, {
+        name: 'example.com',
+        endpoint: serverUrl,
+        strict: false,
+      }),
+    ).resolves.toBeNull()
+  })
+})
+
 describe('only invalid records', () => {
   beforeEach(() => {
     createHandlerResponse(handler, {
@@ -382,6 +470,12 @@ describe('only invalid records', () => {
           type: 16,
           TTL: 0,
           data: '"ENS1 randomnonsense"',
+        },
+        {
+          name: 'example.com',
+          type: 46,
+          TTL: 0,
+          data: 'TXT ALGORITHM 2',
         },
       ],
     })
@@ -429,6 +523,12 @@ describe('no eligible invalid records', () => {
           type: 16,
           TTL: 0,
           data: '"random"',
+        },
+        {
+          name: 'example.com',
+          type: 46,
+          TTL: 0,
+          data: 'TXT ALGORITHM 2',
         },
       ],
     })
