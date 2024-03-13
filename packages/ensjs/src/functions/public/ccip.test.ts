@@ -13,12 +13,12 @@ vi.setConfig({
 
 const goerliPublicClient = createPublicClient({
   chain: addEnsContracts(goerli),
-  transport: http('https://web3.ens.domains/v1/goerli'),
+  transport: http('https://goerli.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
 const mainnetPublicClient = createPublicClient({
   chain: addEnsContracts(mainnet),
-  transport: http('https://web3.ens.domains/v1/mainnet'),
+  transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
 describe('CCIP', () => {

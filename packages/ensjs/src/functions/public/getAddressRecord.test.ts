@@ -8,7 +8,7 @@ import getAddressRecord from './getAddressRecord.js'
 
 const mainnetPublicClient = createPublicClient({
   chain: addEnsContracts(mainnet),
-  transport: http('https://web3.ens.domains/v1/mainnet'),
+  transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
 describe('getAddressRecord()', () => {
