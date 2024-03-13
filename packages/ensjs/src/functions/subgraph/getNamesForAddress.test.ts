@@ -181,6 +181,26 @@ describe('filter', () => {
       expect(name.labelName).toContain('test123')
     }
   })
+  it.only('filters by search string - name', async () => {
+    const result = await getNamesForAddress(publicClient, {
+      address: accounts[2],
+      pageSize: 1000,
+      filter: {
+        owner: true,
+        registrant: true,
+        resolvedAddress: true,
+        wrappedOwner: true,
+        searchString: 'wrapped-with-subnames',
+        searchType: 'name',
+      },
+    })
+
+    if (!result.length) throw new Error('No names found')
+    const subnames = result.filter(
+      (x) => x.parentName === 'wrapped-with-subnames.eth',
+    )
+    expect(subnames.length).toBeGreaterThan(0)
+  })
 })
 
 describe.each([
