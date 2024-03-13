@@ -181,7 +181,7 @@ describe('filter', () => {
       expect(name.labelName).toContain('test123')
     }
   })
-  it.only('filters by search string - name', async () => {
+  it('filters by search string - name', async () => {
     const result = await getNamesForAddress(publicClient, {
       address: accounts[2],
       pageSize: 1000,
