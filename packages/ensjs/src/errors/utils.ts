@@ -174,7 +174,12 @@ export class UnknownContentTypeError extends BaseError {
 export class ResolverAddressRequiredError extends BaseError {
   override name = 'ResolverAddressRequiredError'
 
-  constructor() {
-    super('Resolver address is required when data is supplied')
+  constructor({ data }: { data: object }) {
+    super('Resolver address is required when data is supplied', {
+      metaMessages: [
+        'Supplied data:',
+        ...Object.entries(data).map(([k, v]) => `- ${k}: ${v}`),
+      ],
+    })
   }
 }

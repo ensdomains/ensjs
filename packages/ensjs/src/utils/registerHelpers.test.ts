@@ -132,6 +132,15 @@ describe('makeCommitmentTuple()', () => {
     ).toThrowErrorMatchingInlineSnapshot(`
       [ResolverAddressRequiredError: Resolver address is required when data is supplied
 
+      Supplied data:
+      - name: test.eth
+      - owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+      - duration: 31536000
+      - resolverAddress: 0x0000000000000000000000000000000000000000
+      - records: [object Object]
+      - reverseRecord: true
+      - fuses: undefined
+
       Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
   })

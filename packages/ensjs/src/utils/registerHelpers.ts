@@ -125,7 +125,17 @@ export const makeCommitmentTuple = ({
     : []
 
   if (data.length > 0 && resolverAddress === EMPTY_ADDRESS)
-    throw new ResolverAddressRequiredError()
+    throw new ResolverAddressRequiredError({
+      data: {
+        name,
+        owner,
+        duration,
+        resolverAddress,
+        records,
+        reverseRecord,
+        fuses,
+      },
+    })
 
   return [
     labelHash,
