@@ -82,6 +82,7 @@ describe('makeCommitmentTuple()', () => {
       duration: 31536000,
       secret: '0xsecret',
       reverseRecord: true,
+      resolverAddress: '0xresolverAddress',
     })
     expect(tuple[5]).toMatchInlineSnapshot(`
       [
@@ -100,6 +101,7 @@ describe('makeCommitmentTuple()', () => {
           { coin: 'ETH', value: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' },
         ],
       },
+      resolverAddress: '0xresolverAddress',
       secret: '0xsecret',
       reverseRecord: true,
     })
@@ -109,6 +111,29 @@ describe('makeCommitmentTuple()', () => {
       ]
     `)
     expect(tuple[6]).toBe(true)
+  })
+  it('throws when records are supplied without a resolver address', () => {
+    expect(() =>
+      makeCommitmentTuple({
+        name: 'test.eth',
+        owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        duration: 31536000,
+        records: {
+          coins: [
+            {
+              coin: 'ETH',
+              value: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+            },
+          ],
+        },
+        secret: '0xsecret',
+        reverseRecord: true,
+      }),
+    ).toThrowErrorMatchingInlineSnapshot(`
+      [ResolverAddressRequiredError: Resolver address is required when data is supplied
+
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
+    `)
   })
 })
 

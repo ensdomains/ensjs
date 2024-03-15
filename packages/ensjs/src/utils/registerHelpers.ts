@@ -8,7 +8,10 @@ import {
   type Address,
   type Hex,
 } from 'viem'
-import { CampaignReferenceTooLargeError } from '../errors/utils.js'
+import {
+  CampaignReferenceTooLargeError,
+  ResolverAddressRequiredError,
+} from '../errors/utils.js'
 import { EMPTY_ADDRESS } from './consts.js'
 import { encodeFuses, type EncodeChildFusesInputObject } from './fuses.js'
 import {
@@ -120,6 +123,9 @@ export const makeCommitmentTuple = ({
   const data = records
     ? generateRecordCallArray({ namehash: hash, coins, ...records })
     : []
+
+  if (data.length > 0 && resolverAddress === EMPTY_ADDRESS)
+    throw new ResolverAddressRequiredError()
 
   return [
     labelHash,

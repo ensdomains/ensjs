@@ -170,3 +170,11 @@ export class UnknownContentTypeError extends BaseError {
     super(`Unknown content type: ${contentType}`)
   }
 }
+
+export class ResolverAddressRequiredError extends BaseError {
+  override name = 'ResolverAddressRequiredError'
+
+  constructor() {
+    super('Resolver address is required when data is supplied')
+  }
+}
