@@ -8,6 +8,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
+import createSubname from '../wallet/createSubname.js'
+import setAddressRecord from '../wallet/setAddressRecord.js'
 import setPrimaryName from '../wallet/setPrimaryName.js'
 import getName from './getName.js'
 
@@ -119,5 +121,34 @@ describe('getName', () => {
 
       Version: viem@2.5.0]
     `)
+  })
+  it('should not return unnormalised name', async () => {
+    const tx1 = await createSubname(walletClient, {
+      name: 'suB.with-profile.eth',
+      contract: 'registry',
+      owner: accounts[0],
+      resolverAddress: deploymentAddresses.PublicResolver,
+      account: accounts[0],
+    })
+    await waitForTransaction(tx1)
+    const tx2 = await setAddressRecord(walletClient, {
+      name: 'suB.with-profile.eth',
+      coin: 'eth',
+      resolverAddress: deploymentAddresses.PublicResolver,
+      value: accounts[0],
+      account: accounts[0],
+    })
+    await waitForTransaction(tx2)
+    const tx3 = await setPrimaryName(walletClient, {
+      name: 'suB.with-profile.eth',
+      account: accounts[0],
+    })
+    await waitForTransaction(tx3)
+
+    const result = await getName(publicClient, {
+      address: accounts[0],
+    })
+
+    expect(result).toBeNull()
   })
 })

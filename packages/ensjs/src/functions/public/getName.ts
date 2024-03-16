@@ -2,6 +2,7 @@ import {
   BaseError,
   decodeFunctionResult,
   encodeFunctionData,
+  getAddress,
   toHex,
   type Address,
   type Hex,
@@ -22,6 +23,7 @@ import {
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
+import { normalise } from '../../utils/normalise.js'
 
 export type GetNameParameters = {
   /** Address to get name for */
@@ -102,19 +104,25 @@ const decode = async (
   if (!isSafe) return null
 
   try {
-    const result = decodeFunctionResult({
+    const [
+      unnormalisedName,
+      forwardResolvedAddress,
+      reverseResolverAddress,
+      resolverAddress,
+    ] = decodeFunctionResult({
       abi: universalResolverReverseSnippet,
       functionName: 'reverse',
       data,
     })
-    if (!result[0]) return null
-    const match = result[1].toLowerCase() === address.toLowerCase()
+    if (!unnormalisedName) return null
+    const match = getAddress(forwardResolvedAddress) === getAddress(address)
     if (!match && !allowMismatch) return null
+    const normalisedName = normalise(unnormalisedName)
     return {
-      name: result[0],
-      match: result[1].toLowerCase() === address.toLowerCase(),
-      reverseResolverAddress: result[2],
-      resolverAddress: result[3],
+      name: normalisedName,
+      match,
+      reverseResolverAddress,
+      resolverAddress,
     }
   } catch (error) {
     if (strict) throw error
