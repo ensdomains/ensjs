@@ -1,7 +1,8 @@
 /* eslint-disable */
 import { spawn } from 'child_process'
 import concurrently from 'concurrently'
-import compose from 'docker-compose'
+import composev1 from 'docker-compose'
+import composev2 from 'docker-compose/dist/v2.js'
 import fetch from 'node-fetch'
 import { Transform } from 'stream'
 import waitOn from 'wait-on'
@@ -22,6 +23,16 @@ const opts = {
   composeOptions: ['-p', 'ens-test-env'],
 }
 let verbosity = 0
+
+const getCompose = async () => {
+  const versionv1 = await composev1.version().catch(() => null)
+  if (versionv1) return composev1
+
+  const versionv2 = await composev2.version().catch(() => null)
+  if (versionv2) return composev2
+
+  throw new Error('No docker-compose found, or docker not running?')
+}
 
 /**
  * @type {import('concurrently').Command[]}
@@ -45,6 +56,7 @@ const rpcFetch = (method, params) =>
   batchRpcFetch([{ method, params }]).then((res) => res[0])
 
 async function cleanup(_, exitCode) {
+  const compose = await getCompose()
   let force = false
   if (cleanupRunning) {
     if (exitCode === 'SIGINT') {
@@ -173,6 +185,8 @@ export const main = async (_config, _options, justKill) => {
     opts.env.GRAPH_LOG_LEVEL = 'trace'
     opts.env.ANVIL_EXTRA_ARGS = '--tracing'
   }
+
+  const compose = await getCompose()
 
   try {
     await compose.upOne('anvil', opts)
