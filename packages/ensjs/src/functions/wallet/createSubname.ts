@@ -24,11 +24,7 @@ import type {
 import { encodeFuses, type EncodeFusesInputObject } from '../../utils/fuses.js'
 import { getNameType } from '../../utils/getNameType.js'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
-import {
-  MAX_EXPIRY,
-  expiryToBigInt,
-  wrappedLabelLengthCheck,
-} from '../../utils/wrapper.js'
+import { expiryToBigInt, wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */
@@ -121,7 +117,7 @@ export const makeFunctionData = <
     case 'nameWrapper': {
       wrappedLabelLengthCheck(label)
       const generatedFuses = fuses ? encodeFuses({ input: fuses }) : 0
-      const generatedExpiry = expiry ? expiryToBigInt(expiry) : MAX_EXPIRY
+      const generatedExpiry = expiry ? expiryToBigInt(expiry) : 0n
       return {
         to: getChainContractAddress({
           client: wallet,
