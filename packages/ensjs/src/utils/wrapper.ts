@@ -1,6 +1,7 @@
 import { stringToBytes } from 'viem'
 import { WrappedLabelTooLargeError } from '../errors/utils.js'
 import type { AnyDate } from '../types.js'
+import { ParentFuses } from './fuses.js'
 
 export const MAX_EXPIRY = 2n ** 64n - 1n
 
@@ -17,4 +18,10 @@ export const wrappedLabelLengthCheck = (label: string) => {
   const bytes = stringToBytes(label)
   if (bytes.byteLength > 255)
     throw new WrappedLabelTooLargeError({ label, byteLength: bytes.byteLength })
+}
+
+export const makeDefaultExpiry = (fuses?: number): bigint => {
+  if (fuses && BigInt(fuses) & ParentFuses.PARENT_CANNOT_CONTROL)
+    return MAX_EXPIRY
+  return 0n
 }
