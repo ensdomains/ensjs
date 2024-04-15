@@ -7,7 +7,11 @@ import {
   type Transport,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import type {
+  ChainWithEns,
+  ClientWithAccount,
+  ClientWithEns,
+} from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetSubnodeRecordSnippet } from '../../contracts/registry.js'
@@ -21,14 +25,20 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeFuses, type EncodeFusesInputObject } from '../../utils/fuses.js'
+import {
+  encodeFuses,
+  ParentFuses,
+  type EncodeFusesInputObject,
+} from '../../utils/fuses.js'
 import { getNameType } from '../../utils/getNameType.js'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
 import {
-  MAX_EXPIRY,
   expiryToBigInt,
   wrappedLabelLengthCheck,
+  makeDefaultExpiry,
 } from '../../utils/wrapper.js'
+import getWrapperData from '../public/getWrapperData.js'
+import { BaseError } from '../../errors/base.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */
@@ -121,7 +131,9 @@ export const makeFunctionData = <
     case 'nameWrapper': {
       wrappedLabelLengthCheck(label)
       const generatedFuses = fuses ? encodeFuses({ input: fuses }) : 0
-      const generatedExpiry = expiry ? expiryToBigInt(expiry) : MAX_EXPIRY
+      const generatedExpiry = expiry
+        ? expiryToBigInt(expiry)
+        : makeDefaultExpiry(generatedFuses)
       return {
         to: getChainContractAddress({
           client: wallet,
@@ -148,6 +160,58 @@ export const makeFunctionData = <
         supportedContractTypes: ['registry', 'nameWrapper'],
       })
   }
+}
+
+class CreateSubnamePermissionDeniedError extends BaseError {
+  parentName: string
+
+  override name = 'CreateSubnamePermissionDeniedError'
+
+  constructor({ parentName }: { parentName: string }) {
+    super(
+      `Create subname error: ${parentName} as burned CANNOT_CREATE_SUBDOMAIN fuse`,
+    )
+    this.parentName = parentName
+  }
+}
+
+class CreateSubnameParentNotLockedError extends BaseError {
+  parentName: string
+
+  override name = 'CreateSubnameParentNotLockedError'
+
+  constructor({ parentName }: { parentName: string }) {
+    super(
+      `Create subname error: Cannot burn PARENT_CANNOT_CONTROL when ${parentName} has not burned CANNOT_UNWRAP fuse`,
+    )
+    this.parentName = parentName
+  }
+}
+
+const checkCanCreateSubname = async (
+  wallet: ClientWithEns,
+  {
+    name,
+    fuses,
+    contract,
+  }: Pick<BaseCreateSubnameDataParameters, 'name' | 'contract' | 'fuses'>,
+): Promise<void> => {
+  if (contract !== 'nameWrapper') return
+
+  const parentName = name.split('.').slice(1).join('.')
+  if (parentName === 'eth') return
+
+  const parentWrapperData = await getWrapperData(wallet, { name: parentName })
+  if (parentWrapperData?.fuses?.child?.CANNOT_CREATE_SUBDOMAIN)
+    throw new CreateSubnamePermissionDeniedError({ parentName })
+
+  const generatedFuses = fuses ? encodeFuses({ input: fuses }) : 0
+  const isBurningPCC =
+    fuses && BigInt(generatedFuses) & ParentFuses.PARENT_CANNOT_CONTROL
+  const isParentCannotUnwrapBurned =
+    parentWrapperData?.fuses?.child?.CANNOT_UNWRAP
+  if (isBurningPCC && !isParentCannotUnwrapBurned)
+    throw new CreateSubnameParentNotLockedError({ parentName })
 }
 
 /**
@@ -189,6 +253,8 @@ async function createSubname<
     ...txArgs
   }: CreateSubnameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CreateSubnameReturnType> {
+  await checkCanCreateSubname(wallet, { name, fuses, contract })
+
   const data = makeFunctionData(wallet, {
     name,
     contract,
@@ -201,6 +267,7 @@ async function createSubname<
     ...data,
     ...txArgs,
   } as SendTransactionParameters<TChain, TAccount, TChainOverride>
+
   return sendTransaction(wallet, writeArgs)
 }
 
