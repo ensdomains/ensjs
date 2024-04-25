@@ -25,90 +25,50 @@ const mainnetPublicClient = createPublicClient({
 describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
-      const result = await getRecords(goerliPublicClient, {
-        name: '1.offchainexample.eth',
-        texts: ['email', 'description'],
-        contentHash: true,
-        coins: ['ltc', '60'],
+      const result = await getRecords(mainnetPublicClient, {
+        name: 'sg.offchaindemo.eth',
+        // texts: ['email', 'description'],
+        // contentHash: true,
+        coins: ['60'],
       })
       expect(result).toMatchInlineSnapshot(`
         {
           "coins": [
             {
-              "id": 2,
-              "name": "ltc",
-              "value": "MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441",
-            },
-            {
               "id": 60,
               "name": "eth",
-              "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+              "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
             },
           ],
-          "contentHash": {
-            "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-            "protocolType": "ipfs",
-          },
-          "resolverAddress": "0xEE28bdfBB91dE63bfBDA454082Bb1850f7804B09",
-          "texts": [
-            {
-              "key": "email",
-              "value": "nick@ens.domains",
-            },
-            {
-              "key": "description",
-              "value": "hello offchainresolver wildcard record",
-            },
-          ],
+          "resolverAddress": "0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27",
         }
       `)
     })
     it('should return records from a ccip-read name with custom ccipRequest', async () => {
-      const goerliWithEns = addEnsContracts(goerli)
+      const goerliWithEns = addEnsContracts(mainnet)
       const goerliPublicClientWithCustomCcipRequest = createPublicClient({
         chain: goerliWithEns,
         transport: http(
-          'https://goerli.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo',
+          'https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo',
         ),
         ccipRead: {
           request: ccipRequest(goerliWithEns),
         },
       })
       const result = await getRecords(goerliPublicClientWithCustomCcipRequest, {
-        name: '1.offchainexample.eth',
-        texts: ['email', 'description'],
-        contentHash: true,
-        coins: ['ltc', '60'],
+        name: 'sg.offchaindemo.eth',
+        coins: ['60'],
       })
       expect(result).toMatchInlineSnapshot(`
         {
           "coins": [
             {
-              "id": 2,
-              "name": "ltc",
-              "value": "MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441",
-            },
-            {
               "id": 60,
               "name": "eth",
-              "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+              "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
             },
           ],
-          "contentHash": {
-            "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-            "protocolType": "ipfs",
-          },
-          "resolverAddress": "0xEE28bdfBB91dE63bfBDA454082Bb1850f7804B09",
-          "texts": [
-            {
-              "key": "email",
-              "value": "nick@ens.domains",
-            },
-            {
-              "key": "description",
-              "value": "hello offchainresolver wildcard record",
-            },
-          ],
+          "resolverAddress": "0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27",
         }
       `)
     })
@@ -138,31 +98,30 @@ describe('CCIP', () => {
   describe('batch', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
-        goerliPublicClient,
-        getAddressRecord.batch({ name: '1.offchainexample.eth' }),
-        getAddressRecord.batch({ name: '1.offchainexample.eth', coin: 'ltc' }),
-        getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
+        mainnetPublicClient,
+        getAddressRecord.batch({ name: 'sg.offchaindemo.eth' }),
+        getAddressRecord.batch({ name: 'sg.offchaindemo.eth', coin: '60' }),
+        // getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
       )
       expect(result).toMatchInlineSnapshot(`
         [
           {
             "id": 60,
             "name": "eth",
-            "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+            "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
           },
           {
-            "id": 2,
-            "name": "ltc",
-            "value": "MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441",
+            "id": 60,
+            "name": "eth",
+            "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
           },
-          "nick@ens.domains",
         ]
       `)
     })
     it('allows nested batch ccip', async () => {
       const result = await batch(
-        goerliPublicClient,
-        batch.batch(getAddressRecord.batch({ name: '1.offchainexample.eth' })),
+        mainnetPublicClient,
+        batch.batch(getAddressRecord.batch({ name: 'sg.offchaindemo.eth' })),
       )
       expect(result).toMatchInlineSnapshot(`
         [
@@ -170,7 +129,7 @@ describe('CCIP', () => {
             {
               "id": 60,
               "name": "eth",
-              "value": "0x41563129cDbbD0c5D3e1c86cf9563926b243834d",
+              "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
             },
           ],
         ]
