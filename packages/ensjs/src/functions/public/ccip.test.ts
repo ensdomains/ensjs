@@ -1,20 +1,15 @@
 import { createPublicClient, http } from 'viem'
-import { goerli, mainnet } from 'viem/chains'
+import { mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import { ccipRequest } from '../../utils/ccipRequest.js'
 import batch from './batch.js'
 import getAddressRecord from './getAddressRecord.js'
 import getRecords from './getRecords.js'
-import getText from './getTextRecord.js'
+// import getText from './getTextRecord.js'
 
 vi.setConfig({
   testTimeout: 30000,
-})
-
-const goerliPublicClient = createPublicClient({
-  chain: addEnsContracts(goerli),
-  transport: http('https://goerli.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
 const mainnetPublicClient = createPublicClient({
