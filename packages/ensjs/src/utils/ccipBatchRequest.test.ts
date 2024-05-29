@@ -78,7 +78,7 @@ it('handles and correctly returns HttpRequestError', async () => {
       res.writeHead(404)
       res.end()
     })
-  const { close, url } = await createHttpServer(handler)
+  const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
   ] as const
