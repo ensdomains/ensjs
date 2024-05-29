@@ -136,7 +136,7 @@ describe('CCIP', () => {
       `)
     })
   })
-  describe.only('batch', () => {
+  describe('batch', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
         holeskyPublicClient,

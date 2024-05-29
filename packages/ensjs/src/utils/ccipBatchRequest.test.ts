@@ -93,9 +93,9 @@ it('handles and correctly returns HttpRequestError', async () => {
       ],
     ]
   `)
-  await close()
+  // await close()
 })
-it.only('handles and correctly returns misc. error', async () => {
+it('handles and correctly returns misc. error', async () => {
   const handler = vi
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
