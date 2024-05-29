@@ -22,7 +22,7 @@ const holeskyPublicClient = createPublicClient({
   transport: http('https://holesky.gateway.tenderly.co/5S00ox7ZN3mdGqaO74UDsg'),
 })
 
-describe.only('CCIP', () => {
+describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
       const result = await getRecords(holeskyPublicClient, {
