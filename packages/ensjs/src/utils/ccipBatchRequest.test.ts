@@ -13,7 +13,7 @@ it('returns array of responses', async () => {
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
     })
-  const { close, url } = await createHttpServer(handler)
+  const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef01'],
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef02'],
@@ -35,7 +35,7 @@ it('returns array of responses', async () => {
       ],
     ]
   `)
-  await close()
+  // await close()
 })
 it('removes duplicate requests', async () => {
   const handler = vi
@@ -47,7 +47,7 @@ it('removes duplicate requests', async () => {
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
     })
-  const { close, url } = await createHttpServer(handler)
+  const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
@@ -69,7 +69,7 @@ it('removes duplicate requests', async () => {
       ],
     ]
   `)
-  await close()
+  // await close()
 })
 it('handles and correctly returns HttpRequestError', async () => {
   const handler = vi
@@ -78,7 +78,7 @@ it('handles and correctly returns HttpRequestError', async () => {
       res.writeHead(404)
       res.end()
     })
-  const { close, url } = await createHttpServer(handler)
+  const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
   ] as const
@@ -93,7 +93,7 @@ it('handles and correctly returns HttpRequestError', async () => {
       ],
     ]
   `)
-  await close()
+  // await close()
 })
 it('handles and correctly returns misc. error', async () => {
   const handler = vi
@@ -105,7 +105,7 @@ it('handles and correctly returns misc. error', async () => {
       })
       res.end('invalid json')
     })
-  const { close, url } = await createHttpServer(handler)
+  const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
   ] as const
@@ -120,5 +120,5 @@ it('handles and correctly returns misc. error', async () => {
       ],
     ]
   `)
-  await close()
+  // await close()
 })

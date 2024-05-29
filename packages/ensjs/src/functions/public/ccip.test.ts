@@ -1,12 +1,12 @@
 import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { holesky, mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import { ccipRequest } from '../../utils/ccipRequest.js'
 import batch from './batch.js'
 import getAddressRecord from './getAddressRecord.js'
 import getRecords from './getRecords.js'
-// import getText from './getTextRecord.js'
+import getText from './getTextRecord.js'
 
 vi.setConfig({
   testTimeout: 30000,
@@ -17,54 +17,100 @@ const mainnetPublicClient = createPublicClient({
   transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
+const holeskyPublicClient = createPublicClient({
+  chain: addEnsContracts(holesky),
+  transport: http('https://holesky.gateway.tenderly.co/5S00ox7ZN3mdGqaO74UDsg'),
+})
+
 describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
-      const result = await getRecords(mainnetPublicClient, {
-        name: 'sg.offchaindemo.eth',
-        // texts: ['email', 'description'],
-        // contentHash: true,
-        coins: ['60'],
+      const result = await getRecords(holeskyPublicClient, {
+        name: 'offchainexample.eth',
+        texts: ['email', 'description'],
+        contentHash: true,
+        coins: ['btc', '60'],
       })
       expect(result).toMatchInlineSnapshot(`
         {
           "coins": [
             {
+              "id": 0,
+              "name": "btc",
+              "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+            },
+            {
               "id": 60,
               "name": "eth",
-              "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
+              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
             },
           ],
-          "resolverAddress": "0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27",
+          "contentHash": {
+            "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
+            "protocolType": "ipfs",
+          },
+          "resolverAddress": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547",
+          "texts": [
+            {
+              "key": "email",
+              "value": "vitalik@ethereum.org",
+            },
+            {
+              "key": "description",
+              "value": "hello offchainresolver record",
+            },
+          ],
         }
       `)
     })
     it('should return records from a ccip-read name with custom ccipRequest', async () => {
-      const goerliWithEns = addEnsContracts(mainnet)
-      const goerliPublicClientWithCustomCcipRequest = createPublicClient({
-        chain: goerliWithEns,
-        transport: http(
-          'https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo',
-        ),
+      const holeskyWithEns = addEnsContracts(holesky)
+      const holeskyPublicClientWithCustomCcipRequest = createPublicClient({
+        chain: holeskyWithEns,
+        transport: http('https://holesky.gateway.tenderly.co'),
         ccipRead: {
-          request: ccipRequest(goerliWithEns),
+          request: ccipRequest(holeskyWithEns),
         },
       })
-      const result = await getRecords(goerliPublicClientWithCustomCcipRequest, {
-        name: 'sg.offchaindemo.eth',
-        coins: ['60'],
-      })
-      expect(result).toMatchInlineSnapshot(`
+      const result = await getRecords(
+        holeskyPublicClientWithCustomCcipRequest,
         {
-          "coins": [
-            {
-              "id": 60,
-              "name": "eth",
-              "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
-            },
-          ],
-          "resolverAddress": "0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27",
-        }
+          name: 'offchainexample.eth',
+          texts: ['email', 'description'],
+          contentHash: true,
+          coins: ['btc', '60'],
+        },
+      )
+      expect(result).toMatchInlineSnapshot(`
+      {
+        "coins": [
+          {
+            "id": 0,
+            "name": "btc",
+            "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+          },
+          {
+            "id": 60,
+            "name": "eth",
+            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          },
+        ],
+        "contentHash": {
+          "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
+          "protocolType": "ipfs",
+        },
+        "resolverAddress": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547",
+        "texts": [
+          {
+            "key": "email",
+            "value": "vitalik@ethereum.org",
+          },
+          {
+            "key": "description",
+            "value": "hello offchainresolver record",
+          },
+        ],
+      }
       `)
     })
     it('should return records from a ccip-read name with incompliant resolver', async () => {
@@ -93,30 +139,31 @@ describe('CCIP', () => {
   describe('batch', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
-        mainnetPublicClient,
-        getAddressRecord.batch({ name: 'sg.offchaindemo.eth' }),
-        getAddressRecord.batch({ name: 'sg.offchaindemo.eth', coin: '60' }),
-        // getText.batch({ name: '1.offchainexample.eth', key: 'email' }),
+        holeskyPublicClient,
+        getAddressRecord.batch({ name: 'offchainexample.eth' }),
+        getAddressRecord.batch({ name: 'offchainexample.eth', coin: 'btc' }),
+        getText.batch({ name: 'offchainexample.eth', key: 'email' }),
       )
       expect(result).toMatchInlineSnapshot(`
-        [
-          {
-            "id": 60,
-            "name": "eth",
-            "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
-          },
-          {
-            "id": 60,
-            "name": "eth",
-            "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
-          },
-        ]
+      [
+        {
+          "id": 60,
+          "name": "eth",
+          "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+        },
+        {
+          "id": 0,
+          "name": "btc",
+          "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        },
+        "vitalik@ethereum.org",
+      ]
       `)
     })
     it('allows nested batch ccip', async () => {
       const result = await batch(
-        mainnetPublicClient,
-        batch.batch(getAddressRecord.batch({ name: 'sg.offchaindemo.eth' })),
+        holeskyPublicClient,
+        batch.batch(getAddressRecord.batch({ name: 'offchainexample.eth' })),
       )
       expect(result).toMatchInlineSnapshot(`
         [
@@ -124,7 +171,7 @@ describe('CCIP', () => {
             {
               "id": 60,
               "name": "eth",
-              "value": "0x80c5657CEE59A5a193EfDCfDf3D3913Fad977B61",
+              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
             },
           ],
         ]
