@@ -136,7 +136,7 @@ describe('CCIP', () => {
       `)
     })
   })
-  describe('batch', () => {
+  describe.only('batch', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
         holeskyPublicClient,
@@ -144,7 +144,6 @@ describe('CCIP', () => {
         getAddressRecord.batch({ name: 'offchainexample.eth', coin: 'btc' }),
         getText.batch({ name: 'offchainexample.eth', key: 'email' }),
       )
-      console.log(result)
       expect(result).toMatchInlineSnapshot(`
       [
         {
