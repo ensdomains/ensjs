@@ -1,7 +1,7 @@
 {
   "name": "@ensdomains/ens-test-env",
   "type": "module",
-  "version": "0.5.0-beta.0",
+  "version": "0.5.0-beta.1",
   "files": [
     "src"
   ],
@@ -9,6 +9,9 @@
   "scripts": {
     "prepublish": "cp ../../LICENSE ./",
     "ver": "pnpm version --no-workspaces-update"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
     "@ethersproject/wallet": "^5.6.0",
@@ -18,12 +21,9 @@
     "concurrently": "^7.1.0",
     "docker-compose": "^0.24.7",
     "dotenv": "^16.0.1",
-    "fs-extra": "^10.0.1",
     "ganache": "^7.0.4",
-    "got": "^12.0.2",
     "js-yaml": "^4.1.0",
     "lz4": "^0.6.5",
-    "node-fetch": "^3.2.3",
     "progress-stream": "^2.0.0",
     "tar-fs": "^2.1.1",
     "wait-on": "^6.0.1"
