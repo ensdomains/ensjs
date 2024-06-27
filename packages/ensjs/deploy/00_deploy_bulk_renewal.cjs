@@ -3,32 +3,14 @@
 const { Interface } = require('ethers/lib/utils')
 const { ethers } = require('hardhat')
 const { namehash, labelhash } = require('viem/ens')
-const { keccak256 } = require('viem')
 
-function makeInterfaceId(functionSignatures = []) {
-  const INTERFACE_ID_LENGTH = 4
-
-  const interfaceIdBuffer = functionSignatures
-    .map((signature) => keccak256(signature)) // keccak256
-    .map(
-      (h) => Buffer.from(h.substring(2), 'hex').subarray(0, 4), // bytes4()
-    )
-    .reduce((memo, bytes) => {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < INTERFACE_ID_LENGTH; i++) {
-        memo[i] ^= bytes[i] // xor
-      }
-      return memo
-    }, Buffer.alloc(INTERFACE_ID_LENGTH))
-
-  return `0x${interfaceIdBuffer.toString('hex')}`
-}
+const { makeInterfaceId } = require('@openzeppelin/test-helpers')
 
 /**
  * @param {import('ethers/lib/utils').Interface} iface
  */
 function computeInterfaceId(iface) {
-  return makeInterfaceId(
+  return makeInterfaceId.ERC165(
     Object.values(iface.functions).map((frag) => frag.format('sighash')),
   )
 }
