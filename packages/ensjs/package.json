@@ -109,6 +109,7 @@
     "pako": "^2.1.0"
   },
   "devDependencies": {
+    "@ensdomains/buffer": "^0.1.1",
     "@ensdomains/ens-contracts": "1.0.0",
     "@ensdomains/ens-test-env": "workspace:*",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
@@ -122,7 +123,6 @@
     "cbor": "^8.1.0",
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.6",
-    "eth-ens-namehash": "^2.0.8",
     "ethers": "^5.7.2",
     "glob": "^8.0.3",
     "happy-dom": "^13.3.8",
@@ -142,5 +142,8 @@
   },
   "peerDependencies": {
     "viem": "^2.9.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
