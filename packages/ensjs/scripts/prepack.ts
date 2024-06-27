@@ -49,9 +49,11 @@ function generatePackageJson() {
     if (key === '.') continue
     if (!value.default || !value.import)
       throw new Error('`default` and `import` are required.')
-    fs.writeFileSync(
-      `${key}/package.json`,
-      `{
+    if (!fs.existsSync(key)) fs.mkdirSync(key)
+    if (!fs.existsSync(`${key}/package.json`))
+      fs.writeFileSync(
+        `${key}/package.json`,
+        `{
   ${Object.entries(value)
     .map(([k, v]) => {
       const key_ = (() => {
@@ -64,8 +66,7 @@ function generatePackageJson() {
     })
     .join(',\n  ')}
 }`,
-      { flag: 'wx' },
-    )
+      )
     files_.push(key.replace('./', ''))
   }
 
