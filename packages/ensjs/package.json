@@ -109,7 +109,6 @@
     "pako": "^2.1.0"
   },
   "devDependencies": {
-    "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "1.0.0",
     "@ensdomains/ens-test-env": "workspace:*",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
