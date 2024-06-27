@@ -30,5 +30,6 @@
       "built": false,
       "unplugged": true
     }
-  }
+  },
+  "packageManager": "pnpm@9.4.0"
 }

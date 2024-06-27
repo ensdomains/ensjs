@@ -2,7 +2,6 @@ import type { Kind, SelectionNode, SelectionSetNode } from 'graphql'
 import type { RequestMiddleware, ResponseMiddleware } from 'graphql-request'
 import { GraphQLClient } from 'graphql-request'
 import { parse, print, visit } from 'graphql/language/index.js'
-import traverse from 'traverse'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { namehash } from '../../utils/normalise.js'
 
@@ -57,30 +56,45 @@ export const requestMiddleware: RequestMiddleware = (request) => {
 }
 
 export const responseMiddleware: ResponseMiddleware = (response) => {
-  traverse(response).forEach(function (responseItem: unknown) {
-    if (
-      responseItem instanceof Object &&
-      'name' in responseItem &&
-      responseItem.name &&
-      typeof responseItem.name === 'string'
-    ) {
-      // Name already in hashed form
-      if (responseItem.name && responseItem.name.includes('[')) {
-        return
-      }
+  const traverse = (obj: Record<string, any>) => {
+    if (obj && typeof obj === 'object') {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          const value = obj[key]
 
-      let hashedName = '[Invalid ENS Name]'
-      try {
-        hashedName = namehash(responseItem.name)
-      } catch (e) {
-        this.update({ ...responseItem, name: hashedName, invalidName: true })
-        return
-      }
-      if ('id' in responseItem && responseItem.id !== hashedName) {
-        this.update({ ...responseItem, name: hashedName, invalidName: true })
+          if (value && typeof value === 'object') {
+            traverse(value)
+          }
+
+          if (
+            value instanceof Object &&
+            'name' in value &&
+            value.name &&
+            typeof value.name === 'string'
+          ) {
+            // Name already in hashed form
+            if (value.name.includes('[')) {
+              // eslint-disable-next-line no-continue
+              continue
+            }
+
+            let hashedName = '[Invalid ENS Name]'
+            try {
+              hashedName = namehash(value.name)
+            } catch (e) {
+              obj[key] = { ...value, name: hashedName, invalidName: true }
+            }
+
+            if ('id' in value && value.id !== hashedName) {
+              obj[key] = { ...value, name: hashedName, invalidName: true }
+            }
+          }
+        }
       }
     }
-  })
+  }
+
+  traverse(response)
 }
 
 export const createSubgraphClient = ({ client }: { client: ClientWithEns }) =>
