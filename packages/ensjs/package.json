@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "3.7.0",
+  "version": "4.0.0",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -143,5 +143,8 @@
   },
   "peerDependencies": {
     "viem": "^2.9.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
