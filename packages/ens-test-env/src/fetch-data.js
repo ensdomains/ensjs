@@ -4,7 +4,7 @@
 import colors from 'ansi-colors'
 import cliProgress from 'cli-progress'
 import 'dotenv/config'
-import fs from 'fs-extra'
+import fs from 'node:fs'
 import lz4 from 'lz4'
 import progress from 'progress-stream'
 import { pipeline } from 'stream'
@@ -86,7 +86,7 @@ async function compressToArchive() {
 async function decompressToOutput() {
   return new Promise(async (resolve, reject) => {
     if (fs.existsSync(dataPath))
-      await fs.rm(dataPath, { recursive: true, force: true })
+      await fs.promises.rm(dataPath, { recursive: true, force: true })
 
     const archiveSize = fs.statSync(localPath + '.tar.lz4').size
     const unarchiver = tar.extract(dataPath)
@@ -116,7 +116,7 @@ async function decompressToOutput() {
 
     const readMePath = `${dataPath}/ipfs/blocks/_README`
     if (fs.existsSync(readMePath)) {
-      await fs.rm(readMePath, {force: true})
+      await fs.promises.rm(readMePath, {force: true})
     }
   })
 }
@@ -144,8 +144,8 @@ export const main = async (arg, config) => {
     }
     case 'clean': {
       console.log('Cleaning data directory...')
-      await fs.rm(dataPath, { force: true, recursive: true })
-      await fs.mkdir(dataPath)
+      await fs.promises.rm(dataPath, { force: true, recursive: true })
+      await fs.promises.mkdir(dataPath)
       return
     }
   }

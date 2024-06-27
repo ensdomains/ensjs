@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import fs from 'fs-extra'
+import fs from 'node:fs'
 import path from 'path'
 import * as url from 'url'
 

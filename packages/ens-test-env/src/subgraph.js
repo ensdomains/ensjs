@@ -1,5 +1,5 @@
 import { config } from 'dotenv'
-import fs from 'fs'
+import fs from 'node:fs'
 import yaml from 'js-yaml'
 import path from 'path'
 
