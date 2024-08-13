@@ -92,26 +92,59 @@ const getOrderByFilter = ({
 >): DomainFilter => {
   const lastDomain = previousPage[previousPage.length - 1]
   const operator = orderDirection === 'asc' ? 'gt' : 'lt'
-
   switch (orderBy) {
     case 'expiryDate': {
+      console.log(previousPage)
       let lastExpiryDate = lastDomain.expiryDate?.value
         ? lastDomain.expiryDate.value / 1000
         : 0
+      console.log(lastExpiryDate)
       if (lastDomain.parentName === 'eth') {
         lastExpiryDate += GRACE_PERIOD_SECONDS
       }
-
       if (orderDirection === 'asc' && lastExpiryDate === 0) {
+        console.log('asc 1')
         return {
           and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
         }
       }
-      if (orderDirection === 'desc' && lastExpiryDate !== 0) {
+      if (
+        orderDirection === 'asc' &&
+        lastExpiryDate !== 0 &&
+        previousPage.length === 20
+      ) {
+        console.log('asc 2')
+        //unwrapped subnames no expiry
+        //unwrapped .eth names have expiry
+        //wrapped .eth names have expiry
+        //wrapped subnames have expiry if fuse else same as unwrapped
+        //non .eth names no expiry
+
         return {
-          [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+          or: [
+            {
+              and: [
+                { [`expiryDate_${operator}e`]: `${lastExpiryDate}` },
+                { [`id_${operator}`]: lastDomain.id },
+              ],
+            },
+            {
+              [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+            },
+            { expiryDate: null },
+          ],
         }
       }
+      if (orderDirection === 'desc' && lastExpiryDate !== 0) {
+        console.log('desc 1')
+        return {
+          and: [
+            { [`expiryDate_${operator}e`]: `${lastExpiryDate}` },
+            { [`id_${operator}`]: lastDomain.id },
+          ],
+        }
+      }
+      console.log('general')
       return {
         or: [
           {
@@ -195,6 +228,8 @@ const getNamesForAddress = async (
     searchType,
     ...filters
   } = filter
+
+  console.log('getNames', allowExpired, filters)
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
@@ -336,6 +371,8 @@ const getNamesForAddress = async (
   })
 
   if (!result) return []
+
+  console.log(result.domains)
 
   const names = result.domains.map((domain) => {
     const relation: GetNamesForAddressRelation = {}
