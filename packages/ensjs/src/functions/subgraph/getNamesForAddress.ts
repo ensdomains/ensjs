@@ -114,11 +114,6 @@ const getOrderByFilter = ({
         previousPage.length === 20
       ) {
         console.log('asc 2')
-        //unwrapped subnames no expiry
-        //unwrapped .eth names have expiry
-        //wrapped .eth names have expiry
-        //wrapped subnames have expiry if fuse else same as unwrapped
-        //non .eth names no expiry
 
         return {
           or: [
