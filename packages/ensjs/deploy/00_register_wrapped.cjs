@@ -6,6 +6,7 @@ const { ethers } = require('hardhat')
 const { namehash } = require('viem/ens')
 const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
 const { encodeFuses } = require('../dist/cjs/utils/fuses')
+const { makeNameGenerator } = require('../utils/wrappedNameGenerator.cjs')
 
 /**
  * @type {{
@@ -107,6 +108,8 @@ const func = async function (hre) {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
 
+  const nameGenerator = await makeNameGenerator(hre)
+
   const controller = await ethers.getContract('ETHRegistrarController')
   const publicResolver = await ethers.getContract('PublicResolver')
 
@@ -126,19 +129,15 @@ const func = async function (hre) {
     const owner = allNamedAccts[namedOwner]
     const resolver = publicResolver.address
 
-    const commitment = await controller.makeCommitment(
+    const commitTx = await nameGenerator.commit({
       label,
-      owner,
-      duration,
-      secret,
-      resolver,
+      namedOwner,
       data,
       reverseRecord,
       fuses,
-    )
+      duration
+    })
 
-    const _controller = controller.connect(await ethers.getSigner(owner))
-    const commitTx = await controller.commit(commitment)
     console.log(
       `Committing commitment for ${label}.eth (tx: ${commitTx.hash})...`,
     )
@@ -146,44 +145,34 @@ const func = async function (hre) {
 
     await network.provider.send('evm_mine')
 
-    const [price] = await controller.rentPrice(label, duration)
-
-    const registerTx = await _controller.register(
+    const registerTx = await nameGenerator.register({
       label,
-      owner,
-      duration,
-      secret,
-      resolver,
+      namedOwner,
       data,
       reverseRecord,
       fuses,
-      {
-        value: price,
-      },
-    )
+      duration,
+    })
+
     console.log(`Registering name ${label}.eth (tx: ${registerTx.hash})...`)
     await registerTx.wait()
 
     if (subnames) {
       console.log(`Setting subnames for ${label}.eth...`)
-      const nameWrapper = await ethers.getContract('NameWrapper')
       for (const {
         label: subnameLabel,
         namedOwner: namedSubnameOwner,
         fuses: subnameFuses = 0,
         expiry: subnameExpiry = BigNumber.from(2).pow(64).sub(1),
       } of subnames) {
-        const subnameOwner = allNamedAccts[namedSubnameOwner]
-        const _nameWrapper = nameWrapper.connect(await ethers.getSigner(owner))
-        const setSubnameTx = await _nameWrapper.setSubnodeRecord(
-          namehash(`${label}.eth`),
+        const setSubnameTx = await nameGenerator.subname({
+          label,
+          namedOwner,
           subnameLabel,
-          subnameOwner,
-          resolver,
-          '0',
+          namedSubnameOwner,
           subnameFuses,
           subnameExpiry,
-        )
+        })
         console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
         await setSubnameTx.wait()
       }
