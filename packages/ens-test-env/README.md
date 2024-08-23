@@ -44,9 +44,6 @@ module.exports = {
       mnemonic: 'test test test test test test test test test test test junk',
       unlockedAccounts: ['0x0000000000000000000000000000000000000000'],
     },
-    database: {
-      dbPath: './ganache',
-    },
   },
   graph: {
     bypassLocal: false,

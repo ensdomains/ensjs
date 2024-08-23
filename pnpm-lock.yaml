@@ -102,9 +102,6 @@ importers:
       dotenv:
         specifier: ^16.0.1
         version: 16.0.1
-      ganache:
-        specifier: ^7.0.4
-        version: 7.4.1
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1624,10 +1621,6 @@ packages:
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
-  bufferutil@4.0.5:
-    resolution: {integrity: sha512-HTm14iMQKK2FjFLRTM5lAVcyaUzOnqbPtesFIvREgXpJHdQm8bWS+GkQgIkfaBYRHuCnea7w8UVNfwiAQhlr9A==}
-    engines: {node: '>=6.14.2'}
-
   bufferutil@4.0.6:
     resolution: {integrity: sha512-jduaYOYtnio4aIAyc6UbvPCVcgq7nYpVnucyxr6eCYg/Woad9Hf/oxxBRDnGGjPfjUm6j5O/uBWhIu4iLebFaw==}
     engines: {node: '>=6.14.2'}
@@ -2684,19 +2677,6 @@ packages:
 
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
-
-  ganache@7.4.1:
-    resolution: {integrity: sha512-yLlfsHQpJmXRD/Ryd7JcHTzL9q0cE+BDu3fmMFmJ/0Nl8GYBDfZrtyzm/8nSRWiXoWR98ER/c3PZrhR9KDySeA==}
-    hasBin: true
-    bundledDependencies:
-      - '@trufflesuite/bigint-buffer'
-      - emittery
-      - keccak
-      - leveldown
-      - secp256k1
-      - '@types/bn.js'
-      - '@types/lru-cache'
-      - '@types/seedrandom'
 
   get-caller-file@1.0.3:
     resolution: {integrity: sha512-3t6rVToeoZfYSGd8YoLFR2DJkiQrIiUrGcjvFX2mDw3bn6k2OtwHN0TNCLbBO+w8qTvimhDkv+LSscbJY1vE6w==}
@@ -4750,10 +4730,6 @@ packages:
   url-to-options@1.0.1:
     resolution: {integrity: sha512-0kQLIzG4fdk/G5NONku64rSH/x32NOA39LVQqlK8Le6lvTF6GGRJpqaQFGgU+CLwySIqBSMdwYM0sYcW9f6P4A==}
     engines: {node: '>= 4'}
-
-  utf-8-validate@5.0.7:
-    resolution: {integrity: sha512-vLt1O5Pp+flcArHGIyKEQq883nBt8nN8tVBcoL0qUXj2XT1n7p70yGIq2VK98I5FdZ1YHc0wk/koOnHjnXWk1Q==}
-    engines: {node: '>=6.14.2'}
 
   utf-8-validate@5.0.9:
     resolution: {integrity: sha512-Yek7dAy0v3Kl0orwMlvi7TPtiCNrdfHNd7Gcc/pLq4BLXqfAmd0J7OWMizUQnTTJsyjKn02mU7anqwfmUP4J8Q==}
@@ -7094,11 +7070,6 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bufferutil@4.0.5:
-    dependencies:
-      node-gyp-build: 4.5.0
-    optional: true
-
   bufferutil@4.0.6:
     dependencies:
       node-gyp-build: 4.5.0
@@ -8503,11 +8474,6 @@ snapshots:
   functional-red-black-tree@1.0.1: {}
 
   functions-have-names@1.2.3: {}
-
-  ganache@7.4.1:
-    optionalDependencies:
-      bufferutil: 4.0.5
-      utf-8-validate: 5.0.7
 
   get-caller-file@1.0.3: {}
 
@@ -10801,11 +10767,6 @@ snapshots:
   url-set-query@1.0.0: {}
 
   url-to-options@1.0.1: {}
-
-  utf-8-validate@5.0.7:
-    dependencies:
-      node-gyp-build: 4.5.0
-    optional: true
 
   utf-8-validate@5.0.9:
     dependencies:

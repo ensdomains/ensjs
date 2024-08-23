@@ -21,7 +21,6 @@
     "concurrently": "^7.1.0",
     "docker-compose": "^0.24.7",
     "dotenv": "^16.0.1",
-    "ganache": "^7.0.4",
     "js-yaml": "^4.1.0",
     "lz4": "^0.6.5",
     "progress-stream": "^2.0.0",
