@@ -1,4 +1,4 @@
-import { ConcurrentlyCommandInput } from 'concurrently'
+import type { ConcurrentlyCommandInput } from 'concurrently'
 
 /**
  * ens-test-env configuration object
