@@ -32,7 +32,7 @@ services:
     extra_hosts:
       - 'host.docker.internal:host-gateway'
   ipfs:
-    image: ipfs/kubo:v0.16.0
+    image: ipfs/rainbow:v1.5.0
     ports:
       - '5001:5001'
     volumes:
