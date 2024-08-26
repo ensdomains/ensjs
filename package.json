@@ -23,7 +23,8 @@
     "typescript": "^5.3.2"
   },
   "resolutions": {
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.13"
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.13",
+    "nan": "2.18.0"
   },
   "dependenciesMeta": {
     "ens-contracts": {

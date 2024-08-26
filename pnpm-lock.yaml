@@ -6,6 +6,7 @@ settings:
 
 overrides:
   '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
+  nan: 2.18.0
 
 importers:
 
@@ -3588,8 +3589,8 @@ packages:
   murmur-128@0.2.1:
     resolution: {integrity: sha512-WseEgiRkI6aMFBbj8Cg9yBj/y+OdipwVC7zUo3W2W1JAJITwouUOtpqsmGSg67EQmwwSyod7hsVsWY5LsrfQVg==}
 
-  nan@2.16.0:
-    resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+  nan@2.18.0:
+    resolution: {integrity: sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==}
 
   nano-base32@1.0.1:
     resolution: {integrity: sha512-sxEtoTqAPdjWVGv71Q17koMFGsOMSiHsIFEvzOM7cNp8BXB4AnEwmDabm5dorusJf/v1z7QxaZYxUorU9RKaAw==}
@@ -6912,7 +6913,7 @@ snapshots:
 
   axios@0.25.0:
     dependencies:
-      follow-redirects: 1.15.1
+      follow-redirects: 1.15.1(debug@4.3.4)
     transitivePeerDependencies:
       - debug
 
@@ -8378,8 +8379,6 @@ snapshots:
     dependencies:
       imul: 1.0.1
 
-  follow-redirects@1.15.1: {}
-
   follow-redirects@1.15.1(debug@4.3.4):
     optionalDependencies:
       debug: 4.3.4(supports-color@8.1.1)
@@ -9310,7 +9309,7 @@ snapshots:
     dependencies:
       buffer: 5.7.1
       cuint: 0.2.2
-      nan: 2.16.0
+      nan: 2.18.0
       xxhashjs: 0.2.2
 
   magic-string@0.30.7:
@@ -9505,7 +9504,7 @@ snapshots:
       fmix: 0.1.0
       imul: 1.0.1
 
-  nan@2.16.0: {}
+  nan@2.18.0: {}
 
   nano-base32@1.0.1: {}
 

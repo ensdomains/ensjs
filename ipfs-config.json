@@ -1,0 +1,156 @@
+{
+  "API": {
+    "HTTPHeaders": {}
+  },
+  "Addresses": {
+    "API": "/ip4/0.0.0.0/tcp/5001",
+    "Announce": [],
+    "AppendAnnounce": [],
+    "Gateway": "/ip4/0.0.0.0/tcp/8080",
+    "NoAnnounce": [],
+    "Swarm": [
+      "/ip4/0.0.0.0/tcp/4001",
+      "/ip6/::/tcp/4001",
+      "/ip4/0.0.0.0/udp/4001/quic",
+      "/ip6/::/udp/4001/quic"
+    ]
+  },
+  "AutoNAT": {
+    "ServiceMode": "disabled"
+  },
+  "Bootstrap": [],
+  "DNS": {
+    "Resolvers": {}
+  },
+  "Datastore": {
+    "BloomFilterSize": 0,
+    "GCPeriod": "1h",
+    "HashOnRead": false,
+    "Spec": {
+      "mounts": [
+        {
+          "child": {
+            "path": "blocks",
+            "shardFunc": "/repo/flatfs/shard/v1/next-to-last/2",
+            "sync": true,
+            "type": "flatfs"
+          },
+          "mountpoint": "/blocks",
+          "prefix": "flatfs.datastore",
+          "type": "measure"
+        },
+        {
+          "child": {
+            "compression": "none",
+            "path": "datastore",
+            "type": "levelds"
+          },
+          "mountpoint": "/",
+          "prefix": "leveldb.datastore",
+          "type": "measure"
+        }
+      ],
+      "type": "mount"
+    },
+    "StorageGCWatermark": 90,
+    "StorageMax": "10GB"
+  },
+  "Discovery": {
+    "MDNS": {
+      "Enabled": false
+    }
+  },
+  "Experimental": {
+    "AcceleratedDHTClient": false,
+    "FilestoreEnabled": false,
+    "GraphsyncEnabled": false,
+    "Libp2pStreamMounting": false,
+    "P2pHttpProxy": false,
+    "StrategicProviding": false,
+    "UrlstoreEnabled": false
+  },
+  "Gateway": {
+    "APICommands": [],
+    "HTTPHeaders": {
+      "Access-Control-Allow-Headers": [
+        "X-Requested-With",
+        "Range",
+        "User-Agent"
+      ],
+      "Access-Control-Allow-Methods": ["GET"],
+      "Access-Control-Allow-Origin": ["*"]
+    },
+    "NoDNSLink": true,
+    "NoFetch": true,
+    "PathPrefixes": [],
+    "PublicGateways": null,
+    "RootRedirect": "",
+    "Writable": false
+  },
+  "Identity": {
+    "PeerID": "12D3KooWAVmiCRJS5VkDZFSRmDFd7EYnjohm9YnxZD5wqcSkj61P",
+    "PrivKey": "CAESQPMo9Fb2E3NX2JZwQHkZ6QsNQjbDHP5o+unVcbPvMuxTChhFWqVb3/1kItP2cr0CrFSkg8Hr9Laez0RwHlGFq2o="
+  },
+  "Internal": {},
+  "Ipns": {
+    "RecordLifetime": "",
+    "RepublishPeriod": "",
+    "ResolveCacheSize": 128
+  },
+  "Migration": {
+    "DownloadSources": [],
+    "Keep": ""
+  },
+  "Mounts": {
+    "FuseAllowOther": false,
+    "IPFS": "/ipfs",
+    "IPNS": "/ipns"
+  },
+  "Peering": {
+    "Peers": null
+  },
+  "Pinning": {
+    "RemoteServices": {}
+  },
+  "Plugins": {
+    "Plugins": null
+  },
+  "Provider": {
+    "Strategy": ""
+  },
+  "Pubsub": {
+    "DisableSigning": false,
+    "Router": ""
+  },
+  "Reprovider": {
+    "Interval": "0",
+    "Strategy": "all"
+  },
+  "Routing": {
+    "Methods": null,
+    "Routers": null,
+    "Type": "none"
+  },
+  "Swarm": {
+    "AddrFilters": null,
+    "ConnMgr": {
+      "Type": "none"
+    },
+    "DisableBandwidthMetrics": true,
+    "DisableNatPortMap": true,
+    "RelayClient": {
+      "Enabled": false
+    },
+    "RelayService": {
+      "Enabled": false
+    },
+    "ResourceMgr": {},
+    "Transports": {
+      "Multiplexers": {},
+      "Network": {
+        "Relay": false
+      },
+      "Security": {}
+    }
+  }
+}
