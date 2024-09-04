@@ -2,7 +2,6 @@
 /cache
 /artifacts
 /coverage
-README.md
 LICENSE
 
 .env.local
