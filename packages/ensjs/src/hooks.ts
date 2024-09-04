@@ -1,1 +1,1 @@
-export { useNames } from './hooks/useNames.js'
+export { useNamesForAddress } from './hooks/useNamesForAddress.js'
