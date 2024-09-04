@@ -3,8 +3,8 @@ import {
   useQuery,
   type UseQueryResult,
 } from '@tanstack/react-query'
-import type { ClientWithEns } from '../contracts/consts.js'
-import { getAvailable } from '../public.js'
+import type { ClientWithEns } from '@ensdomains/ensjs/contracts'
+import { getAvailable } from '@ensdomains/ensjs/public'
 
 export type UseEnsAvailableParams = {
   name: string

@@ -7,8 +7,8 @@ import type { Address } from 'viem'
 import {
   getNamesForAddress,
   type GetNamesForAddressReturnType,
-} from '../subgraph.js'
-import type { ClientWithEns } from '../contracts/consts.js'
+} from '@ensdomains/ensjs/subgraph'
+import type { ClientWithEns } from '@ensdomains/ensjs/contracts'
 
 export type UseNamesParams = {
   address: Address

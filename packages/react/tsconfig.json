@@ -1,0 +1,17 @@
+{
+  // This configuration is used for local development and type checking.
+  "extends": "./tsconfig.base.json",
+  "ts-node": {
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS",
+      "allowSyntheticDefaultImports": true
+    }
+  },
+  "include": ["src", "../react/src/hooks"],
+  "exclude": [],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "resolveJsonModule": true
+  }
+}
