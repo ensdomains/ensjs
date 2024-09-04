@@ -318,9 +318,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.54
         version: 5.54.1(react@18.3.1)
-      wagmi:
-        specifier: '2'
-        version: 2.12.8(@tanstack/query-core@5.54.1)(@tanstack/react-query@5.54.1(react@18.3.1))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(react@18.3.1)(typescript@5.3.2)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.19.2)(typescript@5.3.2)(utf-8-validate@5.0.10)(viem@2.9.2(bufferutil@4.0.8)(typescript@5.3.2)(utf-8-validate@5.0.10))
     devDependencies:
       '@ensdomains/buffer':
         specifier: ^0.0.13
@@ -343,6 +340,9 @@ importers:
       viem:
         specifier: 2.9.2
         version: 2.9.2(bufferutil@4.0.8)(typescript@5.3.2)(utf-8-validate@5.0.10)
+      wagmi:
+        specifier: ^2
+        version: 2.12.8(@tanstack/query-core@5.54.1)(@tanstack/react-query@5.54.1(react@18.3.1))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(react@18.3.1)(typescript@5.3.2)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.19.2)(typescript@5.3.2)(utf-8-validate@5.0.10)(viem@2.9.2(bufferutil@4.0.8)(typescript@5.3.2)(utf-8-validate@5.0.10))
 
 packages:
 
