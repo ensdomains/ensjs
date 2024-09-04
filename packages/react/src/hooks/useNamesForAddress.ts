@@ -1,23 +1,15 @@
-import {
-  QueryClient,
-  useQuery,
-  type UseQueryResult,
-} from '@tanstack/react-query'
+import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import type { Address } from 'viem'
 import {
   getNamesForAddress,
   type GetNamesForAddressReturnType,
 } from '@ensdomains/ensjs/subgraph'
-import type { ClientWithEns } from '@ensdomains/ensjs/contracts'
+import { fallbackQueryClient } from '../query.js'
+import type { ParamWithClients } from '../client.js'
 
-export type UseNamesParams = {
+export type UseNamesParams = ParamWithClients<{
   address: Address
-  client: ClientWithEns
-  queryClient?: QueryClient
-}
-
-// TODO: figure out why not taking from provider
-const fallbackQueryClient = new QueryClient()
+}>
 
 /**
  * Returns a list of names for an address

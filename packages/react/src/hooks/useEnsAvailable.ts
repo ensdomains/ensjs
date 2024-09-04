@@ -1,19 +1,11 @@
-import {
-  QueryClient,
-  useQuery,
-  type UseQueryResult,
-} from '@tanstack/react-query'
-import type { ClientWithEns } from '@ensdomains/ensjs/contracts'
+import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { getAvailable } from '@ensdomains/ensjs/public'
+import type { ParamWithClients } from '../client.js'
+import { fallbackQueryClient } from '../query.js'
 
-export type UseEnsAvailableParams = {
+export type UseEnsAvailableParams = ParamWithClients<{
   name: string
-  client: ClientWithEns
-  queryClient?: QueryClient
-}
-
-// TODO: figure out why not taking from provider
-const fallbackQueryClient = new QueryClient()
+}>
 
 /**
  * Returns a list of names for an address
