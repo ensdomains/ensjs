@@ -3,6 +3,7 @@ import type { Address, Hex } from 'viem'
 import { getSupportedInterfaces } from '@ensdomains/ensjs/public'
 import type { ParamWithClients } from '../client.js'
 import { fallbackQueryClient } from '../query.js'
+import { resolverInterfaces } from '../interfaces.js'
 
 export type UseEnsResolverInterfacesParams<
   Interfaces extends readonly Hex[] = [Hex, Hex],
@@ -21,6 +22,8 @@ export type UseEnsResolverInterfacesReturnType<
  * Returns a wether or not the interfaces are supported by the resolver
  * You can find a list of interfaces at https://docs.ens.domains/resolvers/interfaces
  *
+ * You can use the {@link resolverInterfaces} shorthand, or manually specify a Hex value
+ *
  * @param data - {@link UseEnsResolverInterfacesParams}
  * @returns - {@link boolean[]}
  */
@@ -29,8 +32,10 @@ export const useEnsResolverInterfaces = <Interfaces extends readonly Hex[]>(
 ): UseQueryResult<UseEnsResolverInterfacesReturnType<Interfaces>> => {
   const {
     resolver,
-    // default ['addr(node, coinType)', 'wildcard']
-    interfaces = ['0xf1cb7e06', '0x9061b923'],
+    interfaces = [
+      resolverInterfaces.addrMulticoin,
+      resolverInterfaces.wildcard,
+    ],
     client,
     queryClient = fallbackQueryClient,
   } = data
