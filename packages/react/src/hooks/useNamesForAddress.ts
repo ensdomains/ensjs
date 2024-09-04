@@ -7,9 +7,11 @@ import {
 import { fallbackQueryClient } from '../query.js'
 import type { ParamWithClients } from '../client.js'
 
-export type UseNamesParams = ParamWithClients<{
+export type UseNamesForAddressParams = ParamWithClients<{
   address: Address
 }>
+
+export type UseNamesForAddressReturnType = GetNamesForAddressReturnType
 
 /**
  * Returns a list of names for an address
@@ -17,13 +19,13 @@ export type UseNamesParams = ParamWithClients<{
  * Keep in mind that this list will be loaded from the subgraph, and only include watchable names.
  * Read more about enumeration and watchability here: https://docs.ens.domains/web/enumerate
  *
- * @param data - {@link UseNamesParams}
- * @returns - {@link GetNamesForAddressReturnType}
+ * @param params - {@link UseNamesForAddressParams}
+ * @returns - {@link UseNamesForAddressReturnType}
  */
 export const useNamesForAddress = (
-  data: UseNamesParams,
-): UseQueryResult<GetNamesForAddressReturnType> => {
-  const { address, client, queryClient = fallbackQueryClient } = data
+  params: UseNamesForAddressParams,
+): UseQueryResult<UseNamesForAddressReturnType> => {
+  const { address, client, queryClient = fallbackQueryClient } = params
 
   return useQuery(
     {

@@ -1,32 +1,34 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-import { getAvailable } from '@ensdomains/ensjs/public'
+import {
+  getAvailable,
+  type GetAvailableParameters,
+  type GetAvailableReturnType,
+} from '@ensdomains/ensjs/public'
 import type { ParamWithClients } from '../client.js'
 import { fallbackQueryClient } from '../query.js'
 
-export type UseEnsAvailableParams = ParamWithClients<{
-  name: string
-}>
+export type UseEnsAvailableParams = ParamWithClients<GetAvailableParameters>
+
+export type UseEnsAvailableReturnType = GetAvailableReturnType
 
 /**
  * Returns a list of names for an address
  *
  * Keep in mind that this function is limited to .eth names
  *
- * @param data - {@link UseEnsAvailableParams}
- * @returns - {@link boolean}
+ * @param params - {@link UseEnsAvailableParams}
+ * @returns - {@link UseEnsAvailableReturnType}
  */
 export const useEnsAvailable = (
-  data: UseEnsAvailableParams,
-): UseQueryResult<boolean> => {
-  const { name, client, queryClient = fallbackQueryClient } = data
+  params: UseEnsAvailableParams,
+): UseQueryResult<UseEnsAvailableReturnType> => {
+  const { client, queryClient = fallbackQueryClient } = params
 
   return useQuery(
     {
-      queryKey: ['ensjs', 'eth-name-available', name],
+      queryKey: ['ensjs', 'eth-name-available', params.name],
       queryFn: async () => {
-        const result = await getAvailable(client, {
-          name,
-        })
+        const result = await getAvailable(client, params)
 
         return result
       },
