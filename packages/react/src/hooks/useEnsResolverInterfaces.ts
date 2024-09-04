@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
-import type { Address, Hex } from 'viem'
+import type { Hex } from 'viem'
 import {
   getSupportedInterfaces,
   type GetSupportedInterfacesParameters,
