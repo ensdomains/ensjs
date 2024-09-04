@@ -218,6 +218,14 @@ const names = [
     },
   },
   {
+    label: 'with-empty-addr',
+    namedOwner: 'owner2',
+    namedAddr: 'owner2',
+    records: {
+      addr: [{ key: 61, value: '0x' }],
+    },
+  },
+  {
     label: 'with-contenthash',
     namedOwner: 'owner',
     namedAddr: 'owner',
@@ -462,10 +470,7 @@ const func = async function (hre) {
            * @type {string | Buffer | Uint8Array}
            */
           let data
-          if (
-            abi.contentType === 1 ||
-            abi.contentType === 256
-          ) {
+          if (abi.contentType === 1 || abi.contentType === 256) {
             data = JSON.stringify(abi.data)
           } else if (abi.contentType === 2) {
             data = pako.deflate(JSON.stringify(abi.data))
