@@ -9,6 +9,7 @@ jobs:
     name: Publish
     permissions:
       id-token: write
+      contents: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
