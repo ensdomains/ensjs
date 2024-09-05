@@ -3,7 +3,7 @@ import {
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
 } from '@ensdomains/ensjs/subgraph'
-import type { ParamWithClients } from '../client.js'
+import type { ParamWithClients, QueryConfig } from '../client.js'
 import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseDecodedNameParams = ParamWithClients<GetDecodedNameParameters>
@@ -20,8 +20,9 @@ export type UseDecodedNameReturnType = GetDecodedNameReturnType
  */
 export const useDecodedName = (
   params: UseDecodedNameParams,
+  query?: QueryConfig,
 ): UseQueryReturnType<UseDecodedNameReturnType> => {
-  const { client, queryClient } = params
+  const { client } = params
 
   return useQuery(
     ['ensjs', 'decoded-subgraph-name', params.name],
@@ -32,6 +33,6 @@ export const useDecodedName = (
         return result
       },
     },
-    queryClient,
+    query,
   )
 }

@@ -3,7 +3,7 @@ import {
   type GetExpiryParameters,
   type GetExpiryReturnType,
 } from '@ensdomains/ensjs/public'
-import type { ParamWithClients } from '../client.js'
+import type { ParamWithClients, QueryConfig } from '../client.js'
 import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsExpiryParams = ParamWithClients<GetExpiryParameters>
@@ -20,18 +20,15 @@ export type UseEnsExpiryReturnType = GetExpiryReturnType
  */
 export const useEnsExpiry = (
   params: UseEnsExpiryParams,
+  query?: QueryConfig,
 ): UseQueryReturnType<UseEnsExpiryReturnType> => {
-  const { client, queryClient } = params
+  const { client } = params
 
   return useQuery(
     ['ensjs', 'ens-expiry', params.name],
     {
-      queryFn: async () => {
-        const result = await getExpiry(client, params)
-
-        return result
-      },
+      queryFn: async () => getExpiry(client, params),
     },
-    queryClient,
+    query,
   )
 }

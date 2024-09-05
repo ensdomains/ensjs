@@ -3,8 +3,7 @@ import {
   getNamesForAddress,
   type GetNamesForAddressReturnType,
 } from '@ensdomains/ensjs/subgraph'
-import { fallbackQueryClient } from '../query.js'
-import type { ParamWithClients } from '../client.js'
+import type { ParamWithClients, QueryConfig } from '../client.js'
 import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseNamesForAddressParams = ParamWithClients<{
@@ -24,8 +23,9 @@ export type UseNamesForAddressReturnType = GetNamesForAddressReturnType
  */
 export const useNamesForAddress = (
   params: UseNamesForAddressParams,
+  queryConfig?: QueryConfig,
 ): UseQueryReturnType<UseNamesForAddressReturnType> => {
-  const { address, client, queryClient = fallbackQueryClient } = params
+  const { address, client } = params
 
   return useQuery(
     ['ensjs', 'names-for-address', address],
@@ -37,7 +37,9 @@ export const useNamesForAddress = (
 
         return result
       },
+      enabled: !!params.address,
+      initialData: [],
     },
-    queryClient,
+    queryConfig,
   )
 }

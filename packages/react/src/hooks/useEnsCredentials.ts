@@ -1,5 +1,5 @@
 import { getTextRecord } from '@ensdomains/ensjs/public'
-import type { ParamWithClients } from '../client.js'
+import type { ParamWithClients, QueryConfig } from '../client.js'
 import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsCredentialsParams = ParamWithClients<{ name: string }>
@@ -18,8 +18,9 @@ export type UseEnsCredentialsReturnType = ExternalCredential[]
  */
 export const useEnsCredentials = (
   params: UseEnsCredentialsParams,
+  query?: QueryConfig,
 ): UseQueryReturnType<UseEnsCredentialsReturnType> => {
-  const { name, client, queryClient } = params
+  const { name, client } = params
 
   return useQuery(
     ['ensjs', 'credentials', params.name],
@@ -41,6 +42,6 @@ export const useEnsCredentials = (
         return credentials
       },
     },
-    queryClient,
+    query,
   )
 }

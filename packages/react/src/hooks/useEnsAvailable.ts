@@ -3,7 +3,7 @@ import {
   type GetAvailableParameters,
   type GetAvailableReturnType,
 } from '@ensdomains/ensjs/public'
-import type { ParamWithClients } from '../client.js'
+import type { ParamWithClients, QueryConfig } from '../client.js'
 import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsAvailableParams = ParamWithClients<GetAvailableParameters>
@@ -20,8 +20,9 @@ export type UseEnsAvailableReturnType = GetAvailableReturnType
  */
 export const useEnsAvailable = (
   params: UseEnsAvailableParams,
+  query?: QueryConfig,
 ): UseQueryReturnType<UseEnsAvailableReturnType> => {
-  const { client, queryClient } = params
+  const { client } = params
 
   return useQuery(
     ['ensjs', 'eth-name-available', params.name],
@@ -33,6 +34,6 @@ export const useEnsAvailable = (
         return result
       },
     },
-    queryClient,
+    query,
   )
 }

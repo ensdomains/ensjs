@@ -4,8 +4,7 @@ import {
   type GetSupportedInterfacesParameters,
   type GetSupportedInterfacesReturnType,
 } from '@ensdomains/ensjs/public'
-import type { ParamWithClients } from '../client.js'
-import { fallbackQueryClient } from '../query.js'
+import type { ParamWithClients, QueryConfig } from '../client.js'
 import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsResolverInterfacesParams<
@@ -27,8 +26,9 @@ export type UseEnsResolverInterfacesReturnType<
  */
 export const useEnsResolverInterfaces = <Interfaces extends readonly Hex[]>(
   params: UseEnsResolverInterfacesParams<Interfaces>,
+  query?: QueryConfig,
 ): UseQueryReturnType<UseEnsResolverInterfacesReturnType<Interfaces>> => {
-  const { client, queryClient = fallbackQueryClient } = params
+  const { client } = params
 
   return useQuery(
     ['ensjs', 'resolver-interfaces', params.address],
@@ -39,6 +39,6 @@ export const useEnsResolverInterfaces = <Interfaces extends readonly Hex[]>(
         return result
       },
     },
-    queryClient,
+    query,
   )
 }

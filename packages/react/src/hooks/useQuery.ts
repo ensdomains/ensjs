@@ -1,7 +1,6 @@
 import {
   useQuery as useTanstackQuery,
   type DefaultError,
-  type QueryClient,
   type QueryKey,
   type UseQueryOptions,
   type UseQueryResult,
@@ -9,6 +8,7 @@ import {
 import type { ExactPartial } from 'viem'
 import { fallbackQueryClient } from '../query.js'
 import type { Compute } from '../utils/types.js'
+import type { QueryConfig } from '../client.js'
 
 export type UseQueryParameters<
   QueryFnData = unknown,
@@ -31,13 +31,18 @@ export type UseQueryReturnType<
   Error = DefaultError,
 > = UseQueryResult<Data, Error>
 
-export const useQuery = <Parameters, Data, Error>(
+export const useQuery = <
+  Parameters extends UseQueryParameters,
+  Data = unknown,
+  Error = unknown,
+>(
   key: QueryKey,
   queryParameters: Exclude<Parameters, 'queryKey'>,
-  queryClient?: QueryClient,
+  queryConfig?: QueryConfig,
 ): UseQueryReturnType<Data, Error> => {
   const parameters = {
     ...queryParameters,
+    ...queryConfig,
     queryKey: key,
   }
 
@@ -45,6 +50,6 @@ export const useQuery = <Parameters, Data, Error>(
   // @ts-ignore
   return useTanstackQuery(
     { ...parameters } as any,
-    queryClient ?? fallbackQueryClient,
+    queryConfig?.queryClient ?? fallbackQueryClient,
   )
 }
