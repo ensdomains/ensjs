@@ -1,11 +1,10 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import {
   getDecodedName,
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
 } from '@ensdomains/ensjs/subgraph'
 import type { ParamWithClients } from '../client.js'
-import { fallbackQueryClient } from '../query.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseDecodedNameParams = ParamWithClients<GetDecodedNameParameters>
 
@@ -21,12 +20,12 @@ export type UseDecodedNameReturnType = GetDecodedNameReturnType
  */
 export const useDecodedName = (
   params: UseDecodedNameParams,
-): UseQueryResult<UseDecodedNameReturnType> => {
-  const { client, queryClient = fallbackQueryClient } = params
+): UseQueryReturnType<UseDecodedNameReturnType> => {
+  const { client, queryClient } = params
 
   return useQuery(
+    ['ensjs', 'decoded-subgraph-name', params.name],
     {
-      queryKey: ['ensjs', 'decoded-subgraph-name', params.name],
       queryFn: async () => {
         const result = await getDecodedName(client, params)
 

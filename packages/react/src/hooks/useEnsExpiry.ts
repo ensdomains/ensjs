@@ -1,11 +1,10 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import {
   getExpiry,
   type GetExpiryParameters,
   type GetExpiryReturnType,
 } from '@ensdomains/ensjs/public'
 import type { ParamWithClients } from '../client.js'
-import { fallbackQueryClient } from '../query.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsExpiryParams = ParamWithClients<GetExpiryParameters>
 
@@ -21,12 +20,12 @@ export type UseEnsExpiryReturnType = GetExpiryReturnType
  */
 export const useEnsExpiry = (
   params: UseEnsExpiryParams,
-): UseQueryResult<UseEnsExpiryReturnType> => {
-  const { client, queryClient = fallbackQueryClient } = params
+): UseQueryReturnType<UseEnsExpiryReturnType> => {
+  const { client, queryClient } = params
 
   return useQuery(
+    ['ensjs', 'ens-expiry', params.name],
     {
-      queryKey: ['ensjs', 'ens-expiry', params.name],
       queryFn: async () => {
         const result = await getExpiry(client, params)
 

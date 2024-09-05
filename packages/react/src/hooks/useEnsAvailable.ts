@@ -1,11 +1,10 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import {
   getAvailable,
   type GetAvailableParameters,
   type GetAvailableReturnType,
 } from '@ensdomains/ensjs/public'
 import type { ParamWithClients } from '../client.js'
-import { fallbackQueryClient } from '../query.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsAvailableParams = ParamWithClients<GetAvailableParameters>
 
@@ -21,12 +20,13 @@ export type UseEnsAvailableReturnType = GetAvailableReturnType
  */
 export const useEnsAvailable = (
   params: UseEnsAvailableParams,
-): UseQueryResult<UseEnsAvailableReturnType> => {
-  const { client, queryClient = fallbackQueryClient } = params
+): UseQueryReturnType<UseEnsAvailableReturnType> => {
+  const { client, queryClient } = params
 
   return useQuery(
+    ['ensjs', 'eth-name-available', params.name],
     {
-      queryKey: ['ensjs', 'eth-name-available', params.name],
+      queryKey: [],
       queryFn: async () => {
         const result = await getAvailable(client, params)
 

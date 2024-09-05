@@ -1,4 +1,3 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import type { Hex } from 'viem'
 import {
   getSupportedInterfaces,
@@ -7,6 +6,7 @@ import {
 } from '@ensdomains/ensjs/public'
 import type { ParamWithClients } from '../client.js'
 import { fallbackQueryClient } from '../query.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsResolverInterfacesParams<
   Interfaces extends readonly Hex[] = [Hex, Hex],
@@ -27,12 +27,12 @@ export type UseEnsResolverInterfacesReturnType<
  */
 export const useEnsResolverInterfaces = <Interfaces extends readonly Hex[]>(
   params: UseEnsResolverInterfacesParams<Interfaces>,
-): UseQueryResult<UseEnsResolverInterfacesReturnType<Interfaces>> => {
+): UseQueryReturnType<UseEnsResolverInterfacesReturnType<Interfaces>> => {
   const { client, queryClient = fallbackQueryClient } = params
 
   return useQuery(
+    ['ensjs', 'resolver-interfaces', params.address],
     {
-      queryKey: ['ensjs', 'resolver-interfaces', params.address],
       queryFn: async () => {
         const result = await getSupportedInterfaces(client, params)
 

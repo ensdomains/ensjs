@@ -1,4 +1,3 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import type { Address } from 'viem'
 import {
   getNamesForAddress,
@@ -6,6 +5,7 @@ import {
 } from '@ensdomains/ensjs/subgraph'
 import { fallbackQueryClient } from '../query.js'
 import type { ParamWithClients } from '../client.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseNamesForAddressParams = ParamWithClients<{
   address: Address
@@ -24,12 +24,12 @@ export type UseNamesForAddressReturnType = GetNamesForAddressReturnType
  */
 export const useNamesForAddress = (
   params: UseNamesForAddressParams,
-): UseQueryResult<UseNamesForAddressReturnType> => {
+): UseQueryReturnType<UseNamesForAddressReturnType> => {
   const { address, client, queryClient = fallbackQueryClient } = params
 
   return useQuery(
+    ['ensjs', 'names-for-address', address],
     {
-      queryKey: ['ensjs', 'names-for-address', address],
       queryFn: async () => {
         const result = await getNamesForAddress(client, {
           address,
