@@ -17,4 +17,5 @@ pnpm install @ensdomains/ensjs-react
 - `useEnsResolverInterfaces` - check supportsInterface on resolver (uses [getSupportedInterfaces](/docs/public/function.getSupportedInterfaces.md))
 - `useNamesForAddress` - lists names from subgraph (uses [getNamesForAddress](/docs/subgraph/function.getNamesForAddress.md))
 - `useDecodedName` - decodes name using subgraph (uses [getDecodedName](/docs/subgraph/function.getDecodedName.md))
-- `useEnsRecordsWrite` - writes records to a name (uses [setRecords](/docs/wallet/function.setRecords.md))
+- `useEnsRecordsWrite` - writes records to a name (uses [setRecords](/docs/wallet/function.setRecords.md)) (wip)
+- `useEnsCredentials` - returns credentials from a name (uses [getTextRecord](/docs/public/function.getTextRecord.md)) (lite)
