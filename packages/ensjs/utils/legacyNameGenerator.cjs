@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const { namehash, labelhash } = require('viem')
 
 const makeNameGenerator = async (hre, optionalNonceManager ) => {

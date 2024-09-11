@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 const { BigNumber } = require('ethers')
 const { parseUnits } = require('ethers/lib/utils')
 const { namehash } = require('viem/ens')
@@ -56,7 +58,6 @@ const makeNameGenerator = async (hre, optionalNonceManager) => {
       const [price] = await controller.rentPrice(label, duration)
       
       const priceWithBuffer = BigNumber.from(price).mul(105).div(100)
-      console.log('price', price.toNumber(), priceWithBuffer.toNumber())
       const _controller = controller.connect(await ethers.getSigner(owner))
       return _controller.register(
         label,

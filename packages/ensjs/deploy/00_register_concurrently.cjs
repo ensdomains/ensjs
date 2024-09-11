@@ -3,9 +3,6 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { BigNumber } = require('ethers')
 const { ethers } = require('hardhat')
-const { namehash } = require('viem/ens')
-const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
-const { encodeFuses } = require('../dist/cjs/utils/fuses')
 const {
   makeNameGenerator: makeWrappedNameGenerator,
 } = require('../utils/wrappedNameGenerator.cjs')
@@ -32,30 +29,25 @@ const { makeNonceManager } = require('../utils/nonceManager.cjs')
  *  duration?: number | BigNumber
  * }[]}
  */
+
 const names = [
   {
-    label: 'wrappedname',
+    label: 'concurrent-legacy-name',
     type: 'legacy',
-    namedOwner: 'owner',
+    namedOwner: 'owner4',
     reverseRecord: true,
   },
   {
-    label: 'wrappedname-with-subnames',
-    type: 'legacy',
-    namedOwner: 'owner',
+    label: 'concurrent-wrapped-name',
+    type: 'wrapped',
+    namedOwner: 'owner4',
+    reverseRecord: true,
     subnames: [
-      { label: 'test', namedOwner: 'owner2' },
-      { label: 'legacy', namedOwner: 'owner2' },
-      { label: 'xyz', namedOwner: 'owner2' },
-      { label: 'addr', namedOwner: 'owner2' },
+      { label: 'test', namedOwner: 'owner4' },
+      { label: 'legacy', namedOwner: 'owner4' },
+      { label: 'xyz', namedOwner: 'owner4' },
+      { label: 'addr', namedOwner: 'owner4' },
     ],
-  },
-  {
-    label: 'expired-wrappedname',
-    type: 'legacy',
-    namedOwner: 'owner',
-    subnames: [{ label: 'test', namedOwner: 'owner2' }],
-    duration: 2419200,
   },
 ]
 
@@ -63,15 +55,13 @@ const names = [
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
 const func = async function (hre) {
-  const { getNamedAccounts, network } = hre
-  const allNamedAccts = await getNamedAccounts()
+  const { network } = hre
 
   const nonceManager = await makeNonceManager(hre)
   const wrappedNameGenerator = await makeWrappedNameGenerator(hre, nonceManager)
   const legacyNameGenerator = await makeLegacyNameGenerator(hre, nonceManager)
 
   await network.provider.send('evm_setAutomine', [false])
-  // await network.provider.send("evm_setIntervalMining", [0]);
 
   // Commit
   const commitTxs = await Promise.all(
@@ -107,18 +97,20 @@ const func = async function (hre) {
             fuses,
             duration,
           })
-        return commitTx
       },
     ),
+    await network.provider.send('evm_mine')
   )
-  await network.provider.send('evm_mine')
 
+  network.provider.send('evm_mine')
+  console.log('committing...')
   await Promise.all(
     commitTxs.map(async (tx) => {
       return tx.wait()
     }),
   )
 
+  console.log('committed')
   const oldTimestamp = (await ethers.provider.getBlock('latest')).timestamp
   await network.provider.send('evm_setNextBlockTimestamp', [oldTimestamp + 60])
   await network.provider.send('evm_increaseTime', [300])
@@ -221,9 +213,9 @@ const func = async function (hre) {
   return true
 }
 
-func.id = 'register-wrapped-names'
-func.tags = ['register-wrapped-names']
-func.dependencies = ['ETHRegistrarController']
+func.id = 'register-concurrent-names'
+func.tags = ['register-concurrent-names']
+func.dependencies = ['ETHRegistrarController', 'register-wrapped-names']
 func.runAtTheEnd = true
 
 module.exports = func
