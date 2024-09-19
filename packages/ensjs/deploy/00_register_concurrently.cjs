@@ -30,23 +30,53 @@ const { makeNonceManager } = require('../utils/nonceManager.cjs')
  * }[]}
  */
 
+const sameExpiryNames = Array.from({ length: 20 }, (_, index) => ({
+  label: `same-expiry-legacy-name-${index}`,
+  type: 'legacy',
+  namedOwner: 'owner4',
+  reverseRecord: true,
+  duration: 3600,
+}))
+
+const expiryNames = Array.from({ length: 20 }, (_, index) => ({
+  label: `wrapped-name-${index}`,
+  // type: 'wrapped',
+  namedOwner: 'owner4',
+  // reverseRecord: true,
+  expiry: 31556000 + index + 1,
+  // duration: 31556000 + index + 1,
+}))
+
 const names = [
-  {
-    label: 'concurrent-legacy-name',
-    type: 'legacy',
-    namedOwner: 'owner4',
-    reverseRecord: true,
-  },
+  ...sameExpiryNames,
+  // ...expiryNames,
+  // {
+  //   label: 'concurrent-legacy-name',
+  //   type: 'legacy',
+  //   namedOwner: 'owner4',
+  //   reverseRecord: true,
+  //   duration: 3600,
+  // },
+  // {
+  //   label: 'concurrent-legacy-name-2',
+  //   type: 'legacy',
+  //   namedOwner: 'owner4',
+  //   reverseRecord: true,
+  //   duration: 3600,
+  // },
   {
     label: 'concurrent-wrapped-name',
     type: 'wrapped',
     namedOwner: 'owner4',
     reverseRecord: true,
     subnames: [
-      { label: 'test', namedOwner: 'owner4' },
-      { label: 'legacy', namedOwner: 'owner4' },
-      { label: 'xyz', namedOwner: 'owner4' },
-      { label: 'addr', namedOwner: 'owner4' },
+      // { label: 'subname-1', namedOwner: 'owner4', duration: 36000 },
+      // { label: 'subname-2', namedOwner: 'owner4' },
+      // { label: 'test', namedOwner: 'owner4' },
+      // { label: 'legacy', namedOwner: 'owner4' },
+      // { label: 'xyz', namedOwner: 'owner4', expiry: 3600 },
+      // { label: 'addr', namedOwner: 'owner4' },
+      ...expiryNames,
     ],
   },
 ]
@@ -88,18 +118,17 @@ const func = async function (hre) {
             namedOwner,
             namedAddr,
           })
-        else
-          return wrappedNameGenerator.commit({
-            label,
-            namedOwner,
-            data,
-            reverseRecord,
-            fuses,
-            duration,
-          })
+        return wrappedNameGenerator.commit({
+          label,
+          namedOwner,
+          data,
+          reverseRecord,
+          fuses,
+          duration,
+        })
       },
     ),
-    await network.provider.send('evm_mine')
+    await network.provider.send('evm_mine'),
   )
 
   network.provider.send('evm_mine')
@@ -209,7 +238,7 @@ const func = async function (hre) {
     'status after registration',
     await network.provider.send('txpool_content'),
   )
-  
+
   return true
 }
 
