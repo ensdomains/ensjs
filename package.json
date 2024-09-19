@@ -9,6 +9,7 @@
     "publish:local:ensjs": "yalc publish packages/ensjs --push --up",
     "chgset:version": "changeset version && pnpm install",
     "chgset:run": "changeset",
+    "release": "changeset publish",
     "chgset": "pnpm chgset:run && pnpm chgset:version"
   },
   "devDependencies": {
