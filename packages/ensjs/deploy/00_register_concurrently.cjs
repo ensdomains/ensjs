@@ -10,6 +10,9 @@ const {
   makeNameGenerator: makeLegacyNameGenerator,
 } = require('../utils/legacyNameGenerator.cjs')
 const { makeNonceManager } = require('../utils/nonceManager.cjs')
+const { encodeFuses } = require('../dist/cjs/utils/fuses')
+
+const DURATION = 31556000
 
 /**
  * @type {{
@@ -35,15 +38,16 @@ const sameExpiryNames = Array.from({ length: 20 }, (_, index) => ({
   type: 'legacy',
   namedOwner: 'owner4',
   reverseRecord: true,
-  duration: 3600,
+  duration: DURATION,
 }))
 
 const expiryNames = Array.from({ length: 20 }, (_, index) => ({
   label: `wrapped-name-${index}`,
-  // type: 'wrapped',
+  type: 'wrapped',
   namedOwner: 'owner4',
+
   // reverseRecord: true,
-  expiry: 31556000 + index + 1,
+  expiry: DURATION + index + 1,
   // duration: 31556000 + index + 1,
 }))
 
@@ -68,15 +72,37 @@ const names = [
     label: 'concurrent-wrapped-name',
     type: 'wrapped',
     namedOwner: 'owner4',
+    fuses: encodeFuses({
+      input: {
+        child: {
+          named: ['CANNOT_UNWRAP'],
+        },
+      },
+    }),
     reverseRecord: true,
+    duration: DURATION,
     subnames: [
-      // { label: 'subname-1', namedOwner: 'owner4', duration: 36000 },
+      {
+        label: 'subname-1',
+        namedOwner: 'owner4',
+        type: 'wrapped',
+        subnameFuses: encodeFuses({
+          input: {
+            parent: {
+              named: ['PARENT_CANNOT_CONTROL'],
+            },
+            child: {
+              named: ['CANNOT_UNWRAP'],
+            },
+          },
+        }),
+      },
       // { label: 'subname-2', namedOwner: 'owner4' },
       // { label: 'test', namedOwner: 'owner4' },
       // { label: 'legacy', namedOwner: 'owner4' },
       // { label: 'xyz', namedOwner: 'owner4', expiry: 3600 },
       // { label: 'addr', namedOwner: 'owner4' },
-      ...expiryNames,
+      // ...expiryNames,
     ],
   },
 ]
@@ -128,7 +154,6 @@ const func = async function (hre) {
         })
       },
     ),
-    await network.provider.send('evm_mine'),
   )
 
   network.provider.send('evm_mine')
@@ -165,6 +190,7 @@ const func = async function (hre) {
             label,
             namedOwner,
             namedAddr,
+            duration
           })
         else
           return wrappedNameGenerator.register({
