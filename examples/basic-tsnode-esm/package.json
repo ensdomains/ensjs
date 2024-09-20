@@ -8,14 +8,8 @@
   },
   "dependencies": {
     "@ensdomains/ensjs": "workspace:*",
-    "ts-node": "^10.7.0",
-    "typescript": "^5.0.4",
-    "viem": "^1.2.9",
-    "node-fetch": "2.6.7"
-  },
-  "pnpm": {
-    "overrides": {
-      "node-fetch": "2.6.7"
-    }
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "viem": "^2.21.9"
   }
 }
