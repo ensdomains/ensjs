@@ -14,19 +14,7 @@
       "import": "./dist/esm/index.js",
       "default": "./dist/cjs/index.js"
     },
-    "./hooks": {
-      "types": "./dist/types/hooks.d.ts",
-      "import": "./dist/esm/hooks.js",
-      "default": "./dist/cjs/hooks.js"
-    },
     "./package.json": "./package.json"
-  },
-  "typesVersions": {
-    "*": {
-      "hooks": [
-        "./dist/types/hooks/index.d.ts"
-      ]
-    }
   },
   "files": [
     "dist/",

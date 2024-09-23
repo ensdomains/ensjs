@@ -8,7 +8,7 @@
       "allowSyntheticDefaultImports": true
     }
   },
-  "include": ["src", "../react/src/hooks"],
+  "include": ["src"],
   "exclude": [],
   "references": [{ "path": "./tsconfig.node.json" }],
   "compilerOptions": {
