@@ -15,6 +15,8 @@ export type UseEnsCredentialsReturnType = ExternalCredential[]
  *
  * @param params - {@link UseEnsCredentialsParams}
  * @returns - {@link UseEnsCredentialsReturnType}
+ *
+ * @beta
  */
 export const useEnsCredentials = (
   params: UseEnsCredentialsParams,
