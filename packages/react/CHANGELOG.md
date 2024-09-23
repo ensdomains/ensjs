@@ -1,5 +1,11 @@
 # @ensdomains/ensjs-react
 
+## 0.0.3
+
+### Patch Changes
+
+- [#209](https://github.com/ensdomains/ensjs/pull/209) [`927ab6e`](https://github.com/ensdomains/ensjs/commit/927ab6e4dc717159a2f670da3727c2ef24dac1fb) Thanks [@lucemans](https://github.com/lucemans)! - Sorted imports
+
 ## 0.0.2
 
 ### Patch Changes
