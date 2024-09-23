@@ -44,7 +44,7 @@ jobs:
         uses: changesets/action@v1
         with:
           # Note: pnpm install after versioning is necessary to refresh lockfile
-          version: chgset:version
+          version: pnpm chgset:version
           publish: pnpm release
           commit: "chore: release"
           title: "[ci] release"
