@@ -142,9 +142,7 @@
     "wait-on": "^6.0.1"
   },
   "peerDependencies": {
-    "viem": "^2.9.2",
-    "@tanstack/react-query": "^5.54",
-    "wagmi": "2"
+    "viem": "^2.9.2"
   },
   "engines": {
     "node": ">=18"
