@@ -46,7 +46,7 @@ const expiryNames = Array.from({ length: 42 }, (_, index) => ({
     index < 21 ? `expiry-subname-${index}` : `no-expiry-subname-${index - 21}`,
   namedOwner: 'owner4',
   type: 'wrapped',
-  expiry: index < 21 ? 36000 * (index + 1) : 0,
+  expiry: index < 21 ? Math.floor(Date.now()/1000) + 4 * DURATION : 0,
   subnameFuses: encodeFuses({
     input: {
       parent: {
@@ -88,7 +88,7 @@ const names = [
       },
     }),
     reverseRecord: true,
-    duration: DURATION * 3,
+    duration: DURATION,
     subnames: [
       // {
       //   label: 'subname-1',

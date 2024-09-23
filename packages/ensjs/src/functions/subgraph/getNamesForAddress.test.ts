@@ -33,6 +33,7 @@ let expiry: bigint
 describe.only('validate data', () => {
   it.each([
     ...legacyNamesList,
+    'concurrent-wrapped-name.eth',
     ...subnamesList,
     // 'concurrent-wrapped-name.eth',
     // 'subname-1.concurrent-wrapped-name.eth',
