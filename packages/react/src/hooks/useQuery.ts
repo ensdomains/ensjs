@@ -1,9 +1,9 @@
 import {
   useQuery as useTanstackQuery,
   type DefaultError,
+  type DefinedUseQueryResult,
   type QueryKey,
   type UseQueryOptions,
-  type UseQueryResult,
 } from '@tanstack/react-query'
 import type { ExactPartial } from 'viem'
 import { fallbackQueryClient } from '../query.js'
@@ -29,7 +29,7 @@ export type UseQueryParameters<
 export type UseQueryReturnType<
   Data = unknown,
   Error = DefaultError,
-> = UseQueryResult<Data, Error>
+> = DefinedUseQueryResult<Data, Error>
 
 export const useQuery = <
   Parameters extends UseQueryParameters,
@@ -46,9 +46,7 @@ export const useQuery = <
     queryKey: key,
   }
 
-  // TODO: figure out why this is necessary
-  // @ts-ignore
-  return useTanstackQuery(
+  return useTanstackQuery<Data, Error>(
     { ...parameters } as any,
     queryConfig?.queryClient ?? fallbackQueryClient,
   )
