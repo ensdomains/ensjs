@@ -21,6 +21,11 @@ const legacyNamesList = Array.from(
   { length: 20 },
   (_, i) => `same-expiry-legacy-name-${i}.eth`,
 )
+const subnamesList = Array.from(
+  { length: 42 },
+  (_, i) =>
+    `${i > 20 ? 'no-' : ''}expiry-subname-${i}.concurrent-wrapped-name.eth`,
+)
 
 const user4 = '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65'
 let expiry: bigint
@@ -28,15 +33,17 @@ let expiry: bigint
 describe.only('validate data', () => {
   it.each([
     ...legacyNamesList,
-    'concurrent-wrapped-name.eth',
-    'subname-1.concurrent-wrapped-name.eth',
+    ...subnamesList,
+    // 'concurrent-wrapped-name.eth',
+    // 'subname-1.concurrent-wrapped-name.eth',
   ])('%s', async (name) => {
+    console.log(name)
     const ownerData = await getOwner(publicClient, { name })
     const owner = ownerData?.registrant ?? ownerData?.owner
     expect(owner).toEqual(user4)
     const expiryData = await getExpiry(publicClient, { name })
     const expiryValue = expiryData?.expiry?.value || 0n
-
+    console.log('expiryData', expiryData)
     if (!expiry) expiry = expiryValue
     const wrapperData = await getWrapperData(publicClient, { name })
 
@@ -47,7 +54,7 @@ describe.only('validate data', () => {
       ownerData?.ownershipLevel === 'nameWrapper'
         ? wrappedExpiryValue
         : expiryValue
-
+    // console.log(expectedExpiry)
     expect(expectedExpiry).toEqual(expiry)
   })
 })
@@ -73,20 +80,27 @@ it('has registration date on .eth names', async () => {
     }
   }
 })
-it('test', async () => {
+
+// this is my test
+it.only('test', async () => {
   let fullResult = await getNamesForAddress(publicClient, {
     address: accounts[4],
     orderBy: 'expiryDate',
     orderDirection: 'asc',
     pageSize: 20,
   })
-  console.log(
-    fullResult.map((name) => ({
-      name: name?.name,
-      expiry: name?.expiryDate?.value,
-    })),
-  )
+  // console.log(
+  //   fullResult.map((name) => ({
+  //     name: name?.name,
+  //     expiry: name?.expiryDate?.value,
+  //   })),
+  // )
+  console.log(fullResult.length)
   if (!fullResult.length) throw new Error('No names found')
+  for (let i = 0; i < 20; i += 1) {
+    console.log(fullResult[i].name)
+    // expect(fullResult[i].name).toContain('same-expiry')
+  }
   const previousPage = fullResult
   fullResult = await getNamesForAddress(publicClient, {
     address: accounts[4],
@@ -95,14 +109,20 @@ it('test', async () => {
     pageSize: 20,
     previousPage,
   })
-  console.log(
-    fullResult.map((name) => ({
-      name: name?.name,
-      expiry: name?.expiryDate?.value,
-    })),
-  )
-  expect(fullResult).toEqual(fullResult)
+  for (let i = 0; i < 20; i += 1) {
+    console.log(fullResult[i].name)
+    // expect(fullResult[i].name).toContain('same-expiry')
+  }
+  // console.log(
+  //   fullResult.map((name) => ({
+  //     name: name?.name,
+  //     expiry: name?.expiryDate?.value,
+  //   })),
+  // )
+  // console.log(fullResult)
+  // expect(fullResult).toEqual(fullResult)
 })
+// end
 
 // describe('filter', () => {
 //   it('filters by owner', async () => {

@@ -33,7 +33,7 @@ const DURATION = 31556000
  * }[]}
  */
 
-const sameExpiryNames = Array.from({ length: 20 }, (_, index) => ({
+const sameExpiryNames = Array.from({ length: 21 }, (_, index) => ({
   label: `same-expiry-legacy-name-${index}`,
   type: 'legacy',
   namedOwner: 'owner4',
@@ -41,14 +41,22 @@ const sameExpiryNames = Array.from({ length: 20 }, (_, index) => ({
   duration: DURATION,
 }))
 
-const expiryNames = Array.from({ length: 20 }, (_, index) => ({
-  label: `wrapped-name-${index}`,
-  type: 'wrapped',
+const expiryNames = Array.from({ length: 42 }, (_, index) => ({
+  label:
+    index < 21 ? `expiry-subname-${index}` : `no-expiry-subname-${index - 21}`,
   namedOwner: 'owner4',
-
-  // reverseRecord: true,
-  expiry: DURATION + index + 1,
-  // duration: 31556000 + index + 1,
+  type: 'wrapped',
+  expiry: index < 21 ? 36000 * (index + 1) : 0,
+  subnameFuses: encodeFuses({
+    input: {
+      parent: {
+        named: ['PARENT_CANNOT_CONTROL'],
+      },
+      child: {
+        named: ['CANNOT_UNWRAP'],
+      },
+    },
+  }),
 }))
 
 const names = [
@@ -80,29 +88,25 @@ const names = [
       },
     }),
     reverseRecord: true,
-    duration: DURATION,
+    duration: DURATION * 3,
     subnames: [
-      {
-        label: 'subname-1',
-        namedOwner: 'owner4',
-        type: 'wrapped',
-        subnameFuses: encodeFuses({
-          input: {
-            parent: {
-              named: ['PARENT_CANNOT_CONTROL'],
-            },
-            child: {
-              named: ['CANNOT_UNWRAP'],
-            },
-          },
-        }),
-      },
-      // { label: 'subname-2', namedOwner: 'owner4' },
-      // { label: 'test', namedOwner: 'owner4' },
-      // { label: 'legacy', namedOwner: 'owner4' },
-      // { label: 'xyz', namedOwner: 'owner4', expiry: 3600 },
-      // { label: 'addr', namedOwner: 'owner4' },
-      // ...expiryNames,
+      // {
+      //   label: 'subname-1',
+      //   namedOwner: 'owner4',
+      //   type: 'wrapped',
+      //   expiry: Math.floor(Date.now() / 1000),
+      //   subnameFuses: encodeFuses({
+      //     input: {
+      //       parent: {
+      //         named: ['PARENT_CANNOT_CONTROL'],
+      //       },
+      //       child: {
+      //         named: ['CANNOT_UNWRAP'],
+      //       },
+      //     },
+      //   }),
+      // },
+      ...expiryNames,
     ],
   },
 ]
@@ -190,7 +194,7 @@ const func = async function (hre) {
             label,
             namedOwner,
             namedAddr,
-            duration
+            duration,
           })
         else
           return wrappedNameGenerator.register({
