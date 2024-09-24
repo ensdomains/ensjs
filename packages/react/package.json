@@ -14,6 +14,11 @@
       "import": "./dist/esm/index.js",
       "default": "./dist/cjs/index.js"
     },
+    "./query": {
+      "types": "./dist/types/query.d.ts",
+      "import": "./dist/esm/query.js",
+      "default": "./dist/cjs/query.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -22,8 +27,15 @@
     "!src/**/*.test.ts",
     "!src/test"
   ],
-  "repository": "git@github.com:ensdomains/ensjs.git",
-  "author": "Lucemans <luc@lucemans.nl>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ensdomains/ensjs.git",
+    "directory": "packages/react"
+  },
+  "contributors": [
+    "TateB <yo@taytems.xyz>",
+    "Lucemans <luc@lucemans.nl>"
+  ],
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf ./dist",
@@ -49,7 +61,8 @@
   "peerDependencies": {
     "@tanstack/react-query": "^5.54",
     "viem": "^2.9.2",
-    "wagmi": "^2"
+    "wagmi": "^2",
+    "@ensdomains/ensjs": "^4.0.1"
   },
   "engines": {
     "node": ">=18"

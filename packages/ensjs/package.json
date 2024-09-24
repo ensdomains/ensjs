@@ -74,7 +74,11 @@
     "!src/**/*.test.ts",
     "!src/test"
   ],
-  "repository": "git@github.com:ensdomains/ensjs.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ensdomains/ensjs.git",
+    "directory": "packages/ensjs"
+  },
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
