@@ -45,13 +45,12 @@
     "build:types": "tsc --project tsconfig.build.json --module esnext --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
     "build": "pnpm run clean && pnpm run build:cjs && pnpm run build:esm && pnpm run build:types"
   },
-  "dependencies": {
-    "@ensdomains/ensjs": "workspace:*"
-  },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "1.0.0",
     "@ensdomains/ens-test-env": "workspace:*",
+    "@ensdomains/ensjs": "workspace:*",
+    "@wagmi/core": "^2.13.7",
     "ts-node": "^10.9.2",
     "tslib": "^2.7.0",
     "typescript": "5.6.2",
@@ -59,10 +58,10 @@
     "wagmi": "^2"
   },
   "peerDependencies": {
+    "@ensdomains/ensjs": "^4.0.1",
     "@tanstack/react-query": "^5.54",
     "viem": "^2.9.2",
-    "wagmi": "^2",
-    "@ensdomains/ensjs": "^4.0.1"
+    "wagmi": "^2"
   },
   "engines": {
     "node": ">=18"

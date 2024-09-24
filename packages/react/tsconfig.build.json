@@ -5,6 +5,9 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "sourceMap": true,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@wagmi/core": ["./node_modules/@wagmi/core"]
+    }
   }
 }

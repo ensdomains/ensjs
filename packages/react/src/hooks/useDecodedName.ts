@@ -1,4 +1,3 @@
-import { type GetDecodedNameReturnType } from '@ensdomains/ensjs/subgraph'
 import { useChainId, useConfig } from 'wagmi'
 import { useQuery, type UseQueryReturnType } from 'wagmi/query'
 import {
