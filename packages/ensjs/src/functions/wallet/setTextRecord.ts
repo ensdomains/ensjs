@@ -39,6 +39,8 @@ export type SetTextRecordParameters<
 
 export type SetTextRecordReturnType = Hash
 
+export type SetTextRecordErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

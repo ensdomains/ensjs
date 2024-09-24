@@ -19,6 +19,17 @@ export type GetNameHistoryParameters = {
   name: string
 }
 
+export type GetNameHistoryReturnType = {
+  /** Array of domain events */
+  domainEvents: ReturnDomainEvent[]
+  /** Array of registration events */
+  registrationEvents: ReturnRegistrationEvent[] | null
+  /** Array of resolver events */
+  resolverEvents: ReturnResolverEvent[] | null
+} | null
+
+export type GetNameHistoryErrorType = Error
+
 type SubgraphResult = {
   domain?: {
     events: DomainEvent[]
@@ -53,15 +64,6 @@ type ReturnResolverEvent = FlattenedEvent<
       protocolType: string | null
     })
 >
-
-export type GetNameHistoryReturnType = {
-  /** Array of domain events */
-  domainEvents: ReturnDomainEvent[]
-  /** Array of registration events */
-  registrationEvents: ReturnRegistrationEvent[] | null
-  /** Array of resolver events */
-  resolverEvents: ReturnResolverEvent[] | null
-} | null
 
 /**
  * Gets the history of a name from the subgraph.

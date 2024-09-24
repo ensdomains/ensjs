@@ -34,32 +34,38 @@ export type {
 } from './functions/subgraph/events.js'
 export {
   default as getDecodedName,
+  type GetDecodedNameErrorType,
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
 } from './functions/subgraph/getDecodedName.js'
 export {
   default as getNameHistory,
+  type GetNameHistoryErrorType,
   type GetNameHistoryParameters,
   type GetNameHistoryReturnType,
 } from './functions/subgraph/getNameHistory.js'
 export {
   default as getNamesForAddress,
+  type GetNamesForAddressErrorType,
   type GetNamesForAddressParameters,
   type GetNamesForAddressReturnType,
   type NameWithRelation,
 } from './functions/subgraph/getNamesForAddress.js'
 export {
   default as getSubgraphRecords,
+  type GetSubgraphRecordsErrorType,
   type GetSubgraphRecordsParameters,
   type GetSubgraphRecordsReturnType,
 } from './functions/subgraph/getSubgraphRecords.js'
 export {
   default as getSubgraphRegistrant,
+  type GetSubgraphRegistrantErrorType,
   type GetSubgraphRegistrantParameters,
   type GetSubgraphRegistrantReturnType,
 } from './functions/subgraph/getSubgraphRegistrant.js'
 export {
   default as getSubnames,
+  type GetSubnamesErrorType,
   type GetSubnamesParameters,
   type GetSubnamesReturnType,
 } from './functions/subgraph/getSubnames.js'

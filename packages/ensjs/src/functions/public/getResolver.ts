@@ -28,6 +28,8 @@ export type GetResolverParameters = {
 
 export type GetResolverReturnType = Address | null
 
+export type GetResolverErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   { name }: GetResolverParameters,

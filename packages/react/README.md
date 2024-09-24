@@ -7,7 +7,7 @@ React hooks & utilities to interact with the Ethereum Name Service using ENSjs
 After installing [wagmi](https://wagmi.sh), simply run
 
 ```sh
-pnpm install @ensdomains/ensjs-react
+pnpm install @ensdomains/ensjs-react @ensdomains/ensjs
 ```
 
 ## Hooks

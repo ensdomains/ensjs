@@ -10,6 +10,7 @@ import {
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import _getAddr, {
+  type InternalGetAddrErrorType,
   type InternalGetAddrParameters,
   type InternalGetAddrReturnType,
 } from './_getAddr.js'
@@ -23,6 +24,8 @@ export type GetAddressRecordParameters = Prettify<
 >
 
 export type GetAddressRecordReturnType = Prettify<InternalGetAddrReturnType>
+
+export type GetAddressRecordErrorType = InternalGetAddrErrorType
 
 const encode = (
   client: ClientWithEns,

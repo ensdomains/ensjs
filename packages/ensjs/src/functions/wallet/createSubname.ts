@@ -15,10 +15,12 @@ import type {
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetSubnodeRecordSnippet } from '../../contracts/registry.js'
+import { BaseError } from '../../errors/base.js'
 import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
 } from '../../errors/general.js'
+import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
 import type {
   AnyDate,
   Prettify,
@@ -26,19 +28,18 @@ import type {
   WriteTransactionParameters,
 } from '../../types.js'
 import {
-  encodeFuses,
   ParentFuses,
+  encodeFuses,
   type EncodeFusesInputObject,
 } from '../../utils/fuses.js'
 import { getNameType } from '../../utils/getNameType.js'
 import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
 import {
   expiryToBigInt,
-  wrappedLabelLengthCheck,
   makeDefaultExpiry,
+  wrappedLabelLengthCheck,
 } from '../../utils/wrapper.js'
 import getWrapperData from '../public/getWrapperData.js'
-import { BaseError } from '../../errors/base.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */
@@ -82,6 +83,12 @@ export type CreateSubnameParameters<
 >
 
 export type CreateSubnameReturnType = Hash
+
+export type CreateSubnameErrorType =
+  | InvalidContractTypeError
+  | UnsupportedNameTypeError
+  | WrappedLabelTooLargeError
+  | Error
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,

@@ -23,6 +23,15 @@ export type GetDnsOwnerParameters = {
 
 export type GetDnsOwnerReturnType = Address | null
 
+export type GetDnsOwnerErrorType =
+  | DnsDnssecVerificationFailedError
+  | DnsInvalidAddressChecksumError
+  | DnsInvalidTxtRecordError
+  | DnsNoTxtRecordError
+  | DnsResponseStatusError
+  | UnsupportedNameTypeError
+  | Error
+
 /**
  * Gets the DNS owner of a name, via DNS record lookup
  * @param parameters - {@link GetDnsOwnerParameters}

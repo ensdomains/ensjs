@@ -34,6 +34,8 @@ export type InternalGetAddrParameters = {
 
 export type InternalGetAddrReturnType = Prettify<DecodedAddr | null>
 
+export type InternalGetAddrErrorType = Error
+
 const encode = (
   _client: ClientWithEns,
   { name, coin = 60, bypassFormat }: Omit<InternalGetAddrParameters, 'strict'>,

@@ -7,7 +7,11 @@ import {
   type Transport,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import type {
+  ChainWithEns,
+  ClientWithAccount,
+  ClientWithEns,
+} from '../../contracts/consts.js'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type {
@@ -41,11 +45,10 @@ export type SetRecordsParameters<
 
 export type SetRecordsReturnType = Hash
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
->(
-  _wallet: ClientWithAccount<Transport, TChain, TAccount>,
+export type SetRecordsErrorType = NoRecordsSpecifiedError | Error
+
+export const encodeSetRecordsData = <chain extends ChainWithEns>(
+  _client: ClientWithEns<Transport, chain>,
   { name, resolverAddress, ...records }: SetRecordsDataParameters,
 ): SetRecordsDataReturnType => {
   const callArray = generateRecordCallArray({
@@ -114,7 +117,7 @@ async function setRecords<
     ...txArgs
   }: SetRecordsParameters<TChain, TAccount, TChainOverride>,
 ): Promise<SetRecordsReturnType> {
-  const data = makeFunctionData(wallet, {
+  const data = encodeSetRecordsData(wallet, {
     name,
     resolverAddress,
     clearRecords,
@@ -130,6 +133,6 @@ async function setRecords<
   return sendTransaction(wallet, writeArgs)
 }
 
-setRecords.makeFunctionData = makeFunctionData
+setRecords.encodeData = encodeSetRecordsData
 
 export default setRecords

@@ -101,6 +101,8 @@ export type GetRecordsReturnType<
     }
 >
 
+export type GetRecordsErrorType = Error
+
 type CallObj =
   | {
       key: string

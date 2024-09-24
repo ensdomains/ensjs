@@ -32,6 +32,15 @@ export type GetDnsOffchainDataReturnType = {
   extraData: string | null
 } | null
 
+export type GetDnsOffchainDataErrorType =
+  | DnsDnssecVerificationFailedError
+  | DnsDnssecWildcardExpansionError
+  | DnsInvalidTxtRecordError
+  | DnsNoTxtRecordError
+  | DnsResponseStatusError
+  | UnsupportedNameTypeError
+  | Error
+
 type ValidTextRecord = {
   isValid: true
   resolverAddress: Address

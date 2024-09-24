@@ -1,39 +1,57 @@
+import { useChainId, useConfig } from 'wagmi'
+import { useQuery, type UseQueryReturnType } from 'wagmi/query'
 import {
-  getAvailable,
-  type GetAvailableParameters,
-  type GetAvailableReturnType,
-} from '@ensdomains/ensjs/public'
-import type { ParamWithClients, QueryConfig } from '../client.js'
-import { useQuery, type UseQueryReturnType } from './useQuery.js'
+  getEnsAvailableQueryOptions,
+  type GetEnsAvailableData,
+  type GetEnsAvailableErrorType,
+  type GetEnsAvailableOptions,
+  type GetEnsAvailableQueryFnData,
+  type GetEnsAvailableQueryKey,
+} from '../query/getEnsAvailable.js'
+import type { ConfigWithEns } from '../types/config.js'
+import type { ConfigParameter, QueryParameter } from '../types/properties.js'
+import type { ResolvedRegister } from '../types/register.js'
+import type { Compute } from '../types/utils.js'
 
-export type UseEnsAvailableParams = ParamWithClients<GetAvailableParameters>
+export type UseEnsAvailableParameters<
+  config extends ConfigWithEns = ConfigWithEns,
+  selectData = GetEnsAvailableData,
+> = Compute<
+  GetEnsAvailableOptions<config> &
+    ConfigParameter<config> &
+    QueryParameter<
+      GetEnsAvailableQueryFnData,
+      GetEnsAvailableErrorType,
+      selectData,
+      GetEnsAvailableQueryKey<config>
+    >
+>
 
-export type UseEnsAvailableReturnType = GetAvailableReturnType
+export type UseEnsAvailableReturnType<selectData = GetEnsAvailableData> =
+  UseQueryReturnType<selectData, GetEnsAvailableErrorType>
 
 /**
- * Returns a list of names for an address
+ * Check if a .eth name is available
  *
- * Keep in mind that this function is limited to .eth names
- *
- * @param params - {@link UseEnsAvailableParams}
+ * @param parameters - {@link UseEnsAvailableParameters}
  * @returns - {@link UseEnsAvailableReturnType}
  */
-export const useEnsAvailable = (
-  params: UseEnsAvailableParams,
-  query?: QueryConfig,
-): UseQueryReturnType<UseEnsAvailableReturnType> => {
-  const { client } = params
+export const useEnsAvailable = <
+  config extends ConfigWithEns = ResolvedRegister['config'],
+  selectData = GetEnsAvailableData,
+>(
+  parameters: UseEnsAvailableParameters<config, selectData> = {},
+): UseEnsAvailableReturnType<selectData> => {
+  const { name, query = {} } = parameters
 
-  return useQuery(
-    ['ensjs', 'eth-name-available', params.name],
-    {
-      queryKey: [],
-      queryFn: async () => {
-        const result = await getAvailable(client, params)
+  const config = useConfig<ConfigWithEns>()
+  const chainId = useChainId({ config })
 
-        return result
-      },
-    },
-    query,
-  )
+  const options = getEnsAvailableQueryOptions(config, {
+    ...parameters,
+    chainId: parameters.chainId ?? chainId,
+  })
+  const enabled = Boolean(name && (query.enabled ?? true))
+
+  return useQuery({ ...query, ...options, enabled })
 }

@@ -47,6 +47,8 @@ export type GetNameReturnType = {
   resolverAddress: Address
 }
 
+export type GetNameErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   { address, gatewayUrls }: Omit<GetNameParameters, 'allowMismatch' | 'strict'>,

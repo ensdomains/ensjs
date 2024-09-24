@@ -10,6 +10,7 @@ import {
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import _getText, {
+  type InternalGetTextErrorType,
   type InternalGetTextParameters,
   type InternalGetTextReturnType,
 } from './_getText.js'
@@ -23,6 +24,8 @@ export type GetTextRecordParameters = Prettify<
 >
 
 export type GetTextRecordReturnType = Prettify<InternalGetTextReturnType>
+
+export type GetTextRecordErrorType = InternalGetTextErrorType
 
 const encode = (
   client: ClientWithEns,

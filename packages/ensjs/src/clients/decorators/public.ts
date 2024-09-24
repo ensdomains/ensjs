@@ -20,6 +20,10 @@ import getContentHashRecord, {
   type GetContentHashRecordParameters,
   type GetContentHashRecordReturnType,
 } from '../../functions/public/getContentHashRecord.js'
+import getCredentials, {
+  type GetCredentialsParameters,
+  type GetCredentialsReturnType,
+} from '../../functions/public/getCredentials.js'
 import getExpiry, {
   type GetExpiryParameters,
   type GetExpiryReturnType,
@@ -186,6 +190,28 @@ export type EnsPublicActions = {
    * }).extend(ensPublicActions)
    * const result = await client.getExpiry({ name: 'ens.eth' })
    * // { expiry: { date: Date, value: 1913933217n }, gracePeriod: 7776000, status: 'active' }
+   */
+  getCredentials: ({
+    name,
+    gatewayUrls,
+    strict,
+  }: GetCredentialsParameters) => Promise<GetCredentialsReturnType>
+  /**
+   * Gets credentials for a name.
+   * @param parameters - {@link GetCredentialsParameters}
+   * @returns Credentials, or null if none are found. {@link GetCredentialsReturnType}
+   *
+   * @example
+   * import { createPublicClient, http } from 'viem'
+   * import { mainnet } from 'viem/chains'
+   * import { addEnsContracts, ensPublicActions } from '@ensdomains/ensjs'
+   *
+   * const client = createPublicClient({
+   *   chain: addEnsContracts(mainnet),
+   *   transport: http(),
+   * }).extend(ensPublicActions)
+   * const result = await client.getCredentials({ name: 'ens.eth' })
+   * // [{ url: 'https://example.com' }]
    */
   getExpiry: ({
     name,
@@ -408,6 +434,7 @@ export const ensPublicActions = <
   getAvailable: (parameters) => getAvailable(client, parameters),
   getContentHashRecord: (parameters) =>
     getContentHashRecord(client, parameters),
+  getCredentials: (parameters) => getCredentials(client, parameters),
   getExpiry: (parameters) => getExpiry(client, parameters),
   getName: (parameters) => getName(client, parameters),
   getOwner: (parameters) => getOwner(client, parameters),

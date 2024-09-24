@@ -12,6 +12,8 @@ export type GetSubgraphRegistrantParameters = {
 
 export type GetSubgraphRegistrantReturnType = Address | null
 
+export type GetSubgraphRegistrantErrorType = UnsupportedNameTypeError | Error
+
 const query = gql`
   query getSubgraphRegistrant($id: String!) {
     registration(id: $id) {

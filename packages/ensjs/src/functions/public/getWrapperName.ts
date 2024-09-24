@@ -27,6 +27,8 @@ export type GetWrapperNameParameters = {
 
 export type GetWrapperNameReturnType = string | null
 
+export type GetWrapperNameErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   { name }: GetWrapperNameParameters,

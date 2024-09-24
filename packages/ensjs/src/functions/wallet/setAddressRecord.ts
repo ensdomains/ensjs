@@ -39,6 +39,8 @@ export type SetAddressRecordParameters<
 
 export type SetAddressRecordReturnType = Hash
 
+export type SetAddressRecordErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

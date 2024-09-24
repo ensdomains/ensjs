@@ -10,6 +10,7 @@ import {
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import _getContentHash, {
+  type InternalGetContentHashErrorType,
   type InternalGetContentHashParameters,
   type InternalGetContentHashReturnType,
 } from './_getContentHash.js'
@@ -24,6 +25,8 @@ export type GetContentHashRecordParameters = Prettify<
 
 export type GetContentHashRecordReturnType =
   Prettify<InternalGetContentHashReturnType>
+
+export type GetContentHashRecordErrorType = InternalGetContentHashErrorType
 
 const encode = (
   client: ClientWithEns,

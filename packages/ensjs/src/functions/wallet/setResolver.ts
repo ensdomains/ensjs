@@ -40,6 +40,8 @@ export type SetResolverParameters<
 
 export type SetResolverReturnType = Hash
 
+export type SetResolverErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

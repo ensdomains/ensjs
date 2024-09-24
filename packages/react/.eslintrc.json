@@ -37,6 +37,10 @@
       {
         "selector": "typeLike",
         "format": ["PascalCase"]
+      },
+      {
+        "selector": "typeParameter",
+        "format": ["camelCase"]
       }
     ],
     "no-useless-return": ["off"],

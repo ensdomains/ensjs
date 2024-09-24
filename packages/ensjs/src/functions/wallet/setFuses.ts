@@ -40,6 +40,8 @@ export type SetFusesParameters<
 
 export type SetFusesReturnType = Hash
 
+export type SetFusesErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

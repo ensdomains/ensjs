@@ -32,6 +32,8 @@ export type InternalGetAbiParameters = {
 
 export type InternalGetAbiReturnType = Prettify<DecodedAbi | null>
 
+export type InternalGetAbiErrorType = Error
+
 const encode = (
   _client: ClientWithEns,
   {

@@ -52,6 +52,11 @@ export type DeleteSubnameParameters<
 
 export type DeleteSubnameReturnType = Hash
 
+export type DeleteSubnameErrorType =
+  | InvalidContractTypeError
+  | UnsupportedNameTypeError
+  | Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

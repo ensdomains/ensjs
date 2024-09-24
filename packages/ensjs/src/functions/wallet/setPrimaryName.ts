@@ -55,6 +55,8 @@ export type SetPrimaryNameParameters<
 
 export type SetPrimaryNameReturnType = Hash
 
+export type SetPrimaryNameErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account,

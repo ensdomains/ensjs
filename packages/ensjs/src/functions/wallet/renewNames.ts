@@ -42,6 +42,8 @@ export type RenewNamesParameters<
 
 export type RenewNamesReturnType = Hash
 
+export type RenewNamesErrorType = UnsupportedNameTypeError | Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

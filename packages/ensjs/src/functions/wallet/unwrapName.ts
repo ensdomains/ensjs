@@ -66,6 +66,11 @@ export type UnwrapNameParameters<
 
 export type UnwrapNameReturnType = Hash
 
+export type UnwrapNameErrorType =
+  | AdditionalParameterSpecifiedError
+  | RequiredParameterNotSpecifiedError
+  | Error
+
 export const makeFunctionData = <
   TName extends string,
   TChain extends ChainWithEns,

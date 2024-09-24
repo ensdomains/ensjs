@@ -16,6 +16,7 @@ import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
+import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
 import type {
   Eth2ldNameSpecifier,
   GetNameType,
@@ -60,6 +61,11 @@ export type WrapNameParameters<
 >
 
 export type WrapNameReturnType = Hash
+
+export type WrapNameErrorType =
+  | AdditionalParameterSpecifiedError
+  | WrappedLabelTooLargeError
+  | Error
 
 export const makeFunctionData = <
   TName extends string,

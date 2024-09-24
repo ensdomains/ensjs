@@ -17,6 +17,8 @@ export type GetDecodedNameParameters = {
 
 export type GetDecodedNameReturnType = string | null
 
+export type GetDecodedNameErrorType = Error
+
 type SubgraphResult = {
   namehashLookup?: { name: string }
 } & {
