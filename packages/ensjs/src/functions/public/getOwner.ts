@@ -67,6 +67,8 @@ export type GetOwnerReturnType<
         : WrappedOwnership | UnwrappedEth2ldOwnership | UnwrappedOwnership))
   | null
 
+export type GetOwnerErrorType = Error
+
 const encode = <TContract extends OwnerContract | undefined = undefined>(
   client: ClientWithEns,
   { name, contract }: GetOwnerParameters<TContract>,

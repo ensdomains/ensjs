@@ -24,6 +24,8 @@ export type BatchReturnType<TFunctions extends BatchFunctionResult[]> = {
   [TFunctionName in keyof TFunctions]: ExtractResult<TFunctions[TFunctionName]>
 }
 
+export type BatchErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   ...items: BatchFunctionResult[]

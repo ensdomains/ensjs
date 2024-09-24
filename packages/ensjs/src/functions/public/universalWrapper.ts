@@ -35,6 +35,8 @@ export type UniversalWrapperReturnType = {
   resolver: Address
 } | null
 
+export type UniversalWrapperErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   { name, data, gatewayUrls }: Omit<UniversalWrapperParameters, 'strict'>,

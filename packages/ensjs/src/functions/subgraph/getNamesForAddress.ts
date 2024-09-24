@@ -18,6 +18,29 @@ import {
 } from './fragments.js'
 import { makeNameObject, type Name } from './utils.js'
 
+export type GetNamesForAddressParameters = {
+  /** Address to get names for */
+  address: Address
+  /** Names to get, in relation to address */
+  filter?: GetNamesForAddressFilter
+  /** Parameter to order names by (default: name) */
+  orderBy?: GetNamesForAddressOrderBy
+  /** Direction to order names in (default: asc) */
+  orderDirection?: 'asc' | 'desc'
+  /** Previous page of names, used for pagination */
+  previousPage?: NameWithRelation[]
+  /** Page size (default: 100) */
+  pageSize?: number
+}
+
+export type GetNamesForAddressReturnType = NameWithRelation[]
+
+export type GetNamesForAddressErrorType =
+  | InvalidOrderByError
+  | InvalidFilterKeyError
+  | FilterKeyRequiredError
+  | Error
+
 const supportedOwnerFilters = [
   'owner',
   'registrant',
@@ -55,26 +78,9 @@ type GetNamesForAddressFilter = GetNamesForAddressRelation & {
   allowDeleted?: boolean
 }
 
-export type GetNamesForAddressParameters = {
-  /** Address to get names for */
-  address: Address
-  /** Names to get, in relation to address */
-  filter?: GetNamesForAddressFilter
-  /** Parameter to order names by (default: name) */
-  orderBy?: GetNamesForAddressOrderBy
-  /** Direction to order names in (default: asc) */
-  orderDirection?: 'asc' | 'desc'
-  /** Previous page of names, used for pagination */
-  previousPage?: NameWithRelation[]
-  /** Page size (default: 100) */
-  pageSize?: number
-}
-
 export type NameWithRelation = Name & {
   relation: GetNamesForAddressRelation
 }
-
-export type GetNamesForAddressReturnType = NameWithRelation[]
 
 type SubgraphResult = {
   domains: SubgraphDomain[]

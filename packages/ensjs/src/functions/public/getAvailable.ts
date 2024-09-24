@@ -23,6 +23,8 @@ export type GetAvailableParameters = {
 
 export type GetAvailableReturnType = boolean
 
+export type GetAvailableErrorType = UnsupportedNameTypeError | Error
+
 const encode = (
   client: ClientWithEns,
   { name }: GetAvailableParameters,

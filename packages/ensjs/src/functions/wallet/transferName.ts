@@ -80,6 +80,12 @@ export type TransferNameParameters<
 
 export type TransferNameReturnType = Hash
 
+export type TransferNameErrorType =
+  | AdditionalParameterSpecifiedError
+  | InvalidContractTypeError
+  | UnsupportedNameTypeError
+  | Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account,

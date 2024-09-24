@@ -60,6 +60,8 @@ export type ImportDnsNameParameters<
 
 export type ImportDnsNameReturnType = Hash
 
+export type ImportDnsNameErrorType = AdditionalParameterSpecifiedError | Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

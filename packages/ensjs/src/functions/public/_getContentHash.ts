@@ -20,6 +20,8 @@ export type InternalGetContentHashParameters = {
 export type InternalGetContentHashReturnType =
   Prettify<DecodedContentHash | null>
 
+export type InternalGetContentHashErrorType = Error
+
 const encode = (
   _client: ClientWithEns,
   { name }: Omit<InternalGetContentHashParameters, 'strict'>,

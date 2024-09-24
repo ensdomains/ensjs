@@ -10,6 +10,7 @@ import {
   type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import _getAbi, {
+  type InternalGetAbiErrorType,
   type InternalGetAbiParameters,
   type InternalGetAbiReturnType,
 } from './_getAbi.js'
@@ -23,6 +24,8 @@ export type GetAbiRecordParameters = Prettify<
 >
 
 export type GetAbiRecordReturnType = Prettify<InternalGetAbiReturnType>
+
+export type GetAbiRecordErrorType = InternalGetAbiErrorType
 
 const encode = (
   client: ClientWithEns,

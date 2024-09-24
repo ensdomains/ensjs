@@ -35,6 +35,8 @@ export type ClearRecordsParameters<
 
 export type ClearRecordsReturnType = Hash
 
+export type ClearRecordsErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
