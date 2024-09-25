@@ -92,7 +92,6 @@ const getOrderByFilter = ({
 >): DomainFilter => {
   const lastDomain = previousPage[previousPage.length - 1]
   const operator = orderDirection === 'asc' ? 'gt' : 'lt'
-
   switch (orderBy) {
     case 'expiryDate': {
       let lastExpiryDate = lastDomain.expiryDate?.value
@@ -101,15 +100,49 @@ const getOrderByFilter = ({
       if (lastDomain.parentName === 'eth') {
         lastExpiryDate += GRACE_PERIOD_SECONDS
       }
-
       if (orderDirection === 'asc' && lastExpiryDate === 0) {
+        return {
+          and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
+        }
+      }
+      if (
+        orderDirection === 'asc' &&
+        lastExpiryDate !== 0 &&
+        previousPage.length === 20
+      ) {
+        return {
+          or: [
+            {
+              and: [
+                { [`expiryDate_${operator}e`]: `${lastExpiryDate}` },
+                { [`id_${operator}`]: lastDomain.id },
+              ],
+            },
+            {
+              [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+            },
+            { expiryDate: null },
+          ],
+        }
+      }
+      if (orderDirection === 'desc' && lastExpiryDate === 0) {
         return {
           and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
         }
       }
       if (orderDirection === 'desc' && lastExpiryDate !== 0) {
         return {
-          [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+          or: [
+            {
+              and: [
+                { [`expiryDate_${operator}e`]: `${lastExpiryDate}` },
+                { [`id_${operator}`]: lastDomain.id },
+              ],
+            },
+            {
+              [`expiryDate_${operator}`]: `${lastExpiryDate}`,
+            },
+          ],
         }
       }
       return {
@@ -195,6 +228,7 @@ const getNamesForAddress = async (
     searchType,
     ...filters
   } = filter
+
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
