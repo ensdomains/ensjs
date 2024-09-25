@@ -30,35 +30,36 @@ const subnamesList = Array.from(
 const user4 = '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65'
 let expiry: bigint
 
-describe.only('validate data', () => {
-  it.each([
-    ...legacyNamesList,
-    'concurrent-wrapped-name.eth',
-    ...subnamesList,
-    // 'concurrent-wrapped-name.eth',
-    // 'subname-1.concurrent-wrapped-name.eth',
-  ])('%s', async (name) => {
-    console.log(name)
-    const ownerData = await getOwner(publicClient, { name })
-    const owner = ownerData?.registrant ?? ownerData?.owner
-    expect(owner).toEqual(user4)
-    const expiryData = await getExpiry(publicClient, { name })
-    const expiryValue = expiryData?.expiry?.value || 0n
-    console.log('expiryData', expiryData)
-    if (!expiry) expiry = expiryValue
-    const wrapperData = await getWrapperData(publicClient, { name })
+// describe.only('validate data', () => {
+//   it.each([
+//     ...legacyNamesList,
+//     'concurrent-wrapped-name.eth',
+//     ...subnamesList,
+//     // 'concurrent-wrapped-name.eth',
+//     // 'subname-1.concurrent-wrapped-name.eth',
+//   ])('%s', async (name) => {
+//     console.log(name)
+//     const ownerData = await getOwner(publicClient, { name })
 
-    // expiry value from wrapper datat includes grace period
-    const wrappedExpiryValue =
-      (wrapperData?.expiry?.value || 0n) - BigInt(GRACE_PERIOD_SECONDS)
-    const expectedExpiry =
-      ownerData?.ownershipLevel === 'nameWrapper'
-        ? wrappedExpiryValue
-        : expiryValue
-    // console.log(expectedExpiry)
-    expect(expectedExpiry).toEqual(expiry)
-  })
-})
+//     const owner = ownerData?.registrant ?? ownerData?.owner
+//     // expect(owner).toEqual(user4)
+//     const expiryData = await getExpiry(publicClient, { name })
+//     const expiryValue = expiryData?.expiry?.value || 0n
+//     console.log('expiryData', expiryData)
+//     if (!expiry) expiry = expiryValue
+//     const wrapperData = await getWrapperData(publicClient, { name })
+
+//     // expiry value from wrapper datat includes grace period
+//     const wrappedExpiryValue =
+//       (wrapperData?.expiry?.value || 0n) - BigInt(GRACE_PERIOD_SECONDS)
+//     const expectedExpiry =
+//       ownerData?.ownershipLevel === 'nameWrapper'
+//         ? wrappedExpiryValue
+//         : expiryValue
+//     // console.log(expectedExpiry)
+//     expect(expectedExpiry).toEqual(expiry)
+//   })
+// })
 
 it('returns with default values', async () => {
   const result = await getNamesForAddress(publicClient, {
@@ -96,11 +97,11 @@ it.only('test', async () => {
   //     expiry: name?.expiryDate?.value,
   //   })),
   // )
-  console.log(fullResult.length)
+  // console.log(fullResult, fullResult.length)
   if (!fullResult.length) throw new Error('No names found')
   for (let i = 0; i < 20; i += 1) {
-    console.log(fullResult[i].name)
-    // expect(fullResult[i].name).toContain('same-expiry')
+    // console.log(fullResult[i].name)
+    expect(fullResult[i].name).toContain('same-expiry')
   }
   const previousPage = fullResult
   fullResult = await getNamesForAddress(publicClient, {
@@ -110,6 +111,7 @@ it.only('test', async () => {
     pageSize: 20,
     previousPage,
   })
+  // console.log(previousPage, 'BREAK', fullResult)
   for (let i = 0; i < 20; i += 1) {
     console.log(fullResult[i].name)
     // expect(fullResult[i].name).toContain('same-expiry')

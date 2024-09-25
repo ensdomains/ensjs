@@ -38,7 +38,7 @@ const sameExpiryNames = Array.from({ length: 21 }, (_, index) => ({
   type: 'legacy',
   namedOwner: 'owner4',
   reverseRecord: true,
-  duration: DURATION,
+  duration: DURATION / 4,
 }))
 
 const expiryNames = Array.from({ length: 42 }, (_, index) => ({
@@ -46,7 +46,7 @@ const expiryNames = Array.from({ length: 42 }, (_, index) => ({
     index < 21 ? `expiry-subname-${index}` : `no-expiry-subname-${index - 21}`,
   namedOwner: 'owner4',
   type: 'wrapped',
-  expiry: index < 21 ? Math.floor(Date.now()/1000) + 4 * DURATION : 0,
+  expiry: index < 21 ? Math.floor(Date.now() / 1000) + 7200 * (index + 1) : 0,
   subnameFuses: encodeFuses({
     input: {
       parent: {
@@ -88,26 +88,8 @@ const names = [
       },
     }),
     reverseRecord: true,
-    duration: DURATION,
-    subnames: [
-      // {
-      //   label: 'subname-1',
-      //   namedOwner: 'owner4',
-      //   type: 'wrapped',
-      //   expiry: Math.floor(Date.now() / 1000),
-      //   subnameFuses: encodeFuses({
-      //     input: {
-      //       parent: {
-      //         named: ['PARENT_CANNOT_CONTROL'],
-      //       },
-      //       child: {
-      //         named: ['CANNOT_UNWRAP'],
-      //       },
-      //     },
-      //   }),
-      // },
-      ...expiryNames,
-    ],
+    duration: DURATION * 3,
+    subnames: [...expiryNames],
   },
 ]
 
@@ -196,15 +178,14 @@ const func = async function (hre) {
             namedAddr,
             duration,
           })
-        else
-          return wrappedNameGenerator.register({
-            label,
-            namedOwner,
-            data,
-            reverseRecord,
-            fuses,
-            duration,
-          })
+        return wrappedNameGenerator.register({
+          label,
+          namedOwner,
+          data,
+          reverseRecord,
+          fuses,
+          duration,
+        })
       },
     ),
   )
