@@ -28,6 +28,11 @@ export type SimpleTransactionRequest = {
   >
 }
 
+/** @internal */
+export type Evaluate<type> = {
+  [key in keyof type]: type[key]
+} & {}
+
 export type TransactionRequestWithPassthrough<TPassthrough = any> =
   SimpleTransactionRequest & {
     passthrough?: TPassthrough
@@ -68,8 +73,8 @@ export type DecodedAbi = {
 }
 
 export type DecodedAddr = {
-  id: number
-  name: string
+  coinType: number
+  symbol: string
   value: string
 }
 

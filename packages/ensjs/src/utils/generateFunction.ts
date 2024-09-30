@@ -1,65 +1,76 @@
-import { BaseError } from 'viem'
+import { BaseError, type Client, type Transport } from 'viem'
 import { call } from 'viem/actions'
-import type { ClientWithEns } from '../contracts/consts.js'
 import type { TransactionRequestWithPassthrough } from '../types.js'
 
 export type EncoderFunction = (
   ...args: any[]
 ) => TransactionRequestWithPassthrough
-export type DecoderFunction = (...args: any[]) => Promise<any>
+export type DecoderFunction = (...args: any[]) => any
 
-type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
-  ? (...args: P) => R
+type OmitFirstArg<func> = func extends (
+  x: any,
+  ...args: infer parameters
+) => infer returnType
+  ? (...args: parameters) => returnType
+  : never
+
+type ExtractChainType<func> = func extends (
+  client: Client<Transport, infer chainType>,
+  ...args: any
+) => any
+  ? chainType
   : never
 
 export type CoderObject<
-  TEncoderFn extends EncoderFunction = EncoderFunction,
-  TDecoderFn extends DecoderFunction = DecoderFunction,
+  encoderFunction extends EncoderFunction = EncoderFunction,
+  decoderFunction extends DecoderFunction = DecoderFunction,
 > = {
-  encode: TEncoderFn
-  decode: TDecoderFn
+  encode: encoderFunction
+  decode: decoderFunction
 }
 
 export type BatchFunctionResult<
-  TEncoderFn extends EncoderFunction = EncoderFunction,
-  TDecoderFn extends DecoderFunction = DecoderFunction,
+  encoderFunction extends EncoderFunction = EncoderFunction,
+  decoderFunction extends DecoderFunction = DecoderFunction,
 > = {
-  args: Parameters<OmitFirstArg<TEncoderFn>>
-} & CoderObject<TEncoderFn, TDecoderFn>
+  args: Parameters<OmitFirstArg<encoderFunction>>
+} & CoderObject<encoderFunction, decoderFunction>
 
-export type ExtractResult<TFunction extends Function> = TFunction extends (
+export type ExtractResult<func extends Function> = func extends (
   ...args: any[]
-) => Promise<infer U>
-  ? U
+) => infer returnType
+  ? returnType extends Promise<infer awaited>
+    ? awaited
+    : returnType
   : never
 
 export interface GeneratedFunction<
-  TEncoderFn extends EncoderFunction,
-  TDecoderFn extends DecoderFunction,
+  encoderFunction extends EncoderFunction,
+  decoderFunction extends DecoderFunction,
 > extends Function,
-    CoderObject<TEncoderFn, TDecoderFn> {
-  (
-    client: ClientWithEns,
-    ...args: Parameters<OmitFirstArg<TEncoderFn>>
-  ): Promise<ExtractResult<TDecoderFn> | null>
+    CoderObject<encoderFunction, decoderFunction> {
+  <chain extends ExtractChainType<encoderFunction>>(
+    client: Client<Transport, chain>,
+    ...args: Parameters<OmitFirstArg<encoderFunction>>
+  ): Promise<ExtractResult<decoderFunction> | null>
   batch: (
-    ...args: Parameters<OmitFirstArg<TEncoderFn>>
-  ) => BatchFunctionResult<TEncoderFn, TDecoderFn>
+    ...args: Parameters<OmitFirstArg<encoderFunction>>
+  ) => BatchFunctionResult<encoderFunction, decoderFunction>
 }
 
 export const generateFunction = <
-  TEncoderFn extends EncoderFunction,
-  TDecoderFn extends DecoderFunction,
-  TFunction extends GeneratedFunction<
-    TEncoderFn,
-    TDecoderFn
-  > = GeneratedFunction<TEncoderFn, TDecoderFn>,
+  encoderFunction extends EncoderFunction,
+  decoderFunction extends DecoderFunction,
+  generatedFunction extends GeneratedFunction<
+    encoderFunction,
+    decoderFunction
+  > = GeneratedFunction<encoderFunction, decoderFunction>,
 >({
   encode,
   decode,
 }: {
-  encode: TEncoderFn
-  decode: TDecoderFn
+  encode: encoderFunction
+  decode: decoderFunction
 }) => {
   const single = async function (client, ...args) {
     const { passthrough, ...encodedData } = encode(client, ...args)
@@ -71,7 +82,7 @@ export const generateFunction = <
       })
     if (passthrough) return decode(client, result, passthrough, ...args)
     return decode(client, result, ...args)
-  } as TFunction
+  } as generatedFunction
   single.batch = (...args) => ({
     args,
     encode,

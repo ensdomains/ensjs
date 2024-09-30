@@ -2,7 +2,8 @@ import { SignedSet, type ProvableAnswer } from '@ensdomains/dnsprovejs'
 import type * as packet from 'dns-packet'
 import { toHex, type Client, type Hex, type Transport } from 'viem'
 import { readContract } from 'viem/actions'
-import type { ChainWithEns } from '../../contracts/consts.js'
+
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { dnssecImplVerifyRrSetSnippet } from '../../contracts/dnssecImpl.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { DnsNewerRecordTypeAvailableError } from '../../errors/dns.js'
@@ -56,8 +57,10 @@ const encodeProofs = (
  *   name: 'example.eth',
  * })
  */
-const getDnsImportData = async (
-  client: Client<Transport, ChainWithEns>,
+const getDnsImportData = async <
+  chain extends ChainWithContract<'ensDnssecImpl'>,
+>(
+  client: Client<Transport, chain>,
   {
     name,
     endpoint = 'https://cloudflare-dns.com/dns-query',

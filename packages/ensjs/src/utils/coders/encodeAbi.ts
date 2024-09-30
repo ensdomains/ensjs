@@ -14,26 +14,26 @@ const abiEncodeMap = {
 } as const
 type AbiEncodeMap = typeof abiEncodeMap
 
-type GetAbiContentType<TEncodeAs extends AbiEncodeAs> = AbiEncodeMap[TEncodeAs]
+type GetAbiContentType<encodeAs extends AbiEncodeAs> = AbiEncodeMap[encodeAs]
 
-export type EncodeAbiParameters<TEncodeAs extends AbiEncodeAs = AbiEncodeAs> =
-  TEncodeAs extends 'uri'
+export type EncodeAbiParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
+  encodeAs extends 'uri'
     ? {
-        encodeAs: TEncodeAs
+        encodeAs: encodeAs
         data: string | null
       }
     : {
-        encodeAs: TEncodeAs
+        encodeAs: encodeAs
         data: Record<any, any> | null
       }
 
-export type EncodedAbi<TContentType extends AbiContentType = AbiContentType> = {
-  contentType: TContentType
+export type EncodedAbi<contentType extends AbiContentType = AbiContentType> = {
+  contentType: contentType
   encodedData: Hex
 }
 
-export type EncodeAbiReturnType<TContentType extends AbiContentType> =
-  EncodedAbi<TContentType>
+export type EncodeAbiReturnType<contentType extends AbiContentType> =
+  EncodedAbi<contentType>
 
 export const contentTypeToEncodeAs = (
   contentType: AbiContentType,
@@ -63,13 +63,13 @@ export const encodeAsToContentType = (
 }
 
 export const encodeAbi = async <
-  TEncodeAs extends AbiEncodeAs,
-  TContentType extends GetAbiContentType<TEncodeAs>,
+  encodeAs extends AbiEncodeAs,
+  contentType extends GetAbiContentType<encodeAs>,
 >({
   encodeAs,
   data,
-}: EncodeAbiParameters<TEncodeAs>): Promise<
-  Prettify<EncodeAbiReturnType<TContentType>>
+}: EncodeAbiParameters<encodeAs>): Promise<
+  Prettify<EncodeAbiReturnType<contentType>>
 > => {
   let contentType: AbiContentType
   let encodedData: Hex = '0x'
@@ -100,5 +100,5 @@ export const encodeAbi = async <
       break
     }
   }
-  return { contentType: contentType as TContentType, encodedData }
+  return { contentType: contentType as contentType, encodedData }
 }

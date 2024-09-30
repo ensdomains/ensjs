@@ -1,24 +1,32 @@
-import { BaseError, decodeAbiParameters, type Address, type Hex } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import type { SimpleTransactionRequest } from '../../types.js'
-import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import { generateFunction } from '../../utils/generateFunction.js'
-import { namehash as makeNamehash } from '../../utils/normalise.js'
 import {
-  ownerFromContract,
+  namehash,
+  zeroAddress,
+  type Address,
+  type Client,
+  type ReadContractParameters,
+  type ReadContractReturnType,
+  type Transport,
+} from 'viem'
+import { multicall, readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+
+import type { ChainWithContract } from '../../contracts/consts.js'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { isNullRegistrarOwnerOfError } from '../../utils/errors/isNullRegistrarOwnerOfError.js'
+import { nullableAddress } from '../../utils/nullableAddress.js'
+import {
+  getContractSpecificOwnerParameters,
   type OwnerContract,
 } from '../../utils/ownerFromContract.js'
 import { checkIsDotEth } from '../../utils/validation.js'
-import multicallWrapper from './multicallWrapper.js'
 
 export type GetOwnerParameters<
-  TContract extends OwnerContract | undefined = undefined,
+  contract extends OwnerContract | undefined = undefined,
 > = {
   /** Name to get owner for */
   name: string
   /** Optional specific contract to get ownership value from */
-  contract?: TContract
+  contract?: contract
 }
 
 type BaseGetOwnerReturnType = {
@@ -55,197 +63,23 @@ type UnwrappedOwnership = {
 }
 
 export type GetOwnerReturnType<
-  TContract extends OwnerContract | undefined = undefined,
+  contract extends OwnerContract | undefined = undefined,
 > =
   | (BaseGetOwnerReturnType &
-      (TContract extends 'registrar'
+      (contract extends 'registrar'
         ? RegistrarOnlyOwnership
-        : TContract extends 'nameWrapper'
+        : contract extends 'nameWrapper'
         ? WrappedOwnership
-        : TContract extends 'registry'
+        : contract extends 'registry'
         ? UnwrappedOwnership
         : WrappedOwnership | UnwrappedEth2ldOwnership | UnwrappedOwnership))
   | null
 
 export type GetOwnerErrorType = Error
 
-const encode = <TContract extends OwnerContract | undefined = undefined>(
-  client: ClientWithEns,
-  { name, contract }: GetOwnerParameters<TContract>,
-): SimpleTransactionRequest => {
-  const namehash = makeNamehash(name)
-  const labels = name.split('.')
-
-  if (contract || labels.length === 1) {
-    return ownerFromContract({
-      client,
-      contract: contract || 'registry',
-      namehash,
-      labels,
-    })
-  }
-
-  const registryData = ownerFromContract({
-    client,
-    contract: 'registry',
-    namehash,
-  })
-  const nameWrapperData = ownerFromContract({
-    client,
-    contract: 'nameWrapper',
-    namehash,
-  })
-
-  const data: { to: Address; data: Hex }[] = [registryData, nameWrapperData]
-
-  if (checkIsDotEth(labels)) {
-    data.push(ownerFromContract({ client, contract: 'registrar', labels }))
-  }
-
-  return multicallWrapper.encode(client, { transactions: data })
-}
-
-const addressDecode = (data: Hex) =>
-  decodeAbiParameters([{ type: 'address' }], data)[0] as Address
-
-const decode = async <TContract extends OwnerContract | undefined = undefined>(
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  { name, contract }: GetOwnerParameters<TContract>,
-): Promise<GetOwnerReturnType<TContract>> => {
-  if (typeof data === 'object') throw data
-  const labels = name.split('.')
-  if (contract || labels.length === 1) {
-    const singleOwner = addressDecode(data)
-    if (contract === 'registrar') {
-      return {
-        ownershipLevel: 'registrar',
-        registrant: singleOwner,
-      } as GetOwnerReturnType<TContract>
-    }
-    return {
-      ownershipLevel: contract || 'registry',
-      owner: singleOwner,
-    } as GetOwnerReturnType<TContract>
-  }
-
-  const result = await multicallWrapper.decode(client, data, [])
-
-  const [registryOwner, nameWrapperOwner, registrarOwner] = [
-    result[0].returnData,
-    result[1].returnData,
-    result[2]?.returnData,
-  ].map((ret) => (ret && ret !== '0x' ? addressDecode(ret) : undefined)) as [
-    Address,
-    Address,
-    Address | undefined,
-  ]
-
-  const nameWrapperAddress = getChainContractAddress({
-    client,
-    contract: 'ensNameWrapper',
-  })
-
-  // check for only .eth names
-  if (labels[labels.length - 1] === 'eth') {
-    // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
-    // there is no "registrant" for wrapped names
-    if (registrarOwner === nameWrapperAddress) {
-      return {
-        owner: nameWrapperOwner,
-        ownershipLevel: 'nameWrapper',
-      } as GetOwnerReturnType<TContract>
-    }
-    // if there is a registrar owner, then it's not a subdomain but we have also passed the namewrapper clause
-    // this means that it's an unwrapped second-level name
-    // the registrant is the owner of the NFT
-    // the owner is the controller of the records
-    if (registrarOwner) {
-      return {
-        registrant: registrarOwner!,
-        owner: registryOwner!,
-        ownershipLevel: 'registrar',
-      } as GetOwnerReturnType<TContract>
-    }
-    if (registryOwner !== EMPTY_ADDRESS) {
-      // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
-      // so we still want to return the ownership values
-      if (labels.length === 2) {
-        return {
-          registrant: null,
-          owner: registryOwner,
-          ownershipLevel: 'registrar',
-        } as GetOwnerReturnType<TContract>
-      }
-      // this means that the subname is wrapped
-      if (
-        registryOwner === nameWrapperAddress &&
-        nameWrapperOwner &&
-        nameWrapperOwner !== EMPTY_ADDRESS
-      ) {
-        return {
-          owner: nameWrapperOwner,
-          ownershipLevel: 'nameWrapper',
-        } as GetOwnerReturnType<TContract>
-      }
-      // unwrapped subnames do not have NFTs associated, so do not have a registrant
-      return {
-        owner: registryOwner,
-        ownershipLevel: 'registry',
-      } as GetOwnerReturnType<TContract>
-    }
-    // .eth names with no registrar owner are either unregistered or expired
-    return null
-  }
-
-  // non .eth names inherit the owner from the registry
-  // there will only ever be an owner for non .eth names, not a registrant
-  // this is because for unwrapped names, there is no associated NFT
-  // and for wrapped names, owner and registrant are the same thing
-  if (
-    registryOwner === nameWrapperAddress &&
-    nameWrapperOwner &&
-    nameWrapperOwner !== EMPTY_ADDRESS
-  ) {
-    return {
-      owner: nameWrapperOwner,
-      ownershipLevel: 'nameWrapper',
-    } as GetOwnerReturnType<TContract>
-  }
-
-  // for unwrapped non .eth names, the owner is the registry owner
-  if (registryOwner && registryOwner !== EMPTY_ADDRESS) {
-    return {
-      owner: registryOwner,
-      ownershipLevel: 'registry',
-    } as GetOwnerReturnType<TContract>
-  }
-
-  // for anything else, return
-  return null
-}
-
-type EncoderFunction = typeof encode
-type DecoderFunction = typeof decode
-
-type BatchableFunctionObject = {
-  encode: EncoderFunction
-  decode: DecoderFunction
-  batch: <
-    TContract extends OwnerContract | undefined = undefined,
-    TParams extends GetOwnerParameters<TContract> = GetOwnerParameters<TContract>,
-  >(
-    args: TParams,
-  ) => {
-    args: [TParams]
-    encode: EncoderFunction
-    decode: typeof decode<TContract>
-  }
-}
-
 /**
  * Gets the owner(s) of a name.
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetOwnerParameters}
  * @returns Owner data object, or `null` if no owners exist. {@link GetOwnerReturnType}
  *
@@ -262,12 +96,170 @@ type BatchableFunctionObject = {
  * const result = await getOwner(client, { name: 'ens.eth' })
  * // { owner: '0xb6E040C9ECAaE172a89bD561c5F73e1C48d28cd9', registrant: '0xb6E040C9ECAaE172a89bD561c5F73e1C48d28cd9', ownershipLevel: 'registrar }
  */
-const getOwner = generateFunction({ encode, decode }) as (<
-  TContract extends OwnerContract | undefined = undefined,
+export async function getOwner<
+  chain extends ChainWithContract<
+    | 'ensNameWrapper'
+    | 'ensRegistry'
+    | 'ensBaseRegistrarImplementation'
+    | 'multicall3'
+  >,
+  contract extends OwnerContract | undefined = undefined,
 >(
-  client: ClientWithEns,
-  { name, contract }: GetOwnerParameters<TContract>,
-) => Promise<GetOwnerReturnType<TContract>>) &
-  BatchableFunctionObject
+  client: Client<Transport, chain>,
+  { name, contract: contract_ }: GetOwnerParameters<contract>,
+): Promise<GetOwnerReturnType<contract>> {
+  const node = namehash(name)
+  const labels = name.split('.')
 
-export default getOwner
+  if (contract_ || labels.length === 1) {
+    const contract = contract_ || 'registry'
+    const readContractAction = getAction(client, readContract, 'readContract')
+    const params = getContractSpecificOwnerParameters(client, {
+      contract,
+      node,
+      labels,
+    })
+    type OwnerParameters = Extract<typeof params, { functionName: 'owner' }>
+    type OwnerReturnType = ReadContractReturnType<
+      OwnerParameters['abi'],
+      'owner',
+      OwnerParameters['args']
+    >
+    type OwnerOfParameters = Extract<typeof params, { functionName: 'ownerOf' }>
+    type OwnerOfReturnType = ReadContractReturnType<
+      OwnerOfParameters['abi'],
+      'ownerOf',
+      OwnerOfParameters['args']
+    >
+    const result = (await readContractAction(
+      params as ReadContractParameters,
+    )) as OwnerReturnType | OwnerOfReturnType
+
+    if (result === zeroAddress) return null
+
+    if (contract === 'registrar')
+      return {
+        ownershipLevel: 'registrar',
+        registrant: result,
+      } as GetOwnerReturnType<contract>
+
+    return {
+      owner: result,
+      ownershipLevel: contract,
+    } as GetOwnerReturnType<contract>
+  }
+
+  const multicallAction = getAction(client, multicall, 'multicall')
+  const contractParameters = [
+    getContractSpecificOwnerParameters(client, {
+      contract: 'registry',
+      node,
+      labels,
+    }),
+    getContractSpecificOwnerParameters(client, {
+      contract: 'nameWrapper',
+      node,
+      labels,
+    }),
+  ] as const
+  const is2ldEth = checkIsDotEth(labels)
+  const [registryOwner, nameWrapperOwner, registrarOwner] = (
+    is2ldEth
+      ? await multicallAction({
+          contracts: [
+            ...contractParameters,
+            getContractSpecificOwnerParameters(client, {
+              contract: 'registrar',
+              labels,
+            }),
+          ],
+          allowFailure: true,
+        })
+      : await multicallAction({
+          contracts: contractParameters,
+          allowFailure: true,
+        })
+  ).map((result, index) => {
+    if (result.error) {
+      if (index !== 2) throw result.error
+      if (!isNullRegistrarOwnerOfError(result.error)) throw result.error
+      return null
+    }
+    return nullableAddress(result.result)
+  })
+
+  const nameWrapperAddress = getChainContractAddress({
+    client,
+    contract: 'ensNameWrapper',
+  })
+
+  // check for only .eth names
+  if (labels[labels.length - 1] === 'eth') {
+    // if the owner on the registrar is the namewrapper, then the namewrapper owner is the owner
+    // there is no "registrant" for wrapped names
+    if (registrarOwner === nameWrapperAddress) {
+      return {
+        owner: nameWrapperOwner,
+        ownershipLevel: 'nameWrapper',
+      } as GetOwnerReturnType<contract>
+    }
+    // if there is a registrar owner, then it's not a subdomain but we have also passed the namewrapper clause
+    // this means that it's an unwrapped second-level name
+    // the registrant is the owner of the NFT
+    // the owner is the controller of the records
+    if (registrarOwner) {
+      return {
+        registrant: registrarOwner,
+        owner: registryOwner,
+        ownershipLevel: 'registrar',
+      } as GetOwnerReturnType<contract>
+    }
+    if (registryOwner !== null) {
+      // if there is no registrar owner, but the label length is two, then the domain is an expired 2LD .eth
+      // so we still want to return the ownership values
+      if (labels.length === 2) {
+        return {
+          registrant: null,
+          owner: registryOwner,
+          ownershipLevel: 'registrar',
+        } as GetOwnerReturnType<contract>
+      }
+      // this means that the subname is wrapped
+      if (registryOwner === nameWrapperAddress && nameWrapperOwner !== null) {
+        return {
+          owner: nameWrapperOwner,
+          ownershipLevel: 'nameWrapper',
+        } as GetOwnerReturnType<contract>
+      }
+      // unwrapped subnames do not have NFTs associated, so do not have a registrant
+      return {
+        owner: registryOwner,
+        ownershipLevel: 'registry',
+      } as GetOwnerReturnType<contract>
+    }
+    // .eth names with no registrar owner are either unregistered or expired
+    return null
+  }
+
+  // non .eth names inherit the owner from the registry
+  // there will only ever be an owner for non .eth names, not a registrant
+  // this is because for unwrapped names, there is no associated NFT
+  // and for wrapped names, owner and registrant are the same thing
+  if (registryOwner === nameWrapperAddress && nameWrapperOwner !== null) {
+    return {
+      owner: nameWrapperOwner,
+      ownershipLevel: 'nameWrapper',
+    } as GetOwnerReturnType<contract>
+  }
+
+  // for unwrapped non .eth names, the owner is the registry owner
+  if (registryOwner !== null) {
+    return {
+      owner: registryOwner,
+      ownershipLevel: 'registry',
+    } as GetOwnerReturnType<contract>
+  }
+
+  // for anything else, return
+  return null
+}

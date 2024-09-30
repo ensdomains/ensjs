@@ -12,11 +12,11 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import type { EncodedAbi } from '../../utils/encoders/encodeAbi.js'
+import type { EncodedAbi } from '../../utils/coders/encodeAbi.js'
 import {
   encodeSetAbi,
   type EncodeSetAbiParameters,
-} from '../../utils/encoders/encodeSetAbi.js'
+} from '../../utils/coders/encodeSetAbi.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type SetAbiRecordDataParameters = {

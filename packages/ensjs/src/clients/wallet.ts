@@ -19,33 +19,33 @@ import type { Assign, Prettify } from '../types.js'
 import { ensWalletActions, type EnsWalletActions } from './decorators/wallet.js'
 
 export type EnsWalletClientConfig<
-  TTransport extends Transport,
-  TChain extends ChainWithBaseContracts,
-  TAccountOrAddress extends Account | Address | undefined =
+  transport extends Transport,
+  chain extends ChainWithBaseContracts,
+  accountOrAddress extends Account | Address | undefined =
     | Account
     | Address
     | undefined,
 > = Assign<
   Pick<
-    ClientConfig<TTransport, TChain, TAccountOrAddress>,
+    ClientConfig<transport, chain, accountOrAddress>,
     'account' | 'chain' | 'key' | 'name' | 'pollingInterval' | 'transport'
   >,
   {
-    chain: TChain
+    chain: chain
   }
 >
 
 export type EnsWalletClient<
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-  TAccount extends Account | undefined = Account | undefined,
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
+  account extends Account | undefined = Account | undefined,
 > = Prettify<
   Client<
-    TTransport,
-    TChain,
-    TAccount,
+    transport,
+    chain,
+    account,
     WalletRpcSchema,
-    WalletActions<TChain, TAccount> & EnsWalletActions<TChain, TAccount>
+    WalletActions<chain, account> & EnsWalletActions<chain, account>
   >
 >
 
@@ -66,9 +66,9 @@ export type EnsWalletClient<
  * })
  */
 export const createEnsWalletClient = <
-  TTransport extends Transport,
-  TChain extends ChainWithBaseContracts,
-  TAccountOrAddress extends Account | Address | undefined = undefined,
+  transport extends Transport,
+  chain extends ChainWithBaseContracts,
+  accountOrAddress extends Account | Address | undefined = undefined,
 >({
   account,
   chain,
@@ -76,14 +76,10 @@ export const createEnsWalletClient = <
   name = 'ENS Wallet Client',
   transport,
   pollingInterval,
-}: EnsWalletClientConfig<
-  TTransport,
-  TChain,
-  TAccountOrAddress
->): EnsWalletClient<
-  TTransport,
-  CheckedChainWithEns<TChain>,
-  ParseAccount<TAccountOrAddress>
+}: EnsWalletClientConfig<transport, chain, accountOrAddress>): EnsWalletClient<
+  transport,
+  CheckedChainWithEns<chain>,
+  ParseAccount<accountOrAddress>
 > => {
   return createWalletClient({
     account,

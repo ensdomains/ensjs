@@ -12,7 +12,7 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeClearRecords } from '../../utils/encoders/encodeClearRecords.js'
+import { encodeClearRecords } from '../../utils/coders/encodeClearRecords.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type ClearRecordsDataParameters = {

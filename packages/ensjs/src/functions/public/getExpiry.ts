@@ -1,31 +1,20 @@
-import {
-  BaseError,
-  decodeFunctionResult,
-  encodeFunctionData,
-  labelhash,
-  type Hex,
-} from 'viem'
+import { labelhash, type Client, type Transport } from 'viem'
+import { multicall } from 'viem/actions'
+import { getAction } from 'viem/utils'
+
 import {
   baseRegistrarGracePeriodSnippet,
   baseRegistrarNameExpiresSnippet,
 } from '../../contracts/baseRegistrar.js'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { multicallGetCurrentBlockTimestampSnippet } from '../../contracts/multicall.js'
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
-import type {
-  DateWithValue,
-  Prettify,
-  SimpleTransactionRequest,
-} from '../../types.js'
-import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
-import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { Prettify } from '../../types.js'
+import { getNameType } from '../../utils/getNameType.js'
 import { namehash } from '../../utils/normalise.js'
 import { checkIsDotEth } from '../../utils/validation.js'
-import multicallWrapper from './multicallWrapper.js'
 
 type ContractOption = 'registrar' | 'nameWrapper'
 type ExpiryStatus = 'active' | 'expired' | 'gracePeriod'
@@ -39,7 +28,7 @@ export type GetExpiryParameters = Prettify<{
 
 export type GetExpiryReturnType = Prettify<{
   /** Expiry value */
-  expiry: DateWithValue<bigint>
+  expiry: bigint
   /** Grace period value (in seconds) */
   gracePeriod: number
   /** Status of name */
@@ -48,135 +37,9 @@ export type GetExpiryReturnType = Prettify<{
 
 export type GetExpiryErrorType = Error
 
-const getContractToUse = (
-  contract: ContractOption | undefined,
-  labels: string[],
-) => {
-  if (contract) return contract
-  if (checkIsDotEth(labels)) {
-    return 'registrar'
-  }
-  return 'nameWrapper'
-}
-
-const encode = (
-  client: ClientWithEns,
-  { name, contract }: GetExpiryParameters,
-): SimpleTransactionRequest => {
-  const labels = name.split('.')
-
-  const contractToUse = getContractToUse(contract, labels)
-
-  const calls: SimpleTransactionRequest[] = [
-    {
-      to: getChainContractAddress({ client, contract: 'multicall3' }),
-      data: encodeFunctionData({
-        abi: multicallGetCurrentBlockTimestampSnippet,
-        functionName: 'getCurrentBlockTimestamp',
-      }),
-    },
-  ]
-
-  if (contractToUse === 'nameWrapper') {
-    calls.push({
-      to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
-      data: encodeFunctionData({
-        abi: nameWrapperGetDataSnippet,
-        functionName: 'getData',
-        args: [BigInt(namehash(labels.join('.')))],
-      }),
-    })
-  } else {
-    const baseRegistrarImplementationAddress = getChainContractAddress({
-      client,
-      contract: 'ensBaseRegistrarImplementation',
-    })
-    calls.push({
-      to: baseRegistrarImplementationAddress,
-      data: encodeFunctionData({
-        abi: baseRegistrarNameExpiresSnippet,
-        functionName: 'nameExpires',
-        args: [BigInt(labelhash(labels[0]))],
-      }),
-    })
-    calls.push({
-      to: baseRegistrarImplementationAddress,
-      data: encodeFunctionData({
-        abi: baseRegistrarGracePeriodSnippet,
-        functionName: 'GRACE_PERIOD',
-      }),
-    })
-  }
-
-  return multicallWrapper.encode(client, { transactions: calls })
-}
-
-const decode = async (
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  { name, contract }: GetExpiryParameters,
-): Promise<GetExpiryReturnType> => {
-  if (typeof data === 'object') throw data
-  const labels = name.split('.')
-  const result = await multicallWrapper.decode(client, data, [])
-
-  const blockTimestamp = decodeFunctionResult({
-    abi: multicallGetCurrentBlockTimestampSnippet,
-    functionName: 'getCurrentBlockTimestamp',
-    data: result[0].returnData,
-  })
-
-  const contractToUse = getContractToUse(contract, labels)
-
-  let expiry: bigint
-  let gracePeriod: bigint = 0n
-
-  if (contractToUse === 'nameWrapper') {
-    ;[, , expiry] = decodeFunctionResult({
-      abi: nameWrapperGetDataSnippet,
-      functionName: 'getData',
-      data: result[1].returnData,
-    })
-  } else {
-    expiry = decodeFunctionResult({
-      abi: baseRegistrarNameExpiresSnippet,
-      functionName: 'nameExpires',
-      data: result[1].returnData,
-    })
-    gracePeriod = decodeFunctionResult({
-      abi: baseRegistrarGracePeriodSnippet,
-      functionName: 'GRACE_PERIOD',
-      data: result[2].returnData,
-    })
-  }
-
-  if (expiry === 0n) {
-    return null
-  }
-
-  let status: ExpiryStatus = 'active'
-
-  if (blockTimestamp > expiry + gracePeriod) {
-    status = 'expired'
-  } else if (blockTimestamp > expiry) {
-    status = 'gracePeriod'
-  }
-
-  return {
-    expiry: {
-      date: makeSafeSecondsDate(expiry),
-      value: expiry,
-    },
-    gracePeriod: Number(gracePeriod),
-    status,
-  }
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
-
 /**
  * Gets the expiry for a name
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetExpiryParameters}
  * @returns Expiry object, or `null` if no expiry. {@link GetExpiryReturnType}
  *
@@ -193,10 +56,94 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getExpiry(client, { name: 'ens.eth' })
  * // { expiry: { date: Date, value: 1913933217n }, gracePeriod: 7776000, status: 'active' }
  */
-const getExpiry = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
-  { name, contract }: GetExpiryParameters,
-) => Promise<GetExpiryReturnType>) &
-  BatchableFunctionObject
+export async function getExpiry<
+  chain extends ChainWithContract<
+    'ensNameWrapper' | 'ensBaseRegistrarImplementation' | 'multicall3'
+  >,
+>(
+  client: Client<Transport, chain>,
+  { name, contract: contractOption }: GetExpiryParameters,
+): Promise<GetExpiryReturnType> {
+  const labels = name.split('.')
+  const contract = (() => {
+    if (contractOption) {
+      if (contractOption === 'registrar' && !checkIsDotEth(labels))
+        throw new UnsupportedNameTypeError({
+          nameType: getNameType(name),
+          supportedNameTypes: ['eth-2ld', 'tld'],
+          details:
+            'Only the expiry of eth-2ld names can be fetched when using the registrar contract',
+        })
+      return contractOption
+    }
+    if (checkIsDotEth(labels)) return 'registrar'
+    return 'nameWrapper'
+  })()
 
-export default getExpiry
+  const multicallAction = getAction(client, multicall, 'multicall')
+
+  const getCurrentBlockTimestampParameters = {
+    address: getChainContractAddress({ client, contract: 'multicall3' }),
+    abi: multicallGetCurrentBlockTimestampSnippet,
+    functionName: 'getCurrentBlockTimestamp',
+  } as const
+
+  const [currentBlockTimestamp, expiry, gracePeriod] = await (() => {
+    if (contract === 'nameWrapper')
+      return multicallAction({
+        contracts: [
+          getCurrentBlockTimestampParameters,
+          {
+            address: getChainContractAddress({
+              client,
+              contract: 'ensNameWrapper',
+            }),
+            abi: nameWrapperGetDataSnippet,
+            functionName: 'getData',
+            args: [BigInt(namehash(name))],
+          },
+        ],
+        allowFailure: false,
+      }).then(([timestamp_, [, , expiry_]]) => {
+        return [timestamp_, expiry_, 0n] as const
+      })
+
+    return multicallAction({
+      contracts: [
+        getCurrentBlockTimestampParameters,
+        {
+          address: getChainContractAddress({
+            client,
+            contract: 'ensBaseRegistrarImplementation',
+          }),
+          abi: baseRegistrarNameExpiresSnippet,
+          functionName: 'nameExpires',
+          args: [BigInt(labelhash(labels[0]))],
+        },
+        {
+          address: getChainContractAddress({
+            client,
+            contract: 'ensBaseRegistrarImplementation',
+          }),
+          abi: baseRegistrarGracePeriodSnippet,
+          functionName: 'GRACE_PERIOD',
+        },
+      ],
+      allowFailure: false,
+    })
+  })()
+
+  if (expiry === 0n) return null
+
+  const status = (() => {
+    if (currentBlockTimestamp > expiry + gracePeriod) return 'expired'
+    if (currentBlockTimestamp > expiry) return 'gracePeriod'
+    return 'active'
+  })()
+
+  return {
+    expiry,
+    gracePeriod: Number(gracePeriod),
+    status,
+  }
+}

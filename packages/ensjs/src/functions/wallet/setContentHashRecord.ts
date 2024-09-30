@@ -12,7 +12,7 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeSetContentHash } from '../../utils/encoders/encodeSetContentHash.js'
+import { encodeSetContentHash } from '../../utils/coders/encodeSetContentHash.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type SetContentHashRecordDataParameters = {

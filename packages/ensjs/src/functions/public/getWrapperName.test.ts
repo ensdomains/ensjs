@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import getWrapperName from './getWrapperName.js'
+import { getWrapperName } from './getWrapperName.js'
 
 describe('getWrapperName()', () => {
   it('should return name for existing name', async () => {

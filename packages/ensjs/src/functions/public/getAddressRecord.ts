@@ -1,71 +1,35 @@
-import type { BaseError, Hex } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
-import type {
-  GenericPassthrough,
-  Prettify,
-  SimpleTransactionRequest,
-} from '../../types.js'
-import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
-import _getAddr, {
-  type InternalGetAddrErrorType,
-  type InternalGetAddrParameters,
-  type InternalGetAddrReturnType,
-} from './_getAddr.js'
-import universalWrapper from './universalWrapper.js'
+import type { Client, Transport } from 'viem'
+import { encodeFunctionData, getAction } from 'viem/utils'
 
-export type GetAddressRecordParameters = Prettify<
-  InternalGetAddrParameters & {
+import type { ChainWithContract } from '../../contracts/consts.js'
+import type { Prettify } from '../../types.js'
+import {
+  decodeAddressResult,
+  getAddressParameters,
+  type GetAddressErrorType,
+  type GetAddressParameters,
+  type GetAddressReturnType,
+} from '../../utils/coders/getAddress.js'
+import { resolveNameData } from './resolveNameData.js'
+
+export type GetAddressRecordParameters<
+  coin extends string | number | undefined = undefined,
+> = Prettify<
+  GetAddressParameters<coin> & {
     /** Batch gateway URLs to use for resolving CCIP-read requests. */
     gatewayUrls?: string[]
   }
 >
 
-export type GetAddressRecordReturnType = Prettify<InternalGetAddrReturnType>
+export type GetAddressRecordReturnType<
+  coin extends string | number | undefined = undefined,
+> = GetAddressReturnType<coin>
 
-export type GetAddressRecordErrorType = InternalGetAddrErrorType
-
-const encode = (
-  client: ClientWithEns,
-  {
-    name,
-    coin,
-    gatewayUrls,
-  }: Omit<GetAddressRecordParameters, 'strict' | 'bypassFormat'>,
-): SimpleTransactionRequest => {
-  const prData = _getAddr.encode(client, { name, coin })
-  return universalWrapper.encode(client, {
-    name,
-    data: prData.data,
-    gatewayUrls,
-  })
-}
-
-const decode = async (
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-  {
-    coin,
-    strict,
-    gatewayUrls,
-  }: Pick<GetAddressRecordParameters, 'coin' | 'strict' | 'gatewayUrls'>,
-): Promise<GetAddressRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough, {
-    strict,
-    gatewayUrls,
-  })
-  if (!urData) return null
-  return _getAddr.decode(client, urData.data, { coin, strict })
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+export type GetAddressRecordErrorType = GetAddressErrorType
 
 /**
  * Gets an address record for a name and specified coin
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetAddressRecordParameters}
  * @returns Coin value object, or `null` if not found. {@link GetAddressRecordReturnType}
  *
@@ -82,10 +46,32 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getAddressRecord(client, { name: 'ens.eth', coin: 'ETH' })
  * // { id: 60, name: 'ETH , value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }
  */
-const getAddressRecord = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
-  { name, coin, bypassFormat, strict, gatewayUrls }: GetAddressRecordParameters,
-) => Promise<GetAddressRecordReturnType>) &
-  BatchableFunctionObject
-
-export default getAddressRecord
+export async function getAddressRecord<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+  coin extends string | number | undefined = undefined,
+>(
+  client: Client<Transport, chain>,
+  {
+    gatewayUrls,
+    strict,
+    name,
+    bypassFormat,
+    coin,
+  }: GetAddressRecordParameters<coin>,
+): Promise<GetAddressRecordReturnType<coin>> {
+  const resolveNameDataAction = getAction(
+    client,
+    resolveNameData,
+    'resolveNameData',
+  )
+  const result = await resolveNameDataAction({
+    name,
+    data: encodeFunctionData(
+      getAddressParameters({ name, bypassFormat, coin }),
+    ),
+    gatewayUrls,
+    strict,
+  })
+  if (!result) return null
+  return decodeAddressResult(result.resolvedData, { strict, coin })
+}

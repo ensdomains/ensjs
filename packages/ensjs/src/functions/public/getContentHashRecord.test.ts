@@ -1,8 +1,6 @@
-import { RawContractError } from 'viem'
 import { describe, expect, it } from 'vitest'
-import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicClient } from '../../test/addTestContracts.js'
-import getContentHashRecord from './getContentHashRecord.js'
+import { getContentHashRecord } from './getContentHashRecord.js'
 
 describe('getContentHashRecord', () => {
   it('should return null for a non-existent name', async () => {
@@ -29,45 +27,30 @@ describe('getContentHashRecord', () => {
     `)
   })
   it('should return null on error when strict is false', async () => {
-    await expect(
-      getContentHashRecord.decode(
-        {} as ClientWithEns,
-        new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
-        }),
-        {
-          address: '0x1234567890abcdef',
-          args: ['0x', '0x'],
-        },
-        { strict: false },
-      ),
-    ).resolves.toBeNull()
+    const result = await getContentHashRecord(publicClient, {
+      name: 'thisnamedoesnotexist.eth',
+      strict: false,
+    })
+    expect(result).toBeNull()
   })
   it('should throw on error when strict is true', async () => {
     await expect(
-      getContentHashRecord.decode(
-        {} as ClientWithEns,
-        new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
-        }),
-        {
-          address: '0x1234567890abcdef',
-          args: ['0x', '0x'],
-        },
-
-        { strict: true },
-      ),
+      getContentHashRecord(publicClient, {
+        name: 'thisnamedoesnotexist.eth',
+        strict: true,
+      }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound()
+      Error: ResolverWildcardNotSupported()
        
       Contract Call:
-        address:   0x1234567890abcdef
+        address:   0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00
         function:  resolve(bytes name, bytes data)
-        args:             (0x, 0x)
+        args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0xbc1c58d1287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
 
-      Version: viem@2.9.2]
+      Docs: https://viem.sh/docs/contract/readContract
+      Version: 2.21.15]
     `)
   })
 })

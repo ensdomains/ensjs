@@ -1,7 +1,7 @@
 import { RawContractError } from 'viem'
 import { describe, expect, it } from 'vitest'
 import { universalResolverResolveSnippet } from '../contracts/universalResolver.js'
-import { checkSafeUniversalResolverData } from './checkSafeUniversalResolverData.js'
+import { checkSafeUniversalResolverData } from './errors/isNullUniversalResolverError.js'
 
 describe('checkSafeUniversalResolverData', () => {
   it('returns true when the data is safe to use and strict is false', () => {

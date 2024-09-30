@@ -3,7 +3,7 @@ import {
   deploymentAddresses,
   publicClient,
 } from '../../test/addTestContracts.js'
-import getSupportedInterfaces from './getSupportedInterfaces.js'
+import { getSupportedInterfaces } from './getSupportedInterfaces.js'
 
 it('returns true for a single supported interface', async () => {
   const result = await getSupportedInterfaces(publicClient, {

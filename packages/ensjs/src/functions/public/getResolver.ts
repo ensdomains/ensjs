@@ -1,24 +1,15 @@
 import {
-  BaseError,
-  decodeFunctionResult,
-  encodeFunctionData,
-  getContractError,
   toHex,
+  zeroAddress,
   type Address,
-  type Hex,
+  type Client,
+  type Transport,
 } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import { readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
-import type {
-  GenericPassthrough,
-  TransactionRequestWithPassthrough,
-} from '../../types.js'
-import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 
 export type GetResolverParameters = {
@@ -30,54 +21,9 @@ export type GetResolverReturnType = Address | null
 
 export type GetResolverErrorType = Error
 
-const encode = (
-  client: ClientWithEns,
-  { name }: GetResolverParameters,
-): TransactionRequestWithPassthrough => {
-  const address = getChainContractAddress({
-    client,
-    contract: 'ensUniversalResolver',
-  })
-  const args = [toHex(packetToBytes(name))] as const
-  return {
-    to: address,
-    data: encodeFunctionData({
-      abi: universalResolverFindResolverSnippet,
-      functionName: 'findResolver',
-      args,
-    }),
-    passthrough: { address, args },
-  }
-}
-
-const decode = async (
-  _client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-): Promise<GetResolverReturnType> => {
-  if (typeof data === 'object')
-    throw getContractError(data, {
-      abi: universalResolverFindResolverSnippet,
-      functionName: 'findResolver',
-      args: passthrough.args,
-      address: passthrough.address,
-    }) as BaseError
-  const response = decodeFunctionResult({
-    abi: universalResolverFindResolverSnippet,
-    functionName: 'findResolver',
-    data,
-  })
-
-  if (response[0] === EMPTY_ADDRESS) return null
-
-  return response[0]
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
-
 /**
  * Gets the resolver address for a name.
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetResolverParameters}
  * @returns Resolver address, or null if none is found. {@link GetResolverReturnType}
  *
@@ -94,10 +40,23 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getResolver(client, { name: 'ens.eth' })
  * // 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41
  */
-const getResolver = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
+export async function getResolver<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
   { name }: GetResolverParameters,
-) => Promise<GetResolverReturnType>) &
-  BatchableFunctionObject
+): Promise<GetResolverReturnType> {
+  const readContractAction = getAction(client, readContract, 'readContract')
+  const result = await readContractAction({
+    address: getChainContractAddress({
+      client,
+      contract: 'ensUniversalResolver',
+    }),
+    abi: universalResolverFindResolverSnippet,
+    functionName: 'findResolver',
+    args: [toHex(packetToBytes(name))],
+  })
 
-export default getResolver
+  if (result[0] === zeroAddress) return null
+  return result[0]
+}

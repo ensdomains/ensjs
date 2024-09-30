@@ -1,20 +1,20 @@
 import { type Hex } from 'viem'
 import type { Prettify } from '../types.js'
+import {./coders/encodeAbi.js
+  encodeSetText,./coders/encodeClearRecords.js
+  type EncodeSetTextParameters,
+} from './coders/encodeSetText.js'
 import type { EncodedAbi } from './encoders/encodeAbi.js'
 import { encodeClearRecords } from './encoders/encodeClearRecords.js'
 import {
   encodeSetAbi,
   type EncodeSetAbiParameters,
-} from './encoders/encodeSetAbi.js'
+} from './coders/encodeSetAbi.js'
 import {
   encodeSetAddr,
   type EncodeSetAddrParameters,
-} from './encoders/encodeSetAddr.js'
-import { encodeSetContentHash } from './encoders/encodeSetContentHash.js'
-import {
-  encodeSetText,
-  type EncodeSetTextParameters,
-} from './encoders/encodeSetText.js'
+} from './coders/encodeSetAddr.js'
+import { encodeSetContentHash } from './coders/encodeSetContentHash.js'
 
 export type RecordOptions = Prettify<{
   /** Clears all current records */

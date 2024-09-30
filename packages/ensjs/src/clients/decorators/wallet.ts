@@ -74,8 +74,8 @@ import wrapName, {
 } from '../../functions/wallet/wrapName.js'
 
 export type EnsWalletActions<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+  chain extends ChainWithEns,
+  account extends Account | undefined,
 > = {
   /**
    * Clears the records for a name on a resolver.
@@ -102,9 +102,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: ClearRecordsParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<ClearRecordsReturnType>
   /**
    * Commits a name to be registered
@@ -141,9 +141,9 @@ export type EnsWalletActions<
     fuses,
     ...txArgs
   }: CommitNameParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<CommitNameReturnType>
   /**
    * Creates a subname
@@ -175,9 +175,9 @@ export type EnsWalletActions<
     fuses,
     ...txArgs
   }: CreateSubnameParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<CreateSubnameReturnType>
   /**
    * Deletes a subname
@@ -205,9 +205,9 @@ export type EnsWalletActions<
     asOwner,
     ...txArgs
   }: DeleteSubnameParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<DeleteSubnameReturnType>
   /**
    * Registers a name on ENS
@@ -258,9 +258,9 @@ export type EnsWalletActions<
     value,
     ...txArgs
   }: RegisterNameParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<RegisterNameReturnType>
   /**
    * Renews a name or names for a specified duration.
@@ -301,9 +301,9 @@ export type EnsWalletActions<
     value,
     ...txArgs
   }: RenewNamesParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<RenewNamesReturnType>
   /**
    * Sets the ABI for a name on a resolver.
@@ -336,9 +336,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: SetAbiRecordParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetAbiRecordReturnType>
   /**
    * Sets an address record for a name on a resolver.
@@ -369,9 +369,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: SetAddressRecordParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetAddressRecordReturnType>
   /**
    * Sets the fuses for a name as the parent.
@@ -403,9 +403,9 @@ export type EnsWalletActions<
     expiry,
     ...txArgs
   }: SetChildFusesParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetChildFusesReturnType>
   /**
    * Sets the content hash record for a name on a resolver.
@@ -434,9 +434,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: SetContentHashRecordParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetContentHashRecordReturnType>
   /**
    * Sets the fuses for a name.
@@ -464,11 +464,7 @@ export type EnsWalletActions<
     name,
     fuses,
     ...txArgs
-  }: SetFusesParameters<
-    TChain,
-    TAccount,
-    TChain
-  >) => Promise<SetFusesReturnType>
+  }: SetFusesParameters<chain, account, chain>) => Promise<SetFusesReturnType>
   /**
    * Sets a primary name for an address.
    * @param parameters - {@link SetPrimaryNameParameters}
@@ -494,9 +490,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: SetPrimaryNameParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetPrimaryNameReturnType>
   /**
    * Sets multiple records for a name on a resolver.
@@ -536,9 +532,9 @@ export type EnsWalletActions<
     abi,
     ...txArgs
   }: SetRecordsParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetRecordsReturnType>
   /**
    * Sets a resolver for a name.
@@ -567,9 +563,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: SetResolverParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetResolverReturnType>
   /**
    * Sets a text record for a name on a resolver.
@@ -600,9 +596,9 @@ export type EnsWalletActions<
     resolverAddress,
     ...txArgs
   }: SetTextRecordParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<SetTextRecordReturnType>
   /**
    * Transfers a name to a new owner.
@@ -633,9 +629,9 @@ export type EnsWalletActions<
     asParent,
     ...txArgs
   }: TransferNameParameters<
-    TChain,
-    TAccount,
-    TChain
+    chain,
+    account,
+    chain
   >) => Promise<TransferNameReturnType>
   /**
    * Unwraps a name.
@@ -658,16 +654,16 @@ export type EnsWalletActions<
    * })
    * // 0x...
    */
-  unwrapName: <TName extends string>({
+  unwrapName: <name extends string>({
     name,
     newOwnerAddress,
     newRegistrantAddress,
     ...txArgs
   }: UnwrapNameParameters<
-    TName,
-    TChain,
-    TAccount,
-    TChain
+    name,
+    chain,
+    account,
+    chain
   >) => Promise<UnwrapNameReturnType>
   /**
    * Wraps a name.
@@ -689,17 +685,17 @@ export type EnsWalletActions<
    * })
    * // 0x...
    */
-  wrapName: <TName extends string>({
+  wrapName: <name extends string>({
     name,
     newOwnerAddress,
     fuses,
     resolverAddress,
     ...txArgs
   }: WrapNameParameters<
-    TName,
-    TChain,
-    TAccount,
-    TChain
+    name,
+    chain,
+    account,
+    chain
   >) => Promise<WrapNameReturnType>
 }
 
@@ -718,12 +714,12 @@ export type EnsWalletActions<
  * }).extend(ensWalletActions)
  */
 export const ensWalletActions = <
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-  TAccount extends Account | undefined = Account | undefined,
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
+  account extends Account | undefined = Account | undefined,
 >(
-  client: WalletClient<TTransport, TChain, TAccount>,
-): EnsWalletActions<TChain, TAccount> => ({
+  client: WalletClient<transport, chain, account>,
+): EnsWalletActions<chain, account> => ({
   clearRecords: (parameters) => clearRecords(client, parameters),
   commitName: (parameters) => commitName(client, parameters),
   createSubname: (parameters) => createSubname(client, parameters),

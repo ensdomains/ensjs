@@ -1,19 +1,11 @@
-import {
-  BaseError,
-  decodeFunctionResult,
-  encodeFunctionData,
-  labelhash,
-  type Hex,
-} from 'viem'
+import { labelhash, type Client, type Transport } from 'viem'
+import { readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+
 import { baseRegistrarAvailableSnippet } from '../../contracts/baseRegistrar.js'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import type { SimpleTransactionRequest } from '../../types.js'
-import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
 import { getNameType } from '../../utils/getNameType.js'
 
 export type GetAvailableParameters = {
@@ -25,50 +17,9 @@ export type GetAvailableReturnType = boolean
 
 export type GetAvailableErrorType = UnsupportedNameTypeError | Error
 
-const encode = (
-  client: ClientWithEns,
-  { name }: GetAvailableParameters,
-): SimpleTransactionRequest => {
-  const labels = name.split('.')
-  const nameType = getNameType(name)
-  if (nameType !== 'eth-2ld')
-    throw new UnsupportedNameTypeError({
-      nameType,
-      supportedNameTypes: ['eth-2ld'],
-      details: 'Currently only eth-2ld names can be checked for availability',
-    })
-
-  return {
-    to: getChainContractAddress({
-      client,
-      contract: 'ensBaseRegistrarImplementation',
-    }),
-    data: encodeFunctionData({
-      abi: baseRegistrarAvailableSnippet,
-      functionName: 'available',
-      args: [BigInt(labelhash(labels[0]))],
-    }),
-  }
-}
-
-const decode = async (
-  _client: ClientWithEns,
-  data: Hex | BaseError,
-): Promise<GetAvailableReturnType> => {
-  if (typeof data === 'object') throw data
-  const result = decodeFunctionResult({
-    abi: baseRegistrarAvailableSnippet,
-    functionName: 'available',
-    data,
-  })
-  return result
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
-
 /**
  * Gets the availability of a name to register
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetAvailableParameters}
  * @returns Availability as boolean. {@link GetAvailableReturnType}
  *
@@ -85,10 +36,30 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getAvailable(client, { name: 'ens.eth' })
  * // false
  */
-const getAvailable = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
+export async function getAvailable<
+  chain extends ChainWithContract<'ensBaseRegistrarImplementation'>,
+>(
+  client: Client<Transport, chain>,
   { name }: GetAvailableParameters,
-) => Promise<GetAvailableReturnType>) &
-  BatchableFunctionObject
+): Promise<GetAvailableReturnType> {
+  const labels = name.split('.')
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Currently only eth-2ld names can be checked for availability',
+    })
 
-export default getAvailable
+  const readContractAction = getAction(client, readContract, 'readContract')
+  const result = await readContractAction({
+    address: getChainContractAddress({
+      client,
+      contract: 'ensBaseRegistrarImplementation',
+    }),
+    abi: baseRegistrarAvailableSnippet,
+    functionName: 'available',
+    args: [BigInt(labelhash(labels[0]))],
+  })
+  return result
+}

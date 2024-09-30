@@ -179,11 +179,11 @@ export type EnsSubgraphActions = {
  * }).extend(ensSubgraphActions)
  */
 export const ensSubgraphActions = <
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-  TAccount extends Account | undefined = Account | undefined,
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
+  account extends Account | undefined = Account | undefined,
 >(
-  client: Client<TTransport, TChain, TAccount>,
+  client: Client<transport, chain, account>,
 ): EnsSubgraphActions => ({
   getDecodedName: (parameters) => getDecodedName(client, parameters),
   getNameHistory: (parameters) => getNameHistory(client, parameters),

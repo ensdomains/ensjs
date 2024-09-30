@@ -1,5 +1,10 @@
 export { ccipRequest } from './ccipRequest.js'
 export {
+  encodeSetText,
+  type EncodeSetTextParameters,
+  type EncodeSetTextReturnType,
+} from './coders/encodeSetText.js'
+export {
   getDnsTxtRecords,
   type GetDnsTxtRecordsParameters,
   type GetDnsTxtRecordsReturnType,
@@ -13,13 +18,13 @@ export {
 } from './dns/misc.js'
 export {
   contentTypeToEncodeAs,
-  encodeAbi,
-  encodeAsToContentType,
+  encode./coders/encodeAbi.js
+  encodeAsToContentType,./coders/encodeClearRecords.js
   type EncodeAbiParameters,
   type EncodeAbiReturnType,
   type EncodedAbi,
 } from './encoders/encodeAbi.js'
-export { encodeClearRecords } from './encoders/encodeClearRecords.js'
+export {./coders/encodeSetAbi.js './encoders/encodeClearRecords.js'
 export {
   encodeSetAbi,
   type EncodeSetAbiParameters,
@@ -29,17 +34,12 @@ export {
   encodeSetAddr,
   type EncodeSetAddrParameters,
   type EncodeSetAddrReturnType,
-} from './encoders/encodeSetAddr.js'
+} from './coders/encodeSetAddr.js'
 export {
   encodeSetContentHash,
   type EncodeSetContentHashParameters,
   type EncodeSetContentHashReturnType,
-} from './encoders/encodeSetContentHash.js'
-export {
-  encodeSetText,
-  type EncodeSetTextParameters,
-  type EncodeSetTextReturnType,
-} from './encoders/encodeSetText.js'
+} from './coders/encodeSetContentHash.js'
 
 export {
   EMPTY_ADDRESS,

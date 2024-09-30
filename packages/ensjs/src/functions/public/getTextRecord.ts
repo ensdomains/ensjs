@@ -1,66 +1,31 @@
-import type { BaseError, Hex } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
-import type {
-  GenericPassthrough,
-  Prettify,
-  SimpleTransactionRequest,
-} from '../../types.js'
+import type { Client, Transport } from 'viem'
+
+import { encodeFunctionData, getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
+import type { Prettify } from '../../types.js'
 import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
-import _getText, {
-  type InternalGetTextErrorType,
-  type InternalGetTextParameters,
-  type InternalGetTextReturnType,
-} from './_getText.js'
-import universalWrapper from './universalWrapper.js'
+  decodeTextResult,
+  getTextParameters,
+  type GetTextErrorType,
+  type GetTextParameters,
+  type GetTextReturnType,
+} from '../../utils/coders/getText.js'
+import { resolveNameData } from './resolveNameData.js'
 
 export type GetTextRecordParameters = Prettify<
-  InternalGetTextParameters & {
+  GetTextParameters & {
     /** Batch gateway URLs to use for resolving CCIP-read requests. */
     gatewayUrls?: string[]
   }
 >
 
-export type GetTextRecordReturnType = Prettify<InternalGetTextReturnType>
+export type GetTextRecordReturnType = GetTextReturnType
 
-export type GetTextRecordErrorType = InternalGetTextErrorType
-
-const encode = (
-  client: ClientWithEns,
-  { name, key, gatewayUrls }: Omit<GetTextRecordParameters, 'strict'>,
-): SimpleTransactionRequest => {
-  const prData = _getText.encode(client, { name, key })
-  return universalWrapper.encode(client, {
-    name,
-    data: prData.data,
-    gatewayUrls,
-  })
-}
-
-const decode = async (
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-  {
-    strict,
-    gatewayUrls,
-  }: Pick<GetTextRecordParameters, 'strict' | 'gatewayUrls'>,
-): Promise<GetTextRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough, {
-    strict,
-    gatewayUrls,
-  })
-  if (!urData) return null
-  return _getText.decode(client, urData.data, { strict })
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+export type GetTextRecordErrorType = GetTextErrorType
 
 /**
  * Gets a text record for a name.
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetTextRecordParameters}
  * @returns Text record string, or null if none is found. {@link GetTextRecordReturnType}
  *
@@ -77,10 +42,23 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getTextRecord(client, { name: 'ens.eth', key: 'com.twitter' })
  * // ensdomains
  */
-const getTextRecord = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
-  { name, key, strict, gatewayUrls }: GetTextRecordParameters,
-) => Promise<GetTextRecordReturnType>) &
-  BatchableFunctionObject
-
-export default getTextRecord
+export async function getTextRecord<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
+  { gatewayUrls, strict, ...parameters }: GetTextRecordParameters,
+): Promise<GetTextRecordReturnType> {
+  const resolveNameDataAction = getAction(
+    client,
+    resolveNameData,
+    'resolveNameData',
+  )
+  const result = await resolveNameDataAction({
+    name: parameters.name,
+    data: encodeFunctionData(getTextParameters(parameters)),
+    gatewayUrls,
+    strict,
+  })
+  if (!result) return null
+  return decodeTextResult(result.resolvedData, { strict })
+}

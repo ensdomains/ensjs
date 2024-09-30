@@ -1,70 +1,31 @@
-import type { BaseError, Hex } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
-import type {
-  GenericPassthrough,
-  Prettify,
-  SimpleTransactionRequest,
-} from '../../types.js'
+import type { Client, Transport } from 'viem'
+import { encodeFunctionData, getAction } from 'viem/utils'
+
+import type { ChainWithContract } from '../../contracts/consts.js'
+import type { Prettify } from '../../types.js'
 import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
-import _getAbi, {
-  type InternalGetAbiErrorType,
-  type InternalGetAbiParameters,
-  type InternalGetAbiReturnType,
-} from './_getAbi.js'
-import universalWrapper from './universalWrapper.js'
+  decodeAbiResult,
+  getAbiParameters,
+  type GetAbiErrorType,
+  type GetAbiParameters,
+  type GetAbiReturnType,
+} from '../../utils/coders/getAbi.js'
+import { resolveNameData } from './resolveNameData.js'
 
 export type GetAbiRecordParameters = Prettify<
-  InternalGetAbiParameters & {
+  GetAbiParameters & {
     /** Batch gateway URLs to use for resolving CCIP-read requests. */
     gatewayUrls?: string[]
   }
 >
 
-export type GetAbiRecordReturnType = Prettify<InternalGetAbiReturnType>
+export type GetAbiRecordReturnType = GetAbiReturnType
 
-export type GetAbiRecordErrorType = InternalGetAbiErrorType
-
-const encode = (
-  client: ClientWithEns,
-  {
-    name,
-    supportedContentTypes,
-    gatewayUrls,
-  }: Omit<GetAbiRecordParameters, 'strict'>,
-): SimpleTransactionRequest => {
-  const prData = _getAbi.encode(client, { name, supportedContentTypes })
-  return universalWrapper.encode(client, {
-    name,
-    data: prData.data,
-    gatewayUrls,
-  })
-}
-
-const decode = async (
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-  {
-    strict,
-    gatewayUrls,
-  }: Pick<GetAbiRecordParameters, 'strict' | 'gatewayUrls'>,
-): Promise<GetAbiRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough, {
-    strict,
-    gatewayUrls,
-  })
-  if (!urData) return null
-  return _getAbi.decode(client, urData.data, { strict })
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+export type GetAbiRecordErrorType = GetAbiErrorType
 
 /**
  * Gets the ABI record for a name
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetAbiRecordParameters}
  * @returns ABI record for the name, or `null` if not found. {@link GetAbiRecordReturnType}
  *
@@ -81,10 +42,23 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getAbiRecord(client, { name: 'ens.eth' })
  * // TODO: real example
  */
-const getAbiRecord = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
-  { name, strict, gatewayUrls, supportedContentTypes }: GetAbiRecordParameters,
-) => Promise<GetAbiRecordReturnType>) &
-  BatchableFunctionObject
-
-export default getAbiRecord
+export async function getAbiRecord<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
+  { gatewayUrls, name, supportedContentTypes, strict }: GetAbiRecordParameters,
+): Promise<GetAbiRecordReturnType> {
+  const resolveNameDataAction = getAction(
+    client,
+    resolveNameData,
+    'resolveNameData',
+  )
+  const result = await resolveNameDataAction({
+    name,
+    data: encodeFunctionData(getAbiParameters({ name, supportedContentTypes })),
+    gatewayUrls,
+    strict,
+  })
+  if (!result) return null
+  return decodeAbiResult(result.resolvedData, { strict })
+}

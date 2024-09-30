@@ -1,6 +1,12 @@
-import { encodeFunctionData, labelhash, type Hex } from 'viem'
-import { baseRegistrarOwnerOfSnippet } from '../contracts/baseRegistrar.js'
-import type { ClientWithEns } from '../contracts/consts.js'
+import {
+  labelhash,
+  type Client,
+  type Hex,
+  type ReadContractParameters,
+  type Transport,
+} from 'viem'
+
+import type { ChainWithContract } from '../contracts/consts.js'
 import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
 import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
 import { registryOwnerSnippet } from '../contracts/registry.js'
@@ -9,14 +15,13 @@ import { InvalidContractTypeError } from '../errors/general.js'
 export type OwnerContract = 'nameWrapper' | 'registry' | 'registrar'
 
 export type OwnerFromContractArgs = {
-  client: ClientWithEns
   contract: OwnerContract
-  namehash?: Hex
+  node?: Hex
   labels?: string[]
 } & (
   | {
       contract: Exclude<OwnerContract, 'registrar'>
-      namehash: Hex
+      node: Hex
     }
   | {
       contract: 'registrar'
@@ -24,43 +29,44 @@ export type OwnerFromContractArgs = {
     }
 )
 
-export const ownerFromContract = ({
-  client,
-  contract,
-  namehash,
-  labels,
-}: OwnerFromContractArgs) => {
+const abi = [...nameWrapperOwnerOfSnippet, ...registryOwnerSnippet] as const
+
+export const getContractSpecificOwnerParameters = <
+  chain extends ChainWithContract<
+    'ensNameWrapper' | 'ensRegistry' | 'ensBaseRegistrarImplementation'
+  >,
+>(
+  client: Client<Transport, chain>,
+  { contract, node, labels }: OwnerFromContractArgs,
+) => {
   switch (contract) {
     case 'nameWrapper':
       return {
-        to: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
-        data: encodeFunctionData({
-          abi: nameWrapperOwnerOfSnippet,
-          functionName: 'ownerOf',
-          args: [BigInt(namehash)],
+        address: getChainContractAddress({
+          client,
+          contract: 'ensNameWrapper',
         }),
-      }
+        abi,
+        functionName: 'ownerOf',
+        args: [BigInt(node)],
+      } as const satisfies ReadContractParameters<typeof abi, 'ownerOf'>
     case 'registry':
       return {
-        to: getChainContractAddress({ client, contract: 'ensRegistry' }),
-        data: encodeFunctionData({
-          abi: registryOwnerSnippet,
-          functionName: 'owner',
-          args: [namehash],
-        }),
-      }
+        address: getChainContractAddress({ client, contract: 'ensRegistry' }),
+        abi,
+        functionName: 'owner',
+        args: [node],
+      } as const satisfies ReadContractParameters<typeof abi, 'owner'>
     case 'registrar':
       return {
-        to: getChainContractAddress({
+        address: getChainContractAddress({
           client,
           contract: 'ensBaseRegistrarImplementation',
         }),
-        data: encodeFunctionData({
-          abi: baseRegistrarOwnerOfSnippet,
-          functionName: 'ownerOf',
-          args: [BigInt(labelhash(labels[0]))],
-        }),
-      }
+        abi,
+        functionName: 'ownerOf',
+        args: [BigInt(labelhash(labels[0]))],
+      } as const satisfies ReadContractParameters<typeof abi, 'ownerOf'>
     default:
       throw new InvalidContractTypeError({
         contractType: contract,

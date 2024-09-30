@@ -1,19 +1,11 @@
-import type { BaseError, Hex } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
-import type {
-  GenericPassthrough,
-  Prettify,
-  SimpleTransactionRequest,
-} from '../../types.js'
+import type { Client, Transport } from 'viem'
+import type { ChainWithContract } from '../../contracts/consts.js'
+import type { Prettify } from '../../types.js'
 import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
-import type {
-  GetTextRecordErrorType,
-  GetTextRecordParameters,
+  getTextRecord,
+  type GetTextRecordErrorType,
+  type GetTextRecordParameters,
 } from './getTextRecord.js'
-import getTextRecord from './getTextRecord.js'
 
 export type GetCredentialsParameters = Prettify<
   Omit<GetTextRecordParameters, 'key'>
@@ -27,17 +19,6 @@ export type ExternalCredential = {
   url: string
 }
 
-const encode = (
-  client: ClientWithEns,
-  { name, gatewayUrls }: Omit<GetCredentialsParameters, 'strict'>,
-): SimpleTransactionRequest => {
-  return getTextRecord.encode(client, {
-    name,
-    key: 'verifications',
-    gatewayUrls,
-  })
-}
-
 const parseCredentials = (credentials: string[]) => {
   const externalCredentials: ExternalCredential[] = []
   for (const credential of credentials) {
@@ -47,30 +28,9 @@ const parseCredentials = (credentials: string[]) => {
   return externalCredentials
 }
 
-const decode = async (
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-  {
-    strict,
-    gatewayUrls,
-  }: Pick<GetCredentialsParameters, 'strict' | 'gatewayUrls'>,
-): Promise<GetCredentialsReturnType> => {
-  const result = await getTextRecord.decode(client, data, passthrough, {
-    strict,
-    gatewayUrls,
-  })
-  if (!result) return null
-
-  const credentials = JSON.parse(result) as string[]
-  return parseCredentials(credentials)
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
-
 /**
  * Gets credentials for a name.
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetCredentialsParameters}
  * @returns Credentials, or null if none are found. {@link GetCredentialsReturnType}
  *
@@ -87,10 +47,20 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getCredentials(client, { name: 'ens.eth' })
  * // [{ url: 'https://example.com' }]
  */
-const getCredentials = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
-  { name, strict, gatewayUrls }: GetCredentialsParameters,
-) => Promise<GetCredentialsReturnType>) &
-  BatchableFunctionObject
+export async function getCredentials<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
+  { gatewayUrls, strict, name }: GetCredentialsParameters,
+): Promise<GetCredentialsReturnType> {
+  const result = await getTextRecord(client, {
+    name,
+    key: 'verifications',
+    gatewayUrls,
+    strict,
+  })
+  if (!result) return null
 
-export default getCredentials
+  const credential = JSON.parse(result) as string[]
+  return parseCredentials(credential)
+}

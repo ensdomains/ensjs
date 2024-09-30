@@ -18,22 +18,22 @@ import {
 } from './decorators/subgraph.js'
 
 export type EnsPublicClientConfig<
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithBaseContracts = ChainWithBaseContracts,
+  transport extends Transport = Transport,
+  chain extends ChainWithBaseContracts = ChainWithBaseContracts,
 > = Pick<
-  ClientConfig<TTransport, TChain>,
+  ClientConfig<transport, chain>,
   'batch' | 'key' | 'name' | 'pollingInterval' | 'transport'
 > & {
-  chain: TChain
+  chain: chain
 }
 
 export type EnsPublicClient<
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
 > = Prettify<
   Client<
-    TTransport,
-    TChain,
+    transport,
+    chain,
     undefined,
     PublicRpcSchema,
     EnsPublicActions & EnsSubgraphActions
@@ -57,8 +57,8 @@ export type EnsPublicClient<
  * })
  */
 export const createEnsPublicClient = <
-  TTransport extends Transport,
-  TChain extends ChainWithBaseContracts,
+  transport extends Transport,
+  chain extends ChainWithBaseContracts,
 >({
   batch,
   chain,
@@ -66,9 +66,9 @@ export const createEnsPublicClient = <
   name = 'ENS Public Client',
   transport,
   pollingInterval,
-}: EnsPublicClientConfig<TTransport, TChain>): EnsPublicClient<
-  TTransport,
-  ChainWithEns<TChain>
+}: EnsPublicClientConfig<transport, chain>): EnsPublicClient<
+  transport,
+  ChainWithEns<chain>
 > => {
   return createClient({
     batch,

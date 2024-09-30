@@ -1,18 +1,14 @@
-import { describe, expect, it } from 'vitest'
+import { assert, describe, expect, it } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import getExpiry from './getExpiry.js'
+import { getExpiry } from './getExpiry.js'
 
 describe('getExpiry', () => {
   it('should get the expiry for a .eth name with no other args', async () => {
     const result = await getExpiry(publicClient, { name: 'with-profile.eth' })
-    expect(result).toBeTruthy()
-    if (result) {
-      const { expiry, gracePeriod, status } = result
-      expect(expiry.date).toBeInstanceOf(Date)
-      expect(typeof expiry.value).toBe('bigint')
-      expect(gracePeriod).toBe(7776000)
-      expect(status).toBe('active')
-    }
+    assert.isNotNull(result)
+    expect(result.expiry).toBeTypeOf('bigint')
+    expect(result.gracePeriod).toBe(7776000)
+    expect(result.status).toBe('active')
   })
   it('should get the expiry for a wrapped name', async () => {
     const result = await getExpiry(publicClient, {
@@ -20,14 +16,10 @@ describe('getExpiry', () => {
       contract: 'nameWrapper',
     })
 
-    expect(result).toBeTruthy()
-    if (result) {
-      const { expiry, gracePeriod, status } = result
-      expect(expiry.date).toBeInstanceOf(Date)
-      expect(typeof expiry.value).toBe('bigint')
-      expect(gracePeriod).toBe(0)
-      expect(status).toBe('active')
-    }
+    assert.isNotNull(result)
+    expect(result.expiry).toBeTypeOf('bigint')
+    expect(result.gracePeriod).toBe(0)
+    expect(result.status).toBe('active')
   })
   it('should return null for a non .eth name if not wrapped', async () => {
     const result = await getExpiry(publicClient, {
@@ -36,14 +28,19 @@ describe('getExpiry', () => {
     expect(result).toBeNull()
   })
   it('should throw an error for a non .eth name if registrar is specified', async () => {
-    try {
-      await getExpiry(publicClient, {
+    await expect(
+      getExpiry(publicClient, {
         name: 'sub.with-profile.eth',
         contract: 'registrar',
-      })
-      expect(false).toBeTruthy()
-    } catch {
-      expect(true).toBeTruthy()
-    }
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      [UnsupportedNameTypeError: Unsupported name type: eth-subname
+
+      - Supported name types: eth-2ld, tld
+
+      Details: Only the expiry of eth-2ld names can be fetched when using the registrar contract
+
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
+    `)
   })
 })

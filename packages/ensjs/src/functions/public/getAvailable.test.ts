@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import getAvailable from './getAvailable.js'
+import { getAvailable } from './getAvailable.js'
 
 describe('getAvailable', () => {
   it('should return false for a name that is unavailable', async () => {

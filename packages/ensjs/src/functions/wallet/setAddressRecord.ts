@@ -12,7 +12,7 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeSetAddr } from '../../utils/encoders/encodeSetAddr.js'
+import { encodeSetAddr } from '../../utils/coders/encodeSetAddr.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type SetAddressRecordDataParameters = {

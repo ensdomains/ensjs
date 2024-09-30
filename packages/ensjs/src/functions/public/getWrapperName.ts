@@ -1,22 +1,10 @@
-import {
-  BaseError,
-  decodeFunctionResult,
-  encodeFunctionData,
-  getContractError,
-  hexToBytes,
-  type Hex,
-} from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import { hexToBytes, type Client, type Transport } from 'viem'
+import { readContract } from 'viem/actions'
+import { getAction, trim } from 'viem/utils'
+
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperNamesSnippet } from '../../contracts/nameWrapper.js'
-import type {
-  GenericPassthrough,
-  TransactionRequestWithPassthrough,
-} from '../../types.js'
-import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
 import { bytesToPacket } from '../../utils/hexEncodedName.js'
 import { namehash } from '../../utils/normalise.js'
 
@@ -29,52 +17,9 @@ export type GetWrapperNameReturnType = string | null
 
 export type GetWrapperNameErrorType = Error
 
-const encode = (
-  client: ClientWithEns,
-  { name }: GetWrapperNameParameters,
-): TransactionRequestWithPassthrough => {
-  const address = getChainContractAddress({
-    client,
-    contract: 'ensNameWrapper',
-  })
-  const args = [namehash(name)] as const
-  return {
-    to: address,
-    data: encodeFunctionData({
-      abi: nameWrapperNamesSnippet,
-      functionName: 'names',
-      args,
-    }),
-    passthrough: { address, args },
-  }
-}
-
-const decode = async (
-  _client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-): Promise<GetWrapperNameReturnType> => {
-  if (typeof data === 'object')
-    throw getContractError(data, {
-      abi: nameWrapperNamesSnippet,
-      functionName: 'names',
-      args: passthrough.args,
-      address: passthrough.address,
-    }) as BaseError
-  const result = decodeFunctionResult({
-    abi: nameWrapperNamesSnippet,
-    functionName: 'names',
-    data,
-  })
-  if (!result || result === '0x' || BigInt(result) === 0n) return null
-  return bytesToPacket(hexToBytes(result))
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
-
 /**
  * Gets the full name for a name with unknown labels from the NameWrapper.
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetWrapperNameParameters}
  * @returns Full name, or null if name was not found. {@link GetWrapperNameReturnType}
  *
@@ -91,10 +36,22 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getWrapperName(client, { name: '[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth' })
  * // wrapped.eth
  */
-const getWrapperName = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
+export async function getWrapperName<
+  chain extends ChainWithContract<'ensNameWrapper'>,
+>(
+  client: Client<Transport, chain>,
   { name }: GetWrapperNameParameters,
-) => Promise<GetWrapperNameReturnType>) &
-  BatchableFunctionObject
-
-export default getWrapperName
+): Promise<GetWrapperNameReturnType> {
+  const readContractAction = getAction(client, readContract, 'readContract')
+  const result = await readContractAction({
+    address: getChainContractAddress({
+      client,
+      contract: 'ensNameWrapper',
+    }),
+    abi: nameWrapperNamesSnippet,
+    functionName: 'names',
+    args: [namehash(name)],
+  })
+  if (!result || result === '0x' || trim(result) === '0x00') return null
+  return bytesToPacket(hexToBytes(result))
+}

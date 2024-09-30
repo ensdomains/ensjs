@@ -203,12 +203,20 @@ type BaseChainContracts = {
   ensRegistry: ChainContract
 }
 
-export type ChainWithEns<TChain extends Chain = Chain> = Omit<
-  TChain,
+export type ChainWithEns<chain extends Chain = Chain> = Omit<
+  chain,
   'contracts'
 > & {
   contracts: BaseChainContracts & EnsChainContracts
   subgraphs: Subgraphs
+}
+
+export type ChainWithContract<
+  contract extends SupportedContract | keyof BaseChainContracts,
+> = Chain & {
+  contracts: {
+    [key in contract]: ChainContract
+  }
 }
 
 export type ChainWithBaseContracts = Assign<
@@ -218,23 +226,23 @@ export type ChainWithBaseContracts = Assign<
   }
 >
 
-export type CheckedChainWithEns<TChain extends Chain> =
-  TChain['id'] extends SupportedChain
-    ? TChain['contracts'] extends BaseChainContracts
-      ? TChain & {
-          contracts: Prettify<(typeof addresses)[TChain['id']]>
-          subgraphs: (typeof subgraphs)[TChain['id']]
+export type CheckedChainWithEns<chain extends Chain> =
+  chain['id'] extends SupportedChain
+    ? chain['contracts'] extends BaseChainContracts
+      ? chain & {
+          contracts: Prettify<(typeof addresses)[chain['id']]>
+          subgraphs: (typeof subgraphs)[chain['id']]
         }
       : never
     : never
 
 export type ClientWithEns<
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-> = Client<TTransport, TChain>
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
+> = Client<transport, chain>
 
 export type ClientWithAccount<
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-  TAccount extends Account | undefined = Account | undefined,
-> = Client<TTransport, TChain, TAccount>
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
+  account extends Account | undefined = Account | undefined,
+> = Client<transport, chain, account>

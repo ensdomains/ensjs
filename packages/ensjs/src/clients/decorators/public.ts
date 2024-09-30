@@ -1,90 +1,77 @@
 import type { Account, Client, Transport } from 'viem'
 import type { ChainWithEns } from '../../contracts/consts.js'
-import batch, {
-  type BatchParameters,
-  type BatchReturnType,
-} from '../../functions/public/batch.js'
-import getAbiRecord, {
+import {
+  getAbiRecord,
   type GetAbiRecordParameters,
   type GetAbiRecordReturnType,
 } from '../../functions/public/getAbiRecord.js'
-import getAddressRecord, {
+import {
+  getAddressRecord,
   type GetAddressRecordParameters,
   type GetAddressRecordReturnType,
 } from '../../functions/public/getAddressRecord.js'
-import getAvailable, {
+import {
+  getAvailable,
   type GetAvailableParameters,
   type GetAvailableReturnType,
 } from '../../functions/public/getAvailable.js'
-import getContentHashRecord, {
+import {
+  getContentHashRecord,
   type GetContentHashRecordParameters,
   type GetContentHashRecordReturnType,
 } from '../../functions/public/getContentHashRecord.js'
-import getCredentials, {
+import {
+  getCredentials,
   type GetCredentialsParameters,
   type GetCredentialsReturnType,
 } from '../../functions/public/getCredentials.js'
-import getExpiry, {
+import {
+  getExpiry,
   type GetExpiryParameters,
   type GetExpiryReturnType,
 } from '../../functions/public/getExpiry.js'
-import getName, {
+import {
+  getName,
   type GetNameParameters,
   type GetNameReturnType,
 } from '../../functions/public/getName.js'
-import getOwner, {
+import {
+  getOwner,
   type GetOwnerParameters,
   type GetOwnerReturnType,
 } from '../../functions/public/getOwner.js'
-import getPrice, {
+import {
+  getPrice,
   type GetPriceParameters,
   type GetPriceReturnType,
 } from '../../functions/public/getPrice.js'
-import getRecords, {
+import {
+  getRecords,
   type GetRecordsParameters,
   type GetRecordsReturnType,
 } from '../../functions/public/getRecords.js'
-import getResolver, {
+import {
+  getResolver,
   type GetResolverParameters,
   type GetResolverReturnType,
 } from '../../functions/public/getResolver.js'
-import getTextRecord, {
+import {
+  getTextRecord,
   type GetTextRecordParameters,
   type GetTextRecordReturnType,
 } from '../../functions/public/getTextRecord.js'
-import getWrapperData, {
+import {
+  getWrapperData,
   type GetWrapperDataParameters,
   type GetWrapperDataReturnType,
 } from '../../functions/public/getWrapperData.js'
-import getWrapperName, {
+import {
+  getWrapperName,
   type GetWrapperNameParameters,
   type GetWrapperNameReturnType,
 } from '../../functions/public/getWrapperName.js'
 
 export type EnsPublicActions = {
-  /**
-   * Batches multiple read functions into a single call.
-   * @param ...parameters - Array of {@link BatchFunctionResult} objects
-   * @returns Array of return values from each function
-   *
-   * @example
-   * import { createPublicClient, http } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensPublicActions, getTextRecord, getAddressRecord } from '@ensdomains/ensjs'
-   *
-   * const client = createPublicClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: http(),
-   * }).extend(ensPublicActions)
-   * const result = await client.ensBatch(
-   *   getTextRecord.batch({ name: 'ens.eth', key: 'com.twitter' }),
-   *   getAddressRecord.batch({ name: 'ens.eth', coin: 'ETH' }),
-   * )
-   * // ['ensdomains', { id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 }]
-   */
-  ensBatch: <TBatchFunctions extends BatchParameters>(
-    ...parameters: TBatchFunctions
-  ) => Promise<BatchReturnType<TBatchFunctions>>
   /**
    * Gets the ABI record for a name
    * @param parameters - {@link GetAbiRecordParameters}
@@ -237,6 +224,7 @@ export type EnsPublicActions = {
   getName: ({
     address,
     allowMismatch,
+    allowUnnormalised,
     gatewayUrls,
     strict,
   }: GetNameParameters) => Promise<GetNameReturnType>
@@ -305,13 +293,13 @@ export type EnsPublicActions = {
    * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
    */
   getRecords: <
-    const TTexts extends readonly string[] = readonly string[],
-    const TCoins extends readonly (string | number)[] = readonly (
+    const texts extends readonly string[] = readonly string[],
+    const coins extends readonly (string | number)[] = readonly (
       | string
       | number
     )[],
-    const TContentHash extends boolean = true,
-    const TAbi extends boolean = true,
+    const contentHash extends boolean = true,
+    const abi extends boolean = true,
   >({
     name,
     texts,
@@ -320,8 +308,8 @@ export type EnsPublicActions = {
     abi,
     resolver,
     gatewayUrls,
-  }: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>) => Promise<
-    GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
+  }: GetRecordsParameters<texts, coins, contentHash, abi>) => Promise<
+    GetRecordsReturnType<texts, coins, contentHash, abi>
   >
   /**
    * Gets the resolver address for a name.
@@ -422,13 +410,12 @@ export type EnsPublicActions = {
  * }).extend(ensPublicActions)
  */
 export const ensPublicActions = <
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-  TAccount extends Account | undefined = Account | undefined,
+  transport extends Transport = Transport,
+  chain extends ChainWithEns = ChainWithEns,
+  account extends Account | undefined = Account | undefined,
 >(
-  client: Client<TTransport, TChain, TAccount>,
+  client: Client<transport, chain, account>,
 ): EnsPublicActions => ({
-  ensBatch: (...parameters) => batch(client, ...parameters),
   getAbiRecord: (parameters) => getAbiRecord(client, parameters),
   getAddressRecord: (parameters) => getAddressRecord(client, parameters),
   getAvailable: (parameters) => getAvailable(client, parameters),

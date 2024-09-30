@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { assert, describe, expect, it } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import getWrapperData from './getWrapperData.js'
+import { getWrapperData } from './getWrapperData.js'
 
 describe('getWrapperData', () => {
   it('should return null for an unwrapped name', async () => {
@@ -13,11 +13,9 @@ describe('getWrapperData', () => {
     const result = await getWrapperData(publicClient, {
       name: 'test.wrapped-with-subnames.eth',
     })
-    expect(result).toBeTruthy()
-    if (result) {
-      expect(result.fuses.child.CAN_DO_EVERYTHING).toBe(true)
-      expect(result.fuses.value).toBe(0)
-    }
+    assert.isNotNull(result)
+    expect(result.fuses.child.CAN_DO_EVERYTHING).toBe(true)
+    expect(result.fuses.value).toBe(0)
   })
   // it('should return with other correct fuses', async () => {
   //   const tx = await ensInstance.setFuses('wrapped.eth', {
@@ -47,34 +45,14 @@ describe('getWrapperData', () => {
       name: 'wrapped.eth',
     })
     expect(result).toBeTruthy()
-    if (result) {
-      expect(result.expiry!.date).toBeInstanceOf(Date)
-      expect(typeof result.expiry!.value).toBe('bigint')
-      expect(Number.isNaN(result.expiry!.date.getTime())).toBe(false)
-    }
+    assert.isNotNull(result)
+    expect(result.expiry).toBeTypeOf('bigint')
   })
   it('should return correct expiry for large expiry', async () => {
     const result = await getWrapperData(publicClient, {
       name: 'wrapped-big-duration.eth',
     })
-    expect(result).toBeTruthy()
-    if (result) {
-      expect(result.expiry!.date).toBeInstanceOf(Date)
-      expect(typeof result.expiry!.value).toBe('bigint')
-      expect(result.expiry!.date.getFullYear()).toBe(275760)
-      expect(Number.isNaN(result.expiry!.date.getTime())).toBe(false)
-    }
-  })
-  it('should return correct max expiry for expiry larger than maximum for date', async () => {
-    const result = await getWrapperData(publicClient, {
-      name: 'wrapped-max-duration.eth',
-    })
-    expect(result).toBeTruthy()
-    if (result) {
-      expect(result.expiry!.date).toBeInstanceOf(Date)
-      expect(typeof result.expiry!.value).toBe('bigint')
-      expect(result.expiry!.date.getFullYear()).toBe(275760)
-      expect(Number.isNaN(result.expiry!.date.getTime())).toBe(false)
-    }
+    assert.isNotNull(result)
+    expect(result.expiry).toBeTypeOf('bigint')
   })
 })

@@ -1,34 +1,29 @@
-import type { Address, Chain } from 'viem'
-import { getChainContractAddress as _getChainContractAddress } from 'viem/utils'
+import type { Address, Chain, Client, Transport } from 'viem'
+import { getChainContractAddress as viem_getChainContractAddress } from 'viem/utils'
 
-type ExtractContract<TClient> = TClient extends {
-  chain: { contracts: infer C }
-}
-  ? C extends Record<string, { address: string }>
-    ? C
-    : never
+type ExtractContracts<chain> = chain extends { contracts: infer C }
+  ? { [key in keyof C as string extends key ? never : key]: C[key] }
   : never
 
 export const getChainContractAddress = <
-  const TClient extends { chain: Chain },
-  TContracts extends ExtractContract<TClient> = ExtractContract<TClient>,
-  TContractName extends keyof TContracts = keyof TContracts,
-  TContract extends TContracts[TContractName] = TContracts[TContractName],
+  const chain extends Chain,
+  contracts extends ExtractContracts<chain> = ExtractContracts<chain>,
+  contractName extends keyof contracts = keyof contracts,
 >({
   blockNumber,
   client,
   contract,
 }: {
   blockNumber?: bigint
-  client: TClient
-  contract: TContractName
+  client: Client<Transport, chain>
+  contract: contractName
 }) =>
-  _getChainContractAddress({
+  viem_getChainContractAddress({
     blockNumber,
-    chain: client.chain,
+    chain: client.chain as Chain,
     contract: contract as string,
-  }) as TContract extends { address: infer A }
+  }) as contracts[contractName] extends { address: infer A }
     ? A extends Address
       ? A
       : never
-    : Address
+    : never

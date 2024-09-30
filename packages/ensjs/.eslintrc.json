@@ -37,8 +37,13 @@
       {
         "selector": "typeLike",
         "format": ["PascalCase"]
+      },
+      {
+        "selector": "typeParameter",
+        "format": ["camelCase"]
       }
     ],
+    "@typescript-eslint/no-redeclare": "off",
     "no-useless-return": ["off"],
     "radix": ["error", "as-needed"],
     "no-bitwise": ["off"],

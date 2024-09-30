@@ -125,7 +125,11 @@ export const waitForTransaction = async (hash: Hash) =>
       .catch((e) => {
         if (e instanceof TransactionReceiptNotFoundError) {
           setTimeout(() => {
-            waitForTransaction(hash).then(resolveFn)
+            waitForTransaction(hash).then((receipt) => {
+              if (receipt.status !== 'success')
+                reject(new Error('transaction unsuccessful'))
+              resolveFn(receipt)
+            })
           }, 100)
         } else {
           reject(e)

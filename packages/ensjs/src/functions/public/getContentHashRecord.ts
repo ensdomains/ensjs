@@ -1,67 +1,31 @@
-import type { BaseError, Hex } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
-import type {
-  GenericPassthrough,
-  Prettify,
-  TransactionRequestWithPassthrough,
-} from '../../types.js'
+import type { Client, Transport } from 'viem'
+import { encodeFunctionData, getAction } from 'viem/utils'
+
+import type { ChainWithContract } from '../../contracts/consts.js'
+import type { Prettify } from '../../types.js'
 import {
-  generateFunction,
-  type GeneratedFunction,
-} from '../../utils/generateFunction.js'
-import _getContentHash, {
-  type InternalGetContentHashErrorType,
-  type InternalGetContentHashParameters,
-  type InternalGetContentHashReturnType,
-} from './_getContentHash.js'
-import universalWrapper from './universalWrapper.js'
+  decodeContentHashResult,
+  getContentHashParameters,
+  type GetContentHashErrorType,
+  type GetContentHashParameters,
+  type GetContentHashReturnType,
+} from '../../utils/coders/getContentHash.js'
+import { resolveNameData } from './resolveNameData.js'
 
 export type GetContentHashRecordParameters = Prettify<
-  InternalGetContentHashParameters & {
+  GetContentHashParameters & {
     /** Batch gateway URLs to use for resolving CCIP-read requests. */
     gatewayUrls?: string[]
   }
 >
 
-export type GetContentHashRecordReturnType =
-  Prettify<InternalGetContentHashReturnType>
+export type GetContentHashRecordReturnType = GetContentHashReturnType
 
-export type GetContentHashRecordErrorType = InternalGetContentHashErrorType
-
-const encode = (
-  client: ClientWithEns,
-  { name, gatewayUrls }: Omit<GetContentHashRecordParameters, 'strict'>,
-): TransactionRequestWithPassthrough => {
-  const prData = _getContentHash.encode(client, { name })
-  return universalWrapper.encode(client, {
-    name,
-    data: prData.data,
-    gatewayUrls,
-  })
-}
-
-const decode = async (
-  client: ClientWithEns,
-  data: Hex | BaseError,
-  passthrough: GenericPassthrough,
-  {
-    strict,
-    gatewayUrls,
-  }: Pick<GetContentHashRecordParameters, 'strict' | 'gatewayUrls'>,
-): Promise<GetContentHashRecordReturnType> => {
-  const urData = await universalWrapper.decode(client, data, passthrough, {
-    strict,
-    gatewayUrls,
-  })
-  if (!urData) return null
-  return _getContentHash.decode(client, urData.data, { strict })
-}
-
-type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
+export type GetContentHashRecordErrorType = GetContentHashErrorType
 
 /**
  * Gets the content hash record for a name
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetContentHashRecordParameters}
  * @returns Content hash object, or `null` if not found. {@link GetContentHashRecordReturnType}
  *
@@ -78,10 +42,23 @@ type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>
  * const result = await getContentHashRecord(client, { name: 'ens.eth' })
  * // { protocolType: 'ipfs', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' }
  */
-const getContentHashRecord = generateFunction({ encode, decode }) as ((
-  client: ClientWithEns,
-  { name, strict, gatewayUrls }: GetContentHashRecordParameters,
-) => Promise<GetContentHashRecordReturnType>) &
-  BatchableFunctionObject
-
-export default getContentHashRecord
+export async function getContentHashRecord<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
+  { gatewayUrls, name, strict }: GetContentHashRecordParameters,
+): Promise<GetContentHashRecordReturnType> {
+  const resolveNameDataAction = getAction(
+    client,
+    resolveNameData,
+    'resolveNameData',
+  )
+  const result = await resolveNameDataAction({
+    name,
+    data: encodeFunctionData(getContentHashParameters({ name })),
+    gatewayUrls,
+    strict,
+  })
+  if (!result) return null
+  return decodeContentHashResult(result.resolvedData, { strict })
+}

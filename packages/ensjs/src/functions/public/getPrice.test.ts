@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import getPrice from './getPrice.js'
+import { getPrice } from './getPrice.js'
 
 const yearCost = BigInt('8561643835626')
 

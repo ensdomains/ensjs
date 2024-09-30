@@ -3,10 +3,7 @@ import { holesky, mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import { ccipRequest } from '../../utils/ccipRequest.js'
-import batch from './batch.js'
-import getAddressRecord from './getAddressRecord.js'
-import getRecords from './getRecords.js'
-import getText from './getTextRecord.js'
+import { getRecords } from './getRecords.js'
 
 vi.setConfig({
   testTimeout: 30000,
@@ -35,13 +32,13 @@ describe('CCIP', () => {
         {
           "coins": [
             {
-              "id": 0,
-              "name": "btc",
+              "coinType": 0,
+              "symbol": "btc",
               "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
             },
             {
-              "id": 60,
-              "name": "eth",
+              "coinType": 60,
+              "symbol": "eth",
               "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
             },
           ],
@@ -85,13 +82,13 @@ describe('CCIP', () => {
       {
         "coins": [
           {
-            "id": 0,
-            "name": "btc",
+            "coinType": 0,
+            "symbol": "btc",
             "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
           },
           {
-            "id": 60,
-            "name": "eth",
+            "coinType": 60,
+            "symbol": "eth",
             "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
           },
         ],
@@ -124,8 +121,8 @@ describe('CCIP', () => {
         {
           "coins": [
             {
-              "id": 60,
-              "name": "eth",
+              "coinType": 60,
+              "symbol": "eth",
               "value": "0x3A8C8D374AD15fE43E6239F6C694bff9Ee4CBbbf",
             },
           ],
@@ -133,48 +130,6 @@ describe('CCIP', () => {
           "resolverAddress": "0x244fE34a508E16E12A221332f63E3a741C759D76",
           "texts": [],
         }
-      `)
-    })
-  })
-  describe('batch', () => {
-    it('allows batch ccip', async () => {
-      const result = await batch(
-        holeskyPublicClient,
-        getAddressRecord.batch({ name: 'offchainexample.eth' }),
-        getAddressRecord.batch({ name: 'offchainexample.eth', coin: 'btc' }),
-        getText.batch({ name: 'offchainexample.eth', key: 'email' }),
-      )
-      expect(result).toMatchInlineSnapshot(`
-      [
-        {
-          "id": 60,
-          "name": "eth",
-          "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-        },
-        {
-          "id": 0,
-          "name": "btc",
-          "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-        },
-        "vitalik@ethereum.org",
-      ]
-      `)
-    })
-    it('allows nested batch ccip', async () => {
-      const result = await batch(
-        holeskyPublicClient,
-        batch.batch(getAddressRecord.batch({ name: 'offchainexample.eth' })),
-      )
-      expect(result).toMatchInlineSnapshot(`
-        [
-          [
-            {
-              "id": 60,
-              "name": "eth",
-              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            },
-          ],
-        ]
       `)
     })
   })
