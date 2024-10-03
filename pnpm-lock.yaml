@@ -82,45 +82,6 @@ importers:
         specifier: ^2.21.9
         version: 2.21.12(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@6.0.3)
 
-  packages/ens-test-env:
-    dependencies:
-      '@ethersproject/wallet':
-        specifier: ^5.6.0
-        version: 5.7.0
-      ansi-colors:
-        specifier: ^4.1.1
-        version: 4.1.3
-      cli-progress:
-        specifier: ^3.10.0
-        version: 3.12.0
-      commander:
-        specifier: ^9.3.0
-        version: 9.5.0
-      concurrently:
-        specifier: ^7.1.0
-        version: 7.6.0
-      docker-compose:
-        specifier: ^0.24.7
-        version: 0.24.8
-      dotenv:
-        specifier: ^16.0.1
-        version: 16.4.5
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
-      lz4:
-        specifier: ^0.6.5
-        version: 0.6.5
-      progress-stream:
-        specifier: ^2.0.0
-        version: 2.0.0
-      tar-fs:
-        specifier: ^2.1.1
-        version: 2.1.1
-      wait-on:
-        specifier: ^6.0.1
-        version: 6.0.1
-
   packages/ensjs:
     dependencies:
       '@adraffy/ens-normalize':
@@ -158,8 +119,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@ensdomains/ens-test-env':
-        specifier: workspace:*
-        version: link:../ens-test-env
+        specifier: ^0.5.0-beta.2
+        version: 0.5.0-beta.2
       '@nomiclabs/hardhat-ethers':
         specifier: npm:hardhat-deploy-ethers@0.3.0-beta.13
         version: hardhat-deploy-ethers@0.3.0-beta.13(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(hardhat@2.16.1(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.5)(@types/node@20.14.14)(typescript@5.3.2))(typescript@5.3.2)(utf-8-validate@5.0.10))
@@ -261,8 +222,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@ensdomains/ens-test-env':
-        specifier: workspace:*
-        version: link:../ens-test-env
+        specifier: ^0.5.0-beta.2
+        version: 0.5.0-beta.2
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.7.5)(@types/node@20.14.14)(typescript@5.6.2)
@@ -1096,6 +1057,11 @@ packages:
 
   '@ensdomains/ens-contracts@1.0.0':
     resolution: {integrity: sha512-NB5fig+TuaAkdW3uVshO/vuI/BNWus8MkpdDCzx6S797j7gRrDbKfcVHHDH5rBmj8Yp0/jCR1LU4DHaU5oxO0Q==}
+
+  '@ensdomains/ens-test-env@0.5.0-beta.2':
+    resolution: {integrity: sha512-+9LdqGSrwiqjs8hcyKF0K0/eF9VMblJEAjigjHeeQTKNAMyP6KD8jau7VbpvvXEz77D+cQX6z6unDPoQK0l5ng==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@ensdomains/ens@0.4.5':
     resolution: {integrity: sha512-JSvpj1iNMFjK6K+uVl4unqMoa9rf5jopb8cya5UGBWz23Nw8hSNT7efgUx4BTlAPAgpNlEioUfeTyQ6J9ZvTVw==}
@@ -8968,6 +8934,23 @@ snapshots:
       '@openzeppelin/contracts': 4.9.6
       dns-packet: 5.6.1
 
+  '@ensdomains/ens-test-env@0.5.0-beta.2':
+    dependencies:
+      '@ethersproject/wallet': 5.7.0
+      ansi-colors: 4.1.3
+      cli-progress: 3.12.0
+      commander: 9.5.0
+      concurrently: 7.6.0
+      docker-compose: 0.24.8
+      dotenv: 16.4.5
+      js-yaml: 4.1.0
+      lz4: 0.6.5
+      progress-stream: 2.0.0
+      tar-fs: 2.1.1
+      wait-on: 6.0.1
+    transitivePeerDependencies:
+      - debug
+
   '@ensdomains/ens@0.4.5':
     dependencies:
       bluebird: 3.7.2
@@ -10460,7 +10443,7 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.2.0
       '@noble/secp256k1': 1.7.1
-      '@scure/base': 1.1.7
+      '@scure/base': 1.1.9
 
   '@scure/bip32@1.3.2':
     dependencies:
@@ -10477,7 +10460,7 @@ snapshots:
   '@scure/bip39@1.1.1':
     dependencies:
       '@noble/hashes': 1.2.0
-      '@scure/base': 1.1.7
+      '@scure/base': 1.1.9
 
   '@scure/bip39@1.2.1':
     dependencies:
@@ -13186,7 +13169,7 @@ snapshots:
       '@types/bn.js': 4.11.6
       bn.js: 4.12.0
       create-hash: 1.2.0
-      elliptic: 6.5.6
+      elliptic: 6.5.7
       ethereum-cryptography: 0.1.3
       ethjs-util: 0.1.6
       rlp: 2.2.7
@@ -15191,7 +15174,7 @@ snapshots:
 
   number-to-bn@1.7.0:
     dependencies:
-      bn.js: 4.11.6
+      bn.js: 5.2.1
       strip-hex-prefix: 1.0.0
 
   oauth-sign@0.9.0: {}
