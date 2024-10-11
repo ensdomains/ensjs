@@ -150,6 +150,9 @@ importers:
       pako:
         specifier: ^2.1.0
         version: 2.1.0
+      ts-pattern:
+        specifier: ^5.4.0
+        version: 5.4.0
     devDependencies:
       '@ensdomains/buffer':
         specifier: ^0.0.13
@@ -4601,6 +4604,9 @@ packages:
       '@swc/wasm':
         optional: true
 
+  ts-pattern@5.4.0:
+    resolution: {integrity: sha512-hgfOMfjlrARCnYtGD/xEAkFHDXuSyuqjzFSltyQCbN689uNvoQL20TVN2XFcLMjfNuwSsQGU+xtH6MrjIwhwUg==}
+
   tsconfig-paths@3.14.1:
     resolution: {integrity: sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==}
 
@@ -6936,7 +6942,7 @@ snapshots:
 
   axios@0.25.0:
     dependencies:
-      follow-redirects: 1.15.1
+      follow-redirects: 1.15.1(debug@4.3.4)
     transitivePeerDependencies:
       - debug
 
@@ -8406,8 +8412,6 @@ snapshots:
   fmix@0.1.0:
     dependencies:
       imul: 1.0.1
-
-  follow-redirects@1.15.1: {}
 
   follow-redirects@1.15.1(debug@4.3.4):
     optionalDependencies:
@@ -10660,6 +10664,8 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.3.68
+
+  ts-pattern@5.4.0: {}
 
   tsconfig-paths@3.14.1:
     dependencies:

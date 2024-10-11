@@ -11,6 +11,7 @@ const {
 } = require('../utils/legacyNameGenerator.cjs')
 const { makeNonceManager } = require('../utils/nonceManager.cjs')
 const { encodeFuses } = require('../dist/cjs/utils/fuses')
+const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
 
 const DURATION = 31556000
 
@@ -33,51 +34,16 @@ const DURATION = 31556000
  * }[]}
  */
 
-const sameExpiryNames = Array.from({ length: 21 }, (_, index) => ({
-  label: `same-expiry-legacy-name-${index}`,
-  type: 'legacy',
-  namedOwner: 'owner4',
-  reverseRecord: true,
-  duration: DURATION / 4,
-}))
-
-const expiryNames = Array.from({ length: 42 }, (_, index) => ({
-  label:
-    index < 21 ? `expiry-subname-${index}` : `no-expiry-subname-${index - 21}`,
-  namedOwner: 'owner4',
-  type: 'wrapped',
-  expiry: index < 21 ? Math.floor(Date.now() / 1000) + 7200 * (index + 1) : 0,
-  subnameFuses: encodeFuses({
-    input: {
-      parent: {
-        named: ['PARENT_CANNOT_CONTROL'],
-      },
-      child: {
-        named: ['CANNOT_UNWRAP'],
-      },
-    },
-  }),
-}))
-
 const names = [
-  ...sameExpiryNames,
-  // ...expiryNames,
-  // {
-  //   label: 'concurrent-legacy-name',
-  //   type: 'legacy',
-  //   namedOwner: 'owner4',
-  //   reverseRecord: true,
-  //   duration: 3600,
-  // },
-  // {
-  //   label: 'concurrent-legacy-name-2',
-  //   type: 'legacy',
-  //   namedOwner: 'owner4',
-  //   reverseRecord: true,
-  //   duration: 3600,
-  // },
-  {
-    label: 'concurrent-wrapped-name',
+  ...Array.from({ length: 2 }, (_, index) => ({
+    label: `concurrent-legacy-name-${index}`,
+    type: 'legacy',
+    namedOwner: 'owner4',
+    reverseRecord: true,
+    duration: DURATION,
+  })),
+  ...Array.from({ length: 2 }, (_, index) => ({
+    label: `concurrent-wrapped-name-${index}`,
     type: 'wrapped',
     namedOwner: 'owner4',
     fuses: encodeFuses({
@@ -87,10 +53,26 @@ const names = [
         },
       },
     }),
-    reverseRecord: true,
-    duration: DURATION * 3,
-    subnames: [...expiryNames],
-  },
+    duration: DURATION,
+    subnames: [
+      {
+        label: `xyz`,
+        namedOwner: 'owner4',
+        type: 'wrapped',
+        expiry: MAX_DATE_INT,
+        fuses: encodeFuses({
+          input: {
+            parent: {
+              named: ['PARENT_CANNOT_CONTROL'],
+            },
+            child: {
+              named: ['CANNOT_UNWRAP'],
+            },
+          },
+        }),
+      },
+    ],
+  })),
 ]
 
 /**
@@ -116,14 +98,9 @@ const func = async function (hre) {
         data = [],
         reverseRecord = false,
         fuses = 0,
-        subnames,
         duration = 31536000,
       }) => {
         console.log(`Committing commitment for ${label}.eth...`)
-        // console.log(
-        //   `Committing commitment for ${label}.eth (tx: ${commitTx.hash})...`,
-        // )
-        let commitTx
         if (type === 'legacy')
           return legacyNameGenerator.commit({
             label,
@@ -143,14 +120,12 @@ const func = async function (hre) {
   )
 
   network.provider.send('evm_mine')
-  console.log('committing...')
   await Promise.all(
     commitTxs.map(async (tx) => {
       return tx.wait()
     }),
   )
 
-  console.log('committed')
   const oldTimestamp = (await ethers.provider.getBlock('latest')).timestamp
   await network.provider.send('evm_setNextBlockTimestamp', [oldTimestamp + 60])
   await network.provider.send('evm_increaseTime', [300])
@@ -170,7 +145,6 @@ const func = async function (hre) {
         subnames,
         duration = 31536000,
       }) => {
-        let registerTx
         if (type === 'legacy')
           return legacyNameGenerator.register({
             label,
@@ -204,11 +178,7 @@ const func = async function (hre) {
     label,
     namedOwner,
     type,
-    data = [],
-    reverseRecord = false,
-    fuses = 0,
     subnames,
-    duration = 31536000,
   } of names) {
     if (!subnames) continue
     console.log(`Setting subnames for ${label}.eth...`)
@@ -240,16 +210,7 @@ const func = async function (hre) {
     }
   }
 
-  console.log(
-    'status after registration',
-    await network.provider.send('txpool_content'),
-  )
   await network.provider.send('evm_mine')
-  console.log(
-    'status after registration',
-    await network.provider.send('txpool_content'),
-  )
-
   return true
 }
 

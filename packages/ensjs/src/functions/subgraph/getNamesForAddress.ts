@@ -7,9 +7,13 @@ import {
   InvalidFilterKeyError,
   InvalidOrderByError,
 } from '../../errors/subgraph.js'
-import { EMPTY_ADDRESS, GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'
-import type { DomainFilter } from './filters.js'
+import {
+  getExpiryDateOrderFilter,
+  type DomainFilter,
+  getCreatedAtOrderFilter,
+} from './filters.js'
 import {
   domainDetailsFragment,
   registrationDetailsFragment,
@@ -94,65 +98,10 @@ const getOrderByFilter = ({
   const operator = orderDirection === 'asc' ? 'gt' : 'lt'
   switch (orderBy) {
     case 'expiryDate': {
-      let lastExpiryDate = lastDomain.expiryDate?.value
-        ? lastDomain.expiryDate.value / 1000
-        : 0
-      if (lastDomain.parentName === 'eth') {
-        lastExpiryDate += GRACE_PERIOD_SECONDS
-      }
-      if (orderDirection === 'asc' && lastExpiryDate === 0) {
-        return {
-          and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
-        }
-      }
-      if (
-        orderDirection === 'asc' &&
-        lastExpiryDate !== 0 &&
-        previousPage.length === 20
-      ) {
-        return {
-          or: [
-            {
-              and: [
-                { [`expiryDate_${operator}e`]: `${lastExpiryDate}` },
-                { [`id_${operator}`]: lastDomain.id },
-              ],
-            },
-            {
-              [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-            },
-            { expiryDate: null },
-          ],
-        }
-      }
-      if (orderDirection === 'desc' && lastExpiryDate === 0) {
-        return {
-          and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
-        }
-      }
-      if (orderDirection === 'desc' && lastExpiryDate !== 0) {
-        return {
-          or: [
-            {
-              and: [
-                { [`expiryDate_${operator}e`]: `${lastExpiryDate}` },
-                { [`id_${operator}`]: lastDomain.id },
-              ],
-            },
-            {
-              [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-            },
-          ],
-        }
-      }
-      return {
-        or: [
-          {
-            [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-          },
-          { expiryDate: null },
-        ],
-      }
+      return getExpiryDateOrderFilter({
+        orderDirection,
+        lastDomain,
+      })
     }
     case 'name': {
       return {
@@ -165,6 +114,7 @@ const getOrderByFilter = ({
       }
     }
     case 'createdAt': {
+      return getCreatedAtOrderFilter({ lastDomain, orderDirection })
       return {
         [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
       }

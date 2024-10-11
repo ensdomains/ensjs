@@ -359,72 +359,23 @@ const names = [
     namedOwner: 'owner2',
     namedAddr: 'owner2',
   })),
+  ...Array.from({ length: 2}, (_, i) => ({
+    label: `nonconcurrent-legacy-name-${i}`,
+    namedOwner: 'owner4',
+    namedAddr: 'owner4',
+    duration: 31536000 / 2,
+    subnames: [
+      {
+        label: `test`,
+        namedOwner: 'owner4',
+      },
+      {
+        label: `xyz`,
+        namedOwner: 'owner4',
+      }
+    ]
+  }))
 ]
-
- const makeNameGenerator2 = async (hre) => {
-  const { getNamedAccounts, network } = hre
-  const allNamedAccts = await getNamedAccounts()
-  const controller = await ethers.getContract('LegacyETHRegistrarController')
-  const publicResolver = await ethers.getContract('LegacyPublicResolver')
-  const registry = await ethers.getContract('ENSRegistry')
-
-  return {
-    commit: async ({ label, namedOwner, namedAddr }) => {
-      const secret =
-        '0x0000000000000000000000000000000000000000000000000000000000000000'
-      const registrant = allNamedAccts[namedOwner]
-      const resolver = publicResolver.address
-      const addr = allNamedAccts[namedAddr]
-
-      const commitment = await controller.makeCommitmentWithConfig(
-        label,
-        registrant,
-        secret,
-        resolver,
-        addr,
-      )
-
-      const _controller = controller.connect(await ethers.getSigner(registrant))
-      return _controller.commit(commitment)
-    },
-    register: async ({ label, namedOwner, namedAddr, duration = 31536000 }) => {
-      const secret =
-        '0x0000000000000000000000000000000000000000000000000000000000000000'
-      const registrant = allNamedAccts[namedOwner]
-      const resolver = publicResolver.address
-      const addr = allNamedAccts[namedAddr]
-      const price = await controller.rentPrice(label, duration)
-      const _controller = controller.connect(await ethers.getSigner(registrant))
-      return _controller.registerWithConfig(
-        label,
-        registrant,
-        duration,
-        secret,
-        resolver,
-        addr,
-        {
-          value: price,
-        },
-      )
-    },
-    subname: async ({ label, namedOwner, subnameLabel, namedSubnameOwner }) => {
-      console.log(`Setting subnames for ${label}.eth...`)
-      const resolver = publicResolver.address
-      const registrant = allNamedAccts[namedOwner]
-      const owner = allNamedAccts[namedSubnameOwner]
-      const _registry = registry.connect(await ethers.getSigner(registrant))
-      return _registry.setSubnodeRecord(
-        namehash(`${label}.eth`),
-        labelhash(subnameLabel),
-        owner,
-        resolver,
-        '0',
-      )
-    },
-    setSubnameRecords: async () => {},
-    configure: async () => {},
-  }
-}
 
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
@@ -433,7 +384,6 @@ const func = async function (hre) {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
 
-  const controller = await ethers.getContract('LegacyETHRegistrarController')
   const publicResolver = await ethers.getContract('LegacyPublicResolver')
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
@@ -448,12 +398,7 @@ const func = async function (hre) {
     subnames,
     duration = 31536000,
   } of names) {
-    const secret =
-      '0x0000000000000000000000000000000000000000000000000000000000000000'
     const registrant = allNamedAccts[namedOwner]
-    const resolver = publicResolver.address
-    const addr = allNamedAccts[namedAddr]
-
     const commitTx = await nameGenerator.commit({
       label,
       namedOwner,

@@ -3,7 +3,6 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { BigNumber } = require('ethers')
 const { ethers } = require('hardhat')
-const { namehash } = require('viem/ens')
 const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
 const { encodeFuses } = require('../dist/cjs/utils/fuses')
 const { makeNameGenerator } = require('../utils/wrappedNameGenerator.cjs')
@@ -99,6 +98,36 @@ const names = [
       },
     ],
   },
+  ...Array.from({ length: 2}, (_, index) => ({
+    label: `nonconcurrent-wrapped-name-${index}`,
+    namedOwner: 'owner4',
+    fuses: encodeFuses({
+      input: {
+        child: {
+          named: ['CANNOT_UNWRAP'],
+        },
+      },
+    }),
+    duration: 31556000 * 2,
+    subnames: [
+      {
+        label: `xyz`,
+        namedOwner: 'owner4',
+        expiry: MAX_DATE_INT,
+        fuses: encodeFuses({
+          input: {
+            parent: {
+              named: ['PARENT_CANNOT_CONTROL'],
+            },
+            child: {
+              named: ['CANNOT_UNWRAP'],
+            },
+          },
+        }),
+      },
+    ],
+
+  }))
 ]
 
 /**
@@ -110,7 +139,6 @@ const func = async function (hre) {
 
   const nameGenerator = await makeNameGenerator(hre)
 
-  const controller = await ethers.getContract('ETHRegistrarController')
   const publicResolver = await ethers.getContract('PublicResolver')
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
@@ -124,11 +152,6 @@ const func = async function (hre) {
     subnames,
     duration = 31536000,
   } of names) {
-    const secret =
-      '0x0000000000000000000000000000000000000000000000000000000000000000'
-    const owner = allNamedAccts[namedOwner]
-    const resolver = publicResolver.address
-
     const commitTx = await nameGenerator.commit({
       label,
       namedOwner,

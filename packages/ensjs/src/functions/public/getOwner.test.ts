@@ -84,17 +84,5 @@ describe('getOwner', () => {
         }
       `)
     })
-
-    it('should return correct ownership level and values for an expired wrapped name', async () => {
-      const result = await getOwner(publicClient, {
-        name: 'concurrent-wrapped-name.eth',
-      })
-      expect(result).toMatchInlineSnapshot(`
-        {
-          "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-          "ownershipLevel": "nameWrapper",
-        }
-      `)
-    })
   })
 })
