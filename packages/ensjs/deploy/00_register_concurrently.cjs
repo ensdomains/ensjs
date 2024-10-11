@@ -142,7 +142,6 @@ const func = async function (hre) {
         data = [],
         reverseRecord = false,
         fuses = 0,
-        subnames,
         duration = 31536000,
       }) => {
         if (type === 'legacy')
