@@ -60,6 +60,7 @@ const func = async function (hre) {
 
 func.id = 'delete-names'
 func.tags = ['delete-names']
+func.dependencies = ['register-unwrapped-names']
 func.runAtTheEnd = true
 
 module.exports = func
