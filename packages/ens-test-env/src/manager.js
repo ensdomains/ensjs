@@ -336,7 +336,7 @@ export const main = async (_config, _options, justKill) => {
           'http-get://localhost:8000/subgraphs/name/graphprotocol/ens',
         ],
       })
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 5000))
     }
   }
 
