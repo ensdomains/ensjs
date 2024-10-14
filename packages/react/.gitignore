@@ -1,0 +1,7 @@
+# hardhat
+/cache
+/artifacts
+/coverage
+LICENSE
+
+.env.local

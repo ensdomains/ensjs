@@ -1,0 +1,57 @@
+{
+  "name": "@ensdomains/ensjs-react",
+  "version": "0.0.3",
+  "description": "ENS javascript library for contract interaction",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "!src/**/*.test.ts",
+    "!src/test"
+  ],
+  "repository": "git@github.com:ensdomains/ensjs.git",
+  "author": "Lucemans <luc@lucemans.nl>",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "lint": "eslint ./src/* --no-error-on-unmatched-pattern",
+    "build:cjs": "tsc --project tsconfig.build.json --module commonjs --outDir ./dist/cjs --removeComments --verbatimModuleSyntax false && echo > ./dist/cjs/package.json '{\"type\":\"commonjs\"}'",
+    "build:esm": "tsc --project tsconfig.build.json --module es2022 --outDir ./dist/esm && echo > ./dist/esm/package.json '{\"type\":\"module\",\"sideEffects\":false}'",
+    "build:types": "tsc --project tsconfig.build.json --module esnext --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
+    "build": "pnpm run clean && pnpm run build:cjs && pnpm run build:esm && pnpm run build:types"
+  },
+  "dependencies": {
+    "@ensdomains/ensjs": "workspace:*"
+  },
+  "devDependencies": {
+    "@ensdomains/buffer": "^0.0.13",
+    "@ensdomains/ens-contracts": "1.0.0",
+    "@ensdomains/ens-test-env": "workspace:*",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.7.0",
+    "typescript": "5.6.2",
+    "viem": "2.9.2",
+    "wagmi": "^2"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.54",
+    "viem": "^2.9.2",
+    "wagmi": "^2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

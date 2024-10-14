@@ -1,55 +1,61 @@
-name: Publish
+name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FORCE_COLOR: true
 
 jobs:
-  publish:
-    name: Publish
-    permissions:
-      id-token: write
+  changelog:
+    name: PR or Release
+    if: ${{ github.repository_owner == 'ensdomains' }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18]
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.release.target_commitish }}
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.4.0
+      - uses: actions/checkout@v4
+      - name: Enable corepack
+        run: corepack enable pnpm
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install
 
-      - name: Set up git
-        run: |
-          git config --local user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git config --local user.name 'github-actions[bot]'
+      - name: Build Packages
+        run: pnpm -r build
 
-      - name: Bump version to ${{ github.event.release.tag_name }}
-        run: |
-          pnpm -F @ensdomains/ensjs ver ${{ github.event.release.tag_name }}
-          git add .
-          git commit -m "${{ github.event.release.tag_name }}"
-
-      - name: Publish
+      - name: Fix npmrc
+        run: npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # Note: pnpm install after versioning is necessary to refresh lockfile
+          version: pnpm chgset:version
+          publish: pnpm release
+          commit: "chore: release"
+          title: "[ci] release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Needs access to publish to npm
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
-        run: |
-          pnpm config set //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}
-          pnpm -F @ensdomains/ensjs publish
-
-      - name: Push changes
-        run: git push
-        env:
-          github-token: ${{ secrets.GITHUB_TOKEN }}

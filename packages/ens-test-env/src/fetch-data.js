@@ -9,9 +9,7 @@ import lz4 from 'lz4'
 import progress from 'progress-stream'
 import { pipeline } from 'stream'
 import tar from 'tar-fs'
-import { promisify } from 'util'
-
-const __dirname = process.env.INIT_CWD
+import { promisify } from 'node:util'
 
 const createProgressBar = (name, hasSpeed) =>
   new cliProgress.SingleBar({

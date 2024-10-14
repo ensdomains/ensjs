@@ -3,9 +3,8 @@
 /* eslint-disable */
 
 import { Command, Option } from 'commander'
-import path from 'path'
-import { emitKeypressEvents } from 'readline'
-import { URL as URLClass } from 'url'
+import path from 'node:path'
+import { emitKeypressEvents } from 'node:readline'
 import { main as fetchData } from './fetch-data.js'
 import { main as manager } from './manager.js'
 import { main as subgraph } from './subgraph.js'
@@ -13,7 +12,7 @@ import { main as subgraph } from './subgraph.js'
 let config
 const program = new Command()
 
-const __dirname = new URLClass('.', import.meta.url).pathname
+const __dirname = new URL('.', import.meta.url).pathname
 const cwd = process.cwd()
 
 program

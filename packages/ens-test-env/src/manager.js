@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { spawn } from 'child_process'
+import { spawn } from 'node:child_process'
 import concurrently from 'concurrently'
 import composev1 from 'docker-compose'
 import composev2 from 'docker-compose/dist/v2.js'
-import { Transform } from 'stream'
+import { Transform } from 'node:stream'
 import waitOn from 'wait-on'
 import { main as fetchData } from './fetch-data.js'
 

@@ -219,6 +219,14 @@ const names = [
     },
   },
   {
+    label: 'with-empty-addr',
+    namedOwner: 'owner2',
+    namedAddr: 'owner2',
+    records: {
+      addr: [{ key: 61, value: '0x' }],
+    },
+  },
+  {
     label: 'with-contenthash',
     namedOwner: 'owner',
     namedAddr: 'owner',
