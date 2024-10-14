@@ -29,6 +29,9 @@ const func = async function (hre) {
     const label = labelhash(labels.shift())
     const node = namehash(labels.join('.'))
 
+    console.log("--------------- DELETE NAME ---------------")
+
+
     const tx = await registry.setSubnodeRecord(
       node,
       label,
