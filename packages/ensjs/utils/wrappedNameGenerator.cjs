@@ -1,18 +1,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 const { BigNumber } = require('ethers')
-const { parseUnits } = require('ethers/lib/utils')
 const { namehash } = require('viem/ens')
 
 const makeNameGenerator = async (hre, optionalNonceManager) => {
-  const { getNamedAccounts, network } = hre
+  const { getNamedAccounts } = hre
   const allNamedAccts = await getNamedAccounts()
   const controller = await ethers.getContract('ETHRegistrarController')
   const publicResolver = await ethers.getContract('PublicResolver')
   const nameWrapper = await ethers.getContract('NameWrapper')
-  const nonceManager = optionalNonceManager
-    ? optionalNonceManager
-    : { getNonce: () => undefined }
+  const nonceManager = optionalNonceManager ?? { getNonce: () => undefined }
 
   return {
     commit: async ({

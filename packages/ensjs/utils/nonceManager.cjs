@@ -12,10 +12,9 @@
   
   return {
     getNonce: (name) => {
-      const test = nonceMap[name]
+      const nonce = nonceMap[name]
       nonceMap[name]++
-      return test
-      return numberToHex(nonceMap[name])
+      return nonce
     }
   }
 

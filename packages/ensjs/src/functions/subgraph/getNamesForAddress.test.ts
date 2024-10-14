@@ -34,7 +34,7 @@ describe('check that concurrent names all have the same expiry date', () => {
     const owner = ownerData?.registrant ?? ownerData?.owner
     expect(owner).toEqual(user4)
     const expiryData = await getExpiry(publicClient, { name })
-    const expiryValue = expiryData?.expiry?.value || 0n
+    const expiryValue = expiryData?.expiry?.value ?? 0n
     if (!expiry) expiry = expiryValue
 
     const wrapperData = await getWrapperData(publicClient, { name })

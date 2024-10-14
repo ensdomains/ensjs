@@ -115,9 +115,6 @@ const getOrderByFilter = ({
     }
     case 'createdAt': {
       return getCreatedAtOrderFilter({ lastDomain, orderDirection })
-      return {
-        [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
-      }
     }
     default:
       throw new InvalidOrderByError({

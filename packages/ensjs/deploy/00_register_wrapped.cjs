@@ -134,12 +134,8 @@ const names = [
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
 const func = async function (hre) {
-  const { getNamedAccounts, network } = hre
-  const allNamedAccts = await getNamedAccounts()
-
+  const { network } = hre
   const nameGenerator = await makeNameGenerator(hre)
-
-  const publicResolver = await ethers.getContract('PublicResolver')
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
 

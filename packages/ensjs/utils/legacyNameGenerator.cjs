@@ -1,13 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { namehash, labelhash } = require('viem')
 
-const makeNameGenerator = async (hre, optionalNonceManager ) => {
-  const { getNamedAccounts, network } = hre
+const makeNameGenerator = async (hre, optionalNonceManager) => {
+  const { getNamedAccounts } = hre
   const allNamedAccts = await getNamedAccounts()
   const controller = await ethers.getContract('LegacyETHRegistrarController')
   const publicResolver = await ethers.getContract('LegacyPublicResolver')
   const registry = await ethers.getContract('ENSRegistry')
-  const nonceManager = optionalNonceManager ? optionalNonceManager : { getNonce: () => undefined}
+  const nonceManager = optionalNonceManager ?? { getNonce: () => undefined}
 
   return {
     commit: async ({ label, namedOwner, namedAddr }) => {
