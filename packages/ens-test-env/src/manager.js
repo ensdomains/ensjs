@@ -252,6 +252,9 @@ export const main = async (_config, _options, justKill) => {
 
     await awaitCommand('deploy', config.deployCommand)
 
+    // wait for anvil deploy to finish
+    await new Promise((resolve) => setTimeout(resolve, 5000))
+
     // remove block timestamp interval after deploy
     await rpcFetch('anvil_removeBlockTimestampInterval', [])
 
@@ -336,7 +339,6 @@ export const main = async (_config, _options, justKill) => {
           'http-get://localhost:8000/subgraphs/name/graphprotocol/ens',
         ],
       })
-      await new Promise((resolve) => setTimeout(resolve, 5000))
     }
   }
 
