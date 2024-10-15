@@ -157,6 +157,7 @@ const awaitCommand = async (name, command) => {
     deploy.stdout.pipe(outPrepender).pipe(process.stdout)
   }
   deploy.stderr.pipe(errPrepender).pipe(process.stderr)
+  deploy.stderr.on('data', cleanup.bind(null, { exit: true }))
   return new Promise((resolve) => deploy.on('exit', () => resolve()))
 }
 

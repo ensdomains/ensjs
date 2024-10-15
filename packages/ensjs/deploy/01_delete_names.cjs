@@ -29,9 +29,6 @@ const func = async function (hre) {
     const label = labelhash(labels.shift())
     const node = namehash(labels.join('.'))
 
-    console.log("--------------- DELETE NAME ---------------")
-
-
     const tx = await registry.setSubnodeRecord(
       node,
       label,
@@ -57,6 +54,13 @@ const func = async function (hre) {
 
   await deleteName(name1)
   await deleteName(name2)
+
+  for (const name of [name1, name2]) {
+    const owner = await registry.owner(namehash(name))
+    if (owner !== EMPTY_ADDRESS) {
+      throw new Error(`Failed to delete name ${name}`)
+    }
+  }
 
   return true
 }
