@@ -254,7 +254,7 @@ export const main = async (_config, _options, justKill) => {
     await awaitCommand('deploy', config.deployCommand)
 
     // wait for anvil deploy to finish
-    await new Promise((resolve) => setTimeout(resolve, 5000))
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     // remove block timestamp interval after deploy
     await rpcFetch('anvil_removeBlockTimestampInterval', [])
@@ -283,7 +283,14 @@ export const main = async (_config, _options, justKill) => {
 
   if (options.graph) {
     try {
-      await compose.upAll(opts)
+      console.log('Starting postgres...')
+      await compose.upOne('postgres', opts)
+      console.log('Starting ipfs...')
+      await compose.upOne('ipfs', opts)
+      console.log('Starting graph-node...')
+      await compose.upOne('graph-node', opts)
+      console.log('Starting metadata...')
+      // await compose.upOne('metadata', opts)
     } catch {}
 
     await waitOn({ resources: ['http://localhost:8040'] })
@@ -372,13 +379,19 @@ export const main = async (_config, _options, justKill) => {
           })
           .catch(() => 0)
       do {
+        const index = await getCurrentIndex()
+        console.log('current index:', index)
         indexArray.push(await getCurrentIndex())
         if (indexArray.length > 10) indexArray.shift()
-        await new Promise((resolve) => setTimeout(resolve, 100))
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        if (indexArray.every((i) => i === indexArray[0]) && indexArray.length === 10) {
+          return cleanup(undefined, 0)
+        }
       } while (
-        !indexArray.every((i) => i === indexArray[0]) ||
-        indexArray.length < 2 ||
-        indexArray[0] === 0
+        indexArray[indexArray.length - 1] < 326
+        // !indexArray.every((i) => i === indexArray[0]) ||
+        // indexArray.length < 2 ||
+        // indexArray[0] === 0
       )
     }
     /**
