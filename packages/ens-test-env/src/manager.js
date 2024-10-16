@@ -283,11 +283,11 @@ export const main = async (_config, _options, justKill) => {
 
   if (options.graph) {
     try {
-      console.log('Starting postgres...')
-      await compose.upOne('postgres', opts)
-      console.log('Starting ipfs...')
-      await compose.upOne('ipfs', opts)
-      console.log('Starting graph-node...')
+      // console.log('Starting postgres...')
+      // await compose.upOne('postgres', opts)
+      // console.log('Starting ipfs...')
+      // await compose.upOne('ipfs', opts)
+      // console.log('Starting graph-node...')
       await compose.upOne('graph-node', opts)
       console.log('Starting metadata...')
       // await compose.upOne('metadata', opts)
@@ -352,6 +352,14 @@ export const main = async (_config, _options, justKill) => {
 
   if (!options.save && cmdsToRun.length > 0 && options.scripts) {
     if (options.graph) {
+
+      const latestBlock = await rpcFetch('eth_getBlockByNumber', ['latest', false])
+      const latestBlockNumber = parseInt(latestBlock.result.number, 16)
+      if (Number.isNaN(latestBlockNumber)) {
+        console.error('Failed to fetch latest block number')
+        return cleanup(undefined, 0)
+      }
+
       let indexArray = []
       const getCurrentIndex = async () =>
         fetch('http://localhost:8000/subgraphs/name/graphprotocol/ens', {
@@ -385,13 +393,11 @@ export const main = async (_config, _options, justKill) => {
         if (indexArray.length > 10) indexArray.shift()
         await new Promise((resolve) => setTimeout(resolve, 1000))
         if (indexArray.every((i) => i === indexArray[0]) && indexArray.length === 10) {
+          console.error('Subgraph failed to launch properly')
           return cleanup(undefined, 0)
         }
       } while (
-        indexArray[indexArray.length - 1] < 326
-        // !indexArray.every((i) => i === indexArray[0]) ||
-        // indexArray.length < 2 ||
-        // indexArray[0] === 0
+        indexArray[indexArray.length - 1] < latestBlockNumber
       )
     }
     /**
