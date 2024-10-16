@@ -254,9 +254,6 @@ export const main = async (_config, _options, justKill) => {
 
     await awaitCommand('deploy', config.deployCommand)
 
-    // wait for anvil deploy to finish
-    await new Promise((resolve) => setTimeout(resolve, 100))
-
     // remove block timestamp interval after deploy
     await rpcFetch('anvil_removeBlockTimestampInterval', [])
 
@@ -394,6 +391,8 @@ export const main = async (_config, _options, justKill) => {
       })
     }
   }
+
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   if (!options.save && cmdsToRun.length > 0 && options.scripts) {
     /**
