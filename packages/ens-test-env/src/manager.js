@@ -189,6 +189,7 @@ export const main = async (_config, _options, justKill) => {
   const compose = await getCompose()
 
   try {
+    console.log('Starting anvil...')
     await compose.upOne('anvil', opts)
   } catch (e) {
     console.error('e: ', e)
@@ -283,17 +284,60 @@ export const main = async (_config, _options, justKill) => {
 
   if (options.graph) {
     try {
-      // console.log('Starting postgres...')
-      // await compose.upOne('postgres', opts)
-      // console.log('Starting ipfs...')
-      // await compose.upOne('ipfs', opts)
-      // console.log('Starting graph-node...')
+      console.log('Starting graph-node...')
       await compose.upOne('graph-node', opts)
-      console.log('Starting metadata...')
-      // await compose.upOne('metadata', opts)
-    } catch {}
 
-    await waitOn({ resources: ['http://localhost:8040'] })
+      await waitOn({ resources: ['http://localhost:8040'] })
+
+      const latestBlock = await rpcFetch('eth_getBlockByNumber', ['latest', false])
+      const latestBlockNumber = parseInt(latestBlock.result.number, 16)
+      if (Number.isNaN(latestBlockNumber)) {
+        console.error('Failed to fetch latest block number')
+        return cleanup(undefined, 0)
+      }
+
+      let indexArray = []
+      const getCurrentIndex = async () =>
+        fetch('http://localhost:8000/subgraphs/name/graphprotocol/ens', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+            {
+              _meta {
+                block {
+                  number
+                }
+              }
+            }
+          `,
+            variables: {},
+          }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.errors) return 0
+            return res.data._meta.block.number
+          })
+          .catch(() => 0)
+      do {
+        const index = await getCurrentIndex()
+        console.log('subgraph index:', index)
+        indexArray.push(await getCurrentIndex())
+        if (indexArray.length > 10) indexArray.shift()
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        if (indexArray.every((i) => i === indexArray[0]) && indexArray.length === 10) {
+          console.error('Subgraph failed to launch properly')
+          return cleanup(undefined, 0)
+        }
+      } while (
+        indexArray[indexArray.length - 1] < latestBlockNumber
+      )
+      console.log('Starting remaining docker containers...')
+      await compose.upAll(opts)
+    } catch {}
 
     if (options.save) {
       const internalHashes = [
@@ -351,55 +395,6 @@ export const main = async (_config, _options, justKill) => {
   }
 
   if (!options.save && cmdsToRun.length > 0 && options.scripts) {
-    if (options.graph) {
-
-      const latestBlock = await rpcFetch('eth_getBlockByNumber', ['latest', false])
-      const latestBlockNumber = parseInt(latestBlock.result.number, 16)
-      if (Number.isNaN(latestBlockNumber)) {
-        console.error('Failed to fetch latest block number')
-        return cleanup(undefined, 0)
-      }
-
-      let indexArray = []
-      const getCurrentIndex = async () =>
-        fetch('http://localhost:8000/subgraphs/name/graphprotocol/ens', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: `
-            {
-              _meta {
-                block {
-                  number
-                }
-              }
-            }
-          `,
-            variables: {},
-          }),
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.errors) return 0
-            return res.data._meta.block.number
-          })
-          .catch(() => 0)
-      do {
-        const index = await getCurrentIndex()
-        console.log('current index:', index)
-        indexArray.push(await getCurrentIndex())
-        if (indexArray.length > 10) indexArray.shift()
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        if (indexArray.every((i) => i === indexArray[0]) && indexArray.length === 10) {
-          console.error('Subgraph failed to launch properly')
-          return cleanup(undefined, 0)
-        }
-      } while (
-        indexArray[indexArray.length - 1] < latestBlockNumber
-      )
-    }
     /**
      * @type {import('concurrently').ConcurrentlyResult['result']}
      **/
