@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { match, P } from 'ts-pattern'
 import type { InputMaybe, Scalars } from './types.js'
+import type { Name } from './utils.js'
+import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']
@@ -700,3 +703,146 @@ export type ResolverEventFilter = {
   and?: InputMaybe<Array<InputMaybe<ResolverEventFilter>>>
   or?: InputMaybe<Array<InputMaybe<ResolverEventFilter>>>
 }
+
+export const getExpiryDateOrderFilter = ({
+  orderDirection,
+  lastDomain,
+}: {
+  orderDirection: 'asc' | 'desc'
+  lastDomain: Name
+}): DomainFilter => {
+  let lastExpiryDate = lastDomain.expiryDate?.value
+    ? lastDomain.expiryDate.value / 1000
+    : 0
+  if (lastDomain.parentName === 'eth') lastExpiryDate += GRACE_PERIOD_SECONDS
+
+  return match({
+    lastExpiryDate,
+    orderDirection,
+  })
+    .with(
+      {
+        lastExpiryDate: P.number.lte(0),
+        orderDirection: 'asc',
+      },
+      () =>
+        ({
+          and: [{ expiryDate: null }, { id_gt: lastDomain.id }],
+        } as DomainFilter),
+    )
+    .with(
+      {
+        lastExpiryDate: P.number,
+        orderDirection: 'asc',
+      },
+      () =>
+        ({
+          or: [
+            {
+              and: [
+                {
+                  expiryDate_gte: `${lastExpiryDate}`,
+                },
+                { id_gt: lastDomain.id },
+              ],
+            },
+            {
+              expiryDate_gt: `${lastExpiryDate}`,
+            },
+            {
+              expiryDate: null,
+            },
+          ],
+        } as DomainFilter),
+    )
+    .with(
+      {
+        lastExpiryDate: P.number.lte(0),
+        orderDirection: 'desc',
+      },
+      () =>
+        ({
+          or: [
+            {
+              and: [{ expiryDate: null }, { [`id_lt`]: lastDomain.id }],
+            },
+            {
+              [`expiryDate_gt`]: 0,
+            },
+          ],
+        } as DomainFilter),
+    )
+    .with(
+      {
+        lastExpiryDate: P.number,
+        orderDirection: 'desc',
+      },
+      () =>
+        ({
+          or: [
+            {
+              and: [
+                { expiryDate_lte: `${lastExpiryDate}` },
+                { id_lt: lastDomain.id },
+              ],
+            },
+            {
+              expiryDate_lt: `${lastExpiryDate}`,
+            },
+          ],
+        } as DomainFilter),
+    )
+    .exhaustive()
+}
+
+export const getCreatedAtOrderFilter = ({
+  orderDirection,
+  lastDomain,
+}: {
+  orderDirection: 'asc' | 'desc'
+  lastDomain: Name
+}): DomainFilter =>
+  match({
+    orderDirection,
+  })
+    .with(
+      {
+        orderDirection: 'asc',
+      },
+      () =>
+        ({
+          or: [
+            {
+              and: [
+                {
+                  createdAt_gte: `${lastDomain.createdAt.value / 1000}`,
+                  id_gt: lastDomain.id,
+                },
+              ],
+            },
+            {
+              createdAt_gt: `${lastDomain.createdAt.value / 1000}`,
+            },
+          ],
+        } as DomainFilter),
+    )
+    .with(
+      {
+        orderDirection: 'desc',
+      },
+      () =>
+        ({
+          or: [
+            {
+              and: [
+                { createdAt_lte: `${lastDomain.createdAt.value / 1000}` },
+                { id_lt: lastDomain.id },
+              ],
+            },
+            {
+              createdAt_lt: `${lastDomain.createdAt.value / 1000}`,
+            },
+          ],
+        } as DomainFilter),
+    )
+    .exhaustive()

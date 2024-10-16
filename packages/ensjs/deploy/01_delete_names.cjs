@@ -55,11 +55,19 @@ const func = async function (hre) {
   await deleteName(name1)
   await deleteName(name2)
 
+  for (const name of [name1, name2]) {
+    const owner = await registry.owner(namehash(name))
+    if (owner !== EMPTY_ADDRESS) {
+      throw new Error(`Failed to delete name ${name}`)
+    }
+  }
+
   return true
 }
 
 func.id = 'delete-names'
 func.tags = ['delete-names']
+func.dependencies = ['register-unwrapped-names']
 func.runAtTheEnd = true
 
 module.exports = func
