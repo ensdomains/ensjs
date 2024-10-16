@@ -295,6 +295,7 @@ export const main = async (_config, _options, justKill) => {
         console.error('Failed to fetch latest block number')
         return cleanup(undefined, 0)
       }
+      console.log('latest block number:', latestBlockNumber)
 
       let indexArray = []
       const getCurrentIndex = async () =>
