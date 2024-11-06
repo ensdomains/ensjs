@@ -5,7 +5,6 @@
     "packages/*"
   ],
   "scripts": {
-    "publish:local:ens-test-env": "yalc publish packages/ens-test-env --push --up",
     "publish:local:ensjs": "yalc publish packages/ensjs --push --up",
     "chgset:version": "changeset version && pnpm install",
     "chgset:run": "changeset",
