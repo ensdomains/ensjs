@@ -102,19 +102,19 @@ export const addresses = {
       address: '0x283af0b28c62c092c9727f1ee09c02ca627eb7f5',
     },
     ensEthRegistrarController: {
-      address: '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583',
+      address: '0xF404D2F84BC1735f7D9948F032D61F5fFfD9D3C3',
     },
     ensNameWrapper: {
       address: '0xab50971078225D365994dc1Edcb9b7FD72Bb4862',
     },
     ensPublicResolver: {
-      address: '0x9010A27463717360cAD99CEA8bD39b8705CCA238',
+      address: '0x5a692ffe769A9B3D0e61F7446F5cAED650044C36',
     },
     ensRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
-      address: '0x132AC0B116a73add4225029D1951A9A707Ef673f',
+      address: '0x65EE0b0B030a76c95a7ff046C0e0c8f7A2d1B004',
     },
     ensUniversalResolver: {
       address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
@@ -134,19 +134,19 @@ export const addresses = {
       address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
     },
     ensEthRegistrarController: {
-      address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
+      address: '0x4477cAc137F3353Ca35060E01E5aEb777a1Ca01B',
     },
     ensNameWrapper: {
       address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
     },
     ensPublicResolver: {
-      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
+      address: '0x8948458626811dd0c23EB25Cc74291247077cC51',
     },
     ensRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
-      address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
+      address: '0xCF75B92126B02C9811d8c632144288a3eb84afC8',
     },
     ensUniversalResolver: {
       address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',

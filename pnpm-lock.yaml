@@ -150,6 +150,9 @@ importers:
       pako:
         specifier: ^2.1.0
         version: 2.1.0
+      ts-pattern:
+        specifier: ^5.4.0
+        version: 5.4.0
     devDependencies:
       '@ensdomains/buffer':
         specifier: ^0.0.13
@@ -6911,6 +6914,9 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
+
+  ts-pattern@5.4.0:
+    resolution: {integrity: sha512-hgfOMfjlrARCnYtGD/xEAkFHDXuSyuqjzFSltyQCbN689uNvoQL20TVN2XFcLMjfNuwSsQGU+xtH6MrjIwhwUg==}
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -16615,6 +16621,8 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.7.5
+
+  ts-pattern@5.4.0: {}
 
   tsconfig-paths@3.15.0:
     dependencies:

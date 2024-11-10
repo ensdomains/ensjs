@@ -4,6 +4,7 @@ const cbor = require('cbor')
 const { ethers } = require('hardhat')
 const pako = require('pako')
 const { labelhash, namehash, toBytes } = require('viem')
+const { makeNameGenerator } = require('../utils/legacyNameGenerator.cjs')
 
 const dummyABI = [
   {
@@ -366,6 +367,22 @@ const names = [
     namedOwner: 'owner2',
     namedAddr: 'owner2',
   })),
+  ...Array.from({ length: 2}, (_, i) => ({
+    label: `nonconcurrent-legacy-name-${i}`,
+    namedOwner: 'owner4',
+    namedAddr: 'owner4',
+    duration: 31536000 / 2,
+    subnames: [
+      {
+        label: `test`,
+        namedOwner: 'owner4',
+      },
+      {
+        label: `xyz`,
+        namedOwner: 'owner4',
+      }
+    ]
+  }))
 ]
 
 /**
@@ -375,10 +392,11 @@ const func = async function (hre) {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
 
-  const controller = await ethers.getContract('LegacyETHRegistrarController')
   const publicResolver = await ethers.getContract('LegacyPublicResolver')
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
+
+  const nameGenerator = await makeNameGenerator(hre)
 
   for (const {
     label,
@@ -388,22 +406,13 @@ const func = async function (hre) {
     subnames,
     duration = 31536000,
   } of names) {
-    const secret =
-      '0x0000000000000000000000000000000000000000000000000000000000000000'
     const registrant = allNamedAccts[namedOwner]
-    const resolver = publicResolver.address
-    const addr = allNamedAccts[namedAddr]
-
-    const commitment = await controller.makeCommitmentWithConfig(
+    const commitTx = await nameGenerator.commit({
       label,
-      registrant,
-      secret,
-      resolver,
-      addr,
-    )
+      namedOwner,
+      namedAddr,
+    })
 
-    const _controller = controller.connect(await ethers.getSigner(registrant))
-    const commitTx = await _controller.commit(commitment)
     console.log(
       `Committing commitment for ${label}.eth (tx: ${commitTx.hash})...`,
     )
@@ -411,20 +420,14 @@ const func = async function (hre) {
 
     await network.provider.send('evm_mine')
 
-    const price = await controller.rentPrice(label, duration)
-
-    const registerTx = await _controller.registerWithConfig(
+    const registerTx = await nameGenerator.register({
       label,
-      registrant,
+      namedOwner,
+      namedAddr,
       duration,
-      secret,
-      resolver,
-      addr,
-      {
-        value: price,
-      },
-    )
+    })
     console.log(`Registering name ${label}.eth (tx: ${registerTx.hash})...`)
+
     await registerTx.wait()
 
     if (records) {
@@ -493,20 +496,16 @@ const func = async function (hre) {
 
     if (subnames) {
       console.log(`Setting subnames for ${label}.eth...`)
-      const registry = await ethers.getContract('ENSRegistry')
       for (const {
         label: subnameLabel,
-        namedOwner: subnameOwner,
+        namedOwner: namedSubnameOwner,
       } of subnames) {
-        const owner = allNamedAccts[subnameOwner]
-        const _registry = registry.connect(await ethers.getSigner(registrant))
-        const setSubnameTx = await _registry.setSubnodeRecord(
-          namehash(`${label}.eth`),
-          labelhash(subnameLabel),
-          owner,
-          resolver,
-          '0',
-        )
+        const setSubnameTx = await nameGenerator.subname({
+          label,
+          namedOwner,
+          subnameLabel,
+          namedSubnameOwner,
+        })
         console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
         await setSubnameTx.wait()
       }

@@ -59,6 +59,7 @@ const config = {
     },
     owner2: 2,
     owner3: 3,
+    owner4: 4
   },
   external: {
     contracts: [

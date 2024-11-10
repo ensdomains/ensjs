@@ -3,12 +3,12 @@ name: Release
 on:
   release:
     types: [published]
-
 jobs:
   release:
     name: Release
     permissions:
       id-token: write
+      contents: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -47,7 +47,7 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
         run: |
           pnpm config set //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}
-          pnpm -F @ensdomains/ensjs publish
+          pnpm -F @ensdomains/ensjs publish --no-git-checks
 
       - name: Push changes
         run: git push
