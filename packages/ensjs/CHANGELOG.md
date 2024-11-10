@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 4.0.2
+
+### Patch Changes
+
+- Fix pagination bug for names with identical createdAt and expiryDate in getNamesForAddress
+
 ## 4.0.1
 
 ### Patch Changes
