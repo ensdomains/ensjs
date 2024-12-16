@@ -1,5 +1,6 @@
 import type { Account, Address, Chain, Client, Transport } from 'viem'
 import type { Assign, Prettify } from '../types.js'
+import { EMPTY_ADDRESS } from '../utils/consts.js'
 
 type ChainContract = {
   address: Address
@@ -18,6 +19,8 @@ export const supportedContracts = [
   'ensRegistry',
   'ensReverseRegistrar',
   'ensUniversalResolver',
+  'legacyEthRegistrarController',
+  'legacyPublicResolver',
 ] as const
 
 export type SupportedChain = (typeof supportedChains)[number]
@@ -55,6 +58,12 @@ export const addresses = {
     ensUniversalResolver: {
       address: '0xce01f8eee7E479C928F8919abD53E553a36CeF67',
     },
+    legacyEthRegistrarController: {
+      address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
+    },
+    legacyPublicResolver: {
+      address: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+    },
   },
   5: {
     ensBaseRegistrarImplementation: {
@@ -86,6 +95,12 @@ export const addresses = {
     },
     ensUniversalResolver: {
       address: '0x898A1182F3C2BBBF0b16b4DfEf63E9c3e9eB4821',
+    },
+    legacyEthRegistrarController: {
+      address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
+    },
+    legacyPublicResolver: {
+      address: '0xDaaF96c344f63131acadD0Ea35170E7892d3dfBA',
     },
   },
   17000: {
@@ -119,6 +134,12 @@ export const addresses = {
     ensUniversalResolver: {
       address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
     },
+    legacyEthRegistrarController: {
+      address: '0xf13fC748601fDc5afA255e9D9166EB43f603a903',
+    },
+    legacyPublicResolver: {
+      address: '0xc5e43b622b5e6C379a984E9BdB34E9A545564fA5',
+    },
   },
   11155111: {
     ensBaseRegistrarImplementation: {
@@ -150,6 +171,12 @@ export const addresses = {
     },
     ensUniversalResolver: {
       address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',
+    },
+    legacyEthRegistrarController: {
+      address: '0x7e02892cfc2Bfd53a75275451d73cF620e793fc0',
+    },
+    legacyPublicResolver: {
+      address: '0x0CeEC524b2807841739D3B5E161F5bf1430FFA48',
     },
   },
 } as const satisfies Record<
@@ -195,6 +222,8 @@ type EnsChainContracts = {
   ensReverseRegistrar: ChainContract
   ensBulkRenewal: ChainContract
   ensDnssecImpl: ChainContract
+  legacyEthRegistrarController: ChainContract
+  legacyPublicResolver: ChainContract
 }
 
 type BaseChainContracts = {
