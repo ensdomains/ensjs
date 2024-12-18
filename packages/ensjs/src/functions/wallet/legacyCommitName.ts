@@ -22,28 +22,28 @@ import {
 } from '../../utils/legacyRegisterHelpers.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 
-export type CommitNameDataParameters = LegacyRegistrationParameters
+export type LegacyCommitNameDataParameters = LegacyRegistrationParameters
 
-export type CommitNameDataReturnType = SimpleTransactionRequest
+export type LegacyCommitNameDataReturnType = SimpleTransactionRequest
 
-export type CommitNameParameters<
+export type LegacyCommitNameParameters<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
-  CommitNameDataParameters &
+  LegacyCommitNameDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
 >
 
-export type CommitNameReturnType = Hash
+export type LegacyCommitNameReturnType = Hash
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  args: CommitNameDataParameters,
-): CommitNameDataReturnType => {
+  args: LegacyCommitNameDataParameters,
+): LegacyCommitNameDataReturnType => {
   const nameType = getNameType(args.name)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
@@ -68,8 +68,8 @@ export const makeFunctionData = <
 /**
  * Commits a name to be registered
  * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link CommitNameParameters}
- * @returns Transaction hash. {@link CommitNameReturnType}
+ * @param parameters - {@link LegacyCommitNameParameters}
+ * @returns Transaction hash. {@link LegacyCommitNameReturnType}
  *
  * @example
  * import { createWalletClient, custom } from 'viem'
@@ -105,8 +105,8 @@ async function legacyCommitName<
     resolverAddress = EMPTY_ADDRESS,
     address = EMPTY_ADDRESS,
     ...txArgs
-  }: CommitNameParameters<TChain, TAccount, TChainOverride>,
-): Promise<CommitNameReturnType> {
+  }: LegacyCommitNameParameters<TChain, TAccount, TChainOverride>,
+): Promise<LegacyCommitNameReturnType> {
   const data = makeFunctionData(wallet, {
     name,
     owner,
