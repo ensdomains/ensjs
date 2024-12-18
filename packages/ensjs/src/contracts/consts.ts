@@ -1,6 +1,5 @@
 import type { Account, Address, Chain, Client, Transport } from 'viem'
 import type { Assign, Prettify } from '../types.js'
-import { EMPTY_ADDRESS } from '../utils/consts.js'
 
 type ChainContract = {
   address: Address

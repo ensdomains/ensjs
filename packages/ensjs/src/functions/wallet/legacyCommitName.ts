@@ -7,10 +7,7 @@ import {
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import {
-  legacyEthRegistrarControllerCommitSnippet,
-  legacyEthRegistrarControllerMakeCommitmentWithConfigSnippet,
-} from '../../contracts/legacyEthRegistrarController.js'
+import { legacyEthRegistrarControllerCommitSnippet } from '../../contracts/legacyEthRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type {
@@ -23,7 +20,7 @@ import {
   makeLegacyCommitment,
   type LegacyRegistrationParameters,
 } from '../../utils/legacyRegisterHelpers.js'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 
 export type CommitNameDataParameters = LegacyRegistrationParameters
 
@@ -47,7 +44,6 @@ export const makeFunctionData = <
   wallet: ClientWithAccount<Transport, TChain, TAccount>,
   args: CommitNameDataParameters,
 ): CommitNameDataReturnType => {
-  const labels = args.name.split('.')
   const nameType = getNameType(args.name)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
@@ -55,12 +51,7 @@ export const makeFunctionData = <
       supportedNameTypes: ['eth-2ld'],
       details: 'Only 2ld-eth name registration is supported',
     })
-  wrappedLabelLengthCheck(labels[0])
 
-  console.log('>>>', getChainContractAddress({
-    client: wallet,
-    contract: 'legacyEthRegistrarController',
-  }))
   return {
     to: getChainContractAddress({
       client: wallet,
@@ -111,8 +102,8 @@ async function legacyCommitName<
     owner,
     duration,
     secret,
-    resolverAddress,
-    addr,
+    resolverAddress = EMPTY_ADDRESS,
+    address = EMPTY_ADDRESS,
     ...txArgs
   }: CommitNameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CommitNameReturnType> {
@@ -122,7 +113,7 @@ async function legacyCommitName<
     duration,
     secret,
     resolverAddress,
-    addr,
+    address,
   })
   const writeArgs = {
     ...data,

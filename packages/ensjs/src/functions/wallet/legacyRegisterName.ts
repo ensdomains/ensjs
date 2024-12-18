@@ -18,9 +18,12 @@ import { getNameType } from '../../utils/getNameType.js'
 import {
   makeLegacyRegistrationTuple,
   type LegacyRegistrationParameters,
+  isLegacyRegistrationWithConfig,
 } from '../../utils/legacyRegisterHelpers.js'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
-import { legacyEthRegistrarControllerRegisterSnippet } from '../../contracts/legacyEthRegistrarController.js'
+import {
+  legacyEthRegistrarControllerRegisterSnippet,
+  legacyEthRegistrarControllerRegisterWithConfigSnippet,
+} from '../../contracts/legacyEthRegistrarController.js'
 
 export type LegacyRegisterNameDataParameters = LegacyRegistrationParameters & {
   /** Value of registration */
@@ -57,19 +60,24 @@ export const makeFunctionData = <
       details: 'Only 2ld-eth name registration is supported',
     })
 
-  const labels = args.name.split('.')
-  // wrappedLabelLengthCheck(labels[0])
+  const data = isLegacyRegistrationWithConfig(args)
+    ? encodeFunctionData({
+        abi: legacyEthRegistrarControllerRegisterWithConfigSnippet,
+        functionName: 'registerWithConfig',
+        args: makeLegacyRegistrationTuple(args),
+      })
+    : encodeFunctionData({
+        abi: legacyEthRegistrarControllerRegisterSnippet,
+        functionName: 'register',
+        args: makeLegacyRegistrationTuple(args),
+      })
 
   return {
     to: getChainContractAddress({
       client: wallet,
       contract: 'legacyEthRegistrarController',
     }),
-    data: encodeFunctionData({
-      abi: legacyEthRegistrarControllerRegisterSnippet,
-      functionName: 'register',
-      args: makeLegacyRegistrationTuple(args),
-    }),
+    data,
     value,
   }
 }
@@ -114,7 +122,7 @@ export const makeFunctionData = <
  * const hash = await registerName(wallet, { ...params, value })
  * // 0x...
  */
-async function registerName<
+async function legacyRegisterName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -126,6 +134,7 @@ async function registerName<
     duration,
     secret,
     resolverAddress,
+    address,
     value,
     ...txArgs
   }: LegacyRegisterNameParameters<TChain, TAccount, TChainOverride>,
@@ -136,6 +145,7 @@ async function registerName<
     duration,
     secret,
     resolverAddress,
+    address,
     value,
   })
   const writeArgs = {
@@ -145,6 +155,6 @@ async function registerName<
   return sendTransaction(wallet, writeArgs)
 }
 
-registerName.makeFunctionData = makeFunctionData
+legacyRegisterName.makeFunctionData = makeFunctionData
 
-export default registerName
+export default legacyRegisterName
