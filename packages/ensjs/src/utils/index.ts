@@ -104,6 +104,15 @@ export {
   saveLabel,
   saveName,
 } from './labels.js'
+export {
+  makeLegacyCommitment,
+  makeLegacyCommitmentFromTuple,
+  makeLegacyCommitmentTuple,
+  makeLegacyRegistrationTuple,
+  type LegacyCommitmentTuple,
+  type LegacyRegistrationParameters,
+  type LegacyRegistrationTuple,
+} from './legacyRegisterHelpers.js'
 export { makeSafeSecondsDate } from './makeSafeSecondsDate.js'
 export {
   beautify,
