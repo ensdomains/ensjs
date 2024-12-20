@@ -6,5 +6,7 @@
     "@ensdomains/ensjs": "4.0.2",
     "@ensdomains/ensjs-react": "0.0.4"
   },
-  "changesets": []
+  "changesets": [
+    "clever-rings-lick"
+  ]
 }
