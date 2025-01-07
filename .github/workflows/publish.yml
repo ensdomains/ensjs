@@ -51,7 +51,7 @@ jobs:
         with:
           # Note: pnpm install after versioning is necessary to refresh lockfile
           version: pnpm chgset:version
-          publish: pnpm release --no-git-checks
+          publish: pnpm release
           commit: "chore: release"
           title: "[ci] release"
         env:
