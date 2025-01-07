@@ -3,7 +3,6 @@ name: Prerelease
 on:
   release:
     types: [published]
-name: Release
 
 defaults:
   run:
