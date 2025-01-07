@@ -1,12 +1,5 @@
 # @ensdomains/ensjs-react
 
-## 0.0.5-next.0
-
-### Patch Changes
-
-- Updated dependencies [[`d548d95`](https://github.com/ensdomains/ensjs/commit/d548d9555741b6d9a99b1e2ec3c20eaca7a186f6)]:
-  - @ensdomains/ensjs@4.1.0-next.0
-
 ## 0.0.4
 
 ### Patch Changes
