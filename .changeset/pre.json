@@ -1,0 +1,12 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@ensdomains/ens-test-env": "0.5.0-beta.1",
+    "@ensdomains/ensjs": "4.0.2",
+    "@ensdomains/ensjs-react": "0.0.4"
+  },
+  "changesets": [
+    "clever-rings-lick"
+  ]
+}
