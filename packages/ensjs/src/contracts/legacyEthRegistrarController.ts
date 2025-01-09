@@ -8,7 +8,7 @@ export const legacyEthRegistrarControllerAvailableSnippet = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerCommitSnippet = [
   {
@@ -20,7 +20,7 @@ export const legacyEthRegistrarControllerCommitSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerCommitmentsSnippet = [
   {
@@ -32,7 +32,7 @@ export const legacyEthRegistrarControllerCommitmentsSnippet = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerMakeCommitmentSnippet = [
   {
@@ -48,7 +48,7 @@ export const legacyEthRegistrarControllerMakeCommitmentSnippet = [
     stateMutability: 'pure',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerMakeCommitmentWithConfigSnippet = [
   {
@@ -66,7 +66,7 @@ export const legacyEthRegistrarControllerMakeCommitmentWithConfigSnippet = [
     stateMutability: 'pure',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerRegisterSnippet = [
   {
@@ -83,7 +83,7 @@ export const legacyEthRegistrarControllerRegisterSnippet = [
     stateMutability: 'payable',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerRegisterWithConfigSnippet = [
   {
@@ -102,7 +102,7 @@ export const legacyEthRegistrarControllerRegisterWithConfigSnippet = [
     stateMutability: 'payable',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerRenewSnippet = [
   {
@@ -117,7 +117,7 @@ export const legacyEthRegistrarControllerRenewSnippet = [
     stateMutability: 'payable',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerRentPriceSnippet = [
   {
@@ -132,7 +132,7 @@ export const legacyEthRegistrarControllerRentPriceSnippet = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerSupportsInterfaceSnippet = [
   {
@@ -144,7 +144,7 @@ export const legacyEthRegistrarControllerSupportsInterfaceSnippet = [
     stateMutability: 'pure',
     type: 'function',
   },
-]
+] as const
 
 export const legacyEthRegistrarControllerTransferOwnershipSnippet = [
   {
@@ -156,4 +156,39 @@ export const legacyEthRegistrarControllerTransferOwnershipSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-]
+] as const
+
+export const legacyEthRegistrarControllerNameRegisteredEventSnippet = [
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, internalType: 'string', name: 'name', type: 'string' },
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'label',
+        type: 'bytes32',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'cost',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'expires',
+        type: 'uint256',
+      },
+    ],
+    name: 'NameRegistered',
+    type: 'event',
+  },
+] as const

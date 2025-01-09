@@ -40,8 +40,23 @@ export {
   ethRegistrarControllerRegisterSnippet,
   ethRegistrarControllerRenewSnippet,
   ethRegistrarControllerRentPriceSnippet,
+  ethRegistrarControllerNameRegisteredEventSnippet,
 } from './ethRegistrarController.js'
 export { getChainContractAddress } from './getChainContractAddress.js'
+export {
+  legacyEthRegistrarControllerAvailableSnippet,
+  legacyEthRegistrarControllerCommitSnippet,
+  legacyEthRegistrarControllerCommitmentsSnippet,
+  legacyEthRegistrarControllerMakeCommitmentSnippet,
+  legacyEthRegistrarControllerMakeCommitmentWithConfigSnippet,
+  legacyEthRegistrarControllerRegisterSnippet,
+  legacyEthRegistrarControllerRegisterWithConfigSnippet,
+  legacyEthRegistrarControllerRenewSnippet,
+  legacyEthRegistrarControllerRentPriceSnippet,
+  legacyEthRegistrarControllerSupportsInterfaceSnippet,
+  legacyEthRegistrarControllerTransferOwnershipSnippet,
+  legacyEthRegistrarControllerNameRegisteredEventSnippet as legacyNameRegisteredEventSnippet,
+} from './legacyEthRegistrarController.js'
 export {
   multicallGetCurrentBlockTimestampSnippet,
   multicallTryAggregateSnippet,
