@@ -1,11 +1,13 @@
 import { type Address, type Hex } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
 import {
-  isLegacyRegistrationWithConfig,
+  isLegacyRegistrationWithConfigParameters,
   makeLegacyCommitment,
   makeLegacyCommitmentTuple,
   makeLegacyRegistrationTuple,
   type LegacyRegistrationParameters,
+  makeLegacyCommitmentWithConfigTuple,
+  makeLegacyRegistrationWithConfigTuple,
 } from './legacyRegisterHelpers.js'
 import { EMPTY_ADDRESS } from './consts.js'
 import { randomSecret } from './registerHelpers.js'
@@ -42,10 +44,10 @@ beforeAll(async () => {
   ;[owner, address] = accounts
 })
 
-describe('isLegacyRegistrationWithConfig', () => {
+describe('isLegacyRegistrationWithConfigParameters', () => {
   it('return false when resolverAddress and address are undefined', () => {
     expect(
-      isLegacyRegistrationWithConfig({
+      isLegacyRegistrationWithConfigParameters({
         name,
         owner,
         duration,
@@ -56,7 +58,7 @@ describe('isLegacyRegistrationWithConfig', () => {
 
   it('return false when resolverAddress and address are empty addresses', () => {
     expect(
-      isLegacyRegistrationWithConfig({
+      isLegacyRegistrationWithConfigParameters({
         name,
         owner,
         duration,
@@ -69,7 +71,7 @@ describe('isLegacyRegistrationWithConfig', () => {
 
   it('return true when resolverAddress and address are defined', () => {
     expect(
-      isLegacyRegistrationWithConfig({
+      isLegacyRegistrationWithConfigParameters({
         name,
         owner,
         duration,
@@ -82,7 +84,7 @@ describe('isLegacyRegistrationWithConfig', () => {
 
   it('return true when resolverAddress is defined and address is NOT defined', () => {
     expect(
-      isLegacyRegistrationWithConfig({
+      isLegacyRegistrationWithConfigParameters({
         name,
         owner,
         duration,
@@ -94,7 +96,7 @@ describe('isLegacyRegistrationWithConfig', () => {
 
   it('should throw an error when address is defined and resolverAddress is NOT defined', () => {
     expect(() =>
-      isLegacyRegistrationWithConfig({
+      isLegacyRegistrationWithConfigParameters({
         name,
         owner,
         duration,
@@ -106,7 +108,7 @@ describe('isLegacyRegistrationWithConfig', () => {
 
   it('should throw an error when address is defined and resolverAddress is empty address', () => {
     expect(() =>
-      isLegacyRegistrationWithConfig({
+      isLegacyRegistrationWithConfigParameters({
         name,
         owner,
         duration,
@@ -128,9 +130,11 @@ describe('makeLegacyCommitmentTuple', () => {
     })
     expect(tuple).toEqual(['test', owner, secret])
   })
+})
 
+describe('makeLegacyCommitmentWithConfigTuple', () => {
   it('should return args for makeCommitWithConfig if resolverAddress is defined', () => {
-    const tuple = makeLegacyCommitmentTuple({
+    const tuple = makeLegacyCommitmentWithConfigTuple({
       name: 'test.eth',
       owner,
       duration,
@@ -144,18 +148,6 @@ describe('makeLegacyCommitmentTuple', () => {
       resolverAddress,
       EMPTY_ADDRESS,
     ])
-  })
-
-  it('should throw error if resolverAddress is NOT defined and address is defined', () => {
-    expect(() =>
-      makeLegacyCommitmentTuple({
-        name: 'test.eth',
-        owner,
-        duration,
-        secret,
-        address,
-      }),
-    ).toThrowErrorMatchingInlineSnapshot(makeSnapshot(address))
   })
 })
 
@@ -174,34 +166,19 @@ describe('makeLegacyRegistrationTuple', () => {
       secret,
     ])
   })
+})
 
-  it('should return args for register if resolverAddress and address are empty addresses', () => {
-    const params: LegacyRegistrationParameters = {
-      name,
-      owner,
-      duration,
-      secret,
-      resolverAddress: EMPTY_ADDRESS,
-      address: EMPTY_ADDRESS,
-    }
-    expect(makeLegacyRegistrationTuple(params)).toEqual([
-      'test',
-      owner,
-      31536000n,
-      secret,
-    ])
-  })
-
-  it('should return args for register if resolverAddress and address are not undefined', () => {
-    const params: LegacyRegistrationParameters = {
+describe('makeLegacyRegistrationWithConfigTuple', () => {
+  it('should return args for register if resolverAddress and address are defined', () => {
+    const tuple = makeLegacyRegistrationWithConfigTuple({
       name: 'test.eth',
       owner,
       duration,
       secret,
       resolverAddress,
       address,
-    }
-    expect(makeLegacyRegistrationTuple(params)).toEqual([
+    })
+    expect(tuple).toEqual([
       'test',
       owner,
       31536000n,
@@ -254,7 +231,7 @@ describe('makeLegacyCommitment', () => {
         client: publicClient,
         contract: 'legacyEthRegistrarController',
       }),
-      args: makeLegacyCommitmentTuple(params),
+      args: makeLegacyCommitmentWithConfigTuple(params),
     })
 
     expect(commitment).toBe(commitment2)

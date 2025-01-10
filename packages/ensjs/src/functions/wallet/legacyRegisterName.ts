@@ -18,7 +18,7 @@ import { getNameType } from '../../utils/getNameType.js'
 import {
   makeLegacyRegistrationTuple,
   type LegacyRegistrationParameters,
-  isLegacyRegistrationWithConfig,
+  isLegacyRegistrationWithConfigParameters,
   makeLegacyRegistrationWithConfigTuple,
 } from '../../utils/legacyRegisterHelpers.js'
 import {
@@ -61,7 +61,7 @@ export const makeFunctionData = <
       details: 'Only 2ld-eth name registration is supported',
     })
 
-  const data = isLegacyRegistrationWithConfig(args)
+  const data = isLegacyRegistrationWithConfigParameters(args)
     ? encodeFunctionData({
         abi: legacyEthRegistrarControllerRegisterWithConfigSnippet,
         functionName: 'registerWithConfig',

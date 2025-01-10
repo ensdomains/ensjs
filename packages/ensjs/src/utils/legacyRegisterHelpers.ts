@@ -29,7 +29,7 @@ export type LegacyRegistrationWithConfigParameters =
     address?: Address
   }
 
-export const isLegacyRegistrationWithConfig = (
+export const isLegacyRegistrationWithConfigParameters = (
   params: LegacyRegistrationParameters,
 ): params is LegacyRegistrationWithConfigParameters => {
   const { resolverAddress = EMPTY_ADDRESS, address = EMPTY_ADDRESS } =
@@ -140,7 +140,7 @@ export const makeLegacyCommitmentFromTuple = ([label, ...others]:
 export const makeLegacyCommitment = (
   params: LegacyRegistrationParameters | LegacyRegistrationWithConfigParameters,
 ): Hex => {
-  const touple = isLegacyRegistrationWithConfig(params)
+  const touple = isLegacyRegistrationWithConfigParameters(params)
     ? makeLegacyCommitmentWithConfigTuple(params)
     : makeLegacyCommitmentTuple(params)
   return makeLegacyCommitmentFromTuple(touple)
