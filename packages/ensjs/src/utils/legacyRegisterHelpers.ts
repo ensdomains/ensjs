@@ -8,7 +8,7 @@ import {
 import { EMPTY_ADDRESS } from './consts.js'
 import { LegacyRegistrationInvalidConfigError } from '../errors/register.js'
 
-export type LegacyRegistrationBaseParameters = {
+export type LegacyRegistrationParameters = {
   /** Name to register */
   name: string
   /** Address to set owner to */
@@ -24,14 +24,10 @@ export type LegacyRegistrationBaseParameters = {
 }
 
 export type LegacyRegistrationWithConfigParameters =
-  LegacyRegistrationBaseParameters & {
+  LegacyRegistrationParameters & {
     resolverAddress: Address
     address?: Address
   }
-
-export type LegacyRegistrationParameters =
-  | LegacyRegistrationBaseParameters
-  | LegacyRegistrationWithConfigParameters
 
 export const isLegacyRegistrationWithConfig = (
   params: LegacyRegistrationParameters,
@@ -47,67 +43,79 @@ export const isLegacyRegistrationWithConfig = (
   return resolverAddress !== EMPTY_ADDRESS || address !== EMPTY_ADDRESS
 }
 
-export type LegacyCommitmentTuple =
-  | [label: string, owner: Address, secret: Hex]
-  | [
-      label: string,
-      owner: Address,
-      resolverAddress: Address,
-      address: Address,
-      secret: Hex,
-    ]
+export type LegacyCommitmentTuple = [label: string, owner: Address, secret: Hex]
 
-export type LegacyRegistrationTuple =
-  | [label: string, owner: Address, duration: bigint, secret: Hex]
-  | [
-      label: string,
-      owner: Address,
-      duration: bigint,
-      secret: Hex,
-      resolverAddress: Address,
-      address: Address,
-    ]
+export type LegacyCommitmentWithConfigTuple = [
+  label: string,
+  owner: Address,
+  resolverAddress: Address,
+  address: Address,
+  secret: Hex,
+]
+
+export type LegacyRegistrationTuple = [
+  label: string,
+  owner: Address,
+  duration: bigint,
+  secret: Hex,
+]
+
+export type LegacyRegistrationWithConfigTuple = [
+  label: string,
+  owner: Address,
+  duration: bigint,
+  secret: Hex,
+  resolverAddress: Address,
+  address: Address,
+]
 
 export const makeLegacyCommitmentTuple = (
   params: LegacyRegistrationParameters,
 ): LegacyCommitmentTuple => {
-  const {
-    name,
-    owner,
-    secret,
-    resolverAddress = EMPTY_ADDRESS,
-    address = EMPTY_ADDRESS,
-  } = params as LegacyRegistrationWithConfigParameters
-
+  const { name, owner, secret } = params
   const label = name.split('.')[0]
-
-  if (isLegacyRegistrationWithConfig(params)) {
-    return [label, owner, secret, resolverAddress, address]
-  }
   return [label, owner, secret]
 }
 
-export const makeLegacyRegistrationTuple = (
-  params: LegacyRegistrationParameters,
-): LegacyRegistrationTuple => {
+export const makeLegacyCommitmentWithConfigTuple = (
+  params: LegacyRegistrationWithConfigParameters,
+): LegacyCommitmentWithConfigTuple => {
   const {
     name,
     owner,
     secret,
-    duration,
     resolverAddress = EMPTY_ADDRESS,
     address = EMPTY_ADDRESS,
   } = params as LegacyRegistrationWithConfigParameters
   const label = name.split('.')[0]
-  if (isLegacyRegistrationWithConfig(params))
-    return [label, owner, BigInt(duration), secret, resolverAddress, address]
-  return [label, owner, BigInt(params.duration), secret]
+  return [label, owner, secret, resolverAddress, address]
 }
 
-export const makeLegacyCommitmentFromTuple = ([
-  label,
-  ...others
-]: LegacyCommitmentTuple): Hex => {
+export const makeLegacyRegistrationTuple = ({
+  name,
+  owner,
+  secret,
+  duration,
+}: LegacyRegistrationParameters): LegacyRegistrationTuple => {
+  const label = name.split('.')[0]
+  return [label, owner, BigInt(duration), secret]
+}
+
+export const makeLegacyRegistrationWithConfigTuple = ({
+  name,
+  owner,
+  secret,
+  duration,
+  resolverAddress,
+  address = EMPTY_ADDRESS,
+}: LegacyRegistrationWithConfigParameters): LegacyRegistrationWithConfigTuple => {
+  const label = name.split('.')[0]
+  return [label, owner, BigInt(duration), secret, resolverAddress, address]
+}
+
+export const makeLegacyCommitmentFromTuple = ([label, ...others]:
+  | LegacyCommitmentTuple
+  | LegacyCommitmentWithConfigTuple): Hex => {
   const labelHash = labelhash(label)
   const params = [labelHash, ...others] as const
 
@@ -130,5 +138,10 @@ export const makeLegacyCommitmentFromTuple = ([
 }
 
 export const makeLegacyCommitment = (
-  params: LegacyRegistrationParameters,
-): Hex => makeLegacyCommitmentFromTuple(makeLegacyCommitmentTuple(params))
+  params: LegacyRegistrationParameters | LegacyRegistrationWithConfigParameters,
+): Hex => {
+  const touple = isLegacyRegistrationWithConfig(params)
+    ? makeLegacyCommitmentWithConfigTuple(params)
+    : makeLegacyCommitmentTuple(params)
+  return makeLegacyCommitmentFromTuple(touple)
+}

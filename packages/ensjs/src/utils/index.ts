@@ -111,7 +111,7 @@ export {
   makeLegacyRegistrationTuple,
   type LegacyCommitmentTuple,
   type LegacyRegistrationParameters,
-  type LegacyRegistrationTuple,
+  type LegacyRegistrationBaseTuple as LegacyRegistrationTuple,
 } from './legacyRegisterHelpers.js'
 export { makeSafeSecondsDate } from './makeSafeSecondsDate.js'
 export {

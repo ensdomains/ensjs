@@ -19,6 +19,7 @@ import {
   makeLegacyRegistrationTuple,
   type LegacyRegistrationParameters,
   isLegacyRegistrationWithConfig,
+  makeLegacyRegistrationWithConfigTuple,
 } from '../../utils/legacyRegisterHelpers.js'
 import {
   legacyEthRegistrarControllerRegisterSnippet,
@@ -64,7 +65,7 @@ export const makeFunctionData = <
     ? encodeFunctionData({
         abi: legacyEthRegistrarControllerRegisterWithConfigSnippet,
         functionName: 'registerWithConfig',
-        args: makeLegacyRegistrationTuple(args),
+        args: makeLegacyRegistrationWithConfigTuple(args),
       })
     : encodeFunctionData({
         abi: legacyEthRegistrarControllerRegisterSnippet,
