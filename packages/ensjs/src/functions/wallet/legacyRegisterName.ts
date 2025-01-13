@@ -61,24 +61,22 @@ export const makeFunctionData = <
       details: 'Only 2ld-eth name registration is supported',
     })
 
-  const data = isLegacyRegistrationWithConfigParameters(args)
-    ? encodeFunctionData({
-        abi: legacyEthRegistrarControllerRegisterWithConfigSnippet,
-        functionName: 'registerWithConfig',
-        args: makeLegacyRegistrationWithConfigTuple(args),
-      })
-    : encodeFunctionData({
-        abi: legacyEthRegistrarControllerRegisterSnippet,
-        functionName: 'register',
-        args: makeLegacyRegistrationTuple(args),
-      })
-
   return {
     to: getChainContractAddress({
       client: wallet,
       contract: 'legacyEthRegistrarController',
     }),
-    data,
+    data: isLegacyRegistrationWithConfigParameters(args)
+      ? encodeFunctionData({
+          abi: legacyEthRegistrarControllerRegisterWithConfigSnippet,
+          functionName: 'registerWithConfig',
+          args: makeLegacyRegistrationWithConfigTuple(args),
+        })
+      : encodeFunctionData({
+          abi: legacyEthRegistrarControllerRegisterSnippet,
+          functionName: 'register',
+          args: makeLegacyRegistrationTuple(args),
+        }),
     value,
   }
 }
