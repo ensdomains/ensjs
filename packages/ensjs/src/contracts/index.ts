@@ -55,7 +55,7 @@ export {
   legacyEthRegistrarControllerRentPriceSnippet,
   legacyEthRegistrarControllerSupportsInterfaceSnippet,
   legacyEthRegistrarControllerTransferOwnershipSnippet,
-  legacyEthRegistrarControllerNameRegisteredEventSnippet as legacyNameRegisteredEventSnippet,
+  legacyEthRegistrarControllerNameRegisteredEventSnippet,
 } from './legacyEthRegistrarController.js'
 export {
   multicallGetCurrentBlockTimestampSnippet,
