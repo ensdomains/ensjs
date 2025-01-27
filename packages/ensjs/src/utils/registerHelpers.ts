@@ -50,6 +50,16 @@ export type CommitmentTuple = [
   ownerControlledFuses: number,
 ]
 
+export type SubdomainRegistrationTuple = [
+  node: Hex,
+  label: Hex,
+  owner: Address,
+  resolver: Address,
+  duration: bigint,
+  fuses: number,
+  expiry: bigint,
+]
+
 export type RegistrationTuple = [
   label: string,
   owner: Address,
@@ -156,6 +166,25 @@ export const makeRegistrationTuple = (
   const [_labelhash, ...commitmentData] = makeCommitmentTuple(params)
   const label = params.name.split('.')[0]
   return [label, ...commitmentData]
+}
+
+export const makeSubdomainRegistrationTuple = (
+  params: RegistrationParameters,
+): SubdomainRegistrationTuple => {
+  if (!params.resolverAddress) {
+    throw new ResolverAddressRequiredError({
+      data: params,
+    })
+  }
+  return [
+    namehash(params.name), // node
+    params.name.split('.')[0], // label
+    params.owner, // owner
+    params.resolverAddress, // resolver
+    0n, // expiry
+    0, // fuses
+    BigInt(params.duration), // duration
+  ]
 }
 
 export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {

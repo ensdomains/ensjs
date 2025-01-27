@@ -18,9 +18,11 @@ import type {
 import { getNameType } from '../../utils/getNameType.js'
 import {
   makeRegistrationTuple,
+  makeSubdomainRegistrationTuple,
   type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
+import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
 
 export type RegisterNameDataParameters = RegistrationParameters & {
   /** Value of registration */
@@ -50,27 +52,45 @@ export const makeFunctionData = <
   { value, ...args }: RegisterNameDataParameters,
 ): RegisterNameDataReturnType => {
   const nameType = getNameType(args.name)
-  if (nameType !== 'eth-2ld')
-    throw new UnsupportedNameTypeError({
-      nameType,
-      supportedNameTypes: ['eth-2ld'],
-      details: 'Only 2ld-eth name registration is supported',
-    })
 
-  const labels = args.name.split('.')
-  wrappedLabelLengthCheck(labels[0])
+  switch (nameType) {
+    case 'eth-2ld': {
+      const labels = args.name.split('.')
+      wrappedLabelLengthCheck(labels[0])
 
-  return {
-    to: getChainContractAddress({
-      client: wallet,
-      contract: 'ensEthRegistrarController',
-    }),
-    data: encodeFunctionData({
-      abi: ethRegistrarControllerRegisterSnippet,
-      functionName: 'register',
-      args: makeRegistrationTuple(args),
-    }),
-    value,
+      return {
+        to: getChainContractAddress({
+          client: wallet,
+          contract: 'ensEthRegistrarController',
+        }),
+        data: encodeFunctionData({
+          abi: ethRegistrarControllerRegisterSnippet,
+          functionName: 'register',
+          args: makeRegistrationTuple(args),
+        }),
+        value,
+      }
+    }
+    case 'eth-subname': {
+      return {
+        to: getChainContractAddress({
+          client: wallet,
+          contract: 'ensNameWrapper',
+        }),
+        data: encodeFunctionData({
+          abi: nameWrapperSetSubnodeRecordSnippet,
+          functionName: 'setSubnodeRecord',
+          args: makeSubdomainRegistrationTuple(args),
+        }),
+        value,
+      }
+    }
+    default:
+      throw new UnsupportedNameTypeError({
+        nameType,
+        supportedNameTypes: ['eth-2ld', 'eth-subname'],
+        details: 'Unsupported name type',
+      })
   }
 }
 
