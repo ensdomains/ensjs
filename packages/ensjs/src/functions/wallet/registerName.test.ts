@@ -80,3 +80,72 @@ it('should return a registration transaction and succeed', async () => {
   const owner = await getNameWrapperOwner(params.name)
   expect(owner).toBe(accounts[1])
 })
+
+it('should successfully register a subdomain', async () => {
+  const paramsParent: RegistrationParameters = {
+    name: 'parent.eth',
+    duration: 31536000,
+    owner: accounts[1],
+    secret,
+    resolverAddress: getChainContractAddress({
+      client: publicClient,
+      contract: 'ensPublicResolver',
+    }),
+  }
+  const commitTxParent = await commitName(walletClient, {
+    ...paramsParent,
+    account: accounts[1],
+  })
+  await waitForTransaction(commitTxParent)
+
+  await testClient.increaseTime({ seconds: 61 })
+  await testClient.mine({ blocks: 1 })
+
+  const priceParent = await getPrice(publicClient, {
+    nameOrNames: paramsParent.name,
+    duration: paramsParent.duration,
+  })
+
+  const txParent = await registerName(walletClient, {
+    ...paramsParent,
+    account: accounts[1],
+    value: priceParent!.base + priceParent!.premium,
+  })
+  expect(txParent).toBeTruthy()
+  const receiptParent = await waitForTransaction(txParent)
+  expect(receiptParent.status).toBe('success')
+
+  const ownerParent = await getNameWrapperOwner(paramsParent.name)
+  expect(ownerParent).toBe(accounts[1])
+
+  //// Subdomain registration
+
+  const params: RegistrationParameters = {
+    name: 'child.parent.eth',
+    duration: 31536000,
+    owner: accounts[1],
+    secret,
+    resolverAddress: getChainContractAddress({
+      client: publicClient,
+      contract: 'ensPublicResolver',
+    }),
+  }
+
+  const price = await getPrice(publicClient, {
+    nameOrNames: params.name,
+    duration: params.duration,
+  })
+  const total = price!.base + price!.premium
+
+  const tx = await registerName(walletClient, {
+    ...params,
+    account: accounts[1],
+    value: total,
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await waitForTransaction(tx)
+  expect(receipt.status).toBe('success')
+
+  const owner = await getNameWrapperOwner(params.name)
+  expect(owner).toBe(accounts[1])
+})
