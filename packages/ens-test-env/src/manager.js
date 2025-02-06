@@ -183,7 +183,7 @@ export const main = async (_config, _options, justKill) => {
   if (options.verbosity >= 2) {
     outputsToIgnore = []
     opts.env.GRAPH_LOG_LEVEL = 'trace'
-    opts.env.ANVIL_EXTRA_ARGS = '--tracing'
+    // opts.env.ANVIL_EXTRA_ARGS = '--tracing'
   }
 
   const compose = await getCompose()
@@ -316,10 +316,16 @@ export const main = async (_config, _options, justKill) => {
         })
           .then((res) => res.json())
           .then((res) => {
-            if (res.errors) return 0
+            if (res.errors) {
+              console.error(res.errors)
+              return 0
+            }
             return res.data._meta.block.number
           })
-          .catch(() => 0)
+          .catch((error) => {
+            console.error(error)
+            return 0
+          })
       do {
         const index = await getCurrentIndex()
         console.log('subgraph index:', index)
