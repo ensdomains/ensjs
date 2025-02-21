@@ -161,8 +161,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@ensdomains/ens-test-env':
-        specifier: ^0.5.0-beta.1
-        version: 0.5.0-beta.9
+        specifier: github:namehash/ens-test-env
+        version: link:../../../ens-test-env
       '@nomiclabs/hardhat-ethers':
         specifier: npm:hardhat-deploy-ethers@0.3.0-beta.13
         version: hardhat-deploy-ethers@0.3.0-beta.13(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(hardhat@2.16.1(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.5)(@types/node@20.14.14)(typescript@5.3.2))(typescript@5.3.2)(utf-8-validate@5.0.10))
@@ -1099,11 +1099,6 @@ packages:
 
   '@ensdomains/ens-contracts@1.0.0':
     resolution: {integrity: sha512-NB5fig+TuaAkdW3uVshO/vuI/BNWus8MkpdDCzx6S797j7gRrDbKfcVHHDH5rBmj8Yp0/jCR1LU4DHaU5oxO0Q==}
-
-  '@ensdomains/ens-test-env@0.5.0-beta.9':
-    resolution: {integrity: sha512-2bMLONdXk/gOkIk2/HJVUmFzsYSFgPD6+AXEhrKP/aQVz1AvaJkebWP3jiMijmkKOvQF+hplGbqHYJopi3bLGQ==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   '@ensdomains/ens@0.4.5':
     resolution: {integrity: sha512-JSvpj1iNMFjK6K+uVl4unqMoa9rf5jopb8cya5UGBWz23Nw8hSNT7efgUx4BTlAPAgpNlEioUfeTyQ6J9ZvTVw==}
@@ -3579,10 +3574,6 @@ packages:
 
   docker-compose@0.24.8:
     resolution: {integrity: sha512-plizRs/Vf15H+GCVxq2EUvyPK7ei9b/cVesHvjnX4xaXjM9spHe2Ytq0BitndFgvTJ3E3NljPNUEl7BAN43iZw==}
-    engines: {node: '>= 6.0.0'}
-
-  docker-compose@1.1.0:
-    resolution: {integrity: sha512-VrkQJNafPQ5d6bGULW0P6KqcxSkv3ZU5Wn2wQA19oB71o7+55vQ9ogFe2MMeNbK+jc9rrKVy280DnHO5JLMWOQ==}
     engines: {node: '>= 6.0.0'}
 
   doctrine@2.1.0:
@@ -7806,7 +7797,7 @@ snapshots:
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/compat-data@7.25.4': {}
 
@@ -7973,7 +7964,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/parser@7.25.3':
     dependencies:
@@ -8988,23 +8979,6 @@ snapshots:
       '@ensdomains/solsha1': 0.0.3
       '@openzeppelin/contracts': 4.9.6
       dns-packet: 5.6.1
-
-  '@ensdomains/ens-test-env@0.5.0-beta.9':
-    dependencies:
-      cli-progress: 3.12.0
-      commander: 9.5.0
-      concurrently: 7.6.0
-      docker-compose: 1.1.0
-      dotenv: 16.4.5
-      js-yaml: 4.1.0
-      node-fetch: 2.7.0
-      picocolors: 1.1.1
-      progress-stream: 2.0.0
-      tar-fs: 2.1.1
-      wait-on: 6.0.1
-    transitivePeerDependencies:
-      - debug
-      - encoding
 
   '@ensdomains/ens@0.4.5':
     dependencies:
@@ -12512,10 +12486,6 @@ snapshots:
     dependencies:
       yaml: 2.5.0
 
-  docker-compose@1.1.0:
-    dependencies:
-      yaml: 2.5.0
-
   doctrine@2.1.0:
     dependencies:
       esutils: 2.0.3
@@ -15581,7 +15551,7 @@ snapshots:
   postcss@8.4.40:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       source-map-js: 1.2.0
 
   preact@10.23.2: {}
@@ -16839,7 +16809,7 @@ snapshots:
     dependencies:
       browserslist: 4.23.3
       escalade: 3.1.2
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   upper-case-first@1.1.2:
     dependencies:
