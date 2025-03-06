@@ -80,7 +80,7 @@
   "scripts": {
     "tenv": "ens-test-env -c ./ens-test-env.config.cjs -a",
     "denv": "pnpm tenv start --extra-time 11368000 --verbosity 1",
-    "anvil": "pnpm denv --no-graph",
+    "anvil": "pnpm denv --no-ensnode --no-scripts",
     "start": "ts-node --files src/index.test.ts",
     "test": "vitest --no-file-parallelism",
     "test:watch": "vitest --watch --no-file-parallelism",
