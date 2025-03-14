@@ -96,3 +96,9 @@ export {
   universalResolverResolveSnippet,
   universalResolverReverseSnippet,
 } from './universalResolver.js'
+export {
+  offchainRegisterSnippet,
+  offchainCommitableSnippet,
+  offchainTransferrableSnippet,
+  WILDCARD_WRITING_INTERFACE_ID,
+} from './offchainResolver.js'
