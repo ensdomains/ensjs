@@ -186,14 +186,14 @@ it('should throw an error when creating a wrapped subname with a parent name tha
   )
 })
 
-describe('DB offchain domains', () => {
+describe('L2 offchain domains', () => {
   beforeEach(async () => {
     const paramsParent: RegistrationParameters = {
       name: 'parent.eth',
       duration: 31536000,
       owner: accounts[0],
       secret: zeroHash,
-      resolverAddress: '0x7Dc07Bc3a73E6B3d231DCF1b6F23eD20cB12132c',
+      resolverAddress: '0x4A4bF4AFf08A1060B5780BE5658b541C427A9E85',
     }
     const commitTxParent = await commitName(walletClient, {
       ...paramsParent,
@@ -217,6 +217,19 @@ describe('DB offchain domains', () => {
     expect(txParent).toBeTruthy()
     const receiptParent = await waitForTransaction(txParent)
     expect(receiptParent.status).toBe('success')
+
+    const tx = await sendTransaction(walletClient, {
+      to: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
+      data: encodeFunctionData({
+        functionName: 'setApprovalForAll',
+        abi: registrySetApprovalForAllSnippet,
+        args: ['0xEc216900e68df20674303982a87a678CA8B79167', true],
+      }),
+      account: accounts[0],
+    })
+    expect(tx).toBeTruthy()
+    const receipt = await waitForTransaction(tx)
+    expect(receipt.status).toBe('success')
   })
 
   it('should allow creating a subname without records', async () => {
@@ -225,7 +238,7 @@ describe('DB offchain domains', () => {
       contract: 'nameWrapper',
       owner: accounts[0],
       account: accounts[0],
-      resolverAddress: '0x7Dc07Bc3a73E6B3d231DCF1b6F23eD20cB12132c',
+      resolverAddress: '0x4A4bF4AFf08A1060B5780BE5658b541C427A9E85',
     })
     expect(tx).toBeTruthy()
     const receipt = await waitForTransaction(tx)
@@ -238,3 +251,58 @@ describe('DB offchain domains', () => {
     expect(owner).toBe(accounts[0])
   })
 })
+
+// This requires an API compliant with the ERC-7884 Operation Router and so,
+// cannot be run remotely
+// describe('DB offchain domains', () => {
+//   beforeEach(async () => {
+//     const paramsParent: RegistrationParameters = {
+//       name: 'parent.eth',
+//       duration: 31536000,
+//       owner: accounts[0],
+//       secret: zeroHash,
+//       resolverAddress: '0x7Dc07Bc3a73E6B3d231DCF1b6F23eD20cB12132c',
+//     }
+//     const commitTxParent = await commitName(walletClient, {
+//       ...paramsParent,
+//       account: accounts[0],
+//     })
+//     await waitForTransaction(commitTxParent)
+
+//     await testClient.increaseTime({ seconds: 61 })
+//     await testClient.mine({ blocks: 1 })
+
+//     const priceParent = await getPrice(publicClient, {
+//       nameOrNames: paramsParent.name,
+//       duration: paramsParent.duration,
+//     })
+
+//     const txParent = await registerName(walletClient, {
+//       ...paramsParent,
+//       account: accounts[0],
+//       value: priceParent!.base + priceParent!.premium,
+//     })
+//     expect(txParent).toBeTruthy()
+//     const receiptParent = await waitForTransaction(txParent)
+//     expect(receiptParent.status).toBe('success')
+//   })
+
+//   it('should allow creating a subname without records', async () => {
+//     const tx = await createSubname(walletClient, {
+//       name: 'test.parent.eth',
+//       contract: 'nameWrapper',
+//       owner: accounts[0],
+//       account: accounts[0],
+//       resolverAddress: '0x7Dc07Bc3a73E6B3d231DCF1b6F23eD20cB12132c',
+//     })
+//     expect(tx).toBeTruthy()
+//     const receipt = await waitForTransaction(tx)
+//     expect(receipt.status).toBe('success')
+
+//     const { owner } = await getOwner(publicClient, {
+//       name: 'test.parent.eth',
+//       contract: 'nameWrapper',
+//     })
+//     expect(owner).toBe(accounts[0])
+//   })
+// })
