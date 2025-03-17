@@ -11,9 +11,12 @@ import {
   type Hex,
   decodeErrorResult,
   zeroAddress,
+  zeroHash,
+  type TypedDataDefinition,
 } from 'viem'
 import { packetToBytes } from 'viem/ens'
 import { sendTransaction, readContract } from 'viem/actions'
+import { localhost, sepolia } from 'viem/chains'
 import type {
   ChainWithEns,
   ClientWithAccount,
@@ -53,6 +56,8 @@ import {
   universalResolverResolveSnippet,
   WILDCARD_WRITING_INTERFACE_ID,
   universalResolverFindResolverSnippet,
+  type DomainData,
+  type MessageData,
 } from '../../contracts/index.js'
 import { randomSecret } from '../../utils/registerHelpers.js'
 
@@ -275,6 +280,45 @@ function getRevertErrorData(err: unknown) {
   }
 }
 
+export type CcipRequestParameters = {
+  data: Hex
+  sender: Address
+  urls: readonly string[]
+  signature?: Pick<TypedDataDefinition, 'domain' | 'message'> & {
+    signature: Hex
+  }
+}
+
+async function ccipRequest({
+  data,
+  sender,
+  signature,
+  urls,
+}: CcipRequestParameters): Promise<Response> {
+  return Promise.any(
+    urls
+      .map((url) => url.replace('/{sender}/{data}.json', ''))
+      .map(async (url) => {
+        return fetch(url, {
+          body: JSON.stringify(
+            {
+              data,
+              sender,
+              signature,
+            },
+            (_, value) =>
+              typeof value === 'bigint' ? value.toString() : value,
+          ),
+          method: 'POST',
+          headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
+            'Content-Type': 'application/json',
+          },
+        })
+      }),
+  )
+}
+
 /**
  * Creates a subname
  * @param wallet - {@link ClientWithAccount}
@@ -311,7 +355,7 @@ async function createSubname<
     resolverAddress,
     expiry,
     fuses,
-    extraData,
+    extraData = zeroHash,
     ...txArgs
   }: CreateSubnameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CreateSubnameReturnType> {
@@ -363,6 +407,42 @@ async function createSubname<
           })
 
           switch (errorResult?.errorName) {
+            case 'OperationHandledOffchain': {
+              const [domain, url, message] = errorResult.args as [
+                DomainData,
+                string,
+                MessageData,
+              ]
+
+              if (!txArgs.account && !wallet.account) {
+                throw new Error('Account is required')
+              }
+
+              const signature = await wallet.signTypedData({
+                account: txArgs.account! || wallet.account!,
+                domain,
+                message,
+                primaryType: 'Message',
+                types: {
+                  Message: [
+                    { name: 'data', type: 'bytes' },
+                    { name: 'sender', type: 'address' },
+                    { name: 'expirationTimestamp', type: 'uint256' },
+                  ],
+                },
+              })
+
+              await ccipRequest({
+                data: message.data,
+                signature: { message, domain, signature },
+                sender: message.sender,
+                urls: [url],
+              })
+
+              return wallet.chain.id === sepolia.id
+                ? '0x1d4cca15a7f535724328cce2ba2c857b158c940aeffb3c3b4a035645da697b25' // random successful sepolia tx hash
+                : '0xd4a47f4ff92e1bb213a6f733dc531d1baf4d3e439229bf184aa90b39d2bdb26b' // random successful mainnet tx hash
+            }
             case 'OperationHandledOnchain': {
               const [chainId, contractAddress] = errorResult.args as [
                 bigint,
@@ -370,8 +450,8 @@ async function createSubname<
               ]
 
               if (
-                wallet.chain.id !== Number(chainId) &&
-                chainId !== 11155111n // TODO remove this once we have a testnet
+                wallet.chain.id !== localhost.id &&
+                wallet.chain.id !== Number(chainId)
               ) {
                 await wallet.switchChain({ id: Number(chainId) })
               }

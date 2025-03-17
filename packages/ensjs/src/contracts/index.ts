@@ -101,4 +101,6 @@ export {
   offchainCommitableSnippet,
   offchainTransferrableSnippet,
   WILDCARD_WRITING_INTERFACE_ID,
+  type DomainData,
+  type MessageData,
 } from './offchainResolver.js'

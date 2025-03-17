@@ -186,14 +186,14 @@ it('should throw an error when creating a wrapped subname with a parent name tha
   )
 })
 
-describe('L2 offchain domains', () => {
+describe('DB offchain domains', () => {
   beforeEach(async () => {
     const paramsParent: RegistrationParameters = {
       name: 'parent.eth',
       duration: 31536000,
       owner: accounts[0],
       secret: zeroHash,
-      resolverAddress: '0x4A4bF4AFf08A1060B5780BE5658b541C427A9E85',
+      resolverAddress: '0x7Dc07Bc3a73E6B3d231DCF1b6F23eD20cB12132c',
     }
     const commitTxParent = await commitName(walletClient, {
       ...paramsParent,
@@ -217,28 +217,15 @@ describe('L2 offchain domains', () => {
     expect(txParent).toBeTruthy()
     const receiptParent = await waitForTransaction(txParent)
     expect(receiptParent.status).toBe('success')
-
-    const tx = await sendTransaction(walletClient, {
-      to: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
-      data: encodeFunctionData({
-        functionName: 'setApprovalForAll',
-        abi: registrySetApprovalForAllSnippet,
-        args: ['0xEc216900e68df20674303982a87a678CA8B79167', true],
-      }),
-      account: accounts[0],
-    })
-    expect(tx).toBeTruthy()
-    const receipt = await waitForTransaction(tx)
-    expect(receipt.status).toBe('success')
   })
 
-  it('should allow creating a subname on the registry', async () => {
+  it('should allow creating a subname without records', async () => {
     const tx = await createSubname(walletClient, {
       name: 'test.parent.eth',
       contract: 'nameWrapper',
       owner: accounts[0],
       account: accounts[0],
-      resolverAddress: '0x4A4bF4AFf08A1060B5780BE5658b541C427A9E85',
+      resolverAddress: '0x7Dc07Bc3a73E6B3d231DCF1b6F23eD20cB12132c',
     })
     expect(tx).toBeTruthy()
     const receipt = await waitForTransaction(tx)
