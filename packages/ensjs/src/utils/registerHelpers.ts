@@ -7,6 +7,9 @@ import {
   toHex,
   type Address,
   type Hex,
+  RawContractError,
+  type TypedDataDefinition,
+  BaseError,
 } from 'viem'
 import {
   CampaignReferenceTooLargeError,
@@ -178,3 +181,48 @@ export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {
 
 export const makeCommitment = (params: RegistrationParameters): Hex =>
   makeCommitmentFromTuple(makeCommitmentTuple(params))
+
+export function getRevertErrorData(err: unknown) {
+  if (!(err instanceof BaseError)) return
+  const error = err.walk() as RawContractError
+  return error?.data as { errorName: string; args: unknown[] }
+}
+
+export type CcipRequestParameters = {
+  data: Hex
+  sender: Address
+  urls: readonly string[]
+  signature?: Pick<TypedDataDefinition, 'domain' | 'message'> & {
+    signature: Hex
+  }
+}
+
+export async function ccipRequest({
+  data,
+  sender,
+  signature,
+  urls,
+}: CcipRequestParameters): Promise<Response> {
+  return Promise.any(
+    urls
+      .map((url) => url.replace('/{sender}/{data}.json', ''))
+      .map(async (url) => {
+        return fetch(url, {
+          body: JSON.stringify(
+            {
+              data,
+              sender,
+              signature,
+            },
+            (_, value) =>
+              typeof value === 'bigint' ? value.toString() : value,
+          ),
+          method: 'POST',
+          headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
+            'Content-Type': 'application/json',
+          },
+        })
+      }),
+  )
+}
