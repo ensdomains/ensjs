@@ -14,7 +14,6 @@ import {
   type Hash,
   BaseError,
   toHex,
-  decodeFunctionResult,
 } from 'viem'
 import { readContract, sendTransaction } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
@@ -30,6 +29,7 @@ import {
   offchainRegisterSnippet,
   universalResolverResolveSnippet,
   erc165SupportsInterfaceSnippet,
+  universalResolverFindResolverSnippet,
 } from '../contracts/index.js'
 
 export const WILDCARD_WRITING_REGISTER_INTERFACE_ID =
@@ -267,29 +267,20 @@ export async function isWildcardWritingSupported(
   wallet: ClientWithEns,
   name: string,
 ): Promise<boolean> {
-  const [res] = await readContract(wallet, {
+  const [resolver] = await readContract(wallet, {
     address: getChainContractAddress({
       client: wallet,
       contract: 'ensUniversalResolver',
     }),
-    abi: universalResolverResolveSnippet,
-    functionName: 'resolve',
-    args: [
-      toHex(packetToBytes(name)),
-      encodeFunctionData({
-        abi: erc165SupportsInterfaceSnippet,
-        functionName: 'supportsInterface',
-        args: [WILDCARD_WRITING_REGISTER_INTERFACE_ID],
-      }),
-    ],
+    abi: universalResolverFindResolverSnippet,
+    functionName: 'findResolver',
+    args: [toHex(packetToBytes(name))],
   })
 
-  if (res === '0x') return false
-
-  return decodeFunctionResult({
+  return readContract(wallet, {
+    address: resolver,
     abi: erc165SupportsInterfaceSnippet,
-    args: [WILDCARD_WRITING_REGISTER_INTERFACE_ID],
     functionName: 'supportsInterface',
-    data: res[0] as Hex,
+    args: [WILDCARD_WRITING_REGISTER_INTERFACE_ID],
   })
 }
