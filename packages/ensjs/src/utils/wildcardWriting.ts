@@ -13,10 +13,14 @@ import {
   type Account,
   type Hash,
   BaseError,
+  toHex,
+  decodeFunctionResult,
 } from 'viem'
 import { readContract, sendTransaction } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import type {
   ChainWithEns,
+  ClientWithEns,
   WalletClientWithAccount,
 } from '../contracts/consts.js'
 import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
@@ -25,6 +29,7 @@ import {
   type MessageData,
   offchainRegisterSnippet,
   universalResolverResolveSnippet,
+  erc165SupportsInterfaceSnippet,
 } from '../contracts/index.js'
 
 export const WILDCARD_WRITING_REGISTER_INTERFACE_ID =
@@ -256,4 +261,42 @@ export async function handleOffchainTransaction<
     if (!txHash) throw offchainError
     return txHash
   }
+}
+
+/**
+ * Checks whether the ENSIP-20 Wildcard Writing is supported by a given domain's resolver.
+ *
+ * @param wallet - The wallet client with account information
+ * @param name - The domain to gather the resolver for
+ * @returns True if the ENSIP-20 Wildcard Writing is supported, false otherwise
+ */
+export async function isWildcardWritingSupported(
+  wallet: ClientWithEns,
+  name: string,
+): Promise<boolean> {
+  const [res] = await readContract(wallet, {
+    address: getChainContractAddress({
+      client: wallet,
+      contract: 'ensUniversalResolver',
+    }),
+    abi: universalResolverResolveSnippet,
+    functionName: 'resolve',
+    args: [
+      toHex(packetToBytes(name)),
+      encodeFunctionData({
+        abi: erc165SupportsInterfaceSnippet,
+        functionName: 'supportsInterface',
+        args: [WILDCARD_WRITING_REGISTER_INTERFACE_ID],
+      }),
+    ],
+  })
+
+  if (res === '0x') return false
+
+  return decodeFunctionResult({
+    abi: erc165SupportsInterfaceSnippet,
+    args: [WILDCARD_WRITING_REGISTER_INTERFACE_ID],
+    functionName: 'supportsInterface',
+    data: res[0] as Hex,
+  })
 }

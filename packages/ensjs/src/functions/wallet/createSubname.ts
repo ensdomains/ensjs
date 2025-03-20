@@ -10,7 +10,7 @@ import {
   zeroHash,
 } from 'viem'
 import { packetToBytes } from 'viem/ens'
-import { sendTransaction, readContract } from 'viem/actions'
+import { sendTransaction } from 'viem/actions'
 import type {
   ChainWithEns,
   ClientWithAccount,
@@ -44,15 +44,11 @@ import {
 } from '../../utils/wrapper.js'
 import getWrapperData from '../public/getWrapperData.js'
 import { BaseError } from '../../errors/base.js'
-import {
-  erc165SupportsInterfaceSnippet,
-  offchainRegisterSnippet,
-  universalResolverFindResolverSnippet,
-} from '../../contracts/index.js'
+import { offchainRegisterSnippet } from '../../contracts/index.js'
 import { randomSecret } from '../../utils/registerHelpers.js'
 import {
   handleOffchainTransaction,
-  WILDCARD_WRITING_REGISTER_INTERFACE_ID,
+  isWildcardWritingSupported,
 } from '../../utils/wildcardWriting.js'
 
 type BaseCreateSubnameDataParameters = {
@@ -209,7 +205,7 @@ class OffchainSubnameError extends BaseError {
   override name = 'OffchainSubnameError'
 
   constructor(name: string) {
-    super(`Create subname error: ${name} is an offchain domain`)
+    super(`Create subname error: ${name} parent domain is an offchain domain`)
   }
 }
 
@@ -221,24 +217,8 @@ const checkCanCreateSubname = async (
     contract,
   }: Pick<BaseCreateSubnameDataParameters, 'name' | 'contract' | 'fuses'>,
 ): Promise<void> => {
-  const [resolver] = await readContract(wallet, {
-    address: getChainContractAddress({
-      client: wallet,
-      contract: 'ensUniversalResolver',
-    }),
-    abi: universalResolverFindResolverSnippet,
-    functionName: 'findResolver',
-    args: [toHex(packetToBytes(name))],
-  })
-
-  const isOffchain = await readContract(wallet, {
-    address: resolver,
-    abi: erc165SupportsInterfaceSnippet,
-    functionName: 'supportsInterface',
-    args: [WILDCARD_WRITING_REGISTER_INTERFACE_ID],
-  })
-
-  if (isOffchain) throw new OffchainSubnameError(name)
+  if (await isWildcardWritingSupported(wallet, name))
+    throw new OffchainSubnameError(name)
 
   if (contract !== 'nameWrapper') return
 
