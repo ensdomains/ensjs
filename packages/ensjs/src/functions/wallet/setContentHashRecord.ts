@@ -1,12 +1,18 @@
-import type {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
+import {
+  toHex,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { packetToBytes } from 'viem/ens'
+import type {
+  ChainWithEns,
+  ClientWithAccount,
+  WalletClientWithAccount,
+} from '../../contracts/consts.js'
 import type {
   Prettify,
   SimpleTransactionRequest,
@@ -14,6 +20,10 @@ import type {
 } from '../../types.js'
 import { encodeSetContentHash } from '../../utils/encoders/encodeSetContentHash.js'
 import { namehash } from '../../utils/normalise.js'
+import {
+  getRevertErrorData,
+  handleWildcardWritingRevert,
+} from '../../utils/wildcardWriting.js'
 
 export type SetContentHashRecordDataParameters = {
   /** Name to set content hash for */
@@ -78,7 +88,7 @@ async function setContentHashRecord<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: WalletClientWithAccount<Transport, TChain, TAccount>,
   {
     name,
     contentHash,
@@ -95,7 +105,22 @@ async function setContentHashRecord<
     ...data,
     ...txArgs,
   } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  try {
+    return await sendTransaction(wallet, writeArgs)
+  } catch (error) {
+    const errorData = getRevertErrorData(error)
+    if (!errorData) throw error
+
+    const txHash = await handleWildcardWritingRevert(
+      wallet,
+      errorData,
+      toHex(packetToBytes(name)),
+      writeArgs.data!,
+      (txArgs.account || wallet.account) as Address,
+    )
+    if (!txHash) throw error
+    return txHash
+  }
 }
 
 setContentHashRecord.makeFunctionData = makeFunctionData
