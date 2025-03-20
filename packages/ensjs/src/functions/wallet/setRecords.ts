@@ -5,9 +5,15 @@ import {
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  toHex,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { packetToBytes } from 'viem/ens'
+import type {
+  ChainWithEns,
+  ClientWithAccount,
+  WalletClientWithAccount,
+} from '../../contracts/consts.js'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type {
@@ -20,6 +26,10 @@ import {
   type RecordOptions,
 } from '../../utils/generateRecordCallArray.js'
 import { namehash } from '../../utils/normalise.js'
+import {
+  getRevertErrorData,
+  handleWildcardWritingRevert,
+} from '../../utils/wildcardWriting.js'
 
 export type SetRecordsDataParameters = {
   /** The name to set records for */
@@ -102,7 +112,7 @@ async function setRecords<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: WalletClientWithAccount<Transport, TChain, TAccount>,
   {
     name,
     resolverAddress,
@@ -127,7 +137,22 @@ async function setRecords<
     ...data,
     ...txArgs,
   } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  try {
+    return await sendTransaction(wallet, writeArgs)
+  } catch (error) {
+    const errorData = getRevertErrorData(error)
+    if (!errorData) throw error
+
+    const txHash = await handleWildcardWritingRevert(
+      wallet,
+      errorData,
+      toHex(packetToBytes(name)),
+      writeArgs.data!,
+      (txArgs.account || wallet.account) as Address,
+    )
+    if (!txHash) throw error
+    return txHash
+  }
 }
 
 setRecords.makeFunctionData = makeFunctionData
