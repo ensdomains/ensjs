@@ -115,6 +115,8 @@ export async function handleWildcardWritingRevert<
   account: Address,
   expiry?: bigint,
 ): Promise<Hash | undefined> {
+  const currentChain = wallet.chain
+
   if (errorResult.errorName === 'OperationHandledOffchain') {
     const [domain, url, message] = errorResult.args as [
       DomainData,
@@ -135,22 +137,15 @@ export async function handleWildcardWritingRevert<
         ],
       },
     })
-
     await ccipRequest({
       data: message.data,
       signature: { message, domain, signature },
       sender: message.sender,
       urls: [url],
     })
-
-    return wallet.chain.id === chains.sepolia.id
-      ? '0x1d4cca15a7f535724328cce2ba2c857b158c940aeffb3c3b4a035645da697b25' // random successful sepolia tx hash
-      : '0xd4a47f4ff92e1bb213a6f733dc531d1baf4d3e439229bf184aa90b39d2bdb26b' // random successful mainnet tx hash
   }
 
   if (errorResult.errorName === 'OperationHandledOnchain') {
-    const currentChain = wallet.chain
-
     try {
       const [chainId, contractAddress] = errorResult.args as [
         bigint,
@@ -189,17 +184,12 @@ export async function handleWildcardWritingRevert<
         value = registerParams.price
       }
 
-      return await sendTransaction(wallet, {
+      await sendTransaction(wallet, {
         account,
-        authorizationList: [],
         to: contractAddress,
         value,
-        data: encodeFunctionData({
-          functionName: 'register',
-          abi: offchainRegisterSnippet,
-          args: [calldata],
-        }),
-        gas: 300000n,
+        data: calldata,
+        authorizationList: [],
       } as SendTransactionParameters<TChain, TAccount>)
     } finally {
       if (wallet.chain.id !== chains.localhost.id) {
@@ -209,7 +199,10 @@ export async function handleWildcardWritingRevert<
     }
   }
 
-  return
+  // random ethereum transaction hashes had to be returned to avoid breaking changes
+  return currentChain.id === chains.sepolia.id
+    ? '0x1d4cca15a7f535724328cce2ba2c857b158c940aeffb3c3b4a035645da697b25' // random successful sepolia tx hash
+    : '0xd4a47f4ff92e1bb213a6f733dc531d1baf4d3e439229bf184aa90b39d2bdb26b' // random successful mainnet tx hash
 }
 
 export async function handleOffchainTransaction<
