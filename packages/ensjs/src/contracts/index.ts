@@ -100,6 +100,5 @@ export {
   offchainRegisterSnippet,
   offchainCommitableSnippet,
   offchainTransferrableSnippet,
-  type DomainData,
   type MessageData,
 } from './offchainResolver.js'
