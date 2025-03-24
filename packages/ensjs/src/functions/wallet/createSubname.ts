@@ -5,12 +5,21 @@ import {
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  toHex,
+  type Hex,
+  decodeErrorResult,
+  zeroAddress,
+  zeroHash,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
+import * as chains from 'viem/chains'
+import type { Chain } from 'viem/chains'
+import { packetToBytes } from 'viem/ens'
+import { sendTransaction, readContract } from 'viem/actions'
 import type {
   ChainWithEns,
   ClientWithAccount,
   ClientWithEns,
+  WalletClientWithAccount,
 } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
@@ -39,6 +48,20 @@ import {
 } from '../../utils/wrapper.js'
 import getWrapperData from '../public/getWrapperData.js'
 import { BaseError } from '../../errors/base.js'
+import {
+  erc165SupportsInterfaceSnippet,
+  offchainRegisterSnippet,
+  WILDCARD_WRITING_INTERFACE_ID,
+  universalResolverFindResolverSnippet,
+  type DomainData,
+  type MessageData,
+  universalResolverResolveSnippet,
+} from '../../contracts/index.js'
+import {
+  ccipRequest,
+  getRevertErrorData,
+  randomSecret,
+} from '../../utils/registerHelpers.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */
@@ -53,6 +76,8 @@ type BaseCreateSubnameDataParameters = {
   expiry?: AnyDate
   /** Fuses to set (only on NameWrapper) */
   fuses?: EncodeFusesInputObject
+  /** Any given hex data to be used on the offchain flow */
+  extraData?: Hex
 }
 
 type RegistryCreateSubnameDataParameters = {
@@ -188,6 +213,22 @@ class CreateSubnameParentNotLockedError extends BaseError {
   }
 }
 
+class OffchainSubnameError extends BaseError {
+  override name = 'OffchainSubnameError'
+
+  constructor(name: string) {
+    super(`Create subname error: ${name} is an offchain domain`)
+  }
+}
+
+class SubnameUnavailableError extends BaseError {
+  override name = 'SubnameUnavailableError'
+
+  constructor(name: string) {
+    super(`Create subname error: ${name} is unavailable`)
+  }
+}
+
 const checkCanCreateSubname = async (
   wallet: ClientWithEns,
   {
@@ -196,6 +237,25 @@ const checkCanCreateSubname = async (
     contract,
   }: Pick<BaseCreateSubnameDataParameters, 'name' | 'contract' | 'fuses'>,
 ): Promise<void> => {
+  const [resolver] = await readContract(wallet, {
+    address: getChainContractAddress({
+      client: wallet,
+      contract: 'ensUniversalResolver',
+    }),
+    abi: universalResolverFindResolverSnippet,
+    functionName: 'findResolver',
+    args: [toHex(packetToBytes(name))],
+  })
+
+  const isOffchain = await readContract(wallet, {
+    address: resolver,
+    abi: erc165SupportsInterfaceSnippet,
+    functionName: 'supportsInterface',
+    args: [WILDCARD_WRITING_INTERFACE_ID],
+  })
+
+  if (isOffchain) throw new OffchainSubnameError(name)
+
   if (contract !== 'nameWrapper') return
 
   const parentName = name.split('.').slice(1).join('.')
@@ -212,6 +272,12 @@ const checkCanCreateSubname = async (
     parentWrapperData?.fuses?.child?.CANNOT_UNWRAP
   if (isBurningPCC && !isParentCannotUnwrapBurned)
     throw new CreateSubnameParentNotLockedError({ parentName })
+}
+
+function getChain(chainId: number): Chain | undefined {
+  return (Object.values(chains) as Chain[]).find(
+    (chain) => chain.id === chainId,
+  )
 }
 
 /**
@@ -242,7 +308,7 @@ async function createSubname<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: WalletClientWithAccount<Transport, TChain, TAccount>,
   {
     name,
     contract,
@@ -250,10 +316,159 @@ async function createSubname<
     resolverAddress,
     expiry,
     fuses,
+    extraData = zeroHash,
     ...txArgs
   }: CreateSubnameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CreateSubnameReturnType> {
-  await checkCanCreateSubname(wallet, { name, fuses, contract })
+  try {
+    await checkCanCreateSubname(wallet, { name, fuses, contract })
+  } catch (error) {
+    const encodedName = toHex(packetToBytes(name))
+    if (error instanceof OffchainSubnameError) {
+      const calldata = {
+        name: encodedName,
+        owner,
+        duration: expiry,
+        secret: randomSecret(),
+        resolver: resolverAddress || zeroAddress,
+        extraData,
+      }
+
+      try {
+        await readContract(wallet, {
+          address: getChainContractAddress({
+            client: wallet,
+            contract: 'ensUniversalResolver',
+          }),
+          abi: universalResolverResolveSnippet,
+          functionName: 'resolve',
+          args: [
+            encodedName,
+            encodeFunctionData({
+              functionName: 'getOperationHandler',
+              abi: offchainRegisterSnippet,
+              args: [
+                encodeFunctionData({
+                  functionName: 'register',
+                  abi: offchainRegisterSnippet,
+                  args: [calldata],
+                }),
+              ],
+            }),
+          ],
+        })
+      } catch (offchainError) {
+        const data = getRevertErrorData(offchainError)
+
+        if (!data || !Array.isArray(data.args)) throw offchainError
+
+        const [params] = data.args
+        const errorResult = decodeErrorResult({
+          abi: offchainRegisterSnippet,
+          data: params as Hex,
+        })
+
+        switch (errorResult?.errorName) {
+          case 'OperationHandledOffchain': {
+            const [domain, url, message] = errorResult.args as [
+              DomainData,
+              string,
+              MessageData,
+            ]
+
+            if (!txArgs.account && !wallet.account) {
+              throw new Error('Account is required')
+            }
+
+            const signature = await wallet.signTypedData({
+              account: txArgs.account! || wallet.account!,
+              domain,
+              message,
+              primaryType: 'Message',
+              types: {
+                Message: [
+                  { name: 'data', type: 'bytes' },
+                  { name: 'sender', type: 'address' },
+                  { name: 'expirationTimestamp', type: 'uint256' },
+                ],
+              },
+            })
+
+            await ccipRequest({
+              data: message.data,
+              signature: { message, domain, signature },
+              sender: message.sender,
+              urls: [url],
+            })
+
+            // Return a mock transaction hash since the actual transaction
+            // isn't present in the database implementation
+            // and can't be checked on the L2 implementation
+            // This is used for backwards compatibility
+            return wallet.chain.id === chains.sepolia.id
+              ? '0x1d4cca15a7f535724328cce2ba2c857b158c940aeffb3c3b4a035645da697b25' // random successful sepolia tx hash
+              : '0xd4a47f4ff92e1bb213a6f733dc531d1baf4d3e439229bf184aa90b39d2bdb26b' // random successful mainnet tx hash
+          }
+          case 'OperationHandledOnchain': {
+            const currentChain = wallet.chain
+
+            try {
+              const [chainId, contractAddress] = errorResult.args as [
+                bigint,
+                `0x${string}`,
+              ]
+
+              if (
+                wallet.chain.id !== chains.localhost.id &&
+                wallet.chain.id !== Number(chainId)
+              ) {
+                await wallet.switchChain({ id: Number(chainId) })
+                const chain = getChain(Number(chainId))
+                if (!chain) throw new Error('Chain not found')
+                wallet.chain = chain as TChain
+              }
+
+              const registerParams = (await readContract(wallet, {
+                address: contractAddress,
+                abi: offchainRegisterSnippet,
+                functionName: 'registerParams',
+                args: [encodedName, expiryToBigInt(expiry)],
+              })) as {
+                price: bigint
+                commitTime: bigint
+                extraData: Hex
+                available: boolean
+                token: Hex
+              }
+
+              if (!registerParams.available) {
+                throw new SubnameUnavailableError(name)
+              }
+
+              return await sendTransaction(wallet, {
+                ...txArgs,
+                to: contractAddress,
+                value: registerParams.price,
+                data: encodeFunctionData({
+                  functionName: 'register',
+                  abi: offchainRegisterSnippet,
+                  args: [calldata],
+                }),
+                gas: 300000n,
+              } as SendTransactionParameters<TChain, TAccount, TChainOverride>)
+            } finally {
+              if (wallet.chain.id !== chains.localhost.id) {
+                await wallet.switchChain({ id: currentChain.id })
+                wallet.chain = currentChain
+              }
+            }
+          }
+          default:
+            throw offchainError
+        }
+      }
+    }
+  }
 
   const data = makeFunctionData(wallet, {
     name,
