@@ -14,6 +14,8 @@ import {
   type Hash,
   BaseError,
   toHex,
+  type Prettify,
+  type TypedDataDomain,
 } from 'viem'
 import { readContract, sendTransaction } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
@@ -24,7 +26,6 @@ import type {
 } from '../contracts/consts.js'
 import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
 import {
-  type DomainData,
   type MessageData,
   offchainRegisterSnippet,
   universalResolverResolveSnippet,
@@ -119,7 +120,7 @@ export async function handleWildcardWritingRevert<
 
   if (errorResult.errorName === 'OperationHandledOffchain') {
     const [domain, url, message] = errorResult.args as [
-      DomainData,
+      Prettify<TypedDataDomain>,
       string,
       MessageData,
     ]
@@ -137,12 +138,17 @@ export async function handleWildcardWritingRevert<
         ],
       },
     })
-    await ccipRequest({
+    const response = await ccipRequest({
       data: message.data,
-      signature: { message, domain, signature },
+      signature: {
+        message,
+        domain: { ...domain, chainId: Number(domain.chainId) },
+        signature,
+      },
       sender: message.sender,
       urls: [url],
     })
+    if (response.status !== 200) return zeroHash
   }
 
   if (errorResult.errorName === 'OperationHandledOnchain') {
