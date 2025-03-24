@@ -91,11 +91,11 @@ function getChain(chainId: number): Chain | undefined {
   )
 }
 
-export class SubnameUnavailableError extends BaseError {
-  override name = 'SubnameUnavailableError'
+export class NameUnavailableError extends BaseError {
+  override name = 'NameUnavailableError'
 
   constructor(name: string) {
-    super(`Create subname error: ${name} is unavailable`)
+    super(`Create name error: ${name} is unavailable`)
   }
 }
 
@@ -178,7 +178,7 @@ export async function handleWildcardWritingRevert<
         }
 
         if (!registerParams.available) {
-          throw new SubnameUnavailableError(encodedName)
+          throw new NameUnavailableError(encodedName)
         }
 
         value = registerParams.price
