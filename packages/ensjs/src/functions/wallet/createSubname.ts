@@ -51,7 +51,6 @@ import { BaseError } from '../../errors/base.js'
 import {
   erc165SupportsInterfaceSnippet,
   offchainRegisterSnippet,
-  // universalResolverResolveSnippet,
   WILDCARD_WRITING_INTERFACE_ID,
   universalResolverFindResolverSnippet,
   type DomainData,
@@ -248,7 +247,6 @@ const checkCanCreateSubname = async (
     args: [toHex(packetToBytes(name))],
   })
 
-  // TODO: check the interface through the resolve function
   const isOffchain = await readContract(wallet, {
     address: resolver,
     abi: erc165SupportsInterfaceSnippet,
@@ -403,6 +401,10 @@ async function createSubname<
               urls: [url],
             })
 
+            // Return a mock transaction hash since the actual transaction
+            // isn't present in the database implementation
+            // and can't be checked on the L2 implementation
+            // This is used for backwards compatibility
             return wallet.chain.id === chains.sepolia.id
               ? '0x1d4cca15a7f535724328cce2ba2c857b158c940aeffb3c3b4a035645da697b25' // random successful sepolia tx hash
               : '0xd4a47f4ff92e1bb213a6f733dc531d1baf4d3e439229bf184aa90b39d2bdb26b' // random successful mainnet tx hash
