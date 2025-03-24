@@ -1,12 +1,19 @@
-import type {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
+import {
+  toHex,
+  type Account,
+  type Address,
+  type Hash,
+  type SendTransactionParameters,
+  type Transport,
+  zeroHash,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { packetToBytes } from 'viem/ens'
+import type {
+  ChainWithEns,
+  ClientWithAccount,
+  WalletClientWithAccount,
+} from '../../contracts/consts.js'
 import type {
   Prettify,
   SimpleTransactionRequest,
@@ -18,6 +25,7 @@ import {
   type EncodeSetAbiParameters,
 } from '../../utils/encoders/encodeSetAbi.js'
 import { namehash } from '../../utils/normalise.js'
+import { handleOffchainTransaction } from '../../utils/wildcardWriting.js'
 
 export type SetAbiRecordDataParameters = {
   /** Name to set ABI for */
@@ -89,7 +97,7 @@ async function setAbiRecord<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: WalletClientWithAccount<Transport, TChain, TAccount>,
   {
     name,
     encodedAbi,
@@ -102,6 +110,14 @@ async function setAbiRecord<
     encodedAbi,
     resolverAddress,
   })
+  const encodedName = toHex(packetToBytes(name))
+  const txHash = await handleOffchainTransaction(
+    wallet,
+    encodedName,
+    data.data,
+    (txArgs.account || wallet.account) as Address,
+  )
+  if (txHash !== zeroHash) return txHash
   const writeArgs = {
     ...data,
     ...txArgs,
