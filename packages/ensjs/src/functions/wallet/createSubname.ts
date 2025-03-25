@@ -46,10 +46,7 @@ import getWrapperData from '../public/getWrapperData.js'
 import { BaseError } from '../../errors/base.js'
 import { offchainRegisterSnippet } from '../../contracts/index.js'
 import { randomSecret } from '../../utils/registerHelpers.js'
-import {
-  handleOffchainTransaction,
-  isWildcardWritingSupported,
-} from '../../utils/wildcardWriting.js'
+import { handleOffchainTransaction } from '../../utils/wildcardWriting.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */
@@ -201,14 +198,6 @@ class CreateSubnameParentNotLockedError extends BaseError {
   }
 }
 
-class OffchainSubnameError extends BaseError {
-  override name = 'OffchainSubnameError'
-
-  constructor(name: string) {
-    super(`Create subname error: ${name} parent domain is an offchain domain`)
-  }
-}
-
 const checkCanCreateSubname = async (
   wallet: ClientWithEns,
   {
@@ -217,9 +206,6 @@ const checkCanCreateSubname = async (
     contract,
   }: Pick<BaseCreateSubnameDataParameters, 'name' | 'contract' | 'fuses'>,
 ): Promise<void> => {
-  if (await isWildcardWritingSupported(wallet, name))
-    throw new OffchainSubnameError(name)
-
   if (contract !== 'nameWrapper') return
 
   const parentName = name.split('.').slice(1).join('.')
@@ -278,33 +264,30 @@ async function createSubname<
     ...txArgs
   }: CreateSubnameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CreateSubnameReturnType> {
-  try {
-    await checkCanCreateSubname(wallet, { name, fuses, contract })
-  } catch (error) {
-    const encodedName = toHex(packetToBytes(name))
-    if (error instanceof OffchainSubnameError) {
-      return await handleOffchainTransaction(
-        wallet,
-        encodedName,
-        encodeFunctionData({
-          abi: offchainRegisterSnippet,
-          functionName: 'register',
-          args: [
-            {
-              name: encodedName,
-              owner,
-              duration: expiryToBigInt(expiry),
-              secret: randomSecret(),
-              resolver,
-              extraData,
-            },
-          ],
-        }),
-        owner,
-        expiryToBigInt(expiry),
-      )
-    }
-  }
+  const encodedName = toHex(packetToBytes(name))
+  const txHash = await handleOffchainTransaction(
+    wallet,
+    encodedName,
+    encodeFunctionData({
+      abi: offchainRegisterSnippet,
+      functionName: 'register',
+      args: [
+        {
+          name: encodedName,
+          owner,
+          duration: expiryToBigInt(expiry),
+          secret: randomSecret(),
+          resolver,
+          extraData,
+        },
+      ],
+    }),
+    owner,
+    expiryToBigInt(expiry),
+  )
+  if (txHash !== zeroHash) return txHash
+
+  await checkCanCreateSubname(wallet, { name, fuses, contract })
 
   const data = makeFunctionData(wallet, {
     name,
@@ -318,7 +301,6 @@ async function createSubname<
     ...data,
     ...txArgs,
   } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-
   return sendTransaction(wallet, writeArgs)
 }
 
