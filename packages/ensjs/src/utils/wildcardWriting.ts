@@ -189,10 +189,6 @@ export async function handleWildcardWritingRevert<
         to: contractAddress,
         value,
         data: calldata,
-<<<<<<< Updated upstream
-        authorizationList: [],
-=======
->>>>>>> Stashed changes
       } as SendTransactionParameters<TChain, TAccount>)
     } finally {
       if (wallet.chain.id !== chains.localhost.id) {
