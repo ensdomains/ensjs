@@ -186,11 +186,13 @@ export async function handleWildcardWritingRevert<
       }
 
       await sendTransaction(wallet, {
-        account,
         to: contractAddress,
         value,
         data: calldata,
+<<<<<<< Updated upstream
         authorizationList: [],
+=======
+>>>>>>> Stashed changes
       } as SendTransactionParameters<TChain, TAccount>)
     } finally {
       if (wallet.chain.id !== chains.localhost.id) {
@@ -217,6 +219,8 @@ export async function handleOffchainTransaction<
   expiry?: bigint,
 ): Promise<Hash> {
   try {
+    // eslint-disable-next-line no-debugger
+    debugger
     await readContract(wallet, {
       address: getChainContractAddress({
         client: wallet,
@@ -235,6 +239,8 @@ export async function handleOffchainTransaction<
     })
     return zeroHash
   } catch (offchainError) {
+    // eslint-disable-next-line no-debugger
+    debugger
     const data = getRevertErrorData(offchainError)
     if (!data || !Array.isArray(data.args)) throw offchainError
 
