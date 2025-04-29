@@ -111,7 +111,7 @@
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
-    "@ensdomains/ens-contracts": "1.0.0",
+    "@ensdomains/ens-contracts": "1.4.0",
     "@ensdomains/ens-test-env": "workspace:*",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/contracts": "^4.5.0",
