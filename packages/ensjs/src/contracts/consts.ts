@@ -1,4 +1,11 @@
-import type { Account, Address, Chain, Client, Transport } from 'viem'
+import type {
+  Account,
+  Address,
+  Chain,
+  Client,
+  Transport,
+  WalletClient,
+} from 'viem'
 import type { Assign, Prettify } from '../types.js'
 
 type ChainContract = {
@@ -238,3 +245,9 @@ export type ClientWithAccount<
   TChain extends ChainWithEns = ChainWithEns,
   TAccount extends Account | undefined = Account | undefined,
 > = Client<TTransport, TChain, TAccount>
+
+export type WalletClientWithAccount<
+  TTransport extends Transport = Transport,
+  TChain extends ChainWithEns = ChainWithEns,
+  TAccount extends Account | undefined = Account | undefined,
+> = WalletClient<TTransport, TChain, TAccount>

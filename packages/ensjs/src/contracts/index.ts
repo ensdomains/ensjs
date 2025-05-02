@@ -96,3 +96,9 @@ export {
   universalResolverResolveSnippet,
   universalResolverReverseSnippet,
 } from './universalResolver.js'
+export {
+  offchainRegisterSnippet,
+  offchainCommitableSnippet,
+  offchainTransferrableSnippet,
+  type MessageData,
+} from './offchainResolver.js'

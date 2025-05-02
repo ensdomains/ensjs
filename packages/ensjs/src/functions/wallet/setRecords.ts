@@ -5,9 +5,16 @@ import {
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  toHex,
+  zeroHash,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { packetToBytes } from 'viem/ens'
+import type {
+  ChainWithEns,
+  ClientWithAccount,
+  WalletClientWithAccount,
+} from '../../contracts/consts.js'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type {
@@ -20,6 +27,7 @@ import {
   type RecordOptions,
 } from '../../utils/generateRecordCallArray.js'
 import { namehash } from '../../utils/normalise.js'
+import { handleOffchainTransaction } from '../../utils/wildcardWriting.js'
 
 export type SetRecordsDataParameters = {
   /** The name to set records for */
@@ -102,7 +110,7 @@ async function setRecords<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: WalletClientWithAccount<Transport, TChain, TAccount>,
   {
     name,
     resolverAddress,
@@ -123,6 +131,16 @@ async function setRecords<
     coins,
     abi,
   })
+
+  const encodedName = toHex(packetToBytes(name))
+  const txHash = await handleOffchainTransaction(
+    wallet,
+    encodedName,
+    data.data,
+    (txArgs.account || wallet.account) as Address,
+  )
+  if (txHash !== zeroHash) return txHash
+
   const writeArgs = {
     ...data,
     ...txArgs,

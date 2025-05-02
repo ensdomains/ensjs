@@ -5,12 +5,17 @@ import {
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  toHex,
+  type Hex,
+  zeroHash,
 } from 'viem'
+import { packetToBytes } from 'viem/ens'
 import { sendTransaction } from 'viem/actions'
 import type {
   ChainWithEns,
   ClientWithAccount,
   ClientWithEns,
+  WalletClientWithAccount,
 } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
@@ -39,6 +44,9 @@ import {
 } from '../../utils/wrapper.js'
 import getWrapperData from '../public/getWrapperData.js'
 import { BaseError } from '../../errors/base.js'
+import { offchainRegisterSnippet } from '../../contracts/index.js'
+import { randomSecret } from '../../utils/registerHelpers.js'
+import { handleOffchainTransaction } from '../../utils/wildcardWriting.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */
@@ -53,6 +61,8 @@ type BaseCreateSubnameDataParameters = {
   expiry?: AnyDate
   /** Fuses to set (only on NameWrapper) */
   fuses?: EncodeFusesInputObject
+  /** Any given hex data to be used on the offchain flow */
+  extraData?: Hex
 }
 
 type RegistryCreateSubnameDataParameters = {
@@ -242,24 +252,48 @@ async function createSubname<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: WalletClientWithAccount<Transport, TChain, TAccount>,
   {
     name,
     contract,
     owner,
-    resolverAddress,
+    resolverAddress: resolver,
     expiry,
     fuses,
+    extraData = zeroHash,
     ...txArgs
   }: CreateSubnameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CreateSubnameReturnType> {
+  const encodedName = toHex(packetToBytes(name))
+  const txHash = await handleOffchainTransaction(
+    wallet,
+    encodedName,
+    encodeFunctionData({
+      abi: offchainRegisterSnippet,
+      functionName: 'register',
+      args: [
+        {
+          name: encodedName,
+          owner,
+          duration: expiryToBigInt(expiry),
+          secret: randomSecret(),
+          resolver,
+          extraData,
+        },
+      ],
+    }),
+    owner,
+    expiryToBigInt(expiry),
+  )
+  if (txHash !== zeroHash) return txHash
+
   await checkCanCreateSubname(wallet, { name, fuses, contract })
 
   const data = makeFunctionData(wallet, {
     name,
     contract,
     owner,
-    resolverAddress,
+    resolverAddress: resolver,
     expiry,
     fuses,
   } as CreateSubnameDataParameters)
@@ -267,7 +301,6 @@ async function createSubname<
     ...data,
     ...txArgs,
   } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-
   return sendTransaction(wallet, writeArgs)
 }
 
