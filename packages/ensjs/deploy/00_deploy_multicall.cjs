@@ -1,12 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const { existsSync, mkdirSync } = require('fs')
-const { readFile, writeFile } = require('fs/promises')
-const { resolve } = require('path')
+const { existsSync, mkdirSync } = require('node:fs')
+const { readFile, writeFile } = require('node:fs/promises')
+const { resolve } = require('node:path')
 
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { getNamedAccounts } = hre
   const { deployer } = await getNamedAccounts()
 

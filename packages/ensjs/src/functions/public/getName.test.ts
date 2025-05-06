@@ -1,4 +1,4 @@
-import { RawContractError, type Address, type Hex } from 'viem'
+import { type Address, type Hex, RawContractError } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import {

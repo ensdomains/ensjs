@@ -18,7 +18,7 @@ function computeInterfaceId(iface) {
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { getNamedAccounts, deployments, network } = hre
   const { deploy } = deployments
   const { deployer, owner } = await getNamedAccounts()

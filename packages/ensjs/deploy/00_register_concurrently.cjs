@@ -56,7 +56,7 @@ const names = [
     duration: DURATION,
     subnames: [
       {
-        label: `xyz`,
+        label: 'xyz',
         namedOwner: 'owner4',
         type: 'wrapped',
         expiry: MAX_DATE_INT,
@@ -78,7 +78,7 @@ const names = [
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { network } = hre
 
   const nonceManager = await makeNonceManager(hre)
@@ -173,12 +173,7 @@ const func = async function (hre) {
   await network.provider.send('evm_setAutomine', [true])
 
   // Create subnames
-  for (const {
-    label,
-    namedOwner,
-    type,
-    subnames,
-  } of names) {
+  for (const { label, namedOwner, type, subnames } of names) {
     if (!subnames) continue
     console.log(`Setting subnames for ${label}.eth...`)
     for (const {

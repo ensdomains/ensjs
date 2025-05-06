@@ -59,8 +59,8 @@ const getDecodedName = async (
     if (isEncodedLabelhash(label)) {
       labelsQuery += gql`
         labels${i}: domains(first: 1, where: { labelhash: "${decodeLabelhash(
-        label,
-      ).toLowerCase()}", labelName_not: null }) {
+          label,
+        ).toLowerCase()}", labelName_not: null }) {
           labelName
         }
       `
@@ -105,7 +105,7 @@ const getDecodedName = async (
   if (Object.keys(labelResults).length !== 0) {
     for (const [key, value] of Object.entries(labelResults)) {
       if (value.length && value[0].labelName) {
-        attemptedDecodedLabels[parseInt(key.replace('labels', ''))] =
+        attemptedDecodedLabels[Number.parseInt(key.replace('labels', ''))] =
           value[0].labelName
       }
     }

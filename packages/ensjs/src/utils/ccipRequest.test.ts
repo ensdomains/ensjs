@@ -1,4 +1,4 @@
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import { encodeFunctionData, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
 import { expect, it, vi } from 'vitest'

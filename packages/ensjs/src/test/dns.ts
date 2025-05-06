@@ -1,4 +1,4 @@
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import type { MockedFunction } from 'vitest'
 
 type Handler = MockedFunction<RequestListener>

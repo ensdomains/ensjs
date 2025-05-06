@@ -1,4 +1,4 @@
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import { expect, it, vi } from 'vitest'
 import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipBatchRequest } from './ccipBatchRequest.js'

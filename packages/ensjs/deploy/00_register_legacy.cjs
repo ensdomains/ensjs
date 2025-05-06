@@ -367,28 +367,28 @@ const names = [
     namedOwner: 'owner2',
     namedAddr: 'owner2',
   })),
-  ...Array.from({ length: 2}, (_, i) => ({
+  ...Array.from({ length: 2 }, (_, i) => ({
     label: `nonconcurrent-legacy-name-${i}`,
     namedOwner: 'owner4',
     namedAddr: 'owner4',
     duration: 31536000 / 2,
     subnames: [
       {
-        label: `test`,
+        label: 'test',
         namedOwner: 'owner4',
       },
       {
-        label: `xyz`,
+        label: 'xyz',
         namedOwner: 'owner4',
-      }
-    ]
-  }))
+      },
+    ],
+  })),
 ]
 
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { getNamedAccounts, network } = hre
   const allNamedAccts = await getNamedAccounts()
 

@@ -1,7 +1,15 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"files": {
-		"ignore": ["node_modules", "package.json", "dist", "coverage", "data", "cache"]
+		"ignore": [
+			"node_modules",
+			"package.json",
+			"dist",
+			"coverage",
+			"data",
+			"cache",
+			"tsconfig.*.json"
+		]
 	},
 	"organizeImports": {
 		"enabled": true
@@ -11,7 +19,8 @@
 		"rules": {
 			"recommended": true,
 			"complexity": {
-				"noForEach": "off"
+				"noForEach": "off",
+				"noBannedTypes": "warn"
 			},
 			"style": {
 				"noNonNullAssertion": "off"
@@ -25,7 +34,8 @@
 				"noAccumulatingSpread": "off"
 			},
 			"suspicious": {
-				"noAssignInExpressions": "off"
+				"noAssignInExpressions": "off",
+				"noExplicitAny": "warn"
 			}
 		}
 	},

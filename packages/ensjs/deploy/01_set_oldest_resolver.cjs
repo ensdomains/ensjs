@@ -1,8 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-const fs = require('fs/promises')
+const fs = require('node:fs/promises')
 const { ethers } = require('hardhat')
-const { resolve } = require('path')
+const { resolve } = require('node:path')
 const { namehash } = require('viem')
 
 const names = [
@@ -16,7 +16,7 @@ const names = [
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { getNamedAccounts, deployments } = hre
   const allNamedAccts = await getNamedAccounts()
 

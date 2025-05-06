@@ -1,4 +1,4 @@
-import { RawContractError, createPublicClient, http } from 'viem'
+import { http, RawContractError, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../index.js'

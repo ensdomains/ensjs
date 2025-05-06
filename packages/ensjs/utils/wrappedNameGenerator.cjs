@@ -53,7 +53,7 @@ const makeNameGenerator = async (hre, optionalNonceManager) => {
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
       const [price] = await controller.rentPrice(label, duration)
-      
+
       const priceWithBuffer = BigNumber.from(price).mul(105).div(100)
       const _controller = controller.connect(await ethers.getSigner(owner))
       return _controller.register(

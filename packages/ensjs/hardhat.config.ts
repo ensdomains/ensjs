@@ -1,10 +1,10 @@
-import { config } from 'dotenv'
-require('@nomiclabs/hardhat-ethers')
-require('hardhat-deploy')
-const { resolve } = require('path')
+import 'dotenv/config'
+import '@nomiclabs/hardhat-ethers'
+import 'hardhat-deploy'
+import { resolve } from 'node:path'
 
-const { execSync } = require('child_process')
-const { existsSync } = require('fs')
+import { execSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 
 process.env.BATCH_GATEWAY_URLS = JSON.stringify([
   'https://universal-offchain-unwrapper.ens-cf.workers.dev/',

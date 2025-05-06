@@ -81,7 +81,7 @@ export const responseMiddleware: ResponseMiddleware = (response) => {
             let hashedName = '[Invalid ENS Name]'
             try {
               hashedName = namehash(value.name)
-            } catch (e) {
+            } catch (_e) {
               obj[key] = { ...value, name: hashedName, invalidName: true }
             }
 

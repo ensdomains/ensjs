@@ -7,7 +7,7 @@ const makeNameGenerator = async (hre, optionalNonceManager) => {
   const controller = await ethers.getContract('LegacyETHRegistrarController')
   const publicResolver = await ethers.getContract('LegacyPublicResolver')
   const registry = await ethers.getContract('ENSRegistry')
-  const nonceManager = optionalNonceManager ?? { getNonce: () => undefined}
+  const nonceManager = optionalNonceManager ?? { getNonce: () => undefined }
 
   return {
     commit: async ({ label, namedOwner, namedAddr }) => {
@@ -26,7 +26,9 @@ const makeNameGenerator = async (hre, optionalNonceManager) => {
       )
 
       const _controller = controller.connect(await ethers.getSigner(registrant))
-      return _controller.commit(commitment, {nonce: nonceManager.getNonce(namedOwner)})
+      return _controller.commit(commitment, {
+        nonce: nonceManager.getNonce(namedOwner),
+      })
     },
     register: async ({ label, namedOwner, namedAddr, duration = 31536000 }) => {
       const secret =

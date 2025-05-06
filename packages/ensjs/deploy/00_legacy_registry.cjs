@@ -10,7 +10,7 @@ const names = ['legacy']
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { getNamedAccounts } = hre
   const { owner } = await getNamedAccounts()
 
@@ -42,7 +42,7 @@ const func = async function (hre) {
 func.id = 'legacy-registry-names'
 func.tags = ['legacy-registry-names']
 func.dependencies = ['ENSRegistry']
-func.skip = async function (hre) {
+func.skip = async (hre) => {
   const { getNamedAccounts } = hre
   const { owner } = await getNamedAccounts()
 

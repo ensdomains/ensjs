@@ -98,7 +98,7 @@ const names = [
       },
     ],
   },
-  ...Array.from({ length: 2}, (_, index) => ({
+  ...Array.from({ length: 2 }, (_, index) => ({
     label: `nonconcurrent-wrapped-name-${index}`,
     namedOwner: 'owner4',
     fuses: encodeFuses({
@@ -111,7 +111,7 @@ const names = [
     duration: 31556000 * 2,
     subnames: [
       {
-        label: `xyz`,
+        label: 'xyz',
         namedOwner: 'owner4',
         expiry: MAX_DATE_INT,
         fuses: encodeFuses({
@@ -126,14 +126,13 @@ const names = [
         }),
       },
     ],
-
-  }))
+  })),
 ]
 
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { network } = hre
   const nameGenerator = await makeNameGenerator(hre)
 
@@ -154,7 +153,7 @@ const func = async function (hre) {
       data,
       reverseRecord,
       fuses,
-      duration
+      duration,
     })
 
     console.log(

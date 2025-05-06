@@ -22,7 +22,7 @@ describe('expiryToBigInt', () => {
   })
   it('throws when expiry is not bigint, string, number or Date', () => {
     expect(() => expiryToBigInt({} as any)).toThrowErrorMatchingInlineSnapshot(
-      `[TypeError: Expiry must be a bigint, string, number or Date]`,
+      '[TypeError: Expiry must be a bigint, string, number or Date]',
     )
   })
 })
@@ -32,8 +32,9 @@ describe('wrappedLabelLengthCheck', () => {
     expect(wrappedLabelLengthCheck('a'.repeat(255))).toBeUndefined()
   })
   it('throws when label is more than 255 bytes', () => {
-    expect(() => wrappedLabelLengthCheck('a'.repeat(256)))
-      .toThrowErrorMatchingInlineSnapshot(`
+    expect(() =>
+      wrappedLabelLengthCheck('a'.repeat(256)),
+    ).toThrowErrorMatchingInlineSnapshot(`
         [WrappedLabelTooLargeError: Supplied label was too long
 
         - Supplied label: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

@@ -1,10 +1,6 @@
+import { resolve } from 'node:path'
 import { config } from 'dotenv'
-import { resolve } from 'path'
 import {
-  TransactionReceiptNotFoundError,
-  createPublicClient,
-  createTestClient,
-  createWalletClient,
   http,
   type Account,
   type Address,
@@ -12,7 +8,11 @@ import {
   type PublicClient,
   type TestClient,
   type TransactionReceipt,
+  TransactionReceiptNotFoundError,
   type WalletClient,
+  createPublicClient,
+  createTestClient,
+  createWalletClient,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 

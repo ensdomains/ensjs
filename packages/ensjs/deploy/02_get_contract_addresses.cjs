@@ -1,11 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const { writeFile } = require('fs/promises')
-const { resolve } = require('path')
+const { writeFile } = require('node:fs/promises')
+const { resolve } = require('node:path')
 
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const allDeployments = await hre.deployments.all()
   const deploymentAddressMap = Object.fromEntries(
     Object.keys(allDeployments).map((dkey) => [

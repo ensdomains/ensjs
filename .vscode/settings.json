@@ -1,9 +1,7 @@
 {
-  "prettier.enable": true,
-  "eslint.enable": true,
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+	"prettier.enable": false,
+	"eslint.enable": false,
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"biome.enabled": true
 }

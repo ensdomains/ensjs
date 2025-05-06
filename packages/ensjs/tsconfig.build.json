@@ -1,13 +1,13 @@
 {
-  "extends": "./tsconfig.json",
-  "include": ["./src"],
-  "exclude": ["src/**/*.test.ts", "src/test/**/*", "./src/ABIs/**/*"],
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "rootDir": "./src",
-    "paths": {
-      "abitype": ["../node_modules/abitype/dist"]
-    }
-  }
+	"extends": "./tsconfig.json",
+	"include": ["./src"],
+	"exclude": ["src/**/*.test.ts", "src/test/**/*", "./src/ABIs/**/*"],
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"rootDir": "./src",
+		"paths": {
+			"abitype": ["../node_modules/abitype/dist"]
+		}
+	}
 }

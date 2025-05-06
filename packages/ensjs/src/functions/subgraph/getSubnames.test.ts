@@ -141,8 +141,8 @@ describe.each([
     orderBy: 'expiryDate',
     orderDirection: 'asc',
     compareFn: (a: Name, b: Name) => {
-      const aExpiryDate = a.expiryDate?.value || Infinity
-      const bExpiryDate = b.expiryDate?.value || Infinity
+      const aExpiryDate = a.expiryDate?.value || Number.POSITIVE_INFINITY
+      const bExpiryDate = b.expiryDate?.value || Number.POSITIVE_INFINITY
       return aExpiryDate - bExpiryDate
     },
   },
@@ -150,8 +150,8 @@ describe.each([
     orderBy: 'expiryDate',
     orderDirection: 'desc',
     compareFn: (a: Name, b: Name) => {
-      const aExpiryDate = a.expiryDate?.value || Infinity
-      const bExpiryDate = b.expiryDate?.value || Infinity
+      const aExpiryDate = a.expiryDate?.value || Number.POSITIVE_INFINITY
+      const bExpiryDate = b.expiryDate?.value || Number.POSITIVE_INFINITY
       return bExpiryDate - aExpiryDate
     },
   },

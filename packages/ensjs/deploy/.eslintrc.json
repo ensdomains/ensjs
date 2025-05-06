@@ -1,6 +1,6 @@
 {
-  "extends": "../.eslintrc.json",
-  "rules": {
-    "func-names": "off"
-  }
+	"extends": "../.eslintrc.json",
+	"rules": {
+		"func-names": "off"
+	}
 }

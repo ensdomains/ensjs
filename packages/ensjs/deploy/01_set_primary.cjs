@@ -12,7 +12,7 @@ const names = [
 /**
  * @type {import('hardhat-deploy/types').DeployFunction}
  */
-const func = async function (hre) {
+const func = async (hre) => {
   const { getNamedAccounts } = hre
   const allNamedAccts = await getNamedAccounts()
 

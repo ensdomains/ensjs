@@ -1,10 +1,10 @@
 import {
-  encodeFunctionData,
   type Account,
   type Address,
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  encodeFunctionData,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import { parseAccount } from 'viem/utils'
