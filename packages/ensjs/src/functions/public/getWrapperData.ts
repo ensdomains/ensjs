@@ -40,6 +40,8 @@ export type GetWrapperDataReturnType = Prettify<{
   owner: Address
 } | null>
 
+export type GetWrapperDataErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   { name }: GetWrapperDataParameters,

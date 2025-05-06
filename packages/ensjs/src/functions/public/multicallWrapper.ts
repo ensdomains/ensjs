@@ -25,6 +25,8 @@ export type MulticallWrapperReturnType = {
   returnData: Hex
 }[]
 
+export type MulticallWrapperErrorType = Error
+
 const encode = (
   client: ClientWithEns,
   { transactions, requireSuccess = false }: MulticallWrapperParameters,

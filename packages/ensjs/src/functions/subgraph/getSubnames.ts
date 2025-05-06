@@ -18,8 +18,6 @@ import {
 } from './fragments.js'
 import { makeNameObject, type Name } from './utils.js'
 
-type GetSubnamesOrderBy = 'expiryDate' | 'name' | 'labelName' | 'createdAt'
-
 export type GetSubnamesParameters = {
   /** Name to get subnames for */
   name: string
@@ -40,6 +38,10 @@ export type GetSubnamesParameters = {
 }
 
 export type GetSubnamesReturnType = Name[]
+
+export type GetSubnamesErrorType = InvalidOrderByError | Error
+
+type GetSubnamesOrderBy = 'expiryDate' | 'name' | 'labelName' | 'createdAt'
 
 type SubgraphResult = {
   domain?: {

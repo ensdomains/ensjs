@@ -17,6 +17,8 @@ export type InternalGetTextParameters = {
 
 export type InternalGetTextReturnType = string | null
 
+export type InternalGetTextErrorType = Error
+
 const encode = (
   _client: ClientWithEns,
   { name, key }: Omit<InternalGetTextParameters, 'strict'>,

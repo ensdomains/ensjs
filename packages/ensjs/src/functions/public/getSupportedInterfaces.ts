@@ -27,6 +27,8 @@ export type GetSupportedInterfacesReturnType<
   -readonly [K in keyof TInterfaces]: boolean
 }
 
+export type GetSupportedInterfacesErrorType = Error
+
 const encodeInterface = (interfaceId: Hex): Hex =>
   encodeFunctionData({
     abi: erc165SupportsInterfaceSnippet,

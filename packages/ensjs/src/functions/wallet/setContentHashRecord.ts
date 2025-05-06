@@ -37,6 +37,8 @@ export type SetContentHashRecordParameters<
 
 export type SetContentHashRecordReturnType = Hash
 
+export type SetContentHashRecordErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

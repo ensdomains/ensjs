@@ -10,6 +10,7 @@ import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
 import { ethRegistrarControllerCommitSnippet } from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
 import type {
   Prettify,
   SimpleTransactionRequest,
@@ -36,6 +37,11 @@ export type CommitNameParameters<
 >
 
 export type CommitNameReturnType = Hash
+
+export type CommitNameErrorType =
+  | UnsupportedNameTypeError
+  | WrappedLabelTooLargeError
+  | Error
 
 export const makeFunctionData = <
   TChain extends ChainWithEns,

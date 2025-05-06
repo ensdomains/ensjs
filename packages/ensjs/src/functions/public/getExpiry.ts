@@ -46,6 +46,8 @@ export type GetExpiryReturnType = Prettify<{
   status: ExpiryStatus
 } | null>
 
+export type GetExpiryErrorType = Error
+
 const getContractToUse = (
   contract: ContractOption | undefined,
   labels: string[],

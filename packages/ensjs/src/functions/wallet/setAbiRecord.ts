@@ -41,6 +41,8 @@ export type SetAbiRecordParameters<
 
 export type SetAbiRecordReturnType = Hash
 
+export type SetAbiRecordErrorType = Error
+
 export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,

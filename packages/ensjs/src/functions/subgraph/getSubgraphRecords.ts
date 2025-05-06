@@ -24,6 +24,8 @@ export type GetSubgraphRecordsReturnType = {
   coins: string[]
 } | null
 
+export type GetSubgraphRecordsErrorType = Error
+
 const inheritedResolverQuery = gql`
   query getSubgraphRecords($id: String!) {
     domain(id: $id) {

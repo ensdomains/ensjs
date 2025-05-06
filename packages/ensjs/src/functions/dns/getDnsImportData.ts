@@ -5,7 +5,7 @@ import { readContract } from 'viem/actions'
 import type { ChainWithEns } from '../../contracts/consts.js'
 import { dnssecImplVerifyRrSetSnippet } from '../../contracts/dnssecImpl.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { DnsNewerRecordTypeAvailableError } from '../../index.js'
+import { DnsNewerRecordTypeAvailableError } from '../../errors/dns.js'
 import type { Endpoint } from './types.js'
 
 export type GetDnsImportDataParameters = {
@@ -15,12 +15,14 @@ export type GetDnsImportDataParameters = {
   endpoint?: Endpoint
 }
 
+export type GetDnsImportDataReturnType = RrSetWithSig[]
+
+export type GetDnsImportDataErrorType = DnsNewerRecordTypeAvailableError | Error
+
 export type RrSetWithSig = {
   rrset: Hex
   sig: Hex
 }
-
-export type GetDnsImportDataReturnType = RrSetWithSig[]
 
 // Compares two serial numbers using RFC1982 serial number math.
 const serialNumberGt = (i1: number, i2: number): boolean =>

@@ -31,6 +31,8 @@ export type GetPriceReturnType = {
   premium: bigint
 }
 
+export type GetPriceErrorType = UnsupportedNameTypeError | Error
+
 const encode = (
   client: ClientWithEns,
   { nameOrNames, duration }: GetPriceParameters,
