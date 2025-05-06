@@ -103,6 +103,6 @@
 		"./node_modules/@ensdomains/ens-contracts/artifacts",
 		"./deploy/.utils/*.ts",
 		"packages/*/src/**/*.ts",
-		"packages/ensjs/hardhat.config.ts"
+		"packages/ensjs/hardhat.config.cts"
 	]
 }
