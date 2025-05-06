@@ -98,5 +98,11 @@
 		/* Completeness */
 		// "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
 		"skipLibCheck": true /* Skip type checking all .d.ts files. */
-	}
+	},
+	"include": [
+		"./node_modules/@ensdomains/ens-contracts/artifacts",
+		"./deploy/.utils/*.ts",
+		"packages/*/src/**/*.ts",
+		"packages/ensjs/hardhat.config.ts"
+	]
 }
