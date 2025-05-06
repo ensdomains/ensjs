@@ -1,26 +1,17 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
+import '@ensdomains/hardhat-toolbox-viem-extended'
+import '@nomicfoundation/hardhat-viem'
 import 'dotenv/config'
-import '@nomiclabs/hardhat-ethers'
 import 'hardhat-deploy'
+
 import { resolve } from 'node:path'
 
-import { execSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
-
-process.env.BATCH_GATEWAY_URLS = JSON.stringify([
-  'https://universal-offchain-unwrapper.ens-cf.workers.dev/',
-])
+import type { HardhatUserConfig } from 'hardhat/config.js'
 
 const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 
-// check if built package exists
-// this is required to use ensjs functions in the deploy scripts (which are written in cjs)
-const builtCjsExists = existsSync('./dist/cjs/utils/index.js')
-if (!builtCjsExists) execSync('pnpm build', { stdio: 'inherit' })
-
-/**
- * @type {import('hardhat/config').HardhatUserConfig}
- */
-const config = {
+const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
@@ -39,6 +30,9 @@ const config = {
     hardhat: {
       saveDeployments: false,
       chainId: 1337,
+      accounts: {
+        mnemonic: process.env.SECRET_WORDS!,
+      },
       live: false,
       tags: ['test', 'legacy', 'use_root'],
     },
@@ -46,10 +40,18 @@ const config = {
       saveDeployments: false,
       url: 'http://localhost:8545',
       chainId: 1337,
+      accounts: {
+        mnemonic: process.env.SECRET_WORDS!,
+      },
       live: false,
       tags: ['test', 'legacy', 'use_root'],
     },
   },
+  // namedAccounts: {
+  //   deployer: {
+  //     default: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  //   },
+  // },
   namedAccounts: {
     deployer: {
       default: 0,
@@ -57,9 +59,9 @@ const config = {
     owner: {
       default: 1,
     },
-    owner2: 2,
-    owner3: 3,
-    owner4: 4,
+    owner2: {
+      default: 2,
+    },
   },
   external: {
     contracts: [
@@ -72,6 +74,15 @@ const config = {
       },
     ],
   },
+  paths: {
+    artifacts: resolve(ensContractsPath, 'artifacts'),
+  },
 }
 
-module.exports = config
+declare module '@nomicfoundation/hardhat-viem/types.js' {
+  interface Register {
+    config: typeof config
+  }
+}
+
+export default config
