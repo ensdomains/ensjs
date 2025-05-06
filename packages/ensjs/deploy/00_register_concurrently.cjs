@@ -1,6 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 const { BigNumber } = require('ethers')
 const { ethers } = require('hardhat')
 const {

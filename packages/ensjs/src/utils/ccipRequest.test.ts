@@ -11,7 +11,7 @@ const handler = vi
   .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
   .mockImplementation((_, res) => {
     res.writeHead(200, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      
       'Content-Type': 'application/json',
     })
     res.end(JSON.stringify({ data: '0xdeadbeef' }))

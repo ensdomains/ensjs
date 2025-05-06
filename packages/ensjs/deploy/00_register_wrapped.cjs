@@ -1,6 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 const { BigNumber } = require('ethers')
 const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
 const { encodeFuses } = require('../dist/cjs/utils/fuses')

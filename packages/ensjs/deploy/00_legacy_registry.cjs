@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const { ethers } = require('hardhat')
 const { labelhash, namehash } = require('viem/ens')
 

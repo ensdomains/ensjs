@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const { writeFile } = require('node:fs/promises')
 const { resolve } = require('node:path')
 

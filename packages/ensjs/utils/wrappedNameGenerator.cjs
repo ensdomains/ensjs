@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 
 const { BigNumber } = require('ethers')
 const { namehash } = require('viem/ens')
