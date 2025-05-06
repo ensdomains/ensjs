@@ -3,7 +3,7 @@
 const cbor = require('cbor')
 const { ethers } = require('hardhat')
 const pako = require('pako')
-const { labelhash, namehash, toBytes } = require('viem')
+const { namehash, toBytes } = require('viem')
 const { makeNameGenerator } = require('../utils/legacyNameGenerator.cjs')
 
 const dummyABI = [

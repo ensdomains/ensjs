@@ -36,8 +36,8 @@ beforeEach(() => {
 })
 
 it('returns valid address from valid domain and record', async () => {
-  let name
-  let type
+  let name: string | null = null
+  let type: string | null = null
   handler.mockImplementation((req, res) => {
     const url = new URL(req.url!, `http://${req.headers.host!}`)
     name = url.searchParams.get('name')

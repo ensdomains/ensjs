@@ -1,4 +1,3 @@
-
 const { hexToNumber } = require('viem')
 
 const makeNonceManager = async (href) => {

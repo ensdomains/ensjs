@@ -2,7 +2,6 @@
 /* eslint-disable no-await-in-loop */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { BigNumber } = require('ethers')
-const { ethers } = require('hardhat')
 const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
 const { encodeFuses } = require('../dist/cjs/utils/fuses')
 const { makeNameGenerator } = require('../utils/wrappedNameGenerator.cjs')
