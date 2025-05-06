@@ -39,7 +39,7 @@
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "1.0.0",
-    "@ensdomains/ens-test-env": "workspace:*",
+    "@ensdomains/ens-test-env": "^0.6.0",
     "ts-node": "^10.9.2",
     "tslib": "^2.7.0",
     "typescript": "5.6.2",

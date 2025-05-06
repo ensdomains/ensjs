@@ -78,8 +78,8 @@
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
-    "tenv": "ens-test-env -c ./ens-test-env.config.cjs -a",
-    "denv": "pnpm tenv start -ns -nb --extra-time 11368000 --verbosity 1",
+    "tenv": "ens-test-env -c ./ens-test-env.config.js -a",
+    "denv": "pnpm tenv start --no-graph --no-build --extra-time 11368000 --verbosity 1",
     "anvil": "pnpm denv --no-graph",
     "start": "ts-node --files src/index.test.ts",
     "test": "vitest --no-file-parallelism",
@@ -112,7 +112,7 @@
   "devDependencies": {
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/ens-contracts": "1.0.0",
-    "@ensdomains/ens-test-env": "workspace:*",
+    "@ensdomains/ens-test-env": "^0.6.0",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@openzeppelin/contracts": "^4.5.0",
     "@openzeppelin/test-helpers": "^0.5.16",
