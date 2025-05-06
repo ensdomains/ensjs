@@ -1,4 +1,4 @@
-require('dotenv/config')
+import { config } from 'dotenv'
 require('@nomiclabs/hardhat-ethers')
 require('hardhat-deploy')
 const { resolve } = require('path')
