@@ -8,7 +8,6 @@ it('returns array of responses', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        
         'Content-Type': 'application/json',
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
@@ -42,7 +41,6 @@ it('removes duplicate requests', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        
         'Content-Type': 'application/json',
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
@@ -100,7 +98,6 @@ it('handles and correctly returns misc. error', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        
         'Content-Type': 'application/json',
       })
       res.end('invalid json')

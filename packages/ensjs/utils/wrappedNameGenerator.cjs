@@ -1,4 +1,3 @@
-
 const { BigNumber } = require('ethers')
 const { namehash } = require('viem/ens')
 

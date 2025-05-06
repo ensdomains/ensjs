@@ -11,7 +11,6 @@ const handler = vi
   .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
   .mockImplementation((_, res) => {
     res.writeHead(200, {
-      
       'Content-Type': 'application/json',
     })
     res.end(JSON.stringify({ data: '0xdeadbeef' }))

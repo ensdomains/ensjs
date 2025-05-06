@@ -43,7 +43,6 @@ export const requestMiddleware: RequestMiddleware = (request) => {
   const rawQuery = requestBody.query as string
   const parsedQuery = parse(rawQuery)
   const updatedQuery = visit(parsedQuery, {
-    
     SelectionSet: {
       enter,
     },

@@ -35,7 +35,6 @@ query getNames($id: ID!, $expiryDate: Int) {
 const mockRequest = {
   method: 'POST',
   headers: {
-    
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ query: queryWithoutId }),
@@ -143,7 +142,6 @@ const mockResponse = {
   },
   headers: {
     map: {
-      
       'Content-Type': 'application/json',
     },
   },

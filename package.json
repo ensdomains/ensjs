@@ -10,7 +10,8 @@
     "chgset:version": "changeset version && pnpm install",
     "chgset:run": "changeset",
     "release": "pnpm publish -r --access public && changeset tag",
-    "chgset": "pnpm chgset:run && pnpm chgset:version"
+    "chgset": "pnpm chgset:run && pnpm chgset:version",
+    "lint": "biome check"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -28,5 +29,5 @@
       "unplugged": true
     }
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@10.10.0"
 }

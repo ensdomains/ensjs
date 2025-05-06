@@ -6,7 +6,6 @@
 //                 Thibault Poisson <https://github.com/OrIOg>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-
 enum constants {
   // FlushValues
   Z_NO_FLUSH = 0,

@@ -1,4 +1,3 @@
-
 const { Interface } = require('ethers/lib/utils')
 const { ethers } = require('hardhat')
 const { namehash, labelhash } = require('viem/ens')

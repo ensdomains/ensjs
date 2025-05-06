@@ -61,7 +61,6 @@ const getDnsImportData = async (
     endpoint = 'https://cloudflare-dns.com/dns-query',
   }: GetDnsImportDataParameters,
 ): Promise<GetDnsImportDataReturnType> => {
-  
   const { DNSProver } = await import('@ensdomains/dnsprovejs')
   const prover = DNSProver.create(endpoint)
   const result = (await prover.queryWithProof(
