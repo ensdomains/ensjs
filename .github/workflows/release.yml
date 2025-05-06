@@ -1,0 +1,55 @@
+name: Prerelease
+
+on:
+  release:
+    types: [published]
+jobs:
+  release:
+    name: Release
+    permissions:
+      id-token: write
+      contents: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.4.0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Set up git
+        run: |
+          git config --local user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config --local user.name 'github-actions[bot]'
+
+      - name: Bump version to ${{ github.event.release.tag_name }}
+        run: |
+          pnpm -F @ensdomains/ensjs ver ${{ github.event.release.tag_name }}
+          git add .
+          git commit -m "${{ github.event.release.tag_name }}"
+
+      - name: Publish
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+        run: |
+          pnpm config set //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}
+          pnpm -F @ensdomains/ensjs publish --tag next --no-git-checks
+
+      - name: Push changes
+        run: git push
+        env:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
