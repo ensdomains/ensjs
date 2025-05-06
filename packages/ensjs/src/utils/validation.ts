@@ -4,7 +4,7 @@ import {
 } from '../errors/utils.js'
 import { MINIMUM_DOT_ETH_CHARS } from './consts.js'
 import { checkLabel, isEncodedLabelhash, saveName } from './labels.js'
-import { normalise, split, type Label } from './normalise.js'
+import { type Label, normalise, split } from './normalise.js'
 
 export const validateName = (name: string) => {
   const nameArray = name.split('.')

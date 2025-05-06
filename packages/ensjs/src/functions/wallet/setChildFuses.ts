@@ -1,10 +1,10 @@
 import {
-  encodeFunctionData,
-  labelhash,
   type Account,
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  encodeFunctionData,
+  labelhash,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
@@ -15,7 +15,7 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { encodeFuses, type EncodeFusesInputObject } from '../../utils/fuses.js'
+import { type EncodeFusesInputObject, encodeFuses } from '../../utils/fuses.js'
 import { namehash } from '../../utils/normalise.js'
 
 export type SetChildFusesDataParameters = {

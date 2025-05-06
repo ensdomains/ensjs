@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type { RequestListener } from 'http'
-import { createPublicClient, http } from 'viem'
+import type { RequestListener } from 'node:http'
+import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
 import {
+  type MockedFunction,
   afterAll,
   beforeAll,
   beforeEach,
@@ -10,7 +11,6 @@ import {
   expect,
   it,
   vi,
-  type MockedFunction,
 } from 'vitest'
 import { addEnsContracts } from '../../index.js'
 import { createHttpServer } from '../../test/createHttpServer.js'

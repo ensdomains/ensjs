@@ -19,10 +19,7 @@ const main = async () => {
     githubPages: false,
     cleanOutputDir: false,
     readme: 'none',
-    skipIndexPage: true,
-    outputFileStrategy: 'members',
     excludeExternals: true,
-    excludeGroups: true,
     excludeNotDocumented: true,
     excludeNotDocumentedKinds: [
       'Module',

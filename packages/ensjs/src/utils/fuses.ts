@@ -210,10 +210,11 @@ const validateFuseNumber = (fuses: bigint) => {
         fuses < 0 ? 'low' : 'high'
       }`,
     })
-  else if ((fuses & FuseRanges.USER_SETTABLE_FUSES) !== fuses)
+  if ((fuses & FuseRanges.USER_SETTABLE_FUSES) !== fuses)
     throw new FusesOutOfRangeError({
       fuses,
-      details: `Fuse number must be limited to user settable fuses, the supplied value was not`,
+      details:
+        'Fuse number must be limited to user settable fuses, the supplied value was not',
     })
 }
 

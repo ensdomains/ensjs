@@ -1,9 +1,9 @@
 import {
+  type Hex,
   decodeFunctionResult,
   encodeFunctionData,
   hexToBytes,
   trim,
-  type Hex,
 } from 'viem'
 import { namehash } from '../../utils/normalise.js'
 

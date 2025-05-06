@@ -1,17 +1,19 @@
 {
-  // This configuration is used for local development and type checking.
-  "extends": "./tsconfig.base.json",
-  "ts-node": {
-    "compilerOptions": {
-      "esModuleInterop": true,
-      "module": "CommonJS",
-      "allowSyntheticDefaultImports": true
-    }
-  },
-  "include": ["src"],
-  "exclude": [],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "compilerOptions": {
-    "resolveJsonModule": true
-  }
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "commonjs",
+		"strict": true,
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"forceConsistentCasingInFileNames": true,
+		"outDir": "dist"
+	},
+	"include": [
+		"hardhat.config.cts",
+		"./scripts",
+		"./deploy",
+		"./test",
+		"typechain/**/*"
+	],
+	"exclude": ["node_modules"]
 }

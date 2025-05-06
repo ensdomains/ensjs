@@ -1,10 +1,10 @@
 import {
-  getAvailable,
   type GetAvailableParameters,
   type GetAvailableReturnType,
+  getAvailable,
 } from '@ensdomains/ensjs/public'
 import type { ParamWithClients, QueryConfig } from '../client.js'
-import { useQuery, type UseQueryReturnType } from './useQuery.js'
+import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsAvailableParams = ParamWithClients<GetAvailableParameters>
 

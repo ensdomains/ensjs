@@ -1,11 +1,11 @@
-import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
+import { type Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
 import type { Prettify, SimpleTransactionRequest } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import {
-  decodeContentHash,
   type DecodedContentHash,
+  decodeContentHash,
 } from '../../utils/contentHash.js'
 import { generateFunction } from '../../utils/generateFunction.js'
 import { namehash } from '../../utils/normalise.js'

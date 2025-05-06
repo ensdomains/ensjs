@@ -1,14 +1,14 @@
 import {
-  useQuery as useTanstackQuery,
   type DefaultError,
   type DefinedUseQueryResult,
   type QueryKey,
   type UseQueryOptions,
+  useQuery as useTanstackQuery,
 } from '@tanstack/react-query'
 import type { ExactPartial } from 'viem'
+import type { QueryConfig } from '../client.js'
 import { fallbackQueryClient } from '../query.js'
 import type { Compute } from '../utils/types.js'
-import type { QueryConfig } from '../client.js'
 
 export type UseQueryParameters<
   QueryFnData = unknown,

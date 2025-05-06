@@ -1,12 +1,12 @@
 import {
-  BaseError,
+  type Address,
+  type BaseError,
+  type Hex,
   decodeAbiParameters,
   decodeFunctionResult,
   encodeFunctionData,
   hexToBigInt,
   toHex,
-  type Address,
-  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
@@ -150,7 +150,7 @@ const createCalls = (
         key: text,
         call: _getText.encode(client, { name, key: text }),
         type: 'text',
-      } as const),
+      }) as const,
   ),
   ...(coins ?? []).map(
     (coin) =>
@@ -158,7 +158,7 @@ const createCalls = (
         key: coin,
         call: _getAddr.encode(client, { name, coin }),
         type: 'coin',
-      } as const),
+      }) as const,
   ),
   ...(contentHash
     ? ([

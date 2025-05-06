@@ -1,4 +1,4 @@
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import { expect, it, vi } from 'vitest'
 import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipBatchRequest } from './ccipBatchRequest.js'
@@ -8,7 +8,6 @@ it('returns array of responses', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
@@ -42,7 +41,6 @@ it('removes duplicate requests', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
@@ -100,7 +98,6 @@ it('handles and correctly returns misc. error', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       })
       res.end('invalid json')

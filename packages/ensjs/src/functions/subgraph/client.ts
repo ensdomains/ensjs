@@ -43,7 +43,6 @@ export const requestMiddleware: RequestMiddleware = (request) => {
   const rawQuery = requestBody.query as string
   const parsedQuery = parse(rawQuery)
   const updatedQuery = visit(parsedQuery, {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     SelectionSet: {
       enter,
     },
@@ -81,7 +80,7 @@ export const responseMiddleware: ResponseMiddleware = (response) => {
             let hashedName = '[Invalid ENS Name]'
             try {
               hashedName = namehash(value.name)
-            } catch (e) {
+            } catch (_e) {
               obj[key] = { ...value, name: hashedName, invalidName: true }
             }
 

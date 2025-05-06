@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { match, P } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
+import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 import type { InputMaybe, Scalars } from './types.js'
 import type { Name } from './utils.js'
-import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']
@@ -728,7 +728,7 @@ export const getExpiryDateOrderFilter = ({
       () =>
         ({
           and: [{ expiryDate: null }, { id_gt: lastDomain.id }],
-        } as DomainFilter),
+        }) as DomainFilter,
     )
     .with(
       {
@@ -753,7 +753,7 @@ export const getExpiryDateOrderFilter = ({
               expiryDate: null,
             },
           ],
-        } as DomainFilter),
+        }) as DomainFilter,
     )
     .with(
       {
@@ -764,13 +764,13 @@ export const getExpiryDateOrderFilter = ({
         ({
           or: [
             {
-              and: [{ expiryDate: null }, { [`id_lt`]: lastDomain.id }],
+              and: [{ expiryDate: null }, { id_lt: lastDomain.id }],
             },
             {
-              [`expiryDate_gt`]: 0,
+              expiryDate_gt: 0,
             },
           ],
-        } as DomainFilter),
+        }) as DomainFilter,
     )
     .with(
       {
@@ -790,7 +790,7 @@ export const getExpiryDateOrderFilter = ({
               expiryDate_lt: `${lastExpiryDate}`,
             },
           ],
-        } as DomainFilter),
+        }) as DomainFilter,
     )
     .exhaustive()
 }
@@ -824,7 +824,7 @@ export const getCreatedAtOrderFilter = ({
               createdAt_gt: `${lastDomain.createdAt.value / 1000}`,
             },
           ],
-        } as DomainFilter),
+        }) as DomainFilter,
     )
     .with(
       {
@@ -843,6 +843,6 @@ export const getCreatedAtOrderFilter = ({
               createdAt_lt: `${lastDomain.createdAt.value / 1000}`,
             },
           ],
-        } as DomainFilter),
+        }) as DomainFilter,
     )
     .exhaustive()

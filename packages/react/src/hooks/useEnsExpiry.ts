@@ -1,10 +1,10 @@
 import {
-  getExpiry,
   type GetExpiryParameters,
   type GetExpiryReturnType,
+  getExpiry,
 } from '@ensdomains/ensjs/public'
 import type { ParamWithClients, QueryConfig } from '../client.js'
-import { useQuery, type UseQueryReturnType } from './useQuery.js'
+import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsExpiryParams = ParamWithClients<GetExpiryParameters>
 

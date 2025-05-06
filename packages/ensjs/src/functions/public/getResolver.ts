@@ -1,11 +1,11 @@
 import {
-  BaseError,
+  type Address,
+  type BaseError,
+  type Hex,
   decodeFunctionResult,
   encodeFunctionData,
   getContractError,
   toHex,
-  type Address,
-  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
@@ -16,8 +16,8 @@ import type {
 } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import {
-  generateFunction,
   type GeneratedFunction,
+  generateFunction,
 } from '../../utils/generateFunction.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
 

@@ -10,17 +10,17 @@ import {
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'
 import {
-  getExpiryDateOrderFilter,
   type DomainFilter,
   getCreatedAtOrderFilter,
+  getExpiryDateOrderFilter,
 } from './filters.js'
 import {
+  type SubgraphDomain,
   domainDetailsFragment,
   registrationDetailsFragment,
   wrappedDomainDetailsFragment,
-  type SubgraphDomain,
 } from './fragments.js'
-import { makeNameObject, type Name } from './utils.js'
+import { type Name, makeNameObject } from './utils.js'
 
 const supportedOwnerFilters = [
   'owner',

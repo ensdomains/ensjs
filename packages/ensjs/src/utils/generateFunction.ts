@@ -61,7 +61,7 @@ export const generateFunction = <
   encode: TEncoderFn
   decode: TDecoderFn
 }) => {
-  const single = async function (client, ...args) {
+  const single = (async (client, ...args) => {
     const { passthrough, ...encodedData } = encode(client, ...args)
     const result = await call(client, encodedData)
       .then((ret) => ret.data)
@@ -71,7 +71,7 @@ export const generateFunction = <
       })
     if (passthrough) return decode(client, result, passthrough, ...args)
     return decode(client, result, ...args)
-  } as TFunction
+  }) as TFunction
   single.batch = (...args) => ({
     args,
     encode,

@@ -1,4 +1,9 @@
-import { BaseError, decodeAbiParameters, type Address, type Hex } from 'viem'
+import {
+  type Address,
+  type BaseError,
+  type Hex,
+  decodeAbiParameters,
+} from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import type { SimpleTransactionRequest } from '../../types.js'
@@ -6,8 +11,8 @@ import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { generateFunction } from '../../utils/generateFunction.js'
 import { namehash as makeNamehash } from '../../utils/normalise.js'
 import {
-  ownerFromContract,
   type OwnerContract,
+  ownerFromContract,
 } from '../../utils/ownerFromContract.js'
 import { checkIsDotEth } from '../../utils/validation.js'
 import multicallWrapper from './multicallWrapper.js'
@@ -61,10 +66,10 @@ export type GetOwnerReturnType<
       (TContract extends 'registrar'
         ? RegistrarOnlyOwnership
         : TContract extends 'nameWrapper'
-        ? WrappedOwnership
-        : TContract extends 'registry'
-        ? UnwrappedOwnership
-        : WrappedOwnership | UnwrappedEth2ldOwnership | UnwrappedOwnership))
+          ? WrappedOwnership
+          : TContract extends 'registry'
+            ? UnwrappedOwnership
+            : WrappedOwnership | UnwrappedEth2ldOwnership | UnwrappedOwnership))
   | null
 
 const encode = <TContract extends OwnerContract | undefined = undefined>(
@@ -231,7 +236,8 @@ type BatchableFunctionObject = {
   decode: DecoderFunction
   batch: <
     TContract extends OwnerContract | undefined = undefined,
-    TParams extends GetOwnerParameters<TContract> = GetOwnerParameters<TContract>,
+    TParams extends
+      GetOwnerParameters<TContract> = GetOwnerParameters<TContract>,
   >(
     args: TParams,
   ) => {

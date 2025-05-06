@@ -1,10 +1,10 @@
 // from https://github.com/wagmi-dev/viem/blob/main/scripts/prepublishOnly.ts
 
+import fs from 'node:fs'
+import path from 'node:path'
+import * as url from 'node:url'
 /* eslint-disable no-continue */
 import jsonFs from 'jsonfile'
-import fs from 'node:fs'
-import path from 'path'
-import * as url from 'url'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 

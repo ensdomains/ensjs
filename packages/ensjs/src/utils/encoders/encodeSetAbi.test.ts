@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { encodeAbi } from './encodeAbi.js'
-import { encodeSetAbi, type EncodeSetAbiParameters } from './encodeSetAbi.js'
+import { type EncodeSetAbiParameters, encodeSetAbi } from './encodeSetAbi.js'
 
 describe('encodeSetAbi', () => {
   const namehash =

@@ -116,16 +116,16 @@ export type NameType =
 type GetEthNameType<TString extends EthAnyName> = TString extends EthTldName
   ? EthTldNameSpecifier
   : TString extends EthSubname
-  ? EthSubnameSpecifier
-  : Eth2ldNameSpecifier
+    ? EthSubnameSpecifier
+    : Eth2ldNameSpecifier
 type GetOtherNameType<TString extends TldName> = TString extends OtherSubname
   ? OtherSubnameSpecifier
   : TString extends Other2ldName
-  ? Other2ldNameSpecifier
-  : TldNameSpecifier
+    ? Other2ldNameSpecifier
+    : TldNameSpecifier
 
 export type GetNameType<TString extends string> = TString extends RootName
   ? RootNameSpecifier
   : TString extends EthAnyName
-  ? GetEthNameType<TString>
-  : GetOtherNameType<TString>
+    ? GetEthNameType<TString>
+    : GetOtherNameType<TString>

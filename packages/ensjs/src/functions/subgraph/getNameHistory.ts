@@ -277,7 +277,7 @@ const getNameHistory = async (
         }
         case 'MulticoinAddrChanged': {
           const { multiaddr, ...event_ } = event
-          const format = getCoderByCoinType(parseInt(event.coinType))
+          const format = getCoderByCoinType(Number.parseInt(event.coinType))
           if (!format) {
             return {
               ...event_,

@@ -1,5 +1,5 @@
 import { afterEach } from 'node:test'
-import { parseAbi, parseEther, type Address, type Hex } from 'viem'
+import { type Address, type Hex, parseAbi, parseEther } from 'viem'
 import { beforeAll, beforeEach, expect, it, vi } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
