@@ -1,4 +1,4 @@
-import type { Address, Hex } from 'viem'
+import { zeroAddress, type Address, type Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
@@ -12,9 +12,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import { namehash } from '../../utils/normalise.js'
-import deleteSubname from './deleteSubname.js'
+import { namehash } from '../../utils/name/normalise.js'
+import { deleteSubname } from './deleteSubname.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -78,10 +77,10 @@ it('should allow deleting a subname on the registry by parent owner', async () =
   expect(receipt.status).toBe('success')
 
   const owner = await getOwner('test.with-subnames.eth')
-  expect(owner).toBe(EMPTY_ADDRESS)
+  expect(owner).toBe(zeroAddress)
 
   const resolver = await getResolver('test.with-subnames.eth')
-  expect(resolver).toBe(EMPTY_ADDRESS)
+  expect(resolver).toBe(zeroAddress)
 })
 
 it('should allow deleting a subname on the namewrapper by parent owner', async () => {
@@ -95,15 +94,15 @@ it('should allow deleting a subname on the namewrapper by parent owner', async (
   expect(receipt.status).toBe('success')
 
   const owner = await getOwner('test.wrapped-with-subnames.eth')
-  expect(owner).toBe(EMPTY_ADDRESS)
+  expect(owner).toBe(zeroAddress)
 
   const resolver = await getResolver('test.wrapped-with-subnames.eth')
-  expect(resolver).toBe(EMPTY_ADDRESS)
+  expect(resolver).toBe(zeroAddress)
 
   const nameWrapperOwner = await getNameWrapperOwner(
     'test.wrapped-with-subnames.eth',
   )
-  expect(nameWrapperOwner).toBe(EMPTY_ADDRESS)
+  expect(nameWrapperOwner).toBe(zeroAddress)
 })
 
 it('should allow deleting a subname on the namewrapper by name owner', async () => {
@@ -118,15 +117,15 @@ it('should allow deleting a subname on the namewrapper by name owner', async () 
   expect(receipt.status).toBe('success')
 
   const owner = await getOwner('addr.wrapped-with-subnames.eth')
-  expect(owner).toBe(EMPTY_ADDRESS)
+  expect(owner).toBe(zeroAddress)
 
   const resolver = await getResolver('addr.wrapped-with-subnames.eth')
-  expect(resolver).toBe(EMPTY_ADDRESS)
+  expect(resolver).toBe(zeroAddress)
 
   const nameWrapperOwner = await getNameWrapperOwner(
     'addr.wrapped-with-subnames.eth',
   )
-  expect(nameWrapperOwner).toBe(EMPTY_ADDRESS)
+  expect(nameWrapperOwner).toBe(zeroAddress)
 })
 
 it('should not allow deleting top level domain', async () => {

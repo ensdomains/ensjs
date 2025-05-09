@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 import { getAddress, labelhash, type Address } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import { getNameType } from '../../utils/getNameType.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 import { createSubgraphClient } from './client.js'
 
 export type GetSubgraphRegistrantParameters = {

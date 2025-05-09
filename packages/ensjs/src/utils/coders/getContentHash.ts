@@ -3,7 +3,7 @@ import { publicResolverContenthashSnippet } from '../../contracts/publicResolver
 import type { Prettify } from '../../types.js'
 import type { DecodedContentHash } from '../contentHash.js'
 import { decodeContentHash } from '../contentHash.js'
-import { namehash } from '../normalise.js'
+import { namehash } from '../name/normalise.js'
 
 export type GetContentHashParameters = {
   /** Name to get content hash record for */

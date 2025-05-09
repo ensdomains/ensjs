@@ -1,24 +1,21 @@
 import {
-  encodeFunctionData,
   type Account,
   type Address,
+  type Client,
   type Hash,
-  type SendTransactionParameters,
   type Transport,
+  type WriteContractParameters,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import { parseAccount } from 'viem/utils'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   reverseRegistrarSetNameForAddrSnippet,
   reverseRegistrarSetNameSnippet,
 } from '../../contracts/reverseRegistrar.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
 
 type BaseSetPrimaryNameDataParameters = {
   /** The name to set as primary */
@@ -42,73 +39,71 @@ type OtherSetPrimaryNameDataParameters = {
 export type SetPrimaryNameDataParameters = BaseSetPrimaryNameDataParameters &
   (SelfSetPrimaryNameDataParameters | OtherSetPrimaryNameDataParameters)
 
-export type SetPrimaryNameDataReturnType = SimpleTransactionRequest
-
+type ChainWithContractDependencies = ChainWithContract<
+  'ensPublicResolver' | 'ensReverseRegistrar'
+>
 export type SetPrimaryNameParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
   SetPrimaryNameDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
 export type SetPrimaryNameReturnType = Hash
 
 export type SetPrimaryNameErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account,
+export const setPrimaryNameWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     address,
     resolverAddress = getChainContractAddress({
-      client: wallet,
+      client,
       contract: 'ensPublicResolver',
     }),
   }: SetPrimaryNameDataParameters,
-): SetPrimaryNameDataReturnType => {
+) => {
   const reverseRegistrarAddress = getChainContractAddress({
-    client: wallet,
+    client,
     contract: 'ensReverseRegistrar',
   })
-  if (address) {
+
+  const baseParams = {
+    address: reverseRegistrarAddress,
+    account: client.account,
+    chain: client.chain,
+  } as const
+
+  if (address)
     return {
-      to: reverseRegistrarAddress,
-      data: encodeFunctionData({
-        abi: reverseRegistrarSetNameForAddrSnippet,
-        functionName: 'setNameForAddr',
-        args: [
-          address,
-          wallet.account.address,
-          resolverAddress ||
-            getChainContractAddress({
-              client: wallet,
-              contract: 'ensPublicResolver',
-            }),
-          name,
-        ],
-      }),
-    }
-  }
+      ...baseParams,
+      abi: reverseRegistrarSetNameForAddrSnippet,
+      functionName: 'setNameForAddr',
+      args: [address, client.account.address, resolverAddress, name],
+    } as const satisfies WriteContractParameters<
+      typeof reverseRegistrarSetNameForAddrSnippet
+    >
 
   return {
-    to: reverseRegistrarAddress,
-    data: encodeFunctionData({
-      abi: reverseRegistrarSetNameSnippet,
-      functionName: 'setName',
-      args: [name],
-    }),
-  }
+    ...baseParams,
+    abi: reverseRegistrarSetNameSnippet,
+    functionName: 'setName',
+    args: [name],
+  } as const satisfies WriteContractParameters<
+    typeof reverseRegistrarSetNameSnippet
+  >
 }
 
 /**
  * Sets a primary name for an address.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetPrimaryNameParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetPrimaryNameOptions}
  * @returns Transaction hash. {@link SetPrimaryNameReturnType}
  *
  * @example
@@ -126,33 +121,26 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function setPrimaryName<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setPrimaryName<
+  chain extends ChainWithContractDependencies,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     address,
     resolverAddress,
     ...txArgs
-  }: SetPrimaryNameParameters<TChain, TAccount, TChainOverride>,
+  }: SetPrimaryNameParameters<chain, account, chainOverride>,
 ): Promise<SetPrimaryNameReturnType> {
-  const data = makeFunctionData(
-    {
-      ...wallet,
-      account: parseAccount((txArgs.account || wallet.account)!),
-    } as ClientWithAccount<Transport, TChain, Account>,
+  const writeParameters = setPrimaryNameWriteParameters(
+    clientWithOverrides(client, txArgs),
     { name, address, resolverAddress } as SetPrimaryNameDataParameters,
   )
-  const writeArgs = {
-    ...data,
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setPrimaryName.makeFunctionData = makeFunctionData
-
-export default setPrimaryName

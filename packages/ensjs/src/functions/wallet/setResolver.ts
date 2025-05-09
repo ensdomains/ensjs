@@ -1,24 +1,22 @@
 import {
-  encodeFunctionData,
   type Account,
   type Address,
-  type Hash,
-  type SendTransactionParameters,
+  type Client,
   type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetResolverSnippet } from '../../contracts/registry.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { namehash } from '../../utils/normalise.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetResolverDataParameters = {
+export type SetResolverParameters = {
   /** Name to set resolver for */
   name: string
   /** Contract to set resolver on */
@@ -27,63 +25,68 @@ export type SetResolverDataParameters = {
   resolverAddress: Address
 }
 
-export type SetResolverDataReturnType = SimpleTransactionRequest
-
-export type SetResolverParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies = ChainWithContract<
+  'ensNameWrapper' | 'ensRegistry'
+>
+export type SetResolverOptions<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  SetResolverDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetResolverParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetResolverReturnType = Hash
+export type SetResolverReturnType = WriteContractReturnType
 
 export type SetResolverErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const setResolverWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, contract, resolverAddress }: SetResolverDataParameters,
-): SetResolverDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, contract, resolverAddress }: SetResolverParameters,
+) => {
   if (contract !== 'registry' && contract !== 'nameWrapper')
     throw new Error(`Unknown contract: ${contract}`)
 
-  const to = getChainContractAddress({
-    client: wallet,
+  const address = getChainContractAddress({
+    client,
     contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
   })
 
   const args = [namehash(name), resolverAddress] as const
   const functionName = 'setResolver'
 
+  const baseParams = {
+    address,
+    functionName,
+    args,
+    chain: client.chain,
+    account: client.account,
+  } as const
+
   if (contract === 'nameWrapper')
     return {
-      to,
-      data: encodeFunctionData({
-        abi: nameWrapperSetResolverSnippet,
-        functionName,
-        args,
-      }),
-    }
+      ...baseParams,
+      abi: nameWrapperSetResolverSnippet,
+    } as const satisfies WriteContractParameters<
+      typeof nameWrapperSetResolverSnippet
+    >
 
   return {
-    to,
-    data: encodeFunctionData({
-      abi: registrySetResolverSnippet,
-      functionName,
-      args,
-    }),
-  }
+    ...baseParams,
+    abi: registrySetResolverSnippet,
+  } as const satisfies WriteContractParameters<
+    typeof registrySetResolverSnippet
+  >
 }
 
 /**
  * Sets a resolver for a name.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetResolverParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetResolverOptions}
  * @returns Transaction hash. {@link SetResolverReturnType}
  *
  * @example
@@ -103,27 +106,30 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function setResolver<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setResolver<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     contract,
     resolverAddress,
     ...txArgs
-  }: SetResolverParameters<TChain, TAccount, TChainOverride>,
+  }: SetResolverOptions<chain, account, chainOverride>,
 ): Promise<SetResolverReturnType> {
-  const data = makeFunctionData(wallet, { name, contract, resolverAddress })
-  const writeArgs = {
-    ...data,
+  const writeParameters = setResolverWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      contract,
+      resolverAddress,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setResolver.makeFunctionData = makeFunctionData
-
-export default setResolver

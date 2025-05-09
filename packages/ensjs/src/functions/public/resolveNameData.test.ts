@@ -18,7 +18,7 @@ import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
-import { bytesToPacket } from '../../utils/hexEncodedName.js'
+import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
 import { resolveNameData } from './resolveNameData.js'
 
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>

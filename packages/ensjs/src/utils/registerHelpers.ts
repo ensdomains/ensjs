@@ -5,6 +5,7 @@ import {
   pad,
   toBytes,
   toHex,
+  zeroAddress,
   type Address,
   type Hex,
 } from 'viem'
@@ -12,13 +13,12 @@ import {
   CampaignReferenceTooLargeError,
   ResolverAddressRequiredError,
 } from '../errors/utils.js'
-import { EMPTY_ADDRESS } from './consts.js'
-import { encodeFuses, type EncodeChildFusesInputObject } from './fuses.js'
 import {
   generateRecordCallArray,
   type RecordOptions,
-} from './generateRecordCallArray.js'
-import { namehash } from './normalise.js'
+} from './coders/resolverMulticallParameters.js'
+import { encodeFuses, type EncodeChildFusesInputObject } from './fuses.js'
+import { namehash } from './name/normalise.js'
 
 export type RegistrationParameters = {
   /** Name to register */
@@ -97,7 +97,7 @@ export const makeCommitmentTuple = ({
   name,
   owner,
   duration,
-  resolverAddress = EMPTY_ADDRESS,
+  resolverAddress = zeroAddress,
   records: { coins = [], ...records } = { texts: [], coins: [] },
   reverseRecord,
   fuses,
@@ -124,7 +124,7 @@ export const makeCommitmentTuple = ({
     ? generateRecordCallArray({ namehash: hash, coins, ...records })
     : []
 
-  if (data.length > 0 && resolverAddress === EMPTY_ADDRESS)
+  if (data.length > 0 && resolverAddress === zeroAddress)
     throw new ResolverAddressRequiredError({
       data: {
         name,

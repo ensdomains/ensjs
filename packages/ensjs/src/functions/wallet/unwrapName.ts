@@ -1,13 +1,14 @@
 import {
-  encodeFunctionData,
   type Account,
   type Address,
+  type Client,
   type Hash,
-  type SendTransactionParameters,
   type Transport,
+  type WriteContractParameters,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   nameWrapperUnwrapEth2ldSnippet,
@@ -18,51 +19,37 @@ import {
   RequiredParameterNotSpecifiedError,
 } from '../../errors/general.js'
 import type {
-  Eth2ldName,
   Eth2ldNameSpecifier,
   GetNameType,
-  SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { getNameType } from '../../utils/getNameType.js'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/name/makeLabelNodeAndParent.js'
 
-type BaseUnwrapNameDataParameters<TName extends string> = {
+export type UnwrapNameParameters<name extends string> = {
   /** The name to unwrap */
-  name: TName
+  name: name
   /** The recipient of the unwrapped name */
   newOwnerAddress: Address
   /** The registrant of the unwrapped name (eth-2ld only) */
   newRegistrantAddress?: Address
-}
+} & (GetNameType<name> extends Eth2ldNameSpecifier
+  ? {
+      newRegistrantAddress: Address
+    }
+  : {
+      newRegistrantAddress?: never
+    })
 
-type Eth2ldUnwrapNameDataParameters = {
-  name: Eth2ldName
-  newRegistrantAddress: Address
-}
-
-type OtherUnwrapNameDataParameters = {
-  name: string
-  newRegistrantAddress?: never
-}
-
-export type UnwrapNameDataParameters<
-  TName extends string,
-  TNameType extends GetNameType<TName> = GetNameType<TName>,
-> = BaseUnwrapNameDataParameters<TName> &
-  (TNameType extends Eth2ldNameSpecifier
-    ? Eth2ldUnwrapNameDataParameters
-    : OtherUnwrapNameDataParameters)
-
-export type UnwrapNameDataReturnType = SimpleTransactionRequest
-
-export type UnwrapNameParameters<
-  TName extends string,
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
-> = UnwrapNameDataParameters<TName> &
-  WriteTransactionParameters<TChain, TAccount, TChainOverride>
+type ChainWithContractDependencies = ChainWithContract<'ensNameWrapper'>
+export type UnwrapNameOptions<
+  name extends string,
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
+> = UnwrapNameParameters<name> &
+  WriteTransactionParameters<chain, account, chainOverride>
 
 export type UnwrapNameReturnType = Hash
 
@@ -71,21 +58,17 @@ export type UnwrapNameErrorType =
   | RequiredParameterNotSpecifiedError
   | Error
 
-export const makeFunctionData = <
-  TName extends string,
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const unwrapNameWriteParameters = <
+  name extends string,
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  {
-    name,
-    newOwnerAddress,
-    newRegistrantAddress,
-  }: UnwrapNameDataParameters<TName>,
-): UnwrapNameDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, newOwnerAddress, newRegistrantAddress }: UnwrapNameParameters<name>,
+) => {
   const { labelhash, parentNode } = makeLabelNodeAndParent(name)
   const nameWrapperAddress = getChainContractAddress({
-    client: wallet,
+    client,
     contract: 'ensNameWrapper',
   })
   const nameType = getNameType(name)
@@ -98,13 +81,15 @@ export const makeFunctionData = <
       })
 
     return {
-      to: nameWrapperAddress,
-      data: encodeFunctionData({
-        abi: nameWrapperUnwrapEth2ldSnippet,
-        functionName: 'unwrapETH2LD',
-        args: [labelhash, newRegistrantAddress, newOwnerAddress],
-      }),
-    }
+      address: nameWrapperAddress,
+      abi: nameWrapperUnwrapEth2ldSnippet,
+      functionName: 'unwrapETH2LD',
+      args: [labelhash, newRegistrantAddress, newOwnerAddress],
+      chain: client.chain,
+      account: client.account,
+    } as const satisfies WriteContractParameters<
+      typeof nameWrapperUnwrapEth2ldSnippet
+    >
   }
 
   if (newRegistrantAddress)
@@ -115,19 +100,19 @@ export const makeFunctionData = <
     })
 
   return {
-    to: nameWrapperAddress,
-    data: encodeFunctionData({
-      abi: nameWrapperUnwrapSnippet,
-      functionName: 'unwrap',
-      args: [parentNode, labelhash, newOwnerAddress],
-    }),
-  }
+    address: nameWrapperAddress,
+    abi: nameWrapperUnwrapSnippet,
+    functionName: 'unwrap',
+    args: [parentNode, labelhash, newOwnerAddress],
+    chain: client.chain,
+    account: client.account,
+  } as const satisfies WriteContractParameters<typeof nameWrapperUnwrapSnippet>
 }
 
 /**
  * Unwraps a name.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link UnwrapNameParameters}
+ * @param client - {@link Client}
+ * @param options - {@link UnwrapNameOptions}
  * @returns Transaction hash. {@link UnwrapNameReturnType}
  *
  * @example
@@ -147,32 +132,31 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function unwrapName<
-  TName extends string,
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function unwrapName<
+  name extends string,
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     newOwnerAddress,
     newRegistrantAddress,
     ...txArgs
-  }: UnwrapNameParameters<TName, TChain, TAccount, TChainOverride>,
+  }: UnwrapNameOptions<name, chain, account, chainOverride>,
 ): Promise<UnwrapNameReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    newOwnerAddress,
-    newRegistrantAddress,
-  } as UnwrapNameDataParameters<TName>)
-  const writeArgs = {
-    ...data,
-    ...(txArgs as WriteTransactionParameters<TChain, TAccount, TChainOverride>),
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  const writeParameters = unwrapNameWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      newOwnerAddress,
+      newRegistrantAddress,
+    } as UnwrapNameParameters<name>,
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
+    ...txArgs,
+  } as WriteContractParameters)
 }
-
-unwrapName.makeFunctionData = makeFunctionData
-
-export default unwrapName

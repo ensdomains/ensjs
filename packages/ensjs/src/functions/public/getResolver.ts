@@ -6,11 +6,12 @@ import {
   type Transport,
 } from 'viem'
 import { readContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
+
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
-import { packetToBytes } from '../../utils/hexEncodedName.js'
 
 export type GetResolverParameters = {
   /** Name to get resolver for */

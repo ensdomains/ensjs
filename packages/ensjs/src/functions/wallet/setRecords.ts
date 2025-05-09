@@ -2,16 +2,15 @@ import {
   encodeFunctionData,
   type Account,
   type Address,
-  type Hash,
-  type SendTransactionParameters,
+  type Chain,
+  type Client,
+  type EncodeFunctionDataParameters,
   type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type {
-  ChainWithEns,
-  ClientWithAccount,
-  ClientWithEns,
-} from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type {
@@ -19,13 +18,14 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
 import {
-  generateRecordCallArray,
+  resolverMulticallParameters,
   type RecordOptions,
-} from '../../utils/generateRecordCallArray.js'
-import { namehash } from '../../utils/normalise.js'
+} from '../../utils/coders/resolverMulticallParameters.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetRecordsDataParameters = {
+export type SetRecordsParameters = {
   /** The name to set records for */
   name: string
   /** The resolver address to set records on */
@@ -34,47 +34,61 @@ export type SetRecordsDataParameters = {
 
 export type SetRecordsDataReturnType = SimpleTransactionRequest
 
-export type SetRecordsParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+export type SetRecordsOptions<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-  SetRecordsDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetRecordsParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetRecordsReturnType = Hash
+export type SetRecordsReturnType = WriteContractReturnType
 
 export type SetRecordsErrorType = NoRecordsSpecifiedError | Error
 
-export const encodeSetRecordsData = <chain extends ChainWithEns>(
-  _client: ClientWithEns<Transport, chain>,
-  { name, resolverAddress, ...records }: SetRecordsDataParameters,
-): SetRecordsDataReturnType => {
-  const callArray = generateRecordCallArray({
+export const setRecordsWriteParameters = async <
+  chain extends Chain,
+  account extends Account,
+>(
+  client: Client<Transport, chain, account>,
+  { name, resolverAddress, ...records }: SetRecordsParameters,
+) => {
+  const callArray = await resolverMulticallParameters({
     namehash: namehash(name),
     ...records,
   })
   if (callArray.length === 0) throw new NoRecordsSpecifiedError()
+
+  const baseParams = {
+    address: resolverAddress,
+    account: client.account,
+    chain: client.chain,
+  } as const
+
   if (callArray.length === 1)
     return {
-      to: resolverAddress,
-      data: callArray[0],
-    }
+      ...baseParams,
+      ...callArray[0],
+    } as const satisfies WriteContractParameters
   return {
-    to: resolverAddress,
-    data: encodeFunctionData({
-      abi: publicResolverMulticallSnippet,
-      functionName: 'multicall',
-      args: [callArray],
-    }),
-  }
+    ...baseParams,
+    abi: publicResolverMulticallSnippet,
+    functionName: 'multicall',
+    args: [
+      callArray.map((call) =>
+        encodeFunctionData(call as EncodeFunctionDataParameters),
+      ),
+    ],
+  } as const satisfies WriteContractParameters<
+    typeof publicResolverMulticallSnippet
+  >
 }
 
 /**
  * Sets multiple records for a name on a resolver.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetRecordsParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetRecordsOptions}
  * @returns Transaction hash. {@link SetRecordsReturnType}
  *
  * @example
@@ -100,12 +114,12 @@ export const encodeSetRecordsData = <chain extends ChainWithEns>(
  * })
  * // 0x...
  */
-async function setRecords<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setRecords<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     resolverAddress,
@@ -115,24 +129,23 @@ async function setRecords<
     coins,
     abi,
     ...txArgs
-  }: SetRecordsParameters<TChain, TAccount, TChainOverride>,
+  }: SetRecordsOptions<chain, account, chainOverride>,
 ): Promise<SetRecordsReturnType> {
-  const data = encodeSetRecordsData(wallet, {
-    name,
-    resolverAddress,
-    clearRecords,
-    contentHash,
-    texts,
-    coins,
-    abi,
-  })
-  const writeArgs = {
-    ...data,
+  const writeParameters = await setRecordsWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      resolverAddress,
+      clearRecords,
+      contentHash,
+      texts,
+      coins,
+      abi,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setRecords.encodeData = encodeSetRecordsData
-
-export default setRecords

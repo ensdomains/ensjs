@@ -1,24 +1,22 @@
 import {
-  encodeFunctionData,
   type Account,
-  type Hash,
-  type SendTransactionParameters,
+  type Client,
   type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import { bulkRenewalRenewAllSnippet } from '../../contracts/bulkRenewal.js'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { ethRegistrarControllerRenewSnippet } from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { getNameType } from '../../utils/getNameType.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 
-export type RenewNamesDataParameters = {
+export type RenewNamesParameters = {
   /** Name or names to renew */
   nameOrNames: string | string[]
   /** Duration to renew name(s) for */
@@ -27,30 +25,29 @@ export type RenewNamesDataParameters = {
   value: bigint
 }
 
-export type RenewNamesDataReturnType = SimpleTransactionRequest & {
-  value: bigint
-}
-
-export type RenewNamesParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies = ChainWithContract<
+  'ensEthRegistrarController' | 'ensBulkRenewal'
+>
+export type RenewNamesOptions<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  RenewNamesDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  RenewNamesParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type RenewNamesReturnType = Hash
+export type RenewNamesReturnType = WriteContractReturnType
 
 export type RenewNamesErrorType = UnsupportedNameTypeError | Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const renewNamesWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { nameOrNames, duration, value }: RenewNamesDataParameters,
-): RenewNamesDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { nameOrNames, duration, value }: RenewNamesParameters,
+) => {
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
   const labels = names.map((name) => {
     const label = name.split('.')
@@ -64,59 +61,56 @@ export const makeFunctionData = <
     return label[0]
   })
 
+  const baseParams = {
+    chain: client.chain,
+    account: client.account,
+    value,
+  } as const
+
   if (labels.length === 1) {
     return {
-      to: getChainContractAddress({
-        client: wallet,
+      ...baseParams,
+      address: getChainContractAddress({
+        client,
         contract: 'ensEthRegistrarController',
       }),
-      data: encodeFunctionData({
-        abi: ethRegistrarControllerRenewSnippet,
-        functionName: 'renew',
-        args: [labels[0], BigInt(duration)],
-      }),
-      value,
-    }
+      abi: ethRegistrarControllerRenewSnippet,
+      functionName: 'renew',
+      args: [labels[0], BigInt(duration)],
+    } as const satisfies WriteContractParameters
   }
 
   return {
-    to: getChainContractAddress({
-      client: wallet,
+    ...baseParams,
+    address: getChainContractAddress({
+      client,
       contract: 'ensBulkRenewal',
     }),
-    data: encodeFunctionData({
-      abi: bulkRenewalRenewAllSnippet,
-      functionName: 'renewAll',
-      args: [labels, BigInt(duration)],
-    }),
-    value,
-  }
+    abi: bulkRenewalRenewAllSnippet,
+    functionName: 'renewAll',
+    args: [labels, BigInt(duration)],
+  } as const satisfies WriteContractParameters
 }
 
 /**
  * Renews a name or names for a specified duration.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link RenewNamesParameters}
+ * @param client - {@link Client}
+ * @param options - {@link RenewNamesOptions}
  * @returns Transaction hash. {@link RenewNamesReturnType}
  *
  * @example
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+ * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { getPrice } from '@ensdomains/ensjs/public'
  * import { renewNames } from '@ensdomains/ensjs/wallet'
  *
- * const mainnetWithEns = addEnsContracts(mainnet)
- * const client = createPublicClient({
- *   chain: mainnetWithEns,
- *   transport: http(),
- * })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  *
- * const duration = 31536000 // 1 year
+ * const duration = 31536000n // 1 year
  * const { base, premium } = await getPrice(wallet, {
  *  nameOrNames: 'example.eth',
  *  duration,
@@ -129,27 +123,26 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function renewNames<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function renewNames<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     nameOrNames,
     duration,
     value,
     ...txArgs
-  }: RenewNamesParameters<TChain, TAccount, TChainOverride>,
+  }: RenewNamesOptions<chain, account, chainOverride>,
 ): Promise<RenewNamesReturnType> {
-  const data = makeFunctionData(wallet, { nameOrNames, duration, value })
-  const writeArgs = {
-    ...data,
+  const writeParameters = renewNamesWriteParameters(
+    clientWithOverrides(client, txArgs),
+    { nameOrNames, duration, value },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-renewNames.makeFunctionData = makeFunctionData
-
-export default renewNames

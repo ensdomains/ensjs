@@ -1,61 +1,65 @@
-import type {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
+import {
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  type Hash,
+  type Transport,
+  type WriteContractParameters,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { encodeSetContentHash } from '../../utils/coders/encodeSetContentHash.js'
-import { namehash } from '../../utils/normalise.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import {
+  setContentHashParameters,
+  type SetContentHashParametersReturnType,
+} from '../../utils/coders/setContentHash.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetContentHashRecordDataParameters = {
+export type SetContentHashRecordParameters = {
   /** Name to set content hash for */
   name: string
   /** Content hash value */
   contentHash: string | null
-  /** Resolver address to set content hash on */
+  /** The resolver address to use */
   resolverAddress: Address
 }
 
-export type SetContentHashRecordDataReturnType = SimpleTransactionRequest
-
-export type SetContentHashRecordParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+export type SetContentHashRecordOptions<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-  SetContentHashRecordDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetContentHashRecordParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
 export type SetContentHashRecordReturnType = Hash
 
 export type SetContentHashRecordErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const setContentHashRecordWriteParameters = <
+  chain extends Chain,
+  account extends Account,
 >(
-  _wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, contentHash, resolverAddress }: SetContentHashRecordDataParameters,
-): SetContentHashRecordDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, contentHash, resolverAddress }: SetContentHashRecordParameters,
+) => {
   return {
-    to: resolverAddress,
-    data: encodeSetContentHash({ namehash: namehash(name), contentHash }),
-  }
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...setContentHashParameters({ namehash: namehash(name), contentHash }),
+  } as const satisfies WriteContractParameters<
+    SetContentHashParametersReturnType['abi']
+  >
 }
 
 /**
  * Sets the content hash record for a name on a resolver.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetContentHashRecordParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetContentHashRecordOptions}
  * @returns Transaction hash. {@link SetContentHashRecordReturnType}
  *
  * @example
@@ -70,36 +74,34 @@ export const makeFunctionData = <
  * })
  * const hash = await setContentHashRecord(wallet, {
  *   name: 'ens.eth',
- *   value: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
- *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ *   contentHash: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
  * })
  * // 0x...
  */
-async function setContentHashRecord<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setContentHashRecord<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     contentHash,
     resolverAddress,
     ...txArgs
-  }: SetContentHashRecordParameters<TChain, TAccount, TChainOverride>,
+  }: SetContentHashRecordOptions<chain, account, chainOverride>,
 ): Promise<SetContentHashRecordReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    contentHash,
-    resolverAddress,
-  })
-  const writeArgs = {
+  const data = setContentHashRecordWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      contentHash,
+      resolverAddress,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
     ...data,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setContentHashRecord.makeFunctionData = makeFunctionData
-
-export default setContentHashRecord

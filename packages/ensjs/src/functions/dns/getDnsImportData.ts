@@ -39,7 +39,7 @@ const encodeProofs = (
 
 /**
  * Gets DNS import data, used for `importDnsName()`
- * @param client - {@link ClientWithEns}
+ * @param client - {@link Client}
  * @param parameters - {@link GetDnsImportDataParameters}
  * @returns DNS import data object, used for proving the value of the `_ens` TXT record
  *
@@ -57,7 +57,7 @@ const encodeProofs = (
  *   name: 'example.eth',
  * })
  */
-const getDnsImportData = async <
+export async function getDnsImportData<
   chain extends ChainWithContract<'ensDnssecImpl'>,
 >(
   client: Client<Transport, chain>,
@@ -65,7 +65,7 @@ const getDnsImportData = async <
     name,
     endpoint = 'https://cloudflare-dns.com/dns-query',
   }: GetDnsImportDataParameters,
-): Promise<GetDnsImportDataReturnType> => {
+): Promise<GetDnsImportDataReturnType> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { DNSProver } = await import('@ensdomains/dnsprovejs')
   const prover = DNSProver.create(endpoint)
@@ -104,5 +104,3 @@ const getDnsImportData = async <
 
   return rrsets
 }
-
-export default getDnsImportData

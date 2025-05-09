@@ -6,8 +6,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getResolver from '../public/getResolver.js'
-import setResolver from './setResolver.js'
+import { getResolver } from '../public/getResolver.js'
+import { setResolver } from './setResolver.js'
 
 let snapshot: Hex
 let accounts: Address[]

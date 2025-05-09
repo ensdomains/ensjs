@@ -6,10 +6,9 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { encodeAbi } from '../../utils/coders/encodeAbi.js'
-import getRecords from '../public/getRecords.js'
-import getResolver from '../public/getResolver.js'
-import setRecords from './setRecords.js'
+import { getRecords } from '../public/getRecords.js'
+import { getResolver } from '../public/getResolver.js'
+import { setRecords, setRecordsWriteParameters } from './setRecords.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -59,7 +58,7 @@ it('should return a transaction to the resolver and set successfully', async () 
       },
     ],
     texts: [{ key: 'foo', value: 'bar' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    abi: { encodeAs: 'json', data: dummyABI },
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
@@ -104,7 +103,7 @@ it('should return a transaction to the resolver and delete successfully', async 
       },
     ],
     texts: [{ key: 'foo', value: 'bar' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: dummyABI }),
+    abi: { encodeAs: 'json', data: dummyABI },
     account: accounts[1],
   })
   await waitForTransaction(setupTx)
@@ -129,7 +128,7 @@ it('should return a transaction to the resolver and delete successfully', async 
       },
     ],
     texts: [{ key: 'foo', value: '' }],
-    abi: await encodeAbi({ encodeAs: 'json', data: null }),
+    abi: { encodeAs: 'json', data: null },
     account: accounts[1],
   })
   await waitForTransaction(tx)
@@ -151,10 +150,10 @@ it('should return a transaction to the resolver and delete all abis successfully
       name: 'with-type-all-abi.eth',
     }))!,
     abi: [
-      await encodeAbi({ encodeAs: 'json', data: null }),
-      await encodeAbi({ encodeAs: 'cbor', data: null }),
-      await encodeAbi({ encodeAs: 'zlib', data: null }),
-      await encodeAbi({ encodeAs: 'uri', data: null }),
+      { encodeAs: 'json', data: null },
+      { encodeAs: 'cbor', data: null },
+      { encodeAs: 'zlib', data: null },
+      { encodeAs: 'uri', data: null },
     ],
     account: accounts[1],
   })
@@ -183,7 +182,7 @@ it('should error if there are no records to set', async () => {
   `)
 })
 it('should not wrap with multicall if only setting a single record', async () => {
-  const encodedData = setRecords.makeFunctionData(walletClient, {
+  const writeParameters = await setRecordsWriteParameters(walletClient, {
     name: 'test123.eth',
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
@@ -195,6 +194,5 @@ it('should not wrap with multicall if only setting a single record', async () =>
       },
     ],
   })
-  // 0x8b95dd71 is the function selector for setAddr(bytes32,uint256,bytes)
-  expect(encodedData.data.startsWith('0x8b95dd71')).toBe(true)
+  expect(writeParameters.functionName).toBe('setAddr')
 })

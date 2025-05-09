@@ -7,7 +7,7 @@ import type { ChainWithContract } from '../../contracts/consts.js'
 import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import { getNameType } from '../../utils/getNameType.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 
 export type GetPriceParameters = {
   /** Name, or array of names, to get price for */

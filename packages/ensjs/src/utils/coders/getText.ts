@@ -1,6 +1,6 @@
 import { decodeFunctionResult, type Hex } from 'viem'
 import { publicResolverTextSnippet } from '../../contracts/publicResolver.js'
-import { namehash } from '../normalise.js'
+import { namehash } from '../name/normalise.js'
 
 export type GetTextParameters = {
   /** Name to get text record for */

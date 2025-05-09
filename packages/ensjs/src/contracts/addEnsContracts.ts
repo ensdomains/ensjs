@@ -22,7 +22,7 @@ import {
  *   transport: http(),
  * })
  */
-export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
+export const addEnsContracts = <const chain extends Chain>(chain: chain) => {
   if (!chain) throw new NoChainError()
   if (!supportedChains.includes(chain.id as SupportedChain))
     throw new UnsupportedChainError({
@@ -38,5 +38,5 @@ export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
     subgraphs: {
       ...subgraphs[chain.id as SupportedChain],
     },
-  } as unknown as CheckedChainWithEns<TChain>
+  } as unknown as CheckedChainWithEns<chain>
 }

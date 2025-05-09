@@ -7,6 +7,7 @@ import {
   type Transport,
 } from 'viem'
 import { readContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 
 import type { ChainWithContract } from '../../contracts/consts.js'
@@ -18,7 +19,6 @@ import {
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
-import { packetToBytes } from '../../utils/hexEncodedName.js'
 import { getNameWithSizedLabels } from '../../utils/name/getNameWithSizedLabels.js'
 
 export type ResolveNameDataParameters<data extends Hex | Hex[]> = {

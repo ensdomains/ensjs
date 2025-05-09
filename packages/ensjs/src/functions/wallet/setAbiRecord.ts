@@ -1,68 +1,77 @@
-import type {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
-} from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import type { EncodedAbi } from '../../utils/coders/encodeAbi.js'
 import {
-  encodeSetAbi,
-  type EncodeSetAbiParameters,
-} from '../../utils/coders/encodeSetAbi.js'
-import { namehash } from '../../utils/normalise.js'
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
+} from 'viem'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import type {
+  AbiEncodeAs,
+  EncodeAbiParameters,
+} from '../../utils/coders/encodeAbi.js'
+import {
+  setAbiParameters,
+  type SetAbiParameters,
+  type SetAbiParametersReturnType,
+} from '../../utils/coders/setAbi.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetAbiRecordDataParameters = {
-  /** Name to set ABI for */
-  name: string
-  /** Encoded ABI data to set */
-  encodedAbi: EncodedAbi
-  /** Resolver address to set ABI on */
-  resolverAddress: Address
-}
+export type SetAbiRecordParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
+  Prettify<
+    EncodeAbiParameters<encodeAs> & {
+      /** Name to set ABI for */
+      name: string
+      /** Resolver address to set ABI on */
+      resolverAddress: Address
+    }
+  >
 
-export type SetAbiRecordDataReturnType = SimpleTransactionRequest
-
-export type SetAbiRecordParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+export type SetAbiRecordOptions<
+  encodeAs extends AbiEncodeAs,
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-  SetAbiRecordDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetAbiRecordParameters<encodeAs> &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetAbiRecordReturnType = Hash
+export type SetAbiRecordReturnType = WriteContractReturnType
 
 export type SetAbiRecordErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const setAbiRecordWriteParameters = async <
+  encodeAs extends AbiEncodeAs,
+  chain extends Chain,
+  account extends Account,
 >(
-  _wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, encodedAbi, resolverAddress }: SetAbiRecordDataParameters,
-): SetAbiRecordDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, data, encodeAs, resolverAddress }: SetAbiRecordParameters<encodeAs>,
+) => {
   return {
-    to: resolverAddress,
-    data: encodeSetAbi({
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...(await setAbiParameters({
       namehash: namehash(name),
-      ...encodedAbi,
-    } as EncodeSetAbiParameters),
-  }
+      data,
+      encodeAs,
+    } as SetAbiParameters<encodeAs>)),
+  } as const satisfies WriteContractParameters<
+    SetAbiParametersReturnType['abi']
+  >
 }
 
 /**
  * Sets the ABI for a name on a resolver.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetAbiRecordParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetAbiRecordOptions}
  * @returns Transaction hash. {@link SetAbiRecordReturnType}
  *
  * @example
@@ -86,31 +95,33 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function setAbiRecord<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setAbiRecord<
+  encodeAs extends AbiEncodeAs,
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
-    encodedAbi,
+    data,
+    encodeAs,
     resolverAddress,
     ...txArgs
-  }: SetAbiRecordParameters<TChain, TAccount, TChainOverride>,
+  }: SetAbiRecordOptions<encodeAs, chain, account, chainOverride>,
 ): Promise<SetAbiRecordReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    encodedAbi,
-    resolverAddress,
-  })
-  const writeArgs = {
-    ...data,
+  const writeParameters = await setAbiRecordWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      data,
+      encodeAs,
+      resolverAddress,
+    } as SetAbiRecordParameters<encodeAs>,
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setAbiRecord.makeFunctionData = makeFunctionData
-
-export default setAbiRecord

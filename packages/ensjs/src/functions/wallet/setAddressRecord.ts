@@ -1,21 +1,23 @@
-import type {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
+import {
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { encodeSetAddr } from '../../utils/coders/encodeSetAddr.js'
-import { namehash } from '../../utils/normalise.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import {
+  setAddrParameters,
+  type SetAddrParametersReturnType,
+} from '../../utils/coders/setAddr.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetAddressRecordDataParameters = {
+export type SetAddressRecordParameters = {
   /** Name to set address record for */
   name: string
   /** Coin ticker or ID to set */
@@ -26,38 +28,40 @@ export type SetAddressRecordDataParameters = {
   resolverAddress: Address
 }
 
-export type SetAddressRecordDataReturnType = SimpleTransactionRequest
-
-export type SetAddressRecordParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+export type SetAddressRecordOptions<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-  SetAddressRecordDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetAddressRecordParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetAddressRecordReturnType = Hash
+export type SetAddressRecordReturnType = WriteContractReturnType
 
 export type SetAddressRecordErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const setAddressRecordWriteParameters = <
+  chain extends Chain,
+  account extends Account,
 >(
-  _wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, coin, value, resolverAddress }: SetAddressRecordDataParameters,
-): SetAddressRecordDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, coin, value, resolverAddress }: SetAddressRecordParameters,
+) => {
   return {
-    to: resolverAddress,
-    data: encodeSetAddr({ namehash: namehash(name), coin, value }),
-  }
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...setAddrParameters({ namehash: namehash(name), coin, value }),
+  } as const satisfies WriteContractParameters<
+    SetAddrParametersReturnType['abi']
+  >
 }
 
 /**
  * Sets an address record for a name on a resolver.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetAddressRecordParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetAddressRecordOptions}
  * @returns Transaction hash. {@link SetAddressRecordReturnType}
  *
  * @example
@@ -78,33 +82,32 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function setAddressRecord<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setAddressRecord<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     coin,
     value,
     resolverAddress,
     ...txArgs
-  }: SetAddressRecordParameters<TChain, TAccount, TChainOverride>,
+  }: SetAddressRecordOptions<chain, account, chainOverride>,
 ): Promise<SetAddressRecordReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    coin,
-    value,
-    resolverAddress,
-  })
-  const writeArgs = {
+  const data = setAddressRecordWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      coin,
+      value,
+      resolverAddress,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
     ...data,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setAddressRecord.makeFunctionData = makeFunctionData
-
-export default setAddressRecord

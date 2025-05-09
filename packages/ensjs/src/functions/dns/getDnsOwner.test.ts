@@ -11,7 +11,7 @@ import {
   type MockedFunction,
 } from 'vitest'
 import { createHttpServer } from '../../test/createHttpServer.js'
-import getDnsOwner from './getDnsOwner.js'
+import { getDnsOwner } from './getDnsOwner.js'
 
 vi.setConfig({
   testTimeout: 10000,

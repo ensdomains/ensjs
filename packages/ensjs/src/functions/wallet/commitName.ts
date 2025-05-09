@@ -1,39 +1,37 @@
 import {
-  encodeFunctionData,
   type Account,
+  type Client,
   type Hash,
-  type SendTransactionParameters,
   type Transport,
+  type WriteContractParameters,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { ethRegistrarControllerCommitSnippet } from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { getNameType } from '../../utils/getNameType.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 import {
   makeCommitment,
   type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
-export type CommitNameDataParameters = RegistrationParameters
+export type CommitNameParameters = RegistrationParameters
 
-export type CommitNameDataReturnType = SimpleTransactionRequest
-
-export type CommitNameParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies =
+  ChainWithContract<'ensEthRegistrarController'>
+export type CommitNameOptions<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  CommitNameDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  CommitNameParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
 export type CommitNameReturnType = Hash
@@ -43,13 +41,13 @@ export type CommitNameErrorType =
   | WrappedLabelTooLargeError
   | Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const commitNameWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  args: CommitNameDataParameters,
-): CommitNameDataReturnType => {
+  client: Client<Transport, chain, account>,
+  args: CommitNameParameters,
+) => {
   const labels = args.name.split('.')
   const nameType = getNameType(args.name)
   if (nameType !== 'eth-2ld')
@@ -60,22 +58,24 @@ export const makeFunctionData = <
     })
   wrappedLabelLengthCheck(labels[0])
   return {
-    to: getChainContractAddress({
-      client: wallet,
+    address: getChainContractAddress({
+      client,
       contract: 'ensEthRegistrarController',
     }),
-    data: encodeFunctionData({
-      abi: ethRegistrarControllerCommitSnippet,
-      functionName: 'commit',
-      args: [makeCommitment(args)],
-    }),
-  }
+    abi: ethRegistrarControllerCommitSnippet,
+    functionName: 'commit',
+    args: [makeCommitment(args)],
+    chain: client.chain,
+    account: client.account,
+  } as const satisfies WriteContractParameters<
+    typeof ethRegistrarControllerCommitSnippet
+  >
 }
 
 /**
  * Commits a name to be registered
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link CommitNameParameters}
+ * @param client - {@link Client}
+ * @param options - {@link CommitNameOptions}
  * @returns Transaction hash. {@link CommitNameReturnType}
  *
  * @example
@@ -98,12 +98,12 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function commitName<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function commitName<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     owner,
@@ -114,25 +114,24 @@ async function commitName<
     reverseRecord,
     fuses,
     ...txArgs
-  }: CommitNameParameters<TChain, TAccount, TChainOverride>,
+  }: CommitNameOptions<chain, account, chainOverride>,
 ): Promise<CommitNameReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    owner,
-    duration,
-    secret,
-    resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
-  })
-  const writeArgs = {
-    ...data,
+  const writeParameters = commitNameWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      owner,
+      duration,
+      secret,
+      resolverAddress,
+      records,
+      reverseRecord,
+      fuses,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-commitName.makeFunctionData = makeFunctionData
-
-export default commitName

@@ -1,24 +1,22 @@
-import {
-  encodeFunctionData,
-  labelhash,
-  type Account,
-  type Hash,
-  type SendTransactionParameters,
-  type Transport,
+import type {
+  Account,
+  Client,
+  Transport,
+  WriteContractParameters,
+  WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { labelhash } from 'viem/ens'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperSetChildFusesSnippet } from '../../contracts/nameWrapper.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
 import { encodeFuses, type EncodeFusesInputObject } from '../../utils/fuses.js'
-import { namehash } from '../../utils/normalise.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetChildFusesDataParameters = {
+export type SetChildFusesParameters = {
   /** Name to set child fuses for */
   name: string
   /** Fuse object or number value to set to */
@@ -27,46 +25,48 @@ export type SetChildFusesDataParameters = {
   expiry?: number | bigint
 }
 
-export type SetChildFusesDataReturnType = SimpleTransactionRequest
-
-export type SetChildFusesParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies = ChainWithContract<'ensNameWrapper'>
+export type SetChildFusesOptions<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  SetChildFusesDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetChildFusesParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetChildFusesReturnType = Hash
+export type SetChildFusesReturnType = WriteContractReturnType
 
 export type SetChildFusesErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const setChildFusesWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, fuses, expiry }: SetChildFusesDataParameters,
-): SetChildFusesDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, fuses, expiry }: SetChildFusesParameters,
+) => {
   const encodedFuses = encodeFuses({ input: fuses })
   const labels = name.split('.')
   const labelHash = labelhash(labels.shift()!)
   const parentNode = namehash(labels.join('.'))
+
   return {
-    to: getChainContractAddress({ client: wallet, contract: 'ensNameWrapper' }),
-    data: encodeFunctionData({
-      abi: nameWrapperSetChildFusesSnippet,
-      functionName: 'setChildFuses',
-      args: [parentNode, labelHash, encodedFuses, BigInt(expiry ?? 0)],
-    }),
-  }
+    address: getChainContractAddress({ client, contract: 'ensNameWrapper' }),
+    abi: nameWrapperSetChildFusesSnippet,
+    functionName: 'setChildFuses',
+    args: [parentNode, labelHash, encodedFuses, BigInt(expiry ?? 0)],
+    chain: client.chain,
+    account: client.account,
+  } as const satisfies WriteContractParameters<
+    typeof nameWrapperSetChildFusesSnippet
+  >
 }
 
 /**
  * Sets the fuses for a name as the parent.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetChildFusesParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetChildFusesOptions}
  * @returns Transaction hash. {@link SetChildFusesReturnType}
  *
  * @example
@@ -83,33 +83,32 @@ export const makeFunctionData = <
  *   name: 'sub.ens.eth',
  *   fuses: {
  *     parent: {
- *       named: ['PARENT_CANNOT_CONTROl'],
+ *       named: ['PARENT_CANNOT_CONTROL'],
  *     },
  *   },
  * })
  * // 0x...
  */
-async function setChildFuses<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setChildFuses<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     fuses,
     expiry,
     ...txArgs
-  }: SetChildFusesParameters<TChain, TAccount, TChainOverride>,
+  }: SetChildFusesOptions<chain, account, chainOverride>,
 ): Promise<SetChildFusesReturnType> {
-  const data = makeFunctionData(wallet, { name, fuses, expiry })
-  const writeArgs = {
+  const data = setChildFusesWriteParameters(
+    clientWithOverrides(client, txArgs),
+    { name, fuses, expiry },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
     ...data,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setChildFuses.makeFunctionData = makeFunctionData
-
-export default setChildFuses

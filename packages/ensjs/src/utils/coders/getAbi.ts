@@ -7,7 +7,7 @@ import {
 } from 'viem'
 import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'
 import type { DecodedAbi, Prettify } from '../../types.js'
-import { namehash } from '../normalise.js'
+import { namehash } from '../name/normalise.js'
 
 export type GetAbiParameters = {
   /** Name to get ABI record for */

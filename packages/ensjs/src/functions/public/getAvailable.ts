@@ -6,7 +6,7 @@ import { baseRegistrarAvailableSnippet } from '../../contracts/baseRegistrar.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import { getNameType } from '../../utils/getNameType.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 
 export type GetAvailableParameters = {
   /** Name to check availability for, only compatible for eth 2ld */

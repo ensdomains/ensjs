@@ -8,10 +8,10 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getOwner from '../public/getOwner.js'
-import getResolver from '../public/getResolver.js'
-import getWrapperData from '../public/getWrapperData.js'
-import wrapName from './wrapName.js'
+import { getOwner } from '../public/getOwner.js'
+import { getResolver } from '../public/getResolver.js'
+import { getWrapperData } from '../public/getWrapperData.js'
+import { wrapName } from './wrapName.js'
 
 let snapshot: Hex
 let accounts: Address[]

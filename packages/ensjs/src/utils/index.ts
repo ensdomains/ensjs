@@ -3,7 +3,7 @@ export {
   encodeSetText,
   type EncodeSetTextParameters,
   type EncodeSetTextReturnType,
-} from './coders/encodeSetText.js'
+} from './coders/setText.js'
 export {
   getDnsTxtRecords,
   type GetDnsTxtRecordsParameters,
@@ -34,12 +34,12 @@ export {
   encodeSetAddr,
   type EncodeSetAddrParameters,
   type EncodeSetAddrReturnType,
-} from './coders/encodeSetAddr.js'
+} from './coders/setAddr.js'
 export {
   encodeSetContentHash,
   type EncodeSetContentHashParameters,
   type EncodeSetContentHashReturnType,
-} from './coders/encodeSetContentHash.js'
+} from './coders/setContentHash.js'
 
 export {
   EMPTY_ADDRESS,
@@ -91,9 +91,9 @@ export { truncateFormat } from './format.js'
 export {
   generateRecordCallArray,
   type RecordOptions,
-} from './generateRecordCallArray.js'
+} from './coders/resolverMulticallParameters.js'
 export { generateSupportedContentTypes } from './generateSupportedContentTypes.js'
-export { bytesToPacket, packetToBytes } from './hexEncodedName.js'
+export { bytesToPacket } from './name/hexEncodedName.js'
 export {
   checkIsDecrypted,
   checkLabel,
@@ -103,8 +103,7 @@ export {
   isEncodedLabelhash,
   saveLabel,
   saveName,
-} from './labels.js'
-export { makeSafeSecondsDate } from './makeSafeSecondsDate.js'
+} from './name/labels.js'
 export {
   beautify,
   emoji,
@@ -125,7 +124,7 @@ export {
   type TextToken,
   type Token,
   type ValidToken,
-} from './normalise.js'
+} from './name/normalise.js'
 export {
   makeCommitment,
   makeCommitmentFromTuple,
@@ -141,7 +140,7 @@ export {
   parseInput,
   validateName,
   type ParsedInputResult,
-} from './validation.js'
+} from './name/validation.js'
 export {
   MAX_EXPIRY,
   expiryToBigInt,

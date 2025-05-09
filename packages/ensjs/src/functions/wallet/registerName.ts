@@ -1,60 +1,56 @@
 import {
-  encodeFunctionData,
   type Account,
-  type Hash,
-  type SendTransactionParameters,
+  type Client,
   type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { ethRegistrarControllerRegisterSnippet } from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { getNameType } from '../../utils/getNameType.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 import {
   makeRegistrationTuple,
   type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
-export type RegisterNameDataParameters = RegistrationParameters & {
+export type RegisterNameParameters = RegistrationParameters & {
   /** Value of registration */
   value: bigint
 }
 
-export type RegisterNameDataReturnType = SimpleTransactionRequest & {
-  value: bigint
-}
-
-export type RegisterNameParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies =
+  ChainWithContract<'ensEthRegistrarController'>
+export type RegisterNameOptions<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  RegisterNameDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  RegisterNameParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type RegisterNameReturnType = Hash
+export type RegisterNameReturnType = WriteContractReturnType
 
 export type RegisterNameErrorType =
   | UnsupportedNameTypeError
   | WrappedLabelTooLargeError
   | Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const registerNameWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { value, ...args }: RegisterNameDataParameters,
-): RegisterNameDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { value, ...args }: RegisterNameParameters,
+) => {
   const nameType = getNameType(args.name)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
@@ -67,23 +63,25 @@ export const makeFunctionData = <
   wrappedLabelLengthCheck(labels[0])
 
   return {
-    to: getChainContractAddress({
-      client: wallet,
+    address: getChainContractAddress({
+      client,
       contract: 'ensEthRegistrarController',
     }),
-    data: encodeFunctionData({
-      abi: ethRegistrarControllerRegisterSnippet,
-      functionName: 'register',
-      args: makeRegistrationTuple(args),
-    }),
+    abi: ethRegistrarControllerRegisterSnippet,
+    functionName: 'register',
+    args: makeRegistrationTuple(args),
+    chain: client.chain,
+    account: client.account,
     value,
-  }
+  } as const satisfies WriteContractParameters<
+    typeof ethRegistrarControllerRegisterSnippet
+  >
 }
 
 /**
  * Registers a name on ENS
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link RegisterNameParameters}
+ * @param client - {@link Client}
+ * @param options - {@link RegisterNameOptions}
  * @returns Transaction hash. {@link RegisterNameReturnType}
  *
  * @example
@@ -95,7 +93,7 @@ export const makeFunctionData = <
  * import { commitName, registerName } from '@ensdomains/ensjs/wallet'
  *
  * const mainnetWithEns = addEnsContracts(mainnet)
- * const client = createPublicClient({
+ * const publicClient = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),
  * })
@@ -112,20 +110,20 @@ export const makeFunctionData = <
  * }
  *
  * const commitmentHash = await commitName(wallet, params)
- * await client.waitForTransactionReceipt({ hash: commitmentHash }) // wait for commitment to finalise
+ * await publicClient.waitForTransactionReceipt({ hash: commitmentHash }) // wait for commitment to finalise
  * await new Promise((resolve) => setTimeout(resolve, 60 * 1_000)) // wait for commitment to be valid
  *
- * const { base, premium } = await getPrice(client, { nameOrNames: params.name, duration: params.duration })
+ * const { base, premium } = await getPrice(publicClient, { nameOrNames: params.name, duration: params.duration })
  * const value = (base + premium) * 110n / 100n // add 10% to the price for buffer
  * const hash = await registerName(wallet, { ...params, value })
  * // 0x...
  */
-async function registerName<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function registerName<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     owner,
@@ -137,26 +135,25 @@ async function registerName<
     fuses,
     value,
     ...txArgs
-  }: RegisterNameParameters<TChain, TAccount, TChainOverride>,
+  }: RegisterNameOptions<chain, account, chainOverride>,
 ): Promise<RegisterNameReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    owner,
-    duration,
-    secret,
-    resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
-    value,
-  })
-  const writeArgs = {
-    ...data,
+  const writeParameters = registerNameWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      owner,
+      duration,
+      secret,
+      resolverAddress,
+      records,
+      reverseRecord,
+      fuses,
+      value,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-registerName.makeFunctionData = makeFunctionData
-
-export default registerName

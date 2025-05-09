@@ -13,12 +13,12 @@ import { getAction } from 'viem/utils'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { isNullRegistrarOwnerOfError } from '../../utils/errors/isNullRegistrarOwnerOfError.js'
+import { checkIsDotEth } from '../../utils/name/validation.js'
 import { nullableAddress } from '../../utils/nullableAddress.js'
 import {
   getContractSpecificOwnerParameters,
   type OwnerContract,
 } from '../../utils/ownerFromContract.js'
-import { checkIsDotEth } from '../../utils/validation.js'
 
 export type GetOwnerParameters<
   contract extends OwnerContract | undefined = undefined,

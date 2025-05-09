@@ -12,9 +12,9 @@ import { multicallGetCurrentBlockTimestampSnippet } from '../../contracts/multic
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify } from '../../types.js'
-import { getNameType } from '../../utils/getNameType.js'
-import { namehash } from '../../utils/normalise.js'
-import { checkIsDotEth } from '../../utils/validation.js'
+import { getNameType } from '../../utils/name/getNameType.js'
+import { namehash } from '../../utils/name/normalise.js'
+import { checkIsDotEth } from '../../utils/name/validation.js'
 
 type ContractOption = 'registrar' | 'nameWrapper'
 type ExpiryStatus = 'active' | 'expired' | 'gracePeriod'

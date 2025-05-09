@@ -7,7 +7,7 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
 import type { Prettify } from '../../types.js'
 import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
-import { namehash } from '../../utils/normalise.js'
+import { namehash } from '../../utils/name/normalise.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */

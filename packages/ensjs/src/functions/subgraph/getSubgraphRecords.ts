@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import type { Address, Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import type { DateWithValue } from '../../types.js'
-import { namehash } from '../../utils/normalise.js'
+import { namehash } from '../../utils/name/normalise.js'
 import { createSubgraphClient } from './client.js'
 
 export type GetSubgraphRecordsParameters = {

@@ -1,21 +1,23 @@
 import type {
   Account,
   Address,
-  Hash,
-  SendTransactionParameters,
+  Chain,
+  Client,
   Transport,
+  WriteContractParameters,
+  WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { encodeSetText } from '../../utils/coders/encodeSetText.js'
-import { namehash } from '../../utils/normalise.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import {
+  setTextParameters,
+  type SetTextParametersReturnType,
+} from '../../utils/coders/setText.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type SetTextRecordDataParameters = {
+export type SetTextRecordParameters = {
   /** The name to set a text record for */
   name: string
   /** The text record key to set */
@@ -26,38 +28,40 @@ export type SetTextRecordDataParameters = {
   resolverAddress: Address
 }
 
-export type SetTextRecordDataReturnType = SimpleTransactionRequest
-
-export type SetTextRecordParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+export type SetTextRecordOptions<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-  SetTextRecordDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  SetTextRecordParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetTextRecordReturnType = Hash
+export type SetTextRecordReturnType = WriteContractReturnType
 
 export type SetTextRecordErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const setTextRecordWriteParameters = <
+  chain extends Chain,
+  account extends Account,
 >(
-  _wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, key, value, resolverAddress }: SetTextRecordDataParameters,
-): SetTextRecordDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, key, value, resolverAddress }: SetTextRecordParameters,
+) => {
   return {
-    to: resolverAddress,
-    data: encodeSetText({ namehash: namehash(name), key, value }),
-  }
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...setTextParameters({ namehash: namehash(name), key, value }),
+  } as const satisfies WriteContractParameters<
+    SetTextParametersReturnType['abi']
+  >
 }
 
 /**
  * Sets a text record for a name on a resolver.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link SetTextRecordParameters}
+ * @param client - {@link Client}
+ * @param options - {@link SetTextRecordOptions}
  * @returns Transaction hash. {@link SetTextRecordReturnType}
  *
  * @example
@@ -78,33 +82,32 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function setTextRecord<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function setTextRecord<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     key,
     value,
     resolverAddress,
     ...txArgs
-  }: SetTextRecordParameters<TChain, TAccount, TChainOverride>,
+  }: SetTextRecordOptions<chain, account, chainOverride>,
 ): Promise<SetTextRecordReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    key,
-    value,
-    resolverAddress,
-  })
-  const writeArgs = {
-    ...data,
+  const writeParameters = setTextRecordWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      key,
+      value,
+      resolverAddress,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-setTextRecord.makeFunctionData = makeFunctionData
-
-export default setTextRecord

@@ -2,7 +2,7 @@ import { getAddress, type Address, type Hex } from 'viem'
 import type { DateWithValue } from '../../types.js'
 import { truncateFormat } from '../../utils/format.js'
 import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
-import { decryptName } from '../../utils/labels.js'
+import { decryptName } from '../../utils/name/labels.js'
 import type { SubgraphDomain } from './fragments.js'
 
 export type Name = {

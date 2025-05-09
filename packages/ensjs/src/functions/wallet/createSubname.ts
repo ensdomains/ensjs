@@ -32,14 +32,14 @@ import {
   encodeFuses,
   type EncodeFusesInputObject,
 } from '../../utils/fuses.js'
-import { getNameType } from '../../utils/getNameType.js'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
+import { getNameType } from '../../utils/name/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/name/makeLabelNodeAndParent.js'
 import {
   expiryToBigInt,
   makeDefaultExpiry,
   wrappedLabelLengthCheck,
 } from '../../utils/wrapper.js'
-import getWrapperData from '../public/getWrapperData.js'
+import { getWrapperData } from '../public/getWrapperData.js'
 
 type BaseCreateSubnameDataParameters = {
   /** Subname to create */

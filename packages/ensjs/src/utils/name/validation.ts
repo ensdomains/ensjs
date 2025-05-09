@@ -1,8 +1,8 @@
 import {
   NameWithEmptyLabelsError,
   RootNameIncludesOtherLabelsError,
-} from '../errors/utils.js'
-import { MINIMUM_DOT_ETH_CHARS } from './consts.js'
+} from '../../errors/utils.js'
+import { MINIMUM_DOT_ETH_CHARS } from '../consts.js'
 import { checkLabel, isEncodedLabelhash, saveName } from './labels.js'
 import { normalise, split, type Label } from './normalise.js'
 

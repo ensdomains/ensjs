@@ -8,6 +8,7 @@ import {
   type Transport,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
 import {
   dnsRegistrarProveAndClaimSnippet,
@@ -20,7 +21,6 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
-import { packetToBytes } from '../../utils/hexEncodedName.js'
 import type { GetDnsImportDataReturnType } from './getDnsImportData.js'
 
 type BaseImportDnsNameDataParameters = {

@@ -1,4 +1,5 @@
 import { getAddress, type Address } from 'viem'
+
 import {
   DnsDnssecVerificationFailedError,
   DnsInvalidAddressChecksumError,
@@ -9,7 +10,7 @@ import {
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getDnsTxtRecords } from '../../utils/dns/getDnsTxtRecords.js'
 import { DnsRecordType, DnsResponseStatus } from '../../utils/dns/misc.js'
-import { getNameType } from '../../utils/getNameType.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 import type { Endpoint } from './types.js'
 
 export type GetDnsOwnerParameters = {
@@ -43,11 +44,11 @@ export type GetDnsOwnerErrorType =
  * const owner = await getDnsOwner({ name: 'ens.domains' })
  * // '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
  */
-const getDnsOwner = async ({
+export async function getDnsOwner({
   name,
   endpoint,
   strict,
-}: GetDnsOwnerParameters): Promise<GetDnsOwnerReturnType> => {
+}: GetDnsOwnerParameters): Promise<GetDnsOwnerReturnType> {
   const nameType = getNameType(name)
 
   if (nameType !== 'other-2ld')
@@ -94,5 +95,3 @@ const getDnsOwner = async ({
     throw error
   }
 }
-
-export default getDnsOwner

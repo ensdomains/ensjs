@@ -1,4 +1,4 @@
-import type { NameType } from '../types.js'
+import type { NameType } from '../../types.js'
 
 export const getNameType = (name: string): NameType => {
   const labels = name.split('.')

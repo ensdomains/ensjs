@@ -1,12 +1,14 @@
 import {
-  encodeFunctionData,
+  zeroAddress,
   type Account,
+  type Client,
   type Hash,
-  type SendTransactionParameters,
   type Transport,
+  type WriteContractParameters,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   nameWrapperSetRecordSnippet,
@@ -20,17 +22,13 @@ import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
 } from '../../errors/general.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import { getNameType } from '../../utils/getNameType.js'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
-import { namehash } from '../../utils/normalise.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/name/makeLabelNodeAndParent.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type DeleteSubnameDataParameters = {
+export type DeleteSubnameParameters = {
   /** Subname to delete */
   name: string
   /** Contract to delete subname on */
@@ -39,15 +37,16 @@ export type DeleteSubnameDataParameters = {
   asOwner?: boolean
 }
 
-export type DeleteSubnameDataReturnType = SimpleTransactionRequest
-
-export type DeleteSubnameParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies = ChainWithContract<
+  'ensRegistry' | 'ensNameWrapper'
+>
+export type DeleteSubnameOptions<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  DeleteSubnameDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  DeleteSubnameParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
 export type DeleteSubnameReturnType = Hash
@@ -57,13 +56,13 @@ export type DeleteSubnameErrorType =
   | UnsupportedNameTypeError
   | Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const deleteSubnameWriteParameters = <
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, contract, asOwner }: DeleteSubnameDataParameters,
-): DeleteSubnameDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, contract, asOwner }: DeleteSubnameParameters,
+) => {
   const nameType = getNameType(name)
   if (nameType !== 'eth-subname' && nameType !== 'other-subname')
     throw new UnsupportedNameTypeError({
@@ -74,68 +73,70 @@ export const makeFunctionData = <
 
   switch (contract) {
     case 'registry': {
-      const registryAddress = getChainContractAddress({
-        client: wallet,
-        contract: 'ensRegistry',
-      })
+      const baseParams = {
+        address: getChainContractAddress({
+          client,
+          contract: 'ensRegistry',
+        }),
+        chain: client.chain,
+        account: client.account,
+      } as const
       if (asOwner)
         return {
-          to: registryAddress,
-          data: encodeFunctionData({
-            abi: registrySetRecordSnippet,
-            functionName: 'setRecord',
-            args: [namehash(name), EMPTY_ADDRESS, EMPTY_ADDRESS, BigInt(0)],
-          }),
-        }
+          ...baseParams,
+          abi: registrySetRecordSnippet,
+          functionName: 'setRecord',
+          args: [namehash(name), zeroAddress, zeroAddress, BigInt(0)],
+        } as const satisfies WriteContractParameters<
+          typeof registrySetRecordSnippet
+        >
 
       const { labelhash, parentNode } = makeLabelNodeAndParent(name)
       return {
-        to: registryAddress,
-        data: encodeFunctionData({
-          abi: registrySetSubnodeRecordSnippet,
-          functionName: 'setSubnodeRecord',
-          args: [
-            parentNode,
-            labelhash,
-            EMPTY_ADDRESS,
-            EMPTY_ADDRESS,
-            BigInt(0),
-          ],
-        }),
-      }
+        ...baseParams,
+        abi: registrySetSubnodeRecordSnippet,
+        functionName: 'setSubnodeRecord',
+        args: [parentNode, labelhash, zeroAddress, zeroAddress, BigInt(0)],
+      } as const satisfies WriteContractParameters<
+        typeof registrySetSubnodeRecordSnippet
+      >
     }
     case 'nameWrapper': {
-      const nameWrapperAddress = getChainContractAddress({
-        client: wallet,
-        contract: 'ensNameWrapper',
-      })
+      const baseParams = {
+        address: getChainContractAddress({
+          client,
+          contract: 'ensNameWrapper',
+        }),
+        chain: client.chain,
+        account: client.account,
+      } as const
       if (asOwner)
         return {
-          to: nameWrapperAddress,
-          data: encodeFunctionData({
-            abi: nameWrapperSetRecordSnippet,
-            functionName: 'setRecord',
-            args: [namehash(name), EMPTY_ADDRESS, EMPTY_ADDRESS, BigInt(0)],
-          }),
-        }
+          ...baseParams,
+          abi: nameWrapperSetRecordSnippet,
+          functionName: 'setRecord',
+          args: [namehash(name), zeroAddress, zeroAddress, BigInt(0)],
+        } as const satisfies WriteContractParameters<
+          typeof nameWrapperSetRecordSnippet
+        >
 
       const { label, parentNode } = makeLabelNodeAndParent(name)
       return {
-        to: nameWrapperAddress,
-        data: encodeFunctionData({
-          abi: nameWrapperSetSubnodeRecordSnippet,
-          functionName: 'setSubnodeRecord',
-          args: [
-            parentNode,
-            label,
-            EMPTY_ADDRESS,
-            EMPTY_ADDRESS,
-            BigInt(0),
-            0,
-            BigInt(0),
-          ],
-        }),
-      }
+        ...baseParams,
+        abi: nameWrapperSetSubnodeRecordSnippet,
+        functionName: 'setSubnodeRecord',
+        args: [
+          parentNode,
+          label,
+          zeroAddress,
+          zeroAddress,
+          BigInt(0),
+          0,
+          BigInt(0),
+        ],
+      } as const satisfies WriteContractParameters<
+        typeof nameWrapperSetSubnodeRecordSnippet
+      >
     }
     default:
       throw new InvalidContractTypeError({
@@ -147,8 +148,8 @@ export const makeFunctionData = <
 
 /**
  * Deletes a subname
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link DeleteSubnameParameters}
+ * @param client - {@link Client}
+ * @param options - {@link DeleteSubnameOptions}
  * @returns Transaction hash. {@link DeleteSubnameReturnType}
  *
  * @example
@@ -167,31 +168,30 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function deleteSubname<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function deleteSubname<
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     contract,
     asOwner,
     ...txArgs
-  }: DeleteSubnameParameters<TChain, TAccount, TChainOverride>,
+  }: DeleteSubnameOptions<chain, account, chainOverride>,
 ): Promise<DeleteSubnameReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    contract,
-    asOwner,
-  } as DeleteSubnameDataParameters)
-  const writeArgs = {
+  const data = deleteSubnameWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      contract,
+      asOwner,
+    } as DeleteSubnameParameters,
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
     ...data,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-deleteSubname.makeFunctionData = makeFunctionData
-
-export default deleteSubname

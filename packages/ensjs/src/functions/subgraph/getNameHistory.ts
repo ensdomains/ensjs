@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import { hexToBytes, trim } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { decodeContentHash } from '../../utils/contentHash.js'
-import { namehash } from '../../utils/normalise.js'
+import { namehash } from '../../utils/name/normalise.js'
 import { createSubgraphClient } from './client.js'
 import type {
   BaseResolverEvent,

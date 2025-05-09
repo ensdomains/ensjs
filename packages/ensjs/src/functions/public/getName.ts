@@ -6,7 +6,9 @@ import {
   type Transport,
 } from 'viem'
 import { readContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
+
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
@@ -14,8 +16,7 @@ import {
   universalResolverReverseWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
-import { packetToBytes } from '../../utils/hexEncodedName.js'
-import { normalise } from '../../utils/normalise.js'
+import { normalise } from '../../utils/name/normalise.js'
 import { nullableAddress } from '../../utils/nullableAddress.js'
 
 export type GetNameParameters = {

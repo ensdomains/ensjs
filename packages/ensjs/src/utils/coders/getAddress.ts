@@ -10,7 +10,7 @@ import {
   publicResolverSingleAddrSnippet,
 } from '../../contracts/publicResolver.js'
 import type { DecodedAddr, Prettify } from '../../types.js'
-import { namehash } from '../normalise.js'
+import { namehash } from '../name/normalise.js'
 import { getCoderFromCoin } from '../normaliseCoinId.js'
 
 const defaultCoinValue = 60 as const

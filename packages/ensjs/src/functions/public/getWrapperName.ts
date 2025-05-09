@@ -5,8 +5,8 @@ import { getAction, trim } from 'viem/utils'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperNamesSnippet } from '../../contracts/nameWrapper.js'
-import { bytesToPacket } from '../../utils/hexEncodedName.js'
-import { namehash } from '../../utils/normalise.js'
+import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
+import { namehash } from '../../utils/name/normalise.js'
 
 export type GetWrapperNameParameters = {
   /** Name with unknown labels, e.g. "[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth" */

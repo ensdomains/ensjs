@@ -6,9 +6,9 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getContentHashRecord from '../public/getContentHashRecord.js'
-import getResolver from '../public/getResolver.js'
-import setContentHashRecord from './setContentHashRecord.js'
+import { getContentHashRecord } from '../public/getContentHashRecord.js'
+import { getResolver } from '../public/getResolver.js'
+import { setContentHashRecord } from './setContentHashRecord.js'
 
 let snapshot: Hex
 let accounts: Address[]

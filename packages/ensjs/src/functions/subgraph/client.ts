@@ -3,7 +3,7 @@ import type { RequestMiddleware, ResponseMiddleware } from 'graphql-request'
 import { GraphQLClient } from 'graphql-request'
 import { parse, print, visit } from 'graphql/language/index.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import { namehash } from '../../utils/normalise.js'
+import { namehash } from '../../utils/name/normalise.js'
 
 const generateSelection = (selection: string): SelectionNode => ({
   kind: 'Field' as Kind.FIELD,

@@ -8,11 +8,11 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/normalise.js'
+import { namehash } from '../../utils/name/normalise.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
-import getPrice from '../public/getPrice.js'
-import commitName from './commitName.js'
-import registerName from './registerName.js'
+import { getPrice } from '../public/getPrice.js'
+import { commitName } from './commitName.js'
+import { registerName } from './registerName.js'
 
 let snapshot: Hex
 let accounts: Address[]

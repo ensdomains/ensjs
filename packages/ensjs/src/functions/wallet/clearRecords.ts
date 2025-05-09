@@ -1,59 +1,63 @@
-import type {
-  Account,
-  Address,
-  Hash,
-  SendTransactionParameters,
-  Transport,
+import {
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { encodeClearRecords } from '../../utils/coders/encodeClearRecords.js'
-import { namehash } from '../../utils/normalise.js'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import {
+  clearRecordsParameters,
+  type ClearRecordsParametersReturnType,
+} from '../../utils/coders/clearRecords.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-export type ClearRecordsDataParameters = {
+export type ClearRecordsParameters = {
   /** The name to clear records for */
   name: string
   /** The resolver address to use */
   resolverAddress: Address
 }
 
-export type ClearRecordsDataReturnType = SimpleTransactionRequest
-
-export type ClearRecordsParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+export type ClearRecordsOptions<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-  ClearRecordsDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  ClearRecordsParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type ClearRecordsReturnType = Hash
+export type ClearRecordsReturnType = WriteContractReturnType
 
 export type ClearRecordsErrorType = Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
+export const clearRecordsWriteParameters = <
+  chain extends Chain,
+  account extends Account,
 >(
-  _wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, resolverAddress }: ClearRecordsDataParameters,
-): ClearRecordsDataReturnType => {
+  client: Client<Transport, chain, account>,
+  { name, resolverAddress }: ClearRecordsParameters,
+) => {
   return {
-    to: resolverAddress,
-    data: encodeClearRecords(namehash(name)),
-  }
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...clearRecordsParameters(namehash(name)),
+  } as const satisfies WriteContractParameters<
+    ClearRecordsParametersReturnType['abi']
+  >
 }
 
 /**
  * Clears the records for a name on a resolver.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link ClearRecordsParameters}
+ * @param client - {@link Client}
+ * @param options - {@link ClearRecordsOptions}
  * @returns Transaction hash. {@link ClearRecordsReturnType}
  *
  * @example
@@ -72,29 +76,25 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function clearRecords<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function clearRecords<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     resolverAddress,
     ...txArgs
-  }: ClearRecordsParameters<TChain, TAccount, TChainOverride>,
+  }: ClearRecordsOptions<chain, account, chainOverride>,
 ): Promise<ClearRecordsReturnType> {
-  const data = makeFunctionData(wallet, {
-    name,
-    resolverAddress,
-  })
-  const writeArgs = {
-    ...data,
+  const writeParameters = clearRecordsWriteParameters(
+    clientWithOverrides(client, txArgs),
+    { name, resolverAddress },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-clearRecords.makeFunctionData = makeFunctionData
-
-export default clearRecords

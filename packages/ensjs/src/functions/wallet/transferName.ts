@@ -1,19 +1,19 @@
 import {
-  encodeFunctionData,
   labelhash,
   type Account,
   type Address,
-  type Hash,
-  type SendTransactionParameters,
+  type Client,
   type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
 } from 'viem'
-import { sendTransaction } from 'viem/actions'
-import { parseAccount } from 'viem/utils'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import {
   baseRegistrarReclaimSnippet,
   baseRegistrarSafeTransferFromSnippet,
 } from '../../contracts/baseRegistrar.js'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import type { ChainWithContract } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   nameWrapperSafeTransferFromSnippet,
@@ -28,57 +28,40 @@ import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
 } from '../../errors/general.js'
-import type {
-  Prettify,
-  SimpleTransactionRequest,
-  WriteTransactionParameters,
-} from '../../types.js'
-import { getNameType } from '../../utils/getNameType.js'
-import { makeLabelNodeAndParent } from '../../utils/makeLabelNodeAndParent.js'
-import { namehash } from '../../utils/normalise.js'
+import type { Prettify, WriteTransactionParameters } from '../../types.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
+import { makeLabelNodeAndParent } from '../../utils/name/makeLabelNodeAndParent.js'
+import { namehash } from '../../utils/name/normalise.js'
 
-type BaseTransferNameDataParameters = {
+type SupportedContract = 'registry' | 'nameWrapper' | 'registrar'
+export type TransferNameParameters<contract extends SupportedContract> = {
   /** Name to transfer */
   name: string
   /** Transfer recipient */
   newOwnerAddress: Address
   /** Contract to use for transfer */
-  contract: 'registry' | 'nameWrapper' | 'registrar'
+  contract: contract
   /** Reclaim ownership as registrant (registrar only) */
-  reclaim?: boolean
+  reclaim?: contract extends 'registrar' ? boolean : never
   /** Transfer name as the parent owner */
-  asParent?: boolean
+  asParent?: contract extends 'registrar' ? never : boolean
 }
 
-type RegistryOrNameWrapperTransferNameDataParameters = {
-  contract: 'registry' | 'nameWrapper'
-  reclaim?: never
-}
-
-type BaseRegistrarTransferNameDataParameters = {
-  contract: 'registrar'
-  reclaim?: boolean
-  asParent?: never
-}
-
-export type TransferNameDataParameters = BaseTransferNameDataParameters &
-  (
-    | RegistryOrNameWrapperTransferNameDataParameters
-    | BaseRegistrarTransferNameDataParameters
-  )
-
-export type TransferNameDataReturnType = SimpleTransactionRequest
-
-export type TransferNameParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+type ChainWithContractDependencies = ChainWithContract<
+  'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
+>
+export type TransferNameOptions<
+  contract extends 'registry' | 'nameWrapper' | 'registrar',
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  TransferNameDataParameters &
-    WriteTransactionParameters<TChain, TAccount, TChainOverride>
+  TransferNameParameters<contract> &
+    WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type TransferNameReturnType = Hash
+export type TransferNameReturnType = WriteContractReturnType
 
 export type TransferNameErrorType =
   | AdditionalParameterSpecifiedError
@@ -86,19 +69,20 @@ export type TransferNameErrorType =
   | UnsupportedNameTypeError
   | Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account,
+export const transferNameWriteParameters = <
+  contract extends SupportedContract,
+  chain extends ChainWithContractDependencies,
+  account extends Account,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     newOwnerAddress,
     contract,
     reclaim,
     asParent,
-  }: TransferNameDataParameters,
-): TransferNameDataReturnType => {
+  }: TransferNameParameters<contract>,
+) => {
   if (reclaim && contract !== 'registrar')
     throw new AdditionalParameterSpecifiedError({
       parameter: 'reclaim',
@@ -108,30 +92,35 @@ export const makeFunctionData = <
     })
   switch (contract) {
     case 'registry': {
-      const registryAddress = getChainContractAddress({
-        client: wallet,
-        contract: 'ensRegistry',
-      })
+      const baseParams = {
+        address: getChainContractAddress({
+          client,
+          contract: 'ensRegistry',
+        }),
+        chain: client.chain,
+        account: client.account,
+      } as const
       if (asParent) {
         const { labelhash: labelhashId, parentNode } =
           makeLabelNodeAndParent(name)
         return {
-          to: registryAddress,
-          data: encodeFunctionData({
-            abi: registrySetSubnodeOwnerSnippet,
-            functionName: 'setSubnodeOwner',
-            args: [parentNode, labelhashId, newOwnerAddress],
-          }),
-        }
+          ...baseParams,
+          abi: registrySetSubnodeOwnerSnippet,
+          functionName: 'setSubnodeOwner',
+          args: [parentNode, labelhashId, newOwnerAddress],
+        } as const satisfies WriteContractParameters<
+          typeof registrySetSubnodeOwnerSnippet
+        >
       }
+
       return {
-        to: registryAddress,
-        data: encodeFunctionData({
-          abi: registrySetOwnerSnippet,
-          functionName: 'setOwner',
-          args: [namehash(name), newOwnerAddress],
-        }),
-      }
+        ...baseParams,
+        abi: registrySetOwnerSnippet,
+        functionName: 'setOwner',
+        args: [namehash(name), newOwnerAddress],
+      } as const satisfies WriteContractParameters<
+        typeof registrySetOwnerSnippet
+      >
     }
     case 'registrar': {
       if (asParent)
@@ -150,54 +139,68 @@ export const makeFunctionData = <
         })
       const labels = name.split('.')
       const tokenId = BigInt(labelhash(labels[0]))
-      return {
-        to: getChainContractAddress({
-          client: wallet,
+      const baseParams = {
+        address: getChainContractAddress({
+          client,
           contract: 'ensBaseRegistrarImplementation',
         }),
-        data: reclaim
-          ? encodeFunctionData({
-              abi: baseRegistrarReclaimSnippet,
-              functionName: 'reclaim',
-              args: [tokenId, newOwnerAddress],
-            })
-          : encodeFunctionData({
-              abi: baseRegistrarSafeTransferFromSnippet,
-              functionName: 'safeTransferFrom',
-              args: [wallet.account.address, newOwnerAddress, tokenId],
-            }),
+        chain: client.chain,
+        account: client.account,
       }
+      if (reclaim)
+        return {
+          ...baseParams,
+          abi: baseRegistrarReclaimSnippet,
+          functionName: 'reclaim',
+          args: [tokenId, newOwnerAddress],
+        } as const satisfies WriteContractParameters<
+          typeof baseRegistrarReclaimSnippet
+        >
+
+      return {
+        ...baseParams,
+        abi: baseRegistrarSafeTransferFromSnippet,
+        functionName: 'safeTransferFrom',
+        args: [client.account.address, newOwnerAddress, tokenId],
+      } as const satisfies WriteContractParameters<
+        typeof baseRegistrarSafeTransferFromSnippet
+      >
     }
     case 'nameWrapper': {
-      const nameWrapperAddress = getChainContractAddress({
-        client: wallet,
-        contract: 'ensNameWrapper',
-      })
+      const baseParams = {
+        address: getChainContractAddress({
+          client,
+          contract: 'ensNameWrapper',
+        }),
+        chain: client.chain,
+        account: client.account,
+      } as const
       if (asParent) {
         const { label, parentNode } = makeLabelNodeAndParent(name)
         return {
-          to: nameWrapperAddress,
-          data: encodeFunctionData({
-            abi: nameWrapperSetSubnodeOwnerSnippet,
-            functionName: 'setSubnodeOwner',
-            args: [parentNode, label, newOwnerAddress, 0, BigInt(0)],
-          }),
-        }
+          ...baseParams,
+          abi: nameWrapperSetSubnodeOwnerSnippet,
+          functionName: 'setSubnodeOwner',
+          args: [parentNode, label, newOwnerAddress, 0, BigInt(0)],
+        } as const satisfies WriteContractParameters<
+          typeof nameWrapperSetSubnodeOwnerSnippet
+        >
       }
+
       return {
-        to: nameWrapperAddress,
-        data: encodeFunctionData({
-          abi: nameWrapperSafeTransferFromSnippet,
-          functionName: 'safeTransferFrom',
-          args: [
-            wallet.account.address,
-            newOwnerAddress,
-            BigInt(namehash(name)),
-            BigInt(1),
-            '0x',
-          ],
-        }),
-      }
+        ...baseParams,
+        abi: nameWrapperSafeTransferFromSnippet,
+        functionName: 'safeTransferFrom',
+        args: [
+          client.account.address,
+          newOwnerAddress,
+          BigInt(namehash(name)),
+          BigInt(1),
+          '0x',
+        ],
+      } as const satisfies WriteContractParameters<
+        typeof nameWrapperSafeTransferFromSnippet
+      >
     }
     default:
       throw new InvalidContractTypeError({
@@ -209,8 +212,8 @@ export const makeFunctionData = <
 
 /**
  * Transfers a name to a new owner.
- * @param wallet - {@link ClientWithAccount}
- * @param parameters - {@link TransferNameParameters}
+ * @param client - {@link Client}
+ * @param options - {@link TransferNameOptions}
  * @returns Transaction hash. {@link TransferNameReturnType}
  *
  * @example
@@ -230,12 +233,13 @@ export const makeFunctionData = <
  * })
  * // 0x...
  */
-async function transferName<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+export async function transferName<
+  contract extends SupportedContract,
+  chain extends ChainWithContractDependencies | undefined,
+  account extends Account | undefined,
+  chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  client: Client<Transport, chain, account>,
   {
     name,
     newOwnerAddress,
@@ -243,28 +247,22 @@ async function transferName<
     reclaim,
     asParent,
     ...txArgs
-  }: TransferNameParameters<TChain, TAccount, TChainOverride>,
+  }: TransferNameOptions<contract, chain, account, chainOverride>,
 ): Promise<TransferNameReturnType> {
-  const data = makeFunctionData(
-    {
-      ...wallet,
-      account: parseAccount((txArgs.account || wallet.account)!),
-    } as ClientWithAccount<Transport, TChain, Account>,
+  const writeParameters = transferNameWriteParameters(
+    clientWithOverrides(client, txArgs),
     {
       name,
       newOwnerAddress,
       contract,
       reclaim,
       asParent,
-    } as TransferNameDataParameters,
+    } as TransferNameParameters<contract>,
   )
-  const writeArgs = {
-    ...data,
+
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as WriteContractParameters)
 }
-
-transferName.makeFunctionData = makeFunctionData
-
-export default transferName

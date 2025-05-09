@@ -1,25 +1,25 @@
 import type {
+  Abi,
   Account,
-  Address,
+  Chain,
   Client,
-  SendTransactionParameters,
   TransactionRequest,
+  WriteContractParameters,
 } from 'viem'
-import type { ChainWithEns } from './contracts/consts.js'
 
-export type Prettify<T> = {
-  [K in keyof T]: T[K]
+export type Prettify<type> = {
+  [key in keyof type]: type[key]
 } & {}
 
-type AssignI<T, U> = {
-  [K in keyof T as K extends keyof U
-    ? U[K] extends void
+type AssignI<type, union> = {
+  [key in keyof type as key extends keyof union
+    ? union[key] extends void
       ? never
-      : K
-    : K]: K extends keyof U ? U[K] : T[K]
+      : key
+    : key]: key extends keyof union ? union[key] : type[key]
 }
 
-export type Assign<T, U> = AssignI<T, U> & U
+export type Assign<type, union> = AssignI<type, union> & union
 
 export type SimpleTransactionRequest = {
   [P in keyof Pick<TransactionRequest, 'to' | 'data'>]-?: Exclude<
@@ -27,18 +27,6 @@ export type SimpleTransactionRequest = {
     null
   >
 }
-
-/** @internal */
-export type Evaluate<type> = {
-  [key in keyof type]: type[key]
-} & {}
-
-export type TransactionRequestWithPassthrough<TPassthrough = any> =
-  SimpleTransactionRequest & {
-    passthrough?: TPassthrough
-  }
-
-export type GenericPassthrough = { args: any; address: Address }
 
 export type Extended = { [K in keyof Client]?: undefined } & {
   [key: string]: unknown
@@ -51,20 +39,28 @@ type AllowedWriteParameters =
   | 'maxPriorityFeePerGas'
   | 'nonce'
   | 'account'
+  | 'chain'
 
+export type BasicWriteContractParameters<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined = Chain | undefined,
+> = WriteContractParameters<
+  Abi,
+  string,
+  readonly unknown[],
+  chain,
+  account,
+  chainOverride
+>
 export type WriteTransactionParameters<
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined = Chain | undefined,
 > = Pick<
-  SendTransactionParameters<TChain, TAccount, TChainOverride>,
+  BasicWriteContractParameters<chain, account, chainOverride>,
   AllowedWriteParameters
 >
-
-export type DateWithValue<T> = {
-  date: Date
-  value: T
-}
 
 export type DecodedAbi = {
   contentType: 1 | 2 | 4 | 8 | number
@@ -118,19 +114,19 @@ export type NameType =
   | RootNameSpecifier
   | EthTldNameSpecifier
 
-type GetEthNameType<TString extends EthAnyName> = TString extends EthTldName
+type GetEthNameType<name extends EthAnyName> = name extends EthTldName
   ? EthTldNameSpecifier
-  : TString extends EthSubname
+  : name extends EthSubname
   ? EthSubnameSpecifier
   : Eth2ldNameSpecifier
-type GetOtherNameType<TString extends TldName> = TString extends OtherSubname
+type GetOtherNameType<name extends TldName> = name extends OtherSubname
   ? OtherSubnameSpecifier
-  : TString extends Other2ldName
+  : name extends Other2ldName
   ? Other2ldNameSpecifier
   : TldNameSpecifier
 
-export type GetNameType<TString extends string> = TString extends RootName
+export type GetNameType<name extends string> = name extends RootName
   ? RootNameSpecifier
-  : TString extends EthAnyName
-  ? GetEthNameType<TString>
-  : GetOtherNameType<TString>
+  : name extends EthAnyName
+  ? GetEthNameType<name>
+  : GetOtherNameType<name>

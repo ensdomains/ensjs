@@ -2,7 +2,7 @@ import { SignedSet } from '@ensdomains/dnsprovejs'
 import { toBytes } from 'viem'
 import { expect, it, vi } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import getDnsImportData, { type RrSetWithSig } from './getDnsImportData.js'
+import { getDnsImportData, type RrSetWithSig } from './getDnsImportData.js'
 
 vi.setConfig({
   testTimeout: 10000,

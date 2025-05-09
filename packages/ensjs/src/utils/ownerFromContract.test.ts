@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { deploymentAddresses, publicClient } from '../test/addTestContracts.js'
-import { namehash } from './normalise.js'
+import { namehash } from './name/normalise.js'
 import { ownerFromContract } from './ownerFromContract.js'
 
 const baseParams = {

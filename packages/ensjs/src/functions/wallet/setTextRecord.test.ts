@@ -6,9 +6,9 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getResolver from '../public/getResolver.js'
-import getText from '../public/getTextRecord.js'
-import setTextRecord from './setTextRecord.js'
+import { getResolver } from '../public/getResolver.js'
+import { getTextRecord } from '../public/getTextRecord.js'
+import { setTextRecord } from './setTextRecord.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -39,7 +39,7 @@ it('should allow a text record to be set', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getText(publicClient, {
+  const response = await getTextRecord(publicClient, {
     name: 'test123.eth',
     key: 'foo',
   })
@@ -60,7 +60,7 @@ it('should allow a text record to be set to blank', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getText(publicClient, {
+  const response = await getTextRecord(publicClient, {
     name: 'test123.eth',
     key: 'url',
   })

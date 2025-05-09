@@ -6,8 +6,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getOwner from '../public/getOwner.js'
-import transferName from './transferName.js'
+import { getOwner } from '../public/getOwner.js'
+import { transferName } from './transferName.js'
 
 let snapshot: Hex
 let accounts: Address[]

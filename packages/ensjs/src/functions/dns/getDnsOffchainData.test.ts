@@ -15,7 +15,7 @@ import {
 import { addEnsContracts } from '../../index.js'
 import { createHttpServer } from '../../test/createHttpServer.js'
 import { createHandlerResponse } from '../../test/dns.js'
-import getDnsOffchainData from './getDnsOffchainData.js'
+import { getDnsOffchainData } from './getDnsOffchainData.js'
 
 vi.setConfig({
   testTimeout: 10000,

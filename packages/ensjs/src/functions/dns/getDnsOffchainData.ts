@@ -1,5 +1,6 @@
 import { isAddress, type Address, type Client, type Transport } from 'viem'
-import type { ChainWithEns } from '../../contracts/consts.js'
+
+import type { ChainWithContract } from '../../contracts/consts.js'
 import {
   DnsDnssecVerificationFailedError,
   DnsDnssecWildcardExpansionError,
@@ -14,8 +15,8 @@ import {
   DnsResponseStatus,
   type DnsResponseItem,
 } from '../../utils/dns/misc.js'
-import { getNameType } from '../../utils/getNameType.js'
-import getAddressRecord from '../public/getAddressRecord.js'
+import { getNameType } from '../../utils/name/getNameType.js'
+import { getAddressRecord } from '../public/getAddressRecord.js'
 import type { Endpoint } from './types.js'
 
 export type GetDnsOffchainDataParameters = {
@@ -48,10 +49,12 @@ type ValidTextRecord = {
 }
 type InvalidTextRecord = { isValid: false; recordData: string }
 
-const checkValidEnsTxtRecord = async (
-  client: Client<Transport, ChainWithEns>,
+async function checkValidEnsTxtRecord<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
   record: DnsResponseItem,
-): Promise<InvalidTextRecord | ValidTextRecord | null> => {
+): Promise<InvalidTextRecord | ValidTextRecord | null> {
   if (record.type !== DnsRecordType.TXT) return null
   if (!record.data.startsWith('"ENS1 ')) return null
 
@@ -87,18 +90,30 @@ const checkValidEnsTxtRecord = async (
 
 /**
  * Gets the DNS offchain data for a name, via DNS record lookup
+ * @param client - {@link Client}
  * @param parameters - {@link GetDnsOffchainDataParameters}
  * @returns Resolver address and extra data, or null. {@link GetDnsOffchainDataReturnType}
  *
  * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { getDnsOffchainData } from '@ensdomains/ensjs/dns'
  *
- * const owner = await getDnsOffchainData({ name: 'ethleaderboard.xyz' })
+ * const client = createPublicClient({
+ *   chain: addEnsContracts(mainnet),
+ *   transport: http(),
+ * })
+ * const data = await getDnsOffchainData(client, {
+ *   name: 'ethleaderboard.xyz',
+ * })
  */
-const getDnsOffchainData = async (
-  client: Client<Transport, ChainWithEns>,
+export async function getDnsOffchainData<
+  chain extends ChainWithContract<'ensUniversalResolver'>,
+>(
+  client: Client<Transport, chain>,
   { name, endpoint, strict }: GetDnsOffchainDataParameters,
-): Promise<GetDnsOffchainDataReturnType> => {
+): Promise<GetDnsOffchainDataReturnType> {
   const nameType = getNameType(name)
 
   if (nameType !== 'other-2ld' && nameType !== 'other-subname')
@@ -157,5 +172,3 @@ const getDnsOffchainData = async (
     throw error
   }
 }
-
-export default getDnsOffchainData

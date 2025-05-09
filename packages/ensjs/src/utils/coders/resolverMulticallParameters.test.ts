@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
-import { generateRecordCallArray } from './generateRecordCallArray.js'
-import { encodeAbi } from './index.js'
-import { namehash } from './normalise.js'
+import { encodeAbi } from '../index.js'
+import { namehash } from '../name/normalise.js'
+import { generateRecordCallArray } from './resolverMulticallParameters.js'
 
 it('generates a record call array', () => {
   expect(

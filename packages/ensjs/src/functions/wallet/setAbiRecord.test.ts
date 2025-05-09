@@ -6,10 +6,10 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { encodeAbi } from '../../utils/coders/encodeAbi.js'
-import getAbiRecord from '../public/getAbiRecord.js'
-import getResolver from '../public/getResolver.js'
-import setAbiRecord from './setAbiRecord.js'
+import { type AbiEncodeAs } from '../../utils/coders/encodeAbi.js'
+import { getAbiRecord } from '../public/getAbiRecord.js'
+import { getResolver } from '../public/getResolver.js'
+import { setAbiRecord } from './setAbiRecord.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -47,10 +47,10 @@ const dummyABI = [
 ]
 
 it('should allow an abi record to be set with json content type', async () => {
-  const encodedAbi = await encodeAbi({ encodeAs: 'json', data: dummyABI })
   const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
-    encodedAbi,
+    data: dummyABI,
+    encodeAs: 'json',
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
     }))!,
@@ -69,10 +69,10 @@ it('should allow an abi record to be set with json content type', async () => {
 })
 
 it('should allow an abi record to be set with zlib content type', async () => {
-  const encodedAbi = await encodeAbi({ encodeAs: 'zlib', data: dummyABI })
   const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
-    encodedAbi,
+    data: dummyABI,
+    encodeAs: 'zlib',
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
     }))!,
@@ -91,10 +91,10 @@ it('should allow an abi record to be set with zlib content type', async () => {
 })
 
 it('should allow an abi record to be set with cbor content type', async () => {
-  const encodedAbi = await encodeAbi({ encodeAs: 'cbor', data: dummyABI })
   const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
-    encodedAbi,
+    data: dummyABI,
+    encodeAs: 'cbor',
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
     }))!,
@@ -113,13 +113,10 @@ it('should allow an abi record to be set with cbor content type', async () => {
 })
 
 it('should allow an abi record to be set with uri content type', async () => {
-  const encodedAbi = await encodeAbi({
-    encodeAs: 'uri',
-    data: 'https://example.com',
-  })
   const tx = await setAbiRecord(walletClient, {
     name: 'test123.eth',
-    encodedAbi,
+    data: 'https://example.com',
+    encodeAs: 'uri',
     resolverAddress: (await getResolver(publicClient, {
       name: 'test123.eth',
     }))!,
@@ -137,22 +134,18 @@ it('should allow an abi record to be set with uri content type', async () => {
   expect(response!.decoded).toBe(true)
 })
 
-type EncodeAs = Parameters<typeof encodeAbi>[0]['encodeAs']
 it.each([
   ['json', 'with-type-1-abi.eth'],
   ['zlib', 'with-type-2-abi.eth'],
   ['cbor', 'with-type-4-abi.eth'],
   ['uri', 'with-type-8-abi.eth'],
-] as [EncodeAs, string][])(
+] as [AbiEncodeAs, string][])(
   `should allow an abi record to be set to null with %s content type`,
   async (encodeAs, name) => {
-    const encodedAbi = await encodeAbi({
-      encodeAs,
-      data: null,
-    })
     const tx = await setAbiRecord(walletClient, {
       name,
-      encodedAbi,
+      data: null,
+      encodeAs,
       resolverAddress: (await getResolver(publicClient, {
         name,
       }))!,

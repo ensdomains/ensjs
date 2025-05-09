@@ -14,8 +14,8 @@ import {
   UnnamedChildFuses,
   UnnamedParentFuses,
 } from '../../utils/fuses.js'
-import { namehash } from '../../utils/normalise.js'
-import setFuses from './setFuses.js'
+import { namehash } from '../../utils/name/normalise.js'
+import { setFuses } from './setFuses.js'
 
 let snapshot: Hex
 let accounts: Address[]

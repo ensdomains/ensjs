@@ -4,8 +4,8 @@ import {
   checkIsDecrypted,
   decodeLabelhash,
   isEncodedLabelhash,
-} from '../../utils/labels.js'
-import { namehash } from '../../utils/normalise.js'
+} from '../../utils/name/labels.js'
+import { namehash } from '../../utils/name/normalise.js'
 import { createSubgraphClient } from './client.js'
 
 export type GetDecodedNameParameters = {
