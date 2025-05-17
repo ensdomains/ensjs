@@ -3,27 +3,27 @@ import type { ChainWithEns } from '../../contracts/consts.js'
 import getDecodedName, {
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
-} from '../../functions/subgraph/getDecodedName.js'
+} from '../../actions/subgraph/getDecodedName.js'
 import getNameHistory, {
   type GetNameHistoryParameters,
   type GetNameHistoryReturnType,
-} from '../../functions/subgraph/getNameHistory.js'
+} from '../../actions/subgraph/getNameHistory.js'
 import getNamesForAddress, {
   type GetNamesForAddressParameters,
   type GetNamesForAddressReturnType,
-} from '../../functions/subgraph/getNamesForAddress.js'
+} from '../../actions/subgraph/getNamesForAddress.js'
 import getSubgraphRecords, {
   type GetSubgraphRecordsParameters,
   type GetSubgraphRecordsReturnType,
-} from '../../functions/subgraph/getSubgraphRecords.js'
+} from '../../actions/subgraph/getSubgraphRecords.js'
 import getSubgraphRegistrant, {
   type GetSubgraphRegistrantParameters,
   type GetSubgraphRegistrantReturnType,
-} from '../../functions/subgraph/getSubgraphRegistrant.js'
+} from '../../actions/subgraph/getSubgraphRegistrant.js'
 import getSubnames, {
   type GetSubnamesParameters,
   type GetSubnamesReturnType,
-} from '../../functions/subgraph/getSubnames.js'
+} from '../../actions/subgraph/getSubnames.js'
 
 export type EnsSubgraphActions = {
   /**

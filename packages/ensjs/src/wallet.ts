@@ -5,7 +5,7 @@ export {
   type ClearRecordsErrorType,
   type ClearRecordsParameters,
   type ClearRecordsReturnType,
-} from './functions/wallet/clearRecords.js'
+} from './actions/wallet/clearRecords.js'
 export {
   default as commitName,
   type CommitNameDataParameters,
@@ -13,7 +13,7 @@ export {
   type CommitNameErrorType,
   type CommitNameParameters,
   type CommitNameReturnType,
-} from './functions/wallet/commitName.js'
+} from './actions/wallet/commitName.js'
 export {
   default as createSubname,
   type CreateSubnameDataParameters,
@@ -21,7 +21,7 @@ export {
   type CreateSubnameErrorType,
   type CreateSubnameParameters,
   type CreateSubnameReturnType,
-} from './functions/wallet/createSubname.js'
+} from './actions/wallet/createSubname.js'
 export {
   default as deleteSubname,
   type DeleteSubnameDataParameters,
@@ -29,7 +29,7 @@ export {
   type DeleteSubnameErrorType,
   type DeleteSubnameParameters,
   type DeleteSubnameReturnType,
-} from './functions/wallet/deleteSubname.js'
+} from './actions/wallet/deleteSubname.js'
 export {
   default as registerName,
   type RegisterNameDataParameters,
@@ -37,7 +37,7 @@ export {
   type RegisterNameErrorType,
   type RegisterNameParameters,
   type RegisterNameReturnType,
-} from './functions/wallet/registerName.js'
+} from './actions/wallet/registerName.js'
 export {
   default as renewNames,
   type RenewNamesDataParameters,
@@ -45,7 +45,7 @@ export {
   type RenewNamesErrorType,
   type RenewNamesParameters,
   type RenewNamesReturnType,
-} from './functions/wallet/renewNames.js'
+} from './actions/wallet/renewNames.js'
 export {
   default as setAbiRecord,
   type SetAbiRecordDataParameters,
@@ -53,7 +53,7 @@ export {
   type SetAbiRecordErrorType,
   type SetAbiRecordParameters,
   type SetAbiRecordReturnType,
-} from './functions/wallet/setAbiRecord.js'
+} from './actions/wallet/setAbiRecord.js'
 export {
   default as setAddressRecord,
   type SetAddressRecordDataParameters,
@@ -61,7 +61,7 @@ export {
   type SetAddressRecordErrorType,
   type SetAddressRecordParameters,
   type SetAddressRecordReturnType,
-} from './functions/wallet/setAddressRecord.js'
+} from './actions/wallet/setAddressRecord.js'
 export {
   default as setChildFuses,
   type SetChildFusesDataParameters,
@@ -69,7 +69,7 @@ export {
   type SetChildFusesErrorType,
   type SetChildFusesParameters,
   type SetChildFusesReturnType,
-} from './functions/wallet/setChildFuses.js'
+} from './actions/wallet/setChildFuses.js'
 export {
   default as setContentHashRecord,
   type SetContentHashRecordDataParameters,
@@ -77,7 +77,7 @@ export {
   type SetContentHashRecordErrorType,
   type SetContentHashRecordParameters,
   type SetContentHashRecordReturnType,
-} from './functions/wallet/setContentHashRecord.js'
+} from './actions/wallet/setContentHashRecord.js'
 export {
   default as setFuses,
   type SetFusesDataParameters,
@@ -85,7 +85,7 @@ export {
   type SetFusesErrorType,
   type SetFusesParameters,
   type SetFusesReturnType,
-} from './functions/wallet/setFuses.js'
+} from './actions/wallet/setFuses.js'
 export {
   default as setPrimaryName,
   type SetPrimaryNameDataParameters,
@@ -93,7 +93,7 @@ export {
   type SetPrimaryNameErrorType,
   type SetPrimaryNameParameters,
   type SetPrimaryNameReturnType,
-} from './functions/wallet/setPrimaryName.js'
+} from './actions/wallet/setPrimaryName.js'
 export {
   encodeSetRecordsData,
   default as setRecords,
@@ -102,7 +102,7 @@ export {
   type SetRecordsErrorType,
   type SetRecordsParameters,
   type SetRecordsReturnType,
-} from './functions/wallet/setRecords.js'
+} from './actions/wallet/setRecords.js'
 export {
   default as setResolver,
   type SetResolverDataParameters,
@@ -110,7 +110,7 @@ export {
   type SetResolverErrorType,
   type SetResolverParameters,
   type SetResolverReturnType,
-} from './functions/wallet/setResolver.js'
+} from './actions/wallet/setResolver.js'
 export {
   default as setTextRecord,
   type SetTextRecordDataParameters,
@@ -118,7 +118,7 @@ export {
   type SetTextRecordErrorType,
   type SetTextRecordParameters,
   type SetTextRecordReturnType,
-} from './functions/wallet/setTextRecord.js'
+} from './actions/wallet/setTextRecord.js'
 export {
   default as transferName,
   type TransferNameDataParameters,
@@ -126,7 +126,7 @@ export {
   type TransferNameErrorType,
   type TransferNameParameters,
   type TransferNameReturnType,
-} from './functions/wallet/transferName.js'
+} from './actions/wallet/transferName.js'
 export {
   default as unwrapName,
   type UnwrapNameDataParameters,
@@ -134,7 +134,7 @@ export {
   type UnwrapNameErrorType,
   type UnwrapNameParameters,
   type UnwrapNameReturnType,
-} from './functions/wallet/unwrapName.js'
+} from './actions/wallet/unwrapName.js'
 export {
   default as wrapName,
   type WrapNameDataParameters,
@@ -142,4 +142,4 @@ export {
   type WrapNameErrorType,
   type WrapNameParameters,
   type WrapNameReturnType,
-} from './functions/wallet/wrapName.js'
+} from './actions/wallet/wrapName.js'

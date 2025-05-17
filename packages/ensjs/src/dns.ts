@@ -3,19 +3,19 @@ export {
   type GetDnsImportDataErrorType,
   type GetDnsImportDataParameters,
   type GetDnsImportDataReturnType,
-} from './functions/dns/getDnsImportData.js'
+} from './actions/dns/getDnsImportData.js'
 export {
   default as getDnsOffchainData,
   type GetDnsOffchainDataErrorType,
   type GetDnsOffchainDataParameters,
   type GetDnsOffchainDataReturnType,
-} from './functions/dns/getDnsOffchainData.js'
+} from './actions/dns/getDnsOffchainData.js'
 export {
   default as getDnsOwner,
   type GetDnsOwnerErrorType,
   type GetDnsOwnerParameters,
   type GetDnsOwnerReturnType,
-} from './functions/dns/getDnsOwner.js'
+} from './actions/dns/getDnsOwner.js'
 export {
   default as importDnsName,
   type ImportDnsNameDataParameters,
@@ -23,5 +23,5 @@ export {
   type ImportDnsNameErrorType,
   type ImportDnsNameParameters,
   type ImportDnsNameReturnType,
-} from './functions/dns/importDnsName.js'
-export type { Endpoint } from './functions/dns/types.js'
+} from './actions/dns/importDnsName.js'
+export type { Endpoint } from './actions/dns/types.js'

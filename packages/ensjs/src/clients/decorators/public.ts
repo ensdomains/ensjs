@@ -4,72 +4,72 @@ import {
   getAbiRecord,
   type GetAbiRecordParameters,
   type GetAbiRecordReturnType,
-} from '../../functions/public/getAbiRecord.js'
+} from '../../actions/public/getAbiRecord.js'
 import {
   getAddressRecord,
   type GetAddressRecordParameters,
   type GetAddressRecordReturnType,
-} from '../../functions/public/getAddressRecord.js'
+} from '../../actions/public/getAddressRecord.js'
 import {
   getAvailable,
   type GetAvailableParameters,
   type GetAvailableReturnType,
-} from '../../functions/public/getAvailable.js'
+} from '../../actions/public/getAvailable.js'
 import {
   getContentHashRecord,
   type GetContentHashRecordParameters,
   type GetContentHashRecordReturnType,
-} from '../../functions/public/getContentHashRecord.js'
+} from '../../actions/public/getContentHashRecord.js'
 import {
   getCredentials,
   type GetCredentialsParameters,
   type GetCredentialsReturnType,
-} from '../../functions/public/getCredentials.js'
+} from '../../actions/public/getCredentials.js'
 import {
   getExpiry,
   type GetExpiryParameters,
   type GetExpiryReturnType,
-} from '../../functions/public/getExpiry.js'
+} from '../../actions/public/getExpiry.js'
 import {
   getName,
   type GetNameParameters,
   type GetNameReturnType,
-} from '../../functions/public/getName.js'
+} from '../../actions/public/getName.js'
 import {
   getOwner,
   type GetOwnerParameters,
   type GetOwnerReturnType,
-} from '../../functions/public/getOwner.js'
+} from '../../actions/public/getOwner.js'
 import {
   getPrice,
   type GetPriceParameters,
   type GetPriceReturnType,
-} from '../../functions/public/getPrice.js'
+} from '../../actions/public/getPrice.js'
 import {
   getRecords,
   type GetRecordsParameters,
   type GetRecordsReturnType,
-} from '../../functions/public/getRecords.js'
+} from '../../actions/public/getRecords.js'
 import {
   getResolver,
   type GetResolverParameters,
   type GetResolverReturnType,
-} from '../../functions/public/getResolver.js'
+} from '../../actions/public/getResolver.js'
 import {
   getTextRecord,
   type GetTextRecordParameters,
   type GetTextRecordReturnType,
-} from '../../functions/public/getTextRecord.js'
+} from '../../actions/public/getTextRecord.js'
 import {
   getWrapperData,
   type GetWrapperDataParameters,
   type GetWrapperDataReturnType,
-} from '../../functions/public/getWrapperData.js'
+} from '../../actions/public/getWrapperData.js'
 import {
   getWrapperName,
   type GetWrapperNameParameters,
   type GetWrapperNameReturnType,
-} from '../../functions/public/getWrapperName.js'
+} from '../../actions/public/getWrapperName.js'
 
 export type EnsPublicActions = {
   /**

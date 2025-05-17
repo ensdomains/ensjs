@@ -1,4 +1,4 @@
-import type { Endpoint } from '../../functions/dns/types.js'
+import type { Endpoint } from '../../actions/dns/types.js'
 import { type DnsResponse } from './misc.js'
 
 export type GetDnsTxtRecordsParameters = {
