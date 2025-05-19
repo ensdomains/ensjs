@@ -1,4 +1,4 @@
-import { zeroAddress, type Address } from 'viem'
+import { type Address, zeroAddress } from "viem";
 
 export const nullableAddress = (address: Address) =>
-  address === zeroAddress ? null : address
+	address === zeroAddress ? null : address;

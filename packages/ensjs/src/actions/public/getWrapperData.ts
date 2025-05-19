@@ -1,13 +1,25 @@
-import { zeroAddress, type Address, type Client, type Transport } from 'viem'
+import {
+  zeroAddress,
+  type Address,
+  type Chain,
+  type Client,
+  type GetChainContractAddressErrorType,
+  type ReadContractErrorType,
+  type Transport,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 
 import type { ChainWithContract } from '../../contracts/consts.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
-import type { Prettify } from '../../types.js'
+import type { Prettify } from '../../types/index.js'
 import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
-import { namehash } from '../../utils/name/normalise.js'
+import { namehash, type NamehashErrorType } from '../../utils/name/namehash.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */
@@ -25,7 +37,10 @@ export type GetWrapperDataReturnType = Prettify<{
   owner: Address
 } | null>
 
-export type GetWrapperDataErrorType = Error
+export type GetWrapperDataErrorType =
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
+  | NamehashErrorType
 
 /**
  * Gets the wrapper data for a name.
@@ -45,16 +60,16 @@ export type GetWrapperDataErrorType = Error
  * })
  * const result = await getWrapperData(client, { name: 'ilikelasagna.eth' })
  */
-export async function getWrapperData<
-  chain extends ChainWithContract<'ensNameWrapper'>,
->(
-  client: Client<Transport, chain>,
+export async function getWrapperData<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperDataParameters,
 ): Promise<GetWrapperDataReturnType> {
+  UNWRAP_TYPE_ERROR(client)
+
   const readContractAction = getAction(client, readContract, 'readContract')
   const [owner, fuses, expiry] = await readContractAction({
     address: getChainContractAddress({
-      client,
+      chain: client.chain,
       contract: 'ensNameWrapper',
     }),
     abi: nameWrapperGetDataSnippet,

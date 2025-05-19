@@ -1,8 +1,9 @@
-import { type Address, type Client, type Hex, type Transport } from 'viem'
+import type { Address, Chain, Client, Hex, MulticallErrorType } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { ChainWithContract } from '../../contracts/consts.js'
+import type { RequireClientContracts } from '../../clients/chain.js'
 import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetSupportedInterfacesParameters<
   interfaces extends readonly Hex[],
@@ -17,7 +18,7 @@ export type GetSupportedInterfacesReturnType<
   -readonly [K in keyof interfaces]: boolean
 }
 
-export type GetSupportedInterfacesErrorType = Error
+export type GetSupportedInterfacesErrorType = MulticallErrorType
 
 /**
  * Gets the supported interfaces for any contract address.
@@ -42,12 +43,14 @@ export type GetSupportedInterfacesErrorType = Error
  * // [true, false]
  */
 export async function getSupportedInterfaces<
-  chain extends ChainWithContract<'multicall3'>,
+  chain extends Chain,
   const interfaces extends readonly Hex[],
 >(
-  client: Client<Transport, chain>,
+  client: RequireClientContracts<chain, 'multicall3'>,
   { address, interfaces }: GetSupportedInterfacesParameters<interfaces>,
 ): Promise<GetSupportedInterfacesReturnType<interfaces>> {
+  UNWRAP_TYPE_ERROR(client)
+
   const multicallAction = getAction(client, multicall, 'multicall')
 
   const result = await multicallAction({

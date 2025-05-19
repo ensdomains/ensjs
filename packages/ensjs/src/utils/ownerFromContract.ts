@@ -1,76 +1,85 @@
 import {
-  labelhash,
-  type Client,
-  type Hex,
-  type ReadContractParameters,
-  type Transport,
-} from 'viem'
+	type Hex,
+	type LabelhashErrorType,
+	labelhash,
+	type ReadContractParameters,
+	type Chain,
+} from "viem";
 
-import type { ChainWithContract } from '../contracts/consts.js'
-import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
-import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
-import { registryOwnerSnippet } from '../contracts/registry.js'
-import { InvalidContractTypeError } from '../errors/general.js'
+import { nameWrapperOwnerOfSnippet } from "../contracts/nameWrapper.js";
+import { registryOwnerSnippet } from "../contracts/registry.js";
+import { InvalidContractTypeError } from "../errors/general.js";
+import { getChainContractAddress, type RequireChainContracts } from '../clients/chain.js';
+import { UNWRAP_TYPE_ERROR } from '../types/internal.js';
 
-export type OwnerContract = 'nameWrapper' | 'registry' | 'registrar'
+export type OwnerContract = "nameWrapper" | "registry" | "registrar";
 
 export type OwnerFromContractArgs = {
-  contract: OwnerContract
-  node?: Hex
-  labels?: string[]
+	contract: OwnerContract;
+	node?: Hex;
+	labels?: string[];
 } & (
-  | {
-      contract: Exclude<OwnerContract, 'registrar'>
-      node: Hex
-    }
-  | {
-      contract: 'registrar'
-      labels: string[]
-    }
-)
+	| {
+			contract: Exclude<OwnerContract, "registrar">;
+			node: Hex;
+	  }
+	| {
+			contract: "registrar";
+			labels: string[];
+	  }
+);
 
-const abi = [...nameWrapperOwnerOfSnippet, ...registryOwnerSnippet] as const
+const abi = [...nameWrapperOwnerOfSnippet, ...registryOwnerSnippet] as const;
+
+// ================================
+// Get contract specific owner parameters
+// ================================
+
+export type GetContractSpecificOwnerParametersErrorType =
+	// | GetChainContractAddressErrorType
+	| InvalidContractTypeError
+	| LabelhashErrorType;
 
 export const getContractSpecificOwnerParameters = <
-  chain extends ChainWithContract<
-    'ensNameWrapper' | 'ensRegistry' | 'ensBaseRegistrarImplementation'
-  >,
+	_chain extends Chain,
 >(
-  client: Client<Transport, chain>,
-  { contract, node, labels }: OwnerFromContractArgs,
+	chain: RequireChainContracts<_chain, "ensNameWrapper" | "ensRegistry" | "ensBaseRegistrarImplementation">,
+	{ contract, node, labels }: OwnerFromContractArgs,
 ) => {
-  switch (contract) {
-    case 'nameWrapper':
-      return {
-        address: getChainContractAddress({
-          client,
-          contract: 'ensNameWrapper',
-        }),
-        abi,
-        functionName: 'ownerOf',
-        args: [BigInt(node)],
-      } as const satisfies ReadContractParameters<typeof abi, 'ownerOf'>
-    case 'registry':
-      return {
-        address: getChainContractAddress({ client, contract: 'ensRegistry' }),
-        abi,
-        functionName: 'owner',
-        args: [node],
-      } as const satisfies ReadContractParameters<typeof abi, 'owner'>
-    case 'registrar':
-      return {
-        address: getChainContractAddress({
-          client,
-          contract: 'ensBaseRegistrarImplementation',
-        }),
-        abi,
-        functionName: 'ownerOf',
-        args: [BigInt(labelhash(labels[0]))],
-      } as const satisfies ReadContractParameters<typeof abi, 'ownerOf'>
-    default:
-      throw new InvalidContractTypeError({
-        contractType: contract,
-        supportedContractTypes: ['nameWrapper', 'registry', 'registrar'],
-      })
-  }
-}
+	UNWRAP_TYPE_ERROR(chain);
+
+	switch (contract) {
+		case "nameWrapper":
+			return {
+				address: getChainContractAddress({
+					chain,
+					contract: "ensNameWrapper",
+				}),
+				abi,
+				functionName: "ownerOf",
+				args: [BigInt(node)],
+			} as const satisfies ReadContractParameters<typeof abi, "ownerOf">;
+		case "registry":
+			return {
+				address: getChainContractAddress({ chain, contract: "ensRegistry" }),
+				abi,
+				functionName: "owner",
+				args: [node],
+			} as const satisfies ReadContractParameters<typeof abi, "owner">;
+		case "registrar":
+			return {
+				address: getChainContractAddress({
+					chain,
+					contract: "ensBaseRegistrarImplementation",
+				}),
+				abi,
+				functionName: "ownerOf",
+				args: [BigInt(labelhash(labels[0]))],
+			} as const satisfies ReadContractParameters<typeof abi, "ownerOf">;
+		default:
+			throw new InvalidContractTypeError({
+				contractType: contract,
+				supportedContractTypes: ["nameWrapper", "registry", "registrar"],
+			});
+	}
+};

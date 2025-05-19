@@ -1,27 +1,42 @@
-import type { Client, Transport } from 'viem'
-import { encodeFunctionData, getAction } from 'viem/utils'
+import type {
+	Chain,
+	Client,
+	EncodeFunctionDataErrorType,
+	Transport,
+} from "viem";
+import { encodeFunctionData, getAction } from "viem/utils";
 
-import type { ChainWithContract } from '../../contracts/consts.js'
-import type { Prettify } from '../../types.js'
+import type { ChainWithContract } from "../../contracts/consts.js";
+import type { Prettify } from "../../types/index.js";
 import {
-  decodeContentHashResult,
-  getContentHashParameters,
-  type GetContentHashErrorType,
-  type GetContentHashParameters,
-  type GetContentHashReturnType,
-} from '../../utils/coders/getContentHash.js'
-import { resolveNameData } from './resolveNameData.js'
+	type DecodeContentHashResultErrorType,
+	decodeContentHashResult,
+	type GetContentHashErrorType,
+	type GetContentHashParameters,
+	type GetContentHashReturnType,
+	getContentHashParameters,
+} from "../../utils/coders/getContentHash.js";
+import {
+	type ResolveNameDataErrorType,
+	resolveNameData,
+} from "./resolveNameData.js";
+import type { RequireClientContracts } from "../../clients/chain.js";
+import type { ExcludeTE } from "../../types/internal.js";
 
 export type GetContentHashRecordParameters = Prettify<
-  GetContentHashParameters & {
-    /** Batch gateway URLs to use for resolving CCIP-read requests. */
-    gatewayUrls?: string[]
-  }
->
+	GetContentHashParameters & {
+		/** Batch gateway URLs to use for resolving CCIP-read requests. */
+		gatewayUrls?: string[];
+	}
+>;
 
-export type GetContentHashRecordReturnType = GetContentHashReturnType
+export type GetContentHashRecordReturnType = GetContentHashReturnType;
 
-export type GetContentHashRecordErrorType = GetContentHashErrorType
+export type GetContentHashRecordErrorType =
+	| GetContentHashErrorType
+	| ResolveNameDataErrorType
+	| EncodeFunctionDataErrorType
+	| DecodeContentHashResultErrorType;
 
 /**
  * Gets the content hash record for a name
@@ -42,23 +57,23 @@ export type GetContentHashRecordErrorType = GetContentHashErrorType
  * const result = await getContentHashRecord(client, { name: 'ens.eth' })
  * // { protocolType: 'ipfs', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' }
  */
-export async function getContentHashRecord<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
->(
-  client: Client<Transport, chain>,
-  { gatewayUrls, name, strict }: GetContentHashRecordParameters,
+export async function getContentHashRecord<chain extends Chain>(
+	client: RequireClientContracts<chain, "ensUniversalResolver">,
+	{ gatewayUrls, name, strict }: GetContentHashRecordParameters,
 ): Promise<GetContentHashRecordReturnType> {
-  const resolveNameDataAction = getAction(
-    client,
-    resolveNameData,
-    'resolveNameData',
-  )
-  const result = await resolveNameDataAction({
-    name,
-    data: encodeFunctionData(getContentHashParameters({ name })),
-    gatewayUrls,
-    strict,
-  })
-  if (!result) return null
-  return decodeContentHashResult(result.resolvedData, { strict })
+	client = client as ExcludeTE<typeof client>;
+
+	const resolveNameDataAction = getAction(
+		client,
+		resolveNameData,
+		"resolveNameData",
+	);
+	const result = await resolveNameDataAction({
+		name,
+		data: encodeFunctionData(getContentHashParameters({ name })),
+		gatewayUrls,
+		strict,
+	});
+	if (!result) return null;
+	return decodeContentHashResult(result.resolvedData, { strict });
 }

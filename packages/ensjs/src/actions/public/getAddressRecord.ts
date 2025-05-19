@@ -1,31 +1,42 @@
-import type { Client, Transport } from 'viem'
-import { encodeFunctionData, getAction } from 'viem/utils'
+import type { Chain, Client, EncodeFunctionDataErrorType } from "viem";
+import { encodeFunctionData, getAction } from "viem/utils";
 
-import type { ChainWithContract } from '../../contracts/consts.js'
-import type { Prettify } from '../../types.js'
+import type { Prettify } from "../../types/index.js";
 import {
-  decodeAddressResult,
-  getAddressParameters,
-  type GetAddressErrorType,
-  type GetAddressParameters,
-  type GetAddressReturnType,
-} from '../../utils/coders/getAddress.js'
-import { resolveNameData } from './resolveNameData.js'
+	decodeAddressResult,
+	getAddressParameters,
+	type DecodeAddressResultErrorType,
+	type DecodeAddressResultParameters,
+	type DecodeAddressResultReturnType,
+	type GetAddressParametersErrorType,
+	type GetAddressParametersParameters,
+} from "../../utils/coders/getAddress.js";
+import {
+	resolveNameData,
+	type ResolveNameDataErrorType,
+} from "./resolveNameData.js";
+import type { RequireClientContracts } from "../../clients/chain.js";
+import type { ExcludeTE } from "../../types/internal.js";
 
 export type GetAddressRecordParameters<
-  coin extends string | number | undefined = undefined,
+	coin extends string | number | undefined = undefined,
 > = Prettify<
-  GetAddressParameters<coin> & {
-    /** Batch gateway URLs to use for resolving CCIP-read requests. */
-    gatewayUrls?: string[]
-  }
->
+	GetAddressParametersParameters<coin> &
+		DecodeAddressResultParameters<coin> & {
+			/** Batch gateway URLs to use for resolving CCIP-read requests. */
+			gatewayUrls?: string[];
+		}
+>;
 
 export type GetAddressRecordReturnType<
-  coin extends string | number | undefined = undefined,
-> = GetAddressReturnType<coin>
+	coin extends string | number | undefined = undefined,
+> = DecodeAddressResultReturnType<coin>;
 
-export type GetAddressRecordErrorType = GetAddressErrorType
+export type GetAddressRecordErrorType =
+	| ResolveNameDataErrorType
+	| EncodeFunctionDataErrorType
+	| GetAddressParametersErrorType
+	| DecodeAddressResultErrorType;
 
 /**
  * Gets an address record for a name and specified coin
@@ -47,31 +58,33 @@ export type GetAddressRecordErrorType = GetAddressErrorType
  * // { id: 60, name: 'ETH , value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }
  */
 export async function getAddressRecord<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
-  coin extends string | number | undefined = undefined,
+	chain extends Chain,
+	coin extends string | number | undefined = undefined,
 >(
-  client: Client<Transport, chain>,
-  {
-    gatewayUrls,
-    strict,
-    name,
-    bypassFormat,
-    coin,
-  }: GetAddressRecordParameters<coin>,
+	client: RequireClientContracts<chain, "ensUniversalResolver">,
+	{
+		gatewayUrls,
+		strict,
+		name,
+		bypassFormat,
+		coin,
+	}: GetAddressRecordParameters<coin>,
 ): Promise<GetAddressRecordReturnType<coin>> {
-  const resolveNameDataAction = getAction(
-    client,
-    resolveNameData,
-    'resolveNameData',
-  )
-  const result = await resolveNameDataAction({
-    name,
-    data: encodeFunctionData(
-      getAddressParameters({ name, bypassFormat, coin }),
-    ),
-    gatewayUrls,
-    strict,
-  })
-  if (!result) return null
-  return decodeAddressResult(result.resolvedData, { strict, coin })
+	client = client as ExcludeTE<typeof client>;
+
+	const resolveNameDataAction = getAction(
+		client,
+		resolveNameData,
+		"resolveNameData",
+	);
+	const result = await resolveNameDataAction({
+		name,
+		data: encodeFunctionData(
+			getAddressParameters({ name, bypassFormat, coin }),
+		),
+		gatewayUrls,
+		strict,
+	});
+	if (!result) return null;
+	return decodeAddressResult(result.resolvedData, { strict, coin });
 }

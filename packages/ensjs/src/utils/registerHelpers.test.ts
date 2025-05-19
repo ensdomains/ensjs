@@ -1,6 +1,6 @@
 import { labelhash } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { namehash } from './name/normalise.js'
+import { namehash } from './name/normalize.js'
 import {
   makeCommitment,
   makeCommitmentFromTuple,

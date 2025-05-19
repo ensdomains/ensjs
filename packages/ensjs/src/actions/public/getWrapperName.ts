@@ -1,12 +1,25 @@
-import { hexToBytes, type Client, type Transport } from 'viem'
+import {
+  type Chain,
+  type Client,
+  type GetChainContractAddressErrorType,
+  type HexToBytesErrorType,
+  hexToBytes,
+  type ReadContractErrorType,
+  type TrimErrorType,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction, trim } from 'viem/utils'
-
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
 import { nameWrapperNamesSnippet } from '../../contracts/nameWrapper.js'
-import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
-import { namehash } from '../../utils/name/normalise.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import {
+  type BytesToPacketErrorType,
+  bytesToPacket,
+} from '../../utils/name/hexEncodedName.js'
+import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type GetWrapperNameParameters = {
   /** Name with unknown labels, e.g. "[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth" */
@@ -15,7 +28,13 @@ export type GetWrapperNameParameters = {
 
 export type GetWrapperNameReturnType = string | null
 
-export type GetWrapperNameErrorType = Error
+export type GetWrapperNameErrorType =
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
+  | NamehashErrorType
+  | TrimErrorType
+  | BytesToPacketErrorType
+  | HexToBytesErrorType
 
 /**
  * Gets the full name for a name with unknown labels from the NameWrapper.
@@ -36,16 +55,16 @@ export type GetWrapperNameErrorType = Error
  * const result = await getWrapperName(client, { name: '[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth' })
  * // wrapped.eth
  */
-export async function getWrapperName<
-  chain extends ChainWithContract<'ensNameWrapper'>,
->(
-  client: Client<Transport, chain>,
+export async function getWrapperName<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperNameParameters,
 ): Promise<GetWrapperNameReturnType> {
+  UNWRAP_TYPE_ERROR(client)
+
   const readContractAction = getAction(client, readContract, 'readContract')
   const result = await readContractAction({
     address: getChainContractAddress({
-      client,
+      chain: client.chain,
       contract: 'ensNameWrapper',
     }),
     abi: nameWrapperNamesSnippet,

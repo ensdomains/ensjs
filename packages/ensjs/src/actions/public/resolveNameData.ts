@@ -1,17 +1,20 @@
 import {
+  type Address,
+  type Chain,
+  type Client,
+  type GetChainContractAddressErrorType,
+  type Hex,
+  type ReadContractErrorType,
+  type ToHexErrorType,
+  type Transport,
   toHex,
   zeroAddress,
-  type Address,
-  type Client,
-  type Hex,
-  type Transport,
 } from 'viem'
 import { readContract } from 'viem/actions'
-import { packetToBytes } from 'viem/ens'
+import { packetToBytes, type PacketToBytesErrorType } from 'viem/ens'
 import { getAction } from 'viem/utils'
 
 import type { ChainWithContract } from '../../contracts/consts.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   universalResolverResolveArraySnippet,
   universalResolverResolveArrayWithGatewaysSnippet,
@@ -19,7 +22,15 @@ import {
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
-import { getNameWithSizedLabels } from '../../utils/name/getNameWithSizedLabels.js'
+import {
+  getNameWithSizedLabels,
+  type GetNameWithSizedLabelsErrorType,
+} from '../../utils/name/getNameWithSizedLabels.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 
 export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   name: string
@@ -35,7 +46,12 @@ export type ResolveNameDataReturnType<data extends Hex | Hex[]> = {
   resolverAddress: Address
 } | null
 
-export type ResolveNameDataErrorType = Error
+export type ResolveNameDataErrorType =
+  | GetNameWithSizedLabelsErrorType
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
+  | ToHexErrorType
+  | PacketToBytesErrorType
 
 /**
  * Resolves name and data with the universal resolver.
@@ -45,18 +61,20 @@ export type ResolveNameDataErrorType = Error
  * @internal
  */
 export async function resolveNameData<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
+  chain extends Chain,
   data extends Hex | Hex[],
 >(
-  client: Client<Transport, chain>,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name, data, strict, gatewayUrls }: ResolveNameDataParameters<data>,
 ): Promise<ResolveNameDataReturnType<data>> {
+  UNWRAP_TYPE_ERROR(client)
+
   const nameWithSizedLabels = getNameWithSizedLabels(name)
   const readContractAction = getAction(client, readContract, 'readContract')
 
   const baseParameters = {
     address: getChainContractAddress({
-      client,
+      chain: client.chain,
       contract: 'ensUniversalResolver',
     }),
     functionName: 'resolve',

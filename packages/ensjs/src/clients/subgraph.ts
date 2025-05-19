@@ -1,37 +1,37 @@
 import {
-  createClient,
-  type Client,
-  type ClientConfig,
-  type PublicRpcSchema,
-  type Transport,
-} from 'viem'
-import { addEnsContracts } from '../contracts/addEnsContracts.js'
+	createClient,
+	type Client,
+	type ClientConfig,
+	type PublicRpcSchema,
+	type Transport,
+} from "viem";
+import { addEnsContracts } from "../contracts/addEnsContracts.js";
 import type {
-  ChainWithBaseContracts,
-  ChainWithEns,
-} from '../contracts/consts.js'
-import type { Prettify } from '../types.js'
+	ChainWithBaseContracts,
+	ChainWithEns,
+} from "../contracts/consts.js";
+import type { Prettify } from "../types/index.js";
 import {
-  ensSubgraphActions,
-  type EnsSubgraphActions,
-} from './decorators/subgraph.js'
+	ensSubgraphActions,
+	type EnsSubgraphActions,
+} from "./decorators/subgraph.js";
 
 export type EnsSubgraphClientConfig<
-  transport extends Transport = Transport,
-  chain extends ChainWithBaseContracts = ChainWithBaseContracts,
+	transport extends Transport = Transport,
+	chain extends ChainWithBaseContracts = ChainWithBaseContracts,
 > = Pick<
-  ClientConfig<transport, chain>,
-  'batch' | 'key' | 'name' | 'pollingInterval' | 'transport'
+	ClientConfig<transport, chain>,
+	"batch" | "key" | "name" | "pollingInterval" | "transport"
 > & {
-  chain: chain
-}
+	chain: chain;
+};
 
 export type EnsSubgraphClient<
-  transport extends Transport = Transport,
-  chain extends ChainWithEns = ChainWithEns,
+	transport extends Transport = Transport,
+	chain extends ChainWithEns = ChainWithEns,
 > = Prettify<
-  Client<transport, chain, undefined, PublicRpcSchema, EnsSubgraphActions>
->
+	Client<transport, chain, undefined, PublicRpcSchema, EnsSubgraphActions>
+>;
 
 /**
  * Creates a ENS Subgraph Client with a given [Transport](https://viem.sh/docs/clients/intro.html) configured for a [Chain](https://viem.sh/docs/clients/chains.html).
@@ -50,26 +50,26 @@ export type EnsSubgraphClient<
  * })
  */
 export const createEnsSubgraphClient = <
-  transport extends Transport,
-  chain extends ChainWithBaseContracts,
+	transport extends Transport,
+	chain extends ChainWithBaseContracts,
 >({
-  batch,
-  chain,
-  key = 'ensSubgraph',
-  name = 'ENS Subgraph Client',
-  transport,
-  pollingInterval,
+	batch,
+	chain,
+	key = "ensSubgraph",
+	name = "ENS Subgraph Client",
+	transport,
+	pollingInterval,
 }: EnsSubgraphClientConfig<transport, chain>): EnsSubgraphClient<
-  transport,
-  ChainWithEns<chain>
+	transport,
+	ChainWithEns<chain>
 > => {
-  return createClient({
-    batch,
-    chain: addEnsContracts(chain),
-    key,
-    name,
-    pollingInterval,
-    transport,
-    type: 'ensSubgraphClient',
-  }).extend(ensSubgraphActions)
-}
+	return createClient({
+		batch,
+		chain: addEnsContracts(chain),
+		key,
+		name,
+		pollingInterval,
+		transport,
+		type: "ensSubgraphClient",
+	}).extend(ensSubgraphActions);
+};

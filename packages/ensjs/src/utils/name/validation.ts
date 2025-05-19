@@ -3,29 +3,61 @@ import {
   RootNameIncludesOtherLabelsError,
 } from '../../errors/utils.js'
 import { MINIMUM_DOT_ETH_CHARS } from '../consts.js'
-import { checkLabel, isEncodedLabelhash, saveName } from './labels.js'
-import { normalise, split, type Label } from './normalise.js'
+import {
+  type CheckLabelErrorType,
+  checkLabel,
+  isEncodedLabelhash,
+  type SaveNameErrorType,
+  saveName,
+} from './labels.js'
+import {
+  type Label,
+  type NormalizeErrorType,
+  normalize,
+  split,
+} from './normalize.js'
+
+// ================================
+// Validate Name
+// ================================
+
+export type ValidateNameErrorType =
+  | NameWithEmptyLabelsError
+  | RootNameIncludesOtherLabelsError
+  | CheckLabelErrorType
+  | NormalizeErrorType
+  | SaveNameErrorType
 
 export const validateName = (name: string) => {
   const nameArray = name.split('.')
-  const normalisedArray = nameArray.map((label) => {
+  const normalizedArray = nameArray.map((label) => {
     if (label.length === 0) throw new NameWithEmptyLabelsError({ name })
     if (label === '[root]') {
       if (name !== label) throw new RootNameIncludesOtherLabelsError({ name })
       return label
     }
     return isEncodedLabelhash(label)
-      ? checkLabel(label) || label
-      : normalise(label)
+      ? // may throw CheckLabelErrorType
+        checkLabel(label) || label
+      : // may throw NormalizeErrorType
+        normalize(label)
   })
-  const normalisedName = normalisedArray.join('.')
-  saveName(normalisedName)
-  return normalisedName
+
+  const normalizedName = normalizedArray.join('.')
+
+  // may throw SaveNameErrorType
+  saveName(normalizedName)
+
+  return normalizedName
 }
+
+// ================================
+// Parse Input
+// ================================
 
 export type ParsedInputResult = {
   type: 'name' | 'label'
-  normalised: string | undefined
+  normalized: string | undefined
   isValid: boolean
   isShort: boolean
   is2LD: boolean
@@ -37,12 +69,13 @@ export const parseInput = (input: string): ParsedInputResult => {
   let nameReference = input
   let isValid = false
 
+  // TODO: Should this only be catching the explicitly thrown errors or should it be catching all errors?
   try {
     nameReference = validateName(input)
     isValid = true
   } catch {}
 
-  const normalisedName = isValid ? nameReference : undefined
+  const normalizedName = isValid ? nameReference : undefined
 
   const labels = nameReference.split('.')
   const tld = labels[labels.length - 1]
@@ -54,7 +87,7 @@ export const parseInput = (input: string): ParsedInputResult => {
   if (labels.length === 1) {
     return {
       type: 'label',
-      normalised: normalisedName,
+      normalized: normalizedName,
       isShort,
       isValid,
       is2LD: false,
@@ -66,7 +99,7 @@ export const parseInput = (input: string): ParsedInputResult => {
   const is2LD = labels.length === 2
   return {
     type: 'name',
-    normalised: normalisedName,
+    normalized: normalizedName,
     isShort: isETH && is2LD ? isShort : false,
     isValid,
     is2LD,
@@ -75,5 +108,12 @@ export const parseInput = (input: string): ParsedInputResult => {
   }
 }
 
+// ================================
+// Check Is Dot Eth
+// ================================
+
+/**
+ * Checks if a label is a 2LD and is the .eth TLD
+ */
 export const checkIsDotEth = (labels: string[]) =>
   labels.length === 2 && labels[1] === 'eth'

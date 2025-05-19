@@ -1,92 +1,92 @@
-import type { NameType } from '../types.js'
-import { BaseError } from './base.js'
+import type { NameType } from "../types/index.js";
+import { BaseError } from "./base.js";
 
 export class AdditionalParameterSpecifiedError extends BaseError {
-  parameter: string
+	parameter: string;
 
-  allowedParameters: string[]
+	allowedParameters: string[];
 
-  override name = 'AdditionalParameterSpecifiedError'
+	override name = "AdditionalParameterSpecifiedError";
 
-  constructor({
-    parameter,
-    allowedParameters,
-    details,
-  }: {
-    parameter: string
-    allowedParameters: string[]
-    details?: string
-  }) {
-    super(`Additional parameter specified: ${parameter}`, {
-      metaMessages: [`- Allowed parameters: ${allowedParameters.join(', ')}`],
-      details,
-    })
-    this.parameter = parameter
-    this.allowedParameters = allowedParameters
-  }
+	constructor({
+		parameter,
+		allowedParameters,
+		details,
+	}: {
+		parameter: string;
+		allowedParameters: string[];
+		details?: string;
+	}) {
+		super(`Additional parameter specified: ${parameter}`, {
+			metaMessages: [`- Allowed parameters: ${allowedParameters.join(", ")}`],
+			details,
+		});
+		this.parameter = parameter;
+		this.allowedParameters = allowedParameters;
+	}
 }
 
 export class RequiredParameterNotSpecifiedError extends BaseError {
-  parameter: string
+	parameter: string;
 
-  override name = 'RequiredParameterNotSpecifiedError'
+	override name = "RequiredParameterNotSpecifiedError";
 
-  constructor({ parameter, details }: { parameter: string; details?: string }) {
-    super(`Required parameter not specified: ${parameter}`, { details })
-    this.parameter = parameter
-  }
+	constructor({ parameter, details }: { parameter: string; details?: string }) {
+		super(`Required parameter not specified: ${parameter}`, { details });
+		this.parameter = parameter;
+	}
 }
 
 export class UnsupportedNameTypeError extends BaseError {
-  nameType: NameType
+	nameType: NameType;
 
-  supportedTypes: NameType[]
+	supportedTypes: NameType[];
 
-  override name = 'UnsupportedNameTypeError'
+	override name = "UnsupportedNameTypeError";
 
-  constructor({
-    nameType,
-    supportedNameTypes,
-    details,
-  }: {
-    nameType: NameType
-    supportedNameTypes: NameType[]
-    details?: string
-  }) {
-    super(`Unsupported name type: ${nameType}`, {
-      metaMessages: [
-        `- Supported name types: ${supportedNameTypes.join(', ')}`,
-      ],
-      details,
-    })
-    this.nameType = nameType
-    this.supportedTypes = supportedNameTypes
-  }
+	constructor({
+		nameType,
+		supportedNameTypes,
+		details,
+	}: {
+		nameType: NameType;
+		supportedNameTypes: NameType[];
+		details?: string;
+	}) {
+		super(`Unsupported name type: ${nameType}`, {
+			metaMessages: [
+				`- Supported name types: ${supportedNameTypes.join(", ")}`,
+			],
+			details,
+		});
+		this.nameType = nameType;
+		this.supportedTypes = supportedNameTypes;
+	}
 }
 
 export class InvalidContractTypeError extends BaseError {
-  contractType: string
+	contractType: string;
 
-  supportedTypes: string[]
+	supportedTypes: string[];
 
-  override name = 'InvalidContractTypeError'
+	override name = "InvalidContractTypeError";
 
-  constructor({
-    contractType,
-    supportedContractTypes,
-    details,
-  }: {
-    contractType: string
-    supportedContractTypes: string[]
-    details?: string
-  }) {
-    super(`Invalid contract type: ${contractType}`, {
-      metaMessages: [
-        `- Supported contract types: ${supportedContractTypes.join(', ')}`,
-      ],
-      details,
-    })
-    this.contractType = contractType
-    this.supportedTypes = supportedContractTypes
-  }
+	constructor({
+		contractType,
+		supportedContractTypes,
+		details,
+	}: {
+		contractType: string;
+		supportedContractTypes: string[];
+		details?: string;
+	}) {
+		super(`Invalid contract type: ${contractType}`, {
+			metaMessages: [
+				`- Supported contract types: ${supportedContractTypes.join(", ")}`,
+			],
+			details,
+		});
+		this.contractType = contractType;
+		this.supportedTypes = supportedContractTypes;
+	}
 }

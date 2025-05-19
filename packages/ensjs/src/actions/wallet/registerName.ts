@@ -1,82 +1,85 @@
 import {
-  type Account,
-  type Client,
-  type Transport,
-  type WriteContractParameters,
-  type WriteContractReturnType,
-} from 'viem'
-import { writeContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { ethRegistrarControllerRegisterSnippet } from '../../contracts/ethRegistrarController.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { UnsupportedNameTypeError } from '../../errors/general.js'
-import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
-import type { Prettify, WriteTransactionParameters } from '../../types.js'
-import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
-import { getNameType } from '../../utils/name/getNameType.js'
+	type Account,
+	type Client,
+	type Transport,
+	type WriteContractParameters,
+	type WriteContractReturnType,
+} from "viem";
+import { writeContract } from "viem/actions";
+import { getAction } from "viem/utils";
+import type { ChainWithContract } from "../../contracts/consts.js";
+import { ethRegistrarControllerRegisterSnippet } from "../../contracts/ethRegistrarController.js";
+import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
+import { UnsupportedNameTypeError } from "../../errors/general.js";
+import type { WrappedLabelTooLargeError } from "../../errors/utils.js";
+import type {
+	Prettify,
+	WriteTransactionParameters,
+} from "../../types/index.js";
+import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import { getNameType } from "../../utils/name/getNameType.js";
 import {
-  makeRegistrationTuple,
-  type RegistrationParameters,
-} from '../../utils/registerHelpers.js'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
+	makeRegistrationTuple,
+	type RegistrationParameters,
+} from "../../utils/registerHelpers.js";
+import { wrappedLabelLengthCheck } from "../../utils/wrapper.js";
 
 export type RegisterNameParameters = RegistrationParameters & {
-  /** Value of registration */
-  value: bigint
-}
+	/** Value of registration */
+	value: bigint;
+};
 
 type ChainWithContractDependencies =
-  ChainWithContract<'ensEthRegistrarController'>
+	ChainWithContract<"ensEthRegistrarController">;
 export type RegisterNameOptions<
-  chain extends ChainWithContractDependencies | undefined,
-  account extends Account | undefined,
-  chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends ChainWithContractDependencies | undefined,
+	account extends Account | undefined,
+	chainOverride extends ChainWithContractDependencies | undefined,
 > = Prettify<
-  RegisterNameParameters &
-    WriteTransactionParameters<chain, account, chainOverride>
->
+	RegisterNameParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
 
-export type RegisterNameReturnType = WriteContractReturnType
+export type RegisterNameReturnType = WriteContractReturnType;
 
 export type RegisterNameErrorType =
-  | UnsupportedNameTypeError
-  | WrappedLabelTooLargeError
-  | Error
+	| UnsupportedNameTypeError
+	| WrappedLabelTooLargeError
+	| Error;
 
 export const registerNameWriteParameters = <
-  chain extends ChainWithContractDependencies,
-  account extends Account,
+	chain extends ChainWithContractDependencies,
+	account extends Account,
 >(
-  client: Client<Transport, chain, account>,
-  { value, ...args }: RegisterNameParameters,
+	client: Client<Transport, chain, account>,
+	{ value, ...args }: RegisterNameParameters,
 ) => {
-  const nameType = getNameType(args.name)
-  if (nameType !== 'eth-2ld')
-    throw new UnsupportedNameTypeError({
-      nameType,
-      supportedNameTypes: ['eth-2ld'],
-      details: 'Only 2ld-eth name registration is supported',
-    })
+	const nameType = getNameType(args.name);
+	if (nameType !== "eth-2ld")
+		throw new UnsupportedNameTypeError({
+			nameType,
+			supportedNameTypes: ["eth-2ld"],
+			details: "Only 2ld-eth name registration is supported",
+		});
 
-  const labels = args.name.split('.')
-  wrappedLabelLengthCheck(labels[0])
+	const labels = args.name.split(".");
+	wrappedLabelLengthCheck(labels[0]);
 
-  return {
-    address: getChainContractAddress({
-      client,
-      contract: 'ensEthRegistrarController',
-    }),
-    abi: ethRegistrarControllerRegisterSnippet,
-    functionName: 'register',
-    args: makeRegistrationTuple(args),
-    chain: client.chain,
-    account: client.account,
-    value,
-  } as const satisfies WriteContractParameters<
-    typeof ethRegistrarControllerRegisterSnippet
-  >
-}
+	return {
+		address: getChainContractAddress({
+			client,
+			contract: "ensEthRegistrarController",
+		}),
+		abi: ethRegistrarControllerRegisterSnippet,
+		functionName: "register",
+		args: makeRegistrationTuple(args),
+		chain: client.chain,
+		account: client.account,
+		value,
+	} as const satisfies WriteContractParameters<
+		typeof ethRegistrarControllerRegisterSnippet
+	>;
+};
 
 /**
  * Registers a name on ENS
@@ -119,41 +122,41 @@ export const registerNameWriteParameters = <
  * // 0x...
  */
 export async function registerName<
-  chain extends ChainWithContractDependencies | undefined,
-  account extends Account | undefined,
-  chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends ChainWithContractDependencies | undefined,
+	account extends Account | undefined,
+	chainOverride extends ChainWithContractDependencies | undefined,
 >(
-  client: Client<Transport, chain, account>,
-  {
-    name,
-    owner,
-    duration,
-    secret,
-    resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
-    value,
-    ...txArgs
-  }: RegisterNameOptions<chain, account, chainOverride>,
+	client: Client<Transport, chain, account>,
+	{
+		name,
+		owner,
+		duration,
+		secret,
+		resolverAddress,
+		records,
+		reverseRecord,
+		fuses,
+		value,
+		...txArgs
+	}: RegisterNameOptions<chain, account, chainOverride>,
 ): Promise<RegisterNameReturnType> {
-  const writeParameters = registerNameWriteParameters(
-    clientWithOverrides(client, txArgs),
-    {
-      name,
-      owner,
-      duration,
-      secret,
-      resolverAddress,
-      records,
-      reverseRecord,
-      fuses,
-      value,
-    },
-  )
-  const writeContractAction = getAction(client, writeContract, 'writeContract')
-  return writeContractAction({
-    ...writeParameters,
-    ...txArgs,
-  } as WriteContractParameters)
+	const writeParameters = registerNameWriteParameters(
+		clientWithOverrides(client, txArgs),
+		{
+			name,
+			owner,
+			duration,
+			secret,
+			resolverAddress,
+			records,
+			reverseRecord,
+			fuses,
+			value,
+		},
+	);
+	const writeContractAction = getAction(client, writeContract, "writeContract");
+	return writeContractAction({
+		...writeParameters,
+		...txArgs,
+	} as WriteContractParameters);
 }

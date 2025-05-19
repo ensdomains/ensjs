@@ -1,27 +1,43 @@
-import type { Client, Transport } from 'viem'
-
+import type {
+  Chain,
+  Client,
+  EncodeFunctionDataErrorType,
+  Transport,
+} from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
 import type { ChainWithContract } from '../../contracts/consts.js'
-import type { Prettify } from '../../types.js'
+import type { Prettify } from '../../types/index.js'
 import {
+  type DecodeTextResultErrorType,
+  type DecodeTextResultParameters,
+  type DecodeTextResultReturnType,
   decodeTextResult,
+  type GetTextParametersErrorType,
+  type GetTextParametersParameters,
   getTextParameters,
-  type GetTextErrorType,
-  type GetTextParameters,
-  type GetTextReturnType,
 } from '../../utils/coders/getText.js'
-import { resolveNameData } from './resolveNameData.js'
+import {
+  type ResolveNameDataErrorType,
+  resolveNameData,
+} from './resolveNameData.js'
+import type { RequireClientContracts } from '../../clients/chain.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetTextRecordParameters = Prettify<
-  GetTextParameters & {
-    /** Batch gateway URLs to use for resolving CCIP-read requests. */
-    gatewayUrls?: string[]
-  }
+  GetTextParametersParameters &
+    DecodeTextResultParameters & {
+      /** Batch gateway URLs to use for resolving CCIP-read requests. */
+      gatewayUrls?: string[]
+    }
 >
 
-export type GetTextRecordReturnType = GetTextReturnType
+export type GetTextRecordReturnType = DecodeTextResultReturnType
 
-export type GetTextRecordErrorType = GetTextErrorType
+export type GetTextRecordErrorType =
+  | ResolveNameDataErrorType
+  | EncodeFunctionDataErrorType
+  | GetTextParametersErrorType
+  | DecodeTextResultErrorType
 
 /**
  * Gets a text record for a name.
@@ -42,12 +58,12 @@ export type GetTextRecordErrorType = GetTextErrorType
  * const result = await getTextRecord(client, { name: 'ens.eth', key: 'com.twitter' })
  * // ensdomains
  */
-export async function getTextRecord<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
->(
-  client: Client<Transport, chain>,
+export async function getTextRecord<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, strict, ...parameters }: GetTextRecordParameters,
 ): Promise<GetTextRecordReturnType> {
+  UNWRAP_TYPE_ERROR(client)
+
   const resolveNameDataAction = getAction(
     client,
     resolveNameData,

@@ -124,7 +124,7 @@ export {
   type TextToken,
   type Token,
   type ValidToken,
-} from './name/normalise.js'
+} from './name/normalize.js'
 export {
   makeCommitment,
   makeCommitmentFromTuple,

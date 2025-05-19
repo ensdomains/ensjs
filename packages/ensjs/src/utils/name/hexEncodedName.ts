@@ -1,6 +1,19 @@
 // Adapted from https://github.com/mafintosh/dns-packet
-import { bytesToString, type ByteArray } from 'viem'
+import {
+  type ByteArray,
+  type BytesToStringErrorType,
+  bytesToString,
+} from 'viem'
 
+// ================================
+// Bytes To Packet
+// ================================
+
+export type BytesToPacketErrorType = BytesToStringErrorType
+
+/**
+ * @throws {BytesToPacketErrorType}
+ */
 export function bytesToPacket(bytes: ByteArray): string {
   let offset = 0
   let result = ''

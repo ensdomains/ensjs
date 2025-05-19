@@ -1,39 +1,59 @@
 import {
-  encodeFunctionData,
-  zeroAddress,
   type Abi,
   type Address,
+  type Chain,
   type Client,
+  type EncodeFunctionDataErrorType,
+  encodeFunctionData,
   type Hex,
-  type Transport,
+  type MulticallErrorType,
+  zeroAddress,
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { ChainWithContract } from '../../contracts/consts.js'
-import type { DecodedAddr, DecodedText, Prettify } from '../../types.js'
+import type { RequireClientContracts } from '../../clients/chain.js'
+import type { ErrorType } from '../../errors/utils.js'
+import type { DecodedAddr, DecodedText, Prettify } from '../../types/index.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 import {
+  type DecodeAbiResultErrorType,
+  type DecodeAbiResultFromPrimitiveTypesErrorType,
   decodeAbiResult,
   decodeAbiResultFromPrimitiveTypes,
-  getAbiParameters,
+  type GetAbiParametersErrorType,
   type GetAbiReturnType,
+  getAbiParameters,
+  type DecodeAbiResultReturnType,
 } from '../../utils/coders/getAbi.js'
 import {
+  type DecodeAddressResultErrorType,
+  type DecodeAddressResultFromPrimitiveTypesErrorType,
   decodeAddressResult,
   decodeAddressResultFromPrimitiveTypes,
+  type GetAddressParametersErrorType,
   getAddressParameters,
 } from '../../utils/coders/getAddress.js'
 import {
+  type DecodeContentHashResultErrorType,
+  type DecodeContentHashResultFromPrimitiveTypesErrorType,
   decodeContentHashResult,
   decodeContentHashResultFromPrimitiveTypes,
-  getContentHashParameters,
+  type GetContentHashErrorType,
   type GetContentHashReturnType,
+  getContentHashParameters,
 } from '../../utils/coders/getContentHash.js'
 import {
+  type DecodeTextResultErrorType,
+  type DecodeTextResultFromPrimitiveTypesErrorType,
   decodeTextResult,
   decodeTextResultFromPrimitiveTypes,
+  type GetTextParametersErrorType,
   getTextParameters,
 } from '../../utils/coders/getText.js'
-import { resolveNameData } from './resolveNameData.js'
+import {
+  type ResolveNameDataErrorType,
+  resolveNameData,
+} from './resolveNameData.js'
 
 export type GetRecordsParameters<
   texts extends readonly string[] | undefined = readonly string[],
@@ -72,7 +92,7 @@ type WithContentHashResult = {
 
 type WithAbiResult = {
   /** Retrieved ABI record for name */
-  abi: GetAbiReturnType
+  abi: DecodeAbiResultReturnType
 }
 
 type WithTextsResult = {
@@ -85,25 +105,19 @@ type WithCoinsResult = {
   coins: DecodedAddr[]
 }
 
-export type GetRecordsReturnType<
-  texts extends readonly string[] | undefined = readonly string[],
-  coins extends readonly (string | number)[] | undefined = readonly (
-    | string
-    | number
-  )[],
-  contentHash extends boolean | undefined = true,
-  abi extends boolean | undefined = true,
-> = Prettify<
-  (contentHash extends true ? WithContentHashResult : {}) &
-    (abi extends true ? WithAbiResult : {}) &
-    (texts extends readonly string[] ? WithTextsResult : {}) &
-    (coins extends readonly (string | number)[] ? WithCoinsResult : {}) & {
-      /** Resolver address used for fetch */
-      resolverAddress: Address
-    }
->
-
-export type GetRecordsErrorType = Error
+type CreateCallsErrorType =
+  | GetTextParametersErrorType
+  | DecodeTextResultFromPrimitiveTypesErrorType
+  | DecodeTextResultErrorType
+  | GetAddressParametersErrorType
+  | DecodeAddressResultFromPrimitiveTypesErrorType
+  | DecodeAddressResultErrorType
+  | GetContentHashErrorType
+  | DecodeContentHashResultFromPrimitiveTypesErrorType
+  | DecodeContentHashResultErrorType
+  | GetAbiParametersErrorType
+  | DecodeAbiResultFromPrimitiveTypesErrorType
+  | DecodeAbiResultErrorType
 
 const createCalls = <
   const texts extends readonly string[] | undefined = undefined,
@@ -140,7 +154,7 @@ const createCalls = <
 
           currentResult.texts.push({ key: text, value: result })
         },
-      } as const),
+      }) as const,
   ),
   ...(coins ?? []).map(
     (coin) =>
@@ -162,7 +176,7 @@ const createCalls = <
 
           currentResult.coins.push(result)
         },
-      } as const),
+      }) as const,
   ),
   ...(contentHash
     ? ([
@@ -236,7 +250,32 @@ const createEmptyResult = <
     ...(contentHash ? { contentHash: null } : {}),
     ...(abi ? { abi: null } : {}),
     resolverAddress: zeroAddress as Address,
-  } as GetRecordsReturnType)
+  }) as GetRecordsReturnType
+
+export type GetRecordsReturnType<
+  texts extends readonly string[] | undefined = readonly string[],
+  coins extends readonly (string | number)[] | undefined = readonly (
+    | string
+    | number
+  )[],
+  contentHash extends boolean | undefined = true,
+  abi extends boolean | undefined = true,
+> = Prettify<
+  (contentHash extends true ? WithContentHashResult : {}) &
+    (abi extends true ? WithAbiResult : {}) &
+    (texts extends readonly string[] ? WithTextsResult : {}) &
+    (coins extends readonly (string | number)[] ? WithCoinsResult : {}) & {
+      /** Resolver address used for fetch */
+      resolverAddress: Address
+    }
+>
+
+export type GetRecordsErrorType =
+  | CreateCallsErrorType
+  | MulticallErrorType
+  | ResolveNameDataErrorType
+  | EncodeFunctionDataErrorType
+  | ErrorType
 
 /**
  * Gets arbitrary records for a name
@@ -263,13 +302,13 @@ const createEmptyResult = <
  * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
  */
 export async function getRecords<
-  chain extends ChainWithContract<'ensUniversalResolver' | 'multicall3'>,
+  chain extends Chain,
   const texts extends readonly string[] | undefined = undefined,
   const coins extends readonly (string | number)[] | undefined = undefined,
   const contentHash extends boolean | undefined = undefined,
   const abi extends boolean | undefined = undefined,
 >(
-  client: Client<Transport, chain>,
+  client: RequireClientContracts<chain, 'ensUniversalResolver' | 'multicall3'>,
   {
     name,
     resolver,
@@ -280,6 +319,8 @@ export async function getRecords<
     gatewayUrls,
   }: GetRecordsParameters<texts, coins, contentHash, abi>,
 ): Promise<GetRecordsReturnType<texts, coins, contentHash, abi>> {
+  UNWRAP_TYPE_ERROR(client)
+
   const calls = createCalls({
     name,
     texts,

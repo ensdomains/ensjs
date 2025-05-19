@@ -1,17 +1,22 @@
 import {
+  type Address,
+  type Chain,
+  type Client,
+  type GetChainContractAddressErrorType,
+  type ReadContractErrorType,
+  type ToHexErrorType,
   toHex,
   zeroAddress,
-  type Address,
-  type Client,
-  type Transport,
 } from 'viem'
 import { readContract } from 'viem/actions'
-import { packetToBytes } from 'viem/ens'
+import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
-
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
 import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetResolverParameters = {
   /** Name to get resolver for */
@@ -20,7 +25,11 @@ export type GetResolverParameters = {
 
 export type GetResolverReturnType = Address | null
 
-export type GetResolverErrorType = Error
+export type GetResolverErrorType =
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
+  | ToHexErrorType
+  | PacketToBytesErrorType
 
 /**
  * Gets the resolver address for a name.
@@ -41,16 +50,16 @@ export type GetResolverErrorType = Error
  * const result = await getResolver(client, { name: 'ens.eth' })
  * // 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41
  */
-export async function getResolver<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
->(
-  client: Client<Transport, chain>,
+export async function getResolver<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name }: GetResolverParameters,
 ): Promise<GetResolverReturnType> {
+  UNWRAP_TYPE_ERROR(client)
+
   const readContractAction = getAction(client, readContract, 'readContract')
   const result = await readContractAction({
     address: getChainContractAddress({
-      client,
+      chain: client.chain,
       contract: 'ensUniversalResolver',
     }),
     abi: universalResolverFindResolverSnippet,

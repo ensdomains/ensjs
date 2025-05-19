@@ -1,62 +1,65 @@
 import type {
-  Account,
-  Address,
-  Chain,
-  Client,
-  Transport,
-  WriteContractParameters,
-  WriteContractReturnType,
-} from 'viem'
-import { writeContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
-import type { Prettify, WriteTransactionParameters } from '../../types.js'
-import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+	Account,
+	Address,
+	Chain,
+	Client,
+	Transport,
+	WriteContractParameters,
+	WriteContractReturnType,
+} from "viem";
+import { writeContract } from "viem/actions";
+import { getAction } from "viem/utils";
+import type {
+	Prettify,
+	WriteTransactionParameters,
+} from "../../types/index.js";
+import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
 import {
-  setTextParameters,
-  type SetTextParametersReturnType,
-} from '../../utils/coders/setText.js'
-import { namehash } from '../../utils/name/normalise.js'
+	setTextParameters,
+	type SetTextParametersReturnType,
+} from "../../utils/coders/setText.js";
+import { namehash } from "../../utils/name/normalize.js";
 
 export type SetTextRecordParameters = {
-  /** The name to set a text record for */
-  name: string
-  /** The text record key to set */
-  key: string
-  /** The text record value to set */
-  value: string | null
-  /** The resolver address to use */
-  resolverAddress: Address
-}
+	/** The name to set a text record for */
+	name: string;
+	/** The text record key to set */
+	key: string;
+	/** The text record value to set */
+	value: string | null;
+	/** The resolver address to use */
+	resolverAddress: Address;
+};
 
 export type SetTextRecordOptions<
-  chain extends Chain | undefined,
-  account extends Account | undefined,
-  chainOverride extends Chain | undefined,
+	chain extends Chain | undefined,
+	account extends Account | undefined,
+	chainOverride extends Chain | undefined,
 > = Prettify<
-  SetTextRecordParameters &
-    WriteTransactionParameters<chain, account, chainOverride>
->
+	SetTextRecordParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
 
-export type SetTextRecordReturnType = WriteContractReturnType
+export type SetTextRecordReturnType = WriteContractReturnType;
 
-export type SetTextRecordErrorType = Error
+export type SetTextRecordErrorType = Error;
 
 export const setTextRecordWriteParameters = <
-  chain extends Chain,
-  account extends Account,
+	chain extends Chain,
+	account extends Account,
 >(
-  client: Client<Transport, chain, account>,
-  { name, key, value, resolverAddress }: SetTextRecordParameters,
+	client: Client<Transport, chain, account>,
+	{ name, key, value, resolverAddress }: SetTextRecordParameters,
 ) => {
-  return {
-    address: resolverAddress,
-    chain: client.chain,
-    account: client.account,
-    ...setTextParameters({ namehash: namehash(name), key, value }),
-  } as const satisfies WriteContractParameters<
-    SetTextParametersReturnType['abi']
-  >
-}
+	return {
+		address: resolverAddress,
+		chain: client.chain,
+		account: client.account,
+		...setTextParameters({ namehash: namehash(name), key, value }),
+	} as const satisfies WriteContractParameters<
+		SetTextParametersReturnType["abi"]
+	>;
+};
 
 /**
  * Sets a text record for a name on a resolver.
@@ -83,31 +86,31 @@ export const setTextRecordWriteParameters = <
  * // 0x...
  */
 export async function setTextRecord<
-  chain extends Chain | undefined,
-  account extends Account | undefined,
-  chainOverride extends Chain | undefined,
+	chain extends Chain | undefined,
+	account extends Account | undefined,
+	chainOverride extends Chain | undefined,
 >(
-  client: Client<Transport, chain, account>,
-  {
-    name,
-    key,
-    value,
-    resolverAddress,
-    ...txArgs
-  }: SetTextRecordOptions<chain, account, chainOverride>,
+	client: Client<Transport, chain, account>,
+	{
+		name,
+		key,
+		value,
+		resolverAddress,
+		...txArgs
+	}: SetTextRecordOptions<chain, account, chainOverride>,
 ): Promise<SetTextRecordReturnType> {
-  const writeParameters = setTextRecordWriteParameters(
-    clientWithOverrides(client, txArgs),
-    {
-      name,
-      key,
-      value,
-      resolverAddress,
-    },
-  )
-  const writeContractAction = getAction(client, writeContract, 'writeContract')
-  return writeContractAction({
-    ...writeParameters,
-    ...txArgs,
-  } as WriteContractParameters)
+	const writeParameters = setTextRecordWriteParameters(
+		clientWithOverrides(client, txArgs),
+		{
+			name,
+			key,
+			value,
+			resolverAddress,
+		},
+	);
+	const writeContractAction = getAction(client, writeContract, "writeContract");
+	return writeContractAction({
+		...writeParameters,
+		...txArgs,
+	} as WriteContractParameters);
 }

@@ -1,13 +1,22 @@
-import { type Client, type Transport } from 'viem'
+import {
+  type Chain,
+  type Client,
+  type GetChainContractAddressErrorType,
+  type MulticallErrorType,
+  type ReadContractErrorType,
+} from 'viem'
 import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 
 import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
-import type { ChainWithContract } from '../../contracts/consts.js'
 import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getNameType } from '../../utils/name/getNameType.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
+import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetPriceParameters = {
   /** Name, or array of names, to get price for */
@@ -23,7 +32,12 @@ export type GetPriceReturnType = {
   premium: bigint
 }
 
-export type GetPriceErrorType = UnsupportedNameTypeError | Error
+export type GetPriceErrorType =
+  | UnsupportedNameTypeError
+  | MulticallErrorType
+  | GetChainContractAddressErrorType
+  | ReadContractErrorType
+  | TypeError
 
 /**
  * Gets the price of a name, or array of names, for a given duration.
@@ -44,14 +58,15 @@ export type GetPriceErrorType = UnsupportedNameTypeError | Error
  * const result = await getPrice(client, { nameOrNames: 'ens.eth', duration: 31536000 })
  * // { base: 352828971668930335n, premium: 0n }
  */
-export async function getPrice<
-  chain extends ChainWithContract<
-    'ensEthRegistrarController' | 'ensBulkRenewal' | 'multicall3'
+export async function getPrice<chain extends Chain>(
+  client: RequireClientContracts<
+    chain,
+    'ensEthRegistrarController' | 'ensBulkRenewal'
   >,
->(
-  client: Client<Transport, chain>,
   { nameOrNames, duration }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
+  UNWRAP_TYPE_ERROR(client)
+
   const names = (Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]).map(
     (name) => {
       const labels = name.split('.')
@@ -72,7 +87,7 @@ export async function getPrice<
       contracts: [
         {
           address: getChainContractAddress({
-            client,
+            chain: client.chain,
             contract: 'ensBulkRenewal',
           }),
           abi: bulkRenewalRentPriceSnippet,
@@ -81,7 +96,7 @@ export async function getPrice<
         },
         {
           address: getChainContractAddress({
-            client,
+            chain: client.chain,
             contract: 'ensBulkRenewal',
           }),
           abi: bulkRenewalRentPriceSnippet,
@@ -98,7 +113,7 @@ export async function getPrice<
   const readContractAction = getAction(client, readContract, 'readContract')
   return readContractAction({
     address: getChainContractAddress({
-      client,
+      chain: client.chain,
       contract: 'ensEthRegistrarController',
     }),
     abi: ethRegistrarControllerRentPriceSnippet,

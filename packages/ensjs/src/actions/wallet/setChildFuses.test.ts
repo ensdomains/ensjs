@@ -9,7 +9,7 @@ import {
   walletClient,
 } from '../../test/addTestContracts.js'
 import { ChildFuses, ParentFuses } from '../../utils/fuses.js'
-import { namehash } from '../../utils/name/normalise.js'
+import { namehash } from '../../utils/name/normalize.js'
 import { setChildFuses } from './setChildFuses.js'
 import { setFuses } from './setFuses.js'
 
