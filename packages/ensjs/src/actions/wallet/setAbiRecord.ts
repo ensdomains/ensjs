@@ -4,6 +4,7 @@ import {
 	type Chain,
 	type Client,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 	type WriteContractReturnType,
 } from "viem";
@@ -13,7 +14,10 @@ import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
 import type {
 	AbiEncodeAs,
 	EncodeAbiParameters,
@@ -21,33 +25,57 @@ import type {
 import {
 	setAbiParameters,
 	type SetAbiParameters,
+	type SetAbiParametersErrorType,
 	type SetAbiParametersReturnType,
 } from "../../utils/coders/setAbi.js";
-import { namehash } from "../../utils/name/normalize.js";
+import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
 
-export type SetAbiRecordParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
-	Prettify<
-		EncodeAbiParameters<encodeAs> & {
-			/** Name to set ABI for */
-			name: string;
-			/** Resolver address to set ABI on */
-			resolverAddress: Address;
-		}
-	>;
+// export type SetAbiRecordParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
+// 	Prettify<
+// 		EncodeAbiParameters<encodeAs> & {
+// 			/** Name to set ABI for */
+// 			name: string;
+// 			/** Resolver address to set ABI on */
+// 			resolverAddress: Address;
+// 		}
+// 	>;
 
-export type SetAbiRecordOptions<
+// export type SetAbiRecordOptions<
+// 	encodeAs extends AbiEncodeAs,
+// 	chain extends Chain | undefined,
+// 	account extends Account | undefined,
+// 	chainOverride extends Chain | undefined,
+// > = Prettify<
+// 	SetAbiRecordParameters<encodeAs> &
+// 		WriteTransactionParameters<chain, account, chainOverride>
+// >;
+
+// export type SetAbiRecordReturnType = WriteContractReturnType;
+
+// export type SetAbiRecordErrorType = Error;
+
+// ================================
+// Write parameters
+// ================================
+
+export type SetAbiRecordWriteParametersParameters<
 	encodeAs extends AbiEncodeAs,
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
 > = Prettify<
-	SetAbiRecordParameters<encodeAs> &
-		WriteTransactionParameters<chain, account, chainOverride>
+	SetAbiParameters<encodeAs> & {
+		/** Name to set ABI for */
+		name: string;
+		/** Resolver address to set ABI on */
+		resolverAddress: Address;
+	}
 >;
 
-export type SetAbiRecordReturnType = WriteContractReturnType;
+export type SetAbiRecordWriteParametersReturnType = ReturnType<
+	typeof setAbiRecordWriteParameters
+>;
 
-export type SetAbiRecordErrorType = Error;
+export type SetAbiRecordWriteParametersErrorType =
+	| SetAbiParametersErrorType
+	| NamehashErrorType;
 
 export const setAbiRecordWriteParameters = async <
 	encodeAs extends AbiEncodeAs,
@@ -55,7 +83,12 @@ export const setAbiRecordWriteParameters = async <
 	account extends Account,
 >(
 	client: Client<Transport, chain, account>,
-	{ name, data, encodeAs, resolverAddress }: SetAbiRecordParameters<encodeAs>,
+	{
+		name,
+		data,
+		encodeAs,
+		resolverAddress,
+	}: SetAbiRecordWriteParametersParameters<encodeAs>,
 ) => {
 	return {
 		address: resolverAddress,
@@ -71,10 +104,29 @@ export const setAbiRecordWriteParameters = async <
 	>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type SetAbiRecordParameters<
+	encodeAs extends AbiEncodeAs,
+	chain extends Chain | undefined,
+	account extends Account | undefined,
+	chainOverride extends Chain | undefined,
+> = SetAbiRecordWriteParametersParameters<encodeAs> &
+	WriteTransactionParameters<chain, account, chainOverride>;
+
+export type SetAbiRecordReturnType = WriteContractReturnType;
+
+export type SetAbiRecordErrorType =
+	| SetAbiRecordWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
+
 /**
  * Sets the ABI for a name on a resolver.
  * @param client - {@link Client}
- * @param options - {@link SetAbiRecordOptions}
+ * @param options - {@link SetAbiRecordParameters}
  * @returns Transaction hash. {@link SetAbiRecordReturnType}
  *
  * @example
@@ -111,7 +163,7 @@ export async function setAbiRecord<
 		encodeAs,
 		resolverAddress,
 		...txArgs
-	}: SetAbiRecordOptions<encodeAs, chain, account, chainOverride>,
+	}: SetAbiRecordParameters<encodeAs, chain, account, chainOverride>,
 ): Promise<SetAbiRecordReturnType> {
 	const writeParameters = await setAbiRecordWriteParameters(
 		clientWithOverrides(client, txArgs),
@@ -120,7 +172,7 @@ export async function setAbiRecord<
 			data,
 			encodeAs,
 			resolverAddress,
-		} as SetAbiRecordParameters<encodeAs>,
+		} as SetAbiRecordWriteParametersParameters<encodeAs>,
 	);
 	const writeContractAction = getAction(client, writeContract, "writeContract");
 	return writeContractAction({

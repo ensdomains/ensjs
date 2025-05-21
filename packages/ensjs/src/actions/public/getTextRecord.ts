@@ -21,7 +21,7 @@ import {
   resolveNameData,
 } from './resolveNameData.js'
 import type { RequireClientContracts } from '../../clients/chain.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetTextRecordParameters = Prettify<
   GetTextParametersParameters &
@@ -62,7 +62,7 @@ export async function getTextRecord<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, strict, ...parameters }: GetTextRecordParameters,
 ): Promise<GetTextRecordReturnType> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const resolveNameDataAction = getAction(
     client,

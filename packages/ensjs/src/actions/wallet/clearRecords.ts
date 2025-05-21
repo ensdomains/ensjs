@@ -1,61 +1,83 @@
-import {
-	type Account,
-	type Address,
-	type Chain,
-	type Client,
-	type Transport,
-	type WriteContractParameters,
-	type WriteContractReturnType,
-} from "viem";
-import { writeContract } from "viem/actions";
-import { getAction } from "viem/utils";
 import type {
-	Prettify,
-	WriteTransactionParameters,
-} from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+  Account,
+  Address,
+  Chain,
+  Client,
+  Transport,
+  WriteContractErrorType,
+  WriteContractParameters,
+  WriteContractReturnType,
+} from 'viem'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import {
-	clearRecordsParameters,
-	type ClearRecordsParametersReturnType,
-} from "../../utils/coders/clearRecords.js";
-import { namehash } from "../../utils/name/normalize.js";
+  type ClientWithOverridesErrorType,
+  clientWithOverrides,
+} from '../../utils/clientWithOverrides.js'
+import {
+  type ClearRecordsParametersErrorType,
+  type ClearRecordsParametersReturnType,
+  clearRecordsParameters,
+} from '../../utils/coders/clearRecords.js'
+import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
-export type ClearRecordsParameters = {
-	/** The name to clear records for */
-	name: string;
-	/** The resolver address to use */
-	resolverAddress: Address;
-};
+// ================================
+// Write Parameters
+// ================================
 
-export type ClearRecordsOptions<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
-> = Prettify<
-	ClearRecordsParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
->;
+export type ClearRecordsWriteParametersParameters = {
+  /** The name to clear records for */
+  name: string
+  /** The resolver address to use */
+  resolverAddress: Address
+}
 
-export type ClearRecordsReturnType = WriteContractReturnType;
+export type ClearRecordsWriteParametersReturnType<
+  chain extends Chain = Chain,
+  account extends Account = Account,
+> = ReturnType<typeof clearRecordsWriteParameters<chain, account>>
 
-export type ClearRecordsErrorType = Error;
+export type ClearRecordsWriteParametersErrorType =
+  | ClearRecordsParametersErrorType
+  | NamehashErrorType
 
 export const clearRecordsWriteParameters = <
-	chain extends Chain,
-	account extends Account,
+  chain extends Chain,
+  account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, resolverAddress }: ClearRecordsParameters,
+  client: Client<Transport, chain, account>,
+  { name, resolverAddress }: ClearRecordsWriteParametersParameters,
 ) => {
-	return {
-		address: resolverAddress,
-		chain: client.chain,
-		account: client.account,
-		...clearRecordsParameters(namehash(name)),
-	} as const satisfies WriteContractParameters<
-		ClearRecordsParametersReturnType["abi"]
-	>;
-};
+  return {
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...clearRecordsParameters(namehash(name)),
+  } as const satisfies WriteContractParameters<
+    ClearRecordsParametersReturnType['abi']
+  >
+}
+
+// ================================
+// Action
+// ================================
+
+export type ClearRecordsParameters<
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
+> = Prettify<
+  ClearRecordsWriteParametersParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
+>
+
+export type ClearRecordsReturnType = WriteContractReturnType
+
+export type ClearRecordsErrorType =
+  | ClearRecordsParametersErrorType
+  | ClientWithOverridesErrorType
+  | WriteContractErrorType
 
 /**
  * Clears the records for a name on a resolver.
@@ -80,24 +102,24 @@ export const clearRecordsWriteParameters = <
  * // 0x...
  */
 export async function clearRecords<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-	client: Client<Transport, chain, account>,
-	{
-		name,
-		resolverAddress,
-		...txArgs
-	}: ClearRecordsOptions<chain, account, chainOverride>,
+  client: Client<Transport, chain, account>,
+  {
+    name,
+    resolverAddress,
+    ...txArgs
+  }: ClearRecordsParameters<chain, account, chainOverride>,
 ): Promise<ClearRecordsReturnType> {
-	const writeParameters = clearRecordsWriteParameters(
-		clientWithOverrides(client, txArgs),
-		{ name, resolverAddress },
-	);
-	const writeContractAction = getAction(client, writeContract, "writeContract");
-	return writeContractAction({
-		...writeParameters,
-		...txArgs,
-	} as WriteContractParameters);
+  const writeParameters = clearRecordsWriteParameters(
+    clientWithOverrides(client, txArgs),
+    { name, resolverAddress },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
+    ...txArgs,
+  } as WriteContractParameters)
 }

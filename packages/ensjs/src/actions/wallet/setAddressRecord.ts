@@ -4,6 +4,7 @@ import {
 	type Chain,
 	type Client,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 	type WriteContractReturnType,
 } from "viem";
@@ -13,14 +14,46 @@ import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
 import {
 	setAddrParameters,
+	type SetAddrParametersErrorType,
 	type SetAddrParametersReturnType,
 } from "../../utils/coders/setAddr.js";
-import { namehash } from "../../utils/name/normalize.js";
+import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
 
-export type SetAddressRecordParameters = {
+// export type SetAddressRecordParameters = {
+// 	/** Name to set address record for */
+// 	name: string;
+// 	/** Coin ticker or ID to set */
+// 	coin: string | number;
+// 	/** Value to set, null if deleting */
+// 	value: Address | string | null;
+// 	/** Resolver address to set address record on */
+// 	resolverAddress: Address;
+// };
+
+// export type SetAddressRecordOptions<
+// 	chain extends Chain | undefined,
+// 	account extends Account | undefined,
+// 	chainOverride extends Chain | undefined,
+// > = Prettify<
+// 	SetAddressRecordParameters &
+// 		WriteTransactionParameters<chain, account, chainOverride>
+// >;
+
+// export type SetAddressRecordReturnType = WriteContractReturnType;
+
+// export type SetAddressRecordErrorType = Error;
+
+// ================================
+// Write parameters
+// ================================
+
+export type SetAddressRecordWriteParametersParameters = {
 	/** Name to set address record for */
 	name: string;
 	/** Coin ticker or ID to set */
@@ -31,25 +64,25 @@ export type SetAddressRecordParameters = {
 	resolverAddress: Address;
 };
 
-export type SetAddressRecordOptions<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
-> = Prettify<
-	SetAddressRecordParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type SetAddressRecordWriteParametersReturnType = ReturnType<
+	typeof setAddressRecordWriteParameters
 >;
 
-export type SetAddressRecordReturnType = WriteContractReturnType;
-
-export type SetAddressRecordErrorType = Error;
+export type SetAddressRecordWriteParametersErrorType =
+	| SetAddrParametersErrorType
+	| NamehashErrorType;
 
 export const setAddressRecordWriteParameters = <
 	chain extends Chain,
 	account extends Account,
 >(
 	client: Client<Transport, chain, account>,
-	{ name, coin, value, resolverAddress }: SetAddressRecordParameters,
+	{
+		name,
+		coin,
+		value,
+		resolverAddress,
+	}: SetAddressRecordWriteParametersParameters,
 ) => {
 	return {
 		address: resolverAddress,
@@ -61,10 +94,30 @@ export const setAddressRecordWriteParameters = <
 	>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type SetAddressRecordParameters<
+	chain extends Chain | undefined,
+	account extends Account | undefined,
+	chainOverride extends Chain | undefined,
+> = Prettify<
+	SetAddressRecordWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type SetAddressRecordReturnType = WriteContractReturnType;
+
+export type SetAddressRecordErrorType =
+	| SetAddressRecordWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
+
 /**
  * Sets an address record for a name on a resolver.
  * @param client - {@link Client}
- * @param options - {@link SetAddressRecordOptions}
+ * @param options - {@link SetAddressRecordParameters}
  * @returns Transaction hash. {@link SetAddressRecordReturnType}
  *
  * @example
@@ -97,7 +150,7 @@ export async function setAddressRecord<
 		value,
 		resolverAddress,
 		...txArgs
-	}: SetAddressRecordOptions<chain, account, chainOverride>,
+	}: SetAddressRecordParameters<chain, account, chainOverride>,
 ): Promise<SetAddressRecordReturnType> {
 	const data = setAddressRecordWriteParameters(
 		clientWithOverrides(client, txArgs),

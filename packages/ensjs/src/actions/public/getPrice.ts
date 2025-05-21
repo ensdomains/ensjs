@@ -16,7 +16,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetPriceParameters = {
   /** Name, or array of names, to get price for */
@@ -65,7 +65,7 @@ export async function getPrice<chain extends Chain>(
   >,
   { nameOrNames, duration }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const names = (Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]).map(
     (name) => {

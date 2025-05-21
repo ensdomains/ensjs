@@ -4,6 +4,7 @@ import type {
 	Chain,
 	Client,
 	Transport,
+	WriteContractErrorType,
 	WriteContractParameters,
 	WriteContractReturnType,
 } from "viem";
@@ -13,14 +14,18 @@ import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
 import {
 	setTextParameters,
+	type SetTextParametersErrorType,
 	type SetTextParametersReturnType,
 } from "../../utils/coders/setText.js";
-import { namehash } from "../../utils/name/normalize.js";
+import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
 
-export type SetTextRecordParameters = {
+export type SetTextRecordWriteParametersParameters = {
 	/** The name to set a text record for */
 	name: string;
 	/** The text record key to set */
@@ -31,25 +36,20 @@ export type SetTextRecordParameters = {
 	resolverAddress: Address;
 };
 
-export type SetTextRecordOptions<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
-> = Prettify<
-	SetTextRecordParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type SetTextRecordWriteParametersReturnType = ReturnType<
+	typeof setTextRecordWriteParameters
 >;
 
-export type SetTextRecordReturnType = WriteContractReturnType;
-
-export type SetTextRecordErrorType = Error;
+export type SetTextRecordWriteParametersErrorType =
+	| SetTextParametersErrorType
+	| NamehashErrorType;
 
 export const setTextRecordWriteParameters = <
 	chain extends Chain,
 	account extends Account,
 >(
 	client: Client<Transport, chain, account>,
-	{ name, key, value, resolverAddress }: SetTextRecordParameters,
+	{ name, key, value, resolverAddress }: SetTextRecordWriteParametersParameters,
 ) => {
 	return {
 		address: resolverAddress,
@@ -60,6 +60,26 @@ export const setTextRecordWriteParameters = <
 		SetTextParametersReturnType["abi"]
 	>;
 };
+
+// ================================
+// Action
+// ================================
+
+export type SetTextRecordParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends Chain,
+> = Prettify<
+	SetTextRecordWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type SetTextRecordReturnType = WriteContractReturnType;
+
+export type SetTextRecordErrorType =
+	| SetTextRecordWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
 
 /**
  * Sets a text record for a name on a resolver.
@@ -86,9 +106,9 @@ export const setTextRecordWriteParameters = <
  * // 0x...
  */
 export async function setTextRecord<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends Chain,
 >(
 	client: Client<Transport, chain, account>,
 	{
@@ -97,7 +117,7 @@ export async function setTextRecord<
 		value,
 		resolverAddress,
 		...txArgs
-	}: SetTextRecordOptions<chain, account, chainOverride>,
+	}: SetTextRecordParameters<chain, account, chainOverride>,
 ): Promise<SetTextRecordReturnType> {
 	const writeParameters = setTextRecordWriteParameters(
 		clientWithOverrides(client, txArgs),

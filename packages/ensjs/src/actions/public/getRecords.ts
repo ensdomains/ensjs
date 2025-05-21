@@ -14,7 +14,7 @@ import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/chain.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAddr, DecodedText, Prettify } from '../../types/index.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
   type DecodeAbiResultErrorType,
   type DecodeAbiResultFromPrimitiveTypesErrorType,
@@ -319,7 +319,7 @@ export async function getRecords<
     gatewayUrls,
   }: GetRecordsParameters<texts, coins, contentHash, abi>,
 ): Promise<GetRecordsReturnType<texts, coins, contentHash, abi>> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const calls = createCalls({
     name,

@@ -1,15 +1,19 @@
 import {
-	zeroAddress,
 	type Account,
-	type Client,
+	type Chain,
+	type GetChainContractAddressErrorType,
 	type Hash,
-	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
+	zeroAddress,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
-import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
+import {
+	type ChainWithContracts,
+	getChainContractAddress,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
 import {
 	nameWrapperSetRecordSnippet,
 	nameWrapperSetSubnodeRecordSnippet,
@@ -26,12 +30,23 @@ import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+import {
+	type ClientWithOverridesErrorType,
+	clientWithOverrides,
+} from "../../utils/clientWithOverrides.js";
 import { getNameType } from "../../utils/name/getNameType.js";
-import { makeLabelNodeAndParent } from "../../utils/name/makeLabelNodeAndParent.js";
-import { namehash } from "../../utils/name/normalize.js";
+import {
+	type MakeLabelNodeAndParentErrorType,
+	makeLabelNodeAndParent,
+} from "../../utils/name/makeLabelNodeAndParent.js";
+import { type NamehashErrorType, namehash } from "../../utils/name/namehash.js";
 
-export type DeleteSubnameParameters = {
+// ================================
+// Write parameters
+// ================================
+
+export type DeleteSubnameWriteParametersParameters = {
 	/** Subname to delete */
 	name: string;
 	/** Contract to delete subname on */
@@ -40,32 +55,30 @@ export type DeleteSubnameParameters = {
 	asOwner?: boolean;
 };
 
-type ChainWithContractDependencies = ChainWithContract<
-	"ensRegistry" | "ensNameWrapper"
->;
-export type DeleteSubnameOptions<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	DeleteSubnameParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type DeleteSubnameWriteParametersReturnType = ReturnType<
+	typeof deleteSubnameWriteParameters
 >;
 
-export type DeleteSubnameReturnType = Hash;
-
-export type DeleteSubnameErrorType =
-	| InvalidContractTypeError
+export type DeleteSubnameWriteParametersErrorType =
 	| UnsupportedNameTypeError
-	| Error;
+	| GetChainContractAddressErrorType
+	| NamehashErrorType
+	| MakeLabelNodeAndParentErrorType
+	| InvalidContractTypeError;
 
 export const deleteSubnameWriteParameters = <
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, contract, asOwner }: DeleteSubnameParameters,
+	client: RequireClientContracts<
+		chain,
+		"ensRegistry" | "ensNameWrapper",
+		account
+	>,
+	{ name, contract, asOwner }: DeleteSubnameWriteParametersParameters,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const nameType = getNameType(name);
 	if (nameType !== "eth-subname" && nameType !== "other-subname")
 		throw new UnsupportedNameTypeError({
@@ -78,7 +91,7 @@ export const deleteSubnameWriteParameters = <
 		case "registry": {
 			const baseParams = {
 				address: getChainContractAddress({
-					client,
+					chain: client.chain,
 					contract: "ensRegistry",
 				}),
 				chain: client.chain,
@@ -107,7 +120,7 @@ export const deleteSubnameWriteParameters = <
 		case "nameWrapper": {
 			const baseParams = {
 				address: getChainContractAddress({
-					client,
+					chain: client.chain,
 					contract: "ensNameWrapper",
 				}),
 				chain: client.chain,
@@ -149,6 +162,28 @@ export const deleteSubnameWriteParameters = <
 	}
 };
 
+// ================================
+// Delete subname action
+// ================================
+
+export type DeleteSubnameParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends
+		| ChainWithContracts<"ensRegistry" | "ensNameWrapper">
+		| undefined,
+> = Prettify<
+	DeleteSubnameWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type DeleteSubnameReturnType = Hash;
+
+export type DeleteSubnameErrorType =
+	| DeleteSubnameWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
+
 /**
  * Deletes a subname
  * @param client - {@link Client}
@@ -172,25 +207,33 @@ export const deleteSubnameWriteParameters = <
  * // 0x...
  */
 export async function deleteSubname<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends
+		| ChainWithContracts<"ensRegistry" | "ensNameWrapper">
+		| undefined,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensRegistry" | "ensNameWrapper",
+		account
+	>,
 	{
 		name,
 		contract,
 		asOwner,
 		...txArgs
-	}: DeleteSubnameOptions<chain, account, chainOverride>,
+	}: DeleteSubnameParameters<chain, account, chainOverride>,
 ): Promise<DeleteSubnameReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const data = deleteSubnameWriteParameters(
 		clientWithOverrides(client, txArgs),
 		{
 			name,
 			contract,
 			asOwner,
-		} as DeleteSubnameParameters,
+		},
 	);
 	const writeContractAction = getAction(client, writeContract, "writeContract");
 	return writeContractAction({

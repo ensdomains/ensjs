@@ -1,145 +1,188 @@
 import {
-	encodeAbiParameters,
-	labelhash,
-	toHex,
-	type Account,
-	type Address,
-	type Client,
-	type Transport,
-	type WriteContractParameters,
-	type WriteContractReturnType,
-} from "viem";
-import { writeContract } from "viem/actions";
-import { packetToBytes } from "viem/ens";
-import { getAction } from "viem/utils";
-import { baseRegistrarSafeTransferFromWithDataSnippet } from "../../contracts/baseRegistrar.js";
-import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
-import { nameWrapperWrapSnippet } from "../../contracts/nameWrapper.js";
-import { AdditionalParameterSpecifiedError } from "../../errors/general.js";
-import type { WrappedLabelTooLargeError } from "../../errors/utils.js";
+  encodeAbiParameters,
+  labelhash,
+  toHex,
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  type EncodeAbiParametersErrorType,
+  type GetChainContractAddressErrorType,
+  type LabelhashErrorType,
+  type ToHexErrorType,
+  type Transport,
+  type WriteContractParameters,
+  type WriteContractReturnType,
+} from 'viem'
+import { writeContract } from 'viem/actions'
+import { packetToBytes, type PacketToBytesErrorType } from 'viem/ens'
+import { getAction } from 'viem/utils'
+import { baseRegistrarSafeTransferFromWithDataSnippet } from '../../contracts/baseRegistrar.js'
+import type { ChainWithContract } from '../../contracts/consts.js'
+import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
+import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
-	Eth2ldNameSpecifier,
-	GetNameType,
-	WriteTransactionParameters,
-} from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+  ErrorType,
+  WrappedLabelTooLargeError,
+} from '../../errors/utils.js'
+import type {
+  Eth2ldNameSpecifier,
+  GetNameType,
+  WriteTransactionParameters,
+} from '../../types/index.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
 import {
-	encodeFuses,
-	type EncodeChildFusesInputObject,
-} from "../../utils/fuses.js";
-import { checkIsDotEth } from "../../utils/name/validation.js";
-import { wrappedLabelLengthCheck } from "../../utils/wrapper.js";
+  encodeFuses,
+  type EncodeChildFusesInputObject,
+  type EncodeFusesErrorType,
+} from '../../utils/fuses.js'
+import { checkIsDotEth } from '../../utils/name/validation.js'
+import {
+  wrappedLabelLengthCheck,
+  type WrappedLabelLengthCheckErrorType,
+} from '../../utils/wrapper.js'
+import {
+  getChainContractAddress,
+  type ChainWithContracts,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
+import {
+  ASSERT_NO_TYPE_ERROR,
+  EXCLUDE_TYPE_ERROR,
+} from '../../types/internal.js'
 
-export type WrapNameParameters<name extends string> = {
-	/** The name to wrap */
-	name: name;
-	/** The recipient of the wrapped name */
-	newOwnerAddress: Address;
-	/** Fuses to set on wrap (eth-2ld only) */
-	fuses?: GetNameType<name> extends Eth2ldNameSpecifier
-		? EncodeChildFusesInputObject
-		: never;
-	/** The resolver address to set on wrap */
-	resolverAddress?: Address;
-};
+export type WrapNameWriteParameters<name extends string> = {
+  /** The name to wrap */
+  name: name
+  /** The recipient of the wrapped name */
+  newOwnerAddress: Address
+  /** Fuses to set on wrap (eth-2ld only) */
+  fuses?: GetNameType<name> extends Eth2ldNameSpecifier
+    ? EncodeChildFusesInputObject
+    : never
+  /** The resolver address to set on wrap */
+  resolverAddress?: Address
+}
 
 type ChainWithContractDependencies = ChainWithContract<
-	"ensPublicResolver" | "ensNameWrapper" | "ensBaseRegistrarImplementation"
->;
-export type WrapNameOptions<
-	name extends string,
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = WrapNameParameters<name> &
-	WriteTransactionParameters<chain, account, chainOverride>;
+  'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
+>
 
-export type WrapNameReturnType = WriteContractReturnType;
-
-export type WrapNameErrorType =
-	| AdditionalParameterSpecifiedError
-	| WrappedLabelTooLargeError
-	| Error;
+type WrapNameWriteParametersErrorType =
+  | AdditionalParameterSpecifiedError
+  | WrappedLabelTooLargeError
+  | GetChainContractAddressErrorType
+  | WrappedLabelLengthCheckErrorType
+  | EncodeFusesErrorType
+  | LabelhashErrorType
+  | EncodeAbiParametersErrorType
+  | ToHexErrorType
+  | PacketToBytesErrorType
+  | ErrorType
 
 export const wrapNameWriteParameters = <
-	name extends string,
-	chain extends ChainWithContractDependencies,
-	account extends Account,
+  name extends string,
+  chain extends Chain,
+  account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{
-		name,
-		newOwnerAddress,
-		fuses,
-		resolverAddress = getChainContractAddress({
-			client,
-			contract: "ensPublicResolver",
-		}),
-	}: WrapNameParameters<name>,
+  client: RequireClientContracts<
+    chain,
+    'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
+    account
+  >,
+  {
+    name,
+    newOwnerAddress,
+    fuses,
+    resolverAddress = getChainContractAddress({
+      chain: EXCLUDE_TYPE_ERROR(client).chain,
+      contract: 'ensPublicResolver',
+    }),
+  }: WrapNameWriteParameters<name>,
 ) => {
-	const labels = name.split(".");
-	const isEth2ld = checkIsDotEth(labels);
+  ASSERT_NO_TYPE_ERROR(client)
 
-	const nameWrapperAddress = getChainContractAddress({
-		client,
-		contract: "ensNameWrapper",
-	});
+  const labels = name.split('.')
+  const isEth2ld = checkIsDotEth(labels)
 
-	if (isEth2ld) {
-		wrappedLabelLengthCheck(labels[0]);
-		const encodedFuses = fuses
-			? encodeFuses({ restriction: "child", input: fuses })
-			: 0;
-		const tokenId = BigInt(labelhash(labels[0]));
+  const nameWrapperAddress = getChainContractAddress({
+    chain: client.chain,
+    contract: 'ensNameWrapper',
+  })
 
-		const data = encodeAbiParameters(
-			[
-				{ name: "label", type: "string" },
-				{ name: "wrappedOwner", type: "address" },
-				{ name: "ownerControlledFuses", type: "uint16" },
-				{ name: "resolverAddress", type: "address" },
-			],
-			[labels[0], newOwnerAddress, encodedFuses, resolverAddress],
-		);
+  if (isEth2ld) {
+    wrappedLabelLengthCheck(labels[0])
+    const encodedFuses = fuses
+      ? encodeFuses({ restriction: 'child', input: fuses })
+      : 0
+    const tokenId = BigInt(labelhash(labels[0]))
 
-		return {
-			address: getChainContractAddress({
-				client,
-				contract: "ensBaseRegistrarImplementation",
-			}),
-			abi: baseRegistrarSafeTransferFromWithDataSnippet,
-			functionName: "safeTransferFrom",
-			args: [client.account.address, nameWrapperAddress, tokenId, data],
-			chain: client.chain,
-			account: client.account,
-		} as const satisfies WriteContractParameters<
-			typeof baseRegistrarSafeTransferFromWithDataSnippet
-		>;
-	}
+    const data = encodeAbiParameters(
+      [
+        { name: 'label', type: 'string' },
+        { name: 'wrappedOwner', type: 'address' },
+        { name: 'ownerControlledFuses', type: 'uint16' },
+        { name: 'resolverAddress', type: 'address' },
+      ],
+      [labels[0], newOwnerAddress, encodedFuses, resolverAddress],
+    )
 
-	if (fuses)
-		throw new AdditionalParameterSpecifiedError({
-			parameter: "fuses",
-			allowedParameters: ["name", "wrappedOwner", "resolverAddress"],
-			details: "Fuses cannot be initially set when wrapping non eth-2ld names",
-		});
+    return {
+      address: getChainContractAddress({
+        chain: client.chain,
+        contract: 'ensBaseRegistrarImplementation',
+      }),
+      abi: baseRegistrarSafeTransferFromWithDataSnippet,
+      functionName: 'safeTransferFrom',
+      args: [client.account.address, nameWrapperAddress, tokenId, data],
+      chain: client.chain,
+      account: client.account,
+    } as const satisfies WriteContractParameters<
+      typeof baseRegistrarSafeTransferFromWithDataSnippet
+    >
+  }
 
-	labels.forEach((label) => wrappedLabelLengthCheck(label));
-	return {
-		address: nameWrapperAddress,
-		abi: nameWrapperWrapSnippet,
-		functionName: "wrap",
-		args: [toHex(packetToBytes(name)), newOwnerAddress, resolverAddress],
-		chain: client.chain,
-		account: client.account,
-	} as const satisfies WriteContractParameters<typeof nameWrapperWrapSnippet>;
-};
+  if (fuses)
+    throw new AdditionalParameterSpecifiedError({
+      parameter: 'fuses',
+      allowedParameters: ['name', 'wrappedOwner', 'resolverAddress'],
+      details: 'Fuses cannot be initially set when wrapping non eth-2ld names',
+    })
+
+  labels.forEach((label) => wrappedLabelLengthCheck(label))
+  return {
+    address: nameWrapperAddress,
+    abi: nameWrapperWrapSnippet,
+    functionName: 'wrap',
+    args: [toHex(packetToBytes(name)), newOwnerAddress, resolverAddress],
+    chain: client.chain,
+    account: client.account,
+  } as const satisfies WriteContractParameters<typeof nameWrapperWrapSnippet>
+}
+
+// ================================
+// Action
+// ================================
+
+export type WrapNameParameters<
+  name extends string,
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends ChainWithContracts<'ensNameWrapper'>,
+> = WrapNameWriteParameters<name> &
+  WriteTransactionParameters<chain, account, chainOverride>
+
+export type WrapNameReturnType = WriteContractReturnType
+
+export type WrapNameErrorType =
+  | AdditionalParameterSpecifiedError
+  | WrappedLabelTooLargeError
+  | ErrorType
 
 /**
  * Wraps a name.
  * @param client - {@link Client}
- * @param options - {@link WrapNameOptions}
+ * @param options - {@link WrapNameParameters}
  * @returns Transaction hash. {@link WrapNameReturnType}
  *
  * @example
@@ -159,33 +202,41 @@ export const wrapNameWriteParameters = <
  * // 0x...
  */
 export async function wrapName<
-	name extends string,
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+  name extends string,
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends ChainWithContracts<
+    'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
+  >,
 >(
-	client: Client<Transport, chain, account>,
-	{
-		name,
-		newOwnerAddress,
-		fuses,
-		resolverAddress,
-		...txArgs
-	}: WrapNameOptions<name, chain, account, chainOverride>,
+  client: RequireClientContracts<
+    chain,
+    'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
+    account
+  >,
+  {
+    name,
+    newOwnerAddress,
+    fuses,
+    resolverAddress,
+    ...txArgs
+  }: WrapNameParameters<name, chain, account, chainOverride>,
 ): Promise<WrapNameReturnType> {
-	const writeParameters = wrapNameWriteParameters(
-		clientWithOverrides(client, txArgs),
-		{
-			name,
-			newOwnerAddress,
-			fuses,
-			resolverAddress,
-		},
-	);
+  ASSERT_NO_TYPE_ERROR(client)
 
-	const writeContractAction = getAction(client, writeContract, "writeContract");
-	return writeContractAction({
-		...writeParameters,
-		...txArgs,
-	} as WriteContractParameters);
+  const writeParameters = wrapNameWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      newOwnerAddress,
+      fuses,
+      resolverAddress,
+    },
+  )
+
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
+    ...txArgs,
+  } as WriteContractParameters)
 }

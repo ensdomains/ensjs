@@ -16,7 +16,7 @@ import {
   type RequireClientContracts,
 } from '../../clients/chain.js'
 import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetResolverParameters = {
   /** Name to get resolver for */
@@ -54,7 +54,7 @@ export async function getResolver<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name }: GetResolverParameters,
 ): Promise<GetResolverReturnType> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
   const result = await readContractAction({

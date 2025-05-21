@@ -1,15 +1,17 @@
 import {
 	type Account,
 	type Address,
+	type Chain,
 	type Client,
+	type GetChainContractAddressErrorType,
 	type Hash,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
 import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import {
 	reverseRegistrarSetNameForAddrSnippet,
 	reverseRegistrarSetNameSnippet,
@@ -19,6 +21,19 @@ import type {
 	WriteTransactionParameters,
 } from "../../types/index.js";
 import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import {
+	ASSERT_NO_TYPE_ERROR,
+	EXCLUDE_TYPE_ERROR,
+} from "../../types/internal.js";
+
+// ================================
+// Write parameters
+// ================================
 
 type BaseSetPrimaryNameDataParameters = {
 	/** The name to set as primary */
@@ -39,41 +54,39 @@ type OtherSetPrimaryNameDataParameters = {
 	resolverAddress?: Address;
 };
 
-export type SetPrimaryNameDataParameters = BaseSetPrimaryNameDataParameters &
-	(SelfSetPrimaryNameDataParameters | OtherSetPrimaryNameDataParameters);
+export type SetPrimaryNameWriteParametersParameters =
+	BaseSetPrimaryNameDataParameters &
+		(SelfSetPrimaryNameDataParameters | OtherSetPrimaryNameDataParameters);
 
-type ChainWithContractDependencies = ChainWithContract<
-	"ensPublicResolver" | "ensReverseRegistrar"
->;
-export type SetPrimaryNameParameters<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	SetPrimaryNameDataParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type SetPrimaryNameWriteParametersReturnType = ReturnType<
+	typeof setPrimaryNameWriteParameters
 >;
 
-export type SetPrimaryNameReturnType = Hash;
-
-export type SetPrimaryNameErrorType = Error;
+export type SetPrimaryNameWriteParametersErrorType =
+	GetChainContractAddressErrorType;
 
 export const setPrimaryNameWriteParameters = <
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensPublicResolver" | "ensReverseRegistrar",
+		account
+	>,
 	{
 		name,
 		address,
 		resolverAddress = getChainContractAddress({
-			client,
+			chain: EXCLUDE_TYPE_ERROR(client).chain,
 			contract: "ensPublicResolver",
 		}),
-	}: SetPrimaryNameDataParameters,
+	}: SetPrimaryNameWriteParametersParameters,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const reverseRegistrarAddress = getChainContractAddress({
-		client,
+		chain: client.chain,
 		contract: "ensReverseRegistrar",
 	});
 
@@ -103,6 +116,27 @@ export const setPrimaryNameWriteParameters = <
 	>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type SetPrimaryNameParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<
+		"ensPublicResolver" | "ensReverseRegistrar"
+	>,
+> = Prettify<
+	SetPrimaryNameWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type SetPrimaryNameReturnType = Hash;
+
+export type SetPrimaryNameErrorType =
+	| SetPrimaryNameWriteParametersErrorType
+	| WriteContractErrorType;
+
 /**
  * Sets a primary name for an address.
  * @param client - {@link Client}
@@ -125,11 +159,17 @@ export const setPrimaryNameWriteParameters = <
  * // 0x...
  */
 export async function setPrimaryName<
-	chain extends ChainWithContractDependencies,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<
+		"ensPublicResolver" | "ensReverseRegistrar"
+	>,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensPublicResolver" | "ensReverseRegistrar",
+		account
+	>,
 	{
 		name,
 		address,
@@ -137,9 +177,15 @@ export async function setPrimaryName<
 		...txArgs
 	}: SetPrimaryNameParameters<chain, account, chainOverride>,
 ): Promise<SetPrimaryNameReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const writeParameters = setPrimaryNameWriteParameters(
 		clientWithOverrides(client, txArgs),
-		{ name, address, resolverAddress } as SetPrimaryNameDataParameters,
+		{
+			name,
+			address,
+			resolverAddress,
+		} as SetPrimaryNameWriteParametersParameters,
 	);
 	const writeContractAction = getAction(client, writeContract, "writeContract");
 	return writeContractAction({

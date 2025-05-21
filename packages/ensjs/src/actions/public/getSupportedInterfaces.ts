@@ -3,7 +3,7 @@ import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/chain.js'
 import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetSupportedInterfacesParameters<
   interfaces extends readonly Hex[],
@@ -49,7 +49,7 @@ export async function getSupportedInterfaces<
   client: RequireClientContracts<chain, 'multicall3'>,
   { address, interfaces }: GetSupportedInterfacesParameters<interfaces>,
 ): Promise<GetSupportedInterfacesReturnType<interfaces>> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const multicallAction = getAction(client, multicall, 'multicall')
 

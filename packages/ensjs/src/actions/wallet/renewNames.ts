@@ -1,7 +1,10 @@
 import {
 	type Account,
+	type Chain,
 	type Client,
+	type GetChainContractAddressErrorType,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 	type WriteContractReturnType,
 } from "viem";
@@ -10,16 +13,27 @@ import { getAction } from "viem/utils";
 import { bulkRenewalRenewAllSnippet } from "../../contracts/bulkRenewal.js";
 import type { ChainWithContract } from "../../contracts/consts.js";
 import { ethRegistrarControllerRenewSnippet } from "../../contracts/ethRegistrarController.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import { UnsupportedNameTypeError } from "../../errors/general.js";
 import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
 import { getNameType } from "../../utils/name/getNameType.js";
+import {
+	getChainContractAddress,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
 
-export type RenewNamesParameters = {
+// ================================
+// Write parameters
+// ================================
+
+export type RenewNamesWriteParametersParameters = {
 	/** Name or names to renew */
 	nameOrNames: string | string[];
 	/** Duration to renew name(s) for */
@@ -28,29 +42,27 @@ export type RenewNamesParameters = {
 	value: bigint;
 };
 
-type ChainWithContractDependencies = ChainWithContract<
-	"ensEthRegistrarController" | "ensBulkRenewal"
->;
-export type RenewNamesOptions<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	RenewNamesParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type RenewNamesWriteParametersReturnType = ReturnType<
+	typeof renewNamesWriteParameters
 >;
 
-export type RenewNamesReturnType = WriteContractReturnType;
-
-export type RenewNamesErrorType = UnsupportedNameTypeError | Error;
+export type RenewNamesWriteParametersErrorType =
+	| UnsupportedNameTypeError
+	| GetChainContractAddressErrorType;
 
 export const renewNamesWriteParameters = <
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ nameOrNames, duration, value }: RenewNamesParameters,
+	client: RequireClientContracts<
+		chain,
+		"ensEthRegistrarController" | "ensBulkRenewal",
+		account
+	>,
+	{ nameOrNames, duration, value }: RenewNamesWriteParametersParameters,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
 	const labels = names.map((name) => {
 		const label = name.split(".");
@@ -74,7 +86,7 @@ export const renewNamesWriteParameters = <
 		return {
 			...baseParams,
 			address: getChainContractAddress({
-				client,
+				chain: client.chain,
 				contract: "ensEthRegistrarController",
 			}),
 			abi: ethRegistrarControllerRenewSnippet,
@@ -86,7 +98,7 @@ export const renewNamesWriteParameters = <
 	return {
 		...baseParams,
 		address: getChainContractAddress({
-			client,
+			chain: client.chain,
 			contract: "ensBulkRenewal",
 		}),
 		abi: bulkRenewalRenewAllSnippet,
@@ -94,6 +106,28 @@ export const renewNamesWriteParameters = <
 		args: [labels, BigInt(duration)],
 	} as const satisfies WriteContractParameters;
 };
+
+// ================================
+// Renew names action
+// ================================
+
+export type RenewNamesParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends
+		| ChainWithContract<"ensEthRegistrarController" | "ensBulkRenewal">
+		| undefined,
+> = Prettify<
+	RenewNamesWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type RenewNamesReturnType = WriteContractReturnType;
+
+export type RenewNamesErrorType =
+	| RenewNamesWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
 
 /**
  * Renews a name or names for a specified duration.
@@ -127,18 +161,26 @@ export const renewNamesWriteParameters = <
  * // 0x...
  */
 export async function renewNames<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends
+		| ChainWithContract<"ensEthRegistrarController" | "ensBulkRenewal">
+		| undefined,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensEthRegistrarController" | "ensBulkRenewal",
+		account
+	>,
 	{
 		nameOrNames,
 		duration,
 		value,
 		...txArgs
-	}: RenewNamesOptions<chain, account, chainOverride>,
+	}: RenewNamesParameters<chain, account, chainOverride>,
 ): Promise<RenewNamesReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const writeParameters = renewNamesWriteParameters(
 		clientWithOverrides(client, txArgs),
 		{ nameOrNames, duration, value },

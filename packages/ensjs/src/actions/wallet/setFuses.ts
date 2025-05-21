@@ -1,6 +1,8 @@
 import {
 	type Account,
+	type Chain,
 	type Client,
+	type GetChainContractAddressErrorType,
 	type Hash,
 	type Transport,
 	type WriteContractParameters,
@@ -8,7 +10,6 @@ import {
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
 import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import { nameWrapperSetFusesSnippet } from "../../contracts/nameWrapper.js";
 import type {
 	Prettify,
@@ -18,39 +19,47 @@ import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
 import {
 	encodeFuses,
 	type EncodeChildFusesInputObject,
+	type EncodeFusesErrorType,
 } from "../../utils/fuses.js";
-import { namehash } from "../../utils/name/normalize.js";
+import { type NamehashErrorType, namehash } from "../../utils/name/namehash.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
 
-export type SetFusesParameters = {
+export type SetFusesWriteParametersParameters = {
 	/** Name to set fuses for */
 	name: string;
 	/** Fuse object to set to */
 	fuses: EncodeChildFusesInputObject;
 };
 
-type ChainWithContractDependencies = ChainWithContract<"ensNameWrapper">;
-export type SetFusesOptions<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	SetFusesParameters & WriteTransactionParameters<chain, account, chainOverride>
+export type SetFusesWriteParametersReturnType = ReturnType<
+	typeof setFusesWriteParameters
 >;
 
-export type SetFusesReturnType = Hash;
-
-export type SetFusesErrorType = Error;
+export type SetFusesWriteParametersErrorType =
+	| EncodeFusesErrorType
+	| GetChainContractAddressErrorType
+	| NamehashErrorType;
 
 export const setFusesWriteParameters = <
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, fuses }: SetFusesParameters,
+	client: RequireClientContracts<chain, "ensNameWrapper", account>,
+	{ name, fuses }: SetFusesWriteParametersParameters,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const encodedFuses = encodeFuses({ restriction: "child", input: fuses });
 	return {
-		address: getChainContractAddress({ client, contract: "ensNameWrapper" }),
+		address: getChainContractAddress({
+			chain: client.chain,
+			contract: "ensNameWrapper",
+		}),
 		abi: nameWrapperSetFusesSnippet,
 		functionName: "setFuses",
 		args: [namehash(name), encodedFuses],
@@ -61,10 +70,27 @@ export const setFusesWriteParameters = <
 	>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type SetFusesParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<"ensNameWrapper">,
+> = Prettify<
+	SetFusesWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type SetFusesReturnType = Hash;
+
+export type SetFusesErrorType = Error;
+
 /**
  * Sets the fuses for a name.
  * @param client - {@link Client}
- * @param options - {@link SetFusesOptions}
+ * @param options - {@link SetFusesParameters}
  * @returns Transaction hash. {@link SetFusesReturnType}
  *
  * @example
@@ -86,17 +112,20 @@ export const setFusesWriteParameters = <
  * // 0x...
  */
 export async function setFuses<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<"ensNameWrapper">,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, fuses, ...txArgs }: SetFusesOptions<chain, account, chainOverride>,
+	client: RequireClientContracts<chain, "ensNameWrapper", account>,
+	{ name, fuses, ...txArgs }: SetFusesParameters<chain, account, chainOverride>,
 ): Promise<SetFusesReturnType> {
-	const data = setFusesWriteParameters(clientWithOverrides(client, txArgs), {
+	ASSERT_NO_TYPE_ERROR(client);
+
+	const data = setFusesWriteParameters<chain, account>(client, {
 		name,
 		fuses,
 	});
+
 	const writeContractAction = getAction(client, writeContract, "writeContract");
 	return writeContractAction({
 		...data,

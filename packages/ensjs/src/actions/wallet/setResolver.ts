@@ -1,25 +1,37 @@
 import {
 	type Account,
 	type Address,
+	type Chain,
 	type Client,
+	type GetChainContractAddressErrorType,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 	type WriteContractReturnType,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
 import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import { nameWrapperSetResolverSnippet } from "../../contracts/nameWrapper.js";
 import { registrySetResolverSnippet } from "../../contracts/registry.js";
 import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
-import { namehash } from "../../utils/name/normalize.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
+import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+import type { ErrorType } from "../../errors/utils.js";
 
-export type SetResolverParameters = {
+export type SetResolverWriteParametersParameters = {
 	/** Name to set resolver for */
 	name: string;
 	/** Contract to set resolver on */
@@ -28,34 +40,37 @@ export type SetResolverParameters = {
 	resolverAddress: Address;
 };
 
-type ChainWithContractDependencies = ChainWithContract<
-	"ensNameWrapper" | "ensRegistry"
->;
-export type SetResolverOptions<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	SetResolverParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type SetResolverWriteParametersReturnType = ReturnType<
+	typeof setResolverWriteParameters
 >;
 
-export type SetResolverReturnType = WriteContractReturnType;
+export type SetResolverWriteParametersErrorType =
+	| ErrorType
+	| GetChainContractAddressErrorType
+	| NamehashErrorType;
 
-export type SetResolverErrorType = Error;
+// ================================
+// Write parameters
+// ================================
 
 export const setResolverWriteParameters = <
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, contract, resolverAddress }: SetResolverParameters,
+	client: RequireClientContracts<
+		chain,
+		"ensNameWrapper" | "ensRegistry",
+		account
+	>,
+	{ name, contract, resolverAddress }: SetResolverWriteParametersParameters,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	if (contract !== "registry" && contract !== "nameWrapper")
 		throw new Error(`Unknown contract: ${contract}`);
 
 	const address = getChainContractAddress({
-		client,
+		chain: client.chain,
 		contract: contract === "nameWrapper" ? "ensNameWrapper" : "ensRegistry",
 	});
 
@@ -86,6 +101,26 @@ export const setResolverWriteParameters = <
 	>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type SetResolverParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<"ensNameWrapper" | "ensRegistry">,
+> = Prettify<
+	SetResolverWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type SetResolverReturnType = WriteContractReturnType;
+
+export type SetResolverErrorType =
+	| SetResolverWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
+
 /**
  * Sets a resolver for a name.
  * @param client - {@link Client}
@@ -110,18 +145,24 @@ export const setResolverWriteParameters = <
  * // 0x...
  */
 export async function setResolver<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<"ensNameWrapper" | "ensRegistry">,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensNameWrapper" | "ensRegistry",
+		account
+	>,
 	{
 		name,
 		contract,
 		resolverAddress,
 		...txArgs
-	}: SetResolverOptions<chain, account, chainOverride>,
+	}: SetResolverParameters<chain, account, chainOverride>,
 ): Promise<SetResolverReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const writeParameters = setResolverWriteParameters(
 		clientWithOverrides(client, txArgs),
 		{

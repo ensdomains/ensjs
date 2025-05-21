@@ -1,4 +1,5 @@
 import {
+  type Account,
   type Chain,
   type ChainContract,
   type Client,
@@ -289,12 +290,34 @@ export const extendChainWithEns = <const chain extends Chain>(
   } as ChainWithEns<Extract<chain, AnySupportedChain>>
 }
 
-type $ChainWithContracts<contracts extends SuggestedContracts> = Chain & {
+/**
+ * Type utility that explicitly enforces the presence of required contracts on the chain
+ */
+export type ChainWithContracts<
+  contracts extends SuggestedContracts,
+  chain extends Chain = Chain,
+> = chain & {
   contracts: {
-    [key in contracts]: ChainContract | { [sourceId: number]: ChainContract }
+    [key in contracts]: ChainContract
   }
 }
 
+/**
+ * Type utility that enforces required contract dependencies on the chain while providing clear error messages
+ * @example
+ * ```ts
+ * // Action definition
+ * const myAction = async <chain extends Chain>(
+ *   chain: RequireChainContracts<chain, 'ensPublicResolver'>,
+ * ) => { ... }
+ *
+ * // Will error
+ * myAction(mainnet) // TypeError<'Chain "mainnet" is missing required contracts: ensPublicResolver'>
+ *
+ * // Will not error
+ * myAction(extendChainWithEns(mainnet))
+ * ```
+ */
 export type RequireChainContracts<
   chain extends Chain,
   contracts extends SuggestedContracts,
@@ -306,16 +329,55 @@ export type RequireChainContracts<
   ? chain
   : TypeError<`Chain "${chain['name']}" is missing required contracts: ${StringConcatenationOrder<contracts, ', '>}`>
 
+/**
+ * Type utility that enforces required contract dependencies on the client while providing clear error messages
+ * @example
+ * ```ts
+ * // Action definition
+ * const myAction = async <chain extends Chain>(
+ *   client: RequireClientContracts<chain, 'ensPublicResolver'>,
+ * ) => { ... }
+ *
+ * // Example clients
+ * const client = createPublicClient({
+ *   chain: mainnet,
+ *   transport: http(),
+ * })
+ *
+ * const clientWithEnsContracts = createPublicClient({
+ *   // This adds the required contracts to the chain
+ *   chain: extendChainWithEns(mainnet),
+ *   transport: http(),
+ * })
+ *
+ * // This will error
+ * myAction(client) // TypeError<'Chain "mainnet" is missing required contracts: ensPublicResolver'>
+ *
+ * // This will not error
+ * myAction(clientWithEnsContracts)
+ * ```
+ */
 export type RequireClientContracts<
   chain extends Chain,
   contracts extends SuggestedContracts,
+  account extends Account | undefined = Account | undefined,
 > = chain extends Chain & {
   contracts: {
     [key in contracts]: ChainContract
   }
 }
-  ? Client<Transport, chain>
+  ? Client<Transport, chain, account>
   : TypeError<`Chain "${chain['name']}" is missing required contracts: ${StringConcatenationOrder<contracts, ', '>}`>
+
+type sjdajhka = RequireClientContracts<
+  ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>,
+  'ensPublicResolver' | 'ensNameWrapper'
+> extends Client<
+  Transport,
+  ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
+>
+  ? true
+  : false
 
 /**
  * @see {viem_getChainContractAddress}

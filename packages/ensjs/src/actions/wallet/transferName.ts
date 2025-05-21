@@ -2,8 +2,12 @@ import {
 	labelhash,
 	type Account,
 	type Address,
+	type Chain,
 	type Client,
+	type GetChainContractAddressErrorType,
+	type LabelhashErrorType,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 	type WriteContractReturnType,
 } from "viem";
@@ -14,7 +18,6 @@ import {
 	baseRegistrarSafeTransferFromSnippet,
 } from "../../contracts/baseRegistrar.js";
 import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import {
 	nameWrapperSafeTransferFromSnippet,
 	nameWrapperSetSubnodeOwnerSnippet,
@@ -32,13 +35,29 @@ import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
 import { getNameType } from "../../utils/name/getNameType.js";
-import { makeLabelNodeAndParent } from "../../utils/name/makeLabelNodeAndParent.js";
-import { namehash } from "../../utils/name/normalize.js";
+import {
+	makeLabelNodeAndParent,
+	type MakeLabelNodeAndParentErrorType,
+} from "../../utils/name/makeLabelNodeAndParent.js";
+import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+import type { ErrorType } from "../../errors/utils.js";
 
 type SupportedContract = "registry" | "nameWrapper" | "registrar";
-export type TransferNameParameters<contract extends SupportedContract> = {
+
+export type TransferNameWriteParametersParameters<
+	contract extends SupportedContract,
+> = {
 	/** Name to transfer */
 	name: string;
 	/** Transfer recipient */
@@ -51,41 +70,36 @@ export type TransferNameParameters<contract extends SupportedContract> = {
 	asParent?: contract extends "registrar" ? never : boolean;
 };
 
-type ChainWithContractDependencies = ChainWithContract<
-	"ensRegistry" | "ensNameWrapper" | "ensBaseRegistrarImplementation"
->;
-export type TransferNameOptions<
-	contract extends "registry" | "nameWrapper" | "registrar",
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	TransferNameParameters<contract> &
-		WriteTransactionParameters<chain, account, chainOverride>
->;
-
-export type TransferNameReturnType = WriteContractReturnType;
-
-export type TransferNameErrorType =
+export type TransferNameWriteParametersErrorType =
 	| AdditionalParameterSpecifiedError
+	| GetChainContractAddressErrorType
+	| MakeLabelNodeAndParentErrorType
+	| NamehashErrorType
+	| LabelhashErrorType
 	| InvalidContractTypeError
 	| UnsupportedNameTypeError
-	| Error;
+	| ErrorType;
 
 export const transferNameWriteParameters = <
 	contract extends SupportedContract,
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensRegistry" | "ensNameWrapper" | "ensBaseRegistrarImplementation",
+		account
+	>,
 	{
 		name,
 		newOwnerAddress,
 		contract,
 		reclaim,
 		asParent,
-	}: TransferNameParameters<contract>,
+	}: TransferNameWriteParametersParameters<contract>,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	if (reclaim && contract !== "registrar")
 		throw new AdditionalParameterSpecifiedError({
 			parameter: "reclaim",
@@ -97,7 +111,7 @@ export const transferNameWriteParameters = <
 		case "registry": {
 			const baseParams = {
 				address: getChainContractAddress({
-					client,
+					chain: client.chain,
 					contract: "ensRegistry",
 				}),
 				chain: client.chain,
@@ -144,7 +158,7 @@ export const transferNameWriteParameters = <
 			const tokenId = BigInt(labelhash(labels[0]));
 			const baseParams = {
 				address: getChainContractAddress({
-					client,
+					chain: client.chain,
 					contract: "ensBaseRegistrarImplementation",
 				}),
 				chain: client.chain,
@@ -172,7 +186,7 @@ export const transferNameWriteParameters = <
 		case "nameWrapper": {
 			const baseParams = {
 				address: getChainContractAddress({
-					client,
+					chain: client.chain,
 					contract: "ensNameWrapper",
 				}),
 				chain: client.chain,
@@ -213,6 +227,29 @@ export const transferNameWriteParameters = <
 	}
 };
 
+// ================================
+// Action
+// ================================
+
+export type TransferNameParameters<
+	contract extends "registry" | "nameWrapper" | "registrar",
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<
+		"ensRegistry" | "ensNameWrapper" | "ensBaseRegistrarImplementation"
+	>,
+> = Prettify<
+	TransferNameWriteParametersParameters<contract> &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type TransferNameReturnType = WriteContractReturnType;
+
+export type TransferNameErrorType =
+	| TransferNameWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
+
 /**
  * Transfers a name to a new owner.
  * @param client - {@link Client}
@@ -238,11 +275,17 @@ export const transferNameWriteParameters = <
  */
 export async function transferName<
 	contract extends SupportedContract,
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<
+		"ensRegistry" | "ensNameWrapper" | "ensBaseRegistrarImplementation"
+	>,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<
+		chain,
+		"ensRegistry" | "ensNameWrapper" | "ensBaseRegistrarImplementation",
+		account
+	>,
 	{
 		name,
 		newOwnerAddress,
@@ -250,8 +293,10 @@ export async function transferName<
 		reclaim,
 		asParent,
 		...txArgs
-	}: TransferNameOptions<contract, chain, account, chainOverride>,
+	}: TransferNameParameters<contract, chain, account, chainOverride>,
 ): Promise<TransferNameReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const writeParameters = transferNameWriteParameters(
 		clientWithOverrides(client, txArgs),
 		{
@@ -260,7 +305,7 @@ export async function transferName<
 			contract,
 			reclaim,
 			asParent,
-		} as TransferNameParameters<contract>,
+		} as TransferNameWriteParametersParameters<contract>,
 	);
 
 	const writeContractAction = getAction(client, writeContract, "writeContract");

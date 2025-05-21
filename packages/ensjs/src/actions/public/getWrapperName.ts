@@ -14,7 +14,7 @@ import {
   type RequireClientContracts,
 } from '../../clients/chain.js'
 import { nameWrapperNamesSnippet } from '../../contracts/nameWrapper.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
   type BytesToPacketErrorType,
   bytesToPacket,
@@ -59,7 +59,7 @@ export async function getWrapperName<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperNameParameters,
 ): Promise<GetWrapperNameReturnType> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
   const result = await readContractAction({

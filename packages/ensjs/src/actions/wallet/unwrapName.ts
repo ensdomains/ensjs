@@ -1,15 +1,18 @@
 import {
 	type Account,
 	type Address,
+	type Chain,
 	type Client,
+	type GetChainContractAddressErrorType,
 	type Hash,
+	type LabelhashErrorType,
 	type Transport,
+	type WriteContractErrorType,
 	type WriteContractParameters,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
 import type { ChainWithContract } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import {
 	nameWrapperUnwrapEth2ldSnippet,
 	nameWrapperUnwrapSnippet,
@@ -23,11 +26,24 @@ import type {
 	GetNameType,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import {
+	clientWithOverrides,
+	type ClientWithOverridesErrorType,
+} from "../../utils/clientWithOverrides.js";
 import { getNameType } from "../../utils/name/getNameType.js";
-import { makeLabelNodeAndParent } from "../../utils/name/makeLabelNodeAndParent.js";
+import {
+	makeLabelNodeAndParent,
+	type MakeLabelNodeAndParentErrorType,
+} from "../../utils/name/makeLabelNodeAndParent.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+import type { ErrorType } from "../../errors/utils.js";
 
-export type UnwrapNameParameters<name extends string> = {
+export type UnwrapNameWriteParametersParameters<name extends string> = {
 	/** The name to unwrap */
 	name: name;
 	/** The recipient of the unwrapped name */
@@ -42,33 +58,32 @@ export type UnwrapNameParameters<name extends string> = {
 			newRegistrantAddress?: never;
 		});
 
-type ChainWithContractDependencies = ChainWithContract<"ensNameWrapper">;
-export type UnwrapNameOptions<
-	name extends string,
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = UnwrapNameParameters<name> &
-	WriteTransactionParameters<chain, account, chainOverride>;
+// type ChainWithContractDependencies = ChainWithContract<"ensNameWrapper">;
 
-export type UnwrapNameReturnType = Hash;
-
-export type UnwrapNameErrorType =
+export type UnwrapNameWriteParametersErrorType =
+	| MakeLabelNodeAndParentErrorType
 	| AdditionalParameterSpecifiedError
 	| RequiredParameterNotSpecifiedError
-	| Error;
+	| GetChainContractAddressErrorType
+	| ErrorType;
 
 export const unwrapNameWriteParameters = <
 	name extends string,
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, newOwnerAddress, newRegistrantAddress }: UnwrapNameParameters<name>,
+	client: RequireClientContracts<chain, "ensNameWrapper", account>,
+	{
+		name,
+		newOwnerAddress,
+		newRegistrantAddress,
+	}: UnwrapNameWriteParametersParameters<name>,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const { labelhash, parentNode } = makeLabelNodeAndParent(name);
 	const nameWrapperAddress = getChainContractAddress({
-		client,
+		chain: client.chain,
 		contract: "ensNameWrapper",
 	});
 	const nameType = getNameType(name);
@@ -109,6 +124,25 @@ export const unwrapNameWriteParameters = <
 	} as const satisfies WriteContractParameters<typeof nameWrapperUnwrapSnippet>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type UnwrapNameOptions<
+	name extends string,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<"ensNameWrapper">,
+> = UnwrapNameWriteParametersParameters<name> &
+	WriteTransactionParameters<chain, account, chainOverride>;
+
+export type UnwrapNameReturnType = Hash;
+
+export type UnwrapNameErrorType =
+	| UnwrapNameWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
+
 /**
  * Unwraps a name.
  * @param client - {@link Client}
@@ -134,11 +168,11 @@ export const unwrapNameWriteParameters = <
  */
 export async function unwrapName<
 	name extends string,
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends ChainWithContracts<"ensNameWrapper">,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<chain, "ensNameWrapper", account>,
 	{
 		name,
 		newOwnerAddress,
@@ -146,13 +180,15 @@ export async function unwrapName<
 		...txArgs
 	}: UnwrapNameOptions<name, chain, account, chainOverride>,
 ): Promise<UnwrapNameReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const writeParameters = unwrapNameWriteParameters(
 		clientWithOverrides(client, txArgs),
 		{
 			name,
 			newOwnerAddress,
 			newRegistrantAddress,
-		} as UnwrapNameParameters<name>,
+		} as UnwrapNameWriteParametersParameters<name>,
 	);
 	const writeContractAction = getAction(client, writeContract, "writeContract");
 	return writeContractAction({

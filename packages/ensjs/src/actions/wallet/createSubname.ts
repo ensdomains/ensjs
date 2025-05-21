@@ -2,7 +2,12 @@ import {
 	encodeFunctionData,
 	type Account,
 	type Address,
+	type Chain,
+	type Client,
+	type EncodeFunctionDataErrorType,
+	type GetChainContractAddressErrorType,
 	type Hash,
+	type SendTransactionErrorType,
 	type SendTransactionParameters,
 	type Transport,
 } from "viem";
@@ -12,7 +17,6 @@ import type {
 	ClientWithAccount,
 	ClientWithEns,
 } from "../../contracts/consts.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import { nameWrapperSetSubnodeRecordSnippet } from "../../contracts/nameWrapper.js";
 import { registrySetSubnodeRecordSnippet } from "../../contracts/registry.js";
 import { BaseError } from "../../errors/base.js";
@@ -30,31 +34,35 @@ import type {
 import {
 	ParentFuses,
 	encodeFuses,
+	type EncodeFusesErrorType,
 	type EncodeFusesInputObject,
 } from "../../utils/fuses.js";
 import { getNameType } from "../../utils/name/getNameType.js";
-import { makeLabelNodeAndParent } from "../../utils/name/makeLabelNodeAndParent.js";
+import {
+	makeLabelNodeAndParent,
+	type MakeLabelNodeAndParentErrorType,
+} from "../../utils/name/makeLabelNodeAndParent.js";
 import {
 	expiryToBigInt,
 	makeDefaultExpiry,
 	wrappedLabelLengthCheck,
+	type ExpiryToBigIntErrorType,
+	type MakeDefaultExpiryErrorType,
+	type WrappedLabelLengthCheckErrorType,
 } from "../../utils/wrapper.js";
-import { getWrapperData } from "../public/getWrapperData.js";
-
-type BaseCreateSubnameDataParameters = {
-	/** Subname to create */
-	name: string;
-	/** New owner of subname */
-	owner: Address;
-	/** Contract to create subname on */
-	contract: "registry" | "nameWrapper";
-	/** Resolver address to set */
-	resolverAddress?: Address;
-	/** Expiry to set (only on NameWrapper) */
-	expiry?: AnyDate;
-	/** Fuses to set (only on NameWrapper) */
-	fuses?: EncodeFusesInputObject;
-};
+import {
+	getWrapperData,
+	type GetWrapperDataErrorType,
+} from "../public/getWrapperData.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import {
+	ASSERT_NO_TYPE_ERROR,
+	EXCLUDE_TYPE_ERROR,
+} from "../../types/internal.js";
 
 type RegistryCreateSubnameDataParameters = {
 	contract: "registry";
@@ -68,109 +76,9 @@ type NameWrapperCreateSubnameDataParameters = {
 	fuses?: EncodeFusesInputObject;
 };
 
-export type CreateSubnameDataParameters = BaseCreateSubnameDataParameters &
-	(
-		| RegistryCreateSubnameDataParameters
-		| NameWrapperCreateSubnameDataParameters
-	);
-
-export type CreateSubnameDataReturnType = SimpleTransactionRequest;
-
-export type CreateSubnameParameters<
-	TChain extends ChainWithEns,
-	TAccount extends Account | undefined,
-	TChainOverride extends ChainWithEns | undefined,
-> = Prettify<
-	CreateSubnameDataParameters &
-		WriteTransactionParameters<TChain, TAccount, TChainOverride>
->;
-
-export type CreateSubnameReturnType = Hash;
-
-export type CreateSubnameErrorType =
-	| InvalidContractTypeError
-	| UnsupportedNameTypeError
-	| WrappedLabelTooLargeError
-	| Error;
-
-export const makeFunctionData = <
-	TChain extends ChainWithEns,
-	TAccount extends Account | undefined,
->(
-	wallet: ClientWithAccount<Transport, TChain, TAccount>,
-	{
-		name,
-		contract,
-		owner,
-		resolverAddress = getChainContractAddress({
-			client: wallet,
-			contract: "ensPublicResolver",
-		}),
-		expiry,
-		fuses,
-	}: CreateSubnameDataParameters,
-): CreateSubnameDataReturnType => {
-	const nameType = getNameType(name);
-	if (nameType === "tld" || nameType === "root")
-		throw new UnsupportedNameTypeError({
-			nameType,
-			supportedNameTypes: [
-				"eth-2ld",
-				"eth-subname",
-				"other-2ld",
-				"other-subname",
-			],
-		});
-
-	const { label, labelhash, parentNode } = makeLabelNodeAndParent(name);
-
-	switch (contract) {
-		case "registry": {
-			return {
-				to: getChainContractAddress({
-					client: wallet,
-					contract: "ensRegistry",
-				}),
-				data: encodeFunctionData({
-					abi: registrySetSubnodeRecordSnippet,
-					functionName: "setSubnodeRecord",
-					args: [parentNode, labelhash, owner, resolverAddress, BigInt(0)],
-				}),
-			};
-		}
-		case "nameWrapper": {
-			wrappedLabelLengthCheck(label);
-			const generatedFuses = fuses ? encodeFuses({ input: fuses }) : 0;
-			const generatedExpiry = expiry
-				? expiryToBigInt(expiry)
-				: makeDefaultExpiry(generatedFuses);
-			return {
-				to: getChainContractAddress({
-					client: wallet,
-					contract: "ensNameWrapper",
-				}),
-				data: encodeFunctionData({
-					abi: nameWrapperSetSubnodeRecordSnippet,
-					functionName: "setSubnodeRecord",
-					args: [
-						parentNode,
-						label,
-						owner,
-						resolverAddress,
-						BigInt(0),
-						generatedFuses,
-						generatedExpiry,
-					],
-				}),
-			};
-		}
-		default:
-			throw new InvalidContractTypeError({
-				contractType: contract,
-				supportedContractTypes: ["registry", "nameWrapper"],
-			});
-	}
-};
+// ================================
+// Errors
+// ================================
 
 class CreateSubnamePermissionDeniedError extends BaseError {
 	parentName: string;
@@ -197,14 +105,149 @@ class CreateSubnameParentNotLockedError extends BaseError {
 		this.parentName = parentName;
 	}
 }
+// ================================
+// Make function data
+// ================================
+
+export type MakeCreateSubnameFunctionDataParameters = {
+	/** Subname to create */
+	name: string;
+	/** New owner of subname */
+	owner: Address;
+	/** Contract to create subname on */
+	contract: "registry" | "nameWrapper";
+	/** Resolver address to set */
+	resolverAddress?: Address;
+	/** Expiry to set (only on NameWrapper) */
+	expiry?: AnyDate;
+	/** Fuses to set (only on NameWrapper) */
+	fuses?: EncodeFusesInputObject;
+} & (
+	| RegistryCreateSubnameDataParameters
+	| NameWrapperCreateSubnameDataParameters
+);
+
+export type MakeCreateSubnameFunctionDataReturnType = SimpleTransactionRequest;
+
+export type MakeCreateSubnameFunctionDataErrorType =
+	| GetChainContractAddressErrorType
+	| UnsupportedNameTypeError
+	| MakeLabelNodeAndParentErrorType
+	| EncodeFunctionDataErrorType
+	| WrappedLabelLengthCheckErrorType
+	| EncodeFusesErrorType
+	| ExpiryToBigIntErrorType
+	| MakeDefaultExpiryErrorType
+	| InvalidContractTypeError;
+
+export const makeCreateSubnameFunctionData = <
+	chain extends Chain,
+	account extends Account | undefined,
+>(
+	wallet: RequireClientContracts<
+		chain,
+		"ensPublicResolver" | "ensNameWrapper",
+		account
+	>,
+	{
+		name,
+		contract,
+		owner,
+		resolverAddress = getChainContractAddress({
+			chain: EXCLUDE_TYPE_ERROR(wallet).chain,
+			contract: "ensPublicResolver",
+		}),
+		expiry,
+		fuses,
+	}: MakeCreateSubnameFunctionDataParameters,
+): MakeCreateSubnameFunctionDataReturnType => {
+	ASSERT_NO_TYPE_ERROR(wallet);
+
+	const nameType = getNameType(name);
+	if (nameType === "tld" || nameType === "root")
+		throw new UnsupportedNameTypeError({
+			nameType,
+			supportedNameTypes: [
+				"eth-2ld",
+				"eth-subname",
+				"other-2ld",
+				"other-subname",
+			],
+		});
+
+	const { label, labelhash, parentNode } = makeLabelNodeAndParent(name);
+
+	switch (contract) {
+		case "registry": {
+			return {
+				to: getChainContractAddress({
+					chain: wallet.chain,
+					contract: "ensRegistry",
+				}),
+				data: encodeFunctionData({
+					abi: registrySetSubnodeRecordSnippet,
+					functionName: "setSubnodeRecord",
+					args: [parentNode, labelhash, owner, resolverAddress, BigInt(0)],
+				}),
+			};
+		}
+		case "nameWrapper": {
+			wrappedLabelLengthCheck(label);
+			const generatedFuses = fuses ? encodeFuses({ input: fuses }) : 0;
+			const generatedExpiry = expiry
+				? expiryToBigInt(expiry)
+				: makeDefaultExpiry(generatedFuses);
+			return {
+				to: getChainContractAddress({
+					chain: wallet.chain,
+					contract: "ensNameWrapper",
+				}),
+				data: encodeFunctionData({
+					abi: nameWrapperSetSubnodeRecordSnippet,
+					functionName: "setSubnodeRecord",
+					args: [
+						parentNode,
+						label,
+						owner,
+						resolverAddress,
+						BigInt(0),
+						generatedFuses,
+						generatedExpiry,
+					],
+				}),
+			};
+		}
+		default:
+			throw new InvalidContractTypeError({
+				contractType: contract,
+				supportedContractTypes: ["registry", "nameWrapper"],
+			});
+	}
+};
+
+// ================================
+// Check can create subname
+// ================================
+
+type CheckCanCreateSubnameErrorType =
+	| GetWrapperDataErrorType
+	| CreateSubnamePermissionDeniedError
+	| EncodeFusesErrorType
+	| CreateSubnameParentNotLockedError;
 
 const checkCanCreateSubname = async (
-	wallet: ClientWithEns,
+	wallet: Client<
+		Transport,
+		ChainWithContracts<"ensPublicResolver" | "ensNameWrapper">
+	>,
 	{
 		name,
 		fuses,
 		contract,
-	}: Pick<BaseCreateSubnameDataParameters, "name" | "contract" | "fuses">,
+	}: Pick<
+		MakeCreateSubnameFunctionDataParameters,
+		"name" | "contract" | "fuses"
+	>,
 ): Promise<void> => {
 	if (contract !== "nameWrapper") return;
 
@@ -223,6 +266,28 @@ const checkCanCreateSubname = async (
 	if (isBurningPCC && !isParentCannotUnwrapBurned)
 		throw new CreateSubnameParentNotLockedError({ parentName });
 };
+
+// ================================
+// Create subname
+// ================================
+
+export type CreateSubnameParameters<
+	chain extends Chain,
+	account extends Account | undefined,
+	chainOverride extends
+		| ChainWithContracts<"ensPublicResolver" | "ensNameWrapper">
+		| undefined,
+> = Prettify<
+	MakeCreateSubnameFunctionDataParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type CreateSubnameReturnType = Hash;
+
+export type CreateSubnameErrorType =
+	| CheckCanCreateSubnameErrorType
+	| MakeCreateSubnameFunctionDataErrorType
+	| SendTransactionErrorType;
 
 /**
  * Creates a subname
@@ -248,11 +313,17 @@ const checkCanCreateSubname = async (
  * // 0x...
  */
 async function createSubname<
-	TChain extends ChainWithEns,
-	TAccount extends Account | undefined,
-	TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+	chain extends Chain,
+	account extends Account | undefined,
+	chainOverride extends
+		| ChainWithContracts<"ensPublicResolver" | "ensNameWrapper">
+		| undefined = ChainWithContracts<"ensPublicResolver" | "ensNameWrapper">,
 >(
-	wallet: ClientWithAccount<Transport, TChain, TAccount>,
+	wallet: RequireClientContracts<
+		chain,
+		"ensNameWrapper" | "ensPublicResolver",
+		account
+	>,
 	{
 		name,
 		contract,
@@ -261,26 +332,31 @@ async function createSubname<
 		expiry,
 		fuses,
 		...txArgs
-	}: CreateSubnameParameters<TChain, TAccount, TChainOverride>,
+	}: CreateSubnameParameters<chain, account, chainOverride>,
 ): Promise<CreateSubnameReturnType> {
+	ASSERT_NO_TYPE_ERROR(wallet);
+
 	await checkCanCreateSubname(wallet, { name, fuses, contract });
 
-	const data = makeFunctionData(wallet, {
-		name,
-		contract,
-		owner,
-		resolverAddress,
-		expiry,
-		fuses,
-	} as CreateSubnameDataParameters);
+	const data = makeCreateSubnameFunctionData<typeof wallet.chain, account>(
+		wallet,
+		{
+			name,
+			contract,
+			owner,
+			resolverAddress,
+			expiry,
+			fuses,
+		} as MakeCreateSubnameFunctionDataParameters,
+	);
 	const writeArgs = {
 		...data,
 		...txArgs,
-	} as SendTransactionParameters<TChain, TAccount, TChainOverride>;
+	} as SendTransactionParameters<typeof wallet.chain, account, chainOverride>;
 
 	return sendTransaction(wallet, writeArgs);
 }
 
-createSubname.makeFunctionData = makeFunctionData;
+createSubname.makeFunctionData = makeCreateSubnameFunctionData;
 
 export default createSubname;

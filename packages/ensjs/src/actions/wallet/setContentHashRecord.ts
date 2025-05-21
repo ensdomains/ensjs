@@ -1,11 +1,12 @@
-import {
-	type Account,
-	type Address,
-	type Chain,
-	type Client,
-	type Hash,
-	type Transport,
-	type WriteContractParameters,
+import type {
+	Account,
+	Address,
+	Chain,
+	Client,
+	Hash,
+	Transport,
+	WriteContractErrorType,
+	WriteContractParameters,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
@@ -13,14 +14,22 @@ import type {
 	Prettify,
 	WriteTransactionParameters,
 } from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
 import {
-	setContentHashParameters,
+	type ClientWithOverridesErrorType,
+	clientWithOverrides,
+} from "../../utils/clientWithOverrides.js";
+import {
+	type SetContentHashParametersErrorType,
 	type SetContentHashParametersReturnType,
+	setContentHashParameters,
 } from "../../utils/coders/setContentHash.js";
-import { namehash } from "../../utils/name/normalize.js";
+import { type NamehashErrorType, namehash } from "../../utils/name/namehash.js";
 
-export type SetContentHashRecordParameters = {
+// ================================
+// Write Parameters
+// ================================
+
+export type SetContentHashRecordWriteParametersParameters = {
 	/** Name to set content hash for */
 	name: string;
 	/** Content hash value */
@@ -29,25 +38,20 @@ export type SetContentHashRecordParameters = {
 	resolverAddress: Address;
 };
 
-export type SetContentHashRecordOptions<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
-> = Prettify<
-	SetContentHashRecordParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
->;
-
-export type SetContentHashRecordReturnType = Hash;
-
-export type SetContentHashRecordErrorType = Error;
+export type SetContentHashRecordWriteParametersErrorType =
+	| SetContentHashParametersErrorType
+	| NamehashErrorType;
 
 export const setContentHashRecordWriteParameters = <
 	chain extends Chain,
 	account extends Account,
 >(
 	client: Client<Transport, chain, account>,
-	{ name, contentHash, resolverAddress }: SetContentHashRecordParameters,
+	{
+		name,
+		contentHash,
+		resolverAddress,
+	}: SetContentHashRecordWriteParametersParameters,
 ) => {
 	return {
 		address: resolverAddress,
@@ -59,6 +63,25 @@ export const setContentHashRecordWriteParameters = <
 	>;
 };
 
+// ================================
+// Action
+// ================================
+
+export type SetContentHashRecordParameters<
+	chain extends Chain | undefined,
+	account extends Account | undefined,
+	chainOverride extends Chain | undefined,
+> = Prettify<
+	SetContentHashRecordWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type SetContentHashRecordReturnType = Hash;
+
+export type SetContentHashRecordErrorType =
+	| SetContentHashRecordWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
 /**
  * Sets the content hash record for a name on a resolver.
  * @param client - {@link Client}
@@ -92,7 +115,7 @@ export async function setContentHashRecord<
 		contentHash,
 		resolverAddress,
 		...txArgs
-	}: SetContentHashRecordOptions<chain, account, chainOverride>,
+	}: SetContentHashRecordParameters<chain, account, chainOverride>,
 ): Promise<SetContentHashRecordReturnType> {
 	const data = setContentHashRecordWriteParameters(
 		clientWithOverrides(client, txArgs),

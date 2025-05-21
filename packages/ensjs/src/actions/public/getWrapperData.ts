@@ -19,7 +19,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */
@@ -64,7 +64,7 @@ export async function getWrapperData<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperDataParameters,
 ): Promise<GetWrapperDataReturnType> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
   const [owner, fuses, expiry] = await readContractAction({

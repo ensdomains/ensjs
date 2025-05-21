@@ -1,59 +1,66 @@
-import {
-	type Account,
-	type Client,
-	type Transport,
-	type WriteContractParameters,
-	type WriteContractReturnType,
+import type {
+	Account,
+	Chain,
+	GetChainContractAddressErrorType,
+	Prettify,
+	WriteContractErrorType,
+	WriteContractParameters,
+	WriteContractReturnType,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
+import {
+	getChainContractAddress,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
 import type { ChainWithContract } from "../../contracts/consts.js";
 import { ethRegistrarControllerRegisterSnippet } from "../../contracts/ethRegistrarController.js";
-import { getChainContractAddress } from "../../contracts/getChainContractAddress.js";
 import { UnsupportedNameTypeError } from "../../errors/general.js";
-import type { WrappedLabelTooLargeError } from "../../errors/utils.js";
-import type {
-	Prettify,
-	WriteTransactionParameters,
-} from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+import type { WriteTransactionParameters } from "../../types/index.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+import {
+	type ClientWithOverridesErrorType,
+	clientWithOverrides,
+} from "../../utils/clientWithOverrides.js";
 import { getNameType } from "../../utils/name/getNameType.js";
 import {
+	type MakeRegistrationTupleErrorType,
 	makeRegistrationTuple,
 	type RegistrationParameters,
 } from "../../utils/registerHelpers.js";
-import { wrappedLabelLengthCheck } from "../../utils/wrapper.js";
+import {
+	type WrappedLabelLengthCheckErrorType,
+	wrappedLabelLengthCheck,
+} from "../../utils/wrapper.js";
 
-export type RegisterNameParameters = RegistrationParameters & {
+// ================================
+// Write parameters
+// ================================
+
+export type RegisterNameWriteParametersParameters = RegistrationParameters & {
 	/** Value of registration */
 	value: bigint;
 };
 
-type ChainWithContractDependencies =
-	ChainWithContract<"ensEthRegistrarController">;
-export type RegisterNameOptions<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
-> = Prettify<
-	RegisterNameParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
+export type RegisterNameWriteParametersReturnType = ReturnType<
+	typeof registerNameWriteParameters
 >;
 
-export type RegisterNameReturnType = WriteContractReturnType;
-
-export type RegisterNameErrorType =
+export type RegisterNameWriteParametersErrorType =
 	| UnsupportedNameTypeError
-	| WrappedLabelTooLargeError
-	| Error;
+	| GetChainContractAddressErrorType
+	| WrappedLabelLengthCheckErrorType
+	| MakeRegistrationTupleErrorType;
 
 export const registerNameWriteParameters = <
-	chain extends ChainWithContractDependencies,
+	chain extends Chain,
 	account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ value, ...args }: RegisterNameParameters,
+	client: RequireClientContracts<chain, "ensEthRegistrarController", account>,
+	{ value, ...args }: RegisterNameWriteParametersParameters,
 ) => {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const nameType = getNameType(args.name);
 	if (nameType !== "eth-2ld")
 		throw new UnsupportedNameTypeError({
@@ -67,7 +74,7 @@ export const registerNameWriteParameters = <
 
 	return {
 		address: getChainContractAddress({
-			client,
+			chain: client.chain,
 			contract: "ensEthRegistrarController",
 		}),
 		abi: ethRegistrarControllerRegisterSnippet,
@@ -80,6 +87,28 @@ export const registerNameWriteParameters = <
 		typeof ethRegistrarControllerRegisterSnippet
 	>;
 };
+
+// ================================
+// Register name action
+// ================================
+
+export type RegisterNameParameters<
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends
+		| ChainWithContract<"ensEthRegistrarController">
+		| undefined,
+> = Prettify<
+	RegisterNameWriteParametersParameters &
+		WriteTransactionParameters<chain, account, chainOverride>
+>;
+
+export type RegisterNameReturnType = WriteContractReturnType;
+
+export type RegisterNameErrorType =
+	| RegisterNameWriteParametersErrorType
+	| ClientWithOverridesErrorType
+	| WriteContractErrorType;
 
 /**
  * Registers a name on ENS
@@ -122,11 +151,13 @@ export const registerNameWriteParameters = <
  * // 0x...
  */
 export async function registerName<
-	chain extends ChainWithContractDependencies | undefined,
-	account extends Account | undefined,
-	chainOverride extends ChainWithContractDependencies | undefined,
+	chain extends Chain,
+	account extends Account,
+	chainOverride extends
+		| ChainWithContract<"ensEthRegistrarController">
+		| undefined,
 >(
-	client: Client<Transport, chain, account>,
+	client: RequireClientContracts<chain, "ensEthRegistrarController", account>,
 	{
 		name,
 		owner,
@@ -138,8 +169,10 @@ export async function registerName<
 		fuses,
 		value,
 		...txArgs
-	}: RegisterNameOptions<chain, account, chainOverride>,
+	}: RegisterNameParameters<chain, account, chainOverride>,
 ): Promise<RegisterNameReturnType> {
+	ASSERT_NO_TYPE_ERROR(client);
+
 	const writeParameters = registerNameWriteParameters(
 		clientWithOverrides(client, txArgs),
 		{

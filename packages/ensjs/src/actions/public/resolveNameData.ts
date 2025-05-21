@@ -30,7 +30,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { UNWRAP_TYPE_ERROR } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   name: string
@@ -67,7 +67,7 @@ export async function resolveNameData<
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name, data, strict, gatewayUrls }: ResolveNameDataParameters<data>,
 ): Promise<ResolveNameDataReturnType<data>> {
-  UNWRAP_TYPE_ERROR(client)
+  ASSERT_NO_TYPE_ERROR(client)
 
   const nameWithSizedLabels = getNameWithSizedLabels(name)
   const readContractAction = getAction(client, readContract, 'readContract')
