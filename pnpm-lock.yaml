@@ -162,7 +162,7 @@ importers:
         version: 1.0.0
       '@ensdomains/ens-test-env':
         specifier: github:namehash/ens-test-env
-        version: https://codeload.github.com/namehash/ens-test-env/tar.gz/5b1f13ded19f5dafe730b9a2959cfde9e717ef7f
+        version: https://codeload.github.com/namehash/ens-test-env/tar.gz/eeb409fbf29388a6a926be58ff4e438518ec574f
       '@nomiclabs/hardhat-ethers':
         specifier: npm:hardhat-deploy-ethers@0.3.0-beta.13
         version: hardhat-deploy-ethers@0.3.0-beta.13(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(hardhat@2.16.1(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.5)(@types/node@20.14.14)(typescript@5.3.2))(typescript@5.3.2)(utf-8-validate@5.0.10))
@@ -1097,8 +1097,8 @@ packages:
   '@ensdomains/ens-contracts@1.0.0':
     resolution: {integrity: sha512-NB5fig+TuaAkdW3uVshO/vuI/BNWus8MkpdDCzx6S797j7gRrDbKfcVHHDH5rBmj8Yp0/jCR1LU4DHaU5oxO0Q==}
 
-  '@ensdomains/ens-test-env@https://codeload.github.com/namehash/ens-test-env/tar.gz/5b1f13ded19f5dafe730b9a2959cfde9e717ef7f':
-    resolution: {tarball: https://codeload.github.com/namehash/ens-test-env/tar.gz/5b1f13ded19f5dafe730b9a2959cfde9e717ef7f}
+  '@ensdomains/ens-test-env@https://codeload.github.com/namehash/ens-test-env/tar.gz/eeb409fbf29388a6a926be58ff4e438518ec574f':
+    resolution: {tarball: https://codeload.github.com/namehash/ens-test-env/tar.gz/eeb409fbf29388a6a926be58ff4e438518ec574f}
     version: 0.6.0
     engines: {node: '>=18'}
     hasBin: true
@@ -2912,8 +2912,8 @@ packages:
   axios@0.25.0:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
 
-  axios@1.8.1:
-    resolution: {integrity: sha512-NN+fvwH/kV01dYUQ3PTOZns4LWtWhOFCAhQ/pHb88WQ1hNe5V/dvFwc4VJcDL11LT9xSX0QtsR8sWUuyOuOq7g==}
+  axios@1.9.0:
+    resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
 
   axobject-query@3.1.1:
     resolution: {integrity: sha512-goKlv8DZrK9hUh975fnHzhNIO4jUnFCfv/dszV5VwUGDFjI6vQ2VwoyjYjYNEbBE8AH87TduWP5uyDR1D+Iteg==}
@@ -2955,12 +2955,17 @@ packages:
   bare-events@2.5.4:
     resolution: {integrity: sha512-+gFfDkR8pj4/TrWCGUGWmJIkBwuxPS5F+a5yWjOHQt2hHvNZd5YLzadjmDUtFmMM4y429bnKLa8bYBMHcYdnQA==}
 
-  bare-fs@4.0.1:
-    resolution: {integrity: sha512-ilQs4fm/l9eMfWY2dY0WCIUplSUp7U0CT1vrqMg1MUdeZl4fypu5UP0XcDBK5WBQPJAKP1b7XEodISmekH/CEg==}
-    engines: {bare: '>=1.7.0'}
+  bare-fs@4.1.5:
+    resolution: {integrity: sha512-1zccWBMypln0jEE05LzZt+V/8y8AQsQQqxtklqaIyg5nu6OAYFhZxPXinJTSG+kU5qyNmeLgcn9AW7eHiCHVLA==}
+    engines: {bare: '>=1.16.0'}
+    peerDependencies:
+      bare-buffer: '*'
+    peerDependenciesMeta:
+      bare-buffer:
+        optional: true
 
-  bare-os@3.5.1:
-    resolution: {integrity: sha512-LvfVNDcWLw2AnIw5f2mWUgumW3I3N/WYGiWeimhQC1Ybt71n2FjlS9GJKeCnFeg1MKZHxzIFmpFnBXDI+sBeFg==}
+  bare-os@3.6.1:
+    resolution: {integrity: sha512-uaIjxokhFidJP+bmmvKSgiMzj2sV5GPHaZVAIktcxcpCyBFFWO+YlikVAdhmUo2vYFvFhOXIAlldqV29L8126g==}
     engines: {bare: '>=1.14.0'}
 
   bare-path@3.0.0:
@@ -3719,8 +3724,8 @@ packages:
     resolution: {integrity: sha512-plizRs/Vf15H+GCVxq2EUvyPK7ei9b/cVesHvjnX4xaXjM9spHe2Ytq0BitndFgvTJ3E3NljPNUEl7BAN43iZw==}
     engines: {node: '>= 6.0.0'}
 
-  docker-compose@1.1.1:
-    resolution: {integrity: sha512-UkIUz0LtzuO17Ijm6SXMGtfZMs7IvbNwvuJBiBuN93PIhr/n9/sbJMqpvYFaCBGfwu1ZM4PPPDgQzeeke4lEoA==}
+  docker-compose@1.2.0:
+    resolution: {integrity: sha512-wIU1eHk3Op7dFgELRdmOYlPYS4gP8HhH1ZmZa13QZF59y0fblzFDFmKPhyc05phCy2hze9OEvNZAsoljrs+72w==}
     engines: {node: '>= 6.0.0'}
 
   doctrine@2.1.0:
@@ -3754,8 +3759,8 @@ packages:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
 
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
     engines: {node: '>=12'}
 
   dotenv@8.6.0:
@@ -6760,6 +6765,9 @@ packages:
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
 
+  rxjs@7.8.2:
+    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
+
   safe-array-concat@1.1.2:
     resolution: {integrity: sha512-vj6RsCsWBCf19jIeHEfkRMw8DPiBb+DMXklQ/1SGDHOMlHdPUkZXFQ2YdplS23zESTijAcurb1aSgJA3AgMu1Q==}
     engines: {node: '>=0.4'}
@@ -7375,9 +7383,6 @@ packages:
   tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
-  tslib@2.6.3:
-    resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
-
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
@@ -7799,8 +7804,8 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
-  wait-on@8.0.2:
-    resolution: {integrity: sha512-qHlU6AawrgAIHlueGQHQ+ETcPLAauXbnoTKl3RKq20W0T8x0DKVAo5xWIYjHSyvHxQlcYbFdR0jp4T9bDVITFA==}
+  wait-on@8.0.3:
+    resolution: {integrity: sha512-nQFqAFzZDeRxsu7S3C7LbuxslHhk+gnJZHyethuGKAn2IVleIbTB9I3vJSQiSR+DifUqmdzfPMoMPJfLqMF2vw==}
     engines: {node: '>=12.0.0'}
     hasBin: true
 
@@ -9432,18 +9437,18 @@ snapshots:
       '@openzeppelin/contracts': 4.9.6
       dns-packet: 5.6.1
 
-  '@ensdomains/ens-test-env@https://codeload.github.com/namehash/ens-test-env/tar.gz/5b1f13ded19f5dafe730b9a2959cfde9e717ef7f':
+  '@ensdomains/ens-test-env@https://codeload.github.com/namehash/ens-test-env/tar.gz/eeb409fbf29388a6a926be58ff4e438518ec574f':
     dependencies:
       cli-progress: 3.12.0
       commander: 13.1.0
       concurrently: 9.1.2
-      docker-compose: 1.1.1
-      dotenv: 16.4.7
+      docker-compose: 1.2.0
+      dotenv: 16.5.0
       dunai: 0.0.0-dev.2
       js-yaml: 4.1.0
       picocolors: 1.1.1
       tar-fs: 3.0.8
-      wait-on: 8.0.2
+      wait-on: 8.0.3
     transitivePeerDependencies:
       - bare-buffer
       - debug
@@ -10200,7 +10205,7 @@ snapshots:
       '@motionone/easing': 10.18.0
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@motionone/dom@10.18.0':
     dependencies:
@@ -10209,23 +10214,23 @@ snapshots:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
       hey-listen: 1.0.8
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@motionone/easing@10.18.0':
     dependencies:
       '@motionone/utils': 10.18.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@motionone/generators@10.18.0':
     dependencies:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@motionone/svelte@10.16.4':
     dependencies:
       '@motionone/dom': 10.18.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@motionone/types@10.17.1': {}
 
@@ -10233,12 +10238,12 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.1
       hey-listen: 1.0.8
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@motionone/vue@10.16.4':
     dependencies:
       '@motionone/dom': 10.18.0
-      tslib: 2.6.3
+      tslib: 2.8.1
 
   '@noble/curves@1.2.0':
     dependencies:
@@ -12187,7 +12192,7 @@ snapshots:
 
   async-mutex@0.2.6:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.1
 
   asynckit@0.4.0: {}
 
@@ -12215,7 +12220,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@1.8.1:
+  axios@1.9.0:
     dependencies:
       follow-redirects: 1.15.6(debug@4.3.6)
       form-data: 4.0.0
@@ -12276,21 +12281,19 @@ snapshots:
   bare-events@2.5.4:
     optional: true
 
-  bare-fs@4.0.1:
+  bare-fs@4.1.5:
     dependencies:
       bare-events: 2.5.4
       bare-path: 3.0.0
       bare-stream: 2.6.5(bare-events@2.5.4)
-    transitivePeerDependencies:
-      - bare-buffer
     optional: true
 
-  bare-os@3.5.1:
+  bare-os@3.6.1:
     optional: true
 
   bare-path@3.0.0:
     dependencies:
-      bare-os: 3.5.1
+      bare-os: 3.6.1
     optional: true
 
   bare-stream@2.6.5(bare-events@2.5.4):
@@ -12794,7 +12797,7 @@ snapshots:
       chalk: 4.1.2
       lodash: 4.17.21
       rxjs: 7.8.1
-      shell-quote: 1.8.1
+      shell-quote: 1.8.2
       supports-color: 8.1.1
       tree-kill: 1.2.2
       yargs: 17.7.2
@@ -13128,9 +13131,9 @@ snapshots:
     dependencies:
       yaml: 2.5.0
 
-  docker-compose@1.1.1:
+  docker-compose@1.2.0:
     dependencies:
-      yaml: 2.5.0
+      yaml: 2.8.0
 
   doctrine@2.1.0:
     dependencies:
@@ -13166,7 +13169,7 @@ snapshots:
 
   dotenv@16.4.5: {}
 
-  dotenv@16.4.7: {}
+  dotenv@16.5.0: {}
 
   dotenv@8.6.0: {}
 
@@ -16487,7 +16490,7 @@ snapshots:
   postcss@8.4.40:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.0.1
+      picocolors: 1.1.1
       source-map-js: 1.2.0
 
   preact@10.23.2: {}
@@ -16949,6 +16952,10 @@ snapshots:
   rxjs@7.8.1:
     dependencies:
       tslib: 2.7.0
+
+  rxjs@7.8.2:
+    dependencies:
+      tslib: 2.8.1
 
   safe-array-concat@1.1.2:
     dependencies:
@@ -17574,7 +17581,7 @@ snapshots:
       pump: 3.0.0
       tar-stream: 3.1.7
     optionalDependencies:
-      bare-fs: 4.0.1
+      bare-fs: 4.1.5
       bare-path: 3.0.0
     transitivePeerDependencies:
       - bare-buffer
@@ -17731,8 +17738,6 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@1.14.1: {}
-
-  tslib@2.6.3: {}
 
   tslib@2.7.0: {}
 
@@ -18221,13 +18226,13 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  wait-on@8.0.2:
+  wait-on@8.0.3:
     dependencies:
-      axios: 1.8.1
+      axios: 1.9.0
       joi: 17.13.3
       lodash: 4.17.21
       minimist: 1.2.8
-      rxjs: 7.8.1
+      rxjs: 7.8.2
     transitivePeerDependencies:
       - debug
 
