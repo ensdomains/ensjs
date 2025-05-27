@@ -117,16 +117,21 @@ export type NameType =
 type GetEthNameType<name extends EthAnyName> = name extends EthTldName
   ? EthTldNameSpecifier
   : name extends EthSubname
-  ? EthSubnameSpecifier
-  : Eth2ldNameSpecifier
+    ? EthSubnameSpecifier
+    : Eth2ldNameSpecifier
 type GetOtherNameType<name extends TldName> = name extends OtherSubname
   ? OtherSubnameSpecifier
   : name extends Other2ldName
-  ? Other2ldNameSpecifier
-  : TldNameSpecifier
+    ? Other2ldNameSpecifier
+    : TldNameSpecifier
 
 export type GetNameType<name extends string> = name extends RootName
   ? RootNameSpecifier
   : name extends EthAnyName
-  ? GetEthNameType<name>
-  : GetOtherNameType<name>
+    ? GetEthNameType<name>
+    : GetOtherNameType<name>
+
+export type DateWithValue<T> = {
+  date: Date
+  value: T
+}

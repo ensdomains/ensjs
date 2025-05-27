@@ -22,6 +22,7 @@ import {
 } from "../errors/utils.js";
 import {
 	// TODO: missing function @tate
+	// @ts-expect-error missing function
 	generateRecordCallArray,
 	type RecordOptions,
 } from "./coders/resolverMulticallParameters.js";

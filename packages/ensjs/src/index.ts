@@ -10,21 +10,6 @@ export {
   ensWalletActions,
   type EnsWalletActions,
 } from './clients/decorators/wallet.js'
-export {
-  createEnsPublicClient,
-  type EnsPublicClient,
-  type EnsPublicClientConfig,
-} from './clients/public.js'
-export {
-  createEnsSubgraphClient,
-  type EnsSubgraphClient,
-  type EnsSubgraphClientConfig,
-} from './clients/subgraph.js'
-export {
-  createEnsWalletClient,
-  type EnsWalletClient,
-  type EnsWalletClientConfig,
-} from './clients/wallet.js'
 
 export { addEnsContracts } from './contracts/addEnsContracts.js'
 export { BaseError } from './errors/base.js'

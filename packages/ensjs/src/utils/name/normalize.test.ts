@@ -7,12 +7,14 @@ it('exports functions from ens-normalize', async () => {
       "beautify": [Function],
       "emoji": [Function],
       "isCombiningMark": [Function],
-      "namehash": [Function],
       "normalise": [Function],
       "normaliseFragment": [Function],
+      "normalize": [Function],
+      "normalizeFragment": [Function],
       "shouldEscape": [Function],
       "split": [Function],
       "tokenise": [Function],
+      "tokenize": [Function],
     }
   `)
 })

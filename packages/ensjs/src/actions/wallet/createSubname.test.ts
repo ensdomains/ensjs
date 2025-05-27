@@ -12,10 +12,10 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/name/normalize.js'
-import getWrapperData from '../public/getWrapperData.js'
-import createSubname from './createSubname.js'
-import setFuses from './setFuses.js'
+import { namehash } from '../../utils/name/namehash.js'
+import { getWrapperData } from '../public/getWrapperData.js'
+import { createSubname } from './createSubname.js'
+import { setFuses } from './setFuses.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -128,8 +128,8 @@ it('should create a subname on the namewrapper with max expiry if pcc is burned 
   expect(owner).toBe(accounts[0])
 
   const data = await getWrapperData(publicClient, { name: 'test.wrapped.eth' })
-  expect(data?.expiry?.value).toBeTruthy()
-  expect(data!.expiry!.value).toBe(parentWrapperData?.expiry?.value)
+  expect(data?.expiry).toBeTruthy()
+  expect(data!.expiry).toBe(parentWrapperData?.expiry)
 })
 
 it('should throw an error when creating a wrapped subname with PCC burned with a parent name that has not burned CANNOT_UNWRAP', async () => {

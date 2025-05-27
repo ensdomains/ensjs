@@ -29,9 +29,9 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import createSubname from '../wallet/createSubname.js'
-import setAddressRecord from '../wallet/setAddressRecord.js'
-import setPrimaryName from '../wallet/setPrimaryName.js'
+import { createSubname } from '../wallet/createSubname.js'
+import { setAddressRecord } from '../wallet/setAddressRecord.js'
+import { setPrimaryName } from '../wallet/setPrimaryName.js'
 import { getName } from './getName.js'
 
 let snapshot: Hex
@@ -65,7 +65,7 @@ describe('getName', () => {
       {
         "match": true,
         "name": "with-profile.eth",
-        "normalised": true,
+        "normalized": true,
         "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
         "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
       }
@@ -104,7 +104,7 @@ describe('getName', () => {
       {
         "match": false,
         "name": "with-profile.eth",
-        "normalised": true,
+        "normalized": true,
         "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
         "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
       }
@@ -171,7 +171,7 @@ describe('getName', () => {
       }),
     ).rejects.toThrowError(error)
   })
-  it('returns null for a name that is not normalised', async () => {
+  it('returns null for a name that is not normalized', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
@@ -200,7 +200,7 @@ describe('getName', () => {
 
     expect(result).toBeNull()
   })
-  it('returns unnormalised name when allowUnnormalised is true', async () => {
+  it('returns unnormalized name when allowUnnormalized is true', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
@@ -225,14 +225,14 @@ describe('getName', () => {
 
     const result = await getName(publicClient, {
       address: accounts[0],
-      allowUnnormalised: true,
+      allowUnnormalized: true,
     })
 
     expect(result).toMatchInlineSnapshot(`
       {
         "match": true,
         "name": "suB.with-profile.eth",
-        "normalised": false,
+        "normalized": false,
         "resolverAddress": "${deploymentAddresses.PublicResolver}",
         "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
       }

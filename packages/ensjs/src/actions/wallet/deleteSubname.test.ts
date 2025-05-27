@@ -12,7 +12,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/name/normalize.js'
+import { namehash } from '../../utils/name/namehash.js'
 import { deleteSubname } from './deleteSubname.js'
 
 let snapshot: Hex

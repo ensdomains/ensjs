@@ -4,31 +4,27 @@
   "compilerOptions": {
     // Incremental builds
     // NOTE: Enabling incremental builds speeds up `tsc`. Keep in mind though that it does not reliably bust the cache when the `tsconfig.json` file changes.
-    "incremental": false,
+    "incremental": true,
 
     // Type checking
     "strict": true,
-    "useDefineForClassFields": true, // Not enabled by default in `strict` mode unless we bump `target` to ES2022.
+    // "exactOptionalPropertyTypes": true, // Enabled once supported in tanstack query https://github.com/TanStack/query/issues/7641
     "noFallthroughCasesInSwitch": true, // Not enabled by default in `strict` mode.
-    "noImplicitReturns": true, // Not enabled by default in `strict` mode.
-    "useUnknownInCatchVariables": true, // TODO: This would normally be enabled in `strict` mode but would require some adjustments to the codebase.
     "noImplicitOverride": true, // Not enabled by default in `strict` mode.
+    "noImplicitReturns": true, // Not enabled by default in `strict` mode.
+    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true, // Not enabled by default in `strict` mode.
     "noUnusedParameters": true, // Not enabled by default in `strict` mode.
-    // TODO: The following options are also not enabled by default in `strict` mode and would be nice to have but would require some adjustments to the codebase.
-    // "exactOptionalPropertyTypes": true,
-    // "noUncheckedIndexedAccess": true,
+    "useDefineForClassFields": true, // Not enabled by default in `strict` mode unless we bump `target` to ES2022.
+    "useUnknownInCatchVariables": true,
 
     // JavaScript support
     "allowJs": false,
     "checkJs": false,
 
     // Interop constraints
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
-    "importHelpers": true, // This is only used for build validation. Since we do not have `tslib` installed, this will fail if we accidentally make use of anything that'd require injection of helpers.
 
     // Language and environment
     "moduleResolution": "NodeNext",

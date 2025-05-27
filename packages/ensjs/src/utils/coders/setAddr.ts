@@ -1,54 +1,54 @@
 import {
-	bytesToHex,
-	type Address,
-	type BytesToHexErrorType,
-	type EncodeFunctionDataParameters,
-	type Hex,
-} from "viem";
-import { publicResolverSetAddrSnippet } from "../../contracts/publicResolver.js";
+  bytesToHex,
+  type Address,
+  type BytesToHexErrorType,
+  type EncodeFunctionDataParameters,
+  type Hex,
+} from 'viem'
+import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
 import {
-	getCoderFromCoin,
-	type GetCoderFromCoinErrorType,
-} from "../normalizeCoinId.js";
-import type { ErrorType } from "../../errors/utils.js";
+  getCoderFromCoin,
+  type GetCoderFromCoinErrorType,
+} from '../normalizeCoinId.js'
+import type { ErrorType } from '../../errors/utils.js'
 
 // ================================
 // Set address parameters
 // ================================
 
-export type SetAddrParameters = {
-	namehash: Hex;
-	coin: string | number;
-	value: Address | string | null;
-};
+export type SetAddrParametersParameters = {
+  namehash: Hex
+  coin: string | number
+  value: Address | string | null
+}
 
 export type SetAddrParametersErrorType =
-	| GetCoderFromCoinErrorType
-	| BytesToHexErrorType
-	| ErrorType;
+  | GetCoderFromCoinErrorType
+  | BytesToHexErrorType
+  | ErrorType
 
 export const setAddrParameters = ({
-	namehash,
-	coin,
-	value,
-}: SetAddrParameters) => {
-	const coder = getCoderFromCoin(coin);
-	const inputCoinType = coder.coinType;
-	let encodedAddress: Hex | Uint8Array = value ? coder.decode(value) : "0x";
+  namehash,
+  coin,
+  value,
+}: SetAddrParametersParameters) => {
+  const coder = getCoderFromCoin(coin)
+  const inputCoinType = coder.coinType
+  let encodedAddress: Hex | Uint8Array = value ? coder.decode(value) : '0x'
 
-	if (inputCoinType === 60 && encodedAddress === "0x")
-		encodedAddress = coder.decode("0x0000000000000000000000000000000000000000");
-	if (typeof encodedAddress !== "string") {
-		encodedAddress = bytesToHex(encodedAddress);
-	}
+  if (inputCoinType === 60 && encodedAddress === '0x')
+    encodedAddress = coder.decode('0x0000000000000000000000000000000000000000')
+  if (typeof encodedAddress !== 'string') {
+    encodedAddress = bytesToHex(encodedAddress)
+  }
 
-	return {
-		abi: publicResolverSetAddrSnippet,
-		functionName: "setAddr",
-		args: [namehash, BigInt(inputCoinType), encodedAddress],
-	} as const satisfies EncodeFunctionDataParameters<
-		typeof publicResolverSetAddrSnippet
-	>;
-};
+  return {
+    abi: publicResolverSetAddrSnippet,
+    functionName: 'setAddr',
+    args: [namehash, BigInt(inputCoinType), encodedAddress],
+  } as const satisfies EncodeFunctionDataParameters<
+    typeof publicResolverSetAddrSnippet
+  >
+}
 
-export type SetAddrParametersReturnType = ReturnType<typeof setAddrParameters>;
+export type SetAddrParametersReturnType = ReturnType<typeof setAddrParameters>

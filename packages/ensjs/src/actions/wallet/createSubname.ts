@@ -312,7 +312,7 @@ export type CreateSubnameErrorType =
  * })
  * // 0x...
  */
-async function createSubname<
+export async function createSubname<
 	chain extends Chain,
 	account extends Account | undefined,
 	chainOverride extends
@@ -358,5 +358,3 @@ async function createSubname<
 }
 
 createSubname.makeFunctionData = makeCreateSubnameFunctionData;
-
-export default createSubname;

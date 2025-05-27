@@ -9,9 +9,10 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getOwner from '../public/getOwner.js'
-import getResolver from '../public/getResolver.js'
-import getDnsImportData, {
+import { getOwner } from '../public/getOwner.js'
+import { getResolver } from '../public/getResolver.js'
+import {
+  getDnsImportData,
   type GetDnsImportDataReturnType,
 } from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'

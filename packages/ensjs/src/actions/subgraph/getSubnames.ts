@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
 import { EMPTY_ADDRESS, GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
-import { namehash } from '../../utils/name/normalize.js'
+import { namehash } from '../../utils/name/namehash.js'
 import { createSubgraphClient } from './client.js'
 import type { DomainFilter } from './filters.js'
 import {

@@ -12,7 +12,7 @@ import {
   makeCommitment,
   type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
-import commitName from './commitName.js'
+import { commitName } from './commitName.js'
 
 let snapshot: Hex
 let accounts: Address[]

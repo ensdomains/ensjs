@@ -8,8 +8,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getName from '../public/getName.js'
-import setPrimaryName from './setPrimaryName.js'
+import { getName } from '../public/getName.js'
+import { setPrimaryName } from './setPrimaryName.js'
 
 let snapshot: Hex
 let accounts: Address[]

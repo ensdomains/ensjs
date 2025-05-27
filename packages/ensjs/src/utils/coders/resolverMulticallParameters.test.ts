@@ -1,11 +1,11 @@
 import { expect, it } from 'vitest'
 import { encodeAbi } from '../index.js'
-import { namehash } from '../name/normalize.js'
-import { generateRecordCallArray } from './resolverMulticallParameters.js'
+import { namehash } from '../name/namehash.js'
+import { resolverMulticallParameters } from './resolverMulticallParameters.js'
 
 it('generates a record call array', () => {
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       clearRecords: true,
       coins: [
@@ -24,7 +24,7 @@ it('generates a record call array', () => {
 })
 it('adds clearRecords call when clearRecords is true', () => {
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       clearRecords: true,
     }),
@@ -36,7 +36,7 @@ it('adds clearRecords call when clearRecords is true', () => {
 })
 it('adds contentHash call when contentHash is defined', () => {
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       contentHash: 'ipfs://Qma8mnp6xV3J2cRNf3mTth5C8nV11CAnceVinc3y8jSbio',
     }),
@@ -48,7 +48,7 @@ it('adds contentHash call when contentHash is defined', () => {
 })
 it('does not add abi call when abi is undefined', () => {
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       abi: undefined,
     }),
@@ -56,7 +56,7 @@ it('does not add abi call when abi is undefined', () => {
 })
 it('adds text calls when texts array is defined and not empty', () => {
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       texts: [{ key: 'email', value: 'cool' }],
     }),
@@ -68,7 +68,7 @@ it('adds text calls when texts array is defined and not empty', () => {
 })
 it('adds coin calls when coins array is defined and not empty', () => {
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       coins: [
         { coin: 'ETH', value: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' },
@@ -83,7 +83,7 @@ it('adds coin calls when coins array is defined and not empty', () => {
 it('adds abi call when data is null', async () => {
   const result = await encodeAbi({ encodeAs: 'uri', data: null })
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       abi: result,
     }),
@@ -96,7 +96,7 @@ it('adds abi call when data is null', async () => {
 it('adds abi call when data is not empty', async () => {
   const result = await encodeAbi({ encodeAs: 'json', data: { foo: 'bar' } })
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       abi: result,
     }),
@@ -112,7 +112,7 @@ it('adds multiple abi calls when multiple abis are added', async () => {
     await encodeAbi({ encodeAs: 'uri', data: null }),
   ]
   expect(
-    generateRecordCallArray({
+    resolverMulticallParameters({
       namehash: namehash('test.eth'),
       abi: result,
     }),

@@ -5,7 +5,7 @@ import {
   decodeLabelhash,
   isEncodedLabelhash,
 } from '../../utils/name/labels.js'
-import { namehash } from '../../utils/name/normalize.js'
+import { namehash } from '../../utils/name/namehash.js'
 import { createSubgraphClient } from './client.js'
 
 export type GetDecodedNameParameters = {
@@ -61,8 +61,8 @@ const getDecodedName = async (
     if (isEncodedLabelhash(label)) {
       labelsQuery += gql`
         labels${i}: domains(first: 1, where: { labelhash: "${decodeLabelhash(
-        label,
-      ).toLowerCase()}", labelName_not: null }) {
+          label,
+        ).toLowerCase()}", labelName_not: null }) {
           labelName
         }
       `

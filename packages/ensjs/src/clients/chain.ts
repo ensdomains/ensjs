@@ -5,15 +5,16 @@ import {
   type Client,
   createPublicClient,
   http,
+  type Prettify,
   type Transport,
   getChainContractAddress as viem_getChainContractAddress,
 } from 'viem'
+import { mainnet } from 'viem/chains'
 import type {
   StringConcatenationOrder,
   // biome-ignore lint/suspicious/noShadowRestrictedNames: yes
   TypeError,
 } from '../types/internal.js'
-import { mainnet } from 'viem/chains'
 
 // ================================
 // Supported chains
@@ -52,7 +53,7 @@ export const supportedContracts = [
   'ensUniversalResolver',
 ] as const
 
-type SupportedContract = (typeof supportedContracts)[number]
+export type SupportedContract = (typeof supportedContracts)[number]
 
 export const ensContracts = {
   [supportedChains.mainnet]: {
@@ -259,12 +260,13 @@ export type ExtractContracts<chain extends Chain> = NonNullable<
 
 type AssertSupportedChain<chain extends Chain> = chain extends AnySupportedChain
   ? chain
-  : TypeError<`${chain['name']} is not a supported  chain, supported  chains are: ${StringConcatenationOrder<keyof typeof supportedChains, ', '>}`>
+  : TypeError<`${chain['name']} is not a supported chain, supported chains are: ${StringConcatenationOrder<keyof typeof supportedChains, ', '>}`>
 
-export type ChainWithEns<chain extends AnySupportedChain> = chain & {
-  contracts: (typeof ensContracts)[chain['id']]
-  subgraphs: (typeof ensSubgraphs)[chain['id']]
-}
+export type ChainWithEns<chain extends AnySupportedChain = AnySupportedChain> =
+  chain & {
+    contracts: (typeof ensContracts)[chain['id']]
+    subgraphs: (typeof ensSubgraphs)[chain['id']]
+  }
 
 export const extendChainWithEns = <const chain extends Chain>(
   chain: AssertSupportedChain<chain>,
@@ -328,6 +330,7 @@ export type RequireChainContracts<
 }
   ? chain
   : TypeError<`Chain "${chain['name']}" is missing required contracts: ${StringConcatenationOrder<contracts, ', '>}`>
+// : TypeError<`Chain "${chain["name"]}" is missing required contracts: ${StringConcatenationOrder<Exclude<contracts, keyof ExtractContracts<chain>>, ", ">}`>;
 
 /**
  * Type utility that enforces required contract dependencies on the client while providing clear error messages
@@ -368,16 +371,6 @@ export type RequireClientContracts<
 }
   ? Client<Transport, chain, account>
   : TypeError<`Chain "${chain['name']}" is missing required contracts: ${StringConcatenationOrder<contracts, ', '>}`>
-
-type sjdajhka = RequireClientContracts<
-  ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>,
-  'ensPublicResolver' | 'ensNameWrapper'
-> extends Client<
-  Transport,
-  ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
->
-  ? true
-  : false
 
 /**
  * @see {viem_getChainContractAddress}

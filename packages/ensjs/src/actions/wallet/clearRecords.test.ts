@@ -6,10 +6,10 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import getResolver from '../public/getResolver.js'
-import getText from '../public/getTextRecord.js'
-import clearRecords from './clearRecords.js'
-import setTextRecord from './setTextRecord.js'
+import { getResolver } from '../public/getResolver.js'
+import { getTextRecord } from '../public/getTextRecord.js'
+import { clearRecords } from './clearRecords.js'
+import { setTextRecord } from './setTextRecord.js'
 
 let snapshot: Hex
 let accounts: Address[]
@@ -43,7 +43,7 @@ it('should allow a name to be cleared', async () => {
   const setTextReceipt = await waitForTransaction(setTextTx)
   expect(setTextReceipt.status).toBe('success')
 
-  const priorResponse = await getText(publicClient, {
+  const priorResponse = await getTextRecord(publicClient, {
     name: 'wrapped.eth',
     key: 'description',
   })
@@ -58,7 +58,7 @@ it('should allow a name to be cleared', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const response = await getText(publicClient, {
+  const response = await getTextRecord(publicClient, {
     name: 'wrapped.eth',
     key: 'description',
   })

@@ -8,7 +8,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/name/normalize.js'
+import { namehash } from '../../utils/name/namehash.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
 import { getPrice } from '../public/getPrice.js'
 import { commitName } from './commitName.js'
