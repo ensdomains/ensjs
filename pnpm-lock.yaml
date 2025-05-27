@@ -12,8 +12,8 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: 2.0.0-beta.5
+        version: 2.0.0-beta.5
       '@changesets/changelog-github':
         specifier: ^0.5.0
         version: 0.5.0
@@ -217,6 +217,25 @@ importers:
       wait-on:
         specifier: ^6.0.1
         version: 6.0.1
+
+  packages/query-core:
+    dependencies:
+      '@tanstack/query-core':
+        specifier: '>=5.0.0'
+        version: 5.54.1
+    devDependencies:
+      '@ensdomains/ensjs':
+        specifier: workspace:*
+        version: link:../ensjs
+      '@wagmi/core':
+        specifier: ^2.17.2
+        version: 2.17.2(@tanstack/query-core@5.54.1)(react@18.3.1)(typescript@5.6.2)(use-sync-external-store@1.2.0(react@18.3.1))(viem@2.21.15(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@6.0.3))
+      typescript:
+        specifier: 5.6.2
+        version: 5.6.2
+      viem:
+        specifier: ^2.9.2
+        version: 2.21.15(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@6.0.3)
 
   packages/react:
     dependencies:
@@ -962,55 +981,55 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@biomejs/biome@2.0.0-beta.4':
-    resolution: {integrity: sha512-xKdyKTTveVfNthvoyNPEsp+PXU3Iz1n4wgTQKWBEdqxgw4JpQ/W7gBBiLqjVtegEBCc4+sAp+MOA2UH9Tqfxpg==}
+  '@biomejs/biome@2.0.0-beta.5':
+    resolution: {integrity: sha512-1ldO4AepieVvg4aLi1ubZkA7NsefQT2UTNssbJbDiQTGem8kCHx/PZCwLxIR6UzFpGIjh0xsDzivyVvhnmqmuA==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.0.0-beta.4':
-    resolution: {integrity: sha512-gELCMhP72d2ADWBev3Fc11YO9j7LdfMBGrPetwWtsYSNMiqP/ww5rXxHkodqu/J63PSw0M8oGJ1slZbF4QsuRA==}
+  '@biomejs/cli-darwin-arm64@2.0.0-beta.5':
+    resolution: {integrity: sha512-pnJiaoDpwGo+ctGkMu4POcO8jgOgCErBdYbhutr+K9rxxJS+TlHLr0LR91GCEWbGV2O1oyZRFQcW21rYFoak4w==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.0.0-beta.4':
-    resolution: {integrity: sha512-OnbNtCoG+Vhh3xuQcxnbeg1e54eBlyH6bhNc+7i2HS+diC3ntOtBttkV5menBzabktEGrE0d0L9ftwzuCL0zwQ==}
+  '@biomejs/cli-darwin-x64@2.0.0-beta.5':
+    resolution: {integrity: sha512-WwEZpqcmsNoFpZkUFNQcbZo52WK4hLGQ0vZk3PQ8JlZ55gJsHiyhtv6aem6fVlyVCvZgpsC0sYPLE3VvFVKNAQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.0.0-beta.4':
-    resolution: {integrity: sha512-wZWLwJu/rwG5Z791lyhJI3Cu5JdkzIddU0wrIygFbYOIu4KyGPYIzAWX33HgtlmNfH0hVxByUke3J1Szzx9CjQ==}
+  '@biomejs/cli-linux-arm64-musl@2.0.0-beta.5':
+    resolution: {integrity: sha512-4vxNkYx1uEt211W8hLdXddc7icRHQgYENb72g6uTd/tLVPSBvIwqUAxAOkU+9Ai1E/8R4sWy7HIxREgpuFgbNA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-arm64@2.0.0-beta.4':
-    resolution: {integrity: sha512-IzSohzD68di/uoGzXMK9B8gJrhU7v2czPCJOLuZH1WgRmK4ejUzaGyi1JpNpFlP1mRtfAWfbJkYP57BUD+4mSA==}
+  '@biomejs/cli-linux-arm64@2.0.0-beta.5':
+    resolution: {integrity: sha512-lAF1de+Ki0vnq14NwDXouKkAR/iviyMNrUngSHjTGFC4z8XGVEfIw0ZMSm7fAdJZ5fAWodt9HiYmEAVs5EtHQg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64-musl@2.0.0-beta.4':
-    resolution: {integrity: sha512-OX6qS1jUYmk6+VtV1XWyDj2z5RS13JFv6ujEXLq1a3Cn86nzN5v/Dw/MuZYko3zAJ4BDNwlbNztvFVxmL1uWiA==}
+  '@biomejs/cli-linux-x64-musl@2.0.0-beta.5':
+    resolution: {integrity: sha512-nUeKGO517GtRCxziVD9les1HiCs2s2/WIVITMN9+9RRuLOko8r+T77E8ZXEmlfLOfOIOeE6z62WITqei3oNccA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64@2.0.0-beta.4':
-    resolution: {integrity: sha512-71NQPwTg9T/p/cE/k6P7tCBJmeg8vR1+bP4w6ADBT55SVL4pSEyaOsZ3LDIUrV5jkISh8UQsuwxy9F29pHpeqg==}
+  '@biomejs/cli-linux-x64@2.0.0-beta.5':
+    resolution: {integrity: sha512-I0Pt1VHeL1mN8G7ZwV2u9AfzBd5ZKfbvHUI4x2wETUZbwcQlAu/nEzEa2LUe5HqSmnctTR36ig7RkkM9qbmIrA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-win32-arm64@2.0.0-beta.4':
-    resolution: {integrity: sha512-SBYQqhJ19EcPbGshEd8k98du9gbfBFUqbmgqnTT/METPn+WyqIEnYcWLudjd+ujYHuMHYpXqSYxh+NYfL331eg==}
+  '@biomejs/cli-win32-arm64@2.0.0-beta.5':
+    resolution: {integrity: sha512-YXW6hgbrgBcWQ1SLO69ypWlluPchgQV5C1lTG4xOcBUWdCsfYuQirM64S6Dov7SFPqsMIoFC6LlQRW+n8qAyiA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.0.0-beta.4':
-    resolution: {integrity: sha512-2eGsMOwtm8mvicKMkegV2DW2EH0vQPF0Skt9n4enoFk8ABFtoxherTG8Us1fwlBrk9tA7gcshrdUilu35BmZdA==}
+  '@biomejs/cli-win32-x64@2.0.0-beta.5':
+    resolution: {integrity: sha512-N7Yby52BJmvEdst1iMbclE5hxxefboaXKRJLm1tLfBYr4FeuoCe6j8HdiQSwhCRdIUGFFqBLaDXh//LLF6EReA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -2460,6 +2479,18 @@ packages:
 
   '@wagmi/core@2.13.7':
     resolution: {integrity: sha512-vuoy4Qct5A5pzsmbd5D265NV5qcybQM9n03h+fyljZF368T7FfgmMgOfcO8ZElVqhPsc13JS84drxcQPT4yjIg==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.0.0'
+      typescript: '>=5.0.4'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@tanstack/query-core':
+        optional: true
+      typescript:
+        optional: true
+
+  '@wagmi/core@2.17.2':
+    resolution: {integrity: sha512-p1z8VU0YuRClx2bdPoFObDF7M2Reitz9AdByrJ+i5zcPCHuJ/UjaWPv6xD7ydhkWVK0hoa8vQ/KtaiEwEQS7Mg==}
     peerDependencies:
       '@tanstack/query-core': '>=5.0.0'
       typescript: '>=5.0.4'
@@ -7164,6 +7195,24 @@ packages:
       react:
         optional: true
 
+  zustand@5.0.0:
+    resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
 snapshots:
 
   '@adraffy/ens-normalize@1.10.0': {}
@@ -8079,39 +8128,39 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@biomejs/biome@2.0.0-beta.4':
+  '@biomejs/biome@2.0.0-beta.5':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.0.0-beta.4
-      '@biomejs/cli-darwin-x64': 2.0.0-beta.4
-      '@biomejs/cli-linux-arm64': 2.0.0-beta.4
-      '@biomejs/cli-linux-arm64-musl': 2.0.0-beta.4
-      '@biomejs/cli-linux-x64': 2.0.0-beta.4
-      '@biomejs/cli-linux-x64-musl': 2.0.0-beta.4
-      '@biomejs/cli-win32-arm64': 2.0.0-beta.4
-      '@biomejs/cli-win32-x64': 2.0.0-beta.4
+      '@biomejs/cli-darwin-arm64': 2.0.0-beta.5
+      '@biomejs/cli-darwin-x64': 2.0.0-beta.5
+      '@biomejs/cli-linux-arm64': 2.0.0-beta.5
+      '@biomejs/cli-linux-arm64-musl': 2.0.0-beta.5
+      '@biomejs/cli-linux-x64': 2.0.0-beta.5
+      '@biomejs/cli-linux-x64-musl': 2.0.0-beta.5
+      '@biomejs/cli-win32-arm64': 2.0.0-beta.5
+      '@biomejs/cli-win32-x64': 2.0.0-beta.5
 
-  '@biomejs/cli-darwin-arm64@2.0.0-beta.4':
+  '@biomejs/cli-darwin-arm64@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.0.0-beta.4':
+  '@biomejs/cli-darwin-x64@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.0.0-beta.4':
+  '@biomejs/cli-linux-arm64-musl@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.0.0-beta.4':
+  '@biomejs/cli-linux-arm64@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.0.0-beta.4':
+  '@biomejs/cli-linux-x64-musl@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.0.0-beta.4':
+  '@biomejs/cli-linux-x64@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.0.0-beta.4':
+  '@biomejs/cli-win32-arm64@2.0.0-beta.5':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.0.0-beta.4':
+  '@biomejs/cli-win32-x64@2.0.0-beta.5':
     optional: true
 
   '@chainsafe/as-sha256@0.3.1': {}
@@ -10379,6 +10428,21 @@ snapshots:
       - '@types/react'
       - immer
       - react
+
+  '@wagmi/core@2.17.2(@tanstack/query-core@5.54.1)(react@18.3.1)(typescript@5.6.2)(use-sync-external-store@1.2.0(react@18.3.1))(viem@2.21.15(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@6.0.3))':
+    dependencies:
+      eventemitter3: 5.0.1
+      mipd: 0.0.7(typescript@5.6.2)
+      viem: 2.21.15(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@6.0.3)
+      zustand: 5.0.0(react@18.3.1)(use-sync-external-store@1.2.0(react@18.3.1))
+    optionalDependencies:
+      '@tanstack/query-core': 5.54.1
+      typescript: 5.6.2
+    transitivePeerDependencies:
+      - '@types/react'
+      - immer
+      - react
+      - use-sync-external-store
 
   '@walletconnect/core@2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
@@ -15295,6 +15359,24 @@ snapshots:
       - utf-8-validate
       - zod
 
+  viem@2.21.15(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@6.0.3):
+    dependencies:
+      '@adraffy/ens-normalize': 1.10.0
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.4.0
+      abitype: 1.0.5(typescript@5.6.2)
+      isows: 1.0.4(ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+      webauthn-p256: 0.0.5
+      ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+    optionalDependencies:
+      typescript: 5.6.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+
   viem@2.9.2(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
@@ -16110,3 +16192,8 @@ snapshots:
       use-sync-external-store: 1.2.0(react@18.3.1)
     optionalDependencies:
       react: 18.3.1
+
+  zustand@5.0.0(react@18.3.1)(use-sync-external-store@1.2.0(react@18.3.1)):
+    optionalDependencies:
+      react: 18.3.1
+      use-sync-external-store: 1.2.0(react@18.3.1)
