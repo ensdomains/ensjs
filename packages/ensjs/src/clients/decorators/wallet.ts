@@ -1,731 +1,731 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-import type { Account, Chain, Transport, WalletClient } from 'viem'
+import type { Account, Chain, Transport, WalletClient } from "viem";
 import type {
-  ChainWithContracts,
-  ChainWithEns,
-  SupportedContract,
-} from '../chain.js'
+	ChainWithContracts,
+	ChainWithEns,
+	SupportedContract,
+} from "../chain.js";
 import {
-  clearRecords,
-  type ClearRecordsParameters,
-  type ClearRecordsReturnType,
-} from '../../actions/wallet/clearRecords.js'
+	clearRecords,
+	type ClearRecordsParameters,
+	type ClearRecordsReturnType,
+} from "../../actions/wallet/clearRecords.js";
 import {
-  commitName,
-  type CommitNameParameters,
-  type CommitNameReturnType,
-} from '../../actions/wallet/commitName.js'
+	commitName,
+	type CommitNameParameters,
+	type CommitNameReturnType,
+} from "../../actions/wallet/commitName.js";
 import {
-  createSubname,
-  type CreateSubnameParameters,
-  type CreateSubnameReturnType,
-} from '../../actions/wallet/createSubname.js'
+	createSubname,
+	type CreateSubnameParameters,
+	type CreateSubnameReturnType,
+} from "../../actions/wallet/createSubname.js";
 import {
-  deleteSubname,
-  type DeleteSubnameParameters,
-  type DeleteSubnameReturnType,
-} from '../../actions/wallet/deleteSubname.js'
+	deleteSubname,
+	type DeleteSubnameParameters,
+	type DeleteSubnameReturnType,
+} from "../../actions/wallet/deleteSubname.js";
 import {
-  registerName,
-  type RegisterNameParameters,
-  type RegisterNameReturnType,
-} from '../../actions/wallet/registerName.js'
+	registerName,
+	type RegisterNameParameters,
+	type RegisterNameReturnType,
+} from "../../actions/wallet/registerName.js";
 import {
-  renewNames,
-  type RenewNamesParameters,
-  type RenewNamesReturnType,
-} from '../../actions/wallet/renewNames.js'
+	renewNames,
+	type RenewNamesParameters,
+	type RenewNamesReturnType,
+} from "../../actions/wallet/renewNames.js";
 import {
-  setAbiRecord,
-  type SetAbiRecordParameters,
-  type SetAbiRecordReturnType,
-} from '../../actions/wallet/setAbiRecord.js'
+	setAbiRecord,
+	type SetAbiRecordParameters,
+	type SetAbiRecordReturnType,
+} from "../../actions/wallet/setAbiRecord.js";
 import {
-  setAddressRecord,
-  type SetAddressRecordParameters,
-  type SetAddressRecordReturnType,
-} from '../../actions/wallet/setAddressRecord.js'
+	setAddressRecord,
+	type SetAddressRecordParameters,
+	type SetAddressRecordReturnType,
+} from "../../actions/wallet/setAddressRecord.js";
 import {
-  setChildFuses,
-  type SetChildFusesParameters,
-  type SetChildFusesReturnType,
-} from '../../actions/wallet/setChildFuses.js'
+	setChildFuses,
+	type SetChildFusesParameters,
+	type SetChildFusesReturnType,
+} from "../../actions/wallet/setChildFuses.js";
 import {
-  setContentHashRecord,
-  type SetContentHashRecordParameters,
-  type SetContentHashRecordReturnType,
-} from '../../actions/wallet/setContentHashRecord.js'
+	setContentHashRecord,
+	type SetContentHashRecordParameters,
+	type SetContentHashRecordReturnType,
+} from "../../actions/wallet/setContentHashRecord.js";
 import {
-  setFuses,
-  type SetFusesParameters,
-  type SetFusesReturnType,
-} from '../../actions/wallet/setFuses.js'
+	setFuses,
+	type SetFusesParameters,
+	type SetFusesReturnType,
+} from "../../actions/wallet/setFuses.js";
 import {
-  setPrimaryName,
-  type SetPrimaryNameParameters,
-  type SetPrimaryNameReturnType,
-} from '../../actions/wallet/setPrimaryName.js'
+	setPrimaryName,
+	type SetPrimaryNameParameters,
+	type SetPrimaryNameReturnType,
+} from "../../actions/wallet/setPrimaryName.js";
 import {
-  setRecords,
-  type SetRecordsParameters,
-  type SetRecordsReturnType,
-} from '../../actions/wallet/setRecords.js'
+	setRecords,
+	type SetRecordsParameters,
+	type SetRecordsReturnType,
+} from "../../actions/wallet/setRecords.js";
 import {
-  setResolver,
-  type SetResolverParameters,
-  type SetResolverReturnType,
-} from '../../actions/wallet/setResolver.js'
+	setResolver,
+	type SetResolverParameters,
+	type SetResolverReturnType,
+} from "../../actions/wallet/setResolver.js";
 import {
-  setTextRecord,
-  type SetTextRecordParameters,
-  type SetTextRecordReturnType,
-} from '../../actions/wallet/setTextRecord.js'
+	setTextRecord,
+	type SetTextRecordParameters,
+	type SetTextRecordReturnType,
+} from "../../actions/wallet/setTextRecord.js";
 import {
-  transferName,
-  type TransferNameParameters,
-  type TransferNameReturnType,
-} from '../../actions/wallet/transferName.js'
+	transferName,
+	type TransferNameParameters,
+	type TransferNameReturnType,
+} from "../../actions/wallet/transferName.js";
 import {
-  unwrapName,
-  type UnwrapNameParameters,
-  type UnwrapNameReturnType,
-} from '../../actions/wallet/unwrapName.js'
+	unwrapName,
+	type UnwrapNameParameters,
+	type UnwrapNameReturnType,
+} from "../../actions/wallet/unwrapName.js";
 import {
-  wrapName,
-  type WrapNameParameters,
-  type WrapNameReturnType,
-} from '../../actions/wallet/wrapName.js'
-import type { AbiEncodeAs } from '../../utils/index.js'
-import type { RequireClientContracts } from '../chain.js'
-import type { ExcludeTE } from '../../types/internal.js'
+	wrapName,
+	type WrapNameParameters,
+	type WrapNameReturnType,
+} from "../../actions/wallet/wrapName.js";
+import type { AbiEncodeAs } from "../../utils/index.js";
+import type { RequireClientContracts } from "../chain.js";
+import type { ExcludeTE } from "../../types/internal.js";
 
 export type EnsWalletActions<
-  chain extends ChainWithContracts<SupportedContract>,
-  account extends Account,
+	chain extends ChainWithContracts<SupportedContract>,
+	account extends Account,
 > = {
-  /**
-   * Clears the records for a name on a resolver.
-   * @param parameters - {@link ClearRecordsParameters}
-   * @returns Transaction hash. {@link ClearRecordsReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.clearRecords({
-   *   name: 'ens.eth',
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  clearRecords: ({
-    name,
-    resolverAddress,
-    ...txArgs
-  }: ClearRecordsParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<ClearRecordsReturnType>
-  /**
-   * Commits a name to be registered
-   * @param parameters - {@link CommitNameParameters}
-   * @returns Transaction hash. {@link CommitNameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   * import { randomSecret } from '@ensdomains/ensjs/utils'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const secret = randomSecret()
-   * const hash = await wallet.commitName({
-   *   name: 'example.eth',
-   *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *   duration: 31536000, // 1 year
-   *   secret,
-   * })
-   * // 0x...
-   */
-  commitName: ({
-    name,
-    owner,
-    duration,
-    secret,
-    resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
-    ...txArgs
-  }: CommitNameParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<CommitNameReturnType>
-  /**
-   * Creates a subname
-   * @param parameters - {@link CreateSubnameParameters}
-   * @returns Transaction hash. {@link CreateSubnameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.createSubname({
-   *   name: 'sub.ens.eth',
-   *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *   contract: 'registry',
-   * })
-   * // 0x...
-   */
-  createSubname: ({
-    name,
-    contract,
-    owner,
-    resolverAddress,
-    expiry,
-    fuses,
-    ...txArgs
-  }: CreateSubnameParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<CreateSubnameReturnType>
-  /**
-   * Deletes a subname
-   * @param parameters - {@link DeleteSubnameParameters}
-   * @returns Transaction hash. {@link DeleteSubnameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.deleteSubname({
-   *   name: 'sub.ens.eth',
-   *   contract: 'registry',
-   * })
-   * // 0x...
-   */
-  deleteSubname: ({
-    name,
-    contract,
-    asOwner,
-    ...txArgs
-  }: DeleteSubnameParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<DeleteSubnameReturnType>
-  /**
-   * Registers a name on ENS
-   * @param parameters - {@link RegisterNameParameters}
-   * @returns Transaction hash. {@link RegisterNameReturnType}
-   *
-   * @example
-   * import { createPublicClient, createWalletClient, http, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensPublicActions, ensWalletActions } from '@ensdomains/ensjs'
-   * import { randomSecret } from '@ensdomains/ensjs/utils'
-   *
-   * const mainnetWithEns = addEnsContracts(mainnet)
-   * const client = createPublicClient({
-   *   chain: mainnetWithEns,
-   *   transport: http(),
-   * }).extend(ensPublicActions)
-   * const wallet = createWalletClient({
-   *   chain: mainnetWithEns,
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const secret = randomSecret()
-   * const params = {
-   *   name: 'example.eth',
-   *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *   duration: 31536000, // 1 year
-   *   secret,
-   * }
-   *
-   * const commitmentHash = await wallet.commitName(params)
-   * await client.waitForTransactionReceipt({ hash: commitmentHash }) // wait for commitment to finalise
-   * await new Promise((resolve) => setTimeout(resolve, 60 * 1_000)) // wait for commitment to be valid
-   *
-   * const { base, premium } = await client.getPrice({ nameOrNames: params.name, duration: params.duration })
-   * const value = (base + premium) * 110n / 100n // add 10% to the price for buffer
-   * const hash = await wallet.registerName({ ...params, value })
-   * // 0x...
-   */
-  registerName: ({
-    name,
-    owner,
-    duration,
-    secret,
-    resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
-    value,
-    ...txArgs
-  }: RegisterNameParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<RegisterNameReturnType>
-  /**
-   * Renews a name or names for a specified duration.
-   * @param parameters - {@link RenewNamesParameters}
-   * @returns Transaction hash. {@link RenewNamesReturnType}
-   *
-   * @example
-   * import { createPublicClient, createWalletClient, http, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensPublicActions, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const mainnetWithEns = addEnsContracts(mainnet)
-   * const client = createPublicClient({
-   *   chain: mainnetWithEns,
-   *   transport: http(),
-   * }).extend(ensPublicActions)
-   * const wallet = createWalletClient({
-   *   chain: mainnetWithEns,
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   *
-   * const duration = 31536000 // 1 year
-   * const { base, premium } = await client.getPrice({
-   *  nameOrNames: 'example.eth',
-   *  duration,
-   * })
-   * const value = (base + premium) * 110n / 100n // add 10% to the price for buffer
-   * const hash = await wallet.renewNames({
-   *   nameOrNames: 'example.eth',
-   *   duration,
-   *   value,
-   * })
-   * // 0x...
-   */
-  renewNames: ({
-    nameOrNames,
-    duration,
-    value,
-    ...txArgs
-  }: RenewNamesParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<RenewNamesReturnType>
-  /**
-   * Sets the ABI for a name on a resolver.
-   * @param parameters - {@link SetAbiRecordParameters}
-   * @returns Transaction hash. {@link SetAbiRecordReturnType}
-   *
-   * @example
-   * import abi from './abi.json'
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   * import { encodeAbi } from '@ensdomains/ensjs/utils'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   *
-   * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
-   * const hash = await wallet.setAbiRecord({
-   *   name: 'ens.eth',
-   *   encodedAbi,
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  setAbiRecord: <encodeAs extends AbiEncodeAs>({
-    name,
-    encodeAs,
-    resolverAddress,
-    ...txArgs
-  }: SetAbiRecordParameters<
-    encodeAs,
-    chain,
-    account,
-    chain
-  >) => Promise<SetAbiRecordReturnType>
-  /**
-   * Sets an address record for a name on a resolver.
-   * @param parameters - {@link SetAddressRecordParameters}
-   * @returns Transaction hash. {@link SetAddressRecordReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setAddressRecord({
-   *   name: 'ens.eth',
-   *   coin: 'ETH',
-   *   value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  setAddressRecord: ({
-    name,
-    coin,
-    value,
-    resolverAddress,
-    ...txArgs
-  }: SetAddressRecordParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetAddressRecordReturnType>
-  /**
-   * Sets the fuses for a name as the parent.
-   * @param parameters - {@link SetChildFusesParameters}
-   * @returns Transaction hash. {@link SetChildFusesReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setChildFuses({
-   *   name: 'sub.ens.eth',
-   *   fuses: {
-   *     parent: {
-   *       named: ['PARENT_CANNOT_CONTROl'],
-   *     },
-   *   },
-   * })
-   * // 0x...
-   */
-  setChildFuses: ({
-    name,
-    fuses,
-    expiry,
-    ...txArgs
-  }: SetChildFusesParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetChildFusesReturnType>
-  /**
-   * Sets the content hash record for a name on a resolver.
-   * @param parameters - {@link SetContentHashRecordParameters}
-   * @returns Transaction hash. {@link SetContentHashRecordReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setContentHashRecord({
-   *   name: 'ens.eth',
-   *   value: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  setContentHashRecord: ({
-    name,
-    contentHash,
-    resolverAddress,
-    ...txArgs
-  }: SetContentHashRecordParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetContentHashRecordReturnType>
-  /**
-   * Sets the fuses for a name.
-   * @param parameters - {@link SetFusesParameters}
-   * @returns Transaction hash. {@link SetFusesReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setFuses({
-   *   name: 'sub.ens.eth',
-   *   fuses: {
-   *     named: ['CANNOT_TRANSFER'],
-   *   },
-   * })
-   * // 0x...
-   */
-  setFuses: ({
-    name,
-    fuses,
-    ...txArgs
-  }: SetFusesParameters<chain, account, chain>) => Promise<SetFusesReturnType>
-  /**
-   * Sets a primary name for an address.
-   * @param parameters - {@link SetPrimaryNameParameters}
-   * @returns Transaction hash. {@link SetPrimaryNameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setPrimaryName({
-   *   name: 'ens.eth',
-   * })
-   * // 0x...
-   */
-  setPrimaryName: ({
-    name,
-    address,
-    resolverAddress,
-    ...txArgs
-  }: SetPrimaryNameParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetPrimaryNameReturnType>
-  /**
-   * Sets multiple records for a name on a resolver.
-   * @param parameters - {@link SetRecordsParameters}
-   * @returns Transaction hash. {@link SetRecordsReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setRecords({
-   *   name: 'ens.eth',
-   *   coins: [
-   *     {
-   *       coin: 'ETH',
-   *       value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *     },
-   *   ],
-   *   texts: [{ key: 'foo', value: 'bar' }],
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  setRecords: ({
-    name,
-    resolverAddress,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    clearRecords,
-    contentHash,
-    texts,
-    coins,
-    abi,
-    ...txArgs
-  }: SetRecordsParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetRecordsReturnType>
-  /**
-   * Sets a resolver for a name.
-   * @param parameters - {@link SetResolverParameters}
-   * @returns Transaction hash. {@link SetResolverReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setResolver({
-   *   name: 'ens.eth',
-   *   contract: 'registry',
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  setResolver: ({
-    name,
-    contract,
-    resolverAddress,
-    ...txArgs
-  }: SetResolverParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetResolverReturnType>
-  /**
-   * Sets a text record for a name on a resolver.
-   * @param parameters - {@link SetTextRecordParameters}
-   * @returns Transaction hash. {@link SetTextRecordReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.setTextRecord({
-   *   name: 'ens.eth',
-   *   key: 'foo',
-   *   value: 'bar',
-   *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-   * })
-   * // 0x...
-   */
-  setTextRecord: ({
-    name,
-    key,
-    value,
-    resolverAddress,
-    ...txArgs
-  }: SetTextRecordParameters<
-    chain,
-    account,
-    chain
-  >) => Promise<SetTextRecordReturnType>
-  /**
-   * Transfers a name to a new owner.
-   * @param parameters - {@link TransferNameParameters}
-   * @returns Transaction hash. {@link TransferNameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.transferName({
-   *   name: 'ens.eth',
-   *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *   contract: 'registry',
-   * })
-   * // 0x...
-   */
-  transferName: <contract extends 'registry' | 'nameWrapper' | 'registrar'>({
-    name,
-    newOwnerAddress,
-    contract,
-    reclaim,
-    asParent,
-    ...txArgs
-  }: TransferNameParameters<
-    contract,
-    chain,
-    account,
-    chain
-  >) => Promise<TransferNameReturnType>
-  /**
-   * Unwraps a name.
-   * @param parameters - {@link UnwrapNameParameters}
-   * @returns Transaction hash. {@link UnwrapNameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.unwrapName({
-   *   name: 'example.eth',
-   *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   *   newRegistrantAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   * })
-   * // 0x...
-   */
-  unwrapName: <name extends string>({
-    name,
-    newOwnerAddress,
-    newRegistrantAddress,
-    ...txArgs
-  }: UnwrapNameParameters<
-    name,
-    chain,
-    account,
-    chain
-  >) => Promise<UnwrapNameReturnType>
-  /**
-   * Wraps a name.
-   * @param parameters - {@link WrapNameWriteParameters}
-   * @returns Transaction hash. {@link WrapNameReturnType}
-   *
-   * @example
-   * import { createWalletClient, custom } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
-   *
-   * const wallet = createWalletClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: custom(window.ethereum),
-   * }).extend(ensWalletActions)
-   * const hash = await wallet.wrapName({
-   *   name: 'ens.eth',
-   *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-   * })
-   * // 0x...
-   */
-  wrapName: <name extends string>({
-    name,
-    newOwnerAddress,
-    fuses,
-    resolverAddress,
-    ...txArgs
-  }: WrapNameParameters<
-    name,
-    chain,
-    account,
-    chain
-  >) => Promise<WrapNameReturnType>
-}
+	/**
+	 * Clears the records for a name on a resolver.
+	 * @param parameters - {@link ClearRecordsParameters}
+	 * @returns Transaction hash. {@link ClearRecordsReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.clearRecords({
+	 *   name: 'ens.eth',
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	clearRecords: ({
+		name,
+		resolverAddress,
+		...txArgs
+	}: ClearRecordsParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<ClearRecordsReturnType>;
+	/**
+	 * Commits a name to be registered
+	 * @param parameters - {@link CommitNameParameters}
+	 * @returns Transaction hash. {@link CommitNameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 * import { randomSecret } from '@ensdomains/ensjs/utils'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const secret = randomSecret()
+	 * const hash = await wallet.commitName({
+	 *   name: 'example.eth',
+	 *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *   duration: 31536000, // 1 year
+	 *   secret,
+	 * })
+	 * // 0x...
+	 */
+	commitName: ({
+		name,
+		owner,
+		duration,
+		secret,
+		resolverAddress,
+		records,
+		reverseRecord,
+		fuses,
+		...txArgs
+	}: CommitNameParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<CommitNameReturnType>;
+	/**
+	 * Creates a subname
+	 * @param parameters - {@link CreateSubnameParameters}
+	 * @returns Transaction hash. {@link CreateSubnameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.createSubname({
+	 *   name: 'sub.ens.eth',
+	 *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *   contract: 'registry',
+	 * })
+	 * // 0x...
+	 */
+	createSubname: ({
+		name,
+		contract,
+		owner,
+		resolverAddress,
+		expiry,
+		fuses,
+		...txArgs
+	}: CreateSubnameParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<CreateSubnameReturnType>;
+	/**
+	 * Deletes a subname
+	 * @param parameters - {@link DeleteSubnameParameters}
+	 * @returns Transaction hash. {@link DeleteSubnameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.deleteSubname({
+	 *   name: 'sub.ens.eth',
+	 *   contract: 'registry',
+	 * })
+	 * // 0x...
+	 */
+	deleteSubname: ({
+		name,
+		contract,
+		asOwner,
+		...txArgs
+	}: DeleteSubnameParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<DeleteSubnameReturnType>;
+	/**
+	 * Registers a name on ENS
+	 * @param parameters - {@link RegisterNameParameters}
+	 * @returns Transaction hash. {@link RegisterNameReturnType}
+	 *
+	 * @example
+	 * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensPublicActions, ensWalletActions } from '@ensdomains/ensjs'
+	 * import { randomSecret } from '@ensdomains/ensjs/utils'
+	 *
+	 * const mainnetWithEns = addEnsContracts(mainnet)
+	 * const client = createPublicClient({
+	 *   chain: mainnetWithEns,
+	 *   transport: http(),
+	 * }).extend(ensPublicActions)
+	 * const wallet = createWalletClient({
+	 *   chain: mainnetWithEns,
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const secret = randomSecret()
+	 * const params = {
+	 *   name: 'example.eth',
+	 *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *   duration: 31536000, // 1 year
+	 *   secret,
+	 * }
+	 *
+	 * const commitmentHash = await wallet.commitName(params)
+	 * await client.waitForTransactionReceipt({ hash: commitmentHash }) // wait for commitment to finalise
+	 * await new Promise((resolve) => setTimeout(resolve, 60 * 1_000)) // wait for commitment to be valid
+	 *
+	 * const { base, premium } = await client.getPrice({ nameOrNames: params.name, duration: params.duration })
+	 * const value = (base + premium) * 110n / 100n // add 10% to the price for buffer
+	 * const hash = await wallet.registerName({ ...params, value })
+	 * // 0x...
+	 */
+	registerName: ({
+		name,
+		owner,
+		duration,
+		secret,
+		resolverAddress,
+		records,
+		reverseRecord,
+		fuses,
+		value,
+		...txArgs
+	}: RegisterNameParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<RegisterNameReturnType>;
+	/**
+	 * Renews a name or names for a specified duration.
+	 * @param parameters - {@link RenewNamesParameters}
+	 * @returns Transaction hash. {@link RenewNamesReturnType}
+	 *
+	 * @example
+	 * import { createPublicClient, createWalletClient, http, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensPublicActions, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const mainnetWithEns = addEnsContracts(mainnet)
+	 * const client = createPublicClient({
+	 *   chain: mainnetWithEns,
+	 *   transport: http(),
+	 * }).extend(ensPublicActions)
+	 * const wallet = createWalletClient({
+	 *   chain: mainnetWithEns,
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 *
+	 * const duration = 31536000 // 1 year
+	 * const { base, premium } = await client.getPrice({
+	 *  nameOrNames: 'example.eth',
+	 *  duration,
+	 * })
+	 * const value = (base + premium) * 110n / 100n // add 10% to the price for buffer
+	 * const hash = await wallet.renewNames({
+	 *   nameOrNames: 'example.eth',
+	 *   duration,
+	 *   value,
+	 * })
+	 * // 0x...
+	 */
+	renewNames: ({
+		nameOrNames,
+		duration,
+		value,
+		...txArgs
+	}: RenewNamesParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<RenewNamesReturnType>;
+	/**
+	 * Sets the ABI for a name on a resolver.
+	 * @param parameters - {@link SetAbiRecordParameters}
+	 * @returns Transaction hash. {@link SetAbiRecordReturnType}
+	 *
+	 * @example
+	 * import abi from './abi.json'
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 * import { encodeAbi } from '@ensdomains/ensjs/utils'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 *
+	 * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
+	 * const hash = await wallet.setAbiRecord({
+	 *   name: 'ens.eth',
+	 *   encodedAbi,
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	setAbiRecord: <encodeAs extends AbiEncodeAs>({
+		name,
+		encodeAs,
+		resolverAddress,
+		...txArgs
+	}: SetAbiRecordParameters<
+		encodeAs,
+		chain,
+		account,
+		chain
+	>) => Promise<SetAbiRecordReturnType>;
+	/**
+	 * Sets an address record for a name on a resolver.
+	 * @param parameters - {@link SetAddressRecordParameters}
+	 * @returns Transaction hash. {@link SetAddressRecordReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setAddressRecord({
+	 *   name: 'ens.eth',
+	 *   coin: 'ETH',
+	 *   value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	setAddressRecord: ({
+		name,
+		coin,
+		value,
+		resolverAddress,
+		...txArgs
+	}: SetAddressRecordParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetAddressRecordReturnType>;
+	/**
+	 * Sets the fuses for a name as the parent.
+	 * @param parameters - {@link SetChildFusesParameters}
+	 * @returns Transaction hash. {@link SetChildFusesReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setChildFuses({
+	 *   name: 'sub.ens.eth',
+	 *   fuses: {
+	 *     parent: {
+	 *       named: ['PARENT_CANNOT_CONTROl'],
+	 *     },
+	 *   },
+	 * })
+	 * // 0x...
+	 */
+	setChildFuses: ({
+		name,
+		fuses,
+		expiry,
+		...txArgs
+	}: SetChildFusesParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetChildFusesReturnType>;
+	/**
+	 * Sets the content hash record for a name on a resolver.
+	 * @param parameters - {@link SetContentHashRecordParameters}
+	 * @returns Transaction hash. {@link SetContentHashRecordReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setContentHashRecord({
+	 *   name: 'ens.eth',
+	 *   value: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	setContentHashRecord: ({
+		name,
+		contentHash,
+		resolverAddress,
+		...txArgs
+	}: SetContentHashRecordParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetContentHashRecordReturnType>;
+	/**
+	 * Sets the fuses for a name.
+	 * @param parameters - {@link SetFusesParameters}
+	 * @returns Transaction hash. {@link SetFusesReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setFuses({
+	 *   name: 'sub.ens.eth',
+	 *   fuses: {
+	 *     named: ['CANNOT_TRANSFER'],
+	 *   },
+	 * })
+	 * // 0x...
+	 */
+	setFuses: ({
+		name,
+		fuses,
+		...txArgs
+	}: SetFusesParameters<chain, account, chain>) => Promise<SetFusesReturnType>;
+	/**
+	 * Sets a primary name for an address.
+	 * @param parameters - {@link SetPrimaryNameParameters}
+	 * @returns Transaction hash. {@link SetPrimaryNameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setPrimaryName({
+	 *   name: 'ens.eth',
+	 * })
+	 * // 0x...
+	 */
+	setPrimaryName: ({
+		name,
+		address,
+		resolverAddress,
+		...txArgs
+	}: SetPrimaryNameParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetPrimaryNameReturnType>;
+	/**
+	 * Sets multiple records for a name on a resolver.
+	 * @param parameters - {@link SetRecordsParameters}
+	 * @returns Transaction hash. {@link SetRecordsReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setRecords({
+	 *   name: 'ens.eth',
+	 *   coins: [
+	 *     {
+	 *       coin: 'ETH',
+	 *       value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *     },
+	 *   ],
+	 *   texts: [{ key: 'foo', value: 'bar' }],
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	setRecords: ({
+		name,
+		resolverAddress,
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		clearRecords,
+		contentHash,
+		texts,
+		coins,
+		abi,
+		...txArgs
+	}: SetRecordsParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetRecordsReturnType>;
+	/**
+	 * Sets a resolver for a name.
+	 * @param parameters - {@link SetResolverParameters}
+	 * @returns Transaction hash. {@link SetResolverReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setResolver({
+	 *   name: 'ens.eth',
+	 *   contract: 'registry',
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	setResolver: ({
+		name,
+		contract,
+		resolverAddress,
+		...txArgs
+	}: SetResolverParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetResolverReturnType>;
+	/**
+	 * Sets a text record for a name on a resolver.
+	 * @param parameters - {@link SetTextRecordParameters}
+	 * @returns Transaction hash. {@link SetTextRecordReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.setTextRecord({
+	 *   name: 'ens.eth',
+	 *   key: 'foo',
+	 *   value: 'bar',
+	 *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+	 * })
+	 * // 0x...
+	 */
+	setTextRecord: ({
+		name,
+		key,
+		value,
+		resolverAddress,
+		...txArgs
+	}: SetTextRecordParameters<
+		chain,
+		account,
+		chain
+	>) => Promise<SetTextRecordReturnType>;
+	/**
+	 * Transfers a name to a new owner.
+	 * @param parameters - {@link TransferNameParameters}
+	 * @returns Transaction hash. {@link TransferNameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.transferName({
+	 *   name: 'ens.eth',
+	 *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *   contract: 'registry',
+	 * })
+	 * // 0x...
+	 */
+	transferName: <contract extends "registry" | "nameWrapper" | "registrar">({
+		name,
+		newOwnerAddress,
+		contract,
+		reclaim,
+		asParent,
+		...txArgs
+	}: TransferNameParameters<
+		contract,
+		chain,
+		account,
+		chain
+	>) => Promise<TransferNameReturnType>;
+	/**
+	 * Unwraps a name.
+	 * @param parameters - {@link UnwrapNameParameters}
+	 * @returns Transaction hash. {@link UnwrapNameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.unwrapName({
+	 *   name: 'example.eth',
+	 *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 *   newRegistrantAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 * })
+	 * // 0x...
+	 */
+	unwrapName: <name extends string>({
+		name,
+		newOwnerAddress,
+		newRegistrantAddress,
+		...txArgs
+	}: UnwrapNameParameters<
+		name,
+		chain,
+		account,
+		chain
+	>) => Promise<UnwrapNameReturnType>;
+	/**
+	 * Wraps a name.
+	 * @param parameters - {@link WrapNameWriteParameters}
+	 * @returns Transaction hash. {@link WrapNameReturnType}
+	 *
+	 * @example
+	 * import { createWalletClient, custom } from 'viem'
+	 * import { mainnet } from 'viem/chains'
+	 * import { addEnsContracts, ensWalletActions } from '@ensdomains/ensjs'
+	 *
+	 * const wallet = createWalletClient({
+	 *   chain: addEnsContracts(mainnet),
+	 *   transport: custom(window.ethereum),
+	 * }).extend(ensWalletActions)
+	 * const hash = await wallet.wrapName({
+	 *   name: 'ens.eth',
+	 *   newOwnerAddress: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+	 * })
+	 * // 0x...
+	 */
+	wrapName: <name extends string>({
+		name,
+		newOwnerAddress,
+		fuses,
+		resolverAddress,
+		...txArgs
+	}: WrapNameParameters<
+		name,
+		chain,
+		account,
+		chain
+	>) => Promise<WrapNameReturnType>;
+};
 
 /**
  * Extends the viem client with ENS wallet actions
@@ -742,37 +742,37 @@ export type EnsWalletActions<
  * }).extend(ensWalletActions)
  */
 export const ensWalletActions = <
-  chain extends Chain = Chain,
-  account extends Account = Account,
+	chain extends Chain = Chain,
+	account extends Account = Account,
 >(
-  client: RequireClientContracts<
-    chain,
-    SupportedContract | 'multicall3',
-    account
-  >,
-): EnsWalletActions<ExcludeTE<typeof client>['chain'], account> => {
-  const client_ = client as ExcludeTE<typeof client> & {}
+	client: RequireClientContracts<
+		chain,
+		SupportedContract | "multicall3",
+		account
+	>,
+): EnsWalletActions<ExcludeTE<typeof client>["chain"], account> => {
+	const client_ = client as ExcludeTE<typeof client> & {};
 
-  return {
-    clearRecords: (parameters) => clearRecords(client_, parameters as any),
-    commitName: (parameters) => commitName(client_, parameters as any),
-    createSubname: (parameters) => createSubname(client_, parameters as any),
-    deleteSubname: (parameters) => deleteSubname(client_, parameters as any),
-    registerName: (parameters) => registerName(client_, parameters as any),
-    renewNames: (parameters) => renewNames(client_, parameters as any),
-    setAbiRecord: (parameters) => setAbiRecord(client_, parameters as any),
-    setAddressRecord: (parameters) =>
-      setAddressRecord(client_, parameters as any),
-    setChildFuses: (parameters) => setChildFuses(client_, parameters as any),
-    setContentHashRecord: (parameters) =>
-      setContentHashRecord(client_, parameters as any),
-    setFuses: (parameters) => setFuses(client_, parameters as any),
-    setPrimaryName: (parameters) => setPrimaryName(client_, parameters as any),
-    setRecords: (parameters) => setRecords(client_, parameters as any),
-    setResolver: (parameters) => setResolver(client_, parameters as any),
-    setTextRecord: (parameters) => setTextRecord(client_, parameters as any),
-    transferName: (parameters) => transferName(client_, parameters as any),
-    unwrapName: (parameters) => unwrapName(client_, parameters as any),
-    wrapName: (parameters) => wrapName(client_, parameters as any),
-  }
-}
+	return {
+		clearRecords: (parameters) => clearRecords(client_, parameters as any),
+		commitName: (parameters) => commitName(client_, parameters as any),
+		createSubname: (parameters) => createSubname(client_, parameters as any),
+		deleteSubname: (parameters) => deleteSubname(client_, parameters as any),
+		registerName: (parameters) => registerName(client_, parameters as any),
+		renewNames: (parameters) => renewNames(client_, parameters as any),
+		setAbiRecord: (parameters) => setAbiRecord(client_, parameters as any),
+		setAddressRecord: (parameters) =>
+			setAddressRecord(client_, parameters as any),
+		setChildFuses: (parameters) => setChildFuses(client_, parameters as any),
+		setContentHashRecord: (parameters) =>
+			setContentHashRecord(client_, parameters as any),
+		setFuses: (parameters) => setFuses(client_, parameters as any),
+		setPrimaryName: (parameters) => setPrimaryName(client_, parameters as any),
+		setRecords: (parameters) => setRecords(client_, parameters as any),
+		setResolver: (parameters) => setResolver(client_, parameters as any),
+		setTextRecord: (parameters) => setTextRecord(client_, parameters as any),
+		transferName: (parameters) => transferName(client_, parameters as any),
+		unwrapName: (parameters) => unwrapName(client_, parameters as any),
+		wrapName: (parameters) => wrapName(client_, parameters as any),
+	};
+};

@@ -22,8 +22,8 @@
 			"default": "./dist/esm/dns.js"
 		},
 		"./public": {
-			"types": "./dist/types/public.d.ts",
-			"default": "./dist/esm/public.js"
+			"types": "./dist/types/exports/public.d.ts",
+			"default": "./dist/esm/exports/public.js"
 		},
 		"./subgraph": {
 			"types": "./dist/types/subgraph.d.ts",
@@ -34,8 +34,16 @@
 			"default": "./dist/esm/utils/index.js"
 		},
 		"./wallet": {
-			"types": "./dist/types/wallet.d.ts",
-			"default": "./dist/esm/wallet.js"
+			"types": "./dist/types/exports/wallet.d.ts",
+			"default": "./dist/esm/exports/wallet.js"
+		},
+		"./chain": {
+			"types": "./dist/types/exports/chain.d.ts",
+			"default": "./dist/esm/exports/chain.js"
+		},
+		"./internal": {
+			"types": "./dist/types/exports/internal.d.ts",
+			"default": "./dist/esm/exports/internal.js"
 		},
 		"./package.json": "./package.json"
 	},
@@ -48,7 +56,7 @@
 				"./dist/types/dns.d.ts"
 			],
 			"public": [
-				"./dist/types/public.d.ts"
+				"./dist/types/exports/public.d.ts"
 			],
 			"subgraph": [
 				"./dist/types/subgraph.d.ts"
@@ -57,7 +65,13 @@
 				"./dist/types/utils/index.d.ts"
 			],
 			"wallet": [
-				"./dist/types/wallet.d.ts"
+				"./dist/types/exports/wallet.d.ts"
+			],
+			"chain": [
+				"./dist/types/exports/chain.d.ts"
+			],
+			"internal": [
+				"./dist/types/exports/internal.d.ts"
 			]
 		}
 	},
