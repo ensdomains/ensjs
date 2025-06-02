@@ -2,7 +2,6 @@
   "name": "@ensdomains/ensjs",
   "version": "4.0.2",
   "description": "ENS javascript library for contract interaction",
-  "type": "module",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
   "sideEffects": false,
