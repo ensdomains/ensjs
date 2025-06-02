@@ -31,7 +31,7 @@ const config: HardhatUserConfig = {
       saveDeployments: false,
       chainId: 1337,
       accounts: {
-        mnemonic: process.env.SECRET_WORDS!,
+        mnemonic: 'test test test test test test test test test test test junk',
       },
       live: false,
       tags: ['test', 'legacy', 'use_root'],
@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
       url: 'http://localhost:8545',
       chainId: 1337,
       accounts: {
-        mnemonic: process.env.SECRET_WORDS!,
+        mnemonic: 'test test test test test test test test test test test junk',
       },
       live: false,
       tags: ['test', 'legacy', 'use_root'],
