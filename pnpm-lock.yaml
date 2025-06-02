@@ -7,6 +7,11 @@ settings:
 overrides:
   '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
 
+patchedDependencies:
+  hardhat-deploy:
+    hash: c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61
+    path: patches/hardhat-deploy.patch
+
 importers:
 
   .:
@@ -99,7 +104,7 @@ importers:
         version: 1.0.1
       '@ensdomains/hardhat-toolbox-viem-extended':
         specifier: ^0.0.5
-        version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.3(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.29.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.4))(zod@3.24.4))(hardhat-deploy@1.0.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)
+        version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.3(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.29.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.4))(zod@3.24.4))(hardhat-deploy@1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)
       '@nomicfoundation/hardhat-toolbox-viem':
         specifier: ^3.0.0
         version: 3.0.0(4c9f6deca14c7cf56e31c1ae953be261)
@@ -144,7 +149,7 @@ importers:
         version: 2.10.1(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))
       hardhat-deploy:
         specifier: ^1.0.2
-        version: 1.0.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+        version: 1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
@@ -7513,11 +7518,11 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@ensdomains/hardhat-toolbox-viem-extended@0.0.5(@nomicfoundation/hardhat-viem@2.0.3(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.29.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.4))(zod@3.24.4))(hardhat-deploy@1.0.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)':
+  '@ensdomains/hardhat-toolbox-viem-extended@0.0.5(@nomicfoundation/hardhat-viem@2.0.3(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.29.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.4))(zod@3.24.4))(hardhat-deploy@1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)':
     dependencies:
       '@nomicfoundation/hardhat-viem': 2.0.3(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.29.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.4))(zod@3.24.4)
       hardhat: 2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10)
-      hardhat-deploy: 1.0.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      hardhat-deploy: 1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       typescript: 5.8.3
 
   '@ensdomains/resolver@0.2.4': {}
@@ -12056,7 +12061,7 @@ snapshots:
       delete-empty: 3.0.0
       hardhat: 2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10)
 
-  hardhat-deploy@1.0.2(bufferutil@4.0.9)(utf-8-validate@5.0.10):
+  hardhat-deploy@1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10):
     dependencies:
       '@ethersproject/abi': 5.8.0
       '@ethersproject/abstract-signer': 5.8.0
