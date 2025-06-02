@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import type { DeployFunction } from 'hardhat-deploy/types'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types'
+import type { DeployFunction } from 'hardhat-deploy/types.js'
+import type { HardhatRuntimeEnvironment } from 'hardhat/types.js'
 import { type Account, namehash } from 'viem'
 
 import {
@@ -12,7 +12,7 @@ import {
   makeRegistrationTuple,
 } from '@ensdomains/ensjs/utils'
 
-import { nonceManager } from './.utils/nonceManager'
+import { nonceManager } from './.utils/nonceManager.js'
 
 type Name = {
   name: string

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies, import/extensions */
-import type { DeployFunction } from 'hardhat-deploy/types'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types'
+import type { DeployFunction } from 'hardhat-deploy/types.js'
+import type { HardhatRuntimeEnvironment } from 'hardhat/types.js'
 import { labelhash, namehash } from 'viem'
 
 const ZERO_HASH =
