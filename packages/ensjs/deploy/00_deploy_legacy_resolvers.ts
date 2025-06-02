@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types'
+import type { HardhatRuntimeEnvironment } from 'hardhat/types.js'
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { getNamedAccounts, deployments, viem } = hre

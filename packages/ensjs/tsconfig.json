@@ -1,12 +1,11 @@
 {
 	"compilerOptions": {
 		"target": "es2020",
-		"module": "commonjs",
+		"module": "nodenext",
 		"strict": true,
 		"esModuleInterop": true,
-		"moduleResolution": "node",
-		"forceConsistentCasingInFileNames": true,
-		"outDir": "dist"
+		"moduleResolution": "nodenext",
+		"forceConsistentCasingInFileNames": true
 	},
 	"include": [
 		"hardhat.config.cts",
