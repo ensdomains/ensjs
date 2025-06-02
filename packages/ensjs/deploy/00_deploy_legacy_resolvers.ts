@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types.js'
+import type { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { getNamedAccounts, deployments, viem } = hre
@@ -80,4 +80,4 @@ func.id = 'deploy-legacy-resolvers'
 func.tags = ['deploy-legacy-resolvers']
 func.runAtTheEnd = true
 
-module.exports = func
+export default func
