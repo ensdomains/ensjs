@@ -84,7 +84,7 @@
     "ver": "pnpm tsn ./scripts/updateVersion.ts",
     "generateDocs": "pnpm tsn ./scripts/generateDocs.ts",
     "rcBranchVersion": "pnpm tsn ./scripts/rcBranchVersion.ts",
-        "hh": "NODE_OPTIONS='--experimental-loader ts-node/esm/transpile-only' hardhat"
+    "hh": "NODE_OPTIONS='--experimental-loader ts-node/esm/transpile-only' hardhat"
   },
   "dependencies": {
     "@adraffy/ens-normalize": "1.10.1",
@@ -101,7 +101,7 @@
   "devDependencies": {
     "@ensdomains/buffer": "^0.1.1",
     "@ensdomains/ens-contracts": "1.4.0",
-    "@ensdomains/ens-test-env": "^0.6.1",
+    "@ensdomains/ens-test-env": "^1.0.1",
     "@ensdomains/hardhat-toolbox-viem-extended": "^0.0.5",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
     "@nomicfoundation/hardhat-viem": "2.0.3",

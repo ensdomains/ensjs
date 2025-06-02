@@ -95,8 +95,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@ensdomains/ens-test-env':
-        specifier: ^0.6.1
-        version: 0.6.1
+        specifier: ^1.0.1
+        version: 1.0.1
       '@ensdomains/hardhat-toolbox-viem-extended':
         specifier: ^0.0.5
         version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.3(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.29.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.24.4))(zod@3.24.4))(hardhat-deploy@1.0.2(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.23.0(bufferutil@4.0.9)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@20.14.14)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)
@@ -189,8 +189,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@ensdomains/ens-test-env':
-        specifier: ^0.6.0
-        version: 0.6.1
+        specifier: ^1.0.1
+        version: 1.0.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.11.24)(@types/node@22.15.14)(typescript@5.8.3)
@@ -536,9 +536,9 @@ packages:
   '@ensdomains/ens-contracts@1.4.0':
     resolution: {integrity: sha512-h10r9igVCycW8vvkEcNageOtXLJss5k3cb5jQUeLFSppp4VE3aXhwI+UapsqxKwDxSit2XxzAD9Zbwbhj2q4Fw==}
 
-  '@ensdomains/ens-test-env@0.6.1':
-    resolution: {integrity: sha512-Hj2iEZvxkpavOni4itdgW4mY3Hlniegh5LuYQvwjP4qQ1RNa0vD8pqeVTeaZWvArgfGEkQr0/xd6hO4msa5C8g==}
-    engines: {node: '>=18'}
+  '@ensdomains/ens-test-env@1.0.1':
+    resolution: {integrity: sha512-it+5gN/CXCpcrhULClm/aVFoVry5MS5+xlE7g3LlTXDvGd0tBcBBF8yOMvACZRuZPljDA0CtxXngrAkwmxxp6w==}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@ensdomains/ens@0.4.5':
@@ -2189,6 +2189,7 @@ packages:
 
   '@walletconnect/modal@2.6.2':
     resolution: {integrity: sha512-eFopgKi8AjKf/0U4SemvcYw9zlLpx9njVN8sf6DAkowC2Md0gPU/UNEbH1Wwj407pEKnEds98pKWib1NN1ACoA==}
+    deprecated: Please follow the migration guide on https://docs.reown.com/appkit/upgrade/wcm
 
   '@walletconnect/relay-api@1.0.11':
     resolution: {integrity: sha512-tLPErkze/HmC9aCmdZOhtVmYZq1wKfWTJtygQHoWtgg722Jd4homo54Cs4ak2RUFUZIGO2RsOpIcWipaua5D5Q==}
@@ -2887,9 +2888,9 @@ packages:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
     engines: {node: '>=18'}
 
-  commander@13.1.0:
-    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
-    engines: {node: '>=18'}
+  commander@14.0.0:
+    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
+    engines: {node: '>=20'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -6058,8 +6059,8 @@ packages:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
     engines: {node: '>=10.0.0'}
 
-  tar-fs@3.0.8:
-    resolution: {integrity: sha512-ZoROL70jptorGAlgAYiLoBLItEKw/fUxg9BSYK/dF/GAGYFJOJJJMvjPAKDJraCXFwadD456FCuvLWgfhMsPwg==}
+  tar-fs@3.0.9:
+    resolution: {integrity: sha512-XF4w9Xp+ZQgifKakjZYmFdkLoSWd34VGKcsTCwlNWM7QG3ZbaxnTsaBwnjFZqHRf/rROxaR8rXnbtwdvaDI+lA==}
 
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
@@ -7474,17 +7475,17 @@ snapshots:
       '@openzeppelin/contracts': 4.9.6
       dns-packet: 5.6.1
 
-  '@ensdomains/ens-test-env@0.6.1':
+  '@ensdomains/ens-test-env@1.0.1':
     dependencies:
       cli-progress: 3.12.0
-      commander: 13.1.0
+      commander: 14.0.0
       concurrently: 9.1.2
       docker-compose: 1.2.0
       dotenv: 16.5.0
       dunai: 0.0.0-dev.2
       js-yaml: 4.1.0
       picocolors: 1.1.1
-      tar-fs: 3.0.8
+      tar-fs: 3.0.9
       wait-on: 8.0.3
     transitivePeerDependencies:
       - bare-buffer
@@ -10803,7 +10804,7 @@ snapshots:
 
   commander@12.1.0: {}
 
-  commander@13.1.0: {}
+  commander@14.0.0: {}
 
   commander@2.20.3: {}
 
@@ -14638,7 +14639,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  tar-fs@3.0.8:
+  tar-fs@3.0.9:
     dependencies:
       pump: 3.0.0
       tar-stream: 3.1.7
@@ -15046,7 +15047,7 @@ snapshots:
       cac: 6.7.14
       debug: 4.3.6
       pathe: 1.1.2
-      picocolors: 1.0.1
+      picocolors: 1.1.1
       vite: 5.3.5(@types/node@20.14.14)(terser@5.39.0)
     transitivePeerDependencies:
       - '@types/node'
