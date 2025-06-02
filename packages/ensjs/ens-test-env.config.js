@@ -16,7 +16,7 @@ process.env.BATCH_GATEWAY_URLS = JSON.stringify([
  * @type {import('@ensdomains/ens-test-env').ENSTestEnvConfig}
  * */
 export default {
-  deployCommand: 'pnpm hardhat deploy',
+  deployCommand: 'pnpm hh deploy',
   scripts: [
     {
       command:
