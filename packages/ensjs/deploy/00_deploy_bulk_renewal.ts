@@ -1,5 +1,22 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+import type { Abi, AbiFunction } from 'viem'
 import { labelhash, namehash } from 'viem/ens'
+import { bytesToHex, hexToBytes, toFunctionHash } from 'viem/utils'
+
+export const createInterfaceId = <iface extends Abi>(iface: iface) => {
+  const bytesId = iface
+    .filter((item): item is AbiFunction => item.type === 'function')
+    .map((f) => toFunctionHash(f))
+    .map((h) => hexToBytes(h).slice(0, 4))
+    .reduce((memo, bytes) => {
+      for (let i = 0; i < 4; i++) {
+        memo[i] = memo[i] ^ bytes[i] // xor
+      }
+      return memo
+    }, new Uint8Array(4))
+
+  return bytesToHex(bytesId)
+}
 
 const func: DeployFunction = async (hre) => {
   const { getNamedAccounts, deployments, network, viem } = hre
@@ -38,7 +55,7 @@ const func: DeployFunction = async (hre) => {
   console.log('Set interface implementor of eth tld for bulk renewal')
   const tx2 = await resolver.setInterface(
     namehash('eth'),
-    computeInterfaceId(new Interface(bulkRenewal.abi)),
+    createInterfaceId(bulkRenewal.abi),
     bulkRenewal.address,
   )
   await tx2.wait()
@@ -46,7 +63,7 @@ const func: DeployFunction = async (hre) => {
   console.log('Set interface implementor of eth tld for registrar controller')
   const tx3 = await resolver.setInterface(
     namehash('eth'),
-    computeInterfaceId(new Interface(controllerArtifact.abi)),
+    createInterfaceId(controllerArtifact.abi),
     controller.address,
   )
   await tx3.wait()
@@ -54,7 +71,7 @@ const func: DeployFunction = async (hre) => {
   console.log('Set interface implementor of eth tld for name wrapper')
   const tx4 = await resolver.setInterface(
     namehash('eth'),
-    computeInterfaceId(wrapper.interface),
+    createInterfaceId(wrapper.interface),
     wrapper.address,
   )
   await tx4.wait()

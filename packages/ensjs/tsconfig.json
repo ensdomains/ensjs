@@ -12,7 +12,8 @@
 		"./scripts",
 		"./deploy",
 		"./test",
-		"typechain/**/*"
+		"typechain/**/*",
+		"./utils"
 	],
 	"exclude": ["node_modules"]
 }

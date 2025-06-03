@@ -2,30 +2,24 @@
 /* eslint-disable no-await-in-loop */
 
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-import { BigNumber } from 'ethers'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
-import { makeNameGenerator } from '../utils/wrappedNameGenerator.cjs'
+import { makeNameGenerator } from '../utils/wrappedNameGenerator.js'
 
-/**
- * @type {{
- *  label: string
- *  namedOwner: string
- *  data?: any[]
- *  reverseRecord?: boolean
- *  fuses?: number
- *  subnames?: {
- *    label: string
- *    namedOwner: string
- *    fuses?: number
- *    expiry?: number
- *  }[]
- *  duration?: number | BigNumber
- * }[]}
- */
-const names = [
+const names: {
+  label: string
+  namedOwner: string
+  data?: any[]
+  reverseRecord?: boolean
+  fuses?: number
+  subnames?: {
+    label: string
+    namedOwner: string
+    fuses?: number
+    expiry?: number
+  }[]
+  duration?: number | bigint
+}[] = [
   {
     label: 'wrapped',
     namedOwner: 'owner',
@@ -55,7 +49,7 @@ const names = [
   {
     label: 'wrapped-max-duration',
     namedOwner: 'owner3',
-    duration: BigNumber.from('18446744073709'),
+    duration: BigInt('18446744073709'),
   },
   {
     label: 'wrapped-with-expiring-subnames',
@@ -180,7 +174,7 @@ const func: DeployFunction = async (hre) => {
         label: subnameLabel,
         namedOwner: namedSubnameOwner,
         fuses: subnameFuses = 0,
-        expiry: subnameExpiry = BigNumber.from(2).pow(64).sub(1),
+        expiry: subnameExpiry = 2n ** 64n - 1n,
       } of subnames) {
         const setSubnameTx = await nameGenerator.subname({
           label,
