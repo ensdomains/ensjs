@@ -366,11 +366,11 @@ const names: {
     duration: 31536000 / 2,
     subnames: [
       {
-        label: `test`,
+        label: 'test',
         namedOwner: 'owner4',
       },
       {
-        label: `xyz`,
+        label: 'xyz',
         namedOwner: 'owner4',
       },
     ],

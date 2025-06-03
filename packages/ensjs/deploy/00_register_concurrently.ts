@@ -1,5 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
+
+import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+import { MAX_DATE_INT } from '../dist/utils/consts.js'
+import { encodeFuses } from '../dist/utils/fuses.js'
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { BigNumber } = require('ethers')
 const { ethers } = require('hardhat')
@@ -10,41 +15,35 @@ const {
   makeNameGenerator: makeLegacyNameGenerator,
 } = require('../utils/legacyNameGenerator.cjs')
 const { makeNonceManager } = require('../utils/nonceManager.cjs')
-const { encodeFuses } = require('../dist/cjs/utils/fuses')
-const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
 
 const DURATION = 31556000
 
-/**
- * @type {{
- *  label: string
- *  namedOwner: string
- *  namedAddr?: string
- *  type: 'wrapped' | 'legacy'
- *  data?: any[]
- *  reverseRecord?: boolean
- *  fuses?: number
- *  subnames?: {
- *    label: string
- *    namedOwner: string
- *    fuses?: number
- *    expiry?: number
- *  }[]
- *  duration?: number | BigNumber
- * }[]}
- */
-
-const names = [
+const names: {
+  label: string
+  namedOwner: string
+  namedAddr?: string
+  type: 'wrapped' | 'legacy'
+  data?: any[]
+  reverseRecord?: boolean
+  fuses?: number
+  subnames?: {
+    label: string
+    namedOwner: string
+    fuses?: number
+    expiry?: number
+  }[]
+  duration?: number | bigint
+}[] = [
   ...Array.from({ length: 2 }, (_, index) => ({
     label: `concurrent-legacy-name-${index}`,
-    type: 'legacy',
+    type: 'legacy' as const,
     namedOwner: 'owner4',
     reverseRecord: true,
     duration: DURATION,
   })),
   ...Array.from({ length: 2 }, (_, index) => ({
     label: `concurrent-wrapped-name-${index}`,
-    type: 'wrapped',
+    type: 'wrapped' as const,
     namedOwner: 'owner4',
     fuses: encodeFuses({
       input: {
@@ -56,9 +55,9 @@ const names = [
     duration: DURATION,
     subnames: [
       {
-        label: `xyz`,
+        label: 'xyz',
         namedOwner: 'owner4',
-        type: 'wrapped',
+        type: 'wrapped' as const,
         expiry: MAX_DATE_INT,
         fuses: encodeFuses({
           input: {
@@ -75,10 +74,7 @@ const names = [
   })),
 ]
 
-/**
- * @type {import('hardhat-deploy/types').DeployFunction}
- */
-const func = async function (hre) {
+const func: DeployFunction = async (hre) => {
   const { network } = hre
 
   const nonceManager = await makeNonceManager(hre)
@@ -173,12 +169,7 @@ const func = async function (hre) {
   await network.provider.send('evm_setAutomine', [true])
 
   // Create subnames
-  for (const {
-    label,
-    namedOwner,
-    type,
-    subnames,
-  } of names) {
+  for (const { label, namedOwner, type, subnames } of names) {
     if (!subnames) continue
     console.log(`Setting subnames for ${label}.eth...`)
     for (const {
@@ -218,4 +209,4 @@ func.tags = ['register-concurrent-names']
 func.dependencies = ['ETHRegistrarController', 'register-wrapped-names']
 func.runAtTheEnd = true
 
-module.exports = func
+export default func

@@ -1,11 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const { writeFile } = require('fs/promises')
-const { resolve } = require('path')
+import { writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 
-/**
- * @type {import('hardhat-deploy/types').DeployFunction}
- */
-const func = async function (hre) {
+const func: DeployFunction = async (hre) => {
   const allDeployments = await hre.deployments.all()
   const deploymentAddressMap = Object.fromEntries(
     Object.keys(allDeployments).map((dkey) => [
@@ -20,10 +17,10 @@ const func = async function (hre) {
   )
   console.log('Wrote contract addresses to .env.local')
 
-  await hre.ethers.provider.send('evm_snapshot', [])
+  await (await hre.viem.getTestClient()).request({ method: 'evm_snapshot' })
 }
 
 func.runAtTheEnd = true
 func.dependencies = ['set-legacy-resolver']
 
-module.exports = func
+export default func
