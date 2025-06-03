@@ -22,7 +22,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: Build ensjs
+      - name: Build ensjs
         run: pnpm -F @ensdomains/ensjs build
 
       - name: Run tests
