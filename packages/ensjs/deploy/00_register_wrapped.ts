@@ -1,11 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
+
+import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const { BigNumber } = require('ethers')
-const { ethers } = require('hardhat')
-const { MAX_DATE_INT } = require('../dist/cjs/utils/consts')
-const { encodeFuses } = require('../dist/cjs/utils/fuses')
-const { makeNameGenerator } = require('../utils/wrappedNameGenerator.cjs')
+import { BigNumber } from 'ethers'
+import { MAX_DATE_INT } from '../dist/utils/consts.js'
+import { encodeFuses } from '../dist/utils/fuses.js'
+import { makeNameGenerator } from '../utils/wrappedNameGenerator.cjs'
 
 /**
  * @type {{
@@ -98,7 +100,7 @@ const names = [
       },
     ],
   },
-  ...Array.from({ length: 2}, (_, index) => ({
+  ...Array.from({ length: 2 }, (_, index) => ({
     label: `nonconcurrent-wrapped-name-${index}`,
     namedOwner: 'owner4',
     fuses: encodeFuses({
@@ -111,7 +113,7 @@ const names = [
     duration: 31556000 * 2,
     subnames: [
       {
-        label: `xyz`,
+        label: 'xyz',
         namedOwner: 'owner4',
         expiry: MAX_DATE_INT,
         fuses: encodeFuses({
@@ -126,14 +128,10 @@ const names = [
         }),
       },
     ],
-
-  }))
+  })),
 ]
 
-/**
- * @type {import('hardhat-deploy/types').DeployFunction}
- */
-const func = async function (hre) {
+const func: DeployFunction = async (hre) => {
   const { network } = hre
   const nameGenerator = await makeNameGenerator(hre)
 
@@ -154,7 +152,7 @@ const func = async function (hre) {
       data,
       reverseRecord,
       fuses,
-      duration
+      duration,
     })
 
     console.log(
@@ -208,4 +206,4 @@ func.tags = ['register-wrapped-names']
 func.dependencies = ['ETHRegistrarController']
 func.runAtTheEnd = true
 
-module.exports = func
+export default func

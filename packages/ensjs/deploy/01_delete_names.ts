@@ -1,32 +1,19 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-await-in-loop */
-const { ethers } = require('hardhat')
-const { namehash, toHex, labelhash } = require('viem')
-const { EMPTY_ADDRESS } = require('../dist/cjs/utils/consts')
-const { packetToBytes } = require('../dist/cjs/utils/hexEncodedName')
+import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+import { labelhash, namehash, packetToBytes } from 'viem/ens'
+import { toHex } from 'viem/utils'
+import { EMPTY_ADDRESS } from '../dist/utils/consts.js'
 
-/**
- * @type {import('hardhat-deploy/types').DeployFunction}
- */
-const func = async function (hre) {
-  const { getNamedAccounts } = hre
+const func: DeployFunction = async (hre) => {
+  const { getNamedAccounts, viem } = hre
   const allNamedAccts = await getNamedAccounts()
+  const clients = await viem.getNamedClients()
 
-  const nameWrapper = await ethers.getContract(
-    'NameWrapper',
-    await ethers.getSigner(allNamedAccts.owner),
-  )
-  const registry = await ethers.getContract(
-    'ENSRegistry',
-    await ethers.getSigner(allNamedAccts.owner),
-  )
+  const nameWrapper = await viem.getContract('NameWrapper', clients.owner)
+  const registry = await viem.getContract('ENSRegistry', clients.owner)
 
-  /**
-   * @param {string} name
-   */
-  const deleteName = async (name) => {
+  const deleteName = async (name: string) => {
     const labels = name.split('.')
-    const label = labelhash(labels.shift())
+    const label = labelhash(labels.shift()!)
     const node = namehash(labels.join('.'))
 
     const tx = await registry.setSubnodeRecord(
@@ -70,4 +57,4 @@ func.tags = ['delete-names']
 func.dependencies = ['register-unwrapped-names']
 func.runAtTheEnd = true
 
-module.exports = func
+export default func

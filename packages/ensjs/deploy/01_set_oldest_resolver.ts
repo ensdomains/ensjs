@@ -1,9 +1,7 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-await-in-loop */
-const fs = require('fs/promises')
-const { ethers } = require('hardhat')
-const { resolve } = require('path')
-const { namehash } = require('viem')
+import fs from 'node:fs/promises'
+import { resolve } from 'node:path'
+import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+import { namehash } from 'viem'
 
 const names = [
   {
@@ -13,14 +11,11 @@ const names = [
   },
 ]
 
-/**
- * @type {import('hardhat-deploy/types').DeployFunction}
- */
-const func = async function (hre) {
-  const { getNamedAccounts, deployments } = hre
+const func: DeployFunction = async (hre) => {
+  const { getNamedAccounts, deployments, viem } = hre
   const allNamedAccts = await getNamedAccounts()
 
-  const registry = await ethers.getContract('ENSRegistry')
+  const registry = await viem.getContract('ENSRegistry')
 
   await deployments.deploy('OldestResolver', {
     from: allNamedAccts.deployer,
@@ -35,12 +30,12 @@ const func = async function (hre) {
     args: [registry.address],
   })
 
-  const resolver = await ethers.getContract('OldestResolver')
+  const resolver = await viem.getContract('OldestResolver')
 
   for (const { namedOwner, name, addr } of names) {
     const owner = allNamedAccts[namedOwner]
-    const _resolver = resolver.connect(await ethers.getSigner(owner))
-    const _registry = registry.connect(await ethers.getSigner(owner))
+    const _resolver = resolver.connect(await viem.getSigner(owner))
+    const _registry = registry.connect(await viem.getSigner(owner))
 
     const tx = await _registry.setResolver(namehash(name), resolver.address)
     console.log(
@@ -66,4 +61,4 @@ func.id = 'set-oldest-resolver'
 func.tags = ['set-oldest-resolver']
 func.runAtTheEnd = true
 
-module.exports = func
+export default func
