@@ -12,11 +12,9 @@ const main = async () => {
   const records = await client.getSubgraphRecords({ name: 'ens.eth' })
   const recordData = await client.getRecords({
     name: 'ens.eth',
-    records: {
-      abi: true,
-      contentHash: true,
-      ...(records || {}),
-    },
+    abi: true,
+    contentHash: true,
+    ...records,
   })
   console.log(recordData)
 
