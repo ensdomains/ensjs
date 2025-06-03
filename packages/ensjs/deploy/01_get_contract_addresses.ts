@@ -12,7 +12,7 @@ const func: DeployFunction = async (hre) => {
   )
 
   await writeFile(
-    resolve(__dirname, '../.env.local'),
+    resolve(import.meta.dirname, '../.env.local'),
     `DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'`,
   )
   console.log('Wrote contract addresses to .env.local')
