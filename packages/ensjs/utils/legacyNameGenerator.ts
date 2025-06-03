@@ -4,13 +4,12 @@ import { labelhash, namehash } from 'viem/ens'
 
 const makeNameGenerator = async (
   hre: HardhatRuntimeEnvironment,
-  optionalNonceManager?: { getNonce: () => number | undefined },
+  optionalNonceManager?: { getNonce: (acct?: string) => number | undefined },
 ) => {
   const { getNamedAccounts, viem } = hre
   const allNamedAccts = await getNamedAccounts()
   const controller = await viem.getContract('LegacyETHRegistrarController')
   const publicResolver = await viem.getContract('LegacyPublicResolver')
-  const registry = await viem.getContract('ENSRegistry')
   const nonceManager = optionalNonceManager ?? { getNonce: () => undefined }
 
   return {
@@ -18,7 +17,7 @@ const makeNameGenerator = async (
       label,
       namedOwner,
       namedAddr,
-    }: { label: string; namedOwner: string; namedAddr?: Address }) => {
+    }: { label: string; namedOwner: string; namedAddr: Address }) => {
       const secret =
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const registrant = allNamedAccts[namedOwner]
@@ -62,15 +61,23 @@ const makeNameGenerator = async (
     subname: async ({ label, namedOwner, subnameLabel, namedSubnameOwner }) => {
       console.log(`Setting subnames for ${label}.eth...`)
       const resolver = publicResolver.address
-      const registrant = allNamedAccts[namedOwner]
       const owner = allNamedAccts[namedSubnameOwner]
-      const _registry = registry.connect(await ethers.getSigner(registrant))
-      return _registry.setSubnodeRecord(
-        namehash(`${label}.eth`),
-        labelhash(subnameLabel),
-        owner,
-        resolver,
-        '0',
+
+      const client = (await viem.getNamedClients())[namedOwner]
+      const _registry = await viem.getContract(
+        'LegacyENSRegistry' as 'ENSRegistry',
+        client,
+      )
+
+      return _registry.write.setSubnodeRecord(
+        [
+          namehash(`${label}.eth`),
+          labelhash(subnameLabel),
+          owner,
+          resolver,
+          '0',
+        ],
+        { account: client.account },
       )
     },
     setSubnameRecords: async () => {},
