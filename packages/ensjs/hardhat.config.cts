@@ -11,6 +11,10 @@ import type { HardhatUserConfig } from 'hardhat/config.js'
 
 const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 
+process.env.BATCH_GATEWAY_URLS = JSON.stringify([
+  'https://universal-offchain-unwrapper.ens-cf.workers.dev/',
+])
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
