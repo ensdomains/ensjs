@@ -93,4 +93,4 @@ func.dependencies = [
   'ETHRegistrarController',
 ]
 
-module.exports = func
+export default func

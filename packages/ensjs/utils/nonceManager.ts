@@ -27,6 +27,4 @@ const makeNonceManager = async (href: HardhatRuntimeEnvironment) => {
   }
 }
 
-module.exports = {
-  makeNonceManager,
-}
+export { makeNonceManager }
