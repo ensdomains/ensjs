@@ -2,11 +2,8 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import * as url from 'node:url'
 /* eslint-disable no-continue */
 import jsonFs from 'jsonfile'
-
-const import.meta.dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 type Exports = {
   [key: string]: string | { types?: string; import: string; default: string }
