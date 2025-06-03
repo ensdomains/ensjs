@@ -1,18 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
-
 /* eslint-disable no-await-in-loop */
 import cbor from 'cbor'
-import type { DeployFunction } from 'hardhat-deploy/types'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types'
+import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import pako from 'pako'
-import {
-  type Address,
-  type Hash,
-  bytesToHex,
-  labelhash,
-  namehash,
-  stringToBytes,
-} from 'viem'
+import { type Address, namehash, toBytes } from 'viem'
+import { makeNameGenerator } from '../utils/legacyNameGenerator.js'
 
 const dummyABI = [
   {
@@ -133,80 +125,42 @@ const dummyABI = [
   },
 ]
 
-type Name = {
+const names: {
   label: string
   namedOwner: string
   namedAddr: string
-  subname?: string
-  namedController?: string
-  resolver?: Address
   records?: {
     text?: {
       key: string
       value: string
     }[]
     addr?: {
-      key: bigint
-      value: Hash
+      key: number
+      value: string
     }[]
-    contenthash?: Hash
+    contenthash?: string
     abi?:
       | {
-          contentType: bigint
-          data: any
+          contentType: 1 | 2 | 4 | 8 | 256
+          data: object | string
         }
       | {
-          contentType: bigint
-          data: any
+          contentType: 1 | 2 | 4 | 8 | 256
+          data: string
         }[]
   }
-  subnames?: {
-    label: string
-    namedOwner: string
-  }[]
-  customDuration?: bigint
-}
-
-const names: Name[] = [
+  duration?: number
+  subnames?: Subname[]
+}[] = [
   {
     label: 'test123',
     namedOwner: 'owner',
     namedAddr: 'owner',
-    records: {
-      text: [
-        { key: 'description', value: 'Hello2' },
-        { key: 'url', value: 'https://twitter.com' },
-        { key: 'blankrecord', value: '' },
-        { key: 'email', value: 'fakeemail@fake.com' },
-      ],
-      addr: [
-        { key: 61n, value: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' },
-        { key: 0n, value: '0x00149010587f8364b964fcaa70687216b53bd2cbd798' },
-        { key: 2n, value: '0x0000000000000000000000000000000000000000' },
-      ],
-      contenthash:
-        '0xe301017012204edd2984eeaf3ddf50bac238ec95c5713fb40b5e428b508fdbe55d3b9f155ffe',
-    },
   },
   {
     label: 'to-be-wrapped',
     namedOwner: 'owner',
     namedAddr: 'owner',
-    records: {
-      text: [
-        { key: 'description', value: 'Hello2' },
-        { key: 'url', value: 'https://twitter.com' },
-        { key: 'blankrecord', value: '' },
-        { key: 'email', value: 'fakeemail@fake.com' },
-      ],
-      addr: [
-        { key: 61n, value: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' },
-        { key: 0n, value: '0x00149010587f8364b964fcaa70687216b53bd2cbd798' },
-        { key: 2n, value: '0x0000000000000000000000000000000000000000' },
-      ],
-      contenthash:
-        '0xe301017012204edd2984eeaf3ddf50bac238ec95c5713fb40b5e428b508fdbe55d3b9f155ffe',
-    },
   },
   {
     label: 'resume-and-wrap',
@@ -229,107 +183,73 @@ const names: Name[] = [
     namedAddr: 'owner',
   },
   {
-    label: 'other-controller',
+    label: 'with-legacy-resolver',
     namedOwner: 'owner',
     namedAddr: 'owner',
-    namedController: 'deployer',
   },
   {
-    label: 'other-registrant-2',
-    namedOwner: 'deployer',
-    namedAddr: 'deployer',
-    namedController: 'owner',
-  },
-  {
-    label: 'almost-latest-resolver',
+    label: 'with-oldest-resolver',
     namedOwner: 'owner',
     namedAddr: 'owner',
-    namedController: 'owner',
   },
   {
-    label: 'migrated-resolver-to-be-updated',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
+    label: 'with-profile',
+    namedOwner: 'owner2',
+    namedAddr: 'owner2',
     records: {
       text: [
         { key: 'description', value: 'Hello2' },
-        { key: 'url', value: 'https://twitter.com' },
+        { key: 'url', value: 'twitter.com' },
         { key: 'blankrecord', value: '' },
         { key: 'email', value: 'fakeemail@fake.com' },
       ],
       addr: [
-        { key: 61n, value: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' },
-        { key: 0n, value: '0x00149010587f8364b964fcaa70687216b53bd2cbd798' },
-        { key: 2n, value: '0x0000000000000000000000000000000000000000' },
+        { key: 61, value: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' },
+        { key: 0, value: '0x00149010587f8364b964fcaa70687216b53bd2cbd798' },
+        { key: 2, value: '0x0000000000000000000000000000000000000000' },
       ],
+    },
+  },
+  {
+    label: 'with-empty-addr',
+    namedOwner: 'owner2',
+    namedAddr: 'owner2',
+    records: {
+      addr: [{ key: 61, value: '0x' }],
+    },
+  },
+  {
+    label: 'with-contenthash',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
       contenthash:
         '0xe301017012204edd2984eeaf3ddf50bac238ec95c5713fb40b5e428b508fdbe55d3b9f155ffe',
     },
+  },
+  {
+    label: 'to-be-renewed',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
   },
   {
     label: 'with-subnames',
     namedOwner: 'owner',
     namedAddr: 'owner',
     subnames: [
-      { label: 'test', namedOwner: 'owner' },
-      { label: 'legacy', namedOwner: 'deployer' },
-      { label: 'xyz', namedOwner: 'owner' },
-      { label: 'addr', namedOwner: 'owner' },
+      { label: 'test', namedOwner: 'owner2' },
+      { label: 'legacy', namedOwner: 'owner2' },
+      { label: 'xyz', namedOwner: 'owner2' },
+      { label: 'addr', namedOwner: 'owner2' },
     ],
   },
   {
-    label: 'unwrapped-to-delete',
+    label: 'with-unknown-subnames',
     namedOwner: 'owner',
     namedAddr: 'owner',
     subnames: [
-      { label: 'parent-not-child', namedOwner: 'deployer' },
-      { label: 'parent-child', namedOwner: 'owner' },
-      { label: 'not-parent-child', namedOwner: 'deployer' },
-    ],
-  },
-  {
-    label: 'name-with-premium',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    customDuration: 3283200n,
-  },
-  {
-    label: 'expired',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    customDuration: 2419200n,
-  },
-  {
-    label: 'grace-period',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    customDuration: 5011200n,
-  },
-  {
-    label: 'grace-period-in-list',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    customDuration: 5011200n,
-  },
-  {
-    label: 'grace-period-starting-soon',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    customDuration: 12900600n,
-  },
-  {
-    label: 'unwrapped-with-wrapped-subnames',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    subnames: [{ label: 'sub', namedOwner: 'owner' }],
-  },
-  {
-    label: 'unknown-labels',
-    namedOwner: 'owner',
-    namedAddr: 'owner',
-    subnames: [
-      { label: 'aaa123xyz000', namedOwner: 'owner2' },
-      { label: 'aaa123', namedOwner: 'owner' },
+      { label: 'abc123', namedOwner: 'owner2' },
+      { label: 'not-known', namedOwner: 'owner2' },
     ],
   },
   {
@@ -338,358 +258,250 @@ const names: Name[] = [
     namedAddr: 'owner',
   },
   {
-    label: 'with-abi',
+    label: 'with-type-1-abi',
     namedOwner: 'owner',
     namedAddr: 'owner',
     records: {
       abi: {
-        contentType: 1n,
+        contentType: 1,
         data: dummyABI,
       },
     },
   },
   {
-    label: 'with-all-abis',
+    label: 'with-type-2-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 2,
+        data: dummyABI,
+      },
+    },
+  },
+  {
+    label: 'with-type-4-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 4,
+        data: dummyABI,
+      },
+    },
+  },
+  {
+    label: 'with-type-8-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 8,
+        data: 'https://example.com',
+      },
+    },
+  },
+  {
+    label: 'with-type-256-abi',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    records: {
+      abi: {
+        contentType: 256,
+        data: dummyABI,
+      },
+    },
+  },
+  {
+    label: 'with-type-all-abi',
     namedOwner: 'owner',
     namedAddr: 'owner',
     records: {
       abi: [
         {
-          contentType: 1n,
+          contentType: 1,
           data: dummyABI,
         },
         {
-          contentType: 2n,
+          contentType: 2,
           data: dummyABI,
         },
         {
-          contentType: 4n,
+          contentType: 4,
           data: dummyABI,
         },
         {
-          contentType: 8n,
+          contentType: 8,
           data: 'https://example.com',
         },
       ],
     },
   },
-] as const
+  {
+    label: 'expired',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    duration: 2419200,
+  },
+  {
+    label: 'deletable',
+    namedOwner: 'owner',
+    namedAddr: 'owner',
+    subnames: [
+      { label: 'xyz', namedOwner: 'owner2' },
+      { label: 'test', namedOwner: 'owner' },
+      { label: 'unwrapped-deleted', namedOwner: 'owner' },
+      { label: 'wrapped-deleted', namedOwner: 'owner' },
+    ],
+  },
+  ...Array.from({ length: 34 }, (_, i) => ({
+    label: `${i}-dummy`,
+    namedOwner: 'owner2',
+    namedAddr: 'owner2',
+  })),
+  ...Array.from({ length: 2 }, (_, i) => ({
+    label: `nonconcurrent-legacy-name-${i}`,
+    namedOwner: 'owner4',
+    namedAddr: 'owner4',
+    duration: 31536000 / 2,
+    subnames: [
+      {
+        label: `test`,
+        namedOwner: 'owner4',
+      },
+      {
+        label: `xyz`,
+        namedOwner: 'owner4',
+      },
+    ],
+  })),
+]
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { network, viem } = hre
+const func: DeployFunction = async (hre) => {
+  const { getNamedAccounts, network, viem } = hre
+  const allNamedAccts = await getNamedAccounts()
 
-  const allNamedClients = await viem.getNamedClients()
-  const publicClient = await viem.getPublicClient()
-
-  const registry = await viem.getContract('ENSRegistry')
-  const controller = await viem.getContract('LegacyETHRegistrarController')
   const publicResolver = await viem.getContract('LegacyPublicResolver')
 
-  const makeData = ({
+  await network.provider.send('anvil_setBlockTimestampInterval', [60])
+
+  const nameGenerator = await makeNameGenerator(hre)
+
+  for (const {
+    label,
     namedOwner,
-    namedController,
     namedAddr,
-    customDuration,
+    records,
     subnames,
-    ...rest
-  }: Name) => {
-    // eslint-disable-next-line no-restricted-syntax
-    const secret =
-      '0x0000000000000000000000000000000000000000000000000000000000000000'
-    const registrant = allNamedClients[namedOwner].account
-    const owner = namedController
-      ? allNamedClients[namedController].account
-      : undefined
-    const addr = allNamedClients[namedAddr].account
-    const resolver = rest.resolver ?? publicResolver.address
-    const duration = customDuration || 31536000n
+    duration = 31536000,
+  } of names) {
+    const registrant = allNamedAccts[namedOwner] as Address
+    const commitTx = await nameGenerator.commit({
+      label,
+      namedOwner,
+      namedAddr,
+    })
 
-    return {
-      ...rest,
-      secret,
-      registrant,
-      owner,
-      addr,
-      resolver,
+    console.log(
+      `Committing commitment for ${label}.eth (tx: ${commitTx.hash})...`,
+    )
+    await commitTx.wait()
+
+    await network.provider.send('evm_mine')
+
+    const registerTx = await nameGenerator.register({
+      label,
+      namedOwner,
+      namedAddr,
       duration,
-      subnames,
-    } as const
-  }
+    })
+    console.log(`Registering name ${label}.eth (tx: ${registerTx.hash})...`)
 
-  const makeCommitment =
-    (nonce: number) =>
-    async (
-      {
-        label,
-        registrant,
-        secret,
-        resolver,
-        addr,
-      }: ReturnType<typeof makeData>,
-      index: number,
-    ) => {
-      const commitment = await controller.read.makeCommitmentWithConfig([
-        label,
-        registrant.address,
-        secret,
-        resolver,
-        addr.address,
-      ])
+    await registerTx.wait()
 
-      const commitTxHash = await controller.write.commit([commitment], {
-        account: registrant,
-        nonce: nonce + index,
-      })
-      console.log(
-        `Commiting commitment for ${label}.eth (tx: ${commitTxHash})...`,
+    if (records) {
+      const _publicResolver = publicResolver.connect(
+        await viem.getWalletClient(registrant),
       )
-
-      return 1
-    }
-
-  const makeRegistration =
-    (nonce: number) =>
-    async (
-      {
-        label,
-        registrant,
-        secret,
-        resolver,
-        addr,
-        duration,
-      }: ReturnType<typeof makeData>,
-      index: number,
-    ) => {
-      const price = await controller.read.rentPrice([label, duration])
-
-      const registerTxHash = await controller.write.registerWithConfig(
-        [label, registrant.address, duration, secret, resolver, addr.address],
-        {
-          account: registrant,
-          value: price,
-          nonce: nonce + index,
-        },
-      )
-      console.log(`Registering name ${label}.eth (tx: ${registerTxHash})...`)
-
-      return 1
-    }
-
-  const makeRecords =
-    (nonce: number) =>
-    async (
-      { label, records: _records, registrant }: ReturnType<typeof makeData>,
-      index: number,
-    ) => {
-      const records = _records!
-      let nonceRef = nonce + index
 
       const hash = namehash(`${label}.eth`)
       console.log(`Setting records for ${label}.eth...`)
       if (records.text) {
         console.log('TEXT')
         for (const { key, value } of records.text) {
-          const setTextHash = await publicResolver.write.setText(
-            [hash, key, value],
-            {
-              account: registrant,
-              nonce: nonceRef,
-            },
-          )
-          console.log(` - ${key} ${value} (tx: ${setTextHash})...`)
-          nonceRef += 1
+          const setTextTx = await _publicResolver.setText(hash, key, value)
+          console.log(` - ${key} ${value} (tx: ${setTextTx.hash})...`)
+          await setTextTx.wait()
         }
       }
       if (records.addr) {
         console.log('ADDR')
         for (const { key, value } of records.addr) {
-          const setAddrHash = await publicResolver.write.setAddr(
-            [hash, key, value],
-            {
-              account: registrant,
-              nonce: nonceRef,
-            },
-          )
-          console.log(` - ${key} ${value} (tx: ${setAddrHash})...`)
-          nonceRef += 1
+          const setAddrTx = await _publicResolver[
+            'setAddr(bytes32,uint256,bytes)'
+          ](hash, key, value)
+          console.log(` - ${key} ${value} (tx: ${setAddrTx.hash})...`)
+          await setAddrTx.wait()
         }
       }
       if (records.contenthash) {
         console.log('CONTENTHASH')
-        const setContenthashHash = await publicResolver.write.setContenthash(
-          [hash, records.contenthash],
-          { account: registrant, nonce: nonceRef },
+        const setContenthashTx = await _publicResolver.setContenthash(
+          hash,
+          records.contenthash,
         )
-        console.log(` - ${records.contenthash} (tx: ${setContenthashHash})...`)
-        nonceRef += 1
+        console.log(
+          ` - ${records.contenthash} (tx: ${setContenthashTx.hash})...`,
+        )
+        await setContenthashTx.wait()
       }
       if (records.abi) {
         const abis = Array.isArray(records.abi) ? records.abi : [records.abi]
         for (const abi of abis) {
-          console.log('ABI')
-          const { contentType, data } = abi
-          let data_: Uint8Array | undefined
-          if (contentType === 1n) data_ = stringToBytes(JSON.stringify(data))
-          else if (contentType === 2n)
-            data_ = pako.deflate(JSON.stringify(abi.data))
-          else if (contentType === 4n) data_ = cbor.encode(abi.data)
-          else data_ = stringToBytes(data)
-          const setAbiHash = await publicResolver.write.setABI(
-            [hash, contentType, bytesToHex(data_)],
-            { account: registrant, nonce: nonceRef },
+          /**
+           * @type {string | Buffer | Uint8Array}
+           */
+          let data: string | Buffer | Uint8Array
+          if (abi.contentType === 1 || abi.contentType === 256) {
+            data = JSON.stringify(abi.data)
+          } else if (abi.contentType === 2) {
+            data = pako.deflate(JSON.stringify(abi.data))
+          } else if (abi.contentType === 4) {
+            data = cbor.encode(abi.data)
+          } else {
+            data = abi.data
+          }
+          if (typeof data === 'string') data = toBytes(data)
+          const setABITx = await _publicResolver.setABI(
+            hash,
+            abi.contentType,
+            data,
           )
-          console.log(` - ${records.abi} (tx: ${setAbiHash})...`)
-          nonceRef += 1
+          console.log(` - ${abi.contentType} (tx: ${setABITx.hash})...`)
+          await setABITx.wait()
         }
       }
-      return nonceRef - nonce - index
     }
 
-  const makeSubnames =
-    (nonce: number) =>
-    async (
-      { label, subnames, registrant, resolver }: ReturnType<typeof makeData>,
-      index: number,
-    ) => {
-      if (!subnames) return 0
-      for (let i = 0; i < subnames.length; i += 1) {
-        const { label: subnameLabel, namedOwner: namedSubOwner } = subnames[i]
-        const subOwner = allNamedClients[namedSubOwner].account
-        const subnameTxHash = await registry.write.setSubnodeRecord(
-          [
-            namehash(`${label}.eth`),
-            labelhash(subnameLabel),
-            subOwner.address,
-            resolver,
-            0n,
-          ],
-          {
-            account: registrant,
-            nonce: nonce + index + i,
-          },
-        )
-        console.log(
-          `Creating subname ${subnameLabel}.${label}.eth (tx: ${subnameTxHash})...`,
-        )
+    if (subnames) {
+      console.log(`Setting subnames for ${label}.eth...`)
+      for (const {
+        label: subnameLabel,
+        namedOwner: namedSubnameOwner,
+      } of subnames) {
+        const setSubnameTx = await nameGenerator.subname({
+          label,
+          namedOwner,
+          subnameLabel,
+          namedSubnameOwner,
+        })
+        console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
+        await setSubnameTx.wait()
       }
-      return subnames.length
     }
-
-  const makeController =
-    (nonce: number) =>
-    async (
-      { label, owner, registrant }: ReturnType<typeof makeData>,
-      index: number,
-    ) => {
-      const setControllerTxHash = await registry.write.setOwner(
-        [namehash(`${label}.eth`), owner!.address],
-        {
-          account: registrant,
-          nonce: nonce + index,
-        },
-      )
-      console.log(
-        `Setting controller for ${label}.eth to ${owner} (tx: ${setControllerTxHash})...`,
-      )
-
-      return 1
-    }
-
-  const allNameData = names.map(makeData)
-
-  const getNonceAndApply = async (
-    property: keyof ReturnType<typeof makeData>,
-    _func: typeof makeCommitment,
-    filter?: (data: ReturnType<typeof makeData>) => boolean,
-    nonceMap?: Record<string, number>,
-  ) => {
-    const newNonceMap = nonceMap || {}
-    for (const client of Object.values(allNamedClients)) {
-      const account = client.account
-      const address = account.address
-      const namesWithAccount = allNameData.filter((data) => {
-        const propertyValue = data[property]
-        if (typeof propertyValue === 'string') {
-          if (propertyValue !== address) return false
-        } else if (typeof propertyValue === 'object') {
-          if (!('address' in propertyValue)) return false
-          if (propertyValue.address !== address) return false
-        } else {
-          return false
-        }
-        if (filter) return filter(data)
-        return true
-      })
-      if (!newNonceMap[address]) {
-        const nonce = await publicClient.getTransactionCount({ address })
-        newNonceMap[address] = nonce
-      }
-      let usedNonces = 0
-
-      for (let i = 0; i < namesWithAccount.length; i += 1) {
-        const data = namesWithAccount[i]
-        usedNonces += await _func(newNonceMap[address])(data, usedNonces)
-      }
-      newNonceMap[address] += usedNonces
-    }
-    return newNonceMap
   }
 
-  await network.provider.send('evm_setAutomine', [false])
-  await getNonceAndApply('registrant', makeCommitment)
-  await network.provider.send('evm_mine')
-  const oldTimestamp = await publicClient
-    .getBlock()
-    .then((b) => Number(b.timestamp))
-  await network.provider.send('evm_setNextBlockTimestamp', [oldTimestamp + 60])
-  await network.provider.send('evm_mine')
-  await getNonceAndApply('registrant', makeRegistration)
-  await network.provider.send('evm_mine')
-  const tempNonces = await getNonceAndApply(
-    'registrant',
-    makeRecords,
-    (data) => !!data.records,
-  )
-  const tempNonces2 = await getNonceAndApply(
-    'registrant',
-    makeController,
-    (data) => !!data.owner,
-    tempNonces,
-  )
-  await getNonceAndApply(
-    'registrant',
-    makeSubnames,
-    (data) => !!data.subnames,
-    tempNonces2,
-  )
-  await network.provider.send('evm_mine')
-
-  // Skip forward 28 + 90 days so that minimum exp names go into premium
-  await network.provider.send('anvil_setBlockTimestampInterval', [
-    2419200 + 7776000,
-  ])
-  await network.provider.send('evm_mine')
-
-  await network.provider.send('evm_setAutomine', [true])
   await network.provider.send('anvil_setBlockTimestampInterval', [1])
-  await network.provider.send('evm_mine')
-
-  // register subname
-  const resolver = publicResolver.address
-  const registrant = allNamedClients.owner.account
-  const subnameTxHash = await registry.write.setSubnodeRecord(
-    [
-      namehash('test123.eth'),
-      labelhash('sub'),
-      registrant.address,
-      resolver,
-      0n,
-    ],
-    {
-      account: registrant,
-    },
-  )
-  await viem.waitForTransactionSuccess(subnameTxHash)
 
   return true
 }
