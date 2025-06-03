@@ -1,8 +1,5 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
-
-/* eslint-disable import/no-extraneous-dependencies */
-const { ethers } = require('hardhat')
-const { labelhash, namehash } = require('viem/ens')
+import { labelhash, namehash } from 'viem/ens'
 
 const ZERO_HASH =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -10,10 +7,10 @@ const ZERO_HASH =
 const names = ['legacy']
 
 const func: DeployFunction = async (hre) => {
-  const { getNamedAccounts } = hre
-  const { owner } = await getNamedAccounts()
+  const { viem } = hre
+  const { owner } = await viem.getNamedClients()
 
-  const registry = await ethers.getContract('LegacyENSRegistry', owner)
+  const registry = await viem.getContract('LegacyENSRegistry', owner)
 
   const tldTx = await registry.setSubnodeOwner(
     ZERO_HASH,
@@ -42,10 +39,10 @@ func.id = 'legacy-registry-names'
 func.tags = ['legacy-registry-names']
 func.dependencies = ['ENSRegistry']
 func.skip = async (hre) => {
-  const { getNamedAccounts } = hre
+  const { getNamedAccounts, viem } = hre
   const { owner } = await getNamedAccounts()
 
-  const registry = await ethers.getContract('LegacyENSRegistry')
+  const registry = await viem.getContract('LegacyENSRegistry')
 
   const ownerOfTestTld = await registry.owner(namehash('test'))
   if (ownerOfTestTld !== owner) {

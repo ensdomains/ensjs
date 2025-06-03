@@ -1,20 +1,10 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-await-in-loop */
-
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const { BigNumber } = require('ethers')
-const { ethers } = require('hardhat')
-const {
-  makeNameGenerator: makeWrappedNameGenerator,
-} = require('../utils/wrappedNameGenerator.cjs')
-const {
-  makeNameGenerator: makeLegacyNameGenerator,
-} = require('../utils/legacyNameGenerator.cjs')
-const { makeNonceManager } = require('../utils/nonceManager.cjs')
+import { makeNameGenerator as makeLegacyNameGenerator } from '../utils/legacyNameGenerator.js'
+import { makeNonceManager } from '../utils/nonceManager.js'
+import { makeNameGenerator as makeWrappedNameGenerator } from '../utils/wrappedNameGenerator.js'
 
 const DURATION = 31556000
 
@@ -75,7 +65,7 @@ const names: {
 ]
 
 const func: DeployFunction = async (hre) => {
-  const { network } = hre
+  const { network, viem } = hre
 
   const nonceManager = await makeNonceManager(hre)
   const wrappedNameGenerator = await makeWrappedNameGenerator(hre, nonceManager)
@@ -122,8 +112,10 @@ const func: DeployFunction = async (hre) => {
     }),
   )
 
-  const oldTimestamp = (await ethers.provider.getBlock('latest')).timestamp
-  await network.provider.send('evm_setNextBlockTimestamp', [oldTimestamp + 60])
+  const oldTimestamp = (
+    await (await viem.getPublicClient()).getBlock({ blockTag: 'latest' })
+  ).timestamp
+  await network.provider.send('evm_setNextBlockTimestamp', [oldTimestamp + 60n])
   await network.provider.send('evm_increaseTime', [300])
   await network.provider.send('evm_mine')
 
