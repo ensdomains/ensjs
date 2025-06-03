@@ -3,7 +3,7 @@ import { namehash } from 'viem/ens'
 
 const makeNameGenerator = async (
   hre: HardhatRuntimeEnvironment,
-  optionalNonceManager?: { getNonce: () => number | undefined },
+  optionalNonceManager?: { getNonce: (acct?: string) => number | undefined },
 ) => {
   const { getNamedAccounts, viem } = hre
   const allNamedAccts = await getNamedAccounts()
