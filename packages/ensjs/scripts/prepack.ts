@@ -6,7 +6,7 @@ import * as url from 'node:url'
 /* eslint-disable no-continue */
 import jsonFs from 'jsonfile'
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+const import.meta.dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 type Exports = {
   [key: string]: string | { types?: string; import: string; default: string }
@@ -14,7 +14,7 @@ type Exports = {
 
 // Generates a package.json to be published to NPM with only the necessary fields.
 function generatePackageJson() {
-  const packageJsonPath = path.join(__dirname, '../package.json')
+  const packageJsonPath = path.join(import.meta.dirname, '../package.json')
   const tmpPackageJson = jsonFs.readFileSync(packageJsonPath)
 
   jsonFs.writeFileSync(`${packageJsonPath}.tmp`, tmpPackageJson, { spaces: 2 })

@@ -17,7 +17,7 @@ import {
 import { localhost as _localhost } from 'viem/chains'
 
 config({
-  path: resolve(__dirname, '../../.env.local'),
+  path: resolve(import.meta.dirname, '../../.env.local'),
   override: true,
 })
 

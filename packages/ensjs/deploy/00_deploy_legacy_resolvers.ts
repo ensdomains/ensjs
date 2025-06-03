@@ -18,7 +18,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     from: deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(__dirname, './.contracts/OutdatedResolverV1.json'),
+        resolve(import.meta.dirname, './.contracts/OutdatedResolverV1.json'),
         {
           encoding: 'utf8',
         },
@@ -31,7 +31,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     from: deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(__dirname, './.contracts/OutdatedResolverV3.json'),
+        resolve(import.meta.dirname, './.contracts/OutdatedResolverV3.json'),
         {
           encoding: 'utf8',
         },
@@ -44,7 +44,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     from: deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(__dirname, './.contracts/CustomLegacyResolver.json'),
+        resolve(import.meta.dirname, './.contracts/CustomLegacyResolver.json'),
         {
           encoding: 'utf8',
         },
@@ -57,7 +57,10 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     from: deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(__dirname, './.contracts/CustomNameWrapperAwareResolver.json'),
+        resolve(
+          import.meta.dirname,
+          './.contracts/CustomNameWrapperAwareResolver.json',
+        ),
         {
           encoding: 'utf8',
         },

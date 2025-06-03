@@ -19,15 +19,17 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const deploymentAddressMap = Object.fromEntries(deploymentAddressArray)
 
   await writeFile(
-    resolve(__dirname, '../.env.local'),
+    resolve(import.meta.dirname, '../.env.local'),
     `NEXT_PUBLIC_DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'`,
   )
-  if (!existsSync(resolve(__dirname, '../typings-custom/generated'))) {
-    await mkdir(resolve(__dirname, '../typings-custom/generated'))
+  if (
+    !existsSync(resolve(import.meta.dirname, '../typings-custom/generated'))
+  ) {
+    await mkdir(resolve(import.meta.dirname, '../typings-custom/generated'))
   }
   await writeFile(
     resolve(
-      __dirname,
+      import.meta.dirname,
       '../typings-custom/generated/local-contracts-generated.d.ts',
     ),
     `declare module '@app/local-contracts' {
