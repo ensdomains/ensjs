@@ -1,49 +1,28 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { existsSync } from 'node:fs'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import type { DeployFunction } from 'hardhat-deploy/types.js'
 
-import type { DeployFunction } from 'hardhat-deploy/types'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types'
-import { getAddress } from 'viem'
-
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+const func: DeployFunction = async (hre) => {
   const allDeployments = await hre.deployments.all()
-  const deploymentAddressArray = [
-    ...Object.keys(allDeployments).map((dkey) => [
+  const deploymentAddressMap = Object.fromEntries(
+    Object.keys(allDeployments).map((dkey) => [
       dkey,
       allDeployments[dkey].address,
     ]),
-    ['Multicall', '0xca11bde05977b3631167028862be2a173976ca11'],
-  ].map(([name, address]) => [name, getAddress(address)])
-  const deploymentAddressMap = Object.fromEntries(deploymentAddressArray)
+  )
 
   await writeFile(
-    resolve(import.meta.dirname, '../.env.local'),
-    `NEXT_PUBLIC_DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'`,
-  )
-  if (
-    !existsSync(resolve(import.meta.dirname, '../typings-custom/generated'))
-  ) {
-    await mkdir(resolve(import.meta.dirname, '../typings-custom/generated'))
-  }
-  await writeFile(
-    resolve(
-      import.meta.dirname,
-      '../typings-custom/generated/local-contracts-generated.d.ts',
-    ),
-    `declare module '@app/local-contracts' {
-  interface Register {
-    deploymentAddresses: {
-      ${deploymentAddressArray.map(([name, address]) => `${name}: '${address}'`).join('\n      ')}
-    }
-  }
-}
-`,
+    resolve(__dirname, '../.env.local'),
+    `DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'`,
   )
   console.log('Wrote contract addresses to .env.local')
+
+  await (await hre.viem.getTestClient()).request({
+    method: 'evm_snapshot',
+  })
 }
 
 func.runAtTheEnd = true
+func.dependencies = ['set-legacy-resolver']
 
 export default func
