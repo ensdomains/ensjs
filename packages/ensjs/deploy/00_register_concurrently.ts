@@ -108,14 +108,14 @@ const func: DeployFunction = async (hre) => {
   network.provider.send('evm_mine')
   await Promise.all(
     commitTxs.map(async (tx) => {
-      return tx.wait()
+      return viem.waitForTransactionSuccess(tx)
     }),
   )
 
   const oldTimestamp = (
     await (await viem.getPublicClient()).getBlock({ blockTag: 'latest' })
   ).timestamp
-  await network.provider.send('evm_setNextBlockTimestamp', [oldTimestamp + 60n])
+  await network.provider.send('evm_setNextBlockTimestamp', [Number(oldTimestamp + 60n)])
   await network.provider.send('evm_increaseTime', [300])
   await network.provider.send('evm_mine')
 
@@ -168,7 +168,7 @@ const func: DeployFunction = async (hre) => {
       label: subnameLabel,
       namedOwner: namedSubnameOwner,
       fuses: subnameFuses = 0,
-      expiry: subnameExpiry = BigNumber.from(2).pow(64).sub(1),
+      expiry: subnameExpiry = 2n ** 64n - 1n,
     } of subnames) {
       let setSubnameTx
       if (type === 'legacy')
@@ -187,8 +187,8 @@ const func: DeployFunction = async (hre) => {
           subnameFuses,
           subnameExpiry,
         })
-      console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
-      await setSubnameTx.wait()
+      console.log(` - ${subnameLabel} (tx: ${setSubnameTx})...`)
+      await viem.waitForTransactionSuccess(setSubnameTx)
     }
   }
 

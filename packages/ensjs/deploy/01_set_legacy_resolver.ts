@@ -17,11 +17,12 @@ const func: DeployFunction = async (hre) => {
 
   const registry = await viem.getContract('ENSRegistry')
 
+  console.log('deploying NoMulticallResolver')
   await deployments.deploy('NoMulticallResolver', {
     from: allNamedAccts.deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(import.meta.dirname, '../contracts/OldResolver.json'),
+        resolve(import.meta.dirname, '../contracts/NoMulticallResolver.json'),
         {
           encoding: 'utf8',
         },
@@ -33,29 +34,28 @@ const func: DeployFunction = async (hre) => {
   const resolver = await viem.getContract('NoMulticallResolver')
   for (const { namedOwner, name, addr } of names) {
     const owner = (await viem.getNamedClients())[namedOwner]
-    const _resolver = resolver.connect(owner)
-    const _registry = registry.connect(owner)
 
-    const tx = await _registry.write.setResolver([
+    const tx = await registry.write.setResolver([
       namehash(name),
       resolver.address,
-    ])
+    ], {
+      account: owner.address
+    })
     console.log(
-      `Setting resolver for ${name} to ${resolver.address} (tx: ${tx.hash})...`,
+      `Setting resolver for ${name} to ${resolver.address} (tx: ${tx})...`,
     )
-    await tx.wait()
+    await viem.waitForTransactionSuccess(tx)
 
     for (const { key, value } of addr) {
-      const tx2 = await _resolver['setAddr(bytes32,uint256,bytes)'](
-        namehash(name),
-        key,
-        value,
+      const tx2 = await resolver.write.setAddr(
+        [namehash(name), value],
         {
+          account: owner.address,
           gasLimit: 100000,
         },
       )
-      console.log(`Setting address for ${key} to ${value} (tx: ${tx.hash})...`)
-      await tx2.wait()
+      console.log(`Setting address for ${key} to ${value} (tx: ${tx})...`)
+      await viem.waitForTransactionSuccess(tx2)
     }
   }
 

@@ -24,7 +24,7 @@ const makeNameGenerator = async (
       const resolver = publicResolver.address
       const addr = allNamedAccts[namedAddr]
 
-      const commitment = await controller.write.makeCommitmentWithConfig([
+      const commitment = await controller.read.makeCommitmentWithConfig([
         label,
         registrant,
         secret,
@@ -32,36 +32,45 @@ const makeNameGenerator = async (
         addr,
       ])
 
-      const _controller = controller.connect(await ethers.getSigner(registrant))
-      return _controller.commit(commitment, {
+      return controller.write.commit([commitment], {
         nonce: nonceManager.getNonce(namedOwner),
+        account: registrant,
       })
     },
-    register: async ({ label, namedOwner, namedAddr, duration = 31536000 }) => {
+    register: async ({ label, namedOwner, namedAddr, duration = 31536000 }: {
+      label: string
+      namedOwner: string
+      namedAddr: string
+      duration?: number
+    }) => {
       const secret =
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const registrant = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
       const addr = allNamedAccts[namedAddr]
-      const price = await controller.rentPrice(label, duration)
+      const price = await controller.read.rentPrice([label, duration])
+
       return controller.write.registerWithConfig(
         [label, registrant, duration, secret, resolver, addr],
         {
           value: price,
           nonce: nonceManager.getNonce(namedOwner),
+          account: registrant,
         },
-      ) // { account: registrant }
+      )
     },
-    subname: async ({ label, namedOwner, subnameLabel, namedSubnameOwner }) => {
+    subname: async ({ label, namedOwner, subnameLabel, namedSubnameOwner }: {
+      label: string
+      namedOwner: string
+      subnameLabel: string
+      namedSubnameOwner: string
+    }) => {
       console.log(`Setting subnames for ${label}.eth...`)
       const resolver = publicResolver.address
+      const registrant = allNamedAccts[namedOwner]
       const owner = allNamedAccts[namedSubnameOwner]
-
-      const client = (await viem.getNamedClients())[namedOwner]
-      const _registry = await viem.getContract(
-        'LegacyENSRegistry' as 'ENSRegistry',
-        client,
-      )
+    
+      const _registry = await viem.getContract('ENSRegistry')
 
       return _registry.write.setSubnodeRecord(
         [
@@ -71,7 +80,7 @@ const makeNameGenerator = async (
           resolver,
           '0',
         ],
-        { account: client.account },
+        { account: registrant },
       )
     },
     setSubnameRecords: async () => {},

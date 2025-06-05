@@ -16,14 +16,14 @@ const func: DeployFunction = async (hre) => {
     const label = labelhash(labels.shift()!)
     const node = namehash(labels.join('.'))
 
-    const tx = await registry.setSubnodeRecord(
+    const tx = await registry.write.setSubnodeRecord([
       node,
       label,
       EMPTY_ADDRESS,
       EMPTY_ADDRESS,
-      0,
+      0]
     )
-    await tx.wait()
+    await viem.waitForTransactionSuccess(tx)
   }
 
   const name1 = 'wrapped-deleted.deletable.eth'

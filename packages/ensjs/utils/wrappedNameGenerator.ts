@@ -20,25 +20,32 @@ const makeNameGenerator = async (
       reverseRecord = false,
       fuses = 0,
       duration = 31536000,
+    }: {
+      label: string
+      namedOwner: string
+      data?: any[]
+      reverseRecord?: boolean
+      fuses?: number
+      duration?: number | bigint
     }) => {
       const secret =
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
-      const commitment = await controller.makeCommitment(
-        label,
+      const commitment = await controller.read.makeCommitment(
+      [  label,
         owner,
         duration,
         secret,
         resolver,
         data,
         reverseRecord,
-        fuses,
+        fuses]
       )
 
-      const _controller = controller.connect(await viem.getSigner(owner))
-      return _controller.commit(commitment, {
+      return controller.write.commit([commitment], {
         nonce: nonceManager.getNonce(namedOwner),
+        account: owner,
       })
     },
     register: async ({
@@ -60,11 +67,10 @@ const makeNameGenerator = async (
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
-      const [price] = await controller.rentPrice(label, duration)
+      const price = await controller.read.rentPrice([label, duration])
 
-      const priceWithBuffer = BigInt((price * 105) / 100)
-      const _controller = controller.connect(await viem.getSigner(owner))
-      return _controller.register(
+      const priceWithBuffer = price.base * 105n / 100n
+      return controller.write.register([
         label,
         owner,
         duration,
@@ -72,10 +78,11 @@ const makeNameGenerator = async (
         resolver,
         data,
         reverseRecord,
-        fuses,
+        fuses],
         {
           value: priceWithBuffer,
           nonce: nonceManager.getNonce(namedOwner),
+          account: owner
         },
       )
     },
@@ -85,20 +92,29 @@ const makeNameGenerator = async (
       subnameLabel,
       namedSubnameOwner,
       subnameFuses = 0,
-      subnameExpiry = BigNumber.from(2).pow(64).sub(1),
+      subnameExpiry = BigInt(2) ** BigInt(64) - BigInt(1),
+    }: {
+      label: string
+      namedOwner: string
+      subnameLabel: string
+      namedSubnameOwner: string
+      subnameFuses?: number
+      subnameExpiry?: number | bigint
     }) => {
       const resolver = publicResolver.address
       const owner = allNamedAccts[namedOwner]
       const subnameOwner = allNamedAccts[namedSubnameOwner]
-      const _nameWrapper = nameWrapper.connect(await viem.getSigner(owner))
-      return _nameWrapper.setSubnodeRecord(
-        namehash(`${label}.eth`),
+      return nameWrapper.write.setSubnodeRecord(
+       [ namehash(`${label}.eth`),
         subnameLabel,
         subnameOwner,
         resolver,
         '0',
         subnameFuses,
-        subnameExpiry,
+        subnameExpiry],
+        {
+          account: owner
+        },
       )
     },
   }

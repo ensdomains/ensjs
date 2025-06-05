@@ -21,7 +21,7 @@ const func: DeployFunction = async (hre) => {
     from: allNamedAccts.deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(import.meta.dirname, '../contracts/OldestResolver.json'),
+        resolve(import.meta.dirname, '../contracts/OldResolver.json'),
         {
           encoding: 'utf8',
         },
@@ -34,27 +34,28 @@ const func: DeployFunction = async (hre) => {
 
   for (const { namedOwner, name, addr } of names) {
     const owner = allNamedAccts[namedOwner]
-    const _resolver = resolver.connect(await viem.getSigner(owner))
-    const _registry = registry.connect(await viem.getSigner(owner))
 
-    const tx = await _registry.write.setResolver([
+    const tx = await registry.write.setResolver([
       namehash(name),
       resolver.address,
-    ])
+    ], {
+      account: owner
+    })
     console.log(
-      `Setting resolver for ${name} to ${resolver.address} (tx: ${tx.hash})...`,
+      `Setting resolver for ${name} to ${resolver.address} (tx: ${tx})...`,
     )
-    await tx.wait()
+    await viem.waitForTransactionSuccess(tx)
 
-    const tx2 = await _resolver['setAddr(bytes32,address)'](
-      namehash(name),
-      addr,
+    const tx2 = await resolver.write.setAddr(
+    [  namehash(name),
+      addr],
       {
+        account: owner,
         gasLimit: 100000,
       },
     )
-    console.log(`Setting address for 60 to ${addr} (tx: ${tx.hash})...`)
-    await tx2.wait()
+    console.log(`Setting address for 60 to ${addr} (tx: ${tx})...`)
+    await viem.waitForTransactionSuccess(tx2)
   }
 
   return true

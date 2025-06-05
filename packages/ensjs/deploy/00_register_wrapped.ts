@@ -126,7 +126,7 @@ const names: {
 ]
 
 const func: DeployFunction = async (hre) => {
-  const { network } = hre
+  const { network, viem } = hre
   const nameGenerator = await makeNameGenerator(hre)
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
@@ -150,9 +150,9 @@ const func: DeployFunction = async (hre) => {
     })
 
     console.log(
-      `Committing commitment for ${label}.eth (tx: ${commitTx.hash})...`,
+      `Committing commitment for ${label}.eth (tx: ${commitTx})...`,
     )
-    await commitTx.wait()
+    await viem.waitForTransactionSuccess(commitTx)
 
     await network.provider.send('evm_mine')
 
@@ -165,8 +165,8 @@ const func: DeployFunction = async (hre) => {
       duration,
     })
 
-    console.log(`Registering name ${label}.eth (tx: ${registerTx.hash})...`)
-    await registerTx.wait()
+    console.log(`Registering name ${label}.eth (tx: ${registerTx})...`)
+    await viem.waitForTransactionSuccess(registerTx)
 
     if (subnames) {
       console.log(`Setting subnames for ${label}.eth...`)
@@ -184,8 +184,8 @@ const func: DeployFunction = async (hre) => {
           subnameFuses,
           subnameExpiry,
         })
-        console.log(` - ${subnameLabel} (tx: ${setSubnameTx.hash})...`)
-        await setSubnameTx.wait()
+        console.log(` - ${subnameLabel} (tx: ${setSubnameTx})...`)
+        await viem.waitForTransactionSuccess(setSubnameTx)
       }
     }
   }
