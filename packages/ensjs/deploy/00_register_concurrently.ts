@@ -154,7 +154,7 @@ const func: DeployFunction = async (hre) => {
   await network.provider.send('evm_mine')
   await Promise.all(
     registerTxs.map(async (tx) => {
-      return tx.wait()
+      return viem.waitForTransactionSuccess(tx)
     }),
   )
 
