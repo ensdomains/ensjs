@@ -23,7 +23,7 @@ const func: DeployFunction = async (hre) => {
   await Promise.all(
     names.map(async (name) => {
       const nameTx = await registry.write.setSubnodeOwner(
-        [namehash('test'), labelhash(name)],
+        [namehash('test'), labelhash(name), owner.address],
         owner,
       )
       console.log(`Creating ${name}.test (tx: ${nameTx.hash})...`)
