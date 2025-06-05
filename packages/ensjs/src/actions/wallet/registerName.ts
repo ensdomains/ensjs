@@ -18,6 +18,8 @@ import {
 import { getNameType } from "../../utils/name/getNameType.js";
 import {
 	type L2RegistrationParameters,
+	makeL2CommitmentTuple,
+	type MakeL2CommitmentTupleErrorType,
 } from "../../utils/l2RegisterHelpers.js";
 import {
 	wrappedLabelLengthCheck,
@@ -47,18 +49,19 @@ export type RegisterNameWriteParametersReturnType<
 export type RegisterNameWriteParametersErrorType =
 	| UnsupportedNameTypeError
 	| WrappedLabelLengthCheckErrorType
-	| GetChainContractAddressErrorType;
+	| GetChainContractAddressErrorType
+	| MakeL2CommitmentTupleErrorType;
 
 export const registerNameWriteParameters = <
 	chain extends Chain,
 	account extends Account,
 >(
 	client: RequireClientContracts<chain, "ensL2EthRegistrar", account>,
-	{ value, name, owner, duration, secret, subregistryAddress, resolverAddress }: RegisterNameWriteParametersParameters,
+	{ value, ...registrationParams }: RegisterNameWriteParametersParameters,
 ) => {
 	ASSERT_NO_TYPE_ERROR(client);
 
-	const nameType = getNameType(name);
+	const nameType = getNameType(registrationParams.name);
 	if (nameType !== "eth-2ld")
 		throw new UnsupportedNameTypeError({
 			nameType,
@@ -66,8 +69,11 @@ export const registerNameWriteParameters = <
 			details: "Only 2ld-eth name registration is supported",
 		});
 
-	const labels = name.split(".");
+	const labels = registrationParams.name.split(".");
 	wrappedLabelLengthCheck(labels[0]);
+
+	// Use the commitment tuple helper for consistency
+	const commitmentTuple = makeL2CommitmentTuple(registrationParams);
 
 	return {
 		address: getChainContractAddress({
@@ -76,14 +82,7 @@ export const registerNameWriteParameters = <
 		}),
 		abi: l2EthRegistrarRegisterSnippet,
 		functionName: "register",
-		args: [
-			name,
-			owner,
-			secret,
-			subregistryAddress || "0x0000000000000000000000000000000000000000",
-			resolverAddress || "0x0000000000000000000000000000000000000000",
-			BigInt(duration),
-		],
+		args: commitmentTuple,
 		chain: client.chain,
 		account: client.account,
 		value,
