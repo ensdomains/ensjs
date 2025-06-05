@@ -44,19 +44,13 @@ const makeNameGenerator = async (
       const resolver = publicResolver.address
       const addr = allNamedAccts[namedAddr]
       const price = await controller.rentPrice(label, duration)
-      const _controller = controller.connect(await ethers.getSigner(registrant))
-      return _controller.registerWithConfig(
-        label,
-        registrant,
-        duration,
-        secret,
-        resolver,
-        addr,
+      return controller.write.registerWithConfig(
+        [label, registrant, duration, secret, resolver, addr],
         {
           value: price,
           nonce: nonceManager.getNonce(namedOwner),
         },
-      )
+      ) // { account: registrant }
     },
     subname: async ({ label, namedOwner, subnameLabel, namedSubnameOwner }) => {
       console.log(`Setting subnames for ${label}.eth...`)

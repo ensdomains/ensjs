@@ -9,7 +9,7 @@ const func: DeployFunction = async (hre) => {
 
   let contractJson: ArtifactData
 
-  const jsonPath = resolve(__dirname, '../cache/multicall.json')
+  const jsonPath = resolve(import.meta.dirname, '../cache/multicall.json')
 
   if (!existsSync(resolve(jsonPath, '../'))) mkdirSync(resolve(jsonPath, '../'))
 

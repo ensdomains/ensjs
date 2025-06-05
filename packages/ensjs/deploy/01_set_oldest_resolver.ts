@@ -21,7 +21,7 @@ const func: DeployFunction = async (hre) => {
     from: allNamedAccts.deployer,
     contract: JSON.parse(
       await fs.readFile(
-        resolve(__dirname, '../contracts/OldestResolver.json'),
+        resolve(import.meta.dirname, '../contracts/OldestResolver.json'),
         {
           encoding: 'utf8',
         },

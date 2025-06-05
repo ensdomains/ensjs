@@ -20,9 +20,12 @@ const func: DeployFunction = async (hre) => {
   await deployments.deploy('NoMulticallResolver', {
     from: allNamedAccts.deployer,
     contract: JSON.parse(
-      await fs.readFile(resolve(__dirname, '../contracts/OldResolver.json'), {
-        encoding: 'utf8',
-      }),
+      await fs.readFile(
+        resolve(import.meta.dirname, '../contracts/OldResolver.json'),
+        {
+          encoding: 'utf8',
+        },
+      ),
     ),
     args: [registry.address],
   })
