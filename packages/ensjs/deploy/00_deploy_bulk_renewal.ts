@@ -45,17 +45,19 @@ const func: DeployFunction = async (hre) => {
   })
 
   console.log('Temporarily setting owner of eth tld to owner ')
-  const tx = await root.setSubnodeOwner(labelhash('eth'), owner)
+  const tx = await root.write.setSubnodeOwner([labelhash('eth')], owner)
   await tx.wait()
 
   console.log('Set default resolver for eth tld to public resolver')
-  const tx111 = await registry.setResolver(namehash('eth'), resolver.address)
+  const tx111 = await registry.write.setResolver(
+    [namehash('eth')],
+    resolver.address,
+  )
   await tx111.wait()
 
   console.log('Set interface implementor of eth tld for bulk renewal')
-  const tx2 = await resolver.setInterface(
-    namehash('eth'),
-    createInterfaceId(bulkRenewal.abi),
+  const tx2 = await resolver.write.setInterface(
+    [namehash('eth'), createInterfaceId(bulkRenewal.abi)],
     bulkRenewal.address,
   )
   await tx2.wait()

@@ -12,9 +12,8 @@ const func: DeployFunction = async (hre) => {
 
   const registry = await viem.getContract('LegacyENSRegistry', owner)
 
-  const tldTx = await registry.setSubnodeOwner(
-    ZERO_HASH,
-    labelhash('test'),
+  const tldTx = await registry.write.setSubnodeOwner(
+    [ZERO_HASH, labelhash('test')],
     owner,
   )
   console.log(`Creating .test TLD (tx: ${tldTx.hash})...`)
