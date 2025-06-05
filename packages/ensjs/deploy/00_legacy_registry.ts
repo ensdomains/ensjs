@@ -13,11 +13,12 @@ const func: DeployFunction = async (hre) => {
   const registry = await viem.getContract('LegacyENSRegistry', owner)
 
   const tldTx = await registry.write.setSubnodeOwner(
-    [ZERO_HASH, labelhash('test')],
+    [ZERO_HASH, labelhash('test'), owner.address],
     owner,
   )
   console.log(`Creating .test TLD (tx: ${tldTx.hash})...`)
-  await tldTx.wait()
+
+  await viem.waitForTransactionSuccess(tldTx)
 
   await Promise.all(
     names.map(async (name) => {
@@ -26,7 +27,7 @@ const func: DeployFunction = async (hre) => {
         owner,
       )
       console.log(`Creating ${name}.test (tx: ${nameTx.hash})...`)
-      await nameTx.wait()
+      await viem.waitForTransactionSuccess(nameTx)
     }),
   )
 
