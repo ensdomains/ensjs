@@ -22,9 +22,8 @@ const func: DeployFunction = async (hre) => {
 
   await Promise.all(
     names.map(async (name) => {
-      const nameTx = await registry.setSubnodeOwner(
-        namehash('test'),
-        labelhash(name),
+      const nameTx = await registry.write.setSubnodeOwner(
+        [namehash('test'), labelhash(name)],
         owner,
       )
       console.log(`Creating ${name}.test (tx: ${nameTx.hash})...`)
@@ -44,7 +43,7 @@ func.skip = async (hre) => {
 
   const registry = await viem.getContract('LegacyENSRegistry')
 
-  const ownerOfTestTld = await registry.owner(namehash('test'))
+  const ownerOfTestTld = await registry.read.owner([namehash('test')])
   if (ownerOfTestTld !== owner) {
     return false
   }
