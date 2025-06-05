@@ -79,7 +79,7 @@ const func: DeployFunction = async (hre) => {
   await tx4.wait()
 
   console.log('Set owner of eth tld back to registrar')
-  const tx11 = await root.setSubnodeOwner(labelhash('eth'), registrar.address)
+  const tx11 = await root.setSubnodeOwner([labelhash('eth'), registrar.address])
   await tx11.wait()
 
   return true
