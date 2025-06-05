@@ -24,13 +24,13 @@ const makeNameGenerator = async (
       const resolver = publicResolver.address
       const addr = allNamedAccts[namedAddr]
 
-      const commitment = await controller.makeCommitmentWithConfig(
+      const commitment = await controller.write.makeCommitmentWithConfig([
         label,
         registrant,
         secret,
         resolver,
         addr,
-      )
+      ])
 
       const _controller = controller.connect(await ethers.getSigner(registrant))
       return _controller.commit(commitment, {

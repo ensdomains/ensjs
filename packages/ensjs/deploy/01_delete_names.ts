@@ -30,20 +30,23 @@ const func: DeployFunction = async (hre) => {
   const name2 = 'unwrapped-deleted.deletable.eth'
 
   // wrap wrapped-deleted.deletable.eth
-  const approveTx = await registry.setApprovalForAll(nameWrapper.address, true)
-  await approveTx.wait()
-  const wrapTx = await nameWrapper.wrap(
+  const approveTx = await registry.write.setApprovalForAll([
+    nameWrapper.address,
+    true,
+  ])
+  await viem.waitForTransactionSuccess(approveTx)
+  const wrapTx = await nameWrapper.write.wrap([
     toHex(packetToBytes(name1)),
     allNamedAccts.owner,
     EMPTY_ADDRESS,
-  )
-  await wrapTx.wait()
+  ])
+  await viem.waitForTransactionSuccess(wrapTx)
 
   await deleteName(name1)
   await deleteName(name2)
 
   for (const name of [name1, name2]) {
-    const owner = await registry.owner(namehash(name))
+    const owner = await registry.read.owner([namehash(name)])
     if (owner !== EMPTY_ADDRESS) {
       throw new Error(`Failed to delete name ${name}`)
     }

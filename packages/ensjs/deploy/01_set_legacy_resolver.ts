@@ -36,7 +36,10 @@ const func: DeployFunction = async (hre) => {
     const _resolver = resolver.connect(owner)
     const _registry = registry.connect(owner)
 
-    const tx = await _registry.setResolver(namehash(name), resolver.address)
+    const tx = await _registry.write.setResolver([
+      namehash(name),
+      resolver.address,
+    ])
     console.log(
       `Setting resolver for ${name} to ${resolver.address} (tx: ${tx.hash})...`,
     )
