@@ -2,66 +2,63 @@ import type {
 	Account,
 	Chain,
 	GetChainContractAddressErrorType,
-	Prettify,
+	Hash,
 	WriteContractErrorType,
 	WriteContractParameters,
-	WriteContractReturnType,
 } from "viem";
 import { writeContract } from "viem/actions";
 import { getAction } from "viem/utils";
-import {
-	getChainContractAddress,
-	type RequireClientContracts,
-} from "../../clients/chain.js";
-import type { ChainWithContract } from "../../contracts/consts.js";
-import { ethRegistrarControllerRegisterSnippet } from "../../contracts/ethRegistrarController.js";
+import { l2EthRegistrarRegisterSnippet } from "../../contracts/l2EthRegistrar.js";
 import { UnsupportedNameTypeError } from "../../errors/general.js";
-import type { WriteTransactionParameters } from "../../types/index.js";
-import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+import type { Prettify, WriteTransactionParameters } from "../../types/index.js";
 import {
-	type ClientWithOverridesErrorType,
 	clientWithOverrides,
+	type ClientWithOverridesErrorType,
 } from "../../utils/clientWithOverrides.js";
 import { getNameType } from "../../utils/name/getNameType.js";
 import {
-	type MakeRegistrationTupleErrorType,
-	makeRegistrationTuple,
-	type RegistrationParameters,
-} from "../../utils/registerHelpers.js";
+	type L2RegistrationParameters,
+} from "../../utils/l2RegisterHelpers.js";
 import {
-	type WrappedLabelLengthCheckErrorType,
 	wrappedLabelLengthCheck,
+	type WrappedLabelLengthCheckErrorType,
 } from "../../utils/wrapper.js";
+import {
+	getChainContractAddress,
+	type ChainWithContracts,
+	type RequireClientContracts,
+} from "../../clients/chain.js";
+import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
 
 // ================================
 // Write parameters
 // ================================
 
-export type RegisterNameWriteParametersParameters = RegistrationParameters & {
+export type RegisterNameWriteParametersParameters = L2RegistrationParameters & {
 	/** Value of registration */
 	value: bigint;
 };
 
-export type RegisterNameWriteParametersReturnType = ReturnType<
-	typeof registerNameWriteParameters
->;
+export type RegisterNameWriteParametersReturnType<
+	chain extends Chain,
+	account extends Account,
+> = ReturnType<typeof registerNameWriteParameters<chain, account>>;
 
 export type RegisterNameWriteParametersErrorType =
 	| UnsupportedNameTypeError
-	| GetChainContractAddressErrorType
 	| WrappedLabelLengthCheckErrorType
-	| MakeRegistrationTupleErrorType;
+	| GetChainContractAddressErrorType;
 
 export const registerNameWriteParameters = <
 	chain extends Chain,
 	account extends Account,
 >(
-	client: RequireClientContracts<chain, "ensEthRegistrarController", account>,
-	{ value, ...args }: RegisterNameWriteParametersParameters,
+	client: RequireClientContracts<chain, "ensL2EthRegistrar", account>,
+	{ value, name, owner, duration, secret, subregistryAddress, resolverAddress }: RegisterNameWriteParametersParameters,
 ) => {
 	ASSERT_NO_TYPE_ERROR(client);
 
-	const nameType = getNameType(args.name);
+	const nameType = getNameType(name);
 	if (nameType !== "eth-2ld")
 		throw new UnsupportedNameTypeError({
 			nameType,
@@ -69,22 +66,29 @@ export const registerNameWriteParameters = <
 			details: "Only 2ld-eth name registration is supported",
 		});
 
-	const labels = args.name.split(".");
+	const labels = name.split(".");
 	wrappedLabelLengthCheck(labels[0]);
 
 	return {
 		address: getChainContractAddress({
 			chain: client.chain,
-			contract: "ensEthRegistrarController",
+			contract: "ensL2EthRegistrar",
 		}),
-		abi: ethRegistrarControllerRegisterSnippet,
+		abi: l2EthRegistrarRegisterSnippet,
 		functionName: "register",
-		args: makeRegistrationTuple(args),
+		args: [
+			name,
+			owner,
+			secret,
+			subregistryAddress || "0x0000000000000000000000000000000000000000",
+			resolverAddress || "0x0000000000000000000000000000000000000000",
+			BigInt(duration),
+		],
 		chain: client.chain,
 		account: client.account,
 		value,
 	} as const satisfies WriteContractParameters<
-		typeof ethRegistrarControllerRegisterSnippet
+		typeof l2EthRegistrarRegisterSnippet
 	>;
 };
 
@@ -96,14 +100,14 @@ export type RegisterNameParameters<
 	chain extends Chain,
 	account extends Account,
 	chainOverride extends
-		| ChainWithContract<"ensEthRegistrarController">
+		| ChainWithContracts<"ensL2EthRegistrar">
 		| undefined,
 > = Prettify<
 	RegisterNameWriteParametersParameters &
 		WriteTransactionParameters<chain, account, chainOverride>
 >;
 
-export type RegisterNameReturnType = WriteContractReturnType;
+export type RegisterNameReturnType = Hash;
 
 export type RegisterNameErrorType =
 	| RegisterNameWriteParametersErrorType
@@ -154,19 +158,17 @@ export async function registerName<
 	chain extends Chain,
 	account extends Account,
 	chainOverride extends
-		| ChainWithContract<"ensEthRegistrarController">
+		| ChainWithContracts<"ensL2EthRegistrar">
 		| undefined,
 >(
-	client: RequireClientContracts<chain, "ensEthRegistrarController", account>,
+	client: RequireClientContracts<chain, "ensL2EthRegistrar", account>,
 	{
 		name,
 		owner,
 		duration,
 		secret,
 		resolverAddress,
-		records,
-		reverseRecord,
-		fuses,
+		subregistryAddress,
 		value,
 		...txArgs
 	}: RegisterNameParameters<chain, account, chainOverride>,
@@ -181,9 +183,7 @@ export async function registerName<
 			duration,
 			secret,
 			resolverAddress,
-			records,
-			reverseRecord,
-			fuses,
+			subregistryAddress,
 			value,
 		},
 	);

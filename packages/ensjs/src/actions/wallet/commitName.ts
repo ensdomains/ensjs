@@ -4,16 +4,13 @@ import type {
   Client,
   GetChainContractAddressErrorType,
   Hash,
-  Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { ethRegistrarControllerCommitSnippet } from '../../contracts/ethRegistrarController.js'
+import { l2EthRegistrarCommitSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
-import type { WrappedLabelTooLargeError } from '../../errors/utils.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import {
   clientWithOverrides,
@@ -21,10 +18,10 @@ import {
 } from '../../utils/clientWithOverrides.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import {
-  makeCommitment,
-  type MakeCommitmentErrorType,
-  type RegistrationParameters,
-} from '../../utils/registerHelpers.js'
+  makeL2Commitment,
+  type MakeL2CommitmentErrorType,
+  type L2RegistrationParameters,
+} from '../../utils/l2RegisterHelpers.js'
 import {
   wrappedLabelLengthCheck,
   type WrappedLabelLengthCheckErrorType,
@@ -66,7 +63,7 @@ import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 // Write Parameters
 // ================================
 
-export type CommitNameWriteParametersParameters = RegistrationParameters
+export type CommitNameWriteParametersParameters = L2RegistrationParameters
 
 export type CommitNameWriteParametersReturnType<
   chain extends Chain,
@@ -77,13 +74,13 @@ export type CommitNameWriteParametersErrorType =
   | UnsupportedNameTypeError
   | WrappedLabelLengthCheckErrorType
   | GetChainContractAddressErrorType
-  | MakeCommitmentErrorType
+  | MakeL2CommitmentErrorType
 
 export const commitNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensEthRegistrarController', account>,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
   args: CommitNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -100,15 +97,15 @@ export const commitNameWriteParameters = <
   return {
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensEthRegistrarController',
+      contract: 'ensL2EthRegistrar',
     }),
-    abi: ethRegistrarControllerCommitSnippet,
+    abi: l2EthRegistrarCommitSnippet,
     functionName: 'commit',
-    args: [makeCommitment(args)],
+    args: [makeL2Commitment(args)],
     chain: client.chain,
     account: client.account,
   } as const satisfies WriteContractParameters<
-    typeof ethRegistrarControllerCommitSnippet
+    typeof l2EthRegistrarCommitSnippet
   >
 }
 
@@ -120,7 +117,7 @@ export type CommitNameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensEthRegistrarController'>
+    | ChainWithContracts<'ensL2EthRegistrar'>
     | undefined,
 > = Prettify<
   CommitNameWriteParametersParameters &
@@ -164,19 +161,17 @@ export async function commitName<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensEthRegistrarController'>
+    | ChainWithContracts<'ensL2EthRegistrar'>
     | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensEthRegistrarController', account>,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
   {
     name,
     owner,
     duration,
     secret,
     resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
+    subregistryAddress,
     ...txArgs
   }: CommitNameParameters<chain, account, chainOverride>,
 ): Promise<CommitNameReturnType> {
@@ -190,9 +185,7 @@ export async function commitName<
       duration,
       secret,
       resolverAddress,
-      records,
-      reverseRecord,
-      fuses,
+      subregistryAddress,
     },
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')

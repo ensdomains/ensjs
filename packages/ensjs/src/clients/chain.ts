@@ -46,6 +46,7 @@ export const supportedContracts = [
 	"ensDnsRegistrar",
 	"ensDnssecImpl",
 	"ensEthRegistrarController",
+	"ensL2EthRegistrar",
 	"ensNameWrapper",
 	"ensPublicResolver",
 	"ensRegistry",
@@ -71,6 +72,9 @@ export const ensContracts = {
 		},
 		ensEthRegistrarController: {
 			address: "0x253553366Da8546fC250F225fe3d25d0C782303b",
+		},
+		ensL2EthRegistrar: {
+			address: "0x0000000000000000000000000000000000000000",
 		},
 		ensNameWrapper: {
 			address: "0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401",
@@ -104,6 +108,9 @@ export const ensContracts = {
 		ensEthRegistrarController: {
 			address: "0xCc5e7dB10E65EED1BBD105359e7268aa660f6734",
 		},
+		ensL2EthRegistrar: {
+			address: "0x0000000000000000000000000000000000000000",
+		},
 		ensNameWrapper: {
 			address: "0x114D4603199df73e7D157787f8778E21fCd13066",
 		},
@@ -136,6 +143,9 @@ export const ensContracts = {
 		ensEthRegistrarController: {
 			address: "0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583",
 		},
+		ensL2EthRegistrar: {
+			address: "0x0000000000000000000000000000000000000000",
+		},
 		ensNameWrapper: {
 			address: "0xab50971078225D365994dc1Edcb9b7FD72Bb4862",
 		},
@@ -167,6 +177,9 @@ export const ensContracts = {
 		},
 		ensEthRegistrarController: {
 			address: "0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72",
+		},
+		ensL2EthRegistrar: {
+			address: "0x0000000000000000000000000000000000000000",
 		},
 		ensNameWrapper: {
 			address: "0x0635513f179D50A207757E05759CbD106d7dFcE8",
