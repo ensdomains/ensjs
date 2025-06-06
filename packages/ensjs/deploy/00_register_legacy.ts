@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-await-in-loop */
 import cbor from 'cbor'
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import pako from 'pako'

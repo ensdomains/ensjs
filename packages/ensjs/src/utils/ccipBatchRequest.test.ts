@@ -110,7 +110,6 @@ it('handles and correctly returns misc. error', async () => {
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
   ] as const
 
-  // Construct the expected error result dynamically
   const errorResult = encodeErrorResult({
     abi: [
       {

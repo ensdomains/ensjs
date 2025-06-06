@@ -173,7 +173,7 @@ const func: DeployFunction = async (hre) => {
       fuses: subnameFuses = 0,
       expiry: subnameExpiry = 2n ** 64n - 1n,
     } of subnames) {
-      let setSubnameTx
+      let setSubnameTx: Hash
       if (type === 'legacy')
         setSubnameTx = await legacyNameGenerator.subname({
           label,

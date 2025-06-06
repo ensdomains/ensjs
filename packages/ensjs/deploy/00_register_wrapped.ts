@@ -1,6 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-await-in-loop */
-
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
