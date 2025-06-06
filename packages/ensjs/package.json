@@ -100,7 +100,7 @@
   },
   "devDependencies": {
     "@ensdomains/buffer": "^0.1.1",
-    "@ensdomains/ens-contracts": "1.4.0",
+    "@ensdomains/ens-contracts": "1.4.0-beta.2",
     "@ensdomains/ens-test-env": "^1.0.1",
     "@ensdomains/hardhat-toolbox-viem-extended": "^0.0.5",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
