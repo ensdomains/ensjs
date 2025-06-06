@@ -1,4 +1,4 @@
-import { RawContractError, type Address, type Hex } from 'viem'
+import { type Address, type Hex, RawContractError } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import {
@@ -119,7 +119,7 @@ describe('getName', () => {
         function:  reverse(bytes reverseName)
         args:             (0x)
 
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
   it('should not return unnormalised name', async () => {

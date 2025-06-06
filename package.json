@@ -10,23 +10,15 @@
     "chgset:version": "changeset version && pnpm install",
     "chgset:run": "changeset",
     "release": "pnpm publish -r --access public && changeset tag",
-    "chgset": "pnpm chgset:run && pnpm chgset:version"
+    "chgset": "pnpm chgset:run && pnpm chgset:version",
+    "lint": "biome check"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.8",
-    "@typescript-eslint/eslint-plugin": "^6.7.5",
-    "@typescript-eslint/parser": "^6.7.5",
-    "eslint": "^8.51.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^16.1.2",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.8.8",
     "ts-node": "^10.7.0",
-    "typescript": "^5.3.2"
+    "typescript": "^5.8.3"
   },
   "resolutions": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.13"
@@ -37,5 +29,5 @@
       "unplugged": true
     }
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@10.10.0"
 }

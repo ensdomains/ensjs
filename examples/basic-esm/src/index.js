@@ -12,12 +12,10 @@ const main = async () => {
   const records = await client.getSubgraphRecords({ name: 'ens.eth' })
   const recordData = await client.getRecords({
     name: 'ens.eth',
-    records: {
-      coins: [...(records?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
-      texts: [...(records?.texts || []), 'avatar', 'email', 'description'],
-      contentHash: true,
-      abi: true,
-    },
+    coins: [...(records?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
+    texts: [...(records?.texts || []), 'avatar', 'email', 'description'],
+    contentHash: true,
+    abi: true,
   })
   console.log(recordData)
 

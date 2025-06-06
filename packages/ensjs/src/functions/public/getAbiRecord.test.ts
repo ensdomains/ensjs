@@ -261,7 +261,7 @@ describe('getAbiRecord()', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 })

@@ -1,4 +1,4 @@
-import { RawContractError, createPublicClient, http } from 'viem'
+import { http, RawContractError, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../index.js'
@@ -146,7 +146,7 @@ describe('getRecords()', () => {
         args:             (0x04746573740365746800, ["0x5678"])
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 })

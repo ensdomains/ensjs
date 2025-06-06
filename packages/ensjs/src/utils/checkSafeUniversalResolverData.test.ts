@@ -69,7 +69,7 @@ describe('checkSafeUniversalResolverData', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 
@@ -97,7 +97,7 @@ describe('checkSafeUniversalResolverData', () => {
         function:  resolve(bytes name, bytes data)
         args:             (ab, cd)
 
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 
@@ -129,7 +129,7 @@ describe('checkSafeUniversalResolverData', () => {
         args:             (0x, 0x)
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 
@@ -161,7 +161,7 @@ describe('checkSafeUniversalResolverData', () => {
         args:             (0x, 0x)
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 })
