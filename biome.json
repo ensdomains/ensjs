@@ -9,8 +9,7 @@
 			"data",
 			"cache",
 			"tsconfig.*.json",
-			"deploy/.utils/*.d.ts",
-			"deploy/.contracts"
+			"packages/ensjs/contracts"
 		]
 	},
 	"organizeImports": {
