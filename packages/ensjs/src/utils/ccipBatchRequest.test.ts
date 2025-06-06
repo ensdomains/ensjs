@@ -120,7 +120,9 @@ it('handles and correctly returns misc. error', async () => {
       },
     ],
     errorName: 'OffchainLookup',
-    args: ['Unexpected token i in JSON at position 0'],
+    args: [
+      `Uncaught SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON`,
+    ],
   })
 
   const result = await ccipBatchRequest(items)
