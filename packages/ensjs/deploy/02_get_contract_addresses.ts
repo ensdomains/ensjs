@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
-import { getAddress } from 'viem';
+import { getAddress } from 'viem'
 
 const func: DeployFunction = async (hre) => {
   const allDeployments = await hre.deployments.all()

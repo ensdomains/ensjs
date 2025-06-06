@@ -21,8 +21,8 @@ const func: DeployFunction = async (hre) => {
       label,
       EMPTY_ADDRESS,
       EMPTY_ADDRESS,
-      0]
-    )
+      0,
+    ])
     await viem.waitForTransactionSuccess(tx)
   }
 

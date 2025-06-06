@@ -149,9 +149,7 @@ const func: DeployFunction = async (hre) => {
       duration,
     })
 
-    console.log(
-      `Committing commitment for ${label}.eth (tx: ${commitTx})...`,
-    )
+    console.log(`Committing commitment for ${label}.eth (tx: ${commitTx})...`)
     await viem.waitForTransactionSuccess(commitTx)
 
     await network.provider.send('evm_mine')

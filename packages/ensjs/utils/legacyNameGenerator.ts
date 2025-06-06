@@ -37,11 +37,16 @@ const makeNameGenerator = async (
         account: registrant,
       })
     },
-    register: async ({ label, namedOwner, namedAddr, duration = 31536000 }: {
+    register: async ({
+      label,
+      namedOwner,
+      namedAddr,
+      duration = 31536000,
+    }: {
       label: string
       namedOwner: string
       namedAddr: string
-      duration?: number
+      duration?: number | bigint
     }) => {
       const secret =
         '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -59,7 +64,12 @@ const makeNameGenerator = async (
         },
       )
     },
-    subname: async ({ label, namedOwner, subnameLabel, namedSubnameOwner }: {
+    subname: async ({
+      label,
+      namedOwner,
+      subnameLabel,
+      namedSubnameOwner,
+    }: {
       label: string
       namedOwner: string
       subnameLabel: string
@@ -69,7 +79,7 @@ const makeNameGenerator = async (
       const resolver = publicResolver.address
       const registrant = allNamedAccts[namedOwner]
       const owner = allNamedAccts[namedSubnameOwner]
-    
+
       const _registry = await viem.getContract('ENSRegistry')
 
       return _registry.write.setSubnodeRecord(

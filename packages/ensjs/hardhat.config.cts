@@ -68,7 +68,7 @@ const config: HardhatUserConfig = {
     },
     owner3: {
       default: 3,
-    }, 
+    },
     owner4: {
       default: 4,
     },

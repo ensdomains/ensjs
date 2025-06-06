@@ -32,16 +32,16 @@ const makeNameGenerator = async (
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
-      const commitment = await controller.read.makeCommitment(
-      [  label,
+      const commitment = await controller.read.makeCommitment([
+        label,
         owner,
         duration,
         secret,
         resolver,
         data,
         reverseRecord,
-        fuses]
-      )
+        fuses,
+      ])
 
       return controller.write.commit([commitment], {
         nonce: nonceManager.getNonce(namedOwner),
@@ -69,20 +69,13 @@ const makeNameGenerator = async (
       const resolver = publicResolver.address
       const price = await controller.read.rentPrice([label, duration])
 
-      const priceWithBuffer = price.base * 105n / 100n
-      return controller.write.register([
-        label,
-        owner,
-        duration,
-        secret,
-        resolver,
-        data,
-        reverseRecord,
-        fuses],
+      const priceWithBuffer = (price.base * 105n) / 100n
+      return controller.write.register(
+        [label, owner, duration, secret, resolver, data, reverseRecord, fuses],
         {
           value: priceWithBuffer,
           nonce: nonceManager.getNonce(namedOwner),
-          account: owner
+          account: owner,
         },
       )
     },
@@ -105,15 +98,17 @@ const makeNameGenerator = async (
       const owner = allNamedAccts[namedOwner]
       const subnameOwner = allNamedAccts[namedSubnameOwner]
       return nameWrapper.write.setSubnodeRecord(
-       [ namehash(`${label}.eth`),
-        subnameLabel,
-        subnameOwner,
-        resolver,
-        '0',
-        subnameFuses,
-        subnameExpiry],
+        [
+          namehash(`${label}.eth`),
+          subnameLabel,
+          subnameOwner,
+          resolver,
+          '0',
+          subnameFuses,
+          subnameExpiry,
+        ],
         {
-          account: owner
+          account: owner,
         },
       )
     },

@@ -2,6 +2,7 @@ import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
 
+import type { Hash } from 'viem'
 import { makeNameGenerator as makeLegacyNameGenerator } from '../utils/legacyNameGenerator.js'
 import { makeNonceManager } from '../utils/nonceManager.js'
 import { makeNameGenerator as makeWrappedNameGenerator } from '../utils/wrappedNameGenerator.js'
@@ -115,7 +116,9 @@ const func: DeployFunction = async (hre) => {
   const oldTimestamp = (
     await (await viem.getPublicClient()).getBlock({ blockTag: 'latest' })
   ).timestamp
-  await network.provider.send('evm_setNextBlockTimestamp', [Number(oldTimestamp + 60n)])
+  await network.provider.send('evm_setNextBlockTimestamp', [
+    Number(oldTimestamp + 60n),
+  ])
   await network.provider.send('evm_increaseTime', [300])
   await network.provider.send('evm_mine')
 
@@ -153,7 +156,7 @@ const func: DeployFunction = async (hre) => {
 
   await network.provider.send('evm_mine')
   await Promise.all(
-    registerTxs.map(async (tx) => {
+    registerTxs.map(async (tx: Hash) => {
       return viem.waitForTransactionSuccess(tx)
     }),
   )

@@ -35,25 +35,21 @@ const func: DeployFunction = async (hre) => {
   for (const { namedOwner, name, addr } of names) {
     const owner = allNamedAccts[namedOwner]
 
-    const tx = await registry.write.setResolver([
-      namehash(name),
-      resolver.address,
-    ], {
-      account: owner
-    })
+    const tx = await registry.write.setResolver(
+      [namehash(name), resolver.address],
+      {
+        account: owner,
+      },
+    )
     console.log(
       `Setting resolver for ${name} to ${resolver.address} (tx: ${tx})...`,
     )
     await viem.waitForTransactionSuccess(tx)
 
-    const tx2 = await resolver.write.setAddr(
-    [  namehash(name),
-      addr],
-      {
-        account: owner,
-        gasLimit: 100000,
-      },
-    )
+    const tx2 = await resolver.write.setAddr([namehash(name), addr], {
+      account: owner,
+      gasLimit: 100000,
+    })
     console.log(`Setting address for 60 to ${addr} (tx: ${tx})...`)
     await viem.waitForTransactionSuccess(tx2)
   }

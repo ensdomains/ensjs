@@ -3,7 +3,7 @@
 import cbor from 'cbor'
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import pako from 'pako'
-import { type Address, namehash, toBytes, stringToBytes, bytesToHex } from 'viem';
+import { type Address, bytesToHex, namehash, stringToBytes } from 'viem'
 import { makeNameGenerator } from '../utils/legacyNameGenerator.js'
 
 const dummyABI = [
@@ -402,9 +402,7 @@ const func: DeployFunction = async (hre) => {
       namedAddr,
     })
 
-    console.log(
-      `Committing commitment for ${label}.eth (tx: ${commitTx})...`,
-    )
+    console.log(`Committing commitment for ${label}.eth (tx: ${commitTx})...`)
     await viem.waitForTransactionSuccess(commitTx)
 
     await network.provider.send('evm_mine')
@@ -429,7 +427,10 @@ const func: DeployFunction = async (hre) => {
       if (records.text) {
         console.log('TEXT')
         for (const { key, value } of records.text) {
-          const setTextTx = await publicResolver.write.setText([hash, key, value], { account: registrant })
+          const setTextTx = await publicResolver.write.setText(
+            [hash, key, value],
+            { account: registrant },
+          )
           console.log(` - ${key} ${value} (tx: ${setTextTx})...`)
           await viem.waitForTransactionSuccess(setTextTx)
         }
@@ -437,14 +438,20 @@ const func: DeployFunction = async (hre) => {
       if (records.addr) {
         console.log('ADDR')
         for (const { key, value } of records.addr) {
-          const setAddrTx = await publicResolver.write.setAddr([hash, key, value], { account: registrant })
+          const setAddrTx = await publicResolver.write.setAddr(
+            [hash, key, value],
+            { account: registrant },
+          )
           console.log(` - ${key} ${value} (tx: ${setAddrTx})...`)
           await viem.waitForTransactionSuccess(setAddrTx)
         }
       }
       if (records.contenthash) {
         console.log('CONTENTHASH')
-        const setContenthashTx = await publicResolver.write.setContenthash([hash, records.contenthash], { account: registrant })
+        const setContenthashTx = await publicResolver.write.setContenthash(
+          [hash, records.contenthash],
+          { account: registrant },
+        )
         console.log(` - ${records.contenthash} (tx: ${setContenthashTx})...`)
         await viem.waitForTransactionSuccess(setContenthashTx)
       }
@@ -464,7 +471,10 @@ const func: DeployFunction = async (hre) => {
           } else {
             data = stringToBytes(abi.data)
           }
-          const setABITx = await publicResolver.write.setABI([hash, abi.contentType, bytesToHex(data)], { account: registrant })
+          const setABITx = await publicResolver.write.setABI(
+            [hash, abi.contentType, bytesToHex(data)],
+            { account: registrant },
+          )
           console.log(` - ${abi.contentType} (tx: ${setABITx})...`)
           await viem.waitForTransactionSuccess(setABITx)
         }
