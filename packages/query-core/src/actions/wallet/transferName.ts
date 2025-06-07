@@ -7,6 +7,7 @@ import {
   type TransferNameErrorType as ensjs_TransferNameErrorType,
   type TransferNameParameters as ensjs_TransferNameParameters,
   type TransferNameReturnType as ensjs_TransferNameReturnType,
+  type TransferNameSupportedContract,
 } from '@ensdomains/ensjs/wallet'
 import { getConnectorClient, type Config, type SelectChains } from '@wagmi/core'
 import type {
@@ -19,7 +20,7 @@ import type { RequireConfigContracts } from '../../utils/chain.js'
 import { getAction } from '../../utils/getAction.js'
 
 export type TransferNameParameters<
-  contract extends 'registry' | 'nameWrapper' | 'registrar',
+  contract extends TransferNameSupportedContract,
   config extends Config = Config,
   chainId extends
     config['chains'][number]['id'] = config['chains'][number]['id'],
@@ -40,7 +41,7 @@ export type TransferNameReturnType = ensjs_TransferNameReturnType
 export type TransferNameErrorType = ensjs_TransferNameErrorType
 
 export async function transferName<
-  contract extends 'registry' | 'nameWrapper' | 'registrar',
+  contract extends TransferNameSupportedContract,
   chains extends readonly [Chain, ...Chain[]],
 >(
   config: RequireConfigContracts<

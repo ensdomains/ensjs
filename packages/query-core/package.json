@@ -1,69 +1,83 @@
 {
-	"name": "@ensdomains/ensjs-query-core",
-	"version": "0.0.1",
-	"description": "ENS javascript extension library for @wagmi/core",
-	"type": "module",
-	"module": "./dist/esm/exports/index.js",
-	"types": "./dist/types/exports/index.d.ts",
-	"typings": "./dist/types/exports/index.d.ts",
-	"sideEffects": false,
-	"exports": {
-		".": {
-			"types": "./dist/types/exports/index.d.ts",
-			"default": "./dist/esm/exports/index.js"
-		},
-		"./public": {
-			"types": "./dist/types/exports/public.d.ts",
-			"default": "./dist/esm/exports/public.js"
-		},
-		"./wallet": {
-			"types": "./dist/types/exports/wallet.d.ts",
-			"default": "./dist/esm/exports/wallet.js"
-		},
-		"./package.json": "./package.json"
-	},
-	"typesVersions": {
-		"*": {
-			"public": [
-				"./dist/types/exports/public.d.ts"
-			],
-			"wallet": [
-				"./dist/types/exports/wallet.d.ts"
-			]
-		}
-	},
-	"files": [
-		"dist/",
-		"src/",
-		"!src/**/*.test.ts",
-		"!src/test"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/ensdomains/ensjs.git",
-		"directory": "packages/query-core"
-	},
-	"author": "Jakob <jakob@ens.domains>",
-	"license": "MIT",
-	"scripts": {
-		"build": "pnpm run clean && pnpm run build:esm+types",
-		"build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
-		"check:types": "tsc --noEmit"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"typescript": "5.6.2",
-		"@ensdomains/ensjs": "workspace:*",
-		"@wagmi/core": "^2.17.2",
-		"viem": "^2.9.2"
-	},
-	"peerDependencies": {
-		"@tanstack/query-core": ">=5.0.0",
-		"@ensdomains/ensjs": "^5.0.0",
-		"viem": "^2.9.2",
-		"@wagmi/core": "^2.17.2"
-	},
-	"engines": {
-		"node": ">=18"
-	}
+  "name": "@ensdomains/ensjs-query-core",
+  "version": "0.0.1",
+  "description": "ENS javascript extension library for @wagmi/core",
+  "type": "module",
+  "module": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "typings": "./dist/types/exports/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./actions/public": {
+      "types": "./dist/types/actions/public/index.d.ts",
+      "default": "./dist/esm/actions/public/index.js"
+    },
+    "./actions/wallet": {
+      "types": "./dist/types/actions/wallet/index.d.ts",
+      "default": "./dist/esm/actions/wallet/index.js"
+    },
+    "./query/public": {
+      "types": "./dist/types/query/public/index.d.ts",
+      "default": "./dist/esm/query/public/index.js"
+    },
+    "./query/wallet": {
+      "types": "./dist/types/query/wallet/index.d.ts",
+      "default": "./dist/esm/query/wallet/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "actions/public": [
+        "./dist/types/actions/public/index.d.ts"
+      ],
+      "actions/wallet": [
+        "./dist/types/actions/wallet/index.d.ts"
+      ],
+      "query/public": [
+        "./dist/types/query/public/index.d.ts"
+      ],
+      "query/wallet": [
+        "./dist/types/query/wallet/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "!src/**/*.test.ts",
+    "!src/test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ensdomains/ensjs.git",
+    "directory": "packages/query-core"
+  },
+  "author": "Jakob <jakob@ens.domains>",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm run clean && pnpm run build:esm+types",
+    "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "5.6.2",
+    "@ensdomains/ensjs": "workspace:*",
+    "@wagmi/core": "^2.17.2",
+    "viem": "^2.9.2"
+  },
+  "peerDependencies": {
+    "@tanstack/query-core": ">=5.0.0",
+    "@ensdomains/ensjs": "^5.0.0",
+    "viem": "^2.9.2",
+    "@wagmi/core": "^2.17.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }

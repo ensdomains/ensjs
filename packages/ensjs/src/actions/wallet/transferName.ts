@@ -53,10 +53,10 @@ import {
 import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
 import type { ErrorType } from "../../errors/utils.js";
 
-type SupportedContract = "registry" | "nameWrapper" | "registrar";
+export type TransferNameSupportedContract = "registry" | "nameWrapper" | "registrar";
 
 export type TransferNameWriteParametersParameters<
-	contract extends SupportedContract,
+	contract extends TransferNameSupportedContract,
 > = {
 	/** Name to transfer */
 	name: string;
@@ -81,7 +81,7 @@ export type TransferNameWriteParametersErrorType =
 	| ErrorType;
 
 export const transferNameWriteParameters = <
-	contract extends SupportedContract,
+	contract extends TransferNameSupportedContract,
 	chain extends Chain,
 	account extends Account,
 >(
@@ -274,7 +274,7 @@ export type TransferNameErrorType =
  * // 0x...
  */
 export async function transferName<
-	contract extends SupportedContract,
+	contract extends TransferNameSupportedContract,
 	chain extends Chain,
 	account extends Account,
 	chainOverride extends ChainWithContracts<
