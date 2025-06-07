@@ -167,7 +167,7 @@ const getSubgraphRecords = async (
   const { domain, resolver } = result
 
   const { isMigrated, createdAt: stringCreatedAt } = domain
-  const intCreatedAt = parseInt(stringCreatedAt) * 1000
+  const intCreatedAt = Number.parseInt(stringCreatedAt) * 1000
   const texts = resolver?.texts || []
   const coins = resolver?.coinTypes || []
 

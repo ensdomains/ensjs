@@ -1,4 +1,4 @@
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import { encodeFunctionData, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
 import { expect, it, vi } from 'vitest'
@@ -11,7 +11,6 @@ const handler = vi
   .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
   .mockImplementation((_, res) => {
     res.writeHead(200, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     })
     res.end(JSON.stringify({ data: '0xdeadbeef' }))

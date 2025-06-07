@@ -81,13 +81,13 @@ export class FusesFuseNotAllowedError extends BaseError {
 export class FusesInvalidUnnamedFuseError extends BaseError {
 	override name = "FusesInvalidUnnamedFuseError";
 
-	constructor({ fuse }: { fuse: any }) {
-		super(`${fuse} is not a valid unnamed fuse`, {
-			metaMessages: [
-				`- If you are trying to set a named fuse, use the named property`,
-			],
-		});
-	}
+  constructor({ fuse }: { fuse: any }) {
+    super(`${fuse} is not a valid unnamed fuse`, {
+      metaMessages: [
+        '- If you are trying to set a named fuse, use the named property',
+      ],
+    })
+  }
 }
 
 export class InvalidEncodedLabelError extends BaseError {
@@ -136,15 +136,15 @@ export class RootNameIncludesOtherLabelsError extends BaseError {
 export class WrappedLabelTooLargeError extends BaseError {
 	override name = "WrappedLabelTooLargeError";
 
-	constructor({ label, byteLength }: { label: string; byteLength: number }) {
-		super("Supplied label was too long", {
-			metaMessages: [
-				`- Supplied label: ${label}`,
-				`- Max byte length: 255`,
-				`- Actual byte length: ${byteLength}`,
-			],
-		});
-	}
+  constructor({ label, byteLength }: { label: string; byteLength: number }) {
+    super('Supplied label was too long', {
+      metaMessages: [
+        `- Supplied label: ${label}`,
+        '- Max byte length: 255',
+        `- Actual byte length: ${byteLength}`,
+      ],
+    })
+  }
 }
 
 export class CampaignReferenceTooLargeError extends BaseError {

@@ -1,5 +1,4 @@
-import { isAddress, type Address, type Client, type Transport } from 'viem'
-
+import { type Address, type Client, type Transport, isAddress } from 'viem'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import {
   DnsDnssecVerificationFailedError,
@@ -12,8 +11,8 @@ import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getDnsTxtRecords } from '../../utils/dns/getDnsTxtRecords.js'
 import {
   DnsRecordType,
-  DnsResponseStatus,
   type DnsResponseItem,
+  DnsResponseStatus,
 } from '../../utils/dns/misc.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import { getAddressRecord } from '../public/getAddressRecord.js'

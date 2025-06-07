@@ -209,19 +209,20 @@ export type EncodeFusesInputObject =
 type ValidateFuseNumberErrorType = FusesOutOfRangeError;
 
 const validateFuseNumber = (fuses: bigint) => {
-	if (fuses > 2n ** 32n || fuses < 0n)
-		throw new FusesOutOfRangeError({
-			fuses,
-			details: `Fuse number must be limited to uint32, the supplied value was too ${
-				fuses < 0 ? "low" : "high"
-			}`,
-		});
-	else if ((fuses & FuseRanges.USER_SETTABLE_FUSES) !== fuses)
-		throw new FusesOutOfRangeError({
-			fuses,
-			details: `Fuse number must be limited to user settable fuses, the supplied value was not`,
-		});
-};
+  if (fuses > 2n ** 32n || fuses < 0n)
+    throw new FusesOutOfRangeError({
+      fuses,
+      details: `Fuse number must be limited to uint32, the supplied value was too ${
+        fuses < 0 ? 'low' : 'high'
+      }`,
+    })
+  if ((fuses & FuseRanges.USER_SETTABLE_FUSES) !== fuses)
+    throw new FusesOutOfRangeError({
+      fuses,
+      details:
+        'Fuse number must be limited to user settable fuses, the supplied value was not',
+    })
+}
 
 // ================================
 // Check fuse object

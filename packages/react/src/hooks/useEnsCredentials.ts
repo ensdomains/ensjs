@@ -1,17 +1,6 @@
-import { useChainId, useConfig } from 'wagmi'
-import { useQuery, type UseQueryReturnType } from 'wagmi/query'
-import {
-  getEnsCredentialsQueryOptions,
-  type GetEnsCredentialsData,
-  type GetEnsCredentialsErrorType,
-  type GetEnsCredentialsOptions,
-  type GetEnsCredentialsQueryFnData,
-  type GetEnsCredentialsQueryKey,
-} from '../query/getEnsCredentials.js'
-import type { ConfigWithEns } from '../types/config.js'
-import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import type { ResolvedRegister } from '../types/register.js'
-import type { Compute } from '../types/utils.js'
+import { getTextRecord } from '@ensdomains/ensjs/public'
+import type { ParamWithClients, QueryConfig } from '../client.js'
+import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsCredentialsParameters<
   config extends ConfigWithEns = ConfigWithEns,

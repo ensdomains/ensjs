@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import { getAddress, labelhash, type Address } from 'viem'
+import { type Address, getAddress, labelhash } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getNameType } from '../../utils/name/getNameType.js'

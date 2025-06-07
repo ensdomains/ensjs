@@ -2,12 +2,12 @@ import { labelhash } from 'viem'
 import { describe, expect, it } from 'vitest'
 import { namehash } from './name/normalize.js'
 import {
+  type RegistrationParameters,
   makeCommitment,
   makeCommitmentFromTuple,
   makeCommitmentTuple,
   makeRegistrationTuple,
   randomSecret,
-  type RegistrationParameters,
 } from './registerHelpers.js'
 
 describe('randomSecret()', () => {
@@ -27,8 +27,9 @@ describe('randomSecret()', () => {
     expect(secret.slice(10, 18)).toEqual('00000001')
   })
   it('throws when campaign is too large', () => {
-    expect(() => randomSecret({ campaign: 0xffffffff + 1 }))
-      .toThrowErrorMatchingInlineSnapshot(`
+    expect(() =>
+      randomSecret({ campaign: 0xffffffff + 1 }),
+    ).toThrowErrorMatchingInlineSnapshot(`
         [CampaignReferenceTooLargeError: Campaign reference 4294967296 is too large
 
         - Max campaign reference: 4294967295

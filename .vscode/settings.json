@@ -1,17 +1,19 @@
 {
-  "prettier.enable": true,
-  "eslint.enable": true,
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "biome.projects": [
-    {
-      "path": "packages/ensjs"
-    },
-  ],
-  "editor.codeActionsOnSave": {
-    "source.organizeImports.biome": "explicit"
-  }
+	"npm.packageManager": "pnpm",
+	"editor.formatOnSave": true,
+	"biome.enabled": true,
+	"eslint.enable": false,
+	"prettier.enable": false,
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"quickfix.biome": "explicit"
+	}
+    "biome.projects": [
+        {
+            "path": "packages/ensjs"
+        },
+    ],
 }

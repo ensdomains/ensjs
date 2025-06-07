@@ -49,8 +49,7 @@ describe('getContentHashRecord', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0xbc1c58d1287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
 
-      Docs: https://viem.sh/docs/contract/readContract
-      Version: 2.21.15]
+      Version: viem@2.30.6]
     `)
   })
 })

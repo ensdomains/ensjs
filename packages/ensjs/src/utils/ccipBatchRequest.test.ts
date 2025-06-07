@@ -1,4 +1,4 @@
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import { expect, it, vi } from 'vitest'
 import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipBatchRequest } from './ccipBatchRequest.js'
@@ -8,7 +8,6 @@ it('returns array of responses', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
@@ -42,7 +41,6 @@ it('removes duplicate requests', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       })
       res.end(JSON.stringify({ data: '0xdeadbeef' }))
@@ -100,25 +98,23 @@ it('handles and correctly returns misc. error', async () => {
     .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
     .mockImplementation((_, res) => {
       res.writeHead(200, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       })
       res.end('invalid json')
     })
+
   const { url } = await createHttpServer(handler)
+
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
   ] as const
+
   const result = await ccipBatchRequest(items)
-  expect(result).toMatchInlineSnapshot(`
+
+  expect(result).toEqual([
+    [true],
     [
-      [
-        true,
-      ],
-      [
-        "0xca7a4e7500000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000001f400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000028556e657870656374656420746f6b656e206920696e204a534f4e20617420706f736974696f6e2030000000000000000000000000000000000000000000000000",
-      ],
-    ]
-  `)
-  // await close()
+      '0xca7a4e7500000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000001f400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000036556e657870656374656420746f6b656e202769272c2022696e76616c6964206a736f6e22206973206e6f742076616c6964204a534f4e00000000000000000000',
+    ],
+  ])
 })

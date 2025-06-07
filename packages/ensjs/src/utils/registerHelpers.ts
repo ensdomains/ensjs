@@ -144,16 +144,18 @@ export const makeCommitmentTuple = ({
 		? encodeFuses({ restriction: "child", input: fuses })
 		: 0;
 
-	if (
-		reverseRecord &&
-		!coins.find(
-			(c) =>
-				(typeof c.coin === "string" && c.coin.toLowerCase() === "eth") ||
-				(typeof c.coin === "string" ? parseInt(c.coin) === 60 : c.coin === 60),
-		)
-	) {
-		coins.push({ coin: 60, value: owner });
-	}
+  if (
+    reverseRecord &&
+    !coins.find(
+      (c) =>
+        (typeof c.coin === 'string' && c.coin.toLowerCase() === 'eth') ||
+        (typeof c.coin === 'string'
+          ? Number.parseInt(c.coin) === 60
+          : c.coin === 60),
+    )
+  ) {
+    coins.push({ coin: 60, value: owner })
+  }
 
 	const data = records
 		? generateRecordCallArray({ namehash: hash, coins, ...records })

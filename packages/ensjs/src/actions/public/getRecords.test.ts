@@ -1,4 +1,4 @@
-import { createPublicClient, http } from 'viem'
+import { http, RawContractError, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../index.js'
@@ -104,6 +104,40 @@ describe('getRecords()', () => {
         "coins": [],
         "resolverAddress": "0x0000000000000000000000000000000000000000",
       }
+    `)
+  })
+
+  it('throws when unknown resolver error', async () => {
+    await expect(
+      getRecords.decode(
+        publicClient,
+        new RawContractError({
+          data: '0x4ced43fb', // SwagError()
+        }),
+        {
+          calls: [
+            { type: 'coin', key: 60, call: { to: '0x1234', data: '0x5678' } },
+          ],
+          address: '0x1234',
+          args: ['0x04746573740365746800', ['0x5678']],
+        },
+        { name: 'test.eth', coins: [60] },
+      ),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      [ContractFunctionExecutionError: The contract function "resolve" reverted with the following signature:
+      0x4ced43fb
+
+      Unable to decode signature "0x4ced43fb" as it was not found on the provided ABI.
+      Make sure you are using the correct ABI and that the error exists on it.
+      You can look up the decoded signature here: https://openchain.xyz/signatures?query=0x4ced43fb.
+       
+      Contract Call:
+        address:   0x1234
+        function:  resolve(bytes name, bytes[] data)
+        args:             (0x04746573740365746800, ["0x5678"])
+
+      Docs: https://viem.sh/docs/contract/decodeErrorResult
+      Version: viem@2.30.6]
     `)
   })
 })

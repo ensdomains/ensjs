@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type { RequestListener } from 'http'
+import type { RequestListener } from 'node:http'
 import {
+  type MockedFunction,
   afterAll,
   beforeAll,
   beforeEach,
@@ -8,7 +9,6 @@ import {
   expect,
   it,
   vi,
-  type MockedFunction,
 } from 'vitest'
 import { createHttpServer } from '../../test/createHttpServer.js'
 import { getDnsOwner } from './getDnsOwner.js'
@@ -36,8 +36,8 @@ beforeEach(() => {
 })
 
 it('returns valid address from valid domain and record', async () => {
-  let name
-  let type
+  let name: string | null = null
+  let type: string | null = null
   handler.mockImplementation((req, res) => {
     const url = new URL(req.url!, `http://${req.headers.host!}`)
     name = url.searchParams.get('name')
@@ -69,8 +69,9 @@ it('returns valid address from valid domain and record', async () => {
 })
 
 it('throws error when .eth', async () => {
-  await expect(getDnsOwner({ name: 'example.eth' })).rejects
-    .toThrowErrorMatchingInlineSnapshot(`
+  await expect(
+    getDnsOwner({ name: 'example.eth' }),
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
     [UnsupportedNameTypeError: Unsupported name type: eth-2ld
 
     - Supported name types: other-2ld
@@ -79,8 +80,9 @@ it('throws error when .eth', async () => {
   `)
 })
 it('throws error when >2ld', async () => {
-  await expect(getDnsOwner({ name: 'subdomain.example.com' })).rejects
-    .toThrowErrorMatchingInlineSnapshot(`
+  await expect(
+    getDnsOwner({ name: 'subdomain.example.com' }),
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
     [UnsupportedNameTypeError: Unsupported name type: other-subname
 
     - Supported name types: other-2ld

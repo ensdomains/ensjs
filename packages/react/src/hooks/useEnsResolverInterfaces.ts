@@ -1,18 +1,11 @@
-import type { Hex } from 'viem'
-import { useChainId, useConfig } from 'wagmi'
-import { useQuery, type UseQueryReturnType } from 'wagmi/query'
 import {
-  getEnsResolverInterfacesQueryOptions,
-  type GetEnsResolverInterfacesData,
-  type GetEnsResolverInterfacesErrorType,
-  type GetEnsResolverInterfacesOptions,
-  type GetEnsResolverInterfacesQueryFnData,
-  type GetEnsResolverInterfacesQueryKey,
-} from '../query/getEnsResolverInterfaces.js'
-import type { ConfigWithEns } from '../types/config.js'
-import type { ConfigParameter, QueryParameter } from '../types/properties.js'
-import type { ResolvedRegister } from '../types/register.js'
-import type { Compute } from '../types/utils.js'
+  type GetSupportedInterfacesParameters,
+  type GetSupportedInterfacesReturnType,
+  getSupportedInterfaces,
+} from '@ensdomains/ensjs/public'
+import type { Hex } from 'viem'
+import type { ParamWithClients, QueryConfig } from '../client.js'
+import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsResolverInterfacesParameters<
   config extends ConfigWithEns = ConfigWithEns,

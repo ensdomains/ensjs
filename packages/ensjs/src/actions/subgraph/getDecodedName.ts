@@ -107,7 +107,7 @@ const getDecodedName = async (
   if (Object.keys(labelResults).length !== 0) {
     for (const [key, value] of Object.entries(labelResults)) {
       if (value.length && value[0].labelName) {
-        attemptedDecodedLabels[parseInt(key.replace('labels', ''))] =
+        attemptedDecodedLabels[Number.parseInt(key.replace('labels', ''))] =
           value[0].labelName
       }
     }

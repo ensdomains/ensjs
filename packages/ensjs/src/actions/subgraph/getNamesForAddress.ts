@@ -7,16 +7,20 @@ import {
   InvalidFilterKeyError,
   InvalidOrderByError,
 } from '../../errors/subgraph.js'
-import { EMPTY_ADDRESS, GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'
-import type { DomainFilter } from './filters.js'
 import {
+  type DomainFilter,
+  getCreatedAtOrderFilter,
+  getExpiryDateOrderFilter,
+} from './filters.js'
+import {
+  type SubgraphDomain,
   domainDetailsFragment,
   registrationDetailsFragment,
   wrappedDomainDetailsFragment,
-  type SubgraphDomain,
 } from './fragments.js'
-import { makeNameObject, type Name } from './utils.js'
+import { type Name, makeNameObject } from './utils.js'
 
 export type GetNamesForAddressParameters = {
   /** Address to get names for */
@@ -98,34 +102,12 @@ const getOrderByFilter = ({
 >): DomainFilter => {
   const lastDomain = previousPage[previousPage.length - 1]
   const operator = orderDirection === 'asc' ? 'gt' : 'lt'
-
   switch (orderBy) {
     case 'expiryDate': {
-      let lastExpiryDate = lastDomain.expiryDate?.value
-        ? lastDomain.expiryDate.value / 1000
-        : 0
-      if (lastDomain.parentName === 'eth') {
-        lastExpiryDate += GRACE_PERIOD_SECONDS
-      }
-
-      if (orderDirection === 'asc' && lastExpiryDate === 0) {
-        return {
-          and: [{ expiryDate: null }, { [`id_${operator}`]: lastDomain.id }],
-        }
-      }
-      if (orderDirection === 'desc' && lastExpiryDate !== 0) {
-        return {
-          [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-        }
-      }
-      return {
-        or: [
-          {
-            [`expiryDate_${operator}`]: `${lastExpiryDate}`,
-          },
-          { expiryDate: null },
-        ],
-      }
+      return getExpiryDateOrderFilter({
+        orderDirection,
+        lastDomain,
+      })
     }
     case 'name': {
       return {
@@ -138,9 +120,7 @@ const getOrderByFilter = ({
       }
     }
     case 'createdAt': {
-      return {
-        [`createdAt_${operator}`]: `${lastDomain.createdAt.value / 1000}`,
-      }
+      return getCreatedAtOrderFilter({ lastDomain, orderDirection })
     }
     default:
       throw new InvalidOrderByError({
@@ -201,6 +181,7 @@ const getNamesForAddress = async (
     searchType,
     ...filters
   } = filter
+
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
