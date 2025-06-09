@@ -10,15 +10,13 @@ import {
   parseAbi,
   type CcipRequestErrorType as viem_CcipRequestErrorType,
   ccipRequest as viemCcipRequest,
-} from 'viem'
-import {
   type GetChainContractAddressErrorType,
-  getChainContractAddress,
-} from '../contracts/getChainContractAddress.js'
+} from 'viem'
 import {
   type CcipBatchRequestErrorType,
   ccipBatchRequest,
 } from './ccipBatchRequest.js'
+import { getChainContractAddress } from '../clients/chain.js'
 
 const abi = parseAbi([
   'function query((address,string[],bytes)[]) returns (bool[],bytes[])',
@@ -47,7 +45,7 @@ export const ccipRequest =
   }: CcipRequestParameters): ReturnType<typeof viemCcipRequest> => {
     // TODO: Improve
     const universalResolverAddress = getChainContractAddress({
-      client: { chain },
+      chain,
       contract: 'ensUniversalResolver',
     })
     const isUniversalResolverRequest = isAddressEqual(

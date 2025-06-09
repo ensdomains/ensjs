@@ -161,9 +161,7 @@ export type EnsWalletActions<
     duration,
     secret,
     resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
+    subregistryAddress,
     ...txArgs
   }: CommitNameParameters<
     chain,
@@ -277,9 +275,7 @@ export type EnsWalletActions<
     duration,
     secret,
     resolverAddress,
-    records,
-    reverseRecord,
-    fuses,
+    subregistryAddress,
     value,
     ...txArgs
   }: RegisterNameParameters<

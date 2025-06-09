@@ -24,7 +24,7 @@ export class BaseError extends Error {
 
   version = getVersion()
 
-  cause?: BaseError | Error
+  override cause?: BaseError | Error
 
   constructor(shortMesage: string, args: BaseErrorParameters = {}) {
     super()

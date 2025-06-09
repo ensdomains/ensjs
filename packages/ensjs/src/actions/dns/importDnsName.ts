@@ -141,7 +141,7 @@ export const makeFunctionData = <
  *   dnsImportData,
  * })
  */
-async function importDnsName<
+export async function importDnsName<
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
@@ -169,5 +169,3 @@ async function importDnsName<
 }
 
 importDnsName.makeFunctionData = makeFunctionData
-
-export default importDnsName

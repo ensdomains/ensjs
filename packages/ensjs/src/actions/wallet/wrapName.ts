@@ -21,7 +21,6 @@ import {
   type RequireClientContracts,
 } from '../../clients/chain.js'
 import { baseRegistrarSafeTransferFromWithDataSnippet } from '../../contracts/baseRegistrar.js'
-import type { ChainWithContract } from '../../contracts/consts.js'
 import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
@@ -62,11 +61,7 @@ export type WrapNameWriteParameters<name extends string> = {
   resolverAddress?: Address
 }
 
-type ChainWithContractDependencies = ChainWithContract<
-  'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
->
-
-type WrapNameWriteParametersErrorType =
+export type WrapNameWriteParametersErrorType =
   | AdditionalParameterSpecifiedError
   | WrappedLabelTooLargeError
   | GetChainContractAddressErrorType

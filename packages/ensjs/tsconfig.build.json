@@ -6,6 +6,9 @@
     "sourceMap": true,
     // TODO: The following options are also not enabled by default in `strict` mode and would be nice to have but would require some adjustments to the codebase.
     "exactOptionalPropertyTypes": false,
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true,
   }
 }

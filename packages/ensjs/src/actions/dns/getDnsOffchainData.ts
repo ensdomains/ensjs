@@ -1,5 +1,5 @@
-import { type Address, type Client, isAddress, type Transport } from 'viem'
-import type { ChainWithContract } from '../../contracts/consts.js'
+import { type Address, type Chain, isAddress } from 'viem'
+import type { RequireClientContracts } from '../../clients/chain.js'
 import {
   DnsDnssecVerificationFailedError,
   DnsDnssecWildcardExpansionError,
@@ -48,10 +48,8 @@ type ValidTextRecord = {
 }
 type InvalidTextRecord = { isValid: false; recordData: string }
 
-async function checkValidEnsTxtRecord<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
->(
-  client: Client<Transport, chain>,
+async function checkValidEnsTxtRecord<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   record: DnsResponseItem,
 ): Promise<InvalidTextRecord | ValidTextRecord | null> {
   if (record.type !== DnsRecordType.TXT) return null
@@ -107,10 +105,8 @@ async function checkValidEnsTxtRecord<
  *   name: 'ethleaderboard.xyz',
  * })
  */
-export async function getDnsOffchainData<
-  chain extends ChainWithContract<'ensUniversalResolver'>,
->(
-  client: Client<Transport, chain>,
+export async function getDnsOffchainData<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name, endpoint, strict }: GetDnsOffchainDataParameters,
 ): Promise<GetDnsOffchainDataReturnType> {
   const nameType = getNameType(name)
