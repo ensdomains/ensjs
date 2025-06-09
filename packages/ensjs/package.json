@@ -3,59 +3,75 @@
   "version": "4.0.2",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
-  "types": "./dist/index.d.ts",
-  "typings": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/esm/index.js"
     },
     "./contracts": {
-      "types": "./dist/contracts/index.d.ts",
-      "default": "./dist/contracts/index.js"
+      "types": "./dist/types/contracts/index.d.ts",
+      "default": "./dist/esm/contracts/index.js"
     },
     "./dns": {
-      "types": "./dist/dns.d.ts",
-      "default": "./dist/dns.js"
+      "types": "./dist/types/dns.d.ts",
+      "default": "./dist/esm/dns.js"
     },
     "./public": {
-      "types": "./dist/public.d.ts",
-      "default": "./dist/public.js"
+      "types": "./dist/types/exports/public.d.ts",
+      "default": "./dist/esm/exports/public.js"
     },
     "./subgraph": {
-      "types": "./dist/subgraph.d.ts",
-      "default": "./dist/subgraph.js"
+      "types": "./dist/types/subgraph.d.ts",
+      "default": "./dist/esm/subgraph.js"
     },
     "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "default": "./dist/utils/index.js"
+      "types": "./dist/types/utils/index.d.ts",
+      "default": "./dist/esm/utils/index.js"
     },
     "./wallet": {
-      "types": "./dist/wallet.d.ts",
-      "default": "./dist/wallet.js"
+      "types": "./dist/types/exports/wallet.d.ts",
+      "default": "./dist/esm/exports/wallet.js"
+    },
+    "./chain": {
+      "types": "./dist/types/exports/chain.d.ts",
+      "default": "./dist/esm/exports/chain.js"
+    },
+    "./internal": {
+      "types": "./dist/types/exports/internal.d.ts",
+      "default": "./dist/esm/exports/internal.js"
     },
     "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
       "contracts": [
-        "./dist/contracts/index.d.ts"
+        "./dist/types/contracts/index.d.ts"
       ],
       "dns": [
-        "./dist/dns.d.ts"
+        "./dist/types/dns.d.ts"
       ],
       "public": [
-        "./dist/public.d.ts"
+        "./dist/types/exports/public.d.ts"
       ],
       "subgraph": [
-        "./dist/subgraph.d.ts"
+        "./dist/types/subgraph.d.ts"
       ],
       "utils": [
-        "./dist/utils/index.d.ts"
+        "./dist/types/utils/index.d.ts"
       ],
       "wallet": [
-        "./dist/wallet.d.ts"
+        "./dist/types/exports/wallet.d.ts"
+      ],
+      "chain": [
+        "./dist/types/exports/chain.d.ts"
+      ],
+      "internal": [
+        "./dist/types/exports/internal.d.ts"
       ]
     }
   },
