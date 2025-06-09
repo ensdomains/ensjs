@@ -1,32 +1,32 @@
-import { type Hex } from 'viem'
+import type { Hex } from 'viem'
 import type { Prettify } from '../../types/index.js'
 import {
-  clearRecordsParameters,
   type ClearRecordsParametersErrorType,
   type ClearRecordsParametersReturnType,
+  clearRecordsParameters,
 } from './clearRecords.js'
 import type { EncodeAbiParameters } from './encodeAbi.js'
 import {
-  setAbiParameters,
   type SetAbiParametersErrorType,
   type SetAbiParametersReturnType,
+  setAbiParameters,
 } from './setAbi.js'
 import {
-  setAddrParameters,
-  type SetAddrParametersParameters,
   type SetAddrParametersErrorType,
+  type SetAddrParametersParameters,
   type SetAddrParametersReturnType,
+  setAddrParameters,
 } from './setAddr.js'
 import {
-  setContentHashParameters,
   type SetContentHashParametersErrorType,
   type SetContentHashParametersReturnType,
+  setContentHashParameters,
 } from './setContentHash.js'
 import {
-  setTextParameters,
   type SetTextParameters,
   type SetTextParametersErrorType,
   type SetTextParametersReturnType,
+  setTextParameters,
 } from './setText.js'
 
 export type RecordOptions = Prettify<{

@@ -1,15 +1,15 @@
 import {
   BaseError,
+  type Client,
   ContractFunctionRevertedError,
   encodeErrorResult,
-  type Client,
   type Hex,
   type PublicClient,
   type Transport,
 } from 'viem'
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
-import { beforeEach, expect, it, vi, type MockedFunction } from 'vitest'
+import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import {

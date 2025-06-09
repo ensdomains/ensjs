@@ -6,11 +6,11 @@ import {
   type Keccak256ErrorType,
   keccak256,
   type PadErrorType,
+  pad,
   type ToBytesErrorType,
   type ToHexErrorType,
   toBytes,
   toHex,
-  pad,
   zeroAddress,
 } from 'viem'
 import {
@@ -144,4 +144,4 @@ export type MakeL2CommitmentErrorType =
   | MakeL2CommitmentFromTupleErrorType
 
 export const makeL2Commitment = (params: L2RegistrationParameters): Hex =>
-  makeL2CommitmentFromTuple(makeL2CommitmentTuple(params)) 
+  makeL2CommitmentFromTuple(makeL2CommitmentTuple(params))

@@ -242,4 +242,4 @@ export const l2EthRegistrarRegisterSnippet = [
     stateMutability: 'payable',
     type: 'function',
   },
-] as const 
+] as const

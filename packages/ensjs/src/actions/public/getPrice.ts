@@ -1,22 +1,20 @@
-import {
-  type Chain,
-  type Client,
-  type GetChainContractAddressErrorType,
-  type MulticallErrorType,
-  type ReadContractErrorType,
+import type {
+  Chain,
+  GetChainContractAddressErrorType,
+  MulticallErrorType,
+  ReadContractErrorType,
 } from 'viem'
 import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-
-import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
-import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
-import { UnsupportedNameTypeError } from '../../errors/general.js'
-import { getNameType } from '../../utils/name/getNameType.js'
 import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
+import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
+import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 
 export type GetPriceParameters = {
   /** Name, or array of names, to get price for */

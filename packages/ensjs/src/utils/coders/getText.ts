@@ -1,11 +1,10 @@
 import {
-  decodeFunctionResult,
   type DecodeFunctionResultErrorType,
+  decodeFunctionResult,
   type Hex,
 } from 'viem'
 import { publicResolverTextSnippet } from '../../contracts/publicResolver.js'
-import { namehash, type NamehashErrorType } from '../name/namehash.js'
-import type { ErrorType } from '../../errors/utils.js'
+import { type NamehashErrorType, namehash } from '../name/namehash.js'
 
 /** @deprecated */
 export type GetTextParameters = {

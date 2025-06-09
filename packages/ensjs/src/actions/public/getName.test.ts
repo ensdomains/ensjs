@@ -1,9 +1,9 @@
 import {
+  type Address,
   BaseError,
+  type Client,
   ContractFunctionRevertedError,
   encodeErrorResult,
-  type Address,
-  type Client,
   type Hex,
   type PublicClient,
   type Transport,
@@ -16,8 +16,8 @@ import {
   describe,
   expect,
   it,
-  vi,
   type MockedFunction,
+  vi,
 } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ChainWithContract } from '../../contracts/consts.js'

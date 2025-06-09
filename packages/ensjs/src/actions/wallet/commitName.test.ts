@@ -9,8 +9,8 @@ import {
   walletClient,
 } from '../../test/addTestContracts.js'
 import {
-  type RegistrationParameters,
   makeCommitment,
+  type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { commitName } from './commitName.js'
 

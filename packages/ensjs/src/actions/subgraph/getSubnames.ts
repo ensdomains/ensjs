@@ -2,7 +2,7 @@
 import { gql } from 'graphql-request'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
-import { EMPTY_ADDRESS, GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { namehash } from '../../utils/name/namehash.js'
 import { createSubgraphClient } from './client.js'
 import {
@@ -11,12 +11,12 @@ import {
   getExpiryDateOrderFilter,
 } from './filters.js'
 import {
-  type SubgraphDomain,
   domainDetailsWithoutParentFragment,
   registrationDetailsFragment,
+  type SubgraphDomain,
   wrappedDomainDetailsFragment,
 } from './fragments.js'
-import { type Name, makeNameObject } from './utils.js'
+import { makeNameObject, type Name } from './utils.js'
 
 export type GetSubnamesParameters = {
   /** Name to get subnames for */

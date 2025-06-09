@@ -15,12 +15,12 @@ import {
   getExpiryDateOrderFilter,
 } from './filters.js'
 import {
-  type SubgraphDomain,
   domainDetailsFragment,
   registrationDetailsFragment,
+  type SubgraphDomain,
   wrappedDomainDetailsFragment,
 } from './fragments.js'
-import { type Name, makeNameObject } from './utils.js'
+import { makeNameObject, type Name } from './utils.js'
 
 export type GetNamesForAddressParameters = {
   /** Address to get names for */

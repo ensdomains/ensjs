@@ -1,29 +1,26 @@
-import {
-	type Account,
-	type Address,
-	type Chain,
-	type Client,
-	type Transport,
-	type WriteContractErrorType,
-	type WriteContractParameters,
-	type WriteContractReturnType,
-} from "viem";
-import { writeContract } from "viem/actions";
-import { getAction } from "viem/utils";
 import type {
-	Prettify,
-	WriteTransactionParameters,
-} from "../../types/index.js";
+  Account,
+  Address,
+  Chain,
+  Client,
+  Transport,
+  WriteContractErrorType,
+  WriteContractParameters,
+  WriteContractReturnType,
+} from 'viem'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import {
-	clientWithOverrides,
-	type ClientWithOverridesErrorType,
-} from "../../utils/clientWithOverrides.js";
+  type ClientWithOverridesErrorType,
+  clientWithOverrides,
+} from '../../utils/clientWithOverrides.js'
 import {
-	setAddrParameters,
-	type SetAddrParametersErrorType,
-	type SetAddrParametersReturnType,
-} from "../../utils/coders/setAddr.js";
-import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
+  type SetAddrParametersErrorType,
+  type SetAddrParametersReturnType,
+  setAddrParameters,
+} from '../../utils/coders/setAddr.js'
+import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // export type SetAddressRecordParameters = {
 // 	/** Name to set address record for */
@@ -54,65 +51,65 @@ import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
 // ================================
 
 export type SetAddressRecordWriteParametersParameters = {
-	/** Name to set address record for */
-	name: string;
-	/** Coin ticker or ID to set */
-	coin: string | number;
-	/** Value to set, null if deleting */
-	value: Address | string | null;
-	/** Resolver address to set address record on */
-	resolverAddress: Address;
-};
+  /** Name to set address record for */
+  name: string
+  /** Coin ticker or ID to set */
+  coin: string | number
+  /** Value to set, null if deleting */
+  value: Address | string | null
+  /** Resolver address to set address record on */
+  resolverAddress: Address
+}
 
 export type SetAddressRecordWriteParametersReturnType = ReturnType<
-	typeof setAddressRecordWriteParameters
->;
+  typeof setAddressRecordWriteParameters
+>
 
 export type SetAddressRecordWriteParametersErrorType =
-	| SetAddrParametersErrorType
-	| NamehashErrorType;
+  | SetAddrParametersErrorType
+  | NamehashErrorType
 
 export const setAddressRecordWriteParameters = <
-	chain extends Chain,
-	account extends Account,
+  chain extends Chain,
+  account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{
-		name,
-		coin,
-		value,
-		resolverAddress,
-	}: SetAddressRecordWriteParametersParameters,
+  client: Client<Transport, chain, account>,
+  {
+    name,
+    coin,
+    value,
+    resolverAddress,
+  }: SetAddressRecordWriteParametersParameters,
 ) => {
-	return {
-		address: resolverAddress,
-		chain: client.chain,
-		account: client.account,
-		...setAddrParameters({ namehash: namehash(name), coin, value }),
-	} as const satisfies WriteContractParameters<
-		SetAddrParametersReturnType["abi"]
-	>;
-};
+  return {
+    address: resolverAddress,
+    chain: client.chain,
+    account: client.account,
+    ...setAddrParameters({ namehash: namehash(name), coin, value }),
+  } as const satisfies WriteContractParameters<
+    SetAddrParametersReturnType['abi']
+  >
+}
 
 // ================================
 // Action
 // ================================
 
 export type SetAddressRecordParameters<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 > = Prettify<
-	SetAddressRecordWriteParametersParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
->;
+  SetAddressRecordWriteParametersParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
+>
 
-export type SetAddressRecordReturnType = WriteContractReturnType;
+export type SetAddressRecordReturnType = WriteContractReturnType
 
 export type SetAddressRecordErrorType =
-	| SetAddressRecordWriteParametersErrorType
-	| ClientWithOverridesErrorType
-	| WriteContractErrorType;
+  | SetAddressRecordWriteParametersErrorType
+  | ClientWithOverridesErrorType
+  | WriteContractErrorType
 
 /**
  * Sets an address record for a name on a resolver.
@@ -139,31 +136,31 @@ export type SetAddressRecordErrorType =
  * // 0x...
  */
 export async function setAddressRecord<
-	chain extends Chain | undefined,
-	account extends Account | undefined,
-	chainOverride extends Chain | undefined,
+  chain extends Chain | undefined,
+  account extends Account | undefined,
+  chainOverride extends Chain | undefined,
 >(
-	client: Client<Transport, chain, account>,
-	{
-		name,
-		coin,
-		value,
-		resolverAddress,
-		...txArgs
-	}: SetAddressRecordParameters<chain, account, chainOverride>,
+  client: Client<Transport, chain, account>,
+  {
+    name,
+    coin,
+    value,
+    resolverAddress,
+    ...txArgs
+  }: SetAddressRecordParameters<chain, account, chainOverride>,
 ): Promise<SetAddressRecordReturnType> {
-	const data = setAddressRecordWriteParameters(
-		clientWithOverrides(client, txArgs),
-		{
-			name,
-			coin,
-			value,
-			resolverAddress,
-		},
-	);
-	const writeContractAction = getAction(client, writeContract, "writeContract");
-	return writeContractAction({
-		...data,
-		...txArgs,
-	} as WriteContractParameters);
+  const data = setAddressRecordWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      coin,
+      value,
+      resolverAddress,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...data,
+    ...txArgs,
+  } as WriteContractParameters)
 }

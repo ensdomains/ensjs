@@ -1,9 +1,9 @@
 import type { Chain } from 'viem'
 import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
 import {
+  addresses,
   type CheckedChainWithEns,
   type SupportedChain,
-  addresses,
   subgraphs,
   supportedChains,
 } from './consts.js'

@@ -13,15 +13,15 @@ export {
 } from './bulkRenewal.js'
 export {
   addresses,
-  subgraphs,
-  supportedChains,
-  supportedContracts,
   type ChainWithEns,
   type CheckedChainWithEns,
   type ClientWithAccount,
   type ClientWithEns,
   type SupportedChain,
   type SupportedContract,
+  subgraphs,
+  supportedChains,
+  supportedContracts,
 } from './consts.js'
 export {
   dnsRegistrarErrors,
@@ -34,8 +34,8 @@ export {
 } from './dnssecImpl.js'
 export { erc165SupportsInterfaceSnippet } from './erc165.js'
 export {
-  ethRegistrarControllerCommitSnippet,
   ethRegistrarControllerCommitmentsSnippet,
+  ethRegistrarControllerCommitSnippet,
   ethRegistrarControllerErrors,
   ethRegistrarControllerRegisterSnippet,
   ethRegistrarControllerRenewSnippet,

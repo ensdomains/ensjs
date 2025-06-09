@@ -1,25 +1,21 @@
 import {
-  zeroAddress,
   type Address,
   type Chain,
-  type Client,
   type GetChainContractAddressErrorType,
   type ReadContractErrorType,
-  type Transport,
+  zeroAddress,
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
-import type { Prettify } from '../../types/index.js'
-import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
-import { namehash, type NamehashErrorType } from '../../utils/name/namehash.js'
 import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
+import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
+import type { Prettify } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
+import { type DecodedFuses, decodeFuses } from '../../utils/fuses.js'
+import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */

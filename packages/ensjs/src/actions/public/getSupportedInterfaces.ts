@@ -1,4 +1,4 @@
-import type { Address, Chain, Client, Hex, MulticallErrorType } from 'viem'
+import type { Address, Chain, Hex, MulticallErrorType } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/chain.js'

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RequestListener } from 'node:http'
 import {
-  type MockedFunction,
   afterAll,
   beforeAll,
   beforeEach,
   describe,
   expect,
   it,
+  type MockedFunction,
   vi,
 } from 'vitest'
 import { createHttpServer } from '../../test/createHttpServer.js'

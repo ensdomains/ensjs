@@ -1,12 +1,8 @@
-import type {
-  Chain,
-  Client,
-  EncodeFunctionDataErrorType,
-  Transport,
-} from 'viem'
+import type { Chain, EncodeFunctionDataErrorType } from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
-import type { ChainWithContract } from '../../contracts/consts.js'
+import type { RequireClientContracts } from '../../clients/chain.js'
 import type { Prettify } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
   type DecodeTextResultErrorType,
   type DecodeTextResultParameters,
@@ -20,8 +16,6 @@ import {
   type ResolveNameDataErrorType,
   resolveNameData,
 } from './resolveNameData.js'
-import type { RequireClientContracts } from '../../clients/chain.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetTextRecordParameters = Prettify<
   GetTextParametersParameters &

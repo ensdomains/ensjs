@@ -12,8 +12,8 @@ import {
 import { getOwner } from '../public/getOwner.js'
 import { getResolver } from '../public/getResolver.js'
 import {
-  getDnsImportData,
   type GetDnsImportDataReturnType,
+  getDnsImportData,
 } from './getDnsImportData.js'
 import importDnsName from './importDnsName.js'
 

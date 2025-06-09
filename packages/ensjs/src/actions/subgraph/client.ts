@@ -1,7 +1,7 @@
 import type { Kind, SelectionNode, SelectionSetNode } from 'graphql'
+import { parse, print, visit } from 'graphql/language/index.js'
 import type { RequestMiddleware, ResponseMiddleware } from 'graphql-request'
 import { GraphQLClient } from 'graphql-request'
-import { parse, print, visit } from 'graphql/language/index.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { namehash } from '../../utils/name/namehash.js'
 
@@ -58,7 +58,7 @@ export const responseMiddleware: ResponseMiddleware = (response) => {
   const traverse = (obj: Record<string, any>) => {
     if (obj && typeof obj === 'object') {
       for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (Object.hasOwn(obj, key)) {
           const value = obj[key]
 
           if (value && typeof value === 'object') {

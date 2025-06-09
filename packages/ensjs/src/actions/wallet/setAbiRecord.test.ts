@@ -6,7 +6,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { type AbiEncodeAs } from '../../utils/coders/encodeAbi.js'
+import type { AbiEncodeAs } from '../../utils/coders/encodeAbi.js'
 import { getAbiRecord } from '../public/getAbiRecord.js'
 import { getResolver } from '../public/getResolver.js'
 import { setAbiRecord } from './setAbiRecord.js'

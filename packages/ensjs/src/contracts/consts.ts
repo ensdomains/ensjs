@@ -1,248 +1,248 @@
-import type { Account, Address, Chain, Client, Transport } from "viem";
-import type { Assign, Prettify } from "../types/index.js";
+import type { Account, Address, Chain, Client, Transport } from 'viem'
+import type { Assign, Prettify } from '../types/index.js'
 
 type ChainContract = {
-  address: Address;
-  blockCreated?: number;
-};
+  address: Address
+  blockCreated?: number
+}
 
-export const supportedChains = [1, 5, 17000, 11155111] as const;
+export const supportedChains = [1, 5, 17000, 11155111] as const
 export const supportedContracts = [
-	"ensBaseRegistrarImplementation",
-	"ensBulkRenewal",
-	"ensDnsRegistrar",
-	"ensDnssecImpl",
-	"ensEthRegistrarController",
-	"ensNameWrapper",
-	"ensPublicResolver",
-	"ensRegistry",
-	"ensReverseRegistrar",
-	"ensUniversalResolver",
-] as const;
+  'ensBaseRegistrarImplementation',
+  'ensBulkRenewal',
+  'ensDnsRegistrar',
+  'ensDnssecImpl',
+  'ensEthRegistrarController',
+  'ensNameWrapper',
+  'ensPublicResolver',
+  'ensRegistry',
+  'ensReverseRegistrar',
+  'ensUniversalResolver',
+] as const
 
-export type SupportedChain = (typeof supportedChains)[number];
-export type SupportedContract = (typeof supportedContracts)[number];
+export type SupportedChain = (typeof supportedChains)[number]
+export type SupportedContract = (typeof supportedContracts)[number]
 
 export const addresses = {
   1: {
     ensBaseRegistrarImplementation: {
-			address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
     ensBulkRenewal: {
-			address: "0xa12159e5131b1eEf6B4857EEE3e1954744b5033A",
+      address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A',
     },
     ensDnsRegistrar: {
-			address: "0xB32cB5677a7C971689228EC835800432B339bA2B",
+      address: '0xB32cB5677a7C971689228EC835800432B339bA2B',
     },
     ensDnssecImpl: {
-			address: "0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5",
+      address: '0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5',
     },
     ensEthRegistrarController: {
-			address: "0x253553366Da8546fC250F225fe3d25d0C782303b",
+      address: '0x253553366Da8546fC250F225fe3d25d0C782303b',
     },
     ensNameWrapper: {
-			address: "0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401",
+      address: '0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401',
     },
     ensPublicResolver: {
-			address: "0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63",
+      address: '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63',
     },
     ensRegistry: {
-			address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
-			address: "0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb",
+      address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensUniversalResolver: {
-			address: "0xce01f8eee7E479C928F8919abD53E553a36CeF67",
+      address: '0xce01f8eee7E479C928F8919abD53E553a36CeF67',
     },
   },
   5: {
     ensBaseRegistrarImplementation: {
-			address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
     ensBulkRenewal: {
-			address: "0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d",
+      address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
     },
     ensDnsRegistrar: {
-			address: "0x8edc487D26F6c8Fa76e032066A3D4F87E273515d",
+      address: '0x8edc487D26F6c8Fa76e032066A3D4F87E273515d',
     },
     ensDnssecImpl: {
-			address: "0xF427c4AdED8B6dfde604865c1a7E953B160C26f0",
+      address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
     },
     ensEthRegistrarController: {
-			address: "0xCc5e7dB10E65EED1BBD105359e7268aa660f6734",
+      address: '0xCc5e7dB10E65EED1BBD105359e7268aa660f6734',
     },
     ensNameWrapper: {
-			address: "0x114D4603199df73e7D157787f8778E21fCd13066",
+      address: '0x114D4603199df73e7D157787f8778E21fCd13066',
     },
     ensPublicResolver: {
-			address: "0xd7a4F6473f32aC2Af804B3686AE8F1932bC35750",
+      address: '0xd7a4F6473f32aC2Af804B3686AE8F1932bC35750',
     },
     ensRegistry: {
-			address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
-			address: "0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d",
+      address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
     },
     ensUniversalResolver: {
-			address: "0x898A1182F3C2BBBF0b16b4DfEf63E9c3e9eB4821",
+      address: '0x898A1182F3C2BBBF0b16b4DfEf63E9c3e9eB4821',
     },
   },
   17000: {
     ensBaseRegistrarImplementation: {
-			address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
     ensBulkRenewal: {
-			address: "0xbc4cfB363F948E64Cd73Da6438F64CB37E2e33d1",
+      address: '0xbc4cfB363F948E64Cd73Da6438F64CB37E2e33d1',
     },
     ensDnsRegistrar: {
-			address: "0x458d278AEd4cE82BAeC384170f39198b01B8351c",
+      address: '0x458d278AEd4cE82BAeC384170f39198b01B8351c',
     },
     ensDnssecImpl: {
-			address: "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5",
+      address: '0x283af0b28c62c092c9727f1ee09c02ca627eb7f5',
     },
     ensEthRegistrarController: {
       address: '0xF404D2F84BC1735f7D9948F032D61F5fFfD9D3C3',
     },
     ensNameWrapper: {
-			address: "0xab50971078225D365994dc1Edcb9b7FD72Bb4862",
+      address: '0xab50971078225D365994dc1Edcb9b7FD72Bb4862',
     },
     ensPublicResolver: {
       address: '0x5a692ffe769A9B3D0e61F7446F5cAED650044C36',
     },
     ensRegistry: {
-			address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
       address: '0x65EE0b0B030a76c95a7ff046C0e0c8f7A2d1B004',
     },
     ensUniversalResolver: {
-			address: "0xa6ac935d4971e3cd133b950ae053becd16fe7f3b",
+      address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
     },
   },
   11155111: {
     ensBaseRegistrarImplementation: {
-			address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
     ensBulkRenewal: {
-			address: "0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1",
+      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
     },
     ensDnsRegistrar: {
-			address: "0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f",
+      address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
     },
     ensDnssecImpl: {
-			address: "0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653",
+      address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
     },
     ensEthRegistrarController: {
       address: '0x4477cAc137F3353Ca35060E01E5aEb777a1Ca01B',
     },
     ensNameWrapper: {
-			address: "0x0635513f179D50A207757E05759CbD106d7dFcE8",
+      address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
     },
     ensPublicResolver: {
       address: '0x8948458626811dd0c23EB25Cc74291247077cC51',
     },
     ensRegistry: {
-			address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
       address: '0xCF75B92126B02C9811d8c632144288a3eb84afC8',
     },
     ensUniversalResolver: {
-			address: "0xc8af999e38273d658be1b921b88a9ddf005769cc",
+      address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',
     },
   },
 } as const satisfies Record<
   SupportedChain,
   Record<SupportedContract, { address: Address }>
->;
+>
 
 type Subgraphs = {
   ens: {
-    url: string;
-  };
-};
+    url: string
+  }
+}
 
 export const subgraphs = {
   1: {
     ens: {
-			url: "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
+      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
     },
   },
   5: {
     ens: {
-			url: "https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli",
+      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
     },
   },
   17000: {
     ens: {
-			url: "https://api.studio.thegraph.com/query/49574/ensholesky/version/latest",
+      url: 'https://api.studio.thegraph.com/query/49574/ensholesky/version/latest',
     },
   },
   11155111: {
     ens: {
-			url: "https://api.studio.thegraph.com/query/49574/enssepolia/version/latest",
+      url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
     },
   },
-} as const satisfies Record<SupportedChain, Subgraphs>;
+} as const satisfies Record<SupportedChain, Subgraphs>
 
 type EnsChainContracts = {
-	ensBaseRegistrarImplementation: ChainContract;
-	ensDnsRegistrar: ChainContract;
-	ensEthRegistrarController: ChainContract;
-	ensNameWrapper: ChainContract;
-	ensPublicResolver: ChainContract;
-	ensReverseRegistrar: ChainContract;
-	ensBulkRenewal: ChainContract;
-	ensDnssecImpl: ChainContract;
-};
+  ensBaseRegistrarImplementation: ChainContract
+  ensDnsRegistrar: ChainContract
+  ensEthRegistrarController: ChainContract
+  ensNameWrapper: ChainContract
+  ensPublicResolver: ChainContract
+  ensReverseRegistrar: ChainContract
+  ensBulkRenewal: ChainContract
+  ensDnssecImpl: ChainContract
+}
 
 type BaseChainContracts = {
-	multicall3: ChainContract;
-	ensUniversalResolver: ChainContract;
-	ensRegistry: ChainContract;
-};
+  multicall3: ChainContract
+  ensUniversalResolver: ChainContract
+  ensRegistry: ChainContract
+}
 
 export type ChainWithEns<chain extends Chain = Chain> = Omit<
-	chain,
-	"contracts"
+  chain,
+  'contracts'
 > & {
-	contracts: BaseChainContracts & EnsChainContracts;
-	subgraphs: Subgraphs;
-};
+  contracts: BaseChainContracts & EnsChainContracts
+  subgraphs: Subgraphs
+}
 
 export type ChainWithContract<
-	contract extends SupportedContract | keyof BaseChainContracts,
+  contract extends SupportedContract | keyof BaseChainContracts,
 > = Chain & {
-	contracts: {
-		[key in contract]: ChainContract;
-	};
-};
+  contracts: {
+    [key in contract]: ChainContract
+  }
+}
 
 export type ChainWithBaseContracts = Assign<
-	Omit<Chain, "contracts">,
+  Omit<Chain, 'contracts'>,
   {
     contracts: BaseChainContracts
   }
 >
 
 export type CheckedChainWithEns<chain extends Chain> =
-	chain["id"] extends SupportedChain
-		? chain["contracts"] extends BaseChainContracts
-			? chain & {
-					contracts: Prettify<(typeof addresses)[chain["id"]]>;
-					subgraphs: (typeof subgraphs)[chain["id"]];
+  chain['id'] extends SupportedChain
+    ? chain['contracts'] extends BaseChainContracts
+      ? chain & {
+          contracts: Prettify<(typeof addresses)[chain['id']]>
+          subgraphs: (typeof subgraphs)[chain['id']]
         }
       : never
-		: never;
+    : never
 
 export type ClientWithEns<
   TTransport extends Transport = Transport,
   TChain extends ChainWithEns = ChainWithEns,
-> = Client<TTransport, TChain>;
+> = Client<TTransport, TChain>
 
 export type ClientWithAccount<
   TTransport extends Transport = Transport,
   TChain extends ChainWithEns = ChainWithEns,
   TAccount extends Account | undefined = Account | undefined,
-> = Client<TTransport, TChain, TAccount>;
+> = Client<TTransport, TChain, TAccount>

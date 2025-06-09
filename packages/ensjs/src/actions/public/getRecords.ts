@@ -2,7 +2,6 @@ import {
   type Abi,
   type Address,
   type Chain,
-  type Client,
   type EncodeFunctionDataErrorType,
   encodeFunctionData,
   type Hex,
@@ -18,12 +17,11 @@ import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
   type DecodeAbiResultErrorType,
   type DecodeAbiResultFromPrimitiveTypesErrorType,
+  type DecodeAbiResultReturnType,
   decodeAbiResult,
   decodeAbiResultFromPrimitiveTypes,
   type GetAbiParametersErrorType,
-  type GetAbiReturnType,
   getAbiParameters,
-  type DecodeAbiResultReturnType,
 } from '../../utils/coders/getAbi.js'
 import {
   type DecodeAddressResultErrorType,

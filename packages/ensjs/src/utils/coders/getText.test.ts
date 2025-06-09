@@ -9,8 +9,9 @@ import {
 
 describe('getTextParameters', () => {
   it('returns parameters', () => {
-    expect(getTextParameters({ name: 'test.eth', key: 'email' }))
-      .toMatchInlineSnapshot(`
+    expect(
+      getTextParameters({ name: 'test.eth', key: 'email' }),
+    ).toMatchInlineSnapshot(`
       {
         "abi": [
           {
@@ -80,8 +81,9 @@ describe('decodeTextResult', () => {
 
   it('throws when strict is true and decoding fails', () => {
     const encoded = '0x1234' // Invalid data
-    expect(() => decodeTextResult(encoded, { strict: true }))
-      .toThrowErrorMatchingInlineSnapshot(`
+    expect(() =>
+      decodeTextResult(encoded, { strict: true }),
+    ).toThrowErrorMatchingInlineSnapshot(`
       [AbiDecodingDataSizeTooSmallError: Data size of 2 bytes is too small for given parameters.
 
       Params: (string)

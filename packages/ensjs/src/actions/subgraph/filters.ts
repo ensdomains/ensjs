@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
 import type { InputMaybe, Scalars } from './types.js'
 import type { Name } from './utils.js'

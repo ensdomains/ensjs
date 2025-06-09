@@ -1,18 +1,17 @@
 import {
+  type Chain,
   type Hex,
   type LabelhashErrorType,
   labelhash,
   type ReadContractParameters,
-  type Chain,
 } from 'viem'
-
-import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
-import { registryOwnerSnippet } from '../contracts/registry.js'
-import { InvalidContractTypeError } from '../errors/general.js'
 import {
   getChainContractAddress,
   type RequireChainContracts,
 } from '../clients/chain.js'
+import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
+import { registryOwnerSnippet } from '../contracts/registry.js'
+import { InvalidContractTypeError } from '../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../types/internal.js'
 
 export type OwnerContract = 'nameWrapper' | 'registry' | 'registrar'

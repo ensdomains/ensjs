@@ -1,5 +1,4 @@
 import type { Account, Client, Transport } from 'viem'
-import type { ChainWithEns } from '../../contracts/consts.js'
 import getDecodedName, {
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
@@ -24,6 +23,7 @@ import getSubnames, {
   type GetSubnamesParameters,
   type GetSubnamesReturnType,
 } from '../../actions/subgraph/getSubnames.js'
+import type { ChainWithEns } from '../../contracts/consts.js'
 
 export type EnsSubgraphActions = {
   /**

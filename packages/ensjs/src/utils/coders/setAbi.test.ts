@@ -6,8 +6,9 @@ describe('setAbiParameters', () => {
     '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
 
   it('returns correct parameters with null data', async () => {
-    await expect(setAbiParameters({ namehash, data: null, encodeAs: 'json' }))
-      .resolves.toMatchInlineSnapshot(`
+    await expect(
+      setAbiParameters({ namehash, data: null, encodeAs: 'json' }),
+    ).resolves.toMatchInlineSnapshot(`
       {
         "abi": [
           {

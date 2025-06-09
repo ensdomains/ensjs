@@ -1,34 +1,34 @@
-import type { Chain } from "viem";
-import type { RequireClientContracts } from "../../clients/chain.js";
-import type { ErrorType } from "../../errors/utils.js";
-import type { Prettify } from "../../types/index.js";
-import type { ExcludeTE } from "../../types/internal.js";
+import type { Chain } from 'viem'
+import type { RequireClientContracts } from '../../clients/chain.js'
+import type { ErrorType } from '../../errors/utils.js'
+import type { Prettify } from '../../types/index.js'
+import type { ExcludeTE } from '../../types/internal.js'
 import {
-	type GetTextRecordErrorType,
-	type GetTextRecordParameters,
-	getTextRecord,
-} from "./getTextRecord.js";
+  type GetTextRecordErrorType,
+  type GetTextRecordParameters,
+  getTextRecord,
+} from './getTextRecord.js'
 
 export type GetCredentialsParameters = Prettify<
-	Omit<GetTextRecordParameters, "key">
->;
+  Omit<GetTextRecordParameters, 'key'>
+>
 
-export type GetCredentialsReturnType = ExternalCredential[] | null;
+export type GetCredentialsReturnType = ExternalCredential[] | null
 
-export type GetCredentialsErrorType = GetTextRecordErrorType | ErrorType;
+export type GetCredentialsErrorType = GetTextRecordErrorType | ErrorType
 
 export type ExternalCredential = {
-	url: string;
-};
+  url: string
+}
 
 const parseCredentials = (credentials: string[]) => {
-	const externalCredentials: ExternalCredential[] = [];
-	for (const credential of credentials) {
-		if (URL.canParse(credential)) externalCredentials.push({ url: credential });
-	}
+  const externalCredentials: ExternalCredential[] = []
+  for (const credential of credentials) {
+    if (URL.canParse(credential)) externalCredentials.push({ url: credential })
+  }
 
-	return externalCredentials;
-};
+  return externalCredentials
+}
 
 /**
  * Gets credentials for a name.
@@ -50,19 +50,19 @@ const parseCredentials = (credentials: string[]) => {
  * // [{ url: 'https://example.com' }]
  */
 export async function getCredentials<chain extends Chain>(
-	client: RequireClientContracts<chain, "ensUniversalResolver">,
-	{ gatewayUrls, strict, name }: GetCredentialsParameters,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  { gatewayUrls, strict, name }: GetCredentialsParameters,
 ): Promise<GetCredentialsReturnType> {
-	client = client as ExcludeTE<typeof client>;
+  client = client as ExcludeTE<typeof client>
 
-	const result = await getTextRecord(client, {
-		name,
-		key: "verifications",
-		gatewayUrls,
-		strict,
-	});
-	if (!result) return null;
+  const result = await getTextRecord(client, {
+    name,
+    key: 'verifications',
+    gatewayUrls,
+    strict,
+  })
+  if (!result) return null
 
-	const credential = JSON.parse(result) as string[];
-	return parseCredentials(credential);
+  const credential = JSON.parse(result) as string[]
+  return parseCredentials(credential)
 }

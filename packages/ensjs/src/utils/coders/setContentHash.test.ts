@@ -7,8 +7,9 @@ describe('setContentHashParameters', () => {
   const contentHash = 'ipfs://QmXwMFNjzjRvZuPvzJfYJZ1QqX2QJjzj1YJZ1QqX2QJjzj'
 
   it('returns the correct parameters when contentHash is not null', () => {
-    expect(setContentHashParameters({ namehash, contentHash }))
-      .toMatchInlineSnapshot(`
+    expect(
+      setContentHashParameters({ namehash, contentHash }),
+    ).toMatchInlineSnapshot(`
       {
         "abi": [
           {
@@ -38,8 +39,9 @@ describe('setContentHashParameters', () => {
   })
 
   it('returns the correct parameters when contentHash is null', () => {
-    expect(setContentHashParameters({ namehash, contentHash: null }))
-      .toMatchInlineSnapshot(`
+    expect(
+      setContentHashParameters({ namehash, contentHash: null }),
+    ).toMatchInlineSnapshot(`
       {
         "abi": [
           {

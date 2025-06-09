@@ -1,113 +1,109 @@
 import {
-	encodeFunctionData,
-	type Account,
-	type Address,
-	type Chain,
-	type Client,
-	type EncodeFunctionDataErrorType,
-	type EncodeFunctionDataParameters,
-	type Transport,
-	type WriteContractErrorType,
-	type WriteContractParameters,
-	type WriteContractReturnType,
-} from "viem";
-import { writeContract } from "viem/actions";
-import { getAction } from "viem/utils";
-import { publicResolverMulticallSnippet } from "../../contracts/publicResolver.js";
-import { NoRecordsSpecifiedError } from "../../errors/public.js";
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  type EncodeFunctionDataErrorType,
+  type EncodeFunctionDataParameters,
+  encodeFunctionData,
+  type Transport,
+  type WriteContractErrorType,
+  type WriteContractParameters,
+  type WriteContractReturnType,
+} from 'viem'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import type {
-	Prettify,
-	SimpleTransactionRequest,
-	WriteTransactionParameters,
-} from "../../types/index.js";
-import { clientWithOverrides } from "../../utils/clientWithOverrides.js";
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/chain.js'
+import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
+import { NoRecordsSpecifiedError } from '../../errors/public.js'
+import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
 import {
-	resolverMulticallParameters,
-	type RecordOptions,
-} from "../../utils/coders/resolverMulticallParameters.js";
-import { namehash, type NamehashErrorType } from "../../utils/name/namehash.js";
-import type {
-	ChainWithContracts,
-	RequireClientContracts,
-} from "../../clients/chain.js";
-import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+  type RecordOptions,
+  resolverMulticallParameters,
+} from '../../utils/coders/resolverMulticallParameters.js'
+import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // ================================
 // Write parameters
 // ================================
 
 export type SetRecordsWriteParametersParameters = {
-	/** The name to set records for */
-	name: string;
-	/** The resolver address to set records on */
-	resolverAddress: Address;
-} & RecordOptions;
+  /** The name to set records for */
+  name: string
+  /** The resolver address to set records on */
+  resolverAddress: Address
+} & RecordOptions
 
 export type SetRecordsWriteParametersReturnType = ReturnType<
-	typeof setRecordsWriteParameters
->;
+  typeof setRecordsWriteParameters
+>
 
 export type SetRecordsWriteParametersErrorType =
-	| NoRecordsSpecifiedError
-	| NamehashErrorType
-	| EncodeFunctionDataErrorType;
+  | NoRecordsSpecifiedError
+  | NamehashErrorType
+  | EncodeFunctionDataErrorType
 
 export const setRecordsWriteParameters = async <
-	chain extends Chain,
-	account extends Account,
+  chain extends Chain,
+  account extends Account,
 >(
-	client: Client<Transport, chain, account>,
-	{ name, resolverAddress, ...records }: SetRecordsWriteParametersParameters,
+  client: Client<Transport, chain, account>,
+  { name, resolverAddress, ...records }: SetRecordsWriteParametersParameters,
 ) => {
-	const callArray = await resolverMulticallParameters({
-		namehash: namehash(name),
-		...records,
-	});
-	if (callArray.length === 0) throw new NoRecordsSpecifiedError();
+  const callArray = await resolverMulticallParameters({
+    namehash: namehash(name),
+    ...records,
+  })
+  if (callArray.length === 0) throw new NoRecordsSpecifiedError()
 
-	const baseParams = {
-		address: resolverAddress,
-		account: client.account,
-		chain: client.chain,
-	} as const;
+  const baseParams = {
+    address: resolverAddress,
+    account: client.account,
+    chain: client.chain,
+  } as const
 
-	if (callArray.length === 1)
-		return {
-			...baseParams,
-			...callArray[0],
-		} as const satisfies WriteContractParameters;
-	return {
-		...baseParams,
-		abi: publicResolverMulticallSnippet,
-		functionName: "multicall",
-		args: [
-			callArray.map((call) =>
-				encodeFunctionData(call as EncodeFunctionDataParameters),
-			),
-		],
-	} as const satisfies WriteContractParameters<
-		typeof publicResolverMulticallSnippet
-	>;
-};
+  if (callArray.length === 1)
+    return {
+      ...baseParams,
+      ...callArray[0],
+    } as const satisfies WriteContractParameters
+  return {
+    ...baseParams,
+    abi: publicResolverMulticallSnippet,
+    functionName: 'multicall',
+    args: [
+      callArray.map((call) =>
+        encodeFunctionData(call as EncodeFunctionDataParameters),
+      ),
+    ],
+  } as const satisfies WriteContractParameters<
+    typeof publicResolverMulticallSnippet
+  >
+}
 
 // ================================
 // Action
 // ================================
 
 export type SetRecordsParameters<
-	chain extends Chain,
-	account extends Account,
-	chainOverride extends ChainWithContracts<"ensPublicResolver">,
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends ChainWithContracts<'ensPublicResolver'>,
 > = Prettify<
-	SetRecordsWriteParametersParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
->;
+  SetRecordsWriteParametersParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
+>
 
-export type SetRecordsReturnType = WriteContractReturnType;
+export type SetRecordsReturnType = WriteContractReturnType
 
 export type SetRecordsErrorType =
-	| SetRecordsWriteParametersErrorType
-	| WriteContractErrorType;
+  | SetRecordsWriteParametersErrorType
+  | WriteContractErrorType
 
 /**
  * Sets multiple records for a name on a resolver.
@@ -139,39 +135,39 @@ export type SetRecordsErrorType =
  * // 0x...
  */
 export async function setRecords<
-	chain extends Chain,
-	account extends Account,
-	chainOverride extends ChainWithContracts<"ensPublicResolver">,
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends ChainWithContracts<'ensPublicResolver'>,
 >(
-	client: RequireClientContracts<chain, "ensPublicResolver", account>,
-	{
-		name,
-		resolverAddress,
-		clearRecords,
-		contentHash,
-		texts,
-		coins,
-		abi,
-		...txArgs
-	}: SetRecordsParameters<chain, account, chainOverride>,
+  client: RequireClientContracts<chain, 'ensPublicResolver', account>,
+  {
+    name,
+    resolverAddress,
+    clearRecords,
+    contentHash,
+    texts,
+    coins,
+    abi,
+    ...txArgs
+  }: SetRecordsParameters<chain, account, chainOverride>,
 ): Promise<SetRecordsReturnType> {
-	ASSERT_NO_TYPE_ERROR(client);
+  ASSERT_NO_TYPE_ERROR(client)
 
-	const writeParameters = await setRecordsWriteParameters(
-		clientWithOverrides(client, txArgs),
-		{
-			name,
-			resolverAddress,
-			clearRecords,
-			contentHash,
-			texts,
-			coins,
-			abi,
-		},
-	);
-	const writeContractAction = getAction(client, writeContract, "writeContract");
-	return writeContractAction({
-		...writeParameters,
-		...txArgs,
-	} as WriteContractParameters);
+  const writeParameters = await setRecordsWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      resolverAddress,
+      clearRecords,
+      contentHash,
+      texts,
+      coins,
+      abi,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
+    ...txArgs,
+  } as WriteContractParameters)
 }

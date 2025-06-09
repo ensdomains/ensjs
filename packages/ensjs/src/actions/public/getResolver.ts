@@ -1,7 +1,6 @@
 import {
   type Address,
   type Chain,
-  type Client,
   type GetChainContractAddressErrorType,
   type ReadContractErrorType,
   type ToHexErrorType,

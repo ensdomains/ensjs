@@ -1,117 +1,115 @@
 import type {
-	Account,
-	Chain,
-	GetChainContractAddressErrorType,
-	Hash,
-	WriteContractErrorType,
-	WriteContractParameters,
-} from "viem";
-import { writeContract } from "viem/actions";
-import { getAction } from "viem/utils";
-import { l2EthRegistrarRegisterSnippet } from "../../contracts/l2EthRegistrar.js";
-import { UnsupportedNameTypeError } from "../../errors/general.js";
-import type { Prettify, WriteTransactionParameters } from "../../types/index.js";
+  Account,
+  Chain,
+  GetChainContractAddressErrorType,
+  Hash,
+  WriteContractErrorType,
+  WriteContractParameters,
+} from 'viem'
+import { writeContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import {
-	clientWithOverrides,
-	type ClientWithOverridesErrorType,
-} from "../../utils/clientWithOverrides.js";
-import { getNameType } from "../../utils/name/getNameType.js";
+  type ChainWithContracts,
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
+import { l2EthRegistrarRegisterSnippet } from '../../contracts/l2EthRegistrar.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
-	type L2RegistrationParameters,
-	makeL2CommitmentTuple,
-	type MakeL2CommitmentTupleErrorType,
-} from "../../utils/l2RegisterHelpers.js";
+  type ClientWithOverridesErrorType,
+  clientWithOverrides,
+} from '../../utils/clientWithOverrides.js'
 import {
-	wrappedLabelLengthCheck,
-	type WrappedLabelLengthCheckErrorType,
-} from "../../utils/wrapper.js";
+  type L2RegistrationParameters,
+  type MakeL2CommitmentTupleErrorType,
+  makeL2CommitmentTuple,
+} from '../../utils/l2RegisterHelpers.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 import {
-	getChainContractAddress,
-	type ChainWithContracts,
-	type RequireClientContracts,
-} from "../../clients/chain.js";
-import { ASSERT_NO_TYPE_ERROR } from "../../types/internal.js";
+  type WrappedLabelLengthCheckErrorType,
+  wrappedLabelLengthCheck,
+} from '../../utils/wrapper.js'
 
 // ================================
 // Write parameters
 // ================================
 
 export type RegisterNameWriteParametersParameters = L2RegistrationParameters & {
-	/** Value of registration */
-	value: bigint;
-};
+  /** Value of registration */
+  value: bigint
+}
 
 export type RegisterNameWriteParametersReturnType<
-	chain extends Chain,
-	account extends Account,
-> = ReturnType<typeof registerNameWriteParameters<chain, account>>;
+  chain extends Chain,
+  account extends Account,
+> = ReturnType<typeof registerNameWriteParameters<chain, account>>
 
 export type RegisterNameWriteParametersErrorType =
-	| UnsupportedNameTypeError
-	| WrappedLabelLengthCheckErrorType
-	| GetChainContractAddressErrorType
-	| MakeL2CommitmentTupleErrorType;
+  | UnsupportedNameTypeError
+  | WrappedLabelLengthCheckErrorType
+  | GetChainContractAddressErrorType
+  | MakeL2CommitmentTupleErrorType
 
 export const registerNameWriteParameters = <
-	chain extends Chain,
-	account extends Account,
+  chain extends Chain,
+  account extends Account,
 >(
-	client: RequireClientContracts<chain, "ensL2EthRegistrar", account>,
-	{ value, ...registrationParams }: RegisterNameWriteParametersParameters,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
+  { value, ...registrationParams }: RegisterNameWriteParametersParameters,
 ) => {
-	ASSERT_NO_TYPE_ERROR(client);
+  ASSERT_NO_TYPE_ERROR(client)
 
-	const nameType = getNameType(registrationParams.name);
-	if (nameType !== "eth-2ld")
-		throw new UnsupportedNameTypeError({
-			nameType,
-			supportedNameTypes: ["eth-2ld"],
-			details: "Only 2ld-eth name registration is supported",
-		});
+  const nameType = getNameType(registrationParams.name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Only 2ld-eth name registration is supported',
+    })
 
-	const labels = registrationParams.name.split(".");
-	wrappedLabelLengthCheck(labels[0]);
+  const labels = registrationParams.name.split('.')
+  wrappedLabelLengthCheck(labels[0])
 
-	// Use the commitment tuple helper for consistency
-	const commitmentTuple = makeL2CommitmentTuple(registrationParams);
+  // Use the commitment tuple helper for consistency
+  const commitmentTuple = makeL2CommitmentTuple(registrationParams)
 
-	return {
-		address: getChainContractAddress({
-			chain: client.chain,
-			contract: "ensL2EthRegistrar",
-		}),
-		abi: l2EthRegistrarRegisterSnippet,
-		functionName: "register",
-		args: commitmentTuple,
-		chain: client.chain,
-		account: client.account,
-		value,
-	} as const satisfies WriteContractParameters<
-		typeof l2EthRegistrarRegisterSnippet
-	>;
-};
+  return {
+    address: getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensL2EthRegistrar',
+    }),
+    abi: l2EthRegistrarRegisterSnippet,
+    functionName: 'register',
+    args: commitmentTuple,
+    chain: client.chain,
+    account: client.account,
+    value,
+  } as const satisfies WriteContractParameters<
+    typeof l2EthRegistrarRegisterSnippet
+  >
+}
 
 // ================================
 // Register name action
 // ================================
 
 export type RegisterNameParameters<
-	chain extends Chain,
-	account extends Account,
-	chainOverride extends
-		| ChainWithContracts<"ensL2EthRegistrar">
-		| undefined,
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
 > = Prettify<
-	RegisterNameWriteParametersParameters &
-		WriteTransactionParameters<chain, account, chainOverride>
->;
+  RegisterNameWriteParametersParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
+>
 
-export type RegisterNameReturnType = Hash;
+export type RegisterNameReturnType = Hash
 
 export type RegisterNameErrorType =
-	| RegisterNameWriteParametersErrorType
-	| ClientWithOverridesErrorType
-	| WriteContractErrorType;
+  | RegisterNameWriteParametersErrorType
+  | ClientWithOverridesErrorType
+  | WriteContractErrorType
 
 /**
  * Registers a name on ENS
@@ -154,41 +152,39 @@ export type RegisterNameErrorType =
  * // 0x...
  */
 export async function registerName<
-	chain extends Chain,
-	account extends Account,
-	chainOverride extends
-		| ChainWithContracts<"ensL2EthRegistrar">
-		| undefined,
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
 >(
-	client: RequireClientContracts<chain, "ensL2EthRegistrar", account>,
-	{
-		name,
-		owner,
-		duration,
-		secret,
-		resolverAddress,
-		subregistryAddress,
-		value,
-		...txArgs
-	}: RegisterNameParameters<chain, account, chainOverride>,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
+  {
+    name,
+    owner,
+    duration,
+    secret,
+    resolverAddress,
+    subregistryAddress,
+    value,
+    ...txArgs
+  }: RegisterNameParameters<chain, account, chainOverride>,
 ): Promise<RegisterNameReturnType> {
-	ASSERT_NO_TYPE_ERROR(client);
+  ASSERT_NO_TYPE_ERROR(client)
 
-	const writeParameters = registerNameWriteParameters(
-		clientWithOverrides(client, txArgs),
-		{
-			name,
-			owner,
-			duration,
-			secret,
-			resolverAddress,
-			subregistryAddress,
-			value,
-		},
-	);
-	const writeContractAction = getAction(client, writeContract, "writeContract");
-	return writeContractAction({
-		...writeParameters,
-		...txArgs,
-	} as WriteContractParameters);
+  const writeParameters = registerNameWriteParameters(
+    clientWithOverrides(client, txArgs),
+    {
+      name,
+      owner,
+      duration,
+      secret,
+      resolverAddress,
+      subregistryAddress,
+      value,
+    },
+  )
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
+    ...txArgs,
+  } as WriteContractParameters)
 }

@@ -1,4 +1,4 @@
-import type { Chain, Client, EncodeFunctionDataErrorType } from 'viem'
+import type { Chain, EncodeFunctionDataErrorType } from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/chain.js'
 import type { Prettify } from '../../types/index.js'

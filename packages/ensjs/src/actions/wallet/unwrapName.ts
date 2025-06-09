@@ -1,18 +1,19 @@
-import {
-  type Account,
-  type Address,
-  type Chain,
-  type Client,
-  type GetChainContractAddressErrorType,
-  type Hash,
-  type LabelhashErrorType,
-  type Transport,
-  type WriteContractErrorType,
-  type WriteContractParameters,
+import type {
+  Account,
+  Address,
+  Chain,
+  GetChainContractAddressErrorType,
+  Hash,
+  WriteContractErrorType,
+  WriteContractParameters,
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { ChainWithContract } from '../../contracts/consts.js'
+import {
+  type ChainWithContracts,
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
 import {
   nameWrapperUnwrapEth2ldSnippet,
   nameWrapperUnwrapSnippet,
@@ -21,27 +22,22 @@ import {
   AdditionalParameterSpecifiedError,
   RequiredParameterNotSpecifiedError,
 } from '../../errors/general.js'
+import type { ErrorType } from '../../errors/utils.js'
 import type {
   Eth2ldNameSpecifier,
   GetNameType,
   WriteTransactionParameters,
 } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
-  clientWithOverrides,
   type ClientWithOverridesErrorType,
+  clientWithOverrides,
 } from '../../utils/clientWithOverrides.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import {
-  makeLabelNodeAndParent,
   type MakeLabelNodeAndParentErrorType,
+  makeLabelNodeAndParent,
 } from '../../utils/name/makeLabelNodeAndParent.js'
-import {
-  getChainContractAddress,
-  type ChainWithContracts,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
-import type { ErrorType } from '../../errors/utils.js'
 
 export type UnwrapNameWriteParametersParameters<name extends string> = {
   /** The name to unwrap */

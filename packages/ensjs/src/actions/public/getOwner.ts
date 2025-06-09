@@ -1,32 +1,29 @@
 import {
-  namehash,
-  zeroAddress,
   type Address,
   type Chain,
-  type Client,
   type MulticallErrorType,
+  namehash,
   type ReadContractErrorType,
   type ReadContractParameters,
   type ReadContractReturnType,
-  type Transport,
+  zeroAddress,
 } from 'viem'
 import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-
-import { isNullRegistrarOwnerOfError } from '../../utils/errors/isNullRegistrarOwnerOfError.js'
-import { checkIsDotEth } from '../../utils/name/validation.js'
-import { nullableAddress } from '../../utils/nullableAddress.js'
-import {
-  getContractSpecificOwnerParameters,
-  type GetContractSpecificOwnerParametersErrorType,
-  type OwnerContract,
-} from '../../utils/ownerFromContract.js'
 import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { ASSERT_NO_TYPE_ERROR, type ExcludeTE } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
+import { isNullRegistrarOwnerOfError } from '../../utils/errors/isNullRegistrarOwnerOfError.js'
 import type { NamehashErrorType } from '../../utils/name/namehash.js'
+import { checkIsDotEth } from '../../utils/name/validation.js'
+import { nullableAddress } from '../../utils/nullableAddress.js'
+import {
+  type GetContractSpecificOwnerParametersErrorType,
+  getContractSpecificOwnerParameters,
+  type OwnerContract,
+} from '../../utils/ownerFromContract.js'
 
 export type GetOwnerParameters<
   contract extends OwnerContract | undefined = undefined,

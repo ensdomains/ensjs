@@ -9,8 +9,9 @@ import {
 
 describe('getContenthashParameters', () => {
   it('returns parameters', () => {
-    expect(getContentHashParameters({ name: 'test.eth' }))
-      .toMatchInlineSnapshot(`
+    expect(
+      getContentHashParameters({ name: 'test.eth' }),
+    ).toMatchInlineSnapshot(`
       {
         "abi": [
           {
@@ -70,8 +71,9 @@ describe('decodeContenthashResult', () => {
       result:
         '0xe3010170122029f2d17be6139079dc48696d1f582a8530eb9805b561eda517e22a892c7e3f1f',
     })
-    expect(decodeContentHashResult(encoded, { strict: false }))
-      .toMatchInlineSnapshot(`
+    expect(
+      decodeContentHashResult(encoded, { strict: false }),
+    ).toMatchInlineSnapshot(`
       {
         "decoded": "bafybeibj6lixxzqtsb45ysdjnupvqkufgdvzqbnvmhw2kf7cfkesy7r7d4",
         "protocolType": "ipfs",
@@ -86,8 +88,9 @@ describe('decodeContenthashResult', () => {
 
   it('throws when strict is true and decoding fails', () => {
     const encoded = '0x1234' // Invalid data
-    expect(() => decodeContentHashResult(encoded, { strict: true }))
-      .toThrowErrorMatchingInlineSnapshot(`
+    expect(() =>
+      decodeContentHashResult(encoded, { strict: true }),
+    ).toThrowErrorMatchingInlineSnapshot(`
       [AbiDecodingDataSizeTooSmallError: Data size of 2 bytes is too small for given parameters.
 
       Params: (bytes)

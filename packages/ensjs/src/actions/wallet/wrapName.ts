@@ -1,22 +1,25 @@
 import {
-  encodeAbiParameters,
-  labelhash,
-  toHex,
   type Account,
   type Address,
   type Chain,
-  type Client,
   type EncodeAbiParametersErrorType,
+  encodeAbiParameters,
   type GetChainContractAddressErrorType,
   type LabelhashErrorType,
+  labelhash,
   type ToHexErrorType,
-  type Transport,
+  toHex,
   type WriteContractParameters,
   type WriteContractReturnType,
 } from 'viem'
 import { writeContract } from 'viem/actions'
-import { packetToBytes, type PacketToBytesErrorType } from 'viem/ens'
+import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
+import {
+  type ChainWithContracts,
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
 import { baseRegistrarSafeTransferFromWithDataSnippet } from '../../contracts/baseRegistrar.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
@@ -30,26 +33,21 @@ import type {
   GetNameType,
   WriteTransactionParameters,
 } from '../../types/index.js'
-import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
-import {
-  encodeFuses,
-  type EncodeChildFusesInputObject,
-  type EncodeFusesErrorType,
-} from '../../utils/fuses.js'
-import { checkIsDotEth } from '../../utils/name/validation.js'
-import {
-  wrappedLabelLengthCheck,
-  type WrappedLabelLengthCheckErrorType,
-} from '../../utils/wrapper.js'
-import {
-  getChainContractAddress,
-  type ChainWithContracts,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
 import {
   ASSERT_NO_TYPE_ERROR,
   EXCLUDE_TYPE_ERROR,
 } from '../../types/internal.js'
+import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
+import {
+  type EncodeChildFusesInputObject,
+  type EncodeFusesErrorType,
+  encodeFuses,
+} from '../../utils/fuses.js'
+import { checkIsDotEth } from '../../utils/name/validation.js'
+import {
+  type WrappedLabelLengthCheckErrorType,
+  wrappedLabelLengthCheck,
+} from '../../utils/wrapper.js'
 
 export type WrapNameWriteParameters<name extends string> = {
   /** The name to wrap */

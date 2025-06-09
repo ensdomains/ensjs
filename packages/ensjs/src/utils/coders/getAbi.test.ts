@@ -47,8 +47,9 @@ describe('getAbiParameters', () => {
     `)
   })
   it('allows content type override', () => {
-    expect(getAbiParameters({ name: 'test.eth', supportedContentTypes: 0x1n }))
-      .toMatchInlineSnapshot(`
+    expect(
+      getAbiParameters({ name: 'test.eth', supportedContentTypes: 0x1n }),
+    ).toMatchInlineSnapshot(`
       {
         "abi": [
           {
@@ -118,8 +119,9 @@ describe('decodeAbiResult', () => {
       functionName: 'ABI',
       result: [8n, stringToHex('https://example.com')],
     })
-    await expect(decodeAbiResult(encoded, { strict: false })).resolves
-      .toMatchInlineSnapshot(`
+    await expect(
+      decodeAbiResult(encoded, { strict: false }),
+    ).resolves.toMatchInlineSnapshot(`
       {
         "abi": "https://example.com",
         "contentType": 8,

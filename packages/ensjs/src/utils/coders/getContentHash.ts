@@ -1,54 +1,54 @@
 import {
-	decodeFunctionResult,
-	type DecodeFunctionResultErrorType,
-	type Hex,
-} from "viem";
-import { publicResolverContenthashSnippet } from "../../contracts/publicResolver.js";
-import type { Prettify } from "../../types/index.js";
+  type DecodeFunctionResultErrorType,
+  decodeFunctionResult,
+  type Hex,
+} from 'viem'
+import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
+import type { Prettify } from '../../types/index.js'
 import type {
-	DecodeContentHashErrorType,
-	DecodedContentHash,
-} from "../contentHash.js";
-import { decodeContentHash } from "../contentHash.js";
-import { namehash, type NamehashErrorType } from "../name/namehash.js";
+  DecodeContentHashErrorType,
+  DecodedContentHash,
+} from '../contentHash.js'
+import { decodeContentHash } from '../contentHash.js'
+import { type NamehashErrorType, namehash } from '../name/namehash.js'
 
 // ================================
 // Get content hash parameters
 // ================================
 
 export type GetContentHashParameters = {
-	/** Name to get content hash record for */
-	name: string;
-	/** Whether or not to throw decoding errors */
-	strict?: boolean;
-};
+  /** Name to get content hash record for */
+  name: string
+  /** Whether or not to throw decoding errors */
+  strict?: boolean
+}
 
-export type GetContentHashReturnType = Prettify<DecodedContentHash | null>;
+export type GetContentHashReturnType = Prettify<DecodedContentHash | null>
 
-export type GetContentHashErrorType = NamehashErrorType;
+export type GetContentHashErrorType = NamehashErrorType
 
 export function getContentHashParameters({
-	name,
-}: Omit<GetContentHashParameters, "strict">) {
-	return {
-		abi: publicResolverContenthashSnippet,
-		functionName: "contenthash",
-		args: [namehash(name)],
-	} as const;
+  name,
+}: Omit<GetContentHashParameters, 'strict'>) {
+  return {
+    abi: publicResolverContenthashSnippet,
+    functionName: 'contenthash',
+    args: [namehash(name)],
+  } as const
 }
 
 // ================================
 // Decode content hash result from primitive types
 // ================================
 export type DecodeContentHashResultFromPrimitiveTypesErrorType =
-	DecodeContentHashErrorType;
+  DecodeContentHashErrorType
 
 export function decodeContentHashResultFromPrimitiveTypes({
-	decodedData,
+  decodedData,
 }: {
-	decodedData: Hex;
+  decodedData: Hex
 }): GetContentHashReturnType {
-	return decodeContentHash(decodedData);
+  return decodeContentHash(decodedData)
 }
 
 // ================================
@@ -56,25 +56,25 @@ export function decodeContentHashResultFromPrimitiveTypes({
 // ================================
 
 export type DecodeContentHashResultErrorType =
-	| DecodeFunctionResultErrorType
-	| DecodeContentHashResultFromPrimitiveTypesErrorType;
+  | DecodeFunctionResultErrorType
+  | DecodeContentHashResultFromPrimitiveTypesErrorType
 
 export function decodeContentHashResult(
-	data: Hex,
-	{ strict }: Pick<GetContentHashParameters, "strict">,
+  data: Hex,
+  { strict }: Pick<GetContentHashParameters, 'strict'>,
 ): GetContentHashReturnType {
-	if (data === "0x") return null;
+  if (data === '0x') return null
 
-	try {
-		const decodedData = decodeFunctionResult({
-			abi: publicResolverContenthashSnippet,
-			functionName: "contenthash",
-			data,
-		});
+  try {
+    const decodedData = decodeFunctionResult({
+      abi: publicResolverContenthashSnippet,
+      functionName: 'contenthash',
+      data,
+    })
 
-		return decodeContentHashResultFromPrimitiveTypes({ decodedData });
-	} catch (error) {
-		if (strict) throw error;
-		return null;
-	}
+    return decodeContentHashResultFromPrimitiveTypes({ decodedData })
+  } catch (error) {
+    if (strict) throw error
+    return null
+  }
 }

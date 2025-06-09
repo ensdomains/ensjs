@@ -1,36 +1,32 @@
 import {
   type Address,
   type Chain,
-  type Client,
   type GetChainContractAddressErrorType,
   type Hex,
   type ReadContractErrorType,
   type ToHexErrorType,
-  type Transport,
   toHex,
   zeroAddress,
 } from 'viem'
 import { readContract } from 'viem/actions'
-import { packetToBytes, type PacketToBytesErrorType } from 'viem/ens'
+import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
-
-import type { ChainWithContract } from '../../contracts/consts.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
 import {
   universalResolverResolveArraySnippet,
   universalResolverResolveArrayWithGatewaysSnippet,
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
 import {
-  getNameWithSizedLabels,
   type GetNameWithSizedLabelsErrorType,
+  getNameWithSizedLabels,
 } from '../../utils/name/getNameWithSizedLabels.js'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   name: string

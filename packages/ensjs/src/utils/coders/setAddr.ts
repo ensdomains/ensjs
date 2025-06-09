@@ -1,16 +1,16 @@
 import {
-  bytesToHex,
   type Address,
   type BytesToHexErrorType,
+  bytesToHex,
   type EncodeFunctionDataParameters,
   type Hex,
 } from 'viem'
 import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
-import {
-  getCoderFromCoin,
-  type GetCoderFromCoinErrorType,
-} from '../normalizeCoinId.js'
 import type { ErrorType } from '../../errors/utils.js'
+import {
+  type GetCoderFromCoinErrorType,
+  getCoderFromCoin,
+} from '../normalizeCoinId.js'
 
 // ================================
 // Set address parameters

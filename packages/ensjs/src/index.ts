@@ -1,14 +1,14 @@
 export {
-  ensPublicActions,
   type EnsPublicActions,
+  ensPublicActions,
 } from './clients/decorators/public.js'
 export {
-  ensSubgraphActions,
   type EnsSubgraphActions,
+  ensSubgraphActions,
 } from './clients/decorators/subgraph.js'
 export {
-  ensWalletActions,
   type EnsWalletActions,
+  ensWalletActions,
 } from './clients/decorators/wallet.js'
 
 export { addEnsContracts } from './contracts/addEnsContracts.js'

@@ -63,8 +63,9 @@ describe('getAddressParameters', () => {
   })
 
   it('returns parameters for non-ETH address', () => {
-    expect(getAddressParameters({ name: 'test.eth', coin: 'btc' }))
-      .toMatchInlineSnapshot(`
+    expect(
+      getAddressParameters({ name: 'test.eth', coin: 'btc' }),
+    ).toMatchInlineSnapshot(`
       {
         "abi": [
           {
@@ -157,8 +158,9 @@ describe('decodeAddressResult', () => {
       functionName: 'addr',
       result: '0x1234567890123456789012345678901234567890',
     })
-    expect(decodeAddressResult(encoded, { coin: 60, strict: false }))
-      .toMatchInlineSnapshot(`
+    expect(
+      decodeAddressResult(encoded, { coin: 60, strict: false }),
+    ).toMatchInlineSnapshot(`
       {
         "coinType": 60,
         "symbol": "eth",
@@ -174,8 +176,9 @@ describe('decodeAddressResult', () => {
 
   it('throws when strict is true and decoding fails', () => {
     const encoded = '0x1234' // Invalid data
-    expect(() => decodeAddressResult(encoded, { coin: 60, strict: true }))
-      .toThrowErrorMatchingInlineSnapshot(`
+    expect(() =>
+      decodeAddressResult(encoded, { coin: 60, strict: true }),
+    ).toThrowErrorMatchingInlineSnapshot(`
       [AbiDecodingDataSizeTooSmallError: Data size of 2 bytes is too small for given parameters.
 
       Params: (address)
@@ -191,8 +194,9 @@ describe('decodeAddressResult', () => {
       functionName: 'addr',
       result: '0x76a91462e907b15cbf27d5425399ebf6f0fb50ebb88f1888ac',
     })
-    expect(decodeAddressResult(encoded, { coin: 'btc', strict: false }))
-      .toMatchInlineSnapshot(`
+    expect(
+      decodeAddressResult(encoded, { coin: 'btc', strict: false }),
+    ).toMatchInlineSnapshot(`
       {
         "coinType": 0,
         "symbol": "btc",

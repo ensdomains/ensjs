@@ -1,7 +1,6 @@
 import type {
   Account,
   Chain,
-  Client,
   GetChainContractAddressErrorType,
   Hash,
   WriteContractErrorType,
@@ -9,29 +8,29 @@ import type {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import {
+  type ChainWithContracts,
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
 import { l2EthRegistrarCommitSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
-  clientWithOverrides,
   type ClientWithOverridesErrorType,
+  clientWithOverrides,
 } from '../../utils/clientWithOverrides.js'
+import {
+  type L2RegistrationParameters,
+  type MakeL2CommitmentErrorType,
+  makeL2Commitment,
+} from '../../utils/l2RegisterHelpers.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import {
-  makeL2Commitment,
-  type MakeL2CommitmentErrorType,
-  type L2RegistrationParameters,
-} from '../../utils/l2RegisterHelpers.js'
-import {
-  wrappedLabelLengthCheck,
   type WrappedLabelLengthCheckErrorType,
+  wrappedLabelLengthCheck,
 } from '../../utils/wrapper.js'
-import {
-  getChainContractAddress,
-  type ChainWithContracts,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 // /** @deprecated */
 // export type CommitNameParameters = RegistrationParameters
@@ -116,9 +115,7 @@ export const commitNameWriteParameters = <
 export type CommitNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends
-    | ChainWithContracts<'ensL2EthRegistrar'>
-    | undefined,
+  chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
 > = Prettify<
   CommitNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -160,9 +157,7 @@ export type CommitNameErrorType =
 export async function commitName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends
-    | ChainWithContracts<'ensL2EthRegistrar'>
-    | undefined,
+  chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
 >(
   client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
   {

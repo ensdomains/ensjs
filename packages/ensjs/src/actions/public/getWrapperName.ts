@@ -1,6 +1,5 @@
 import {
   type Chain,
-  type Client,
   type GetChainContractAddressErrorType,
   type HexToBytesErrorType,
   hexToBytes,

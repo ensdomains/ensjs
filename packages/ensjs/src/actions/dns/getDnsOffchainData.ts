@@ -1,4 +1,4 @@
-import { type Address, type Client, type Transport, isAddress } from 'viem'
+import { type Address, type Client, isAddress, type Transport } from 'viem'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import {
   DnsDnssecVerificationFailedError,

@@ -1,38 +1,35 @@
 import {
-	labelhash,
-	type Chain,
-	type Client,
-	type GetChainContractAddressErrorType,
-	type LabelhashErrorType,
-	type ReadContractErrorType,
-	type Transport,
-} from "viem";
-import { readContract } from "viem/actions";
-import { getAction } from "viem/utils";
-
-import { baseRegistrarAvailableSnippet } from "../../contracts/baseRegistrar.js";
-import { UnsupportedNameTypeError } from "../../errors/general.js";
-import { getNameType } from "../../utils/name/getNameType.js";
+  type Chain,
+  type GetChainContractAddressErrorType,
+  type LabelhashErrorType,
+  labelhash,
+  type ReadContractErrorType,
+} from 'viem'
+import { readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import {
-	getChainContractAddress,
-	type RequireClientContracts,
-} from "../../clients/chain.js";
-import type { ExcludeTE } from "../../types/internal.js";
-import type { ErrorType } from "../../errors/utils.js";
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/chain.js'
+import { baseRegistrarAvailableSnippet } from '../../contracts/baseRegistrar.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { ErrorType } from '../../errors/utils.js'
+import type { ExcludeTE } from '../../types/internal.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 
 export type GetAvailableParameters = {
-	/** Name to check availability for, only compatible for eth 2ld */
-	name: string;
-};
+  /** Name to check availability for, only compatible for eth 2ld */
+  name: string
+}
 
-export type GetAvailableReturnType = boolean;
+export type GetAvailableReturnType = boolean
 
 export type GetAvailableErrorType =
-	| UnsupportedNameTypeError
-	| ReadContractErrorType
-	| GetChainContractAddressErrorType
-	| LabelhashErrorType
-	| ErrorType;
+  | UnsupportedNameTypeError
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
+  | LabelhashErrorType
+  | ErrorType
 
 /**
  * Gets the availability of a name to register
@@ -54,29 +51,29 @@ export type GetAvailableErrorType =
  * // false
  */
 export async function getAvailable<chain extends Chain>(
-	client: RequireClientContracts<chain, "ensBaseRegistrarImplementation">,
-	{ name }: GetAvailableParameters,
+  client: RequireClientContracts<chain, 'ensBaseRegistrarImplementation'>,
+  { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
-	client = client as ExcludeTE<typeof client>;
+  client = client as ExcludeTE<typeof client>
 
-	const labels = name.split(".");
-	const nameType = getNameType(name);
-	if (nameType !== "eth-2ld")
-		throw new UnsupportedNameTypeError({
-			nameType,
-			supportedNameTypes: ["eth-2ld"],
-			details: "Currently only eth-2ld names can be checked for availability",
-		});
+  const labels = name.split('.')
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Currently only eth-2ld names can be checked for availability',
+    })
 
-	const readContractAction = getAction(client, readContract, "readContract");
-	const result = await readContractAction({
-		address: getChainContractAddress({
-			chain: client.chain,
-			contract: "ensBaseRegistrarImplementation",
-		}),
-		abi: baseRegistrarAvailableSnippet,
-		functionName: "available",
-		args: [BigInt(labelhash(labels[0]))],
-	});
-	return result;
+  const readContractAction = getAction(client, readContract, 'readContract')
+  const result = await readContractAction({
+    address: getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensBaseRegistrarImplementation',
+    }),
+    abi: baseRegistrarAvailableSnippet,
+    functionName: 'available',
+    args: [BigInt(labelhash(labels[0]))],
+  })
+  return result
 }
