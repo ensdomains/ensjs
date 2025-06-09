@@ -2,6 +2,7 @@ import type { Config, CreateConnectorFn, Transport } from '@wagmi/core'
 import type { SupportedContract } from '@ensdomains/ensjs/chain'
 import type {
   StringConcatenationOrder,
+  // biome-ignore lint/suspicious/noShadowRestrictedNames: import
   TypeError,
 } from '@ensdomains/ensjs/internal'
 import type { Chain } from 'viem/chains'
