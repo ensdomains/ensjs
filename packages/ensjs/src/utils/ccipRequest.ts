@@ -5,18 +5,18 @@ import {
   decodeFunctionData,
   type EncodeFunctionResultErrorType,
   encodeFunctionResult,
+  type GetChainContractAddressErrorType,
   type IsAddressEqualErrorType,
   isAddressEqual,
   parseAbi,
   type CcipRequestErrorType as viem_CcipRequestErrorType,
   ccipRequest as viemCcipRequest,
-  type GetChainContractAddressErrorType,
 } from 'viem'
+import { getChainContractAddress } from '../clients/chain.js'
 import {
   type CcipBatchRequestErrorType,
   ccipBatchRequest,
 } from './ccipBatchRequest.js'
-import { getChainContractAddress } from '../clients/chain.js'
 
 const abi = parseAbi([
   'function query((address,string[],bytes)[]) returns (bool[],bytes[])',
