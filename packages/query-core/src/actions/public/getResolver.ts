@@ -1,13 +1,13 @@
 import {
+  ASSERT_NO_TYPE_ERROR,
+  type ExcludeTE,
+} from '@ensdomains/ensjs/internal'
+import {
   type GetResolverErrorType as ensjs_GetResolverErrorType,
   type GetResolverParameters as ensjs_GetResolverParameters,
   type GetResolverReturnType as ensjs_GetResolverReturnType,
   getResolver as ensjs_getResolver,
 } from '@ensdomains/ensjs/public'
-import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'

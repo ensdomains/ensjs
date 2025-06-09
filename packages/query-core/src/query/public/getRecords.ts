@@ -1,24 +1,23 @@
-import type { QueryOptions } from '@tanstack/query-core'
-
 import {
-  type GetRecordsErrorType,
-  type GetRecordsParameters,
-  type GetRecordsReturnType,
-  getRecords,
-} from '../../actions/public/getRecords.js'
-import { filterQueryOptions } from '../utils.js'
+  ASSERT_NO_TYPE_ERROR,
+  type ExcludeTE,
+} from '@ensdomains/ensjs/internal'
+import type { QueryOptions } from '@tanstack/query-core'
 import type { Config } from '@wagmi/core'
 import type {
   Compute,
   ExactPartial,
   ScopeKeyParameter,
 } from '@wagmi/core/internal'
-import type { RequireConfigContracts } from '../../utils/chain.js'
 import type { Chain } from 'viem'
 import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
+  type GetRecordsErrorType,
+  type GetRecordsParameters,
+  type GetRecordsReturnType,
+  getRecords,
+} from '../../actions/public/getRecords.js'
+import type { RequireConfigContracts } from '../../utils/chain.js'
+import { filterQueryOptions } from '../utils.js'
 
 export type GetRecordsOptions<
   config extends Config,

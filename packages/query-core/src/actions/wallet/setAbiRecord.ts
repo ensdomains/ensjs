@@ -1,11 +1,11 @@
 import type { AbiEncodeAs } from '@ensdomains/ensjs/utils'
 import {
-  setAbiRecord as ensjs_setAbiRecord,
   type SetAbiRecordErrorType as ensjs_SetAbiRecordErrorType,
   type SetAbiRecordParameters as ensjs_SetAbiRecordParameters,
   type SetAbiRecordReturnType as ensjs_SetAbiRecordReturnType,
+  setAbiRecord as ensjs_setAbiRecord,
 } from '@ensdomains/ensjs/wallet'
-import { getConnectorClient, type Config, type SelectChains } from '@wagmi/core'
+import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,
   Compute,

@@ -1,10 +1,10 @@
 import {
-  setContentHashRecord as ensjs_setContentHashRecord,
   type SetContentHashRecordErrorType as ensjs_SetContentHashRecordErrorType,
   type SetContentHashRecordParameters as ensjs_SetContentHashRecordParameters,
   type SetContentHashRecordReturnType as ensjs_SetContentHashRecordReturnType,
+  setContentHashRecord as ensjs_setContentHashRecord,
 } from '@ensdomains/ensjs/wallet'
-import { getConnectorClient, type Config, type SelectChains } from '@wagmi/core'
+import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,
   Compute,

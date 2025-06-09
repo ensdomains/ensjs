@@ -2,6 +2,7 @@ import {
   ASSERT_NO_TYPE_ERROR,
   type ExcludeTE,
 } from '@ensdomains/ensjs/internal'
+import type { TransferNameSupportedContract } from '@ensdomains/ensjs/wallet'
 import type { MutationOptions } from '@tanstack/query-core'
 import type { Config } from '@wagmi/core'
 import type {
@@ -9,16 +10,15 @@ import type {
   ExactPartial,
   ScopeKeyParameter,
 } from '@wagmi/core/internal'
+import type { Chain } from 'viem/chains'
 import {
   type TransferNameErrorType,
   type TransferNameParameters,
   type TransferNameReturnType,
   transferName,
 } from '../../actions/wallet/transferName.js'
-import { filterQueryOptions } from '../utils.js'
-import type { Chain } from 'viem/chains'
 import type { RequireConfigContracts } from '../../utils/chain.js'
-import type { TransferNameSupportedContract } from '@ensdomains/ensjs/wallet'
+import { filterQueryOptions } from '../utils.js'
 
 export type TransferNameOptions<
   contract extends TransferNameSupportedContract,

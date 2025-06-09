@@ -1,7 +1,5 @@
-import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
+import { ASSERT_NO_TYPE_ERROR } from '@ensdomains/ensjs/internal'
+import type { AbiEncodeAs } from '@ensdomains/ensjs/utils'
 import type { MutationOptions } from '@tanstack/query-core'
 import type { Config } from '@wagmi/core'
 import type {
@@ -16,7 +14,6 @@ import {
   setAbiRecord,
 } from '../../actions/wallet/setAbiRecord.js'
 import { filterQueryOptions } from '../utils.js'
-import type { AbiEncodeAs } from '@ensdomains/ensjs/utils'
 
 export type SetAbiRecordOptions<
   encodeAs extends AbiEncodeAs,

@@ -1,13 +1,13 @@
 import {
+  ASSERT_NO_TYPE_ERROR,
+  type ExcludeTE,
+} from '@ensdomains/ensjs/internal'
+import {
   type GetRecordsErrorType as ensjs_GetRecordsErrorType,
   type GetRecordsParameters as ensjs_GetRecordsParameters,
   type GetRecordsReturnType as ensjs_GetRecordsReturnType,
   getRecords as ensjs_getRecords,
 } from '@ensdomains/ensjs/public'
-import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'

@@ -1,13 +1,13 @@
 import {
+  ASSERT_NO_TYPE_ERROR,
+  type ExcludeTE,
+} from '@ensdomains/ensjs/internal'
+import {
   type ResolveNameDataErrorType as ensjs_ResolveNameDataErrorType,
   type ResolveNameDataParameters as ensjs_ResolveNameDataParameters,
   type ResolveNameDataReturnType as ensjs_ResolveNameDataReturnType,
   resolveNameData as ensjs_resolveNameData,
 } from '@ensdomains/ensjs/public'
-import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Hex, Prettify } from 'viem'

@@ -3,18 +3,18 @@ import {
   type ExcludeTE,
 } from '@ensdomains/ensjs/internal'
 import {
-  setPrimaryName as ensjs_setPrimaryName,
   type SetPrimaryNameErrorType as ensjs_SetPrimaryNameErrorType,
   type SetPrimaryNameParameters as ensjs_SetPrimaryNameParameters,
   type SetPrimaryNameReturnType as ensjs_SetPrimaryNameReturnType,
+  setPrimaryName as ensjs_setPrimaryName,
 } from '@ensdomains/ensjs/wallet'
-import { getConnectorClient, type Config, type SelectChains } from '@wagmi/core'
+import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,
   Compute,
   ConnectorParameter,
 } from '@wagmi/core/internal'
-import type { Account, Chain, Client, Transport } from 'viem'
+import type { Account, Chain, Client } from 'viem'
 import type { RequireConfigContracts } from '../../utils/chain.js'
 import { getAction } from '../../utils/getAction.js'
 

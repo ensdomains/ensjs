@@ -1,97 +1,84 @@
 export {
-  clearRecords,
+  type ClearRecordsErrorType,
   type ClearRecordsParameters,
   type ClearRecordsReturnType,
-  type ClearRecordsErrorType,
+  clearRecords,
 } from './clearRecords.js'
-
 export {
-  setTextRecord,
-  type SetTextRecordParameters,
-  type SetTextRecordReturnType,
-  type SetTextRecordErrorType,
-} from './setTextRecord.js'
-
-export {
-  setAddressRecord,
-  type SetAddressRecordParameters,
-  type SetAddressRecordReturnType,
-  type SetAddressRecordErrorType,
-} from './setAddressRecord.js'
-
-export {
-  setRecords,
-  type SetRecordsParameters,
-  type SetRecordsReturnType,
-  type SetRecordsErrorType,
-} from './setRecords.js'
-
-export {
-  setContentHashRecord,
-  type SetContentHashRecordParameters,
-  type SetContentHashRecordReturnType,
-  type SetContentHashRecordErrorType,
-} from './setContentHashRecord.js'
-
-export {
-  setAbiRecord,
-  type SetAbiRecordParameters,
-  type SetAbiRecordReturnType,
-  type SetAbiRecordErrorType,
-} from './setAbiRecord.js'
-
-export {
-  setResolver,
-  type SetResolverParameters,
-  type SetResolverReturnType,
-  type SetResolverErrorType,
-} from './setResolver.js'
-
-export {
-  setPrimaryName,
-  type SetPrimaryNameParameters,
-  type SetPrimaryNameReturnType,
-  type SetPrimaryNameErrorType,
-} from './setPrimaryName.js'
-
-export {
-  transferName,
-  type TransferNameParameters,
-  type TransferNameReturnType,
-  type TransferNameErrorType,
-} from './transferName.js'
-
-export {
-  registerName,
-  type RegisterNameParameters,
-  type RegisterNameReturnType,
-  type RegisterNameErrorType,
-} from './registerName.js'
-
-export {
-  commitName,
+  type CommitNameErrorType,
   type CommitNameParameters,
   type CommitNameReturnType,
-  type CommitNameErrorType,
+  commitName,
 } from './commitName.js'
-
 export {
-  createSubname,
+  type CreateSubnameErrorType,
   type CreateSubnameParameters,
   type CreateSubnameReturnType,
-  type CreateSubnameErrorType,
+  createSubname,
 } from './createSubname.js'
-
 export {
-  renewNames,
-  type RenewNamesParameters,
-  type RenewNamesReturnType,
-  type RenewNamesErrorType,
-} from './renewNames.js'
-
-export {
-  deleteSubname,
+  type DeleteSubnameErrorType,
   type DeleteSubnameParameters,
   type DeleteSubnameReturnType,
-  type DeleteSubnameErrorType,
+  deleteSubname,
 } from './deleteSubname.js'
+export {
+  type RegisterNameErrorType,
+  type RegisterNameParameters,
+  type RegisterNameReturnType,
+  registerName,
+} from './registerName.js'
+export {
+  type RenewNamesErrorType,
+  type RenewNamesParameters,
+  type RenewNamesReturnType,
+  renewNames,
+} from './renewNames.js'
+export {
+  type SetAbiRecordErrorType,
+  type SetAbiRecordParameters,
+  type SetAbiRecordReturnType,
+  setAbiRecord,
+} from './setAbiRecord.js'
+export {
+  type SetAddressRecordErrorType,
+  type SetAddressRecordParameters,
+  type SetAddressRecordReturnType,
+  setAddressRecord,
+} from './setAddressRecord.js'
+export {
+  type SetContentHashRecordErrorType,
+  type SetContentHashRecordParameters,
+  type SetContentHashRecordReturnType,
+  setContentHashRecord,
+} from './setContentHashRecord.js'
+export {
+  type SetPrimaryNameErrorType,
+  type SetPrimaryNameParameters,
+  type SetPrimaryNameReturnType,
+  setPrimaryName,
+} from './setPrimaryName.js'
+export {
+  type SetRecordsErrorType,
+  type SetRecordsParameters,
+  type SetRecordsReturnType,
+  setRecords,
+} from './setRecords.js'
+export {
+  type SetResolverErrorType,
+  type SetResolverParameters,
+  type SetResolverReturnType,
+  setResolver,
+} from './setResolver.js'
+export {
+  type SetTextRecordErrorType,
+  type SetTextRecordParameters,
+  type SetTextRecordReturnType,
+  setTextRecord,
+} from './setTextRecord.js'
+export {
+  type TransferNameErrorType,
+  type TransferNameParameters,
+  type TransferNameReturnType,
+  transferName,
+} from './transferName.js'

@@ -3,18 +3,18 @@ import {
   type ExcludeTE,
 } from '@ensdomains/ensjs/internal'
 import {
-  clearRecords as ensjs_clearRecords,
   type ClearRecordsErrorType as ensjs_ClearRecordsErrorType,
   type ClearRecordsParameters as ensjs_ClearRecordsParameters,
   type ClearRecordsReturnType as ensjs_ClearRecordsReturnType,
+  clearRecords as ensjs_clearRecords,
 } from '@ensdomains/ensjs/wallet'
-import { getConnectorClient, type Config, type SelectChains } from '@wagmi/core'
+import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,
   Compute,
   ConnectorParameter,
 } from '@wagmi/core/internal'
-import type { Account, Chain, Client, Transport } from 'viem'
+import type { Account, Chain, Client } from 'viem'
 import type { RequireConfigContracts } from '../../utils/chain.js'
 import { getAction } from '../../utils/getAction.js'
 

@@ -1,13 +1,13 @@
 import {
+  ASSERT_NO_TYPE_ERROR,
+  type ExcludeTE,
+} from '@ensdomains/ensjs/internal'
+import {
   type GetWrapperNameErrorType as ensjs_GetWrapperNameErrorType,
   type GetWrapperNameParameters as ensjs_GetWrapperNameParameters,
   type GetWrapperNameReturnType as ensjs_GetWrapperNameReturnType,
   getWrapperName as ensjs_getWrapperName,
 } from '@ensdomains/ensjs/public'
-import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'

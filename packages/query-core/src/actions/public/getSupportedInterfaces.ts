@@ -1,16 +1,16 @@
 import {
+  ASSERT_NO_TYPE_ERROR,
+  type ExcludeTE,
+} from '@ensdomains/ensjs/internal'
+import {
   type GetSupportedInterfacesErrorType as ensjs_GetSupportedInterfacesErrorType,
   type GetSupportedInterfacesParameters as ensjs_GetSupportedInterfacesParameters,
   type GetSupportedInterfacesReturnType as ensjs_GetSupportedInterfacesReturnType,
   getSupportedInterfaces as ensjs_getSupportedInterfaces,
 } from '@ensdomains/ensjs/public'
-import {
-  ASSERT_NO_TYPE_ERROR,
-  type ExcludeTE,
-} from '@ensdomains/ensjs/internal'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
-import type { Chain, Prettify, Hex } from 'viem'
+import type { Chain, Hex, Prettify } from 'viem'
 import type { RequireConfigContracts } from '../../utils/chain.js'
 import { getAction } from '../../utils/getAction.js'
 

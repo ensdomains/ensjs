@@ -1,10 +1,10 @@
 import {
-  setTextRecord as ensjs_setTextRecord,
   type SetTextRecordErrorType as ensjs_SetTextRecordErrorType,
   type SetTextRecordParameters as ensjs_SetTextRecordParameters,
   type SetTextRecordReturnType as ensjs_SetTextRecordReturnType,
+  setTextRecord as ensjs_setTextRecord,
 } from '@ensdomains/ensjs/wallet'
-import { getConnectorClient, type Config, type SelectChains } from '@wagmi/core'
+import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,
   Compute,
