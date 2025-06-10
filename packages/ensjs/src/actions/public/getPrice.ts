@@ -1,17 +1,15 @@
 import type {
   Chain,
   GetChainContractAddressErrorType,
-  MulticallErrorType,
   ReadContractErrorType,
 } from 'viem'
-import { multicall, readContract } from 'viem/actions'
+import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
-import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
+import { l2EthRegistrarRentPriceSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { getNameType } from '../../utils/name/getNameType.js'
@@ -32,7 +30,6 @@ export type GetPriceReturnType = {
 
 export type GetPriceErrorType =
   | UnsupportedNameTypeError
-  | MulticallErrorType
   | GetChainContractAddressErrorType
   | ReadContractErrorType
   | TypeError
@@ -57,65 +54,46 @@ export type GetPriceErrorType =
  * // { base: 352828971668930335n, premium: 0n }
  */
 export async function getPrice<chain extends Chain>(
-  client: RequireClientContracts<
-    chain,
-    'ensEthRegistrarController' | 'ensBulkRenewal'
-  >,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar'>,
   { nameOrNames, duration }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const names = (Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]).map(
-    (name) => {
-      const labels = name.split('.')
-      const nameType = getNameType(name)
-      if (nameType !== 'eth-2ld' && nameType !== 'tld')
-        throw new UnsupportedNameTypeError({
-          nameType,
-          supportedNameTypes: ['eth-2ld', 'tld'],
-          details: 'Currently only the price of eth-2ld names can be fetched',
-        })
-      return labels[0]
-    },
-  )
-
-  if (names.length > 1) {
-    const multicallAction = getAction(client, multicall, 'multicall')
-    const [price, premium] = await multicallAction({
-      contracts: [
-        {
-          address: getChainContractAddress({
-            chain: client.chain,
-            contract: 'ensBulkRenewal',
-          }),
-          abi: bulkRenewalRentPriceSnippet,
-          functionName: 'rentPrice',
-          args: [names, BigInt(duration)],
-        },
-        {
-          address: getChainContractAddress({
-            chain: client.chain,
-            contract: 'ensBulkRenewal',
-          }),
-          abi: bulkRenewalRentPriceSnippet,
-          functionName: 'rentPrice',
-          args: [names, 0n],
-        },
-      ],
-      allowFailure: false,
-    })
-    const base = price - premium
-    return { base, premium }
-  }
-
+  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
+  
+  let totalBase = 0n
+  let totalPremium = 0n
+  
   const readContractAction = getAction(client, readContract, 'readContract')
-  return readContractAction({
-    address: getChainContractAddress({
-      chain: client.chain,
-      contract: 'ensEthRegistrarController',
-    }),
-    abi: ethRegistrarControllerRentPriceSnippet,
-    functionName: 'rentPrice',
-    args: [names[0], BigInt(duration)],
-  })
+  
+  // Process each name individually and aggregate the results
+  for (const name of names) {
+    const labels = name.split('.')
+    const nameType = getNameType(name)
+    
+    if (nameType !== 'eth-2ld' && nameType !== 'tld')
+      throw new UnsupportedNameTypeError({
+        nameType,
+        supportedNameTypes: ['eth-2ld', 'tld'],
+        details: 'Currently only the price of eth-2ld names can be fetched',
+      })
+
+    const result = await readContractAction({
+      address: getChainContractAddress({
+        chain: client.chain,
+        contract: 'ensL2EthRegistrar',
+      }),
+      abi: l2EthRegistrarRentPriceSnippet,
+      functionName: 'rentPrice',
+      args: [labels[0], BigInt(duration)],
+    })
+    
+    totalBase += result.base
+    totalPremium += result.premium
+  }
+  
+  return {
+    base: totalBase,
+    premium: totalPremium,
+  }
 }
