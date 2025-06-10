@@ -1,5 +1,8 @@
-import type { EncodeFunctionDataParameters, Hex } from "viem";
-import { publicResolverClearRecordsSnippet, publicResolverClearRecordsV2Snippet } from "../../contracts/publicResolver.js";
+import type { EncodeFunctionDataParameters, Hex } from 'viem'
+import {
+  publicResolverClearRecordsSnippet,
+  publicResolverClearRecordsV2Snippet,
+} from '../../contracts/publicResolver.js'
 
 // ================================
 // Clear records parameters
@@ -16,14 +19,14 @@ export const clearRecordsParameters = (namehash: Hex) =>
     typeof publicResolverClearRecordsSnippet
   >
 
-	export const clearRecordsParametersV2 = () =>
-		({
-			abi: publicResolverClearRecordsV2Snippet,
-			functionName: "clearRecords",
-			args: [],
-		}) as const satisfies EncodeFunctionDataParameters<
-			typeof publicResolverClearRecordsV2Snippet
-		>;
+export const clearRecordsParametersV2 = () =>
+  ({
+    abi: publicResolverClearRecordsV2Snippet,
+    functionName: 'clearRecords',
+    args: [],
+  }) as const satisfies EncodeFunctionDataParameters<
+    typeof publicResolverClearRecordsV2Snippet
+  >
 
 export type ClearRecordsParametersReturnType = ReturnType<
   typeof clearRecordsParameters
