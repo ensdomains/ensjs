@@ -11,9 +11,4 @@
 		"source.organizeImports.biome": "explicit",
 		"quickfix.biome": "explicit"
 	}
-    "biome.projects": [
-        {
-            "path": "packages/ensjs"
-        },
-    ],
 }
