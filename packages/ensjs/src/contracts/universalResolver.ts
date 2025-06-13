@@ -1,48 +1,56 @@
 export const universalResolverErrors = [
   {
-    inputs: [],
     name: 'ResolverNotFound',
     type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'ResolverWildcardNotSupported',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'ResolverNotContract',
-    type: 'error',
-  },
-  {
     inputs: [
       {
-        name: 'returnData',
+        name: 'name',
         type: 'bytes',
       },
     ],
-    name: 'ResolverError',
-    type: 'error',
   },
   {
+    name: 'ResolverWildcardNotSupported',
+    type: 'error',
+    inputs: [],
+  },
+  {
+    name: 'ResolverNotContract',
+    type: 'error',
     inputs: [
       {
-        components: [
-          {
-            name: 'status',
-            type: 'uint16',
-          },
-          {
-            name: 'message',
-            type: 'string',
-          },
-        ],
-        name: 'errors',
-        type: 'tuple[]',
+        name: 'name',
+        type: 'bytes',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
       },
     ],
+  },
+  {
+    name: 'ResolverError',
+    type: 'error',
+    inputs: [
+      {
+        name: 'errorData',
+        type: 'bytes',
+      },
+    ],
+  },
+  {
     name: 'HttpError',
     type: 'error',
+    inputs: [
+      {
+        name: 'status',
+        type: 'uint16',
+      },
+      {
+        name: 'message',
+        type: 'string',
+      },
+    ],
   },
 ] as const
 
@@ -86,10 +94,12 @@ export const universalResolverReverseWithGatewaysSnippet = [
 const universalResolverResolve = {
   inputs: [
     {
+      internalType: 'bytes',
       name: 'name',
       type: 'bytes',
     },
     {
+      internalType: 'bytes',
       name: 'data',
       type: 'bytes',
     },
@@ -97,11 +107,13 @@ const universalResolverResolve = {
   name: 'resolve',
   outputs: [
     {
-      name: 'data',
+      internalType: 'bytes',
+      name: '',
       type: 'bytes',
     },
     {
-      name: 'resolver',
+      internalType: 'address',
+      name: '',
       type: 'address',
     },
   ],
