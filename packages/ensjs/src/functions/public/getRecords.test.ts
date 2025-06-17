@@ -142,7 +142,7 @@ describe('getRecords()', () => {
        
       Contract Call:
         address:   0x1234
-        function:  resolve(bytes name, bytes[] data)
+        function:  resolve(bytes name, bytes data)
         args:             (0x04746573740365746800, ["0x5678"])
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
