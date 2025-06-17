@@ -143,7 +143,8 @@ export const universalResolverErrors = [
     name: 'UnsupportedResolverProfile',
     type: 'error',
   },
-]
+] as const
+
 const universalResolverReverse = {
   inputs: [
     {
@@ -163,11 +164,13 @@ const universalResolverReverse = {
   ],
   stateMutability: 'view',
   type: 'function',
-}
+} as const
+
 export const universalResolverReverseSnippet = [
   ...universalResolverErrors,
   universalResolverReverse,
-]
+] as const
+
 export const universalResolverReverseWithGatewaysSnippet = [
   ...universalResolverErrors,
   {
@@ -181,7 +184,8 @@ export const universalResolverReverseWithGatewaysSnippet = [
       },
     ],
   },
-]
+] as const
+
 const universalResolverResolve = {
   inputs: [
     {
@@ -206,11 +210,13 @@ const universalResolverResolve = {
   ],
   stateMutability: 'view',
   type: 'function',
-}
+} as const
+
 export const universalResolverResolveSnippet = [
   ...universalResolverErrors,
   universalResolverResolve,
-]
+] as const
+
 export const universalResolverResolveWithGatewaysSnippet = [
   ...universalResolverErrors,
   {
@@ -224,7 +230,8 @@ export const universalResolverResolveWithGatewaysSnippet = [
       },
     ],
   },
-]
+] as const
+
 export const universalResolverFindResolverSnippet = [
   ...universalResolverErrors,
   {
@@ -252,4 +259,4 @@ export const universalResolverFindResolverSnippet = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const

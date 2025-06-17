@@ -64,7 +64,7 @@ const encode = (
       ? {
           data: encodeFunctionData({
             abi: universalResolverReverseWithGatewaysSnippet,
-            functionName: 'reverse',
+            functionName: 'reverseWithGateways',
             args: [...args, gatewayUrls] as const,
           }),
           passthrough: {
