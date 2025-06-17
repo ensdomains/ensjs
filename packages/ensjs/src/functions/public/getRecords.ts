@@ -8,13 +8,13 @@ import {
   hexToBigInt,
   toHex,
 } from 'viem'
-import { universalResolverResolveArrayWithGatewaysSnippet } from '../../../dist/contracts/universalResolver.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { multicallSnippet } from '../../contracts/multicall.js'
 import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
+  universalResolverReverseWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import type {
   DecodedAddr,
@@ -391,7 +391,7 @@ const decode = async <
     const isSafe = checkSafeUniversalResolverData(data, {
       strict: false,
       abi: gatewayUrls
-        ? universalResolverResolveArrayWithGatewaysSnippet
+        ? universalResolverReverseWithGatewaysSnippet
         : universalResolverResolveSnippet,
       args: passthrough.args,
       functionName: 'resolve',
