@@ -12,7 +12,6 @@ import {
 	getChainContractAddress,
 	type RequireClientContracts,
 } from "../../clients/chain.js";
-import { bulkRenewalRenewAllSnippet } from "../../contracts/bulkRenewal.js";
 import type { ChainWithContract } from "../../contracts/consts.js";
 import { l2EthRegistrarRenewSnippet } from "../../contracts/l2EthRegistrar.js";
 import { UnsupportedNameTypeError } from "../../errors/general.js";
@@ -32,11 +31,11 @@ import { getNameType } from "../../utils/name/getNameType.js";
 // ================================
 
 export type RenewNamesWriteParametersParameters = {
-	/** Name or names to renew */
+	/** Name to renew */
 	nameOrNames: string | string[];
-	/** Duration to renew name(s) for */
+	/** Duration to renew name for */
 	duration: bigint | number;
-	/** Value of all renewals */
+	/** Value of renewal */
 	value: bigint;
 };
 
@@ -52,27 +51,24 @@ export const renewNamesWriteParameters = <
 	chain extends Chain,
 	account extends Account,
 >(
-	client: RequireClientContracts<
-		chain,
-		"ensEthRegistrarController" | "ensBulkRenewal",
-		account
-	>,
+	client: RequireClientContracts<chain, "ensEthRegistrarController", account>,
 	{ nameOrNames, duration, value }: RenewNamesWriteParametersParameters,
 ) => {
 	ASSERT_NO_TYPE_ERROR(client);
 
-	const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
-	const labels = names.map((name) => {
-		const label = name.split(".");
-		const nameType = getNameType(name);
-		if (nameType !== "eth-2ld")
-			throw new UnsupportedNameTypeError({
-				nameType,
-				supportedNameTypes: ["eth-2ld"],
-				details: "Only 2ld-eth renewals are currently supported",
-			});
-		return label[0];
-	});
+	if (Array.isArray(nameOrNames)) {
+		throw new Error("Array of names is not currently supported for renewals");
+	}
+
+	const name = nameOrNames;
+	const label = name.split(".");
+	const nameType = getNameType(name);
+	if (nameType !== "eth-2ld")
+		throw new UnsupportedNameTypeError({
+			nameType,
+			supportedNameTypes: ["eth-2ld"],
+			details: "Only 2ld-eth renewals are currently supported",
+		});
 
 	const baseParams = {
 		chain: client.chain,
@@ -80,28 +76,15 @@ export const renewNamesWriteParameters = <
 		value,
 	} as const;
 
-	if (labels.length === 1) {
-		return {
-			...baseParams,
-			address: getChainContractAddress({
-				chain: client.chain,
-				contract: "ensEthRegistrarController",
-			}),
-			abi: l2EthRegistrarRenewSnippet,
-			functionName: "renew",
-			args: [labels[0], BigInt(duration)],
-		} as const satisfies WriteContractParameters;
-	}
-
 	return {
 		...baseParams,
 		address: getChainContractAddress({
 			chain: client.chain,
-			contract: "ensBulkRenewal",
+			contract: "ensEthRegistrarController",
 		}),
-		abi: bulkRenewalRenewAllSnippet,
-		functionName: "renewAll",
-		args: [labels, BigInt(duration)],
+		abi: l2EthRegistrarRenewSnippet,
+		functionName: "renew",
+		args: [label[0], BigInt(duration)],
 	} as const satisfies WriteContractParameters;
 };
 
@@ -113,7 +96,7 @@ export type RenewNamesParameters<
 	chain extends Chain,
 	account extends Account,
 	chainOverride extends
-		| ChainWithContract<"ensEthRegistrarController" | "ensBulkRenewal">
+		| ChainWithContract<"ensEthRegistrarController">
 		| undefined,
 > = Prettify<
 	RenewNamesWriteParametersParameters &
@@ -162,14 +145,10 @@ export async function renewNames<
 	chain extends Chain,
 	account extends Account,
 	chainOverride extends
-		| ChainWithContract<"ensEthRegistrarController" | "ensBulkRenewal">
+		| ChainWithContract<"ensEthRegistrarController">
 		| undefined,
 >(
-	client: RequireClientContracts<
-		chain,
-		"ensEthRegistrarController" | "ensBulkRenewal",
-		account
-	>,
+	client: RequireClientContracts<chain, "ensEthRegistrarController", account>,
 	{
 		nameOrNames,
 		duration,
