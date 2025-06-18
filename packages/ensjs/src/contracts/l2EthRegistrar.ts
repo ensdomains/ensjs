@@ -203,6 +203,27 @@ export const l2EthRegistrarCommitmentsSnippet = [
   },
 ] as const
 
+export const l2EthRegistrarAvailableSnippet = [
+  ...l2EthRegistrarErrors,
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'string',
+      },
+    ],
+    name: 'available',
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 export const l2EthRegistrarRegisterSnippet = [
   ...l2EthRegistrarErrors,
   {
