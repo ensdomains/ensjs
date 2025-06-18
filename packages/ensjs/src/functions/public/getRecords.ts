@@ -413,8 +413,11 @@ const decode = async <
     recordData = decodeFunctionResult({
       abi: multicallSnippet,
       data: result[0],
-    }).map((r) => {
-      if (r === '0x') return null
+    }).map((r, i) => {
+      if (r === '0x') {
+        calls[i] = null
+        return null
+      }
       return (r.length - 2) % 32 === 0 ? r : null
     })
   }
