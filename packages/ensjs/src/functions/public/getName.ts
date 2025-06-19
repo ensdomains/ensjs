@@ -27,12 +27,12 @@ import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
 import { normalise } from '../../utils/normalise.js'
 
 type GetNameCoinTypeParameters = {
-  coinType: bigint
+  coinType: number
   chainId?: never
 }
 
 type GetNameChainIdParameters = {
-  chainId: bigint
+  chainId: number
   coinType?: never
 }
 
@@ -77,9 +77,7 @@ const encode = (
   })
   const args = [
     address,
-    chainId
-      ? evmChainIdToCoinType(chainId as unknown as number)
-      : coinType || 60n,
+    chainId ? evmChainIdToCoinType(chainId) : coinType || 60n,
   ] as const
 
   return {

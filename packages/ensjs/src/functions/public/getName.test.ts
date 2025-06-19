@@ -70,6 +70,7 @@ describe('getName', () => {
     const result = await getName(publicClient, {
       address: accounts[0],
       allowMismatch: true,
+      chainId: publicClient.chain.id,
     })
     expect(result).toMatchInlineSnapshot(`
       {
@@ -91,7 +92,12 @@ describe('getName', () => {
           address: '0x1234567890abcdef',
           args: ['0x', '0x'],
         },
-        { address: accounts[0], allowMismatch: true, strict: false },
+        {
+          address: accounts[0],
+          allowMismatch: true,
+          strict: false,
+          chainId: publicClient.chain.id,
+        },
       ),
     ).resolves.toBeNull()
   })
@@ -107,7 +113,12 @@ describe('getName', () => {
           args: ['0x'],
         },
 
-        { address: accounts[0], allowMismatch: true, strict: true },
+        {
+          address: accounts[0],
+          allowMismatch: true,
+          strict: true,
+          chainId: publicClient.chain.id,
+        },
       ),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "reverse" reverted.
