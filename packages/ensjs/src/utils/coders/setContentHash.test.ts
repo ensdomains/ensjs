@@ -82,4 +82,29 @@ describe('setContentHashParameters', () => {
         Version: @ensdomains/ensjs@1.0.0-mock.0]
       `)
   })
+  it('uses DedicatedResolver ABI when namehash is not specified', () => {
+    expect(setContentHashParameters({ contentHash })).toMatchInlineSnapshot(`
+			{
+			  "abi": [
+			    {
+			      "inputs": [
+			        {
+			          "internalType": "bytes",
+			          "name": "hash",
+			          "type": "bytes",
+			        },
+			      ],
+			      "name": "setContenthash",
+			      "outputs": [],
+			      "stateMutability": "nonpayable",
+			      "type": "function",
+			    },
+			  ],
+			  "args": [
+			    "0xe301017012208e9cc47fde7ff64028480ec671a4ddb8f767a71ff71a73247f51a495a6f29634",
+			  ],
+			  "functionName": "setContenthash",
+			}
+		`)
+  })
 })

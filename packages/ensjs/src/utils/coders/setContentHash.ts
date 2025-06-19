@@ -1,4 +1,5 @@
 import type { EncodeFunctionDataParameters, Hex } from 'viem'
+import { dedicatedResolverSetContentHashSnippet } from '../../contracts/dedicatedResolver.js'
 import { publicResolverSetContenthashSnippet } from '../../contracts/publicResolver.js'
 import {
   type EncodeContentHashErrorType,
@@ -10,7 +11,7 @@ import {
 // ================================
 
 export type SetContentHashParameters = {
-  namehash: Hex
+  namehash?: Hex
   contentHash: string | null
 }
 
@@ -21,13 +22,23 @@ export const setContentHashParameters = ({
   contentHash,
 }: SetContentHashParameters) => {
   const encodedHash = contentHash ? encodeContentHash(contentHash) : '0x'
-  return {
-    abi: publicResolverSetContenthashSnippet,
-    functionName: 'setContenthash',
-    args: [namehash, encodedHash],
-  } as const satisfies EncodeFunctionDataParameters<
-    typeof publicResolverSetContenthashSnippet
-  >
+  if (namehash) {
+    return {
+      abi: publicResolverSetContenthashSnippet,
+      functionName: 'setContenthash',
+      args: [namehash, encodedHash],
+    } as const satisfies EncodeFunctionDataParameters<
+      typeof publicResolverSetContenthashSnippet
+    >
+  } else {
+    return {
+      abi: dedicatedResolverSetContentHashSnippet,
+      functionName: 'setContenthash',
+      args: [encodedHash],
+    } as const satisfies EncodeFunctionDataParameters<
+      typeof dedicatedResolverSetContentHashSnippet
+    >
+  }
 }
 
 export type SetContentHashParametersReturnType = ReturnType<
