@@ -1,21 +1,21 @@
-import { describe, expect, it } from "vitest";
-import { setTextParameters } from "./setText.js";
+import { describe, expect, it } from 'vitest'
+import { setTextParameters } from './setText.js'
 
-describe("setTextParameters", () => {
-	const namehash =
-		"0x1234567890123456789012345678901234567890123456789012345678901234";
-	const key = "email";
-	const value = "test@example.com";
+describe('setTextParameters', () => {
+  const namehash =
+    '0x1234567890123456789012345678901234567890123456789012345678901234'
+  const key = 'email'
+  const value = 'test@example.com'
 
-	const parameters = {
-		namehash,
-		key,
-		value,
-	} as const;
+  const parameters = {
+    namehash,
+    key,
+    value,
+  } as const
 
-	it("returns the correct parameters", () => {
-		const result = setTextParameters(parameters);
-		expect(result).toMatchInlineSnapshot(`
+  it('returns the correct parameters', () => {
+    const result = setTextParameters(parameters)
+    expect(result).toMatchInlineSnapshot(`
       {
         "abi": [
           {
@@ -46,11 +46,11 @@ describe("setTextParameters", () => {
         ],
         "functionName": "setText",
       }
-    `);
-	});
-	it("uses DedicatedResolver if namehash is not provided", () => {
-		const result = setTextParameters({ key: "email", value });
-		expect(result).toMatchInlineSnapshot(`
+    `)
+  })
+  it('uses DedicatedResolver if namehash is not provided', () => {
+    const result = setTextParameters({ key: 'email', value })
+    expect(result).toMatchInlineSnapshot(`
 			{
 			  "abi": [
 			    {
@@ -78,6 +78,6 @@ describe("setTextParameters", () => {
 			  ],
 			  "functionName": "setText",
 			}
-		`);
-	});
-});
+		`)
+  })
+})
