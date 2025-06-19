@@ -24,7 +24,7 @@ import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type SetTextRecordWriteParametersParameters = {
   /** The name to set a text record for */
-  name: string
+  name?: string
   /** The text record key to set */
   key: string
   /** The text record value to set */
@@ -52,7 +52,11 @@ export const setTextRecordWriteParameters = <
     address: resolverAddress,
     chain: client.chain,
     account: client.account,
-    ...setTextParameters({ namehash: namehash(name), key, value }),
+    ...setTextParameters(
+      typeof name === 'string'
+        ? { namehash: namehash(name), key, value }
+        : { key, value },
+    ),
   } as const satisfies WriteContractParameters<
     SetTextParametersReturnType['abi']
   >
