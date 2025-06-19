@@ -1,12 +1,11 @@
 import {
-  type Address,
   RawContractError,
   bytesToHex,
   decodeFunctionData,
   encodeErrorResult,
   hexToBytes,
 } from 'viem'
-import { beforeAll, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import {
   universalResolverErrors,
   universalResolverResolveSnippet,
@@ -14,16 +13,9 @@ import {
 import {
   deploymentAddresses,
   publicClient,
-  walletClient,
 } from '../../test/addTestContracts.js'
 import { bytesToPacket, packetToBytes } from '../../utils/hexEncodedName.js'
 import universalWrapper from './universalWrapper.js'
-
-let accounts: Address[]
-
-beforeAll(async () => {
-  accounts = await walletClient.getAddresses()
-})
 
 it('returns with passthrough containing args and address on encode', () => {
   const result = universalWrapper.encode(publicClient, {
@@ -118,9 +110,7 @@ it('throws on known contract error when strict is true', async () => {
         data: encodeErrorResult({
           abi: universalResolverErrors,
           errorName: 'ResolverNotFound',
-          args: [
-            bytesToHex(packetToBytes(`${accounts[0].slice(2)}.addr.reverse`)),
-          ],
+          args: [bytesToHex(packetToBytes('test.eth'))],
         }),
       }),
       {
@@ -133,7 +123,7 @@ it('throws on known contract error when strict is true', async () => {
     [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
     Error: ResolverNotFound(bytes name)
-                           (0x28663339466436653531616164383846364634636536614238383237323739636666466239323236360461646472077265766572736500)
+                           (0x04746573740365746800)
      
     Contract Call:
       address:   0x1234567890abcdef
