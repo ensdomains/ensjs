@@ -130,7 +130,8 @@ describe('getAddressRecord()', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound()
+      Error: ResolverNotFound(bytes name)
+                             (0x04746573740365746800)
        
       Contract Call:
         address:   0x1234567890abcdef
