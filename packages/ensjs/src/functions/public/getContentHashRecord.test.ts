@@ -35,7 +35,11 @@ describe('getContentHashRecord', () => {
       getContentHashRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x77209fe8', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [bytesToHex(packetToBytes('test.eth'))],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
