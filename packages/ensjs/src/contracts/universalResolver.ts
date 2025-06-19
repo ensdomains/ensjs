@@ -50,37 +50,6 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-      {
-        internalType: 'string[]',
-        name: 'urls',
-        type: 'string[]',
-      },
-      {
-        internalType: 'bytes',
-        name: 'callData',
-        type: 'bytes',
-      },
-      {
-        internalType: 'bytes4',
-        name: 'callbackFunction',
-        type: 'bytes4',
-      },
-      {
-        internalType: 'bytes',
-        name: 'extraData',
-        type: 'bytes',
-      },
-    ],
-    name: 'OffchainLookup',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
         internalType: 'bytes',
         name: 'errorData',
         type: 'bytes',

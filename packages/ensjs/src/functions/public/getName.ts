@@ -49,7 +49,7 @@ export type GetNameParameters = {
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
-} & (GetNameCoinTypeParameters | GetNameChainIdParameters)
+} & (GetNameCoinTypeParameters | GetNameChainIdParameters | {})
 
 export type GetNameReturnType = {
   /** Primary name for address */

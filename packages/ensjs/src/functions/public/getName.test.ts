@@ -1,6 +1,13 @@
-import { type Address, type Hex, RawContractError } from 'viem'
+import {
+  type Address,
+  type Hex,
+  RawContractError,
+  bytesToHex,
+  encodeErrorResult,
+} from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
+import { universalResolverErrors } from '../../contracts/universalResolver.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -8,6 +15,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
 import createSubname from '../wallet/createSubname.js'
 import setAddressRecord from '../wallet/setAddressRecord.js'
 import setPrimaryName from '../wallet/setPrimaryName.js'
@@ -70,14 +78,13 @@ describe('getName', () => {
     const result = await getName(publicClient, {
       address: accounts[0],
       allowMismatch: true,
-      chainId: publicClient.chain.id,
     })
     expect(result).toMatchInlineSnapshot(`
       {
         "match": false,
         "name": "with-profile.eth",
-        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
-        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
+        "resolverAddress": "0x0000000000000000000000000000000000000000",
+        "reverseResolverAddress": "0x0000000000000000000000000000000000000000",
       }
     `)
   })
@@ -86,17 +93,22 @@ describe('getName', () => {
       getName.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x77209fe8', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [
+              bytesToHex(packetToBytes(`${accounts[0].slice(2)}.addr.reverse`)),
+            ],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
-          args: ['0x', '0x'],
+          args: ['0x', 60n],
         },
         {
           address: accounts[0],
           allowMismatch: true,
           strict: false,
-          chainId: publicClient.chain.id,
         },
       ),
     ).resolves.toBeNull()
@@ -106,29 +118,34 @@ describe('getName', () => {
       getName.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x77209fe8', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [
+              bytesToHex(packetToBytes(`${accounts[0].slice(2)}.addr.reverse`)),
+            ],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
-          args: ['0x'],
+          args: ['0x', 60n],
         },
-
         {
           address: accounts[0],
           allowMismatch: true,
           strict: true,
-          chainId: publicClient.chain.id,
         },
       ),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "reverse" reverted.
 
-      Error: ResolverNotFound()
+      Error: ResolverNotFound(bytes name)
+                             (0x28663339466436653531616164383846364634636536614238383237323739636666466239323236360461646472077265766572736500)
        
       Contract Call:
         address:   0x1234567890abcdef
-        function:  reverse(bytes reverseName)
-        args:             (0x)
+        function:  reverse(bytes encodedAddress, uint256 coinType)
+        args:             (0x, 60)
 
       Version: viem@2.30.6]
     `)
