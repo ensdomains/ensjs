@@ -1,11 +1,19 @@
-import { http, RawContractError, createPublicClient } from 'viem'
+import {
+  http,
+  RawContractError,
+  bytesToHex,
+  createPublicClient,
+  encodeErrorResult,
+} from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
+import { universalResolverErrors } from '../../contracts/universalResolver.js'
 import { addEnsContracts } from '../../index.js'
 import {
   deploymentAddresses,
   publicClient,
 } from '../../test/addTestContracts.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
 import getRecords from './getRecords.js'
 
 const mainnetPublicClient = createPublicClient({
@@ -99,7 +107,11 @@ describe('getRecords()', () => {
       getRecords.decode(
         publicClient,
         new RawContractError({
-          data: '0x77209fe8', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [bytesToHex(packetToBytes('test.eth'))],
+          }),
         }),
         {
           calls: [

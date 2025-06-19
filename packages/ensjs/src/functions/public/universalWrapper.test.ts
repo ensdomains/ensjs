@@ -91,7 +91,11 @@ it('does not throw known contract error when strict is false', async () => {
     universalWrapper.decode(
       publicClient,
       new RawContractError({
-        data: '0x77209fe8', // ResolverNotFound()
+        data: encodeErrorResult({
+          abi: universalResolverErrors,
+          errorName: 'ResolverNotFound',
+          args: [bytesToHex(packetToBytes('test.eth'))],
+        }),
       }),
       {
         address: '0x1234567890abcdef',
