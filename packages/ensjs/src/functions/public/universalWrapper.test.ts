@@ -1,12 +1,29 @@
-import { RawContractError, decodeFunctionData, hexToBytes } from 'viem'
-import { expect, it } from 'vitest'
-import { universalResolverResolveSnippet } from '../../contracts/universalResolver.js'
+import {
+  type Address,
+  RawContractError,
+  bytesToHex,
+  decodeFunctionData,
+  encodeErrorResult,
+  hexToBytes,
+} from 'viem'
+import { beforeAll, expect, it } from 'vitest'
+import {
+  universalResolverErrors,
+  universalResolverResolveSnippet,
+} from '../../contracts/universalResolver.js'
 import {
   deploymentAddresses,
   publicClient,
+  walletClient,
 } from '../../test/addTestContracts.js'
-import { bytesToPacket } from '../../utils/hexEncodedName.js'
+import { bytesToPacket, packetToBytes } from '../../utils/hexEncodedName.js'
 import universalWrapper from './universalWrapper.js'
+
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
+})
 
 it('returns with passthrough containing args and address on encode', () => {
   const result = universalWrapper.encode(publicClient, {
@@ -98,7 +115,13 @@ it('throws on known contract error when strict is true', async () => {
     universalWrapper.decode(
       publicClient,
       new RawContractError({
-        data: '0x77209fe8', // ResolverNotFound()
+        data: encodeErrorResult({
+          abi: universalResolverErrors,
+          errorName: 'ResolverNotFound',
+          args: [
+            bytesToHex(packetToBytes(`${accounts[0].slice(2)}.addr.reverse`)),
+          ],
+        }),
       }),
       {
         address: '0x1234567890abcdef',
@@ -107,17 +130,18 @@ it('throws on known contract error when strict is true', async () => {
       { strict: true },
     ),
   ).rejects.toMatchInlineSnapshot(`
-  [ContractFunctionExecutionError: The contract function "resolve" reverted.
+    [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-  Error: ResolverNotFound()
-   
-  Contract Call:
-    address:   0x1234567890abcdef
-    function:  resolve(bytes name, bytes data)
-    args:             (0x, 0x)
+    Error: ResolverNotFound(bytes name)
+                           (0x28663339466436653531616164383846364634636536614238383237323739636666466239323236360461646472077265766572736500)
+     
+    Contract Call:
+      address:   0x1234567890abcdef
+      function:  resolve(bytes name, bytes data)
+      args:             (0x, 0x)
 
-  Version: viem@2.30.6]
-`)
+    Version: viem@2.30.6]
+  `)
 })
 
 it('throws on unknown contract error when strict is false', async () => {
