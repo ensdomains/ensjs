@@ -82,7 +82,7 @@ it('does not throw known contract error when strict is false', async () => {
     universalWrapper.decode(
       publicClient,
       new RawContractError({
-        data: '0x7199966d', // ResolverNotFound()
+        data: '0x77209fe8', // ResolverNotFound()
       }),
       {
         address: '0x1234567890abcdef',
@@ -98,7 +98,7 @@ it('throws on known contract error when strict is true', async () => {
     universalWrapper.decode(
       publicClient,
       new RawContractError({
-        data: '0x7199966d', // ResolverNotFound()
+        data: '0x77209fe8', // ResolverNotFound()
       }),
       {
         address: '0x1234567890abcdef',

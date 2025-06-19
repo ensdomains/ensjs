@@ -99,7 +99,7 @@ describe('getRecords()', () => {
       getRecords.decode(
         publicClient,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: '0x77209fe8', // ResolverNotFound()
         }),
         {
           calls: [

@@ -227,7 +227,7 @@ describe('getAbiRecord()', () => {
       getAbiRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: '0x77209fe8', // ResolverNotFound()
         }),
         {
           address: '0x1234567890abcdef',
@@ -242,7 +242,7 @@ describe('getAbiRecord()', () => {
       getAbiRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: '0x77209fe8', // ResolverNotFound()
         }),
         {
           address: '0x1234567890abcdef',

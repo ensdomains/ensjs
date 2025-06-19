@@ -32,7 +32,7 @@ describe('checkSafeUniversalResolverData', () => {
     expect(
       checkSafeUniversalResolverData(
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: '0x77209fe8', // ResolverNotFound()
         }),
         {
           strict: false,
@@ -49,7 +49,7 @@ describe('checkSafeUniversalResolverData', () => {
     expect(() => {
       checkSafeUniversalResolverData(
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: '0x77209fe8', // ResolverNotFound()
         }),
         {
           strict: true,
@@ -77,7 +77,7 @@ describe('checkSafeUniversalResolverData', () => {
     expect(() => {
       checkSafeUniversalResolverData(
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: '0x77209fe8', // ResolverNotFound()
         }),
         {
           strict: true,
