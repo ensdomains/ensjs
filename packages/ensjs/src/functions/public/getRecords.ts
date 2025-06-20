@@ -10,9 +10,11 @@ import {
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { multicallSnippet } from '../../contracts/multicall.js'
 import {
-  universalResolverResolveArraySnippet,
-  universalResolverResolveArrayWithGatewaysSnippet,
+  universalResolverResolveSnippet,
+  universalResolverResolveWithGatewaysSnippet,
+  universalResolverReverseWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import type {
   DecodedAddr,
@@ -215,7 +217,10 @@ const encode = (
   })
   const args = [
     toHex(packetToBytes(name)),
-    calls.map((c) => c.call.data),
+    encodeFunctionData({
+      abi: multicallSnippet,
+      args: [calls.map((c) => c.call.data)],
+    }),
   ] as const
 
   return {
@@ -223,8 +228,8 @@ const encode = (
     ...(gatewayUrls
       ? {
           data: encodeFunctionData({
-            abi: universalResolverResolveArrayWithGatewaysSnippet,
-            functionName: 'resolve',
+            abi: universalResolverResolveWithGatewaysSnippet,
+            functionName: 'resolveWithGateways',
             args: [...args, gatewayUrls] as const,
           }),
           passthrough: {
@@ -235,7 +240,7 @@ const encode = (
         }
       : {
           data: encodeFunctionData({
-            abi: universalResolverResolveArraySnippet,
+            abi: universalResolverResolveSnippet,
             functionName: 'resolve',
             args,
           }),
@@ -386,8 +391,8 @@ const decode = async <
     const isSafe = checkSafeUniversalResolverData(data, {
       strict: false,
       abi: gatewayUrls
-        ? universalResolverResolveArrayWithGatewaysSnippet
-        : universalResolverResolveArraySnippet,
+        ? universalResolverReverseWithGatewaysSnippet
+        : universalResolverResolveSnippet,
       args: passthrough.args,
       functionName: 'resolve',
       address: passthrough.address,
@@ -400,17 +405,20 @@ const decode = async <
       } as GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
 
     const result = decodeFunctionResult({
-      abi: universalResolverResolveArraySnippet,
+      abi: universalResolverResolveSnippet,
       functionName: 'resolve',
       data,
     })
     ;[, resolverAddress] = result
-    recordData = result[0].map((item, i) => {
-      if (!item.success) {
+    recordData = decodeFunctionResult({
+      abi: multicallSnippet,
+      data: result[0],
+    }).map((r, i) => {
+      if (r === '0x') {
         calls[i] = null
         return null
       }
-      return item.returnData
+      return (r.length - 2) % 32 === 0 ? r : null
     })
   }
 

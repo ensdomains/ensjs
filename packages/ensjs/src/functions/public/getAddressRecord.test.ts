@@ -1,9 +1,17 @@
-import { http, RawContractError, createPublicClient } from 'viem'
+import {
+  http,
+  RawContractError,
+  bytesToHex,
+  createPublicClient,
+  encodeErrorResult,
+} from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
+import { universalResolverErrors } from '../../contracts/universalResolver.js'
 import { publicClient } from '../../test/addTestContracts.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
 import getAddressRecord from './getAddressRecord.js'
 
 const mainnetPublicClient = createPublicClient({
@@ -87,7 +95,11 @@ describe('getAddressRecord()', () => {
       getAddressRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [bytesToHex(packetToBytes('test.eth'))],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
@@ -102,7 +114,11 @@ describe('getAddressRecord()', () => {
       getAddressRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [bytesToHex(packetToBytes('test.eth'))],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
@@ -114,7 +130,8 @@ describe('getAddressRecord()', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound()
+      Error: ResolverNotFound(bytes name)
+                             (0x04746573740365746800)
        
       Contract Call:
         address:   0x1234567890abcdef

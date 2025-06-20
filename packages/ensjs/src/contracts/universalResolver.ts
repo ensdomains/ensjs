@@ -1,23 +1,57 @@
 export const universalResolverErrors = [
   {
-    inputs: [],
-    name: 'ResolverNotFound',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'ResolverWildcardNotSupported',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'ResolverNotContract',
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'dns',
+        type: 'bytes',
+      },
+    ],
+    name: 'DNSDecodingFailed',
     type: 'error',
   },
   {
     inputs: [
       {
-        name: 'returnData',
+        internalType: 'string',
+        name: 'ens',
+        type: 'string',
+      },
+    ],
+    name: 'DNSEncodingFailed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'EmptyAddress',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint16',
+        name: 'status',
+        type: 'uint16',
+      },
+      {
+        internalType: 'string',
+        name: 'message',
+        type: 'string',
+      },
+    ],
+    name: 'HttpError',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidBatchGatewayResponse',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'errorData',
         type: 'bytes',
       },
     ],
@@ -27,21 +61,55 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        components: [
-          {
-            name: 'status',
-            type: 'uint16',
-          },
-          {
-            name: 'message',
-            type: 'string',
-          },
-        ],
-        name: 'errors',
-        type: 'tuple[]',
+        internalType: 'bytes',
+        name: 'name',
+        type: 'bytes',
+      },
+      {
+        internalType: 'address',
+        name: 'resolver',
+        type: 'address',
       },
     ],
-    name: 'HttpError',
+    name: 'ResolverNotContract',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'name',
+        type: 'bytes',
+      },
+    ],
+    name: 'ResolverNotFound',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'primary',
+        type: 'string',
+      },
+      {
+        internalType: 'bytes',
+        name: 'primaryAddress',
+        type: 'bytes',
+      },
+    ],
+    name: 'ReverseAddressMismatch',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes4',
+        name: 'selector',
+        type: 'bytes4',
+      },
+    ],
+    name: 'UnsupportedResolverProfile',
     type: 'error',
   },
 ] as const
@@ -49,16 +117,19 @@ export const universalResolverErrors = [
 const universalResolverReverse = {
   inputs: [
     {
-      name: 'reverseName',
+      name: 'encodedAddress',
       type: 'bytes',
+    },
+    {
+      name: 'coinType',
+      type: 'uint256',
     },
   ],
   name: 'reverse',
   outputs: [
-    { type: 'string', name: 'resolvedName' },
-    { type: 'address', name: 'resolvedAddress' },
-    { type: 'address', name: 'reverseResolver' },
+    { type: 'string', name: 'name' },
     { type: 'address', name: 'resolver' },
+    { type: 'address', name: 'reverseResolver' },
   ],
   stateMutability: 'view',
   type: 'function',
@@ -73,6 +144,7 @@ export const universalResolverReverseWithGatewaysSnippet = [
   ...universalResolverErrors,
   {
     ...universalResolverReverse,
+    name: 'reverseWithGateways',
     inputs: [
       ...universalResolverReverse.inputs,
       {
@@ -118,63 +190,9 @@ export const universalResolverResolveWithGatewaysSnippet = [
   ...universalResolverErrors,
   {
     ...universalResolverResolve,
+    name: 'resolveWithGateways',
     inputs: [
       ...universalResolverResolve.inputs,
-      {
-        name: 'gateways',
-        type: 'string[]',
-      },
-    ],
-  },
-] as const
-
-const universalResolverResolveArray = {
-  inputs: [
-    {
-      name: 'name',
-      type: 'bytes',
-    },
-    {
-      name: 'data',
-      type: 'bytes[]',
-    },
-  ],
-  name: 'resolve',
-  outputs: [
-    {
-      components: [
-        {
-          name: 'success',
-          type: 'bool',
-        },
-        {
-          name: 'returnData',
-          type: 'bytes',
-        },
-      ],
-      name: '',
-      type: 'tuple[]',
-    },
-    {
-      name: '',
-      type: 'address',
-    },
-  ],
-  stateMutability: 'view',
-  type: 'function',
-} as const
-
-export const universalResolverResolveArraySnippet = [
-  ...universalResolverErrors,
-  universalResolverResolveArray,
-] as const
-
-export const universalResolverResolveArrayWithGatewaysSnippet = [
-  ...universalResolverErrors,
-  {
-    ...universalResolverResolveArray,
-    inputs: [
-      ...universalResolverResolveArray.inputs,
       {
         name: 'gateways',
         type: 'string[]',
@@ -195,12 +213,16 @@ export const universalResolverFindResolverSnippet = [
     name: 'findResolver',
     outputs: [
       {
-        name: '',
+        name: 'address',
         type: 'address',
       },
       {
-        name: '',
+        name: 'node',
         type: 'bytes32',
+      },
+      {
+        name: 'offset',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',

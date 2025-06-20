@@ -61,7 +61,7 @@ const encode = (
       ? {
           data: encodeFunctionData({
             abi: universalResolverResolveWithGatewaysSnippet,
-            functionName: 'resolve',
+            functionName: 'resolveWithGateways',
             args: [...args, gatewayUrls] as const,
           }),
           passthrough: {
