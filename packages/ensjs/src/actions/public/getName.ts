@@ -1,15 +1,14 @@
-import {
-  type Address,
-  type Chain,
-  type GetAddressErrorType,
-  type GetChainContractAddressErrorType,
-  getAddress,
-  type ReadContractErrorType,
-  type ToHexErrorType,
-  toHex,
+import { evmChainIdToCoinType } from '@ensdomains/address-encoder/utils'
+import type {
+  Address,
+  Chain,
+  GetAddressErrorType,
+  GetChainContractAddressErrorType,
+  ReadContractErrorType,
+  ToHexErrorType,
 } from 'viem'
 import { readContract } from 'viem/actions'
-import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
+import type { PacketToBytesErrorType } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
@@ -28,17 +27,29 @@ import {
 } from '../../utils/name/normalize.js'
 import { nullableAddress } from '../../utils/nullableAddress.js'
 
+type GetNameCoinTypeParameters = {
+  coinType: number
+  chainId?: never
+}
+
+type GetNameChainIdParameters = {
+  chainId: number
+  coinType?: never
+}
+
 export type GetNameParameters = {
   /** Address to get name for */
   address: Address
-  /** Whether or not to allow mismatched forward resolution */
-  allowMismatch?: boolean
   /** Whether or not to allow unnormalized name results (UNSAFE) */
   allowUnnormalized?: boolean
   /** Whether or not to throw decoding errors */
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
+  /** Coin type to use for reverse resolution */
+  coinType?: GetNameCoinTypeParameters['coinType']
+  /** Chain ID to use for reverse resolution */
+  chainId?: GetNameChainIdParameters['chainId']
 }
 
 export type GetNameReturnType = {
@@ -86,15 +97,15 @@ export async function getName<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   {
     address,
-    allowMismatch,
     allowUnnormalized,
     strict,
     gatewayUrls,
+    chainId,
+    coinType,
   }: GetNameParameters,
 ): Promise<GetNameReturnType> {
   client = client as ExcludeTE<typeof client>
 
-  const reverseNode = `${address.toLowerCase().substring(2)}.addr.reverse`
   const readContractAction = getAction(client, readContract, 'readContract')
 
   const parameters = {
@@ -103,35 +114,27 @@ export async function getName<chain extends Chain>(
       contract: 'ensUniversalResolver',
     }),
     abi: universalResolverReverseSnippet,
-    functionName: 'reverse',
-    args: [toHex(packetToBytes(reverseNode))],
+    functionName: 'reverseWithGateways',
+    args: [address, chainId ? evmChainIdToCoinType(chainId) : coinType || 60n],
   } as const
   try {
-    const [
-      unnormalizedName,
-      forwardResolvedAddress,
-      reverseResolverAddress,
-      resolverAddress,
-    ] = gatewayUrls
-      ? await readContractAction({
-          ...parameters,
-          abi: universalResolverReverseWithGatewaysSnippet,
-          args: [...parameters.args, gatewayUrls],
-        })
-      : await readContractAction(parameters)
-    if (!unnormalizedName) return null
+    const [unnormalisedName, resolverAddress, reverseResolverAddress] =
+      gatewayUrls
+        ? await readContractAction({
+            ...parameters,
+            abi: universalResolverReverseWithGatewaysSnippet,
+            args: [...parameters.args, gatewayUrls] as const,
+          })
+        : await readContractAction({ ...parameters, functionName: 'reverse' })
+    if (!unnormalisedName) return null
 
-    const addressMatch =
-      getAddress(forwardResolvedAddress) === getAddress(address)
-    if (!addressMatch && !allowMismatch) return null
-
-    const normalizedName = normalize(unnormalizedName)
-    const nameMatch = unnormalizedName === normalizedName
+    const normalizedName = normalize(unnormalisedName)
+    const nameMatch = unnormalisedName === normalizedName
     if (!nameMatch && !allowUnnormalized) return null
 
     return {
-      name: unnormalizedName,
-      match: addressMatch,
+      name: unnormalisedName,
+      match: true,
       normalized: nameMatch,
       reverseResolverAddress: nullableAddress(reverseResolverAddress),
       resolverAddress: nullableAddress(resolverAddress),
