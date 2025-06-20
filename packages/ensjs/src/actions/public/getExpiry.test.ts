@@ -6,9 +6,9 @@ describe('getExpiry', () => {
   it('should get the expiry for a .eth name with no other args', async () => {
     const result = await getExpiry(publicClient, { name: 'with-profile.eth' })
     assert.isNotNull(result)
-    expect(result.expiry).toBeTypeOf('bigint')
-    expect(result.gracePeriod).toBe(7776000)
-    expect(result.status).toBe('active')
+    expect(result?.expiry).toBeTypeOf('bigint')
+    expect(result?.gracePeriod).toBe(7776000)
+    expect(result?.status).toBe('active')
   })
   it('should get the expiry for a wrapped name', async () => {
     const result = await getExpiry(publicClient, {
@@ -17,9 +17,9 @@ describe('getExpiry', () => {
     })
 
     assert.isNotNull(result)
-    expect(result.expiry).toBeTypeOf('bigint')
-    expect(result.gracePeriod).toBe(0)
-    expect(result.status).toBe('active')
+    expect(result?.expiry).toBeTypeOf('bigint')
+    expect(result?.gracePeriod).toBe(0)
+    expect(result?.status).toBe('active')
   })
   it('should return null for a non .eth name if not wrapped', async () => {
     const result = await getExpiry(publicClient, {
@@ -42,5 +42,15 @@ describe('getExpiry', () => {
 
       Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
+  })
+  it('should get the expiry for a .eth name using l2Registrar contract', async () => {
+    const result = await getExpiry(publicClient, {
+      name: 'with-profile.eth',
+      contract: 'l2Registrar',
+    })
+    assert.isNotNull(result)
+    expect(result?.expiry).toBeTypeOf('bigint')
+    expect(result?.gracePeriod).toBeTypeOf('number')
+    expect(result?.status).toBe('active')
   })
 })
