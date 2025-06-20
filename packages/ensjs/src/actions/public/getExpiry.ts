@@ -115,9 +115,9 @@ export async function getExpiry<chain extends Chain>(
 		functionName: "getCurrentBlockTimestamp",
 	} as const;
 
-	const [currentBlockTimestamp, expiry, gracePeriod] = await (() => {
-		if (contract === "nameWrapper")
-			return multicallAction({
+	const [currentBlockTimestamp, expiry, gracePeriod] = await (async () => {
+		if (contract === "nameWrapper") {
+			const [timestamp_, [, , expiry_]] = await multicallAction({
 				contracts: [
 					getCurrentBlockTimestampParameters,
 					{
@@ -131,14 +131,14 @@ export async function getExpiry<chain extends Chain>(
 					},
 				],
 				allowFailure: false,
-			}).then(([timestamp_, [, , expiry_]]) => {
-				return [timestamp_, expiry_, 0n] as const;
 			});
+			return [timestamp_, expiry_, 0n] as const;
+		}
 
 		if (contract === "l2Registrar") {
 			// For L2 registrars, we get the registry owner which should be the L2 registrar
 			// and query it for expiry information
-			return multicallAction({
+			const [timestamp_, registryOwner] = await multicallAction({
 				contracts: [
 					getCurrentBlockTimestampParameters,
 					{
@@ -152,30 +152,30 @@ export async function getExpiry<chain extends Chain>(
 					},
 				],
 				allowFailure: false,
-			}).then(async ([timestamp_, registryOwner]) => {
-				// Now query the registry owner (L2 registrar) for expiry information
-				const [nameExpiry, gracePeriodValue] = await multicallAction({
-					contracts: [
-						{
-							address: registryOwner as Address,
-							abi: baseRegistrarNameExpiresSnippet,
-							functionName: "nameExpires",
-							args: [BigInt(labelhash(labels[0]))],
-						},
-						{
-							address: registryOwner as Address,
-							abi: baseRegistrarGracePeriodSnippet,
-							functionName: "GRACE_PERIOD",
-						},
-					],
-					allowFailure: false,
-				});
-
-				return [timestamp_, nameExpiry, gracePeriodValue] as const;
 			});
+
+			// Now query the registry owner (L2 registrar) for expiry information
+			const [nameExpiry, gracePeriodValue] = await multicallAction({
+				contracts: [
+					{
+						address: registryOwner as Address,
+						abi: baseRegistrarNameExpiresSnippet,
+						functionName: "nameExpires",
+						args: [BigInt(labelhash(labels[0]))],
+					},
+					{
+						address: registryOwner as Address,
+						abi: baseRegistrarGracePeriodSnippet,
+						functionName: "GRACE_PERIOD",
+					},
+				],
+				allowFailure: false,
+			});
+
+			return [timestamp_, nameExpiry, gracePeriodValue] as const;
 		}
 
-		return multicallAction({
+		return await multicallAction({
 			contracts: [
 				getCurrentBlockTimestampParameters,
 				{
