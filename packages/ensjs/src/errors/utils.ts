@@ -1,5 +1,7 @@
 import { BaseError } from './base.js'
 
+export type ErrorType<name extends string = 'Error'> = Error & { name: name }
+
 export class FusesOutOfRangeError extends BaseError {
   override name = 'FusesOutOfRangeError'
 

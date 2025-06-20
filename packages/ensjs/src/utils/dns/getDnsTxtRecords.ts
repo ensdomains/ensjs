@@ -1,4 +1,5 @@
-import type { Endpoint } from '../../functions/dns/types.js'
+import type { Endpoint } from '../../actions/dns/types.js'
+import type { ErrorType } from '../../errors/utils.js'
 import type { DnsResponse } from './misc.js'
 
 export type GetDnsTxtRecordsParameters = {
@@ -9,6 +10,8 @@ export type GetDnsTxtRecordsParameters = {
 }
 
 export type GetDnsTxtRecordsReturnType = DnsResponse
+
+export type GetDnsTxtRecordsErrorType = ErrorType
 
 /**
  * Gets the DNS record response of a name, via DNS record lookup

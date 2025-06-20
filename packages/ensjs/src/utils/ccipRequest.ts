@@ -1,20 +1,40 @@
 import {
   type CcipRequestParameters,
   type Chain,
+  type DecodeFunctionDataErrorType,
   decodeFunctionData,
+  type EncodeFunctionResultErrorType,
   encodeFunctionResult,
+  type GetChainContractAddressErrorType,
+  type IsAddressEqualErrorType,
   isAddressEqual,
   parseAbi,
+  type CcipRequestErrorType as viem_CcipRequestErrorType,
   ccipRequest as viemCcipRequest,
 } from 'viem'
-import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
-import { ccipBatchRequest } from './ccipBatchRequest.js'
+import { getChainContractAddress } from '../clients/chain.js'
+import {
+  type CcipBatchRequestErrorType,
+  ccipBatchRequest,
+} from './ccipBatchRequest.js'
 
 const abi = parseAbi([
   'function query((address,string[],bytes)[]) returns (bool[],bytes[])',
 ])
 
 const universalResolverQuerySig = '0xa780bab6'
+
+// ================================
+// Ccip request
+// ================================
+
+export type CcipRequestErrorType =
+  | GetChainContractAddressErrorType
+  | IsAddressEqualErrorType
+  | DecodeFunctionDataErrorType
+  | CcipBatchRequestErrorType
+  | EncodeFunctionResultErrorType
+  | viem_CcipRequestErrorType
 
 export const ccipRequest =
   <TChain extends Chain>(chain: TChain) =>
@@ -23,8 +43,9 @@ export const ccipRequest =
     sender,
     urls,
   }: CcipRequestParameters): ReturnType<typeof viemCcipRequest> => {
+    // TODO: Improve
     const universalResolverAddress = getChainContractAddress({
-      client: { chain },
+      chain,
       contract: 'ensUniversalResolver',
     })
     const isUniversalResolverRequest = isAddressEqual(

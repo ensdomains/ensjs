@@ -1,12 +1,13 @@
 import {
   type Address,
   BaseError,
-  type Hex,
-  HttpRequestError,
   ccipRequest,
   encodeErrorResult,
+  type Hex,
+  HttpRequestError,
   parseAbi,
 } from 'viem'
+import type { ErrorType } from '../errors/utils.js'
 
 type ReadonlyDeep<T> = {
   readonly [P in keyof T]: ReadonlyDeep<T[P]>
@@ -15,6 +16,10 @@ type ReadonlyDeep<T> = {
 const errorAbi = parseAbi(['error HttpError((uint16, string)[])'])
 
 type CcipRequestItem = [success: boolean, result: Hex]
+
+// ================================
+// Ccip request item handler
+// ================================
 
 const ccipRequestItemHandler = async ([
   wrappedSender,
@@ -49,6 +54,13 @@ const ccipRequestItemHandler = async ([
     ]
   }
 }
+
+// ================================
+// Ccip batch request
+// ================================
+
+// Could possibly be error free, but not sure
+export type CcipBatchRequestErrorType = ErrorType
 
 export const ccipBatchRequest = async (
   callDatas: ReadonlyDeep<[Address, string[], Hex][]>,

@@ -1,86 +1,78 @@
-import type { Account, Client, Transport } from 'viem'
-import type { ChainWithEns } from '../../contracts/consts.js'
-import batch, {
-  type BatchParameters,
-  type BatchReturnType,
-} from '../../functions/public/batch.js'
-import getAbiRecord, {
+import type { Account, Chain } from 'viem'
+import {
   type GetAbiRecordParameters,
   type GetAbiRecordReturnType,
-} from '../../functions/public/getAbiRecord.js'
-import getAddressRecord, {
+  getAbiRecord,
+} from '../../actions/public/getAbiRecord.js'
+import {
   type GetAddressRecordParameters,
   type GetAddressRecordReturnType,
-} from '../../functions/public/getAddressRecord.js'
-import getAvailable, {
+  getAddressRecord,
+} from '../../actions/public/getAddressRecord.js'
+import {
   type GetAvailableParameters,
   type GetAvailableReturnType,
-} from '../../functions/public/getAvailable.js'
-import getContentHashRecord, {
+  getAvailable,
+} from '../../actions/public/getAvailable.js'
+import {
   type GetContentHashRecordParameters,
   type GetContentHashRecordReturnType,
-} from '../../functions/public/getContentHashRecord.js'
-import getExpiry, {
+  getContentHashRecord,
+} from '../../actions/public/getContentHashRecord.js'
+import {
+  type GetCredentialsParameters,
+  type GetCredentialsReturnType,
+  getCredentials,
+} from '../../actions/public/getCredentials.js'
+import {
   type GetExpiryParameters,
   type GetExpiryReturnType,
-} from '../../functions/public/getExpiry.js'
-import getName, {
+  getExpiry,
+} from '../../actions/public/getExpiry.js'
+import {
   type GetNameParameters,
   type GetNameReturnType,
-} from '../../functions/public/getName.js'
-import getOwner, {
+  getName,
+} from '../../actions/public/getName.js'
+import {
   type GetOwnerParameters,
   type GetOwnerReturnType,
-} from '../../functions/public/getOwner.js'
-import getPrice, {
+  getOwner,
+} from '../../actions/public/getOwner.js'
+import {
   type GetPriceParameters,
   type GetPriceReturnType,
-} from '../../functions/public/getPrice.js'
-import getRecords, {
+  getPrice,
+} from '../../actions/public/getPrice.js'
+import {
   type GetRecordsParameters,
   type GetRecordsReturnType,
-} from '../../functions/public/getRecords.js'
-import getResolver, {
+  getRecords,
+} from '../../actions/public/getRecords.js'
+import {
   type GetResolverParameters,
   type GetResolverReturnType,
-} from '../../functions/public/getResolver.js'
-import getTextRecord, {
+  getResolver,
+} from '../../actions/public/getResolver.js'
+import {
   type GetTextRecordParameters,
   type GetTextRecordReturnType,
-} from '../../functions/public/getTextRecord.js'
-import getWrapperData, {
+  getTextRecord,
+} from '../../actions/public/getTextRecord.js'
+import {
   type GetWrapperDataParameters,
   type GetWrapperDataReturnType,
-} from '../../functions/public/getWrapperData.js'
-import getWrapperName, {
+  getWrapperData,
+} from '../../actions/public/getWrapperData.js'
+import {
   type GetWrapperNameParameters,
   type GetWrapperNameReturnType,
-} from '../../functions/public/getWrapperName.js'
+  getWrapperName,
+} from '../../actions/public/getWrapperName.js'
+import type { ExcludeTE } from '../../types/internal.js'
+import type { RequireClientContracts, SupportedContract } from '../chain.js'
 
 export type EnsPublicActions = {
-  /**
-   * Batches multiple read functions into a single call.
-   * @param ...parameters - Array of {@link BatchFunctionResult} objects
-   * @returns Array of return values from each function
-   *
-   * @example
-   * import { createPublicClient, http } from 'viem'
-   * import { mainnet } from 'viem/chains'
-   * import { addEnsContracts, ensPublicActions, getTextRecord, getAddressRecord } from '@ensdomains/ensjs'
-   *
-   * const client = createPublicClient({
-   *   chain: addEnsContracts(mainnet),
-   *   transport: http(),
-   * }).extend(ensPublicActions)
-   * const result = await client.ensBatch(
-   *   getTextRecord.batch({ name: 'ens.eth', key: 'com.twitter' }),
-   *   getAddressRecord.batch({ name: 'ens.eth', coin: 'ETH' }),
-   * )
-   * // ['ensdomains', { id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 }]
-   */
-  ensBatch: <TBatchFunctions extends BatchParameters>(
-    ...parameters: TBatchFunctions
-  ) => Promise<BatchReturnType<TBatchFunctions>>
   /**
    * Gets the ABI record for a name
    * @param parameters - {@link GetAbiRecordParameters}
@@ -187,6 +179,28 @@ export type EnsPublicActions = {
    * const result = await client.getExpiry({ name: 'ens.eth' })
    * // { expiry: { date: Date, value: 1913933217n }, gracePeriod: 7776000, status: 'active' }
    */
+  getCredentials: ({
+    name,
+    gatewayUrls,
+    strict,
+  }: GetCredentialsParameters) => Promise<GetCredentialsReturnType>
+  /**
+   * Gets credentials for a name.
+   * @param parameters - {@link GetCredentialsParameters}
+   * @returns Credentials, or null if none are found. {@link GetCredentialsReturnType}
+   *
+   * @example
+   * import { createPublicClient, http } from 'viem'
+   * import { mainnet } from 'viem/chains'
+   * import { addEnsContracts, ensPublicActions } from '@ensdomains/ensjs'
+   *
+   * const client = createPublicClient({
+   *   chain: addEnsContracts(mainnet),
+   *   transport: http(),
+   * }).extend(ensPublicActions)
+   * const result = await client.getCredentials({ name: 'ens.eth' })
+   * // [{ url: 'https://example.com' }]
+   */
   getExpiry: ({
     name,
     contract,
@@ -211,6 +225,7 @@ export type EnsPublicActions = {
   getName: ({
     address,
     allowMismatch,
+    allowUnnormalized,
     gatewayUrls,
     strict,
   }: GetNameParameters) => Promise<GetNameReturnType>
@@ -279,13 +294,13 @@ export type EnsPublicActions = {
    * // { texts: [{ key: 'com.twitter', value: 'ensdomains' }, { key: 'com.github', value: 'ensdomains' }], coins: [{ id: 60, name: 'ETH', value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' }], contentHash: { protocolType: 'ipns', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' } }
    */
   getRecords: <
-    const TTexts extends readonly string[] = readonly string[],
-    const TCoins extends readonly (string | number)[] = readonly (
+    const texts extends readonly string[] = readonly string[],
+    const coins extends readonly (string | number)[] = readonly (
       | string
       | number
     )[],
-    const TContentHash extends boolean = true,
-    const TAbi extends boolean = true,
+    const contentHash extends boolean = true,
+    const abi extends boolean = true,
   >({
     name,
     texts,
@@ -294,8 +309,8 @@ export type EnsPublicActions = {
     abi,
     resolver,
     gatewayUrls,
-  }: GetRecordsParameters<TTexts, TCoins, TContentHash, TAbi>) => Promise<
-    GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
+  }: GetRecordsParameters<texts, coins, contentHash, abi>) => Promise<
+    GetRecordsReturnType<texts, coins, contentHash, abi>
   >
   /**
    * Gets the resolver address for a name.
@@ -396,25 +411,32 @@ export type EnsPublicActions = {
  * }).extend(ensPublicActions)
  */
 export const ensPublicActions = <
-  TTransport extends Transport = Transport,
-  TChain extends ChainWithEns = ChainWithEns,
-  TAccount extends Account | undefined = Account | undefined,
+  chain extends Chain = Chain,
+  account extends Account | undefined = Account | undefined,
 >(
-  client: Client<TTransport, TChain, TAccount>,
-): EnsPublicActions => ({
-  ensBatch: (...parameters) => batch(client, ...parameters),
-  getAbiRecord: (parameters) => getAbiRecord(client, parameters),
-  getAddressRecord: (parameters) => getAddressRecord(client, parameters),
-  getAvailable: (parameters) => getAvailable(client, parameters),
-  getContentHashRecord: (parameters) =>
-    getContentHashRecord(client, parameters),
-  getExpiry: (parameters) => getExpiry(client, parameters),
-  getName: (parameters) => getName(client, parameters),
-  getOwner: (parameters) => getOwner(client, parameters),
-  getPrice: (parameters) => getPrice(client, parameters),
-  getRecords: (parameters) => getRecords(client, parameters),
-  getResolver: (parameters) => getResolver(client, parameters),
-  getTextRecord: (parameters) => getTextRecord(client, parameters),
-  getWrapperData: (parameters) => getWrapperData(client, parameters),
-  getWrapperName: (parameters) => getWrapperName(client, parameters),
-})
+  client: RequireClientContracts<
+    chain,
+    SupportedContract | 'multicall3',
+    account
+  >,
+): EnsPublicActions => {
+  const client_ = client as ExcludeTE<typeof client> & {}
+
+  return {
+    getAbiRecord: (parameters) => getAbiRecord(client_, parameters),
+    getAddressRecord: (parameters) => getAddressRecord(client_, parameters),
+    getAvailable: (parameters) => getAvailable(client_, parameters),
+    getContentHashRecord: (parameters) =>
+      getContentHashRecord(client_, parameters),
+    getCredentials: (parameters) => getCredentials(client_, parameters),
+    getExpiry: (parameters) => getExpiry(client_, parameters),
+    getName: (parameters) => getName(client_, parameters),
+    getOwner: (parameters) => getOwner(client_, parameters),
+    getPrice: (parameters) => getPrice(client_, parameters),
+    getRecords: (parameters) => getRecords(client_, parameters),
+    getResolver: (parameters) => getResolver(client_, parameters),
+    getTextRecord: (parameters) => getTextRecord(client_, parameters),
+    getWrapperData: (parameters) => getWrapperData(client_, parameters),
+    getWrapperName: (parameters) => getWrapperName(client_, parameters),
+  }
+}

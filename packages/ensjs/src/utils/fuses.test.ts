@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import {
   ChildFuseKeys,
   ChildFuses,
+  decodeFuses,
+  encodeFuses,
   FullParentFuseKeys,
   FullParentFuses,
   FuseRanges,
@@ -11,8 +13,6 @@ import {
   UnnamedParentFuses,
   UserSettableFuseKeys,
   UserSettableFuses,
-  decodeFuses,
-  encodeFuses,
 } from './fuses.js'
 
 describe('correctly exports', () => {

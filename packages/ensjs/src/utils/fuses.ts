@@ -202,6 +202,12 @@ export type EncodeFusesInputObject =
       number: bigint
     }
 
+// ================================
+// Validate fuse number
+// ================================
+
+type ValidateFuseNumberErrorType = FusesOutOfRangeError
+
 const validateFuseNumber = (fuses: bigint) => {
   if (fuses > 2n ** 32n || fuses < 0n)
     throw new FusesOutOfRangeError({
@@ -217,6 +223,17 @@ const validateFuseNumber = (fuses: bigint) => {
         'Fuse number must be limited to user settable fuses, the supplied value was not',
     })
 }
+
+// ================================
+// Check fuse object
+// ================================
+
+type CheckFuseObjectErrorType =
+  | FusesInvalidFuseObjectError
+  | ValidateFuseNumberErrorType
+  | FusesOutOfRangeError
+  | FusesInvalidNamedFuseError
+  | FusesInvalidUnnamedFuseError
 
 const checkFuseObject = <TFuseReference extends GenericFuseEnum>({
   reference,
@@ -267,7 +284,11 @@ const checkFuseObject = <TFuseReference extends GenericFuseEnum>({
   return Number(fuseNumber)
 }
 
-type EncodeFusesParameters =
+// ================================
+// Encode fuses
+// ================================
+
+export type EncodeFusesParameters =
   | {
       restriction: 'child'
       input: EncodeChildFusesInputObject
@@ -280,6 +301,10 @@ type EncodeFusesParameters =
       restriction?: never
       input: EncodeFusesInputObject
     }
+
+export type EncodeFusesErrorType =
+  | CheckFuseObjectErrorType
+  | FusesRestrictionNotAllowedError
 
 export const encodeFuses = ({
   restriction,
@@ -324,6 +349,10 @@ export const encodeFuses = ({
 
   return Number(childFuses | parentFuses)
 }
+
+// ================================
+// Decode fuses
+// ================================
 
 type DecodedFuseGroup<TFuseReference extends GenericFuseEnum> = {
   [key in TFuseReference['Keys'][number]]: boolean

@@ -1,24 +1,37 @@
 import {
   type Address,
-  type Hex,
+  type EncodeAbiParametersErrorType,
   encodeAbiParameters,
+  type Hex,
+  type Keccak256ErrorType,
   keccak256,
+  type LabelhashErrorType,
   labelhash,
+  type PadErrorType,
   pad,
+  type ToBytesErrorType,
+  type ToHexErrorType,
   toBytes,
   toHex,
+  zeroAddress,
 } from 'viem'
 import {
   CampaignReferenceTooLargeError,
+  type ErrorType,
   ResolverAddressRequiredError,
 } from '../errors/utils.js'
-import { EMPTY_ADDRESS } from './consts.js'
-import { type EncodeChildFusesInputObject, encodeFuses } from './fuses.js'
 import {
-  type RecordOptions,
+  // TODO: missing function @tate
+  // @ts-expect-error missing function
   generateRecordCallArray,
-} from './generateRecordCallArray.js'
-import { namehash } from './normalise.js'
+  type RecordOptions,
+} from './coders/resolverMulticallParameters.js'
+import {
+  type EncodeChildFusesInputObject,
+  type EncodeFusesErrorType,
+  encodeFuses,
+} from './fuses.js'
+import { type NamehashErrorType, namehash } from './name/namehash.js'
 
 export type RegistrationParameters = {
   /** Name to register */
@@ -68,6 +81,18 @@ const cryptoRef =
     window.crypto) ||
   undefined
 
+// ================================
+// Random secret
+// ================================
+
+export type RandomSecretErrorType =
+  | ToBytesErrorType
+  | NamehashErrorType
+  | CampaignReferenceTooLargeError
+  | PadErrorType
+  | ToHexErrorType
+  | ErrorType
+
 export const randomSecret = ({
   platformDomain,
   campaign,
@@ -93,11 +118,21 @@ export const randomSecret = ({
   return toHex(bytes)
 }
 
+// ================================
+// Make commitment tuple
+// ================================
+
+export type MakeCommitmentTupleErrorType =
+  | LabelhashErrorType
+  | NamehashErrorType
+  | EncodeFusesErrorType
+  | ResolverAddressRequiredError
+
 export const makeCommitmentTuple = ({
   name,
   owner,
   duration,
-  resolverAddress = EMPTY_ADDRESS,
+  resolverAddress = zeroAddress,
   records: { coins = [], ...records } = { texts: [], coins: [] },
   reverseRecord,
   fuses,
@@ -126,7 +161,7 @@ export const makeCommitmentTuple = ({
     ? generateRecordCallArray({ namehash: hash, coins, ...records })
     : []
 
-  if (data.length > 0 && resolverAddress === EMPTY_ADDRESS)
+  if (data.length > 0 && resolverAddress === zeroAddress)
     throw new ResolverAddressRequiredError({
       data: {
         name,
@@ -151,6 +186,12 @@ export const makeCommitmentTuple = ({
   ]
 }
 
+// ================================
+// Make registration tuple
+// ================================
+
+export type MakeRegistrationTupleErrorType = MakeCommitmentTupleErrorType
+
 export const makeRegistrationTuple = (
   params: RegistrationParameters,
 ): RegistrationTuple => {
@@ -159,6 +200,14 @@ export const makeRegistrationTuple = (
   const label = params.name.split('.')[0]
   return [label, ...commitmentData]
 }
+
+// ================================
+// Make commitment from tuple
+// ================================
+
+export type MakeCommitmentFromTupleErrorType =
+  | Keccak256ErrorType
+  | EncodeAbiParametersErrorType
 
 export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {
   return keccak256(
@@ -177,6 +226,14 @@ export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {
     ),
   )
 }
+
+// ================================
+// Make commitment
+// ================================
+
+export type MakeCommitmentErrorType =
+  | MakeCommitmentTupleErrorType
+  | MakeCommitmentFromTupleErrorType
 
 export const makeCommitment = (params: RegistrationParameters): Hex =>
   makeCommitmentFromTuple(makeCommitmentTuple(params))

@@ -1,11 +1,11 @@
 import {
-  type Codec as InternalCodec,
   decode,
   encode,
   getCodec,
+  type Codec as InternalCodec,
 } from '@ensdomains/content-hash'
 import { type Hex, isHex } from 'viem'
-import { InvalidContentHashError } from '../errors/utils.js'
+import { type ErrorType, InvalidContentHashError } from '../errors/utils.js'
 
 export type ProtocolType =
   | 'ipfs'
@@ -30,7 +30,14 @@ function matchProtocol(text: string) {
   )
 }
 
+// ================================
+// Get display codec
+// ================================
+
+export type GetDisplayCodecErrorType = ErrorType
+
 export const getDisplayCodec = (encoded: string): ProtocolType => {
+  // could throw
   const codec = getCodec(encoded)
   switch (codec) {
     case 'ipfs':
@@ -49,6 +56,12 @@ export const getDisplayCodec = (encoded: string): ProtocolType => {
   }
 }
 
+// ================================
+// Get internal codec
+// ================================
+
+export type GetInternalCodecErrorType = ErrorType
+
 export const getInternalCodec = (
   displayCodec: NonNullable<ProtocolType>,
 ): InternalCodec => {
@@ -64,6 +77,12 @@ export const getInternalCodec = (
   }
 }
 
+// ================================
+// Decode content hash
+// ================================
+
+export type DecodeContentHashErrorType = ErrorType | GetDisplayCodecErrorType
+
 export function decodeContentHash(encoded: Hex): DecodedContentHash | null {
   if (!encoded || encoded === '0x') {
     return null
@@ -73,11 +92,23 @@ export function decodeContentHash(encoded: Hex): DecodedContentHash | null {
   return { protocolType, decoded }
 }
 
+// ================================
+// Is valid content hash
+// ================================
+
+export type IsValidContentHashErrorType = ErrorType | GetDisplayCodecErrorType
+
 export function isValidContentHash(encoded: unknown) {
   if (typeof encoded !== 'string') return false
   const codec = getCodec(encoded)
   return Boolean(codec && isHex(encoded))
 }
+
+// ================================
+// Get protocol type
+// ================================
+
+export type GetProtocolTypeErrorType = ErrorType
 
 export function getProtocolType(encoded: string) {
   const matched = matchProtocol(encoded)
@@ -85,6 +116,12 @@ export function getProtocolType(encoded: string) {
   const [, protocolType, decoded] = matched
   return { protocolType: protocolType as NonNullable<ProtocolType>, decoded }
 }
+
+// ================================
+// Encode content hash
+// ================================
+
+export type EncodeContentHashErrorType = ErrorType | GetProtocolTypeErrorType
 
 export function encodeContentHash(text: string): Hex {
   const typeData = getProtocolType(text)

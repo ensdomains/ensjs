@@ -2,48 +2,47 @@ import { getTextRecord } from '@ensdomains/ensjs/public'
 import type { ParamWithClients, QueryConfig } from '../client.js'
 import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
-export type UseEnsCredentialsParams = ParamWithClients<{ name: string }>
+export type UseEnsCredentialsParameters<
+  config extends ConfigWithEns = ConfigWithEns,
+  selectData = GetEnsCredentialsData,
+> = Compute<
+  GetEnsCredentialsOptions<config> &
+    ConfigParameter<config> &
+    QueryParameter<
+      GetEnsCredentialsQueryFnData,
+      GetEnsCredentialsErrorType,
+      selectData,
+      GetEnsCredentialsQueryKey<config>
+    >
+>
 
-export type ExternalCredential = {
-  url: string
-}
-
-export type UseEnsCredentialsReturnType = ExternalCredential[]
+export type UseEnsCredentialsReturnType<selectData = GetEnsCredentialsData> =
+  UseQueryReturnType<selectData, GetEnsCredentialsErrorType>
 
 /**
  * Returns credentials from a name
  *
- * @param params - {@link UseEnsCredentialsParams}
+ * @param parameters - {@link UseEnsCredentialsParameters}
  * @returns - {@link UseEnsCredentialsReturnType}
  *
  * @beta
  */
-export const useEnsCredentials = (
-  params: UseEnsCredentialsParams,
-  query?: QueryConfig,
-): UseQueryReturnType<UseEnsCredentialsReturnType> => {
-  const { name, client } = params
+export const useEnsCredentials = <
+  config extends ConfigWithEns = ResolvedRegister['config'],
+  selectData = GetEnsCredentialsData,
+>(
+  parameters: UseEnsCredentialsParameters<config, selectData> = {},
+): UseEnsCredentialsReturnType<selectData> => {
+  const { name, query = {} } = parameters
 
-  return useQuery(
-    ['ensjs', 'credentials', params.name],
-    {
-      queryFn: async () => {
-        const result = await getTextRecord(client, {
-          name,
-          key: 'verifications',
-        })
+  const config = useConfig<ConfigWithEns>()
+  const chainId = useChainId({ config })
 
-        if (!result) return []
+  const options = getEnsCredentialsQueryOptions(config, {
+    ...parameters,
+    chainId: parameters.chainId ?? chainId,
+  })
+  const enabled = Boolean(name && (query.enabled ?? true))
 
-        const credentials = (JSON.parse(result) as string[])
-          .filter((url) => new URL(url))
-          .map((url) => ({
-            url,
-          }))
-
-        return credentials
-      },
-    },
-    query,
-  )
+  return useQuery({ ...query, ...options, enabled })
 }

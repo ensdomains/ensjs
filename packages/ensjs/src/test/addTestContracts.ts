@@ -1,18 +1,18 @@
 import { resolve } from 'node:path'
 import { config } from 'dotenv'
 import {
-  http,
   type Account,
   type Address,
+  createPublicClient,
+  createTestClient,
+  createWalletClient,
   type Hash,
+  http,
   type PublicClient,
   type TestClient,
   type TransactionReceipt,
   TransactionReceiptNotFoundError,
   type WalletClient,
-  createPublicClient,
-  createTestClient,
-  createWalletClient,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 
@@ -65,6 +65,9 @@ export const localhost = {
       address: deploymentAddresses.DNSRegistrar,
     },
     ensEthRegistrarController: {
+      address: deploymentAddresses.ETHRegistrarController,
+    },
+    ensL2EthRegistrar: {
       address: deploymentAddresses.ETHRegistrarController,
     },
     ensNameWrapper: {
@@ -125,7 +128,11 @@ export const waitForTransaction = async (hash: Hash) =>
       .catch((e) => {
         if (e instanceof TransactionReceiptNotFoundError) {
           setTimeout(() => {
-            waitForTransaction(hash).then(resolveFn)
+            waitForTransaction(hash).then((receipt) => {
+              if (receipt.status !== 'success')
+                reject(new Error('transaction unsuccessful'))
+              resolveFn(receipt)
+            })
           }, 100)
         } else {
           reject(e)

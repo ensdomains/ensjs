@@ -1,12 +1,12 @@
 import { labelhash } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { namehash } from './normalise.js'
+import { namehash } from './name/normalize.js'
 import {
-  type RegistrationParameters,
   makeCommitment,
   makeCommitmentFromTuple,
   makeCommitmentTuple,
   makeRegistrationTuple,
+  type RegistrationParameters,
   randomSecret,
 } from './registerHelpers.js'
 

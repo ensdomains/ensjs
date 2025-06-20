@@ -1,5 +1,5 @@
 import type { Account, Address, Chain, Client, Transport } from 'viem'
-import type { Assign, Prettify } from '../types.js'
+import type { Assign, Prettify } from '../types/index.js'
 
 type ChainContract = {
   address: Address
@@ -203,12 +203,20 @@ type BaseChainContracts = {
   ensRegistry: ChainContract
 }
 
-export type ChainWithEns<TChain extends Chain = Chain> = Omit<
-  TChain,
+export type ChainWithEns<chain extends Chain = Chain> = Omit<
+  chain,
   'contracts'
 > & {
   contracts: BaseChainContracts & EnsChainContracts
   subgraphs: Subgraphs
+}
+
+export type ChainWithContract<
+  contract extends SupportedContract | keyof BaseChainContracts,
+> = Chain & {
+  contracts: {
+    [key in contract]: ChainContract
+  }
 }
 
 export type ChainWithBaseContracts = Assign<
@@ -218,12 +226,12 @@ export type ChainWithBaseContracts = Assign<
   }
 >
 
-export type CheckedChainWithEns<TChain extends Chain> =
-  TChain['id'] extends SupportedChain
-    ? TChain['contracts'] extends BaseChainContracts
-      ? TChain & {
-          contracts: Prettify<(typeof addresses)[TChain['id']]>
-          subgraphs: (typeof subgraphs)[TChain['id']]
+export type CheckedChainWithEns<chain extends Chain> =
+  chain['id'] extends SupportedChain
+    ? chain['contracts'] extends BaseChainContracts
+      ? chain & {
+          contracts: Prettify<(typeof addresses)[chain['id']]>
+          subgraphs: (typeof subgraphs)[chain['id']]
         }
       : never
     : never

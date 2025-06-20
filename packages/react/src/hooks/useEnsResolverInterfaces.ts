@@ -7,38 +7,56 @@ import type { Hex } from 'viem'
 import type { ParamWithClients, QueryConfig } from '../client.js'
 import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
-export type UseEnsResolverInterfacesParams<
-  Interfaces extends readonly Hex[] = [Hex, Hex],
-> = ParamWithClients<GetSupportedInterfacesParameters<Interfaces>>
+export type UseEnsResolverInterfacesParameters<
+  config extends ConfigWithEns = ConfigWithEns,
+  interfaces extends readonly Hex[] = readonly Hex[],
+  selectData = GetEnsResolverInterfacesData<interfaces>,
+> = Compute<
+  GetEnsResolverInterfacesOptions<config, interfaces> &
+    ConfigParameter<config> &
+    QueryParameter<
+      GetEnsResolverInterfacesQueryFnData<interfaces>,
+      GetEnsResolverInterfacesErrorType,
+      selectData,
+      GetEnsResolverInterfacesQueryKey<config, interfaces>
+    >
+>
 
 export type UseEnsResolverInterfacesReturnType<
-  Interfaces extends readonly Hex[],
-> = GetSupportedInterfacesReturnType<Interfaces>
+  interfaces extends readonly Hex[],
+  selectData = GetEnsResolverInterfacesData<interfaces>,
+> = UseQueryReturnType<selectData, GetEnsResolverInterfacesErrorType>
 
 /**
- * Returns a wether or not the interfaces are supported by the resolver
+ * Returns whether or not the interfaces are supported by the resolver
  * You can find a list of interfaces at https://docs.ens.domains/resolvers/interfaces
  *
  * You can use the {@link resolverInterfaces} shorthand, or manually specify a Hex value
  *
- * @param params - {@link UseEnsResolverInterfacesParams}
- * @returns - {@link boolean[]}
+ * @param parameters - {@link UseEnsResolverInterfacesParameters}
+ * @returns - {@link UseEnsResolverInterfacesReturnType}
  */
-export const useEnsResolverInterfaces = <Interfaces extends readonly Hex[]>(
-  params: UseEnsResolverInterfacesParams<Interfaces>,
-  query?: QueryConfig,
-): UseQueryReturnType<UseEnsResolverInterfacesReturnType<Interfaces>> => {
-  const { client } = params
+export const useEnsResolverInterfaces = <
+  config extends ConfigWithEns = ResolvedRegister['config'],
+  const interfaces extends readonly Hex[] = readonly Hex[],
+  selectData = GetEnsResolverInterfacesData<interfaces>,
+>(
+  parameters: UseEnsResolverInterfacesParameters<
+    config,
+    interfaces,
+    selectData
+  > = {},
+): UseEnsResolverInterfacesReturnType<interfaces, selectData> => {
+  const { address, interfaces, query = {} } = parameters
 
-  return useQuery(
-    ['ensjs', 'resolver-interfaces', params.address],
-    {
-      queryFn: async () => {
-        const result = await getSupportedInterfaces(client, params)
+  const config = useConfig<ConfigWithEns>()
+  const chainId = useChainId({ config })
 
-        return result
-      },
-    },
-    query,
-  )
+  const options = getEnsResolverInterfacesQueryOptions(config, {
+    ...parameters,
+    chainId: parameters.chainId ?? chainId,
+  })
+  const enabled = Boolean(address && interfaces && (query.enabled ?? true))
+
+  return useQuery({ ...query, ...options, enabled })
 }

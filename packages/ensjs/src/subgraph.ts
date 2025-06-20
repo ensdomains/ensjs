@@ -1,4 +1,4 @@
-export { createSubgraphClient } from './functions/subgraph/client.js'
+export { createSubgraphClient } from './actions/subgraph/client.js'
 export type {
   AbiChanged,
   AddrChanged,
@@ -31,40 +31,46 @@ export type {
   Transfer,
   VersionChanged,
   WrappedTransfer,
-} from './functions/subgraph/events.js'
+} from './actions/subgraph/events.js'
 export {
   default as getDecodedName,
+  type GetDecodedNameErrorType,
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
-} from './functions/subgraph/getDecodedName.js'
+} from './actions/subgraph/getDecodedName.js'
 export {
   default as getNameHistory,
+  type GetNameHistoryErrorType,
   type GetNameHistoryParameters,
   type GetNameHistoryReturnType,
-} from './functions/subgraph/getNameHistory.js'
+} from './actions/subgraph/getNameHistory.js'
 export {
   default as getNamesForAddress,
+  type GetNamesForAddressErrorType,
   type GetNamesForAddressParameters,
   type GetNamesForAddressReturnType,
   type NameWithRelation,
-} from './functions/subgraph/getNamesForAddress.js'
+} from './actions/subgraph/getNamesForAddress.js'
 export {
   default as getSubgraphRecords,
+  type GetSubgraphRecordsErrorType,
   type GetSubgraphRecordsParameters,
   type GetSubgraphRecordsReturnType,
-} from './functions/subgraph/getSubgraphRecords.js'
+} from './actions/subgraph/getSubgraphRecords.js'
 export {
   default as getSubgraphRegistrant,
+  type GetSubgraphRegistrantErrorType,
   type GetSubgraphRegistrantParameters,
   type GetSubgraphRegistrantReturnType,
-} from './functions/subgraph/getSubgraphRegistrant.js'
+} from './actions/subgraph/getSubgraphRegistrant.js'
 export {
   default as getSubnames,
+  type GetSubnamesErrorType,
   type GetSubnamesParameters,
   type GetSubnamesReturnType,
-} from './functions/subgraph/getSubnames.js'
+} from './actions/subgraph/getSubnames.js'
 export {
   getChecksumAddressOrNull,
   makeNameObject,
   type Name,
-} from './functions/subgraph/utils.js'
+} from './actions/subgraph/utils.js'

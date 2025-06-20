@@ -3,6 +3,8 @@
   "version": "4.0.2",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
   "sideEffects": false,
@@ -20,8 +22,8 @@
       "default": "./dist/dns.js"
     },
     "./public": {
-      "types": "./dist/public.d.ts",
-      "default": "./dist/public.js"
+      "types": "./dist/exports/public.d.ts",
+      "default": "./dist/exports/public.js"
     },
     "./subgraph": {
       "types": "./dist/subgraph.d.ts",
@@ -32,8 +34,16 @@
       "default": "./dist/utils/index.js"
     },
     "./wallet": {
-      "types": "./dist/wallet.d.ts",
-      "default": "./dist/wallet.js"
+      "types": "./dist/exports/wallet.d.ts",
+      "default": "./dist/exports/wallet.js"
+    },
+    "./chain": {
+      "types": "./dist/exports/chain.d.ts",
+      "default": "./dist/exports/chain.js"
+    },
+    "./internal": {
+      "types": "./dist/exports/internal.d.ts",
+      "default": "./dist/exports/internal.js"
     },
     "./package.json": "./package.json"
   },
@@ -46,7 +56,7 @@
         "./dist/dns.d.ts"
       ],
       "public": [
-        "./dist/public.d.ts"
+        "./dist/exports/public.d.ts"
       ],
       "subgraph": [
         "./dist/subgraph.d.ts"
@@ -55,7 +65,13 @@
         "./dist/utils/index.d.ts"
       ],
       "wallet": [
-        "./dist/wallet.d.ts"
+        "./dist/exports/wallet.d.ts"
+      ],
+      "chain": [
+        "./dist/exports/chain.d.ts"
+      ],
+      "internal": [
+        "./dist/exports/internal.d.ts"
       ]
     }
   },
@@ -76,7 +92,7 @@
     "test": "vitest --no-file-parallelism",
     "test:watch": "vitest --watch --no-file-parallelism",
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
-    "lint": "eslint ./src/* --no-error-on-unmatched-pattern",
+    "lint": "biome check",
     "build": "tsc --project tsconfig.build.json",
     "tsn": "TS_NODE_PROJECT=tsconfig.node.json node --loader ts-node/esm",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",

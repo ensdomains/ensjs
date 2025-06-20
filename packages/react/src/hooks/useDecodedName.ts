@@ -1,3 +1,5 @@
+import { useChainId, useConfig } from 'wagmi'
+import { useQuery, type UseQueryReturnType } from 'wagmi/query'
 import {
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
@@ -6,9 +8,22 @@ import {
 import type { ParamWithClients, QueryConfig } from '../client.js'
 import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
-export type UseDecodedNameParams = ParamWithClients<GetDecodedNameParameters>
+export type UseDecodedNameParameters<
+  config extends ConfigWithEns = ConfigWithEns,
+  selectData = GetDecodedNameData,
+> = Compute<
+  GetDecodedNameOptions<config> &
+    ConfigParameter<config> &
+    QueryParameter<
+      GetDecodedNameQueryFnData,
+      GetDecodedNameErrorType,
+      selectData,
+      GetDecodedNameQueryKey<config>
+    >
+>
 
-export type UseDecodedNameReturnType = GetDecodedNameReturnType
+export type UseDecodedNameReturnType<selectData = GetDecodedNameData> =
+  UseQueryReturnType<selectData, GetDecodedNameErrorType>
 
 /**
  * Decode names returned using the subgraph
@@ -18,21 +33,22 @@ export type UseDecodedNameReturnType = GetDecodedNameReturnType
  * @param params - {@link UseDecodedNameParams}
  * @returns - {@link GetDecodedNameReturnType}
  */
-export const useDecodedName = (
-  params: UseDecodedNameParams,
-  query?: QueryConfig,
-): UseQueryReturnType<UseDecodedNameReturnType> => {
-  const { client } = params
+export const useDecodedName = <
+  config extends ConfigWithEns = ResolvedRegister['config'],
+  selectData = GetDecodedNameData,
+>(
+  parameters: UseDecodedNameParameters<config, selectData> = {},
+): UseDecodedNameReturnType<selectData> => {
+  const { name, query = {} } = parameters
 
-  return useQuery(
-    ['ensjs', 'decoded-subgraph-name', params.name],
-    {
-      queryFn: async () => {
-        const result = await getDecodedName(client, params)
+  const config = useConfig<ConfigWithEns>()
+  const chainId = useChainId({ config })
 
-        return result
-      },
-    },
-    query,
-  )
+  const options = getDecodedNameQueryOptions(config, {
+    ...parameters,
+    chainId: parameters.chainId ?? chainId,
+  })
+  const enabled = Boolean(name && (query.enabled ?? true))
+
+  return useQuery({ ...query, ...options, enabled })
 }

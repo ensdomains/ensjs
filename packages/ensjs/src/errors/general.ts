@@ -1,4 +1,4 @@
-import type { NameType } from '../types.js'
+import type { NameType } from '../types/index.js'
 import { BaseError } from './base.js'
 
 export class AdditionalParameterSpecifiedError extends BaseError {
