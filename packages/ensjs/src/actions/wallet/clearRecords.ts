@@ -17,8 +17,8 @@ import {
 } from '../../utils/clientWithOverrides.js'
 import {
   type ClearRecordsParametersErrorType,
-  type ClearRecordsParametersReturnType,
   clearRecordsParameters,
+  clearRecordsParametersV2,
 } from '../../utils/coders/clearRecords.js'
 import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
@@ -28,7 +28,7 @@ import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type ClearRecordsWriteParametersParameters = {
   /** The name to clear records for */
-  name: string
+  name?: string | null
   /** The resolver address to use */
   resolverAddress: Address
 }
@@ -49,14 +49,15 @@ export const clearRecordsWriteParameters = <
   client: Client<Transport, chain, account>,
   { name, resolverAddress }: ClearRecordsWriteParametersParameters,
 ) => {
+  const _clearRecordsParameters = !name
+    ? clearRecordsParametersV2()
+    : clearRecordsParameters(namehash(name))
   return {
     address: resolverAddress,
     chain: client.chain,
     account: client.account,
-    ...clearRecordsParameters(namehash(name)),
-  } as const satisfies WriteContractParameters<
-    ClearRecordsParametersReturnType['abi']
-  >
+    ..._clearRecordsParameters,
+  } as const satisfies WriteContractParameters
 }
 
 // ================================
@@ -113,9 +114,18 @@ export async function clearRecords<
     ...txArgs
   }: ClearRecordsParameters<chain, account, chainOverride>,
 ): Promise<ClearRecordsReturnType> {
+  const params = !name
+    ? {
+        resolverAddress,
+      }
+    : {
+        name,
+        resolverAddress,
+      }
+
   const writeParameters = clearRecordsWriteParameters(
     clientWithOverrides(client, txArgs),
-    { name, resolverAddress },
+    params,
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')
   return writeContractAction({

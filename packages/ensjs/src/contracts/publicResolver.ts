@@ -220,6 +220,16 @@ export const publicResolverClearRecordsSnippet = [
   },
 ] as const
 
+export const publicResolverClearRecordsV2Snippet = [
+  {
+    inputs: [],
+    name: 'clearRecords',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 export const publicResolverMulticallSnippet = [
   {
     inputs: [

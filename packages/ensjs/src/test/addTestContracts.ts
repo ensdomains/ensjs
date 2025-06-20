@@ -67,6 +67,9 @@ export const localhost = {
     ensEthRegistrarController: {
       address: deploymentAddresses.ETHRegistrarController,
     },
+    ensL2EthRegistrar: {
+      address: deploymentAddresses.ETHRegistrarController,
+    },
     ensNameWrapper: {
       address: deploymentAddresses.NameWrapper,
     },
