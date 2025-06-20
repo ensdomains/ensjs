@@ -1,6 +1,7 @@
 import {
   type Address,
   BaseError,
+  bytesToHex,
   type Client,
   ContractFunctionRevertedError,
   encodeErrorResult,
@@ -9,6 +10,7 @@ import {
   type Transport,
 } from 'viem'
 import { mainnet } from 'viem/chains'
+import { packetToBytes } from 'viem/ens'
 import {
   afterEach,
   beforeAll,
@@ -118,7 +120,7 @@ describe('getName', () => {
         data: encodeErrorResult({
           abi: universalResolverReverseSnippet,
           errorName: 'ResolverNotFound',
-          args: [],
+          args: [bytesToHex(packetToBytes('test.eth'))],
         }),
       })
     })
@@ -134,7 +136,7 @@ describe('getName', () => {
       data: encodeErrorResult({
         abi: universalResolverReverseSnippet,
         errorName: 'ResolverNotFound',
-        args: [],
+        args: [bytesToHex(packetToBytes('test.eth'))],
       }),
     })
     mockReadContract.mockImplementation(async () => {
