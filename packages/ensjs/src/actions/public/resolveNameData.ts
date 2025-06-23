@@ -16,8 +16,6 @@ import {
   type RequireClientContracts,
 } from '../../clients/chain.js'
 import {
-  universalResolverResolveArraySnippet,
-  universalResolverResolveArrayWithGatewaysSnippet,
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
@@ -81,14 +79,15 @@ export async function resolveNameData<
       if (Array.isArray(data)) {
         const arrayParameters = {
           ...baseParameters,
-          abi: universalResolverResolveArraySnippet,
+          abi: universalResolverResolveSnippet,
           args: [toHex(packetToBytes(nameWithSizedLabels)), data as Hex[]],
         } as const
 
         return gatewayUrls
           ? readContractAction({
               ...arrayParameters,
-              abi: universalResolverResolveArrayWithGatewaysSnippet,
+              abi: universalResolverResolveWithGatewaysSnippet,
+              functionName: 'resolveWithGateways',
               args: [...arrayParameters.args, gatewayUrls],
             })
           : readContractAction(arrayParameters)
@@ -104,7 +103,8 @@ export async function resolveNameData<
         ? readContractAction({
             ...parameters,
             abi: universalResolverResolveWithGatewaysSnippet,
-            args: [...parameters.args, gatewayUrls],
+            functionName: 'resolveWithGateways',
+            args: [...parameters.args, gatewayUrls] as const,
           })
         : readContractAction(parameters)
     })()
