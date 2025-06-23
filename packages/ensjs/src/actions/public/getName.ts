@@ -21,6 +21,7 @@ import {
 import type { ErrorType } from '../../errors/utils.js'
 import type { ExcludeTE } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
+import { isReverseAddressMismatch } from '../../utils/errors/isReverseAddressMismatch.js'
 import {
   type NormalizeErrorType,
   normalize,
@@ -50,6 +51,7 @@ export type GetNameParameters = {
   coinType?: GetNameCoinTypeParameters['coinType']
   /** Chain ID to use for reverse resolution */
   chainId?: GetNameChainIdParameters['chainId']
+  allowMismatch?: boolean
 }
 
 export type GetNameReturnType = {
@@ -102,6 +104,7 @@ export async function getName<chain extends Chain>(
     gatewayUrls,
     chainId,
     coinType,
+    allowMismatch,
   }: GetNameParameters,
 ): Promise<GetNameReturnType> {
   client = client as ExcludeTE<typeof client>
@@ -117,31 +120,45 @@ export async function getName<chain extends Chain>(
     functionName: 'reverseWithGateways',
     args: [address, chainId ? evmChainIdToCoinType(chainId) : coinType || 60n],
   } as const
+
+  let unnormalisedName: string | null = null
+  let resolverAddress: Address | null = null
+  let reverseResolverAddress: Address | null = null
+  let match = true
+
   try {
-    const [unnormalisedName, resolverAddress, reverseResolverAddress] =
-      gatewayUrls
-        ? await readContractAction({
-            ...parameters,
-            abi: universalResolverReverseWithGatewaysSnippet,
-            args: [...parameters.args, gatewayUrls] as const,
-          })
-        : await readContractAction({ ...parameters, functionName: 'reverse' })
-    if (!unnormalisedName) return null
-
-    const normalizedName = normalize(unnormalisedName)
-    const nameMatch = unnormalisedName === normalizedName
-    if (!nameMatch && !allowUnnormalized) return null
-
-    return {
-      name: unnormalisedName,
-      match: true,
-      normalized: nameMatch,
-      reverseResolverAddress: nullableAddress(reverseResolverAddress),
-      resolverAddress: nullableAddress(resolverAddress),
-    }
+    const [name, resolver, reverseResolver] = Array.isArray(gatewayUrls)
+      ? await readContractAction({
+          ...parameters,
+          abi: universalResolverReverseWithGatewaysSnippet,
+          args: [...parameters.args, gatewayUrls] as const,
+        })
+      : await readContractAction({ ...parameters, functionName: 'reverse' })
+    if (!name) return null
+    unnormalisedName = name
+    resolverAddress = resolver
+    reverseResolverAddress = reverseResolver
   } catch (error) {
     if (strict) throw error
     if (isNullUniversalResolverError(error)) return null
+    const errorArgs = isReverseAddressMismatch(error)
+    if (Array.isArray(errorArgs)) {
+      unnormalisedName = errorArgs[0]
+      resolverAddress = errorArgs[1]
+      if (!allowMismatch) match = false
+    }
     throw error
+  }
+
+  const normalizedName = normalize(unnormalisedName)
+  const nameMatch = unnormalisedName === normalizedName
+  if (!nameMatch && !allowUnnormalized) return null
+
+  return {
+    name: unnormalisedName,
+    match,
+    normalized: nameMatch,
+    reverseResolverAddress: nullableAddress(reverseResolverAddress),
+    resolverAddress: nullableAddress(resolverAddress),
   }
 }

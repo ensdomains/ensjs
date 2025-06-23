@@ -16,7 +16,9 @@ describe('getOwner', () => {
     `)
   })
   it('should return correct ownership level and values for an expired wrapped .eth name', async () => {
-    const result = await getOwner(publicClient, { name: 'expired-wrapped.eth' })
+    const result = await getOwner(publicClient, {
+      name: 'expired-wrapped.eth',
+    })
     expect(result).toMatchInlineSnapshot(`
       {
         "owner": "${deploymentAddresses.NameWrapper}",

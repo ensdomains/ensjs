@@ -17,7 +17,11 @@ const makeNameGenerator = async (
       label,
       namedOwner,
       namedAddr,
-    }: { label: string; namedOwner: string; namedAddr: Address }) => {
+    }: {
+      label: string
+      namedOwner: string
+      namedAddr: Address
+    }) => {
       const secret =
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const registrant = allNamedAccts[namedOwner]
