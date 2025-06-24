@@ -1,8 +1,11 @@
 import {
   type Address,
   type Chain,
+  decodeFunctionResult,
+  encodeFunctionData,
   type GetChainContractAddressErrorType,
   type Hex,
+  multicall3Abi,
   type ReadContractErrorType,
   type ToHexErrorType,
   toHex,
@@ -15,6 +18,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
+import { multicallSnippet } from '../../contracts/multicall.js'
 import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
@@ -33,7 +37,8 @@ export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   gatewayUrls?: string[]
 }
 
-type ResultArray = readonly { success: boolean; returnData: Hex }[]
+type Result = { success: boolean; returnData: Hex }
+type ResultArray = readonly Result[]
 
 export type ResolveNameDataReturnType<data extends Hex | Hex[]> = {
   resolvedData: data extends Hex[] ? ResultArray : Hex
@@ -77,10 +82,16 @@ export async function resolveNameData<
   try {
     const [resolvedData, resolverAddress] = await (() => {
       if (Array.isArray(data)) {
+        const multicallData = encodeFunctionData({
+          abi: multicallSnippet,
+          functionName: 'multicall',
+          args: [data as Hex[]],
+        })
+
         const arrayParameters = {
           ...baseParameters,
           abi: universalResolverResolveSnippet,
-          args: [toHex(packetToBytes(nameWithSizedLabels)), data as Hex[]],
+          args: [toHex(packetToBytes(nameWithSizedLabels)), multicallData],
         } as const
 
         return gatewayUrls
@@ -110,6 +121,22 @@ export async function resolveNameData<
     })()
 
     if (resolverAddress === zeroAddress) return null
+    if (Array.isArray(data)) {
+      return {
+        resolvedData: decodeFunctionResult({
+          abi: multicallSnippet,
+          data: resolvedData,
+        }).map((r): Result => {
+          if (r === '0x') {
+            return { success: false, returnData: r }
+          }
+          return (r.length - 2) % 32 === 0
+            ? { success: true, returnData: r }
+            : { success: false, returnData: r }
+        }) as ResultArray,
+        resolverAddress,
+      } as ResolveNameDataReturnType<data>
+    }
     return { resolvedData, resolverAddress } as ResolveNameDataReturnType<data>
   } catch (error) {
     if (strict) throw error
