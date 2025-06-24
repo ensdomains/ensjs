@@ -4,6 +4,7 @@ import {
   ContractFunctionRevertedError,
   encodeErrorResult,
   type Hex,
+  namehash,
   type PublicClient,
   type Transport,
 } from 'viem'
@@ -13,8 +14,6 @@ import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import {
-  universalResolverResolveArraySnippet,
-  universalResolverResolveArrayWithGatewaysSnippet,
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
@@ -43,15 +42,6 @@ it('encodes labels larger than 255 bytes', async () => {
   )
 })
 
-it('uses array abi when data array is provided', async () => {
-  await resolveNameData(mockClient, {
-    name: 'test.eth',
-    data: ['0x'],
-  }).catch(() => {})
-  const [{ abi }] = mockReadContract.mock.calls[0]
-  expect(abi).toBe(universalResolverResolveArraySnippet)
-})
-
 it('uses gateways abi when gateways are provided', async () => {
   await resolveNameData(mockClient, {
     name: 'test.eth',
@@ -62,16 +52,6 @@ it('uses gateways abi when gateways are provided', async () => {
   expect(abi).toBe(universalResolverResolveWithGatewaysSnippet)
 })
 
-it('uses gateways array abi when gateways are provided and data array is provided', async () => {
-  await resolveNameData(mockClient, {
-    name: 'test.eth',
-    data: ['0x'],
-    gatewayUrls: ['https://gateway.example.com'],
-  }).catch(() => {})
-  const [{ abi }] = mockReadContract.mock.calls[0]
-  expect(abi).toBe(universalResolverResolveArrayWithGatewaysSnippet)
-})
-
 it('does not throw on known error when strict is false', async () => {
   mockReadContract.mockImplementation(async () => {
     throw new ContractFunctionRevertedError({
@@ -80,7 +60,7 @@ it('does not throw on known error when strict is false', async () => {
       data: encodeErrorResult({
         abi: universalResolverResolveSnippet,
         errorName: 'ResolverNotFound',
-        args: [],
+        args: [namehash('test.eth')],
       }),
     })
   })
@@ -99,7 +79,7 @@ it('throws on known error when strict is true', async () => {
     data: encodeErrorResult({
       abi: universalResolverResolveSnippet,
       errorName: 'ResolverNotFound',
-      args: [],
+      args: [namehash('test.eth')],
     }),
   })
   mockReadContract.mockImplementation(async () => {
