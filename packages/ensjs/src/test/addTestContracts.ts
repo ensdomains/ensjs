@@ -1,7 +1,6 @@
-import { resolve } from 'node:path'
 import { config } from 'dotenv'
+import { resolve } from 'node:path'
 import {
-  http,
   type Account,
   type Address,
   type Hash,
@@ -13,6 +12,7 @@ import {
   createPublicClient,
   createTestClient,
   createWalletClient,
+  http,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 
@@ -42,7 +42,9 @@ export const deploymentAddresses = JSON.parse(
   | 'ENSRegistry'
   | 'LegacyPublicResolver'
   | 'NoMulticallResolver'
-  | 'OldestResolver',
+  | 'OldestResolver'
+  | 'WrappedBulkRenewal'
+  | 'WrappedEthRegistrarController',
   Address
 >
 
@@ -81,6 +83,12 @@ export const localhost = {
     },
     ensDnssecImpl: {
       address: deploymentAddresses.DNSSECImpl,
+    },
+    ensWrappedBulkRenewal: {
+      address: deploymentAddresses.WrappedBulkRenewal,
+    },
+    ensWrappedEthRegistrarController: {
+      address: deploymentAddresses.WrappedEthRegistrarController,
     },
   },
   subgraphs: {

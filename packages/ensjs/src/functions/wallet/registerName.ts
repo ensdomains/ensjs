@@ -18,9 +18,8 @@ import type {
 import { getNameType } from '../../utils/getNameType.js'
 import {
   type RegistrationParameters,
-  makeRegistrationTuple,
+  registrationParametersWithDefaults,
 } from '../../utils/registerHelpers.js'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
 export type RegisterNameDataParameters = RegistrationParameters & {
   /** Value of registration */
@@ -57,9 +56,6 @@ export const makeFunctionData = <
       details: 'Only 2ld-eth name registration is supported',
     })
 
-  const labels = args.name.split('.')
-  wrappedLabelLengthCheck(labels[0])
-
   return {
     to: getChainContractAddress({
       client: wallet,
@@ -68,7 +64,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: ethRegistrarControllerRegisterSnippet,
       functionName: 'register',
-      args: makeRegistrationTuple(args),
+      args: [registrationParametersWithDefaults(args)],
     }),
     value,
   }
@@ -128,7 +124,7 @@ async function registerName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
     value,
     ...txArgs
   }: RegisterNameParameters<TChain, TAccount, TChainOverride>,
@@ -141,7 +137,7 @@ async function registerName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
     value,
   })
   const writeArgs = {

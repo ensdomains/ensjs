@@ -1,5 +1,5 @@
-import { erc721OwnerOfSnippet } from './erc721.js'
 import { erc1155SafeTransferFromSnippet } from './erc1155.js'
+import { erc721OwnerOfSnippet } from './erc721.js'
 import { registrySetResolverSnippet } from './registry.js'
 
 export const nameWrapperErrors = [
@@ -386,4 +386,25 @@ export const nameWrapperOwnerOfSnippet = [
 export const nameWrapperSetResolverSnippet = [
   ...nameWrapperErrors,
   ...registrySetResolverSnippet,
+] as const
+
+export const nameWrapperIsWrappedSnippet = [
+  ...nameWrapperErrors,
+  {
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+      },
+    ],
+    name: 'isWrapped',
+    stateMutability: 'view',
+    type: 'function',
+  },
 ] as const

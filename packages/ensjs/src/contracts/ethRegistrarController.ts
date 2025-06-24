@@ -2,8 +2,30 @@ export const ethRegistrarControllerErrors = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
         name: 'commitment',
         type: 'bytes32',
+      },
+    ],
+    name: 'CommitmentNotFound',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'commitment',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minimumCommitmentTimestamp',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'currentTimestamp',
+        type: 'uint256',
       },
     ],
     name: 'CommitmentTooNew',
@@ -12,8 +34,19 @@ export const ethRegistrarControllerErrors = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
         name: 'commitment',
         type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'maximumCommitmentTimestamp',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'currentTimestamp',
+        type: 'uint256',
       },
     ],
     name: 'CommitmentTooOld',
@@ -22,6 +55,7 @@ export const ethRegistrarControllerErrors = [
   {
     inputs: [
       {
+        internalType: 'uint256',
         name: 'duration',
         type: 'uint256',
       },
@@ -47,11 +81,17 @@ export const ethRegistrarControllerErrors = [
   {
     inputs: [
       {
+        internalType: 'string',
         name: 'name',
         type: 'string',
       },
     ],
     name: 'NameNotAvailable',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ResolverRequiredForReverseRecord',
     type: 'error',
   },
   {
@@ -62,6 +102,7 @@ export const ethRegistrarControllerErrors = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
         name: 'commitment',
         type: 'bytes32',
       },
@@ -148,36 +189,42 @@ export const ethRegistrarControllerRegisterSnippet = [
   {
     inputs: [
       {
-        name: 'name',
-        type: 'string',
-      },
-      {
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        name: 'duration',
-        type: 'uint256',
-      },
-      {
-        name: 'secret',
-        type: 'bytes32',
-      },
-      {
-        name: 'resolver',
-        type: 'address',
-      },
-      {
-        name: 'data',
-        type: 'bytes[]',
-      },
-      {
-        name: 'reverseRecord',
-        type: 'bool',
-      },
-      {
-        name: 'ownerControlledFuses',
-        type: 'uint16',
+        components: [
+          {
+            name: 'label',
+            type: 'string',
+          },
+          {
+            name: 'owner',
+            type: 'address',
+          },
+          {
+            name: 'duration',
+            type: 'uint256',
+          },
+          {
+            name: 'secret',
+            type: 'bytes32',
+          },
+          {
+            name: 'resolver',
+            type: 'address',
+          },
+          {
+            name: 'data',
+            type: 'bytes[]',
+          },
+          {
+            name: 'reverseRecord',
+            type: 'uint8',
+          },
+          {
+            name: 'referrer',
+            type: 'bytes32',
+          },
+        ],
+        name: 'registration',
+        type: 'tuple',
       },
     ],
     name: 'register',
@@ -188,6 +235,30 @@ export const ethRegistrarControllerRegisterSnippet = [
 ] as const
 
 export const ethRegistrarControllerRenewSnippet = [
+  ...ethRegistrarControllerErrors,
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'string',
+      },
+      {
+        name: 'duration',
+        type: 'uint256',
+      },
+      {
+        name: 'referrer',
+        type: 'bytes32',
+      },
+    ],
+    name: 'renew',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+] as const
+
+export const wrappedEthRegistrarControllerRenewSnippet = [
   ...ethRegistrarControllerErrors,
   {
     inputs: [

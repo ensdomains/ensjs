@@ -33,6 +33,29 @@ export const bulkRenewalRenewAllSnippet = [
         name: 'duration',
         type: 'uint256',
       },
+      {
+        name: 'referrer',
+        type: 'bytes32',
+      },
+    ],
+    name: 'renewAll',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+] as const
+
+export const wrappedBulkRenewalRenewAllSnippet = [
+  {
+    inputs: [
+      {
+        name: 'names',
+        type: 'string[]',
+      },
+      {
+        name: 'duration',
+        type: 'uint256',
+      },
     ],
     name: 'renewAll',
     outputs: [],

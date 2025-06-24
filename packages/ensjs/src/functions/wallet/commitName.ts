@@ -18,7 +18,7 @@ import type {
 import { getNameType } from '../../utils/getNameType.js'
 import {
   type RegistrationParameters,
-  makeCommitment,
+  createCommitmentHashWithDefaults,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
@@ -61,7 +61,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: ethRegistrarControllerCommitSnippet,
       functionName: 'commit',
-      args: [makeCommitment(args)],
+      args: [createCommitmentHashWithDefaults(args)],
     }),
   }
 }
@@ -106,7 +106,7 @@ async function commitName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
     ...txArgs
   }: CommitNameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CommitNameReturnType> {
@@ -118,7 +118,7 @@ async function commitName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
   })
   const writeArgs = {
     ...data,
