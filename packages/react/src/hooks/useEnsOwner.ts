@@ -1,12 +1,12 @@
 import { useChainId, useConfig } from 'wagmi'
-import { useQuery, type UseQueryReturnType } from 'wagmi/query'
+import { type UseQueryReturnType, useQuery } from 'wagmi/query'
 import {
-  getEnsOwnerQueryOptions,
   type GetEnsOwnerData,
   type GetEnsOwnerErrorType,
   type GetEnsOwnerOptions,
   type GetEnsOwnerQueryFnData,
   type GetEnsOwnerQueryKey,
+  getEnsOwnerQueryOptions,
 } from '../query/getEnsOwner.js'
 import type { ConfigWithEns } from '../types/config.js'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'

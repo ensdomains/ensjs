@@ -1,6 +1,4 @@
 export {
-  getDecodedNameQueryKey,
-  getDecodedNameQueryOptions,
   type GetDecodedNameData,
   type GetDecodedNameErrorType,
   type GetDecodedNameOptions,
@@ -8,9 +6,10 @@ export {
   type GetDecodedNameQueryFnData,
   type GetDecodedNameQueryKey,
   type GetDecodedNameReturnType,
+  getDecodedNameQueryKey,
+  getDecodedNameQueryOptions,
 } from './query/getDecodedName.js'
 export {
-  getEnsAbiQueryOptions,
   type GetEnsAbiData,
   type GetEnsAbiErrorType,
   type GetEnsAbiOptions,
@@ -18,9 +17,9 @@ export {
   type GetEnsAbiQueryFnData,
   type GetEnsAbiQueryKey,
   type GetEnsAbiReturnType,
+  getEnsAbiQueryOptions,
 } from './query/getEnsAbi.js'
 export {
-  getEnsAddressQueryOptions,
   type GetEnsAddressData,
   type GetEnsAddressErrorType,
   type GetEnsAddressOptions,
@@ -28,9 +27,9 @@ export {
   type GetEnsAddressQueryFnData,
   type GetEnsAddressQueryKey,
   type GetEnsAddressReturnType,
+  getEnsAddressQueryOptions,
 } from './query/getEnsAddress.js'
 export {
-  getEnsAvailableQueryOptions,
   type GetEnsAvailableData,
   type GetEnsAvailableErrorType,
   type GetEnsAvailableOptions,
@@ -38,9 +37,9 @@ export {
   type GetEnsAvailableQueryFnData,
   type GetEnsAvailableQueryKey,
   type GetEnsAvailableReturnType,
+  getEnsAvailableQueryOptions,
 } from './query/getEnsAvailable.js'
 export {
-  getEnsContentHashQueryOptions,
   type GetEnsContentHashData,
   type GetEnsContentHashErrorType,
   type GetEnsContentHashOptions,
@@ -48,9 +47,9 @@ export {
   type GetEnsContentHashQueryFnData,
   type GetEnsContentHashQueryKey,
   type GetEnsContentHashReturnType,
+  getEnsContentHashQueryOptions,
 } from './query/getEnsContentHash.js'
 export {
-  getEnsCredentialsQueryOptions,
   type GetEnsCredentialsData,
   type GetEnsCredentialsErrorType,
   type GetEnsCredentialsOptions,
@@ -58,9 +57,9 @@ export {
   type GetEnsCredentialsQueryFnData,
   type GetEnsCredentialsQueryKey,
   type GetEnsCredentialsReturnType,
+  getEnsCredentialsQueryOptions,
 } from './query/getEnsCredentials.js'
 export {
-  getEnsExpiryQueryOptions,
   type GetEnsExpiryData,
   type GetEnsExpiryErrorType,
   type GetEnsExpiryOptions,
@@ -68,9 +67,9 @@ export {
   type GetEnsExpiryQueryFnData,
   type GetEnsExpiryQueryKey,
   type GetEnsExpiryReturnType,
+  getEnsExpiryQueryOptions,
 } from './query/getEnsExpiry.js'
 export {
-  getEnsNamesForAddressQueryOptions,
   type GetEnsNamesForAddressData,
   type GetEnsNamesForAddressErrorType,
   type GetEnsNamesForAddressOptions,
@@ -78,9 +77,9 @@ export {
   type GetEnsNamesForAddressQueryFnData,
   type GetEnsNamesForAddressQueryKey,
   type GetEnsNamesForAddressReturnType,
+  getEnsNamesForAddressQueryOptions,
 } from './query/getEnsNamesForAddress.js'
 export {
-  getEnsOwnerQueryOptions,
   type GetEnsOwnerData,
   type GetEnsOwnerErrorType,
   type GetEnsOwnerOptions,
@@ -88,9 +87,9 @@ export {
   type GetEnsOwnerQueryFnData,
   type GetEnsOwnerQueryKey,
   type GetEnsOwnerReturnType,
+  getEnsOwnerQueryOptions,
 } from './query/getEnsOwner.js'
 export {
-  getEnsPriceQueryOptions,
   type GetEnsPriceData,
   type GetEnsPriceErrorType,
   type GetEnsPriceOptions,
@@ -98,9 +97,9 @@ export {
   type GetEnsPriceQueryFnData,
   type GetEnsPriceQueryKey,
   type GetEnsPriceReturnType,
+  getEnsPriceQueryOptions,
 } from './query/getEnsPrice.js'
 export {
-  getEnsRecordsQueryOptions,
   type GetEnsRecordsData,
   type GetEnsRecordsErrorType,
   type GetEnsRecordsOptions,
@@ -108,9 +107,9 @@ export {
   type GetEnsRecordsQueryFnData,
   type GetEnsRecordsQueryKey,
   type GetEnsRecordsReturnType,
+  getEnsRecordsQueryOptions,
 } from './query/getEnsRecords.js'
 export {
-  getEnsResolverInterfacesQueryOptions,
   type GetEnsResolverInterfacesData,
   type GetEnsResolverInterfacesErrorType,
   type GetEnsResolverInterfacesOptions,
@@ -118,10 +117,9 @@ export {
   type GetEnsResolverInterfacesQueryFnData,
   type GetEnsResolverInterfacesQueryKey,
   type GetEnsResolverInterfacesReturnType,
+  getEnsResolverInterfacesQueryOptions,
 } from './query/getEnsResolverInterfaces.js'
 export {
-  writeEnsRecords,
-  writeEnsRecordsMutationOptions,
   type WriteEnsRecordsData,
   type WriteEnsRecordsErrorType,
   type WriteEnsRecordsMutate,
@@ -129,4 +127,6 @@ export {
   type WriteEnsRecordsParameters,
   type WriteEnsRecordsReturnType,
   type WriteEnsRecordsVariables,
+  writeEnsRecords,
+  writeEnsRecordsMutationOptions,
 } from './query/writeEnsRecords.js'

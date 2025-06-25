@@ -1,8 +1,8 @@
 import {
-  getCredentials,
   type GetCredentialsErrorType as ensjs_GetCredentialsErrorType,
   type GetCredentialsParameters as ensjs_GetCredentialsParameters,
   type GetCredentialsReturnType as ensjs_GetCredentialsReturnType,
+  getCredentials,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

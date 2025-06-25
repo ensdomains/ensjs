@@ -1,8 +1,8 @@
 import {
-  getAbiRecord,
   type GetAbiRecordErrorType as ensjs_GetEnsAbiErrorType,
   type GetAbiRecordParameters as ensjs_GetEnsAbiParameters,
   type GetAbiRecordReturnType as ensjs_GetEnsAbiReturnType,
+  getAbiRecord,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

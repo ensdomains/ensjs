@@ -30,15 +30,14 @@ export const setContentHashParameters = ({
     } as const satisfies EncodeFunctionDataParameters<
       typeof publicResolverSetContenthashSnippet
     >
-  } else {
-    return {
-      abi: dedicatedResolverSetContentHashSnippet,
-      functionName: 'setContenthash',
-      args: [encodedHash],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof dedicatedResolverSetContentHashSnippet
-    >
   }
+  return {
+    abi: dedicatedResolverSetContentHashSnippet,
+    functionName: 'setContenthash',
+    args: [encodedHash],
+  } as const satisfies EncodeFunctionDataParameters<
+    typeof dedicatedResolverSetContentHashSnippet
+  >
 }
 
 export type SetContentHashParametersReturnType = ReturnType<

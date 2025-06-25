@@ -1,67 +1,66 @@
-export { resolverInterfaces } from './interfaces.js'
-
 export {
-  useDecodedName,
   type UseDecodedNameParameters,
   type UseDecodedNameReturnType,
+  useDecodedName,
 } from './hooks/useDecodedName.js'
 export {
-  useEnsAbi,
   type UseEnsAbiParameters,
   type UseEnsAbiReturnType,
+  useEnsAbi,
 } from './hooks/useEnsAbi.js'
 export {
-  useEnsAddress,
   type UseEnsAddressParameters,
   type UseEnsAddressReturnType,
+  useEnsAddress,
 } from './hooks/useEnsAddress.js'
 export {
-  useEnsAvailable,
   type UseEnsAvailableParameters,
   type UseEnsAvailableReturnType,
+  useEnsAvailable,
 } from './hooks/useEnsAvailable.js'
 export {
-  useEnsContentHash,
   type UseEnsContentHashParameters,
   type UseEnsContentHashReturnType,
+  useEnsContentHash,
 } from './hooks/useEnsContentHash.js'
 export {
-  useEnsCredentials,
   type UseEnsCredentialsParameters,
   type UseEnsCredentialsReturnType,
+  useEnsCredentials,
 } from './hooks/useEnsCredentials.js'
 export {
-  useEnsExpiry,
   type UseEnsExpiryParameters,
   type UseEnsExpiryReturnType,
+  useEnsExpiry,
 } from './hooks/useEnsExpiry.js'
 export {
-  useEnsNamesForAddress,
   type UseEnsNamesForAddressParameters,
   type UseEnsNamesForAddressReturnType,
+  useEnsNamesForAddress,
 } from './hooks/useEnsNamesForAddress.js'
 export {
-  useEnsOwner,
   type UseEnsOwnerParameters,
   type UseEnsOwnerReturnType,
+  useEnsOwner,
 } from './hooks/useEnsOwner.js'
 export {
-  useEnsPrice,
   type UseEnsPriceParameters,
   type UseEnsPriceReturnType,
+  useEnsPrice,
 } from './hooks/useEnsPrice.js'
 export {
-  useEnsRecords,
   type UseEnsRecordsParameters,
   type UseEnsRecordsReturnType,
+  useEnsRecords,
 } from './hooks/useEnsRecords.js'
 export {
-  useEnsResolverInterfaces,
   type UseEnsResolverInterfacesParameters,
   type UseEnsResolverInterfacesReturnType,
+  useEnsResolverInterfaces,
 } from './hooks/useEnsResolverInterfaces.js'
 export {
-  useWriteEnsRecords,
   type UseWriteEnsRecordsParameters,
   type UseWriteEnsRecordsReturnType,
+  useWriteEnsRecords,
 } from './hooks/useWriteEnsRecords.js'
+export { resolverInterfaces } from './interfaces.js'

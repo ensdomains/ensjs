@@ -1,8 +1,8 @@
 import {
-  getContentHashRecord,
   type GetContentHashRecordErrorType as ensjs_GetEnsContentHashErrorType,
   type GetContentHashRecordParameters as ensjs_GetEnsContentHashParameters,
   type GetContentHashRecordReturnType as ensjs_GetEnsContentHashReturnType,
+  getContentHashRecord,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

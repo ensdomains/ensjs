@@ -44,17 +44,19 @@ export const getChecksumAddressOrNull = (
 
 export const makeNameObject = (domain: SubgraphDomain): Name => {
   const decrypted = domain.name ? decryptName(domain.name) : null
-  const createdAt = parseInt(domain.createdAt) * 1000
+  const createdAt = Number.parseInt(domain.createdAt) * 1000
   const registrationDate = domain.registration?.registrationDate
-    ? parseInt(domain.registration?.registrationDate) * 1000
+    ? Number.parseInt(domain.registration?.registrationDate) * 1000
     : null
   const fuses = domain.wrappedDomain?.fuses
-    ? decodeFuses(parseInt(domain.wrappedDomain.fuses))
+    ? decodeFuses(Number.parseInt(domain.wrappedDomain.fuses))
     : null
   const expiryDateRef =
     domain.registration?.expiryDate ||
     (fuses?.parent.PARENT_CANNOT_CONTROL && domain.wrappedDomain?.expiryDate)
-  const expiryDate = expiryDateRef ? parseInt(expiryDateRef) * 1000 : null
+  const expiryDate = expiryDateRef
+    ? Number.parseInt(expiryDateRef) * 1000
+    : null
   return {
     id: domain.id,
     name: decrypted,
@@ -80,7 +82,7 @@ export const makeNameObject = (domain: SubgraphDomain): Name => {
         }
       : null,
     fuses: domain.wrappedDomain?.fuses
-      ? decodeFuses(parseInt(domain.wrappedDomain.fuses))
+      ? decodeFuses(Number.parseInt(domain.wrappedDomain.fuses))
       : null,
     owner: getAddress(domain.owner.id),
     registrant: getChecksumAddressOrNull(domain.registrant?.id),

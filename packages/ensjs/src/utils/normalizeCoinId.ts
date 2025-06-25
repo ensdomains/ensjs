@@ -25,7 +25,7 @@ export const normalizeCoinId = (
 ): NormalizeCoinIdReturnType => {
   const isString = typeof coinId === 'string'
 
-  if (isString && Number.isNaN(parseInt(coinId))) {
+  if (isString && Number.isNaN(Number.parseInt(coinId))) {
     return {
       type: 'name',
       value: coinId.toLowerCase().replace(/legacy$/, 'Legacy'),
@@ -33,7 +33,7 @@ export const normalizeCoinId = (
   }
   return {
     type: 'id',
-    value: isString ? parseInt(coinId as string) : (coinId as number),
+    value: isString ? Number.parseInt(coinId as string) : (coinId as number),
   } as const
 }
 

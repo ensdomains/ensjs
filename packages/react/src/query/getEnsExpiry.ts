@@ -1,8 +1,8 @@
 import {
-  getExpiry,
   type GetExpiryErrorType as ensjs_GetExpiryErrorType,
   type GetExpiryParameters as ensjs_GetExpiryParameters,
   type GetExpiryReturnType as ensjs_GetExpiryReturnType,
+  getExpiry,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

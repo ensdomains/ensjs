@@ -1,8 +1,8 @@
 import {
-  getDecodedName,
   type GetDecodedNameErrorType as ensjs_GetDecodedNameErrorType,
   type GetDecodedNameParameters as ensjs_GetDecodedNameParameters,
   type GetDecodedNameReturnType as ensjs_GetDecodedNameReturnType,
+  getDecodedName,
 } from '@ensdomains/ensjs/subgraph'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

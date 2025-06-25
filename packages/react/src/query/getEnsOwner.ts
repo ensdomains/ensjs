@@ -1,8 +1,8 @@
 import {
-  getOwner,
   type GetOwnerErrorType as ensjs_GetEnsOwnerErrorType,
   type GetOwnerParameters as ensjs_GetEnsOwnerParameters,
   type GetOwnerReturnType as ensjs_GetEnsOwnerReturnType,
+  getOwner,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

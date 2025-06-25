@@ -1,8 +1,8 @@
 import {
-  getSupportedInterfaces,
   type GetSupportedInterfacesErrorType as ensjs_GetSupportedInterfacesErrorType,
   type GetSupportedInterfacesParameters as ensjs_GetSupportedInterfacesParameters,
   type GetSupportedInterfacesReturnType as ensjs_GetSupportedInterfacesReturnType,
+  getSupportedInterfaces,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { Hex } from 'viem'

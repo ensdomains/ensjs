@@ -1,8 +1,8 @@
 import {
-  getNamesForAddress,
   type GetNamesForAddressErrorType as ensjs_GetNamesForAddressErrorType,
   type GetNamesForAddressParameters as ensjs_GetNamesForAddressParameters,
   type GetNamesForAddressReturnType as ensjs_GetNamesForAddressReturnType,
+  getNamesForAddress,
 } from '@ensdomains/ensjs/subgraph'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

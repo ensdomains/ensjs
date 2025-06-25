@@ -1,12 +1,12 @@
 import { useChainId, useConfig } from 'wagmi'
-import { useQuery, type UseQueryReturnType } from 'wagmi/query'
+import { type UseQueryReturnType, useQuery } from 'wagmi/query'
 import {
-  getEnsPriceQueryOptions,
   type GetEnsPriceData,
   type GetEnsPriceErrorType,
   type GetEnsPriceOptions,
   type GetEnsPriceQueryFnData,
   type GetEnsPriceQueryKey,
+  getEnsPriceQueryOptions,
 } from '../query/getEnsPrice.js'
 import type { ConfigWithEns } from '../types/config.js'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'

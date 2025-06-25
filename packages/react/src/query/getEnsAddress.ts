@@ -1,8 +1,8 @@
 import {
-  getAddressRecord,
   type GetAddressRecordErrorType as ensjs_GetEnsAddressErrorType,
   type GetAddressRecordParameters as ensjs_GetEnsAddressParameters,
   type GetAddressRecordReturnType as ensjs_GetEnsAddressReturnType,
+  getAddressRecord,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

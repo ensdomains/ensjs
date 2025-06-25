@@ -140,7 +140,7 @@ it.each([
   ['cbor', 'with-type-4-abi.eth'],
   ['uri', 'with-type-8-abi.eth'],
 ] as [AbiEncodeAs, string][])(
-  `should allow an abi record to be set to null with %s content type`,
+  'should allow an abi record to be set to null with %s content type',
   async (encodeAs, name) => {
     const tx = await setAbiRecord(walletClient, {
       name,
