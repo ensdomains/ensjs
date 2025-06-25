@@ -5,7 +5,6 @@ import {
   encodeFunctionData,
   type GetChainContractAddressErrorType,
   type Hex,
-  multicall3Abi,
   type ReadContractErrorType,
   type ToHexErrorType,
   toHex,
