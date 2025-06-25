@@ -3,6 +3,7 @@ import {
   type Client,
   ContractFunctionRevertedError,
   encodeErrorResult,
+  encodeFunctionData,
   type Hex,
   namehash,
   type PublicClient,
@@ -17,6 +18,7 @@ import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
+import { resolverMulticallParameters } from '../../utils/index.js'
 import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
 import { resolveNameData } from './resolveNameData.js'
 
@@ -92,6 +94,31 @@ it('throws on known error when strict is true', async () => {
       strict: true,
     }),
   ).rejects.toThrowError(error)
+})
+
+it('works with multicall', async () => {
+  const calls = await resolverMulticallParameters({
+    namehash: namehash('test.eth'),
+    clearRecords: true,
+    coins: [
+      { coin: 'ETH', value: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' },
+    ],
+
+    texts: [{ key: 'email', value: 'test@example.com' }],
+  })
+
+  const data = await resolveNameData(mockClient, {
+    name: 'test.eth',
+    strict: true,
+    data: calls.map((c) =>
+      encodeFunctionData({
+        abi: c.abi,
+        functionName: c.functionName,
+        args: c.args,
+      }),
+    ),
+  })
+  expect(data).toMatchInlineSnapshot()
 })
 
 it('throws on unknown error when strict is false', async () => {
