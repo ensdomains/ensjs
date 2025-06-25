@@ -17,15 +17,12 @@ import {
   type EncodeSetAbiParameters,
   encodeSetAbi,
 } from '../../utils/encoders/encodeSetAbi.js'
-import { namehash } from '../../utils/normalise.js'
 
 export type SetAbiRecordDataParameters = {
-  /** Name to set ABI for */
-  name: string
   /** Encoded ABI data to set */
   encodedAbi: EncodedAbi
-  /** Resolver address to set ABI on */
-  resolverAddress: Address
+  /** DedicatedResolver address to set ABI on */
+  dedicatedResolverAddress: Address
 }
 
 export type SetAbiRecordDataReturnType = SimpleTransactionRequest
@@ -46,19 +43,19 @@ export const makeFunctionData = <
   TAccount extends Account | undefined,
 >(
   _wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { name, encodedAbi, resolverAddress }: SetAbiRecordDataParameters,
+  { encodedAbi, dedicatedResolverAddress }: SetAbiRecordDataParameters,
 ): SetAbiRecordDataReturnType => {
   return {
-    to: resolverAddress,
-    data: encodeSetAbi({
-      namehash: namehash(name),
-      ...encodedAbi,
-    } as EncodeSetAbiParameters),
+    to: dedicatedResolverAddress,
+    data: encodeSetAbi(encodedAbi as EncodeSetAbiParameters),
   }
 }
 
 /**
- * Sets the ABI for a name on a resolver.
+ * Sets the ABI for a namechain DedicatedResolver.
+ * Unlike the standard resolver, this sets a universal ABI that will be returned
+ * for any name that uses this dedicated resolver.
+ * 
  * @param wallet - {@link ClientWithAccount}
  * @param parameters - {@link SetAbiRecordParameters}
  * @returns Transaction hash. {@link SetAbiRecordReturnType}
@@ -78,9 +75,8 @@ export const makeFunctionData = <
  *
  * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
  * const hash = await setAbiRecord(wallet, {
- *   name: 'ens.eth',
  *   encodedAbi,
- *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ *   dedicatedResolverAddress: '0x1234567890123456789012345678901234567890',
  * })
  * // 0x...
  */
@@ -91,16 +87,14 @@ async function setAbiRecord<
 >(
   wallet: ClientWithAccount<Transport, TChain, TAccount>,
   {
-    name,
     encodedAbi,
-    resolverAddress,
+    dedicatedResolverAddress,
     ...txArgs
   }: SetAbiRecordParameters<TChain, TAccount, TChainOverride>,
 ): Promise<SetAbiRecordReturnType> {
   const data = makeFunctionData(wallet, {
-    name,
     encodedAbi,
-    resolverAddress,
+    dedicatedResolverAddress,
   })
   const writeArgs = {
     ...data,

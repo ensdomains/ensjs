@@ -1,21 +1,18 @@
 import { type Hex, encodeFunctionData } from 'viem'
-import { publicResolverSetAbiSnippet } from '../../contracts/publicResolver.js'
+import { dedicatedResolverSetAbiSnippet } from '../../contracts/dedicatedResolver.js'
 import type { EncodedAbi } from './encodeAbi.js'
 
-export type EncodeSetAbiParameters = {
-  namehash: Hex
-} & EncodedAbi
+export type EncodeSetAbiParameters = EncodedAbi
 
 export type EncodeSetAbiReturnType = Hex
 
 export const encodeSetAbi = ({
-  namehash,
   contentType,
   encodedData,
 }: EncodeSetAbiParameters): EncodeSetAbiReturnType => {
   return encodeFunctionData({
-    abi: publicResolverSetAbiSnippet,
+    abi: dedicatedResolverSetAbiSnippet,
     functionName: 'setABI',
-    args: [namehash, BigInt(contentType), encodedData],
+    args: [BigInt(contentType), encodedData],
   })
 }
