@@ -129,7 +129,7 @@ export async function resolveNameData<
           if (r === '0x') {
             return { success: false, returnData: r }
           }
-          return (r.length - 2) % 32 === 0
+          return (r.length & 31) === 4
             ? { success: true, returnData: r }
             : { success: false, returnData: r }
         }) as ResultArray,
