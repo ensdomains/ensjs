@@ -125,13 +125,12 @@ export async function resolveNameData<
         resolvedData: decodeFunctionResult({
           abi: multicallSnippet,
           data: resolvedData,
-        }).map((r): Result => {
-          if (r === '0x') {
-            return { success: false, returnData: r }
+        }).map((returnData): Result => {
+          if (returnData === '0x') {
+            return { success: false, returnData: returnData }
           }
-          return (r.length & 31) === 4
-            ? { success: true, returnData: r }
-            : { success: false, returnData: r }
+          const success = ((returnData.length - 2) & 63) !== 8
+          return { success, returnData }
         }) as ResultArray,
         resolverAddress,
       } as ResolveNameDataReturnType<data>

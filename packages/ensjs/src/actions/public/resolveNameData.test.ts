@@ -1,9 +1,7 @@
 import {
   BaseError,
-  type Chain,
   type Client,
   ContractFunctionRevertedError,
-  decodeFunctionResult,
   encodeErrorResult,
   encodeFunctionData,
   encodeFunctionResult,
@@ -11,6 +9,7 @@ import {
   namehash,
   type PublicClient,
   type Transport,
+  zeroAddress,
 } from 'viem'
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
@@ -18,6 +17,10 @@ import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { multicallSnippet } from '../../contracts/multicall.js'
+import {
+  publicResolverSingleAddrSnippet,
+  publicResolverTextSnippet,
+} from '../../contracts/publicResolver.js'
 import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
@@ -106,14 +109,26 @@ it('throws on known error when strict is true', async () => {
   ).rejects.toThrowError(error)
 })
 
-it.only('works with multicall', async () => {
+it('works with multicall', async () => {
+  const results = [
+    encodeFunctionResult({
+      abi: publicResolverTextSnippet,
+      functionName: 'text',
+      result: 'example@example.com',
+    }),
+    encodeFunctionResult({
+      abi: publicResolverSingleAddrSnippet,
+      functionName: 'addr',
+      result: zeroAddress,
+    }),
+  ]
   mockReadContract.mockImplementation(
     async ({ functionName, args, address }) => {
       if (functionName === 'resolve' && Array.isArray(args)) {
         const data = encodeFunctionResult({
           abi: multicallSnippet,
           functionName: 'multicall',
-          result: args as Hex[],
+          result: results,
         })
 
         return [data, address]
@@ -135,7 +150,10 @@ it.only('works with multicall', async () => {
   expect(data?.resolverAddress).toEqual(
     '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
   )
-  expect(data?.resolvedData).toEqual([{}])
+
+  expect(data?.resolvedData).toEqual(
+    results.map((r) => ({ success: true, returnData: r })),
+  )
 })
 
 it('throws on unknown error when strict is false', async () => {
