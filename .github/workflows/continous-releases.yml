@@ -23,4 +23,4 @@ jobs:
 
       - name: Publish ensjs to pkg.pr.new
         run: |
-          pnpm dlx pkg-pr-new publish "./packages/ensjs" 
+          pnpm dlx pkg-pr-new publish "./packages/ensjs" --ignore-scripts
