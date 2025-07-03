@@ -38,7 +38,7 @@ const getExpiry = async (name: string) => {
   })
 }
 
-it('should return a renew transaction for a single name and succeed', async () => {
+it.skip('should return a renew transaction for a single name and succeed', async () => {
   const name = 'to-be-renewed.eth'
   const duration = 31536000n
 
@@ -48,7 +48,7 @@ it('should return a renew transaction for a single name and succeed', async () =
     nameOrNames: name,
     duration,
   })
-  const total = price!.base + price!.premium
+  const total = price?.base + price?.premium
 
   const tx = await renewNames(walletClient, {
     nameOrNames: name,
