@@ -99,10 +99,11 @@ describe('getAddressRecord()', () => {
       Error: ResolverWildcardNotSupported()
        
       Contract Call:
-        address:   0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00
+        address:   0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650
         function:  resolve(bytes name, bytes data)
         args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0x3b3b57de287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
 
+      Docs: https://viem.sh/docs/contract/readContract
       Version: viem@2.31.0]
     `)
   })
