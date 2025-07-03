@@ -53,7 +53,7 @@ it('should return a commit transaction and succeed', async () => {
       client: publicClient,
       contract: 'ensEthRegistrarController',
     }),
-    args: [makeCommitment(params)],
+    args: [await makeCommitment(params)],
   })
   expect(commitment).toBeTruthy()
 })
