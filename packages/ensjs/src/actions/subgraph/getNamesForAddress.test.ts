@@ -4,9 +4,9 @@ import type { Address } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { publicClient, walletClient } from '../../test/addTestContracts.js'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
-import getExpiry from '../public/getExpiry.js'
-import getOwner from '../public/getOwner.js'
-import getWrapperData from '../public/getWrapperData.js'
+import { getExpiry } from '../public/getExpiry.js'
+import { getOwner } from '../public/getOwner.js'
+import { getWrapperData } from '../public/getWrapperData.js'
 import getNamesForAddress, {
   type NameWithRelation,
 } from './getNamesForAddress.js'
@@ -36,12 +36,12 @@ describe('check that concurrent names all have the same expiry date', () => {
     const owner = ownerData?.registrant ?? ownerData?.owner
     expect(owner).toEqual(user4)
     const expiryData = await getExpiry(publicClient, { name })
-    const expiryValue = expiryData?.expiry?.value ?? 0n
+    const expiryValue = expiryData?.expiry ?? 0n
     if (!expiry) expiry = expiryValue
 
     const wrapperData = await getWrapperData(publicClient, { name })
     const wrappedExpiryValue =
-      (wrapperData?.expiry?.value || 0n) - BigInt(GRACE_PERIOD_SECONDS)
+      (wrapperData?.expiry || 0n) - BigInt(GRACE_PERIOD_SECONDS)
     const expectedExpiry =
       ownerData?.ownershipLevel === 'nameWrapper'
         ? wrappedExpiryValue
