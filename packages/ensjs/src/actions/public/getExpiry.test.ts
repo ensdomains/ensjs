@@ -38,7 +38,7 @@ describe('getExpiry', () => {
 
       - Supported name types: eth-2ld, tld
 
-      Details: Only the expiry of eth-2ld names can be fetched when using the registrar contract
+      Details: Only the expiry of eth-2ld names can be fetched when using the registrar or l2Registrar contract
 
       Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
