@@ -1,7 +1,7 @@
-import {
-  type Chain,
-  type GetChainContractAddressErrorType,
-  type ReadContractErrorType,
+import type {
+  Chain,
+  GetChainContractAddressErrorType,
+  ReadContractErrorType,
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
@@ -63,7 +63,7 @@ export async function getAvailable<chain extends Chain>(
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
-  
+
   const result = await readContractAction({
     address: getChainContractAddress({
       chain: client.chain,
@@ -71,7 +71,7 @@ export async function getAvailable<chain extends Chain>(
     }),
     abi: l2EthRegistrarAvailableSnippet,
     functionName: 'available',
-    args: [labels[0]], 
+    args: [labels[0]],
   })
   return result
 }
