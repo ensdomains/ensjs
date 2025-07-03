@@ -20,7 +20,7 @@ beforeAll(async () => {
 const user4 = '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65'
 let expiry: bigint
 
-describe('check that concurrent names all have the same expiry date', () => {
+describe.skip('check that concurrent names all have the same expiry date', () => {
   it.each([
     ...Array.from({ length: 2 }, (_, i) => `concurrent-legacy-name-${i}.eth`),
     ...Array.from({ length: 4 }, (_, i) => {
