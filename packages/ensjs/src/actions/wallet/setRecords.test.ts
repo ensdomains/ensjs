@@ -75,8 +75,8 @@ it('should return a transaction to the resolver and set successfully', async () 
   expect(records.coins).toMatchInlineSnapshot(`
     [
       {
-        "id": 61,
-        "name": "etcLegacy",
+        "coinType": 61,
+        "symbol": "etcLegacy",
         "value": "0x42D63ae25990889E35F215bC95884039Ba354115",
       },
     ]

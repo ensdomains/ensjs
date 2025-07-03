@@ -15,7 +15,7 @@ import {
   type GetDnsImportDataReturnType,
   getDnsImportData,
 } from './getDnsImportData.js'
-import importDnsName from './importDnsName.js'
+import { importDnsName } from './importDnsName.js'
 
 vi.setConfig({
   testTimeout: 10000,

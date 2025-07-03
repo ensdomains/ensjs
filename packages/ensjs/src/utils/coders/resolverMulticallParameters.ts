@@ -42,7 +42,7 @@ export type RecordOptions = Prettify<{
   abi?: EncodeAbiParameters | EncodeAbiParameters[]
 }>
 
-type ResolverMulticallItem =
+export type ResolverMulticallItem =
   | ClearRecordsParametersReturnType
   | SetContentHashParametersReturnType
   | SetAbiParametersReturnType

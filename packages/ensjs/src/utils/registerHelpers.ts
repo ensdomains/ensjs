@@ -2,6 +2,7 @@ import {
   type Address,
   type EncodeAbiParametersErrorType,
   encodeAbiParameters,
+  encodeFunctionData,
   type Hex,
   type Keccak256ErrorType,
   keccak256,
@@ -21,10 +22,8 @@ import {
   ResolverAddressRequiredError,
 } from '../errors/utils.js'
 import {
-  // TODO: missing function @tate
-  // @ts-expect-error missing function
-  generateRecordCallArray,
   type RecordOptions,
+  resolverMulticallParameters,
 } from './coders/resolverMulticallParameters.js'
 import {
   type EncodeChildFusesInputObject,
@@ -128,7 +127,7 @@ export type MakeCommitmentTupleErrorType =
   | EncodeFusesErrorType
   | ResolverAddressRequiredError
 
-export const makeCommitmentTuple = ({
+export const makeCommitmentTuple = async ({
   name,
   owner,
   duration,
@@ -137,7 +136,7 @@ export const makeCommitmentTuple = ({
   reverseRecord,
   fuses,
   secret,
-}: RegistrationParameters): CommitmentTuple => {
+}: RegistrationParameters): Promise<CommitmentTuple> => {
   const labelHash = labelhash(name.split('.')[0])
   const hash = namehash(name)
   const fuseData = fuses
@@ -158,7 +157,9 @@ export const makeCommitmentTuple = ({
   }
 
   const data = records
-    ? generateRecordCallArray({ namehash: hash, coins, ...records })
+    ? (await resolverMulticallParameters({ namehash: hash, coins, ...records }))
+        // @ts-expect-error needs TS magic
+        .map((item) => encodeFunctionData(item))
     : []
 
   if (data.length > 0 && resolverAddress === zeroAddress)
@@ -192,11 +193,11 @@ export const makeCommitmentTuple = ({
 
 export type MakeRegistrationTupleErrorType = MakeCommitmentTupleErrorType
 
-export const makeRegistrationTuple = (
+export const makeRegistrationTuple = async (
   params: RegistrationParameters,
-): RegistrationTuple => {
+): Promise<RegistrationTuple> => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_labelhash, ...commitmentData] = makeCommitmentTuple(params)
+  const [_labelhash, ...commitmentData] = await makeCommitmentTuple(params)
   const label = params.name.split('.')[0]
   return [label, ...commitmentData]
 }
@@ -235,5 +236,6 @@ export type MakeCommitmentErrorType =
   | MakeCommitmentTupleErrorType
   | MakeCommitmentFromTupleErrorType
 
-export const makeCommitment = (params: RegistrationParameters): Hex =>
-  makeCommitmentFromTuple(makeCommitmentTuple(params))
+export const makeCommitment = async (
+  params: RegistrationParameters,
+): Promise<Hex> => makeCommitmentFromTuple(await makeCommitmentTuple(params))

@@ -48,4 +48,34 @@ describe('setTextParameters', () => {
       }
     `)
   })
+  it('uses DedicatedResolver if namehash is not provided', () => {
+    const result = setTextParameters({ key: 'email', value })
+    expect(result).toMatchInlineSnapshot(`
+			{
+			  "abi": [
+			    {
+			      "inputs": [
+			        {
+			          "name": "key",
+			          "type": "string",
+			        },
+			        {
+			          "name": "value",
+			          "type": "string",
+			        },
+			      ],
+			      "name": "setText",
+			      "outputs": [],
+			      "stateMutability": "nonpayable",
+			      "type": "function",
+			    },
+			  ],
+			  "args": [
+			    "email",
+			    "test@example.com",
+			  ],
+			  "functionName": "setText",
+			}
+		`)
+  })
 })

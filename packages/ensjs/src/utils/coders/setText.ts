@@ -1,4 +1,5 @@
 import type { EncodeFunctionDataParameters, Hex } from 'viem'
+import { dedicatedResolverSetTextSnippet } from '../../contracts/dedicatedResolver.js'
 import { publicResolverSetTextSnippet } from '../../contracts/publicResolver.js'
 
 // ================================
@@ -6,7 +7,7 @@ import { publicResolverSetTextSnippet } from '../../contracts/publicResolver.js'
 // ================================
 
 export type SetTextParameters = {
-  namehash: Hex
+  namehash?: Hex
   key: string
   value: string | null
 }
@@ -18,13 +19,23 @@ export const setTextParameters = ({
   key,
   value,
 }: SetTextParameters) => {
-  return {
-    abi: publicResolverSetTextSnippet,
-    functionName: 'setText',
-    args: [namehash, key, value ?? ''],
-  } as const satisfies EncodeFunctionDataParameters<
-    typeof publicResolverSetTextSnippet
-  >
+  if (!namehash) {
+    return {
+      abi: dedicatedResolverSetTextSnippet,
+      functionName: 'setText',
+      args: [key, value ?? ''],
+    } as const satisfies EncodeFunctionDataParameters<
+      typeof dedicatedResolverSetTextSnippet
+    >
+  } else {
+    return {
+      abi: publicResolverSetTextSnippet,
+      functionName: 'setText',
+      args: [namehash, key, value ?? ''],
+    } as const satisfies EncodeFunctionDataParameters<
+      typeof publicResolverSetTextSnippet
+    >
+  }
 }
 
 export type SetTextParametersReturnType = ReturnType<typeof setTextParameters>
