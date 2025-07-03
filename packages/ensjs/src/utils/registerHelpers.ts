@@ -158,7 +158,7 @@ export const makeCommitmentTuple = async ({
 
   const data = records
     ? (await resolverMulticallParameters({ namehash: hash, coins, ...records }))
-      // @ts-expect-error needs TS magic
+        // @ts-expect-error needs TS magic
         .map((item) => encodeFunctionData(item))
     : []
 
