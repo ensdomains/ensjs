@@ -2,6 +2,7 @@ import {
   type Address,
   type EncodeAbiParametersErrorType,
   encodeAbiParameters,
+  encodeFunctionData,
   type Hex,
   type Keccak256ErrorType,
   keccak256,
@@ -14,7 +15,6 @@ import {
   toBytes,
   toHex,
   zeroAddress,
-  encodeFunctionData,
 } from 'viem'
 import {
   CampaignReferenceTooLargeError,
@@ -22,8 +22,8 @@ import {
   ResolverAddressRequiredError,
 } from '../errors/utils.js'
 import {
-  resolverMulticallParameters,
   type RecordOptions,
+  resolverMulticallParameters,
 } from './coders/resolverMulticallParameters.js'
 import {
   type EncodeChildFusesInputObject,
@@ -157,8 +157,9 @@ export const makeCommitmentTuple = async ({
   }
 
   const data = records
-  // @ts-expect-error needs TS magic
-    ? (await resolverMulticallParameters({ namehash: hash, coins, ...records })).map(item => encodeFunctionData(item))
+    ? (await resolverMulticallParameters({ namehash: hash, coins, ...records }))
+      // @ts-expect-error needs TS magic
+        .map((item) => encodeFunctionData(item))
     : []
 
   if (data.length > 0 && resolverAddress === zeroAddress)
@@ -235,5 +236,6 @@ export type MakeCommitmentErrorType =
   | MakeCommitmentTupleErrorType
   | MakeCommitmentFromTupleErrorType
 
-export const makeCommitment = async (params: RegistrationParameters): Promise<Hex> =>
-  makeCommitmentFromTuple(await makeCommitmentTuple(params))
+export const makeCommitment = async (
+  params: RegistrationParameters,
+): Promise<Hex> => makeCommitmentFromTuple(await makeCommitmentTuple(params))
