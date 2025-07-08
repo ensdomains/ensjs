@@ -19,15 +19,7 @@ export const setTextParameters = ({
   key,
   value,
 }: SetTextParameters) => {
-  if (!namehash) {
-    return {
-      abi: dedicatedResolverSetTextSnippet,
-      functionName: 'setText',
-      args: [key, value ?? ''],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof dedicatedResolverSetTextSnippet
-    >
-  } else {
+  if (namehash) {
     return {
       abi: publicResolverSetTextSnippet,
       functionName: 'setText',
@@ -36,6 +28,13 @@ export const setTextParameters = ({
       typeof publicResolverSetTextSnippet
     >
   }
+  return {
+    abi: dedicatedResolverSetTextSnippet,
+    functionName: 'setText',
+    args: [key, value ?? ''],
+  } as const satisfies EncodeFunctionDataParameters<
+    typeof dedicatedResolverSetTextSnippet
+  >
 }
 
 export type SetTextParametersReturnType = ReturnType<typeof setTextParameters>
