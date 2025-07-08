@@ -107,13 +107,15 @@ export async function getName<chain extends Chain>(
     allowMismatch,
   }: GetNameParameters,
 ): Promise<GetNameReturnType> {
-  client = client as ExcludeTE<typeof client>
-
-  const readContractAction = getAction(client, readContract, 'readContract')
+  const readContractAction = getAction(
+    client as ExcludeTE<typeof client>,
+    readContract,
+    'readContract',
+  )
 
   const parameters = {
     address: getChainContractAddress({
-      chain: client.chain,
+      chain: (client as ExcludeTE<typeof client>).chain,
       contract: 'ensUniversalResolver',
     }),
     abi: universalResolverReverseSnippet,

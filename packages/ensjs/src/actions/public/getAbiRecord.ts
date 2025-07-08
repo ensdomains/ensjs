@@ -56,10 +56,8 @@ export async function getAbiRecord<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, name, supportedContentTypes, strict }: GetAbiRecordParameters,
 ): Promise<GetAbiRecordReturnType> {
-  client = client as ExcludeTE<typeof client>
-
   const resolveNameDataAction = getAction(
-    client,
+    client as ExcludeTE<typeof client>,
     resolveNameData,
     'resolveNameData',
   )

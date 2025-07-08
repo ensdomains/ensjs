@@ -83,8 +83,7 @@ export async function getExpiry<chain extends Chain>(
   >,
   { name, contract: contractOption }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
-  client = client as ExcludeTE<typeof client>
-
+  const chain = (client as ExcludeTE<typeof client>).chain
   const labels = name.split('.')
   const contract = (() => {
     if (contractOption) {
@@ -104,11 +103,15 @@ export async function getExpiry<chain extends Chain>(
     return 'nameWrapper'
   })()
 
-  const multicallAction = getAction(client, multicall, 'multicall')
+  const multicallAction = getAction(
+    client as ExcludeTE<typeof client>,
+    multicall,
+    'multicall',
+  )
 
   const getCurrentBlockTimestampParameters = {
     address: getChainContractAddress({
-      chain: client.chain,
+      chain,
       contract: 'multicall3',
     }),
     abi: multicallGetCurrentBlockTimestampSnippet,
@@ -122,7 +125,7 @@ export async function getExpiry<chain extends Chain>(
           getCurrentBlockTimestampParameters,
           {
             address: getChainContractAddress({
-              chain: client.chain,
+              chain,
               contract: 'ensNameWrapper',
             }),
             abi: nameWrapperGetDataSnippet,
@@ -143,7 +146,7 @@ export async function getExpiry<chain extends Chain>(
           getCurrentBlockTimestampParameters,
           {
             address: getChainContractAddress({
-              chain: client.chain,
+              chain,
               contract: 'ensRegistry',
             }),
             abi: registryOwnerSnippet,
@@ -180,7 +183,7 @@ export async function getExpiry<chain extends Chain>(
         getCurrentBlockTimestampParameters,
         {
           address: getChainContractAddress({
-            chain: client.chain,
+            chain,
             contract: 'ensBaseRegistrarImplementation',
           }),
           abi: baseRegistrarNameExpiresSnippet,
@@ -189,7 +192,7 @@ export async function getExpiry<chain extends Chain>(
         },
         {
           address: getChainContractAddress({
-            chain: client.chain,
+            chain,
             contract: 'ensBaseRegistrarImplementation',
           }),
           abi: baseRegistrarGracePeriodSnippet,

@@ -51,8 +51,6 @@ export async function getAvailable<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensL2EthRegistrar'>,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
-  client = client as ExcludeTE<typeof client>
-
   const labels = name.split('.')
   const nameType = getNameType(name)
   if (nameType !== 'eth-2ld')
@@ -62,11 +60,15 @@ export async function getAvailable<chain extends Chain>(
       details: 'Currently only eth-2ld names can be checked for availability',
     })
 
-  const readContractAction = getAction(client, readContract, 'readContract')
+  const readContractAction = getAction(
+    client as ExcludeTE<typeof client>,
+    readContract,
+    'readContract',
+  )
 
   const result = await readContractAction({
     address: getChainContractAddress({
-      chain: client.chain,
+      chain: (client as ExcludeTE<typeof client>).chain,
       contract: 'ensL2EthRegistrar',
     }),
     abi: l2EthRegistrarAvailableSnippet,

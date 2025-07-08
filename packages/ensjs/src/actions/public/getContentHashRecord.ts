@@ -54,10 +54,8 @@ export async function getContentHashRecord<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, name, strict }: GetContentHashRecordParameters,
 ): Promise<GetContentHashRecordReturnType> {
-  client = client as ExcludeTE<typeof client>
-
   const resolveNameDataAction = getAction(
-    client,
+    client as ExcludeTE<typeof client>,
     resolveNameData,
     'resolveNameData',
   )
