@@ -1,9 +1,7 @@
-import {
-  type Chain,
-  type GetChainContractAddressErrorType,
-  type LabelhashErrorType,
-  labelhash,
-  type ReadContractErrorType,
+import type {
+  Chain,
+  GetChainContractAddressErrorType,
+  ReadContractErrorType,
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
@@ -11,7 +9,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { baseRegistrarAvailableSnippet } from '../../contracts/baseRegistrar.js'
+import { l2EthRegistrarAvailableSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { ExcludeTE } from '../../types/internal.js'
@@ -28,7 +26,6 @@ export type GetAvailableErrorType =
   | UnsupportedNameTypeError
   | ReadContractErrorType
   | GetChainContractAddressErrorType
-  | LabelhashErrorType
   | ErrorType
 
 /**
@@ -51,7 +48,7 @@ export type GetAvailableErrorType =
  * // false
  */
 export async function getAvailable<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensBaseRegistrarImplementation'>,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar'>,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
   client = client as ExcludeTE<typeof client>
@@ -66,14 +63,15 @@ export async function getAvailable<chain extends Chain>(
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
+
   const result = await readContractAction({
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensBaseRegistrarImplementation',
+      contract: 'ensL2EthRegistrar',
     }),
-    abi: baseRegistrarAvailableSnippet,
+    abi: l2EthRegistrarAvailableSnippet,
     functionName: 'available',
-    args: [BigInt(labelhash(labels[0]))],
+    args: [labels[0]],
   })
   return result
 }

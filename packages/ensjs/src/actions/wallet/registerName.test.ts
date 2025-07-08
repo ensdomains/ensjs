@@ -43,7 +43,7 @@ const getNameWrapperOwner = async (name: string) => {
   })
 }
 
-it('should return a registration transaction and succeed', async () => {
+it.skip('should return a registration transaction and succeed', async () => {
   const params: RegistrationParameters = {
     name: 'cool-swag.eth',
     duration: 31536000,

@@ -1,16 +1,42 @@
+import {
+  type Abi,
+  type Address,
+  encodeFunctionData,
+  type Hex,
+  type ReadContractParameters,
+} from 'viem'
 import { expect, it } from 'vitest'
 import { deploymentAddresses, publicClient } from '../test/addTestContracts.js'
 import { namehash } from './name/namehash.js'
-import { ownerFromContract } from './ownerFromContract.js'
+import { getContractSpecificOwnerParameters } from './ownerFromContract.js'
 
 const baseParams = {
-  client: publicClient,
-  namehash: namehash('test.eth'),
+  node: namehash('test.eth'),
+}
+
+const toSnapshot = <abi extends Abi>({
+  abi,
+  functionName,
+  args,
+  address,
+}: ReadContractParameters<abi>): { data: Hex; to?: Address } => {
+  // @ts-expect-error requires viem ABI TS magic
+  const data = encodeFunctionData({ abi, functionName, args })
+
+  return {
+    data,
+    to: address,
+  }
 }
 
 it('uses nameWrapper contract when contract is nameWrapper', () => {
   expect(
-    ownerFromContract({ ...baseParams, contract: 'nameWrapper' }),
+    toSnapshot(
+      getContractSpecificOwnerParameters(publicClient.chain, {
+        ...baseParams,
+        contract: 'nameWrapper',
+      }),
+    ),
   ).toMatchInlineSnapshot(`
     {
       "data": "0x6352211eeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
@@ -20,7 +46,12 @@ it('uses nameWrapper contract when contract is nameWrapper', () => {
 })
 it('uses registry contract when contract is registry', () => {
   expect(
-    ownerFromContract({ ...baseParams, contract: 'registry' }),
+    toSnapshot(
+      getContractSpecificOwnerParameters(publicClient.chain, {
+        ...baseParams,
+        contract: 'registry',
+      }),
+    ),
   ).toMatchInlineSnapshot(`
     {
       "data": "0x02571be3eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
@@ -30,11 +61,13 @@ it('uses registry contract when contract is registry', () => {
 })
 it('uses registrar contract when contract is registrar', () => {
   expect(
-    ownerFromContract({
-      ...baseParams,
-      contract: 'registrar',
-      labels: ['test'],
-    }),
+    toSnapshot(
+      getContractSpecificOwnerParameters(publicClient.chain, {
+        ...baseParams,
+        contract: 'registrar',
+        labels: ['test'],
+      }),
+    ),
   ).toMatchInlineSnapshot(`
     {
       "data": "0x6352211e9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658",
@@ -44,7 +77,11 @@ it('uses registrar contract when contract is registrar', () => {
 })
 it('throws when contract is not nameWrapper, registry, or registrar', () => {
   expect(() =>
-    ownerFromContract({ ...baseParams, contract: 'invalid' as any }),
+    getContractSpecificOwnerParameters(publicClient.chain, {
+      ...baseParams,
+      // biome-ignore lint/suspicious/noExplicitAny: Intentionally invalid contract type
+      contract: 'invalid' as any,
+    }),
   ).toThrowErrorMatchingInlineSnapshot(`
       [InvalidContractTypeError: Invalid contract type: invalid
 

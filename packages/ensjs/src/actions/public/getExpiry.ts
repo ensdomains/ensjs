@@ -1,4 +1,5 @@
 import {
+  type Address,
   type Chain,
   type GetChainContractAddressErrorType,
   type LabelhashErrorType,
@@ -17,6 +18,7 @@ import {
 } from '../../contracts/baseRegistrar.js'
 import { multicallGetCurrentBlockTimestampSnippet } from '../../contracts/multicall.js'
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
+import { registryOwnerSnippet } from '../../contracts/registry.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify } from '../../types/index.js'
 import type { ExcludeTE } from '../../types/internal.js'
@@ -24,7 +26,7 @@ import { getNameType } from '../../utils/name/getNameType.js'
 import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 import { checkIsDotEth } from '../../utils/name/validation.js'
 
-type ContractOption = 'registrar' | 'nameWrapper'
+type ContractOption = 'registrar' | 'nameWrapper' | 'l2Registrar'
 type ExpiryStatus = 'active' | 'expired' | 'gracePeriod'
 
 export type GetExpiryParameters = Prettify<{
@@ -67,11 +69,17 @@ export type GetExpiryErrorType =
  * })
  * const result = await getExpiry(client, { name: 'ens.eth' })
  * // { expiry: { date: Date, value: 1913933217n }, gracePeriod: 7776000, status: 'active' }
+ *
+ * // Using L2 registrar
+ * const l2Result = await getExpiry(client, { name: 'example.eth', contract: 'l2Registrar' })
  */
 export async function getExpiry<chain extends Chain>(
   client: RequireClientContracts<
     chain,
-    'ensNameWrapper' | 'ensBaseRegistrarImplementation' | 'multicall3'
+    | 'ensNameWrapper'
+    | 'ensBaseRegistrarImplementation'
+    | 'ensRegistry'
+    | 'multicall3'
   >,
   { name, contract: contractOption }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
@@ -80,12 +88,15 @@ export async function getExpiry<chain extends Chain>(
   const labels = name.split('.')
   const contract = (() => {
     if (contractOption) {
-      if (contractOption === 'registrar' && !checkIsDotEth(labels))
+      if (
+        (contractOption === 'registrar' || contractOption === 'l2Registrar') &&
+        !checkIsDotEth(labels)
+      )
         throw new UnsupportedNameTypeError({
           nameType: getNameType(name),
           supportedNameTypes: ['eth-2ld', 'tld'],
           details:
-            'Only the expiry of eth-2ld names can be fetched when using the registrar contract',
+            'Only the expiry of eth-2ld names can be fetched when using the registrar or l2Registrar contract',
         })
       return contractOption
     }
@@ -104,9 +115,9 @@ export async function getExpiry<chain extends Chain>(
     functionName: 'getCurrentBlockTimestamp',
   } as const
 
-  const [currentBlockTimestamp, expiry, gracePeriod] = await (() => {
-    if (contract === 'nameWrapper')
-      return multicallAction({
+  const [currentBlockTimestamp, expiry, gracePeriod] = await (async () => {
+    if (contract === 'nameWrapper') {
+      const [timestamp_, [, , expiry_]] = await multicallAction({
         contracts: [
           getCurrentBlockTimestampParameters,
           {
@@ -120,11 +131,51 @@ export async function getExpiry<chain extends Chain>(
           },
         ],
         allowFailure: false,
-      }).then(([timestamp_, [, , expiry_]]) => {
-        return [timestamp_, expiry_, 0n] as const
+      })
+      return [timestamp_, expiry_, 0n] as const
+    }
+
+    if (contract === 'l2Registrar') {
+      // For L2 registrars, we get the registry owner which should be the L2 registrar
+      // and query it for expiry information
+      const [timestamp_, registryOwner] = await multicallAction({
+        contracts: [
+          getCurrentBlockTimestampParameters,
+          {
+            address: getChainContractAddress({
+              chain: client.chain,
+              contract: 'ensRegistry',
+            }),
+            abi: registryOwnerSnippet,
+            functionName: 'owner',
+            args: [namehash(name)],
+          },
+        ],
+        allowFailure: false,
       })
 
-    return multicallAction({
+      // Now query the registry owner (L2 registrar) for expiry information
+      const [nameExpiry, gracePeriodValue] = await multicallAction({
+        contracts: [
+          {
+            address: registryOwner as Address,
+            abi: baseRegistrarNameExpiresSnippet,
+            functionName: 'nameExpires',
+            args: [BigInt(labelhash(labels[0]))],
+          },
+          {
+            address: registryOwner as Address,
+            abi: baseRegistrarGracePeriodSnippet,
+            functionName: 'GRACE_PERIOD',
+          },
+        ],
+        allowFailure: false,
+      })
+
+      return [timestamp_, nameExpiry, gracePeriodValue] as const
+    }
+
+    return await multicallAction({
       contracts: [
         getCurrentBlockTimestampParameters,
         {

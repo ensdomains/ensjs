@@ -45,8 +45,8 @@ it('should allow an eth address record to be set', async () => {
   })
   expect(response).toMatchInlineSnapshot(`
     {
-      "id": 60,
-      "name": "eth",
+      "coinType": 60,
+      "symbol": "eth",
       "value": "0x42D63ae25990889E35F215bC95884039Ba354115",
     }
   `)
@@ -72,8 +72,8 @@ it('should allow a multicoin address record to be set', async () => {
   })
   expect(response).toMatchInlineSnapshot(`
     {
-      "id": 61,
-      "name": "etcLegacy",
+      "coinType": 61,
+      "symbol": "etcLegacy",
       "value": "0x42D63ae25990889E35F215bC95884039Ba354115",
     }
   `)

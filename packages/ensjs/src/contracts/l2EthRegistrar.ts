@@ -203,6 +203,27 @@ export const l2EthRegistrarCommitmentsSnippet = [
   },
 ] as const
 
+export const l2EthRegistrarAvailableSnippet = [
+  ...l2EthRegistrarErrors,
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'string',
+      },
+    ],
+    name: 'available',
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 export const l2EthRegistrarRegisterSnippet = [
   ...l2EthRegistrarErrors,
   {
@@ -239,6 +260,43 @@ export const l2EthRegistrarRegisterSnippet = [
         type: 'uint256',
       },
     ],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+] as const
+
+export const l2EthRegistrarRenewErrors = [
+  {
+    inputs: [
+      {
+        name: 'required',
+        type: 'uint256',
+      },
+      {
+        name: 'provided',
+        type: 'uint256',
+      },
+    ],
+    name: 'InsufficientValue',
+    type: 'error',
+  },
+] as const
+
+export const l2EthRegistrarRenewSnippet = [
+  ...l2EthRegistrarRenewErrors,
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'string',
+      },
+      {
+        name: 'duration',
+        type: 'uint64',
+      },
+    ],
+    name: 'renew',
+    outputs: [],
     stateMutability: 'payable',
     type: 'function',
   },

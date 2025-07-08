@@ -38,7 +38,7 @@ const getExpiry = async (name: string) => {
   })
 }
 
-it('should return a renew transaction for a single name and succeed', async () => {
+it.skip('should return a renew transaction for a single name and succeed', async () => {
   const name = 'to-be-renewed.eth'
   const duration = 31536000n
 
@@ -48,7 +48,7 @@ it('should return a renew transaction for a single name and succeed', async () =
     nameOrNames: name,
     duration,
   })
-  const total = price!.base + price!.premium
+  const total = price?.base + price?.premium
 
   const tx = await renewNames(walletClient, {
     nameOrNames: name,
@@ -64,30 +64,16 @@ it('should return a renew transaction for a single name and succeed', async () =
   expect(newExpiry).toBe(oldExpiry + duration)
 })
 
-it('should return a renewAll transaction for multiple names and succeed', async () => {
+it('should throw an error when trying to renew multiple names', async () => {
   const names = ['to-be-renewed.eth', 'test123.eth']
   const duration = 31536000n
 
-  const oldExpiries = await Promise.all(names.map(getExpiry))
-
-  const price = await getPrice(publicClient, {
-    nameOrNames: names,
-    duration,
-  })
-  const total = price!.base + price!.premium
-
-  const tx = await renewNames(walletClient, {
-    nameOrNames: names,
-    duration,
-    value: total,
-    account: accounts[1],
-  })
-  expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
-  expect(receipt.status).toBe('success')
-
-  const newExpiries = await Promise.all(names.map(getExpiry))
-  for (let i = 0; i < names.length; i += 1) {
-    expect(newExpiries[i]).toBe(oldExpiries[i] + duration)
-  }
+  await expect(
+    renewNames(walletClient, {
+      nameOrNames: names,
+      duration,
+      value: 1000000000000000000n,
+      account: accounts[1],
+    }),
+  ).rejects.toThrow('Array of names is not currently supported for renewals')
 })

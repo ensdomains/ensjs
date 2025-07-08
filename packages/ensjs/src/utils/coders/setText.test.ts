@@ -56,12 +56,10 @@ describe('setTextParameters', () => {
 			    {
 			      "inputs": [
 			        {
-			          "internalType": "string",
 			          "name": "key",
 			          "type": "string",
 			        },
 			        {
-			          "internalType": "string",
 			          "name": "value",
 			          "type": "string",
 			        },
