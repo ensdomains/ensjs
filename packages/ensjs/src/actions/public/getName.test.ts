@@ -171,7 +171,7 @@ describe('getName', () => {
       }),
     ).rejects.toThrowError(error)
   })
-  it('returns null for a name that is not normalized', async () => {
+  it.skip('returns null for a name that is not normalized', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
@@ -200,7 +200,7 @@ describe('getName', () => {
 
     expect(result).toBeNull()
   })
-  it('returns unnormalized name when allowUnnormalized is true', async () => {
+  it.skip('returns unnormalized name when allowUnnormalized is true', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',

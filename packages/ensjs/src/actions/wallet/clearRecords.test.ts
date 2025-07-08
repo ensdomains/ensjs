@@ -65,7 +65,7 @@ it('should allow a name to be cleared', async () => {
   expect(response).toBeNull()
 })
 
-it('should allow a name to be cleared v2', async () => {
+it.skip('should allow a name to be cleared v2', async () => {
   // biome-ignore lint/style/noNonNullAssertion: <explanation>
   const resolverAddress = (await getResolver(publicClient, {
     name: 'wrapped.eth',

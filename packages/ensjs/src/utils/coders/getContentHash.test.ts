@@ -17,7 +17,6 @@ describe('getContenthashParameters', () => {
           {
             "inputs": [
               {
-                "internalType": "bytes32",
                 "name": "node",
                 "type": "bytes32",
               },
@@ -25,7 +24,6 @@ describe('getContenthashParameters', () => {
             "name": "contenthash",
             "outputs": [
               {
-                "internalType": "bytes",
                 "name": "",
                 "type": "bytes",
               },
@@ -96,7 +94,7 @@ describe('decodeContenthashResult', () => {
       Params: (bytes)
       Data:   0x1234 (2 bytes)
 
-      Version: 2.21.15]
+      Version: viem@2.31.0]
     `)
   })
 })

@@ -70,7 +70,6 @@ export const publicResolverContenthashSnippet = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
         name: 'node',
         type: 'bytes32',
       },
@@ -78,7 +77,6 @@ export const publicResolverContenthashSnippet = [
     name: 'contenthash',
     outputs: [
       {
-        internalType: 'bytes',
         name: '',
         type: 'bytes',
       },
@@ -208,7 +206,6 @@ export const publicResolverClearRecordsSnippet = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
         name: 'node',
         type: 'bytes32',
       },
