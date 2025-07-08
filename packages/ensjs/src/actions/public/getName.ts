@@ -147,20 +147,23 @@ export async function getName<chain extends Chain>(
     if (Array.isArray(errorArgs)) {
       unnormalisedName = errorArgs[0]
       resolverAddress = errorArgs[1]
-      if (!allowMismatch) match = false
-    }
-    throw error
+      if (allowMismatch) {
+        match = false
+      } else {
+        return null
+      }
+    } else throw error
   }
 
-  const normalizedName = normalize(unnormalisedName)
+  const normalizedName = normalize(unnormalisedName!)
   const nameMatch = unnormalisedName === normalizedName
   if (!nameMatch && !allowUnnormalized) return null
 
   return {
-    name: unnormalisedName,
+    name: unnormalisedName!,
     match,
     normalized: nameMatch,
-    reverseResolverAddress: nullableAddress(reverseResolverAddress),
-    resolverAddress: nullableAddress(resolverAddress),
+    reverseResolverAddress: nullableAddress(reverseResolverAddress!),
+    resolverAddress: nullableAddress(resolverAddress!),
   }
 }
