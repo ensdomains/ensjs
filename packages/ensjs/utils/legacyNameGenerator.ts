@@ -1,5 +1,5 @@
-import type { Address } from 'abitype'
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
+import type { Address } from 'viem/accounts'
 import { labelhash, namehash } from 'viem/ens'
 
 const makeNameGenerator = async (
