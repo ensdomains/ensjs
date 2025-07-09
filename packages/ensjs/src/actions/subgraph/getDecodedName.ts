@@ -1,11 +1,11 @@
 import { gql } from 'graphql-request'
+import { namehash } from 'viem/ens'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import {
   checkIsDecrypted,
   decodeLabelhash,
   isEncodedLabelhash,
 } from '../../utils/name/labels.js'
-import { namehash } from '../../utils/name/namehash.js'
 import { createSubgraphClient } from './client.js'
 
 export type GetDecodedNameParameters = {

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { gql } from 'graphql-request'
+import { namehash } from 'viem/ens'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import { namehash } from '../../utils/name/namehash.js'
 import { createSubgraphClient } from './client.js'
 import {
   type DomainFilter,

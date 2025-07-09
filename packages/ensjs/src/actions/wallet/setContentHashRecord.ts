@@ -8,6 +8,7 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -20,7 +21,6 @@ import {
   type SetContentHashParametersReturnType,
   setContentHashParameters,
 } from '../../utils/coders/setContentHash.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // ================================
 // Write Parameters

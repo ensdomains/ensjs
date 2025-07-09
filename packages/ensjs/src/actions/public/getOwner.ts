@@ -2,6 +2,7 @@ import {
   type Address,
   type Chain,
   type MulticallErrorType,
+  type NamehashErrorType,
   namehash,
   type ReadContractErrorType,
   type ReadContractParameters,
@@ -16,7 +17,7 @@ import {
 } from '../../clients/chain.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullRegistrarOwnerOfError } from '../../utils/errors/isNullRegistrarOwnerOfError.js'
-import type { NamehashErrorType } from '../../utils/name/namehash.js'
+
 import { checkIsDotEth } from '../../utils/name/validation.js'
 import { nullableAddress } from '../../utils/nullableAddress.js'
 import {

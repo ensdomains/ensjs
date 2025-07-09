@@ -1,4 +1,5 @@
 import type { Address, Hex } from 'viem'
+import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
@@ -14,7 +15,6 @@ import {
   UnnamedChildFuses,
   UnnamedParentFuses,
 } from '../../utils/fuses.js'
-import { namehash } from '../../utils/name/namehash.js'
 import { setFuses } from './setFuses.js'
 
 let snapshot: Hex

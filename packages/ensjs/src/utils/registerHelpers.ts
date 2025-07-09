@@ -16,6 +16,7 @@ import {
   toHex,
   zeroAddress,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem/ens'
 import {
   CampaignReferenceTooLargeError,
   type ErrorType,
@@ -30,7 +31,6 @@ import {
   type EncodeFusesErrorType,
   encodeFuses,
 } from './fuses.js'
-import { type NamehashErrorType, namehash } from './name/namehash.js'
 
 export type RegistrationParameters = {
   /** Name to register */
@@ -99,7 +99,7 @@ export const randomSecret = ({
   platformDomain?: string
   campaign?: number
 } = {}) => {
-  const bytes = cryptoRef!.getRandomValues(new Uint8Array(32))
+  const bytes = cryptoRef?.getRandomValues(new Uint8Array(32))!
   if (platformDomain) {
     const hash = toBytes(namehash(platformDomain))
     for (let i = 0; i < 4; i += 1) {

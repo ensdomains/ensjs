@@ -1,4 +1,4 @@
-import { namehash } from 'viem'
+import { namehash } from 'viem/ens'
 import { describe, expect, it } from 'vitest'
 import { requestMiddleware, responseMiddleware } from './client.js'
 
