@@ -96,3 +96,4 @@ export {
   universalResolverResolveSnippet,
   universalResolverReverseSnippet,
 } from './universalResolver.js'
+export { namechainSetResolverSnippet } from './namechain.js'
