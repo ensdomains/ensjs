@@ -9,6 +9,7 @@
     "ignoreUnknown": false,
     "includes": [
       "packages/**/*.{cts,ts,mts}",
+      "examples/**/*.{ts}",
       "!**/*.gen.ts",
       "!**/node_modules/**",
       "!**/dist/**"
