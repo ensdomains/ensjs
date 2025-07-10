@@ -7,7 +7,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { labelhash, isAddress } from 'viem'
+import { isAddress, labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import {
@@ -15,6 +15,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
+import { namechainSetResolverSnippet } from '../../contracts/namechain.js'
 import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetResolverSnippet } from '../../contracts/registry.js'
 import type { ErrorType } from '../../errors/utils.js'
@@ -25,7 +26,6 @@ import {
   clientWithOverrides,
 } from '../../utils/clientWithOverrides.js'
 import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
-import { namechainSetResolverSnippet } from '../../contracts/namechain.js'
 
 export type SetResolverWriteParametersParameters = {
   /** Name to set resolver for */
