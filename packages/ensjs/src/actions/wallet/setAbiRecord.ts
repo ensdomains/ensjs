@@ -8,6 +8,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
+import { isAddress } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -56,8 +57,8 @@ export type SetAbiRecordWriteParametersParameters<
   encodeAs extends AbiEncodeAs,
 > = Prettify<
   SetAbiParameters<encodeAs> & {
-    /** Name to set ABI for */
-    name: string
+    /** Name to set ABI for. If not provided, uses dedicated resolver. */
+    name?: string
     /** Resolver address to set ABI on */
     resolverAddress: Address
   }
@@ -84,12 +85,16 @@ export const setAbiRecordWriteParameters = async <
     resolverAddress,
   }: SetAbiRecordWriteParametersParameters<encodeAs>,
 ) => {
+  if (!isAddress(resolverAddress)) {
+    throw new Error(`Invalid resolver address: ${resolverAddress}`)
+  }
+
   return {
     address: resolverAddress,
     chain: client.chain,
     account: client.account,
     ...(await setAbiParameters({
-      namehash: namehash(name),
+      namehash: name ? namehash(name) : undefined,
       data,
       encodeAs,
     } as SetAbiParameters<encodeAs>)),
@@ -119,6 +124,7 @@ export type SetAbiRecordErrorType =
 
 /**
  * Sets the ABI for a name on a resolver.
+ * Uses the dedicated resolver when name is not provided, otherwise uses the legacy resolver.
  * @param client - {@link Client}
  * @param options - {@link SetAbiRecordParameters}
  * @returns Transaction hash. {@link SetAbiRecordReturnType}
@@ -137,9 +143,19 @@ export type SetAbiRecordErrorType =
  * })
  *
  * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
+ * 
+ * // Legacy resolver usage (with name)
  * const hash = await setAbiRecord(wallet, {
  *   name: 'ens.eth',
- *   encodedAbi,
+ *   data: encodedAbi,
+ *   encodeAs: 'json',
+ *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+ * })
+ * 
+ * // Dedicated resolver usage (without name)
+ * const hash2 = await setAbiRecord(wallet, {
+ *   data: encodedAbi,
+ *   encodeAs: 'json',
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
  * // 0x...

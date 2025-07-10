@@ -1,4 +1,5 @@
 import type { EncodeFunctionDataParameters, Hex } from 'viem'
+import { dedicatedResolverSetAbiSnippet } from '../../contracts/dedicatedResolver.js'
 import { publicResolverSetAbiSnippet } from '../../contracts/publicResolver.js'
 import type { Prettify } from '../../types/index.js'
 import {
@@ -15,7 +16,7 @@ import {
 export type SetAbiParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
   Prettify<
     {
-      namehash: Hex
+      namehash?: Hex
     } & EncodeAbiParameters<encodeAs>
   >
 
@@ -30,12 +31,23 @@ export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
     data,
     encodeAs,
   } as EncodeAbiParameters<encodeAs>)
+  
+  if (namehash) {
+    return {
+      abi: publicResolverSetAbiSnippet,
+      functionName: 'setABI',
+      args: [namehash, BigInt(contentType), encodedData],
+    } as const satisfies EncodeFunctionDataParameters<
+      typeof publicResolverSetAbiSnippet
+    >
+  }
+  
   return {
-    abi: publicResolverSetAbiSnippet,
+    abi: dedicatedResolverSetAbiSnippet,
     functionName: 'setABI',
-    args: [namehash, BigInt(contentType), encodedData],
+    args: [BigInt(contentType), encodedData],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof publicResolverSetAbiSnippet
+    typeof dedicatedResolverSetAbiSnippet
   >
 }
 

@@ -32,3 +32,22 @@ export const dedicatedResolverSetContentHashSnippet = [
     type: 'function',
   },
 ] as const
+
+export const dedicatedResolverSetAbiSnippet = [
+  {
+    inputs: [
+      {
+        name: 'contentType',
+        type: 'uint256',
+      },
+      {
+        name: 'data',
+        type: 'bytes',
+      },
+    ],
+    name: 'setABI',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
