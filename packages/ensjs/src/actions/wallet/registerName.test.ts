@@ -1,4 +1,5 @@
 import type { Address, Hex } from 'viem'
+import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
@@ -8,7 +9,6 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/name/namehash.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
 import { getPrice } from '../public/getPrice.js'
 import { commitName } from './commitName.js'
@@ -66,7 +66,7 @@ it.skip('should return a registration transaction and succeed', async () => {
     nameOrNames: params.name,
     duration: params.duration,
   })
-  const total = price!.base + price!.premium
+  const total = price?.base + price?.premium
 
   const tx = await registerName(walletClient, {
     ...params,

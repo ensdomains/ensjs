@@ -8,6 +8,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -22,7 +23,6 @@ import {
   type SetAbiParametersReturnType,
   setAbiParameters,
 } from '../../utils/coders/setAbi.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // export type SetAbiRecordParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
 // 	Prettify<

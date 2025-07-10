@@ -5,6 +5,7 @@ import type {
   Hash,
   WriteContractParameters,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import {
@@ -20,7 +21,6 @@ import {
   type EncodeFusesErrorType,
   encodeFuses,
 } from '../../utils/fuses.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type SetFusesWriteParametersParameters = {
   /** Name to set fuses for */

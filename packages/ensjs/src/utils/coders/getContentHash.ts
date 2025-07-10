@@ -2,6 +2,8 @@ import {
   type DecodeFunctionResultErrorType,
   decodeFunctionResult,
   type Hex,
+  type NamehashErrorType,
+  namehash,
 } from 'viem'
 import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
 import type { Prettify } from '../../types/index.js'
@@ -10,7 +12,6 @@ import type {
   DecodedContentHash,
 } from '../contentHash.js'
 import { decodeContentHash } from '../contentHash.js'
-import { type NamehashErrorType, namehash } from '../name/namehash.js'
 
 // ================================
 // Get content hash parameters

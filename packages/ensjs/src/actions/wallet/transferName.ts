@@ -5,6 +5,8 @@ import {
   type GetChainContractAddressErrorType,
   type LabelhashErrorType,
   labelhash,
+  type NamehashErrorType,
+  namehash,
   type WriteContractErrorType,
   type WriteContractParameters,
   type WriteContractReturnType,
@@ -45,7 +47,6 @@ import {
   type MakeLabelNodeAndParentErrorType,
   makeLabelNodeAndParent,
 } from '../../utils/name/makeLabelNodeAndParent.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type TransferNameSupportedContract =
   | 'registry'

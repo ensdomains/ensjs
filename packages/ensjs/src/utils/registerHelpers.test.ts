@@ -1,14 +1,6 @@
-import { labelhash } from 'viem'
+import { namehash } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { namehash } from './name/namehash.js'
-import {
-  makeCommitment,
-  makeCommitmentFromTuple,
-  makeCommitmentTuple,
-  makeRegistrationTuple,
-  type RegistrationParameters,
-  randomSecret,
-} from './registerHelpers.js'
+import { randomSecret } from './registerHelpers.js'
 
 describe('randomSecret()', () => {
   it('generates a random secret with no args', () => {
