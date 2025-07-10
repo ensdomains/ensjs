@@ -102,7 +102,7 @@ export const setResolverWriteParameters = <
 
   // Handle namechain contracts
   if (!isAddress(contract)) {
-    throw new Error(`Invalid contract address: ${contract}`)
+    throw new Error(`Unknown contract: ${contract}`)
   }
 
   const label = name.split('.')[0]
