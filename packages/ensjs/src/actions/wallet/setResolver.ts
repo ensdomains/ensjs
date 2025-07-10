@@ -7,6 +7,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
+import { isAddress, labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import {
@@ -14,6 +15,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
+import { namechainSetResolverSnippet } from '../../contracts/namechain.js'
 import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetResolverSnippet } from '../../contracts/registry.js'
 import type { ErrorType } from '../../errors/utils.js'
@@ -28,8 +30,8 @@ import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 export type SetResolverWriteParametersParameters = {
   /** Name to set resolver for */
   name: string
-  /** Contract to set resolver on */
-  contract: 'registry' | 'nameWrapper'
+  /** Contract to set resolver on - can be 'registry', 'nameWrapper', or an address of a namechain registry */
+  contract: 'registry' | 'nameWrapper' | Address
   /** Resolver address to set */
   resolverAddress: Address
 }
@@ -60,38 +62,67 @@ export const setResolverWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  if (contract !== 'registry' && contract !== 'nameWrapper')
+  if (!isAddress(resolverAddress)) {
+    throw new Error(`Invalid resolver address: ${resolverAddress}`)
+  }
+
+  // Handle legacy contracts
+  if (contract === 'registry' || contract === 'nameWrapper') {
+    const address = getChainContractAddress({
+      chain: client.chain,
+      contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
+    })
+
+    const args = [namehash(name), resolverAddress] as const
+    const functionName = 'setResolver'
+
+    const baseParams = {
+      address,
+      functionName,
+      args,
+      chain: client.chain,
+      account: client.account,
+    } as const
+
+    if (contract === 'nameWrapper')
+      return {
+        ...baseParams,
+        abi: nameWrapperSetResolverSnippet,
+      } as const satisfies WriteContractParameters<
+        typeof nameWrapperSetResolverSnippet
+      >
+
+    return {
+      ...baseParams,
+      abi: registrySetResolverSnippet,
+    } as const satisfies WriteContractParameters<
+      typeof registrySetResolverSnippet
+    >
+  }
+
+  // Handle namechain contracts
+  if (!isAddress(contract)) {
     throw new Error(`Unknown contract: ${contract}`)
+  }
 
-  const address = getChainContractAddress({
-    chain: client.chain,
-    contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
-  })
+  const label = name.split('.')[0]
+  const tokenId = BigInt(labelhash(label))
 
-  const args = [namehash(name), resolverAddress] as const
-  const functionName = 'setResolver'
+  const args = [tokenId, resolverAddress] as const
 
   const baseParams = {
-    address,
-    functionName,
+    address: contract as Address,
+    functionName: 'setResolver',
     args,
     chain: client.chain,
     account: client.account,
   } as const
 
-  if (contract === 'nameWrapper')
-    return {
-      ...baseParams,
-      abi: nameWrapperSetResolverSnippet,
-    } as const satisfies WriteContractParameters<
-      typeof nameWrapperSetResolverSnippet
-    >
-
   return {
     ...baseParams,
-    abi: registrySetResolverSnippet,
+    abi: namechainSetResolverSnippet,
   } as const satisfies WriteContractParameters<
-    typeof registrySetResolverSnippet
+    typeof namechainSetResolverSnippet
   >
 }
 
