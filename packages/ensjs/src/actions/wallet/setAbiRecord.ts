@@ -143,7 +143,7 @@ export type SetAbiRecordErrorType =
  * })
  *
  * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
- * 
+ *
  * // Legacy resolver usage (with name)
  * const hash = await setAbiRecord(wallet, {
  *   name: 'ens.eth',
@@ -151,7 +151,7 @@ export type SetAbiRecordErrorType =
  *   encodeAs: 'json',
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
- * 
+ *
  * // Dedicated resolver usage (without name)
  * const hash2 = await setAbiRecord(wallet, {
  *   data: encodedAbi,

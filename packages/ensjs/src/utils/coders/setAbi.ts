@@ -31,7 +31,7 @@ export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
     data,
     encodeAs,
   } as EncodeAbiParameters<encodeAs>)
-  
+
   if (namehash) {
     return {
       abi: publicResolverSetAbiSnippet,
@@ -41,7 +41,7 @@ export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
       typeof publicResolverSetAbiSnippet
     >
   }
-  
+
   return {
     abi: dedicatedResolverSetAbiSnippet,
     functionName: 'setABI',
