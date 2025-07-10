@@ -46,6 +46,7 @@ export {
   multicallGetCurrentBlockTimestampSnippet,
   multicallTryAggregateSnippet,
 } from './multicall.js'
+export { namechainSetResolverSnippet } from './namechain.js'
 export {
   nameWrapperErrors,
   nameWrapperGetDataSnippet,
@@ -96,4 +97,3 @@ export {
   universalResolverResolveSnippet,
   universalResolverReverseSnippet,
 } from './universalResolver.js'
-export { namechainSetResolverSnippet } from './namechain.js'
