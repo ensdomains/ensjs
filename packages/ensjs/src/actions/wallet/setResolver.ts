@@ -7,6 +7,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import {
@@ -23,7 +24,6 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../utils/clientWithOverrides.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type SetResolverWriteParametersParameters = {
   /** Name to set resolver for */

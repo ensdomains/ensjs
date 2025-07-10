@@ -2,6 +2,8 @@ import {
   type Address,
   type Chain,
   type GetChainContractAddressErrorType,
+  type NamehashErrorType,
+  namehash,
   type ReadContractErrorType,
   zeroAddress,
 } from 'viem'
@@ -15,7 +17,6 @@ import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
 import type { Prettify } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { type DecodedFuses, decodeFuses } from '../../utils/fuses.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */

@@ -1,4 +1,5 @@
 import { type Address, type Hex, zeroAddress } from 'viem'
+import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
@@ -12,7 +13,6 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/name/namehash.js'
 import { deleteSubname } from './deleteSubname.js'
 
 let snapshot: Hex

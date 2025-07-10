@@ -1,7 +1,6 @@
-import { encodeFunctionData } from 'viem'
+import { encodeFunctionData, namehash } from 'viem'
 import { expect, it } from 'vitest'
 import { encodeAbi } from '../index.js'
-import { namehash } from '../name/namehash.js'
 import {
   type ResolverMulticallItem,
   resolverMulticallParameters,

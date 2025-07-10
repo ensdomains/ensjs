@@ -7,13 +7,13 @@ import {
   hexToBytes,
   hexToString,
   type NamehashErrorType,
+  namehash,
   type TrimErrorType,
   trim,
 } from 'viem'
 import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAbi, Prettify } from '../../types/index.js'
-import { namehash } from '../name/namehash.js'
 
 /** @deprecated */
 export type GetAbiParameters = {

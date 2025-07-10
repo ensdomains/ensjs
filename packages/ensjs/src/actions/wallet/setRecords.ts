@@ -6,6 +6,8 @@ import {
   type EncodeFunctionDataErrorType,
   type EncodeFunctionDataParameters,
   encodeFunctionData,
+  type NamehashErrorType,
+  namehash,
   type Transport,
   type WriteContractErrorType,
   type WriteContractParameters,
@@ -26,7 +28,6 @@ import {
   type RecordOptions,
   resolverMulticallParameters,
 } from '../../utils/coders/resolverMulticallParameters.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // ================================
 // Write parameters

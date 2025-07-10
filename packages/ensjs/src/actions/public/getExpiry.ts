@@ -5,6 +5,8 @@ import {
   type LabelhashErrorType,
   labelhash,
   type MulticallErrorType,
+  type NamehashErrorType,
+  namehash,
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
@@ -23,7 +25,6 @@ import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify } from '../../types/index.js'
 import type { ExcludeTE } from '../../types/internal.js'
 import { getNameType } from '../../utils/name/getNameType.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 import { checkIsDotEth } from '../../utils/name/validation.js'
 
 type ContractOption = 'registrar' | 'nameWrapper' | 'l2Registrar'

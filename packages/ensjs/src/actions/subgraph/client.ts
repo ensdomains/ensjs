@@ -2,8 +2,8 @@ import type { Kind, SelectionNode, SelectionSetNode } from 'graphql'
 import { parse, print, visit } from 'graphql/language/index.js'
 import type { RequestMiddleware, ResponseMiddleware } from 'graphql-request'
 import { GraphQLClient } from 'graphql-request'
+import { namehash } from 'viem/ens'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import { namehash } from '../../utils/name/namehash.js'
 
 const generateSelection = (selection: string): SelectionNode => ({
   kind: 'Field' as Kind.FIELD,
