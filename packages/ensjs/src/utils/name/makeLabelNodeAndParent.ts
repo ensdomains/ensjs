@@ -1,5 +1,9 @@
-import { type LabelhashErrorType, labelhash } from 'viem'
-import { type NamehashErrorType, namehash } from './namehash.js'
+import {
+  type LabelhashErrorType,
+  labelhash,
+  type NamehashErrorType,
+  namehash,
+} from 'viem'
 
 export type MakeLabelNodeAndParentErrorType =
   | NamehashErrorType

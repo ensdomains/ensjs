@@ -1,9 +1,9 @@
 import { getCoderByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
 import { hexToBytes, trim } from 'viem'
+import { namehash } from 'viem/ens'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { decodeContentHash } from '../../utils/contentHash.js'
-import { namehash } from '../../utils/name/namehash.js'
 import { createSubgraphClient } from './client.js'
 import type {
   BaseResolverEvent,

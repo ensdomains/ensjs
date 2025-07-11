@@ -3,6 +3,8 @@ import {
   type Chain,
   type GetChainContractAddressErrorType,
   type Hash,
+  type NamehashErrorType,
+  namehash,
   type WriteContractErrorType,
   type WriteContractParameters,
   zeroAddress,
@@ -37,7 +39,6 @@ import {
   type MakeLabelNodeAndParentErrorType,
   makeLabelNodeAndParent,
 } from '../../utils/name/makeLabelNodeAndParent.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // ================================
 // Write parameters

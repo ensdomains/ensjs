@@ -7,6 +7,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { labelhash } from 'viem/ens'
 import { getAction } from 'viem/utils'
@@ -26,7 +27,6 @@ import {
   type EncodeFusesInputObject,
   encodeFuses,
 } from '../../utils/fuses.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 // ================================
 // Write parameters

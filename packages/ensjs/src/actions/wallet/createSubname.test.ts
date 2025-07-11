@@ -1,4 +1,5 @@
 import type { Address, Hex } from 'viem'
+import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
@@ -12,7 +13,6 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/name/namehash.js'
 import { getWrapperData } from '../public/getWrapperData.js'
 import { createSubname } from './createSubname.js'
 import { setFuses } from './setFuses.js'
@@ -129,7 +129,7 @@ it('should create a subname on the namewrapper with max expiry if pcc is burned 
 
   const data = await getWrapperData(publicClient, { name: 'test.wrapped.eth' })
   expect(data?.expiry).toBeTruthy()
-  expect(data!.expiry).toBe(parentWrapperData?.expiry)
+  expect(data?.expiry).toBe(parentWrapperData?.expiry)
 })
 
 it('should throw an error when creating a wrapped subname with PCC burned with a parent name that has not burned CANNOT_UNWRAP', async () => {

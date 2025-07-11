@@ -3,6 +3,8 @@ import {
   type GetChainContractAddressErrorType,
   type HexToBytesErrorType,
   hexToBytes,
+  type NamehashErrorType,
+  namehash,
   type ReadContractErrorType,
   type TrimErrorType,
 } from 'viem'
@@ -18,7 +20,6 @@ import {
   type BytesToPacketErrorType,
   bytesToPacket,
 } from '../../utils/name/hexEncodedName.js'
-import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
 export type GetWrapperNameParameters = {
   /** Name with unknown labels, e.g. "[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth" */
