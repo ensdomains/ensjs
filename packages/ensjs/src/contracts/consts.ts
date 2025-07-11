@@ -1,5 +1,4 @@
 import type { Account, Address, Chain, Client, Transport } from 'viem'
-import { holesky, mainnet, sepolia } from 'viem/chains'
 import type { Assign, Prettify } from '../types/index.js'
 
 type ChainContract = {
@@ -7,7 +6,17 @@ type ChainContract = {
   blockCreated?: number
 }
 
-export const supportedChains = [mainnet.id, holesky.id, sepolia.id] as const
+const chains = {
+  mainnet: 1,
+  sepolia: 11155111,
+  holesky: 17000,
+} as const
+
+export const supportedChains = [
+  chains.mainnet,
+  chains.holesky,
+  chains.sepolia,
+] as const
 export const supportedContracts = [
   'ensBaseRegistrarImplementation',
   'ensBulkRenewal',
@@ -25,7 +34,7 @@ export type SupportedChain = (typeof supportedChains)[number]
 export type SupportedContract = (typeof supportedContracts)[number]
 
 export const addresses = {
-  [mainnet.id]: {
+  [chains.mainnet]: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -57,7 +66,7 @@ export const addresses = {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
   },
-  [holesky.id]: {
+  [chains.holesky]: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -89,7 +98,7 @@ export const addresses = {
       address: '0xf606bc986635dab91b189aee8f565f45a0336f89',
     },
   },
-  [sepolia.id]: {
+  [chains.sepolia]: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -133,17 +142,17 @@ type Subgraphs = {
 }
 
 export const subgraphs = {
-  1: {
+  [chains.mainnet]: {
     ens: {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
     },
   },
-  17000: {
+  [chains.holesky]: {
     ens: {
       url: 'https://api.studio.thegraph.com/query/49574/ensholesky/version/latest',
     },
   },
-  11155111: {
+  [chains.sepolia]: {
     ens: {
       url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
     },
