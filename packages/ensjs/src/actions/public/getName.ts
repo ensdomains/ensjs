@@ -43,13 +43,14 @@ type GetNameChainIdParameters = {
 export type GetNameParameters = {
   /** Address to get name for */
   address: Address
+  /** Whether or not to allow mismatched forward resolution */
+  allowMismatch?: boolean
   /** Whether or not to allow unnormalized name results (UNSAFE) */
   allowUnnormalized?: boolean
   /** Whether or not to throw decoding errors */
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
-  allowMismatch?: boolean
 } & (GetNameCoinTypeParameters | GetNameChainIdParameters)
 
 export type GetNameReturnType = {
