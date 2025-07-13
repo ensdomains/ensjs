@@ -129,8 +129,7 @@ export async function resolveNameData<
           if (returnData === '0x') {
             return { success: false, returnData: returnData }
           }
-          const success = ((returnData.length - 2) & 63) !== 8
-          return { success, returnData }
+          return { success: (returnData.length - 2) % 64 === 0, returnData }
         }) as ResultArray,
         resolverAddress,
       } as ResolveNameDataReturnType<data>
