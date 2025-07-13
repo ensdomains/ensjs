@@ -12,7 +12,7 @@ import {
 import { l2EthRegistrarAvailableSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { ErrorType } from '../../errors/utils.js'
-import type { ExcludeTE } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 
 export type GetAvailableParameters = {
@@ -53,6 +53,7 @@ export async function getAvailable<chain extends Chain>(
 ): Promise<GetAvailableReturnType> {
   const labels = name.split('.')
   const nameType = getNameType(name)
+  ASSERT_NO_TYPE_ERROR(client)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
       nameType,
@@ -60,15 +61,11 @@ export async function getAvailable<chain extends Chain>(
       details: 'Currently only eth-2ld names can be checked for availability',
     })
 
-  const readContractAction = getAction(
-    client as ExcludeTE<typeof client>,
-    readContract,
-    'readContract',
-  )
+  const readContractAction = getAction(client, readContract, 'readContract')
 
   const result = await readContractAction({
     address: getChainContractAddress({
-      chain: (client as ExcludeTE<typeof client>).chain,
+      chain: client.chain,
       contract: 'ensL2EthRegistrar',
     }),
     abi: l2EthRegistrarAvailableSnippet,
