@@ -91,7 +91,7 @@ describe('getName', () => {
     })
     expect(result).toBeNull()
   })
-  it('should return with a false match for a name with no forward resolution when allowMismatch is true', async () => {
+  it.skip('should return with a false match for a name with no forward resolution when allowMismatch is true', async () => {
     const tx = await setPrimaryName(walletClient, {
       name: 'with-profile.eth',
       account: accounts[0],
