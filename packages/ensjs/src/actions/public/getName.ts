@@ -29,12 +29,14 @@ import {
 import { nullableAddress } from '../../utils/nullableAddress.js'
 
 type GetNameCoinTypeParameters = {
-  coinType: number
+  /** Coin type to use for reverse resolution */
+  coinType?: number
   chainId?: never
 }
 
 type GetNameChainIdParameters = {
-  chainId: number
+  /** Chain ID to use for reverse resolution */
+  chainId?: number
   coinType?: never
 }
 
@@ -47,12 +49,8 @@ export type GetNameParameters = {
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
-  /** Coin type to use for reverse resolution */
-  coinType?: GetNameCoinTypeParameters['coinType']
-  /** Chain ID to use for reverse resolution */
-  chainId?: GetNameChainIdParameters['chainId']
   allowMismatch?: boolean
-}
+} & (GetNameCoinTypeParameters | GetNameChainIdParameters)
 
 export type GetNameReturnType = {
   /** Primary name for address */
