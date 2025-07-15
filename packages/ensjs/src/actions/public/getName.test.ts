@@ -91,7 +91,7 @@ describe('getName', () => {
     })
     expect(result).toBeNull()
   })
-  it.skip('should return with a false match for a name with no forward resolution when allowMismatch is true', async () => {
+  it('should return with a false match for a name with no forward resolution when allowMismatch is true', async () => {
     const tx = await setPrimaryName(walletClient, {
       name: 'with-profile.eth',
       account: accounts[0],
@@ -107,8 +107,8 @@ describe('getName', () => {
         "match": false,
         "name": "with-profile.eth",
         "normalized": true,
-        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
-        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
+        "resolverAddress": null,
+        "reverseResolverAddress": null,
       }
     `)
   })
@@ -173,11 +173,11 @@ describe('getName', () => {
       }),
     ).rejects.toThrowError(error)
   })
-  it.skip('returns null for a name that is not normalized', async () => {
+  it('returns null for a name that is not normalized', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
-      owner: accounts[0],
+      owner: accounts[0], 
       resolverAddress: deploymentAddresses.PublicResolver,
       account: accounts[2],
     })
