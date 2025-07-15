@@ -1,4 +1,4 @@
-import type { Address, Hex } from 'viem'
+import { zeroAddress, type Address, type Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import {
   publicClient,
@@ -65,6 +65,18 @@ it('should error if unknown contract', async () => {
       account: accounts[1],
     }),
   ).rejects.toThrow('Unknown contract: random')
+})
+
+it.skip('should allow specifying a custom registry address', async () => {
+  const tx = await setResolver(walletClient, {
+    name: 'wrapped.eth',
+    registryAddress: zeroAddress,
+    resolverAddress: '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC',
+    account: accounts[1],
+  })
+  expect(tx).toBeTruthy()
+  const receipt = await waitForTransaction(tx)
+  expect(receipt.status).toBe('success')
 })
 
 // it('should return a transaction for a name and set successfully', async () => {

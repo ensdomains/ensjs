@@ -1,6 +1,6 @@
 // Namechain contract ABI snippets
 
-export const namechainSetResolverSnippet = [
+export const standardRegistrySetResolverSnippet = [
   {
     inputs: [
       {

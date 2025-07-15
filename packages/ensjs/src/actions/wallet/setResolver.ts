@@ -15,7 +15,7 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
-import { namechainSetResolverSnippet } from '../../contracts/namechain.js'
+import { standardRegistrySetResolverSnippet } from '../../contracts/namechain/standardRegistry.js'
 import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetResolverSnippet } from '../../contracts/registry.js'
 import type { ErrorType } from '../../errors/utils.js'
@@ -27,14 +27,25 @@ import {
 } from '../../utils/clientWithOverrides.js'
 import { type NamehashErrorType, namehash } from '../../utils/name/namehash.js'
 
+type SetResolverContractParameters = {
+  /** Contract to set resolver on - can be 'registry', 'nameWrapper', or an address of a namechain registry */
+  contract?: 'registry' | 'nameWrapper'
+  registryAddress?: never
+}
+
+type SetResolverRegistryAddressParameters = {
+  /** Contract to set resolver on - can be 'registry', 'nameWrapper', or an address of a namechain registry */
+  contract?: never
+  registryAddress: Address
+}
+
 export type SetResolverWriteParametersParameters = {
   /** Name to set resolver for */
   name: string
-  /** Contract to set resolver on - can be 'registry', 'nameWrapper', or an address of a namechain registry */
-  contract: 'registry' | 'nameWrapper' | Address
+
   /** Resolver address to set */
   resolverAddress: Address
-}
+} & (SetResolverContractParameters | SetResolverRegistryAddressParameters)
 
 export type SetResolverWriteParametersReturnType = ReturnType<
   typeof setResolverWriteParameters
@@ -58,7 +69,7 @@ export const setResolverWriteParameters = <
     'ensNameWrapper' | 'ensRegistry',
     account
   >,
-  { name, contract, resolverAddress }: SetResolverWriteParametersParameters,
+  { name, contract, resolverAddress, registryAddress }: SetResolverWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -101,7 +112,7 @@ export const setResolverWriteParameters = <
   }
 
   // Handle namechain contracts
-  if (!isAddress(contract)) {
+  if (registryAddress && !isAddress(registryAddress)) {
     throw new Error(`Unknown contract: ${contract}`)
   }
 
@@ -111,7 +122,7 @@ export const setResolverWriteParameters = <
   const args = [tokenId, resolverAddress] as const
 
   const baseParams = {
-    address: contract as Address,
+    address: registryAddress!,
     functionName: 'setResolver',
     args,
     chain: client.chain,
@@ -120,9 +131,9 @@ export const setResolverWriteParameters = <
 
   return {
     ...baseParams,
-    abi: namechainSetResolverSnippet,
+    abi: standardRegistrySetResolverSnippet,
   } as const satisfies WriteContractParameters<
-    typeof namechainSetResolverSnippet
+    typeof standardRegistrySetResolverSnippet
   >
 }
 
