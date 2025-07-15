@@ -177,7 +177,7 @@ describe('getName', () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
-      owner: accounts[0], 
+      owner: accounts[0],
       resolverAddress: deploymentAddresses.PublicResolver,
       account: accounts[2],
     })
