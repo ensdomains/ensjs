@@ -1,4 +1,4 @@
-import { zeroAddress, type Address, type Hex } from 'viem'
+import { type Address, type Hex, zeroAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import {
   publicClient,

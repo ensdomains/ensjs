@@ -69,7 +69,12 @@ export const setResolverWriteParameters = <
     'ensNameWrapper' | 'ensRegistry',
     account
   >,
-  { name, contract, resolverAddress, registryAddress }: SetResolverWriteParametersParameters,
+  {
+    name,
+    contract,
+    resolverAddress,
+    registryAddress,
+  }: SetResolverWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
