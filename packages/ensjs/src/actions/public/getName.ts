@@ -145,7 +145,6 @@ export async function getName<chain extends Chain>(
     const errorArgs = isReverseAddressMismatch(error)
     if (Array.isArray(errorArgs)) {
       unnormalisedName = errorArgs[0]
-      resolverAddress = errorArgs[1]
       if (allowMismatch) {
         match = false
       } else {

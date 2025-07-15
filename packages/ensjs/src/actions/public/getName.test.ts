@@ -202,7 +202,8 @@ describe('getName', () => {
 
     expect(result).toBeNull()
   })
-  it.skip('returns unnormalized name when allowUnnormalized is true', async () => {
+
+  it('returns unnormalized name when allowUnnormalized is true', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
