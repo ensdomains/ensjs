@@ -21,7 +21,7 @@ import {
 import type { ErrorType } from '../../errors/utils.js'
 import type { ExcludeTE } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
-import { isReverseAddressMismatch } from '../../utils/errors/isReverseAddressMismatch.js'
+import { parseReverseAddressMismatchError } from '../../utils/errors/parseReverseAddressMismatchError.js'
 import {
   type NormalizeErrorType,
   normalize,
@@ -142,7 +142,7 @@ export async function getName<chain extends Chain>(
   } catch (error) {
     if (strict) throw error
     if (isNullUniversalResolverError(error)) return null
-    const errorArgs = isReverseAddressMismatch(error)
+    const errorArgs = parseReverseAddressMismatchError(error)
     if (Array.isArray(errorArgs)) {
       unnormalisedName = errorArgs[0]
       if (allowMismatch) {
