@@ -120,3 +120,13 @@ it('should allow a multicoin record to be set to blank', async () => {
   })
   expect(response).toBeNull()
 })
+
+// it('uses DedicatedResolver if namehash is not provided', async () => {
+//  const tx = await setResolver(walletClient, {
+//   name: 'test123.eth',
+//   contract: 'registry',
+//   resolverAddress: deploymentAddresses.DedicatedResolver,
+//   account: accounts[1],
+// })
+// there will be a test that sets the name to DedicatedResolver and then sets a record, but tenv does not include Namechain stuff yet
+// })

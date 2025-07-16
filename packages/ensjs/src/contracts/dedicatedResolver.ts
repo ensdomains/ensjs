@@ -32,3 +32,24 @@ export const dedicatedResolverSetContentHashSnippet = [
     type: 'function',
   },
 ] as const
+
+export const dedicatedResolverSetAddrSnippet = [
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'coinType',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: 'addressBytes',
+        type: 'bytes',
+      },
+    ],
+    name: 'setAddr',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

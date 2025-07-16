@@ -5,6 +5,7 @@ import {
   type EncodeFunctionDataParameters,
   type Hex,
 } from 'viem'
+import { dedicatedResolverSetAddrSnippet } from '../../contracts/dedicatedResolver.js'
 import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
 import {
@@ -17,7 +18,7 @@ import {
 // ================================
 
 export type SetAddrParametersParameters = {
-  namehash: Hex
+  namehash?: Hex
   coin: string | number
   value: Address | string | null
 }
@@ -42,12 +43,21 @@ export const setAddrParameters = ({
     encodedAddress = bytesToHex(encodedAddress)
   }
 
+  if (namehash) {
+    return {
+      abi: publicResolverSetAddrSnippet,
+      functionName: 'setAddr',
+      args: [namehash, BigInt(inputCoinType), encodedAddress],
+    } as const satisfies EncodeFunctionDataParameters<
+      typeof publicResolverSetAddrSnippet
+    >
+  }
   return {
-    abi: publicResolverSetAddrSnippet,
+    abi: dedicatedResolverSetAddrSnippet,
     functionName: 'setAddr',
-    args: [namehash, BigInt(inputCoinType), encodedAddress],
+    args: [BigInt(inputCoinType), encodedAddress],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof publicResolverSetAddrSnippet
+    typeof dedicatedResolverSetAddrSnippet
   >
 }
 
