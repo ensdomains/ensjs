@@ -19,7 +19,7 @@ import {
   universalResolverReverseWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
-import type { ExcludeTE } from '../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
 import { parseReverseAddressMismatchError } from '../../utils/errors/parseReverseAddressMismatchError.js'
 import {
@@ -106,15 +106,12 @@ export async function getName<chain extends Chain>(
     allowMismatch,
   }: GetNameParameters,
 ): Promise<GetNameReturnType> {
-  const readContractAction = getAction(
-    client as ExcludeTE<typeof client>,
-    readContract,
-    'readContract',
-  )
+  ASSERT_NO_TYPE_ERROR(client)
+  const readContractAction = getAction(client, readContract, 'readContract')
 
   const parameters = {
     address: getChainContractAddress({
-      chain: (client as ExcludeTE<typeof client>).chain,
+      chain: client.chain,
       contract: 'ensUniversalResolver',
     }),
     abi: universalResolverReverseSnippet,
