@@ -69,10 +69,8 @@ export async function getAddressRecord<
     coin,
   }: GetAddressRecordParameters<coin>,
 ): Promise<GetAddressRecordReturnType<coin>> {
-  client = client as ExcludeTE<typeof client>
-
   const resolveNameDataAction = getAction(
-    client,
+    client as ExcludeTE<typeof client>,
     resolveNameData,
     'resolveNameData',
   )

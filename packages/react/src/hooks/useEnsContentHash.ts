@@ -1,12 +1,12 @@
 import { useChainId, useConfig } from 'wagmi'
-import { useQuery, type UseQueryReturnType } from 'wagmi/query'
+import { type UseQueryReturnType, useQuery } from 'wagmi/query'
 import {
-  getEnsContentHashQueryOptions,
   type GetEnsContentHashData,
   type GetEnsContentHashErrorType,
   type GetEnsContentHashOptions,
   type GetEnsContentHashQueryFnData,
   type GetEnsContentHashQueryKey,
+  getEnsContentHashQueryOptions,
 } from '../query/getEnsContentHash.js'
 import type { ConfigWithEns } from '../types/config.js'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'

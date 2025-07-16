@@ -2,7 +2,6 @@ import type { Chain } from 'viem'
 import type { RequireClientContracts } from '../../clients/chain.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { Prettify } from '../../types/index.js'
-import type { ExcludeTE } from '../../types/internal.js'
 import {
   type GetTextRecordErrorType,
   type GetTextRecordParameters,
@@ -53,8 +52,6 @@ export async function getCredentials<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, strict, name }: GetCredentialsParameters,
 ): Promise<GetCredentialsReturnType> {
-  client = client as ExcludeTE<typeof client>
-
   const result = await getTextRecord(client, {
     name,
     key: 'verifications',

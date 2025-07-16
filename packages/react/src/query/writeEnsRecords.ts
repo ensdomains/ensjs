@@ -7,7 +7,7 @@ import {
 } from '@ensdomains/ensjs/wallet'
 import type { MutateOptions, MutationOptions } from '@tanstack/react-query'
 import type { Account } from 'viem'
-import { sendTransaction, type SendTransactionParameters } from 'wagmi/actions'
+import { type SendTransactionParameters, sendTransaction } from 'wagmi/actions'
 import type { ConfigWithEns } from '../types/config.js'
 import type {
   ChainIdParameter,

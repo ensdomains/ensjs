@@ -1,16 +1,16 @@
 import { useConfig } from 'wagmi'
 import {
-  useMutation,
   type UseMutationParameters,
   type UseMutationReturnType,
+  useMutation,
 } from 'wagmi/query'
 import {
-  writeEnsRecordsMutationOptions,
   type WriteEnsRecordsData,
   type WriteEnsRecordsErrorType,
   type WriteEnsRecordsMutate,
   type WriteEnsRecordsMutateAsync,
   type WriteEnsRecordsVariables,
+  writeEnsRecordsMutationOptions,
 } from '../query/writeEnsRecords.js'
 import type { ConfigWithEns } from '../types/config.js'
 import type { ConfigParameter } from '../types/properties.js'

@@ -1,6 +1,8 @@
 import {
   type Address,
   type Chain,
+  decodeFunctionResult,
+  encodeFunctionData,
   type GetChainContractAddressErrorType,
   type Hex,
   type ReadContractErrorType,
@@ -15,9 +17,8 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/chain.js'
+import { multicallSnippet } from '../../contracts/multicall.js'
 import {
-  universalResolverResolveArraySnippet,
-  universalResolverResolveArrayWithGatewaysSnippet,
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
@@ -35,7 +36,8 @@ export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   gatewayUrls?: string[]
 }
 
-type ResultArray = readonly { success: boolean; returnData: Hex }[]
+type Result = { success: boolean; returnData: Hex }
+type ResultArray = readonly Result[]
 
 export type ResolveNameDataReturnType<data extends Hex | Hex[]> = {
   resolvedData: data extends Hex[] ? ResultArray : Hex
@@ -79,16 +81,23 @@ export async function resolveNameData<
   try {
     const [resolvedData, resolverAddress] = await (() => {
       if (Array.isArray(data)) {
+        const multicallData = encodeFunctionData({
+          abi: multicallSnippet,
+          functionName: 'multicall',
+          args: [data as Hex[]],
+        })
+
         const arrayParameters = {
           ...baseParameters,
-          abi: universalResolverResolveArraySnippet,
-          args: [toHex(packetToBytes(nameWithSizedLabels)), data as Hex[]],
+          abi: universalResolverResolveSnippet,
+          args: [toHex(packetToBytes(nameWithSizedLabels)), multicallData],
         } as const
 
         return gatewayUrls
           ? readContractAction({
               ...arrayParameters,
-              abi: universalResolverResolveArrayWithGatewaysSnippet,
+              abi: universalResolverResolveWithGatewaysSnippet,
+              functionName: 'resolveWithGateways',
               args: [...arrayParameters.args, gatewayUrls],
             })
           : readContractAction(arrayParameters)
@@ -104,12 +113,27 @@ export async function resolveNameData<
         ? readContractAction({
             ...parameters,
             abi: universalResolverResolveWithGatewaysSnippet,
-            args: [...parameters.args, gatewayUrls],
+            functionName: 'resolveWithGateways',
+            args: [...parameters.args, gatewayUrls] as const,
           })
         : readContractAction(parameters)
     })()
 
     if (resolverAddress === zeroAddress) return null
+    if (Array.isArray(data)) {
+      return {
+        resolvedData: decodeFunctionResult({
+          abi: multicallSnippet,
+          data: resolvedData,
+        }).map((returnData): Result => {
+          if (returnData === '0x') {
+            return { success: false, returnData: returnData }
+          }
+          return { success: (returnData.length - 2) % 64 === 0, returnData }
+        }) as ResultArray,
+        resolverAddress,
+      } as ResolveNameDataReturnType<data>
+    }
     return { resolvedData, resolverAddress } as ResolveNameDataReturnType<data>
   } catch (error) {
     if (strict) throw error

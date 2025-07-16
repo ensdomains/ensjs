@@ -1,8 +1,8 @@
 import {
-  getRecords,
   type GetRecordsErrorType as ensjs_GetEnsRecordsErrorType,
   type GetRecordsParameters as ensjs_GetEnsRecordsParameters,
   type GetRecordsReturnType as ensjs_GetEnsRecordsReturnType,
+  getRecords,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

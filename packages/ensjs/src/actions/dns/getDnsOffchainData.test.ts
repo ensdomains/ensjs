@@ -14,12 +14,21 @@ import {
 } from 'vitest'
 import { addEnsContracts } from '../../index.js'
 import { createHttpServer } from '../../test/createHttpServer.js'
-import { createHandlerResponse } from '../../test/dns.js'
 import { getDnsOffchainData } from './getDnsOffchainData.js'
 
 vi.setConfig({
   testTimeout: 10000,
 })
+
+type Handler = MockedFunction<RequestListener>
+
+const createHandlerResponse = (handler: Handler, response: object) => {
+  handler.mockImplementation((_req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/dns-json' })
+    res.end(JSON.stringify(response))
+    res.destroy()
+  })
+}
 
 const handler: MockedFunction<RequestListener> = vi.fn()
 let closeServer: () => Promise<unknown>

@@ -1,8 +1,8 @@
 import {
-  getAvailable,
   type GetAvailableErrorType,
   type GetAvailableParameters,
   type GetAvailableReturnType,
+  getAvailable,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'

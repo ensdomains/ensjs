@@ -42,10 +42,11 @@ describe('getContentHashRecord', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverWildcardNotSupported()
+      Error: ResolverNotFound(bytes name)
+                             (0x14746869736e616d65646f65736e6f7465786973740365746800)
        
       Contract Call:
-        address:   0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650
+        address:   0x82e01223d51Eb87e16A03E24687EDF0F294da6f1
         function:  resolve(bytes name, bytes data)
         args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0xbc1c58d1287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
 

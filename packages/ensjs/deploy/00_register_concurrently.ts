@@ -1,8 +1,7 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+import type { Hash } from 'viem'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
-
-import type { Hash } from 'viem'
 import { makeNameGenerator as makeLegacyNameGenerator } from '../utils/legacyNameGenerator.js'
 import { makeNonceManager } from '../utils/nonceManager.js'
 import { makeNameGenerator as makeWrappedNameGenerator } from '../utils/wrappedNameGenerator.js'

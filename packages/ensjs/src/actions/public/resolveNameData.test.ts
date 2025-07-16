@@ -3,22 +3,36 @@ import {
   type Client,
   ContractFunctionRevertedError,
   encodeErrorResult,
+  encodeFunctionData,
+  encodeFunctionResult,
   type Hex,
+  namehash,
   type PublicClient,
   type Transport,
+  zeroAddress,
 } from 'viem'
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
+import { multicallSnippet } from '../../contracts/multicall.js'
 import {
-  universalResolverResolveArraySnippet,
-  universalResolverResolveArrayWithGatewaysSnippet,
+  publicResolverSingleAddrSnippet,
+  publicResolverTextSnippet,
+} from '../../contracts/publicResolver.js'
+import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
+import {
+  decodeTextResult,
+  getAddressParameters,
+  getTextParameters,
+  resolverMulticallParameters,
+} from '../../utils/index.js'
 import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
+import { getRecords } from './getRecords.js'
 import { resolveNameData } from './resolveNameData.js'
 
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
@@ -43,15 +57,6 @@ it('encodes labels larger than 255 bytes', async () => {
   )
 })
 
-it('uses array abi when data array is provided', async () => {
-  await resolveNameData(mockClient, {
-    name: 'test.eth',
-    data: ['0x'],
-  }).catch(() => {})
-  const [{ abi }] = mockReadContract.mock.calls[0]
-  expect(abi).toBe(universalResolverResolveArraySnippet)
-})
-
 it('uses gateways abi when gateways are provided', async () => {
   await resolveNameData(mockClient, {
     name: 'test.eth',
@@ -62,16 +67,6 @@ it('uses gateways abi when gateways are provided', async () => {
   expect(abi).toBe(universalResolverResolveWithGatewaysSnippet)
 })
 
-it('uses gateways array abi when gateways are provided and data array is provided', async () => {
-  await resolveNameData(mockClient, {
-    name: 'test.eth',
-    data: ['0x'],
-    gatewayUrls: ['https://gateway.example.com'],
-  }).catch(() => {})
-  const [{ abi }] = mockReadContract.mock.calls[0]
-  expect(abi).toBe(universalResolverResolveArrayWithGatewaysSnippet)
-})
-
 it('does not throw on known error when strict is false', async () => {
   mockReadContract.mockImplementation(async () => {
     throw new ContractFunctionRevertedError({
@@ -80,7 +75,7 @@ it('does not throw on known error when strict is false', async () => {
       data: encodeErrorResult({
         abi: universalResolverResolveSnippet,
         errorName: 'ResolverNotFound',
-        args: [],
+        args: [namehash('test.eth')],
       }),
     })
   })
@@ -99,7 +94,7 @@ it('throws on known error when strict is true', async () => {
     data: encodeErrorResult({
       abi: universalResolverResolveSnippet,
       errorName: 'ResolverNotFound',
-      args: [],
+      args: [namehash('test.eth')],
     }),
   })
   mockReadContract.mockImplementation(async () => {
@@ -112,6 +107,53 @@ it('throws on known error when strict is true', async () => {
       strict: true,
     }),
   ).rejects.toThrowError(error)
+})
+
+it('works with multicall', async () => {
+  const results = [
+    encodeFunctionResult({
+      abi: publicResolverTextSnippet,
+      functionName: 'text',
+      result: 'example@example.com',
+    }),
+    encodeFunctionResult({
+      abi: publicResolverSingleAddrSnippet,
+      functionName: 'addr',
+      result: zeroAddress,
+    }),
+  ]
+  mockReadContract.mockImplementation(
+    async ({ functionName, args, address }) => {
+      if (functionName === 'resolve' && Array.isArray(args)) {
+        const data = encodeFunctionResult({
+          abi: multicallSnippet,
+          functionName: 'multicall',
+          result: results,
+        })
+
+        return [data, address]
+      }
+    },
+  )
+
+  const calls = [
+    encodeFunctionData(getTextParameters({ name: 'test.eth', key: 'email' })),
+    encodeFunctionData(getAddressParameters({ name: 'test.eth', coin: 'ETH' })),
+  ]
+
+  const data = await resolveNameData(mockClient, {
+    name: 'test.eth',
+    strict: true,
+    data: calls,
+  })
+
+  expect(data?.resolverAddress).toEqual(
+    '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
+  )
+
+  expect(data?.resolvedData).toEqual(
+    results.map((r) => ({ success: true, returnData: r })),
+  )
 })
 
 it('throws on unknown error when strict is false', async () => {

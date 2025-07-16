@@ -1,6 +1,7 @@
 import {
   type Address,
   BaseError,
+  bytesToHex,
   type Client,
   ContractFunctionRevertedError,
   encodeErrorResult,
@@ -9,6 +10,7 @@ import {
   type Transport,
 } from 'viem'
 import { mainnet } from 'viem/chains'
+import { packetToBytes } from 'viem/ens'
 import {
   afterEach,
   beforeAll,
@@ -105,8 +107,8 @@ describe('getName', () => {
         "match": false,
         "name": "with-profile.eth",
         "normalized": true,
-        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
-        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
+        "resolverAddress": null,
+        "reverseResolverAddress": null,
       }
     `)
   })
@@ -118,7 +120,7 @@ describe('getName', () => {
         data: encodeErrorResult({
           abi: universalResolverReverseSnippet,
           errorName: 'ResolverNotFound',
-          args: [],
+          args: [bytesToHex(packetToBytes('test.eth'))],
         }),
       })
     })
@@ -134,7 +136,7 @@ describe('getName', () => {
       data: encodeErrorResult({
         abi: universalResolverReverseSnippet,
         errorName: 'ResolverNotFound',
-        args: [],
+        args: [bytesToHex(packetToBytes('test.eth'))],
       }),
     })
     mockReadContract.mockImplementation(async () => {
@@ -171,7 +173,7 @@ describe('getName', () => {
       }),
     ).rejects.toThrowError(error)
   })
-  it.skip('returns null for a name that is not normalized', async () => {
+  it('returns null for a name that is not normalized', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',
@@ -200,7 +202,8 @@ describe('getName', () => {
 
     expect(result).toBeNull()
   })
-  it.skip('returns unnormalized name when allowUnnormalized is true', async () => {
+
+  it('returns unnormalized name when allowUnnormalized is true', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',
       contract: 'registry',

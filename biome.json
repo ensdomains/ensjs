@@ -1,6 +1,5 @@
 {
-  "root": false,
-  "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -8,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["src/**", "!**/*.gen.ts", "!**/node_modules/**", "!**/dist/**"]
+    "includes": [
+      "packages/**/*.{cts,ts,mts}",
+      "packages/*/*.js",
+      "examples/**/*.{ts}",
+      "!**/*.gen.ts",
+      "!**/node_modules/**",
+      "!**/dist/**"
+    ]
   },
   "formatter": {
     "enabled": true,

@@ -33,17 +33,18 @@ describe('getTextRecord()', () => {
         strict: true,
       }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      [ContractFunctionExecutionError: The contract function "resolve" reverted.
+			[ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverWildcardNotSupported()
-       
-      Contract Call:
-        address:   0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650
-        function:  resolve(bytes name, bytes data)
-        args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0x59d1d43c287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000b6465736372697074696f6e000000000000000000000000000000000000000000)
+			Error: ResolverNotFound(bytes name)
+			                       (0x14746869736e616d65646f65736e6f7465786973740365746800)
+			 
+			Contract Call:
+			  address:   0x82e01223d51Eb87e16A03E24687EDF0F294da6f1
+			  function:  resolve(bytes name, bytes data)
+			  args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0x59d1d43c287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000b6465736372697074696f6e000000000000000000000000000000000000000000)
 
-      Docs: https://viem.sh/docs/contract/readContract
-      Version: viem@2.31.0]
-    `)
+			Docs: https://viem.sh/docs/contract/readContract
+			Version: viem@2.31.0]
+		`)
   })
 })

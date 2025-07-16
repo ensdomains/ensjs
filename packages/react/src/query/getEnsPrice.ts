@@ -1,8 +1,8 @@
 import {
-  getPrice,
   type GetPriceErrorType as ensjs_GetEnsPriceErrorType,
   type GetPriceParameters as ensjs_GetEnsPriceParameters,
   type GetPriceReturnType as ensjs_GetEnsPriceReturnType,
+  getPrice,
 } from '@ensdomains/ensjs/public'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'
