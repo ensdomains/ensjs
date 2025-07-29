@@ -3,6 +3,5 @@ packages:
   - examples/*
 overrides:
   '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
-  '@ensdomains/namechain': link:../namechain/contracts
 patchedDependencies:
   hardhat-deploy: patches/hardhat-deploy.patch

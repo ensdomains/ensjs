@@ -176,24 +176,16 @@ type BaseChainContracts = {
   ensRegistry: ChainContract
 }
 
-type NameChainL1Contracts = {
-  ethFallbackResolver: ChainContract
-  l1EjectionController: ChainContract
-}
-
 export type ChainWithEns<chain extends Chain = Chain> = Omit<
   chain,
   'contracts'
 > & {
-  contracts: BaseChainContracts & EnsChainContracts & NameChainL1Contracts
+  contracts: BaseChainContracts & EnsChainContracts
   subgraphs: Subgraphs
 }
 
 export type ChainWithContract<
-  contract extends
-    | SupportedContract
-    | keyof BaseChainContracts
-    | keyof NameChainL1Contracts,
+  contract extends SupportedContract | keyof BaseChainContracts,
 > = Chain & {
   contracts: {
     [key in contract]: ChainContract
