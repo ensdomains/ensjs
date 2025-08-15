@@ -18,7 +18,6 @@ import type {
 
 export const supportedChains = {
   mainnet: 1,
-  goerli: 5,
   holesky: 17000,
   sepolia: 11155111,
 } as const
@@ -86,41 +85,6 @@ export const ensContracts = {
     },
     ensUniversalResolver: {
       address: '0xce01f8eee7E479C928F8919abD53E553a36CeF67',
-    },
-  },
-  [supportedChains.goerli]: {
-    ensBaseRegistrarImplementation: {
-      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
-    },
-    ensBulkRenewal: {
-      address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
-    },
-    ensDnsRegistrar: {
-      address: '0x8edc487D26F6c8Fa76e032066A3D4F87E273515d',
-    },
-    ensDnssecImpl: {
-      address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
-    },
-    ensEthRegistrarController: {
-      address: '0xCc5e7dB10E65EED1BBD105359e7268aa660f6734',
-    },
-    ensL2EthRegistrar: {
-      address: '0x0000000000000000000000000000000000000000',
-    },
-    ensNameWrapper: {
-      address: '0x114D4603199df73e7D157787f8778E21fCd13066',
-    },
-    ensPublicResolver: {
-      address: '0xd7a4F6473f32aC2Af804B3686AE8F1932bC35750',
-    },
-    ensRegistry: {
-      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    },
-    ensReverseRegistrar: {
-      address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
-    },
-    ensUniversalResolver: {
-      address: '0x898A1182F3C2BBBF0b16b4DfEf63E9c3e9eB4821',
     },
   },
   [supportedChains.holesky]: {
@@ -212,11 +176,6 @@ export const ensSubgraphs = {
   [supportedChains.mainnet]: {
     ens: {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-    },
-  },
-  [supportedChains.goerli]: {
-    ens: {
-      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
     },
   },
   [supportedChains.holesky]: {
