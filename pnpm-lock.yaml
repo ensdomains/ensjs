@@ -55,30 +55,6 @@ importers:
         specifier: ^4.20.3
         version: 4.20.3
 
-  examples/basic-esm:
-    dependencies:
-      '@ensdomains/ensjs':
-        specifier: workspace:*
-        version: link:../../packages/ensjs
-      viem:
-        specifier: ^2.30.6
-        version: 2.31.0(bufferutil@4.0.8)(typescript@5.8.3)(utf-8-validate@5.0.10)
-
-  examples/basic-tsnode-esm:
-    dependencies:
-      '@ensdomains/ensjs':
-        specifier: workspace:*
-        version: link:../../packages/ensjs
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.15.30)(typescript@5.8.3)
-      typescript:
-        specifier: ^5.6.2
-        version: 5.8.3
-      viem:
-        specifier: ^2.30.6
-        version: 2.31.0(bufferutil@4.0.8)(typescript@5.8.3)(utf-8-validate@5.0.10)
-
   packages/ensjs:
     dependencies:
       '@adraffy/ens-normalize':
