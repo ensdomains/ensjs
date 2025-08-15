@@ -84,7 +84,7 @@ export const ensContracts = {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensUniversalResolver: {
-      address: '0xce01f8eee7E479C928F8919abD53E553a36CeF67',
+      address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
   },
   [supportedChains.holesky]: {
