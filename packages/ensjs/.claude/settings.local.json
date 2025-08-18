@@ -8,7 +8,8 @@
       "Bash(grep:*)",
       "Bash(pnpm list:*)",
       "Bash(pnpm add:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(pnpm prepack:*)"
     ],
     "deny": []
   }

@@ -78,7 +78,7 @@
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
     "lint": "eslint ./src/* --no-error-on-unmatched-pattern",
     "build": "tsc --project tsconfig.build.json",
-    "tsn": "TS_NODE_PROJECT=tsconfig.node.json node --loader ts-node/esm",
+    "tsn": "node --loader ts-node/esm",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
     "prepack": "pnpm tsn ./scripts/prepack.ts",
     "ver": "pnpm tsn ./scripts/updateVersion.ts",
