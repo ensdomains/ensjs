@@ -19,6 +19,7 @@ export const supportedContracts = [
   'ensRegistry',
   'ensReverseRegistrar',
   'ensUniversalResolver',
+  'ensDefaultReverseRegistrar',
 ] as const
 
 export type SupportedChain = (typeof supportedChains)[number]
@@ -54,7 +55,10 @@ export const addresses = {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensUniversalResolver: {
-      address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
+      address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+    },
+    ensDefaultReverseRegistrar: {
+      address: '0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9',
     },
   },
   [holesky.id]: {
@@ -88,6 +92,9 @@ export const addresses = {
     ensUniversalResolver: {
       address: '0xf606bc986635dab91b189aee8f565f45a0336f89',
     },
+    ensDefaultReverseRegistrar: {
+      address: '0x0000000000000000000000000000000000000000',
+    },
   },
   [sepolia.id]: {
     ensBaseRegistrarImplementation: {
@@ -115,10 +122,13 @@ export const addresses = {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
-      address: '0xCF75B92126B02C9811d8c632144288a3eb84afC8',
+      address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensUniversalResolver: {
-      address: '0x49c9331501b37191d54f5e332b307df82d15e9cc',
+      address: '0xb7B7DAdF4D42a08B3eC1d3A1079959Dfbc8CFfCC',
+    },
+    ensDefaultReverseRegistrar: {
+      address: '0x4F382928805ba0e23B30cFB75fC9E848e82DFD47',
     },
   },
 } as const satisfies Record<

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(pnpm tenv start:*)",
+      "Bash(pnpm tenv:*)",
+      "Bash(pnpm -F @ensdomains/ensjs tenv start:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm test:*)"
+    ],
+    "deny": []
+  }
+}
