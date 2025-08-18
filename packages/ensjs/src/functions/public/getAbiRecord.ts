@@ -6,8 +6,8 @@ import type {
   SimpleTransactionRequest,
 } from '../../types.js'
 import {
-  generateFunction,
   type GeneratedFunction,
+  generateFunction,
 } from '../../utils/generateFunction.js'
 import _getAbi, {
   type InternalGetAbiParameters,

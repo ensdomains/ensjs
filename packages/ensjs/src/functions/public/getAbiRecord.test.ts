@@ -1,8 +1,10 @@
-import { RawContractError } from 'viem'
+import { RawContractError, bytesToHex, encodeErrorResult } from 'viem'
 import { describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
+import { universalResolverErrors } from '../../contracts/universalResolver.js'
 import { publicClient } from '../../test/addTestContracts.js'
 import { generateSupportedContentTypes } from '../../utils/generateSupportedContentTypes.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
 import getAbiRecord from './getAbiRecord.js'
 
 const dummyABI = [
@@ -227,7 +229,11 @@ describe('getAbiRecord()', () => {
       getAbiRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [bytesToHex(packetToBytes('test.eth'))],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
@@ -242,7 +248,11 @@ describe('getAbiRecord()', () => {
       getAbiRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: '0x7199966d', // ResolverNotFound()
+          data: encodeErrorResult({
+            abi: universalResolverErrors,
+            errorName: 'ResolverNotFound',
+            args: [bytesToHex(packetToBytes('test.eth'))],
+          }),
         }),
         {
           address: '0x1234567890abcdef',
@@ -254,14 +264,15 @@ describe('getAbiRecord()', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound()
+      Error: ResolverNotFound(bytes name)
+                             (0x04746573740365746800)
        
       Contract Call:
         address:   0x1234567890abcdef
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: 2.21.12]
+      Version: viem@2.30.6]
     `)
   })
 })

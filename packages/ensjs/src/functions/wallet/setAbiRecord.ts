@@ -14,8 +14,8 @@ import type {
 } from '../../types.js'
 import type { EncodedAbi } from '../../utils/encoders/encodeAbi.js'
 import {
-  encodeSetAbi,
   type EncodeSetAbiParameters,
+  encodeSetAbi,
 } from '../../utils/encoders/encodeSetAbi.js'
 import { namehash } from '../../utils/normalise.js'
 

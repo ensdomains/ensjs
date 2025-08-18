@@ -1,9 +1,9 @@
 import {
+  type Hex,
   decodeFunctionResult,
   encodeFunctionData,
   hexToBytes,
   hexToString,
-  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'

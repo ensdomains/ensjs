@@ -6,9 +6,9 @@ import type {
   TransactionRequestWithPassthrough,
 } from '../../types.js'
 import {
-  generateFunction,
   type BatchFunctionResult,
   type GeneratedFunction,
+  generateFunction,
 } from '../../utils/generateFunction.js'
 import multicallWrapper from './multicallWrapper.js'
 

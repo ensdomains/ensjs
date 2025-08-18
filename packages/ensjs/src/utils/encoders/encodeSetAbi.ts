@@ -1,4 +1,4 @@
-import { encodeFunctionData, type Hex } from 'viem'
+import { type Hex, encodeFunctionData } from 'viem'
 import { publicResolverSetAbiSnippet } from '../../contracts/publicResolver.js'
 import type { EncodedAbi } from './encodeAbi.js'
 

@@ -1,10 +1,10 @@
 import {
-  BaseError,
+  type BaseError,
+  type Hex,
   decodeFunctionResult,
   encodeFunctionData,
   getContractError,
   offchainLookup,
-  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'

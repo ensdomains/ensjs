@@ -1,11 +1,20 @@
-import { RawContractError, decodeFunctionData, hexToBytes } from 'viem'
+import {
+  RawContractError,
+  bytesToHex,
+  decodeFunctionData,
+  encodeErrorResult,
+  hexToBytes,
+} from 'viem'
 import { expect, it } from 'vitest'
-import { universalResolverResolveSnippet } from '../../contracts/universalResolver.js'
+import {
+  universalResolverErrors,
+  universalResolverResolveSnippet,
+} from '../../contracts/universalResolver.js'
 import {
   deploymentAddresses,
   publicClient,
 } from '../../test/addTestContracts.js'
-import { bytesToPacket } from '../../utils/hexEncodedName.js'
+import { bytesToPacket, packetToBytes } from '../../utils/hexEncodedName.js'
 import universalWrapper from './universalWrapper.js'
 
 it('returns with passthrough containing args and address on encode', () => {
@@ -73,7 +82,7 @@ it('throws on result decode error when strict is true', async () => {
     Params: (bytes data, address resolver)
     Data:   0x1234 (2 bytes)
 
-    Version: 2.21.12]
+    Version: viem@2.30.6]
   `)
 })
 
@@ -82,7 +91,11 @@ it('does not throw known contract error when strict is false', async () => {
     universalWrapper.decode(
       publicClient,
       new RawContractError({
-        data: '0x7199966d', // ResolverNotFound()
+        data: encodeErrorResult({
+          abi: universalResolverErrors,
+          errorName: 'ResolverNotFound',
+          args: [bytesToHex(packetToBytes('test.eth'))],
+        }),
       }),
       {
         address: '0x1234567890abcdef',
@@ -98,7 +111,11 @@ it('throws on known contract error when strict is true', async () => {
     universalWrapper.decode(
       publicClient,
       new RawContractError({
-        data: '0x7199966d', // ResolverNotFound()
+        data: encodeErrorResult({
+          abi: universalResolverErrors,
+          errorName: 'ResolverNotFound',
+          args: [bytesToHex(packetToBytes('test.eth'))],
+        }),
       }),
       {
         address: '0x1234567890abcdef',
@@ -107,17 +124,18 @@ it('throws on known contract error when strict is true', async () => {
       { strict: true },
     ),
   ).rejects.toMatchInlineSnapshot(`
-  [ContractFunctionExecutionError: The contract function "resolve" reverted.
+    [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-  Error: ResolverNotFound()
-   
-  Contract Call:
-    address:   0x1234567890abcdef
-    function:  resolve(bytes name, bytes data)
-    args:             (0x, 0x)
+    Error: ResolverNotFound(bytes name)
+                           (0x04746573740365746800)
+     
+    Contract Call:
+      address:   0x1234567890abcdef
+      function:  resolve(bytes name, bytes data)
+      args:             (0x, 0x)
 
-  Version: 2.21.12]
-`)
+    Version: viem@2.30.6]
+  `)
 })
 
 it('throws on unknown contract error when strict is false', async () => {
@@ -147,7 +165,7 @@ it('throws on unknown contract error when strict is false', async () => {
       args:             (0x, 0x)
 
     Docs: https://viem.sh/docs/contract/decodeErrorResult
-    Version: 2.21.12]
+    Version: viem@2.30.6]
   `)
 })
 
@@ -178,6 +196,6 @@ it('throws on unknown contract error when strict is true', async () => {
       args:             (0x, 0x)
 
     Docs: https://viem.sh/docs/contract/decodeErrorResult
-    Version: 2.21.12]
+    Version: viem@2.30.6]
   `)
 })
