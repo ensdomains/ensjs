@@ -69,8 +69,8 @@ const func: DeployFunction = async (hre) => {
   const { network, viem } = hre
 
   const nonceManager = await makeNonceManager(hre)
-  const wrappedNameGenerator = await makeWrappedNameGenerator(hre)
-  const legacyNameGenerator = await makeLegacyNameGenerator(hre)
+  const wrappedNameGenerator = await makeWrappedNameGenerator(hre, nonceManager)
+  const legacyNameGenerator = await makeLegacyNameGenerator(hre, nonceManager)
 
   await network.provider.send('evm_setAutomine', [false])
 
