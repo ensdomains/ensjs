@@ -1,9 +1,9 @@
 import {
-  BaseError,
+  type BaseError,
+  type Hex,
   decodeFunctionResult,
   encodeFunctionData,
   labelhash,
-  type Hex,
 } from 'viem'
 import {
   baseRegistrarGracePeriodSnippet,
@@ -19,8 +19,8 @@ import type {
   SimpleTransactionRequest,
 } from '../../types.js'
 import {
-  generateFunction,
   type GeneratedFunction,
+  generateFunction,
 } from '../../utils/generateFunction.js'
 import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate.js'
 import { namehash } from '../../utils/normalise.js'
@@ -127,7 +127,7 @@ const decode = async (
   const contractToUse = getContractToUse(contract, labels)
 
   let expiry: bigint
-  let gracePeriod: bigint = 0n
+  let gracePeriod = 0n
 
   if (contractToUse === 'nameWrapper') {
     ;[, , expiry] = decodeFunctionResult({

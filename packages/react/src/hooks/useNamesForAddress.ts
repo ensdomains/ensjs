@@ -1,10 +1,10 @@
-import type { Address } from 'viem'
 import {
-  getNamesForAddress,
   type GetNamesForAddressReturnType,
+  getNamesForAddress,
 } from '@ensdomains/ensjs/subgraph'
+import type { Address } from 'viem'
 import type { ParamWithClients, QueryConfig } from '../client.js'
-import { useQuery, type UseQueryReturnType } from './useQuery.js'
+import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseNamesForAddressParams = ParamWithClients<{
   address: Address

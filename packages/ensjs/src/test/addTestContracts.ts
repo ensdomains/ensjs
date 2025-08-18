@@ -1,10 +1,6 @@
+import { resolve } from 'node:path'
 import { config } from 'dotenv'
-import { resolve } from 'path'
 import {
-  TransactionReceiptNotFoundError,
-  createPublicClient,
-  createTestClient,
-  createWalletClient,
   http,
   type Account,
   type Address,
@@ -12,12 +8,16 @@ import {
   type PublicClient,
   type TestClient,
   type TransactionReceipt,
+  TransactionReceiptNotFoundError,
   type WalletClient,
+  createPublicClient,
+  createTestClient,
+  createWalletClient,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 
 config({
-  path: resolve(__dirname, '../../.env.local'),
+  path: resolve(import.meta.dirname, '../../.env.local'),
   override: true,
 })
 
@@ -93,7 +93,7 @@ export const localhost = {
   },
   subgraphs: {
     ens: {
-      url: 'http://localhost:8000/subgraphs/name/graphprotocol/ens',
+      url: 'http://localhost:42069/subgraph',
     },
   },
 } as const

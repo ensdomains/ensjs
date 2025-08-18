@@ -1,9 +1,9 @@
 import {
-  createClient,
   type Client,
   type ClientConfig,
   type PublicRpcSchema,
   type Transport,
+  createClient,
 } from 'viem'
 import { addEnsContracts } from '../contracts/addEnsContracts.js'
 import type {
@@ -11,10 +11,10 @@ import type {
   ChainWithEns,
 } from '../contracts/consts.js'
 import type { Prettify } from '../types.js'
-import { ensPublicActions, type EnsPublicActions } from './decorators/public.js'
+import { type EnsPublicActions, ensPublicActions } from './decorators/public.js'
 import {
-  ensSubgraphActions,
   type EnsSubgraphActions,
+  ensSubgraphActions,
 } from './decorators/subgraph.js'
 
 export type EnsPublicClientConfig<

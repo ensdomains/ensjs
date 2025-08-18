@@ -1,11 +1,11 @@
 import {
-  encodeFunctionData,
-  toHex,
   type Account,
   type Address,
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  encodeFunctionData,
+  toHex,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'

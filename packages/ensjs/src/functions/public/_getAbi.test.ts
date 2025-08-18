@@ -10,13 +10,14 @@ it('does not propagate error when strict is false', async () => {
 })
 
 it('propagates error when strict is true', async () => {
-  await expect(_getAbi.decode({} as ClientWithEns, '0x1234', { strict: true }))
-    .rejects.toThrowErrorMatchingInlineSnapshot(`
+  await expect(
+    _getAbi.decode({} as ClientWithEns, '0x1234', { strict: true }),
+  ).rejects.toThrowErrorMatchingInlineSnapshot(`
     [AbiDecodingDataSizeTooSmallError: Data size of 2 bytes is too small for given parameters.
 
     Params: (uint256, bytes)
     Data:   0x1234 (2 bytes)
 
-    Version: 2.21.12]
+    Version: viem@2.30.6]
   `)
 })

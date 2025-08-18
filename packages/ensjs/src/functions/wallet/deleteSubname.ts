@@ -1,9 +1,9 @@
 import {
-  encodeFunctionData,
   type Account,
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  encodeFunctionData,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
