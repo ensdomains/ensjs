@@ -25,6 +25,9 @@ jobs:
       - name: Build ensjs
         run: pnpm -F @ensdomains/ensjs build
 
+      - name: Publish to pkg.pr.new
+        run: pnpm dlx pkg-pr-new publish './packages/ensjs'
+
       - name: Run tests
         run: pnpm -F @ensdomains/ensjs tenv start --extra-time 11368000
   lint:
