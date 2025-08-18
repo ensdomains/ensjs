@@ -20,8 +20,10 @@ const makeNonceManager = async (href: HardhatRuntimeEnvironment) => {
 
   return {
     getNonce: (name: string) => {
+      console.log('Getting nonce for', name, nonceMap[name])
       const nonce = nonceMap[name]
       nonceMap[name]++
+      console.log('Incremented nonce for', name, nonceMap[name])
       return nonce
     },
   }
