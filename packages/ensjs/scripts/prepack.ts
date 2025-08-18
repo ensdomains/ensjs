@@ -2,8 +2,12 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 /* eslint-disable no-continue */
 import jsonFs from 'jsonfile'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 type Exports = {
   [key: string]: string | { types?: string; import: string; default: string }
@@ -11,7 +15,7 @@ type Exports = {
 
 // Generates a package.json to be published to NPM with only the necessary fields.
 function generatePackageJson() {
-  const packageJsonPath = path.join(import.meta.dirname, '../package.json')
+  const packageJsonPath = path.join(__dirname, '../package.json')
   const tmpPackageJson = jsonFs.readFileSync(packageJsonPath)
 
   jsonFs.writeFileSync(`${packageJsonPath}.tmp`, tmpPackageJson, { spaces: 2 })
@@ -42,10 +46,11 @@ function generatePackageJson() {
   // Generate proxy packages for each export.
   const files_ = [...files]
   for (const [key, value] of Object.entries(exports_ as Exports)) {
+    console.log(key, value)
     if (typeof value === 'string') continue
     if (key === '.') continue
-    if (!value.default || !value.import)
-      throw new Error('`default` and `import` are required.')
+    if (!value.default)
+      throw new Error('`default` is required.')
     if (!fs.existsSync(key)) fs.mkdirSync(key)
     if (!fs.existsSync(`${key}/package.json`))
       fs.writeFileSync(
@@ -57,7 +62,7 @@ function generatePackageJson() {
         if (k === 'import') return 'module'
         if (k === 'default') return 'main'
         if (k === 'types') return 'types'
-        throw new Error('Invalid key')
+        return k // Allow other keys to pass through
       })()
       return `"${key_}": "${v.replace('./', '../')}"`
     })
