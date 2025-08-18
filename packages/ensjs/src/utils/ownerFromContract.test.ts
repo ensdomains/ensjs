@@ -9,9 +9,8 @@ const baseParams = {
 }
 
 it('uses nameWrapper contract when contract is nameWrapper', () => {
-  expect(
-    ownerFromContract({ ...baseParams, contract: 'nameWrapper' }),
-  ).toMatchInlineSnapshot(`
+  expect(ownerFromContract({ ...baseParams, contract: 'nameWrapper' }))
+    .toMatchInlineSnapshot(`
     {
       "data": "0x6352211eeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
       "to": "${deploymentAddresses.NameWrapper}",
@@ -19,9 +18,8 @@ it('uses nameWrapper contract when contract is nameWrapper', () => {
   `)
 })
 it('uses registry contract when contract is registry', () => {
-  expect(
-    ownerFromContract({ ...baseParams, contract: 'registry' }),
-  ).toMatchInlineSnapshot(`
+  expect(ownerFromContract({ ...baseParams, contract: 'registry' }))
+    .toMatchInlineSnapshot(`
     {
       "data": "0x02571be3eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
       "to": "${deploymentAddresses.ENSRegistry}",
@@ -43,9 +41,8 @@ it('uses registrar contract when contract is registrar', () => {
   `)
 })
 it('throws when contract is not nameWrapper, registry, or registrar', () => {
-  expect(() =>
-    ownerFromContract({ ...baseParams, contract: 'invalid' as any }),
-  ).toThrowErrorMatchingInlineSnapshot(`
+  expect(() => ownerFromContract({ ...baseParams, contract: 'invalid' as any }))
+    .toThrowErrorMatchingInlineSnapshot(`
       [InvalidContractTypeError: Invalid contract type: invalid
 
       - Supported contract types: nameWrapper, registry, registrar

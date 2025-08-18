@@ -107,6 +107,7 @@ export {
 export {
   universalResolverErrors,
   universalResolverFindResolverSnippet,
+  universalResolverResolveArraySnippet,
   universalResolverResolveSnippet,
   universalResolverReverseSnippet,
 } from './universalResolver.js'

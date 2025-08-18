@@ -1,4 +1,4 @@
-import { BaseError, type RawContractError } from 'viem'
+import { BaseError, RawContractError } from 'viem'
 
 export const getRevertErrorData = (err: unknown) => {
   if (!(err instanceof BaseError)) return undefined

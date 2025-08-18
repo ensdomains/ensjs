@@ -1,5 +1,5 @@
 // Adapted from https://github.com/mafintosh/dns-packet
-import { type ByteArray, bytesToString, labelhash, stringToBytes } from 'viem'
+import { bytesToString, labelhash, stringToBytes, type ByteArray } from 'viem'
 import { encodeLabelhash } from './labels.js'
 
 /*

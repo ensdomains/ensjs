@@ -13,9 +13,9 @@ import {
   walletClient,
 } from '../../test/addTestContracts.js'
 import { namehash } from '../../utils/normalise.js'
-import getWrapperData from '../public/getWrapperData.js'
 import createSubname from './createSubname.js'
 import setFuses from './setFuses.js'
+import getWrapperData from '../public/getWrapperData.js'
 
 let snapshot: Hex
 let accounts: Address[]

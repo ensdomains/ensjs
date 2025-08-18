@@ -1,11 +1,11 @@
+import type { Hex } from 'viem'
 import {
+  getSupportedInterfaces,
   type GetSupportedInterfacesParameters,
   type GetSupportedInterfacesReturnType,
-  getSupportedInterfaces,
 } from '@ensdomains/ensjs/public'
-import type { Hex } from 'viem'
 import type { ParamWithClients, QueryConfig } from '../client.js'
-import { type UseQueryReturnType, useQuery } from './useQuery.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseEnsResolverInterfacesParams<
   Interfaces extends readonly Hex[] = [Hex, Hex],

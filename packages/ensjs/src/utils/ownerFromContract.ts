@@ -1,4 +1,4 @@
-import { type Hex, encodeFunctionData, labelhash } from 'viem'
+import { encodeFunctionData, labelhash, type Hex } from 'viem'
 import { baseRegistrarOwnerOfSnippet } from '../contracts/baseRegistrar.js'
 import type { ClientWithEns } from '../contracts/consts.js'
 import { getChainContractAddress } from '../contracts/getChainContractAddress.js'

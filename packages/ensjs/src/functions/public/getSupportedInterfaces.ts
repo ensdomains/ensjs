@@ -1,9 +1,9 @@
 import {
-  type Address,
-  type BaseError,
-  type Hex,
+  BaseError,
   encodeFunctionData,
   padHex,
+  type Address,
+  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'

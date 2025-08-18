@@ -1,20 +1,18 @@
 import {
-  type Address,
-  type BaseError,
-  type Hex,
+  BaseError,
   decodeAbiParameters,
   decodeFunctionResult,
   encodeFunctionData,
   hexToBigInt,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { multicallSnippet } from '../../contracts/multicall.js'
 import {
-  universalResolverResolveSnippet,
-  universalResolverResolveWithGatewaysSnippet,
-  universalResolverReverseWithGatewaysSnippet,
+  universalResolverResolveArraySnippet,
+  universalResolverResolveArrayWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
 import type {
   DecodedAddr,
@@ -152,7 +150,7 @@ const createCalls = (
         key: text,
         call: _getText.encode(client, { name, key: text }),
         type: 'text',
-      }) as const,
+      } as const),
   ),
   ...(coins ?? []).map(
     (coin) =>
@@ -160,7 +158,7 @@ const createCalls = (
         key: coin,
         call: _getAddr.encode(client, { name, coin }),
         type: 'coin',
-      }) as const,
+      } as const),
   ),
   ...(contentHash
     ? ([
@@ -217,10 +215,7 @@ const encode = (
   })
   const args = [
     toHex(packetToBytes(name)),
-    encodeFunctionData({
-      abi: multicallSnippet,
-      args: [calls.map((c) => c.call.data)],
-    }),
+    calls.map((c) => c.call.data),
   ] as const
 
   return {
@@ -228,8 +223,8 @@ const encode = (
     ...(gatewayUrls
       ? {
           data: encodeFunctionData({
-            abi: universalResolverResolveWithGatewaysSnippet,
-            functionName: 'resolveWithGateways',
+            abi: universalResolverResolveArrayWithGatewaysSnippet,
+            functionName: 'resolve',
             args: [...args, gatewayUrls] as const,
           }),
           passthrough: {
@@ -240,7 +235,7 @@ const encode = (
         }
       : {
           data: encodeFunctionData({
-            abi: universalResolverResolveSnippet,
+            abi: universalResolverResolveArraySnippet,
             functionName: 'resolve',
             args,
           }),
@@ -383,7 +378,7 @@ const decode = async <
     const result = await multicallWrapper.decode(
       client,
       data,
-      passthrough.calls.filter((c) => c).map((c) => c?.call!),
+      passthrough.calls.filter((c) => c).map((c) => c!.call),
     )
     resolverAddress = resolver.address
     recordData = result.map((r) => r.returnData)
@@ -391,8 +386,8 @@ const decode = async <
     const isSafe = checkSafeUniversalResolverData(data, {
       strict: false,
       abi: gatewayUrls
-        ? universalResolverReverseWithGatewaysSnippet
-        : universalResolverResolveSnippet,
+        ? universalResolverResolveArrayWithGatewaysSnippet
+        : universalResolverResolveArraySnippet,
       args: passthrough.args,
       functionName: 'resolve',
       address: passthrough.address,
@@ -405,20 +400,17 @@ const decode = async <
       } as GetRecordsReturnType<TTexts, TCoins, TContentHash, TAbi>
 
     const result = decodeFunctionResult({
-      abi: universalResolverResolveSnippet,
+      abi: universalResolverResolveArraySnippet,
       functionName: 'resolve',
       data,
     })
     ;[, resolverAddress] = result
-    recordData = decodeFunctionResult({
-      abi: multicallSnippet,
-      data: result[0],
-    }).map((r, i) => {
-      if (r === '0x') {
+    recordData = result[0].map((item, i) => {
+      if (!item.success) {
         calls[i] = null
         return null
       }
-      return (r.length - 2) % 64 === 0 ? r : null
+      return item.returnData
     })
   }
 

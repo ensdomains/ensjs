@@ -1,5 +1,3 @@
 packages:
-  - packages/*
-  - examples/*
-patchedDependencies:
-  hardhat-deploy: patches/hardhat-deploy.patch
+  - 'packages/*'
+  - 'examples/*'

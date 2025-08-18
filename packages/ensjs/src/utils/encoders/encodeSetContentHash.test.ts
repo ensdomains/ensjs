@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
-  type EncodeSetContentHashParameters,
   encodeSetContentHash,
+  type EncodeSetContentHashParameters,
 } from './encodeSetContentHash.js'
 
 describe('encodeSetContentHash', () => {
@@ -31,9 +31,8 @@ describe('encodeSetContentHash', () => {
       namehash,
       contentHash: 'invalid-content-hash',
     }
-    expect(() =>
-      encodeSetContentHash(params),
-    ).toThrowErrorMatchingInlineSnapshot(`
+    expect(() => encodeSetContentHash(params))
+      .toThrowErrorMatchingInlineSnapshot(`
         [InvalidContentHashError: Invalid content hash
 
         Version: @ensdomains/ensjs@1.0.0-mock.0]

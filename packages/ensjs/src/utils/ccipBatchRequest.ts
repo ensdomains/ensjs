@@ -1,11 +1,11 @@
 import {
-  type Address,
   BaseError,
-  type Hex,
   HttpRequestError,
   ccipRequest,
   encodeErrorResult,
   parseAbi,
+  type Address,
+  type Hex,
 } from 'viem'
 
 type ReadonlyDeep<T> = {

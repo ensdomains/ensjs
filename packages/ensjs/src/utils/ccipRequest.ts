@@ -1,11 +1,11 @@
 import {
-  type CcipRequestParameters,
-  type Chain,
   decodeFunctionData,
   encodeFunctionResult,
   isAddressEqual,
   parseAbi,
   ccipRequest as viemCcipRequest,
+  type CcipRequestParameters,
+  type Chain,
 } from 'viem'
 import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
 import { ccipBatchRequest } from './ccipBatchRequest.js'

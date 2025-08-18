@@ -1,10 +1,10 @@
 import {
+  getDecodedName,
   type GetDecodedNameParameters,
   type GetDecodedNameReturnType,
-  getDecodedName,
 } from '@ensdomains/ensjs/subgraph'
 import type { ParamWithClients, QueryConfig } from '../client.js'
-import { type UseQueryReturnType, useQuery } from './useQuery.js'
+import { useQuery, type UseQueryReturnType } from './useQuery.js'
 
 export type UseDecodedNameParams = ParamWithClients<GetDecodedNameParameters>
 

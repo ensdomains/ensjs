@@ -1,4 +1,4 @@
-import { type Hex, bytesToHex, stringToHex } from 'viem'
+import { bytesToHex, stringToHex, type Hex } from 'viem'
 import { UnknownContentTypeError } from '../../errors/utils.js'
 import type { Prettify } from '../../types.js'
 

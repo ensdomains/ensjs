@@ -1,4 +1,4 @@
-import { type Hex, labelhash } from 'viem'
+import { labelhash, type Hex } from 'viem'
 import {
   InvalidEncodedLabelError,
   InvalidLabelhashError,

@@ -1,10 +1,10 @@
 import {
-  type Address,
-  type BaseError,
-  type Hex,
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
   getContractError,
+  type Address,
+  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
@@ -16,10 +16,10 @@ import type {
   TransactionRequestWithPassthrough,
 } from '../../types.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
-import { type DecodedFuses, decodeFuses } from '../../utils/fuses.js'
+import { decodeFuses, type DecodedFuses } from '../../utils/fuses.js'
 import {
-  type GeneratedFunction,
   generateFunction,
+  type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import { makeSafeSecondsDate } from '../../utils/makeSafeSecondsDate.js'
 import { namehash } from '../../utils/normalise.js'

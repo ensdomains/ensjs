@@ -1,15 +1,13 @@
 {
-	"include": ["./src"],
-	"exclude": ["src/**/*.test.ts", "src/test/**/*"],
-	"compilerOptions": {
-		"sourceMap": true,
-		"rootDir": "./src",
-		"outDir": "./dist",
-		"declaration": true,
-		"module":"nodenext",
-		"target": "esnext",
-		"moduleResolution": "nodenext",
-		"skipLibCheck": true,
-		"strict": true
-	}
+  "extends": "./tsconfig.json",
+  "include": ["./src"],
+  "exclude": ["src/**/*.test.ts", "src/test/**/*", "./src/ABIs/**/*"],
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "rootDir": "./src",
+    "paths": {
+      "abitype": ["../node_modules/abitype/dist"]
+    }
+  }
 }

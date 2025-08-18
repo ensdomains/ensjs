@@ -1,5 +1,5 @@
-import { type RequestListener, createServer } from 'node:http'
-import type { AddressInfo } from 'node:net'
+import { createServer, type RequestListener } from 'http'
+import type { AddressInfo } from 'net'
 
 export function createHttpServer(handler: RequestListener): Promise<{
   close: () => Promise<unknown>

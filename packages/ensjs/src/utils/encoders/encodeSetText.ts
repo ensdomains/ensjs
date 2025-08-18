@@ -1,4 +1,4 @@
-import { type Hex, encodeFunctionData } from 'viem'
+import { encodeFunctionData, type Hex } from 'viem'
 import { publicResolverSetTextSnippet } from '../../contracts/publicResolver.js'
 
 export type EncodeSetTextParameters = {

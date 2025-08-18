@@ -5,17 +5,19 @@ import { mainnet } from 'viem/chains'
 
 const client = createEnsPublicClient({
   chain: mainnet,
-  transport: http('https://web3.euc.li/v1/mainnet'),
+  transport: http('https://web3.ens.domains/v1/mainnet'),
 })
 
 const main = async () => {
   const records = await client.getSubgraphRecords({ name: 'ens.eth' })
   const recordData = await client.getRecords({
     name: 'ens.eth',
-    coins: [...(records?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
-    texts: [...(records?.texts || []), 'avatar', 'email', 'description'],
-    contentHash: true,
-    abi: true,
+    records: {
+      coins: [...(records?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
+      texts: [...(records?.texts || []), 'avatar', 'email', 'description'],
+      contentHash: true,
+      abi: true,
+    },
   })
   console.log(recordData)
 

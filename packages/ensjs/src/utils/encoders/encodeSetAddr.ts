@@ -1,4 +1,4 @@
-import { type Address, type Hex, bytesToHex, encodeFunctionData } from 'viem'
+import { bytesToHex, encodeFunctionData, type Address, type Hex } from 'viem'
 import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
 import { getCoderFromCoin } from '../normaliseCoinId.js'
 

@@ -4,26 +4,26 @@ If you want to use a custom subgraph endpoint for the chain you are using, such 
 Keep in mind though that you can only use custom URIs if not using the default exported ENS clients.
 
 ```ts
-import { http, createClient } from "viem";
-import { mainnet } from "viem/chains";
-import { addEnsContracts } from "@ensdomains/ensjs";
-import { getSubgraphRecords } from "@ensdomains/ensjs/subgraph";
+import { http, createClient } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getSubgraphRecords } from '@ensdomains/ensjs/subgraph'
 
-const mainnetWithEns = addEnsContracts(mainnet);
+const mainnetWithEns = addEnsContracts(mainnet)
 
 const chain = {
   ...mainnetWithEns,
   subgraphs: {
     ens: {
-      url: "http://localhost:42069/subgraph",
+      url: 'http://localhost:8000/subgraphs/name/ensdomains/ens',
     },
   },
-};
+}
 
 const client = createClient({
   chain,
   transport: http(),
-});
+})
 
-const subgraphRecords = await getSubgraphRecords(client, { name: "ens.eth" });
+const subgraphRecords = await getSubgraphRecords(client, { name: 'ens.eth' })
 ```

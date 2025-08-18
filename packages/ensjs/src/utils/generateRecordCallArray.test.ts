@@ -52,7 +52,7 @@ it('does not add abi call when abi is undefined', () => {
       namehash: namehash('test.eth'),
       abi: undefined,
     }),
-  ).toMatchInlineSnapshot('[]')
+  ).toMatchInlineSnapshot(`[]`)
 })
 it('adds text calls when texts array is defined and not empty', () => {
   expect(

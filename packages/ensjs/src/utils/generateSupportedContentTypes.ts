@@ -15,7 +15,6 @@ export const generateSupportedContentTypes = (
     : [encodeAsItemOrList]
   return encodeAsList.reduce<bigint>((result, encodeAs) => {
     const contentType = abiEncodeAsMap[encodeAs]
-    // biome-ignore lint/style/noParameterAssign: idk what is this
     if (contentType) result |= contentType
     return result
   }, 0n)

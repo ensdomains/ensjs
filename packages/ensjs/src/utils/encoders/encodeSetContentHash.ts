@@ -1,4 +1,4 @@
-import { type Hex, encodeFunctionData } from 'viem'
+import { encodeFunctionData, type Hex } from 'viem'
 import { publicResolverSetContenthashSnippet } from '../../contracts/publicResolver.js'
 import { encodeContentHash } from '../contentHash.js'
 

@@ -1,5 +1,4 @@
 import type { Account, Address, Chain, Client, Transport } from 'viem'
-import { holesky, mainnet, sepolia } from 'viem/chains'
 import type { Assign, Prettify } from '../types.js'
 
 type ChainContract = {
@@ -7,7 +6,7 @@ type ChainContract = {
   blockCreated?: number
 }
 
-export const supportedChains = [mainnet.id, sepolia.id, holesky.id] as const
+export const supportedChains = [1, 5, 17000, 11155111] as const
 export const supportedContracts = [
   'ensBaseRegistrarImplementation',
   'ensBulkRenewal',
@@ -27,7 +26,7 @@ export type SupportedChain = (typeof supportedChains)[number]
 export type SupportedContract = (typeof supportedContracts)[number]
 
 export const addresses = {
-  [mainnet.id]: {
+  1: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -56,7 +55,7 @@ export const addresses = {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensUniversalResolver: {
-      address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
+      address: '0xce01f8eee7E479C928F8919abD53E553a36CeF67',
     },
     legacyEthRegistrarController: {
       address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
@@ -65,7 +64,45 @@ export const addresses = {
       address: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
     },
   },
-  [holesky.id]: {
+  5: {
+    ensBaseRegistrarImplementation: {
+      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
+    },
+    ensBulkRenewal: {
+      address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
+    },
+    ensDnsRegistrar: {
+      address: '0x8edc487D26F6c8Fa76e032066A3D4F87E273515d',
+    },
+    ensDnssecImpl: {
+      address: '0xF427c4AdED8B6dfde604865c1a7E953B160C26f0',
+    },
+    ensEthRegistrarController: {
+      address: '0xCc5e7dB10E65EED1BBD105359e7268aa660f6734',
+    },
+    ensNameWrapper: {
+      address: '0x114D4603199df73e7D157787f8778E21fCd13066',
+    },
+    ensPublicResolver: {
+      address: '0xd7a4F6473f32aC2Af804B3686AE8F1932bC35750',
+    },
+    ensRegistry: {
+      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    ensReverseRegistrar: {
+      address: '0x6d9F26FfBcF1c6f0bAe9F2C1f7fBe8eE6B1d8d4d',
+    },
+    ensUniversalResolver: {
+      address: '0x898A1182F3C2BBBF0b16b4DfEf63E9c3e9eB4821',
+    },
+    legacyEthRegistrarController: {
+      address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
+    },
+    legacyPublicResolver: {
+      address: '0xDaaF96c344f63131acadD0Ea35170E7892d3dfBA',
+    },
+  },
+  17000: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -94,7 +131,7 @@ export const addresses = {
       address: '0x65EE0b0B030a76c95a7ff046C0e0c8f7A2d1B004',
     },
     ensUniversalResolver: {
-      address: '0xf606bc986635dab91b189aee8f565f45a0336f89',
+      address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
     },
     legacyEthRegistrarController: {
       address: '0xf13fC748601fDc5afA255e9D9166EB43f603a903',
@@ -103,7 +140,7 @@ export const addresses = {
       address: '0xc5e43b622b5e6C379a984E9BdB34E9A545564fA5',
     },
   },
-  [sepolia.id]: {
+  11155111: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
@@ -132,7 +169,7 @@ export const addresses = {
       address: '0xCF75B92126B02C9811d8c632144288a3eb84afC8',
     },
     ensUniversalResolver: {
-      address: '0x49c9331501b37191d54f5e332b307df82d15e9cc',
+      address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',
     },
     legacyEthRegistrarController: {
       address: '0x7e02892cfc2Bfd53a75275451d73cF620e793fc0',
@@ -156,6 +193,11 @@ export const subgraphs = {
   1: {
     ens: {
       url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+    },
+  },
+  5: {
+    ens: {
+      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
     },
   },
   17000: {

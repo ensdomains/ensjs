@@ -1,4 +1,4 @@
-import { type Hex, decodeFunctionResult, encodeFunctionData } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { publicResolverTextSnippet } from '../../contracts/publicResolver.js'
 import type { SimpleTransactionRequest } from '../../types.js'

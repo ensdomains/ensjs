@@ -1,10 +1,10 @@
 import {
-  type BaseError,
-  type Hex,
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
   getContractError,
   hexToBytes,
+  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
@@ -14,8 +14,8 @@ import type {
   TransactionRequestWithPassthrough,
 } from '../../types.js'
 import {
-  type GeneratedFunction,
   generateFunction,
+  type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import { bytesToPacket } from '../../utils/hexEncodedName.js'
 import { namehash } from '../../utils/normalise.js'

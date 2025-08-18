@@ -1,8 +1,8 @@
 import {
-  type BaseError,
-  type Hex,
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
+  type Hex,
 } from 'viem'
 import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
@@ -11,8 +11,8 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { SimpleTransactionRequest } from '../../types.js'
 import {
-  type GeneratedFunction,
   generateFunction,
+  type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import { getNameType } from '../../utils/getNameType.js'
 import multicallWrapper from './multicallWrapper.js'

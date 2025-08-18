@@ -1,4 +1,12 @@
 import {
+  ens_beautify,
+  ens_emoji,
+  ens_normalize,
+  ens_normalize_fragment,
+  ens_split,
+  ens_tokenize,
+  is_combining_mark,
+  should_escape,
   type DisallowedToken,
   type EmojiToken,
   type IgnoredToken,
@@ -9,23 +17,8 @@ import {
   type TextToken,
   type Token,
   type ValidToken,
-  ens_beautify,
-  ens_emoji,
-  ens_normalize,
-  ens_normalize_fragment,
-  ens_split,
-  ens_tokenize,
-  is_combining_mark,
-  should_escape,
 } from '@adraffy/ens-normalize'
-import {
-  type ByteArray,
-  bytesToHex,
-  concat,
-  hexToBytes,
-  keccak256,
-  stringToBytes,
-} from 'viem'
+import { bytesToHex, concat, hexToBytes, keccak256, stringToBytes } from 'viem'
 import { decodeLabelhash, isEncodedLabelhash } from './labels.js'
 
 const zeros = new Uint8Array(32)
@@ -34,7 +27,7 @@ zeros.fill(0)
 export const normalise = (name: string) => (name ? ens_normalize(name) : name)
 
 export function namehash(name: string) {
-  let result: ByteArray = new Uint8Array(32).fill(0)
+  let result = new Uint8Array(32).fill(0)
   if (!name) return bytesToHex(result)
 
   const labels = name.split('.')

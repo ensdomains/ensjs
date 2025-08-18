@@ -6,6 +6,7 @@
 //                 Thibault Poisson <https://github.com/OrIOg>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 enum constants {
   // FlushValues
   Z_NO_FLUSH = 0,

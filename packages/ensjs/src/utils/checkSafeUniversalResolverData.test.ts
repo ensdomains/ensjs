@@ -1,11 +1,7 @@
-import { RawContractError, bytesToHex, encodeErrorResult } from 'viem'
+import { RawContractError } from 'viem'
 import { describe, expect, it } from 'vitest'
-import {
-  universalResolverErrors,
-  universalResolverResolveSnippet,
-} from '../contracts/universalResolver.js'
+import { universalResolverResolveSnippet } from '../contracts/universalResolver.js'
 import { checkSafeUniversalResolverData } from './checkSafeUniversalResolverData.js'
-import { packetToBytes } from './hexEncodedName.js'
 
 describe('checkSafeUniversalResolverData', () => {
   it('returns true when the data is safe to use and strict is false', () => {
@@ -36,11 +32,7 @@ describe('checkSafeUniversalResolverData', () => {
     expect(
       checkSafeUniversalResolverData(
         new RawContractError({
-          data: encodeErrorResult({
-            abi: universalResolverErrors,
-            errorName: 'ResolverNotFound',
-            args: [bytesToHex(packetToBytes('test.eth'))],
-          }),
+          data: '0x7199966d', // ResolverNotFound()
         }),
         {
           strict: false,
@@ -57,11 +49,7 @@ describe('checkSafeUniversalResolverData', () => {
     expect(() => {
       checkSafeUniversalResolverData(
         new RawContractError({
-          data: encodeErrorResult({
-            abi: universalResolverErrors,
-            errorName: 'ResolverNotFound',
-            args: [bytesToHex(packetToBytes('test.eth'))],
-          }),
+          data: '0x7199966d', // ResolverNotFound()
         }),
         {
           strict: true,
@@ -74,15 +62,14 @@ describe('checkSafeUniversalResolverData', () => {
     }).toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound(bytes name)
-                             (0x04746573740365746800)
+      Error: ResolverNotFound()
        
       Contract Call:
         address:   0x1234567890abcdef
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: viem@2.30.6]
+      Version: 2.21.12]
     `)
   })
 
@@ -90,11 +77,7 @@ describe('checkSafeUniversalResolverData', () => {
     expect(() => {
       checkSafeUniversalResolverData(
         new RawContractError({
-          data: encodeErrorResult({
-            abi: universalResolverErrors,
-            errorName: 'ResolverNotFound',
-            args: [bytesToHex(packetToBytes('test.eth'))],
-          }),
+          data: '0x7199966d', // ResolverNotFound()
         }),
         {
           strict: true,
@@ -107,15 +90,14 @@ describe('checkSafeUniversalResolverData', () => {
     }).toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound(bytes name)
-                             (0x04746573740365746800)
+      Error: ResolverNotFound()
        
       Contract Call:
         address:   0x1234567890abcdef
         function:  resolve(bytes name, bytes data)
         args:             (ab, cd)
 
-      Version: viem@2.30.6]
+      Version: 2.21.12]
     `)
   })
 
@@ -147,7 +129,7 @@ describe('checkSafeUniversalResolverData', () => {
         args:             (0x, 0x)
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: viem@2.30.6]
+      Version: 2.21.12]
     `)
   })
 
@@ -179,7 +161,7 @@ describe('checkSafeUniversalResolverData', () => {
         args:             (0x, 0x)
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: viem@2.30.6]
+      Version: 2.21.12]
     `)
   })
 })

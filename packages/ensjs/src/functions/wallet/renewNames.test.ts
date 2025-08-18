@@ -1,4 +1,4 @@
-import { type Address, type Hex, labelhash } from 'viem'
+import { labelhash, type Address, type Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { baseRegistrarNameExpiresSnippet } from '../../contracts/baseRegistrar.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'

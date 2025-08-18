@@ -4,12 +4,10 @@ import type { Address } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { publicClient, walletClient } from '../../test/addTestContracts.js'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
-import getExpiry from '../public/getExpiry.js'
+import getNamesForAddress from './getNamesForAddress.js'
 import getOwner from '../public/getOwner.js'
+import getExpiry from '../public/getExpiry.js'
 import getWrapperData from '../public/getWrapperData.js'
-import getNamesForAddress, {
-  type NameWithRelation,
-} from './getNamesForAddress.js'
 
 let accounts: Address[]
 
@@ -82,7 +80,7 @@ it('should get ascending names by expiry date correctly, including names with th
   const expectedNames = fullResults.map((item) => item.name)
 
   const names = []
-  let previousPage: NameWithRelation[] | undefined
+  let previousPage
   do {
     // eslint-disable-next-line no-await-in-loop
     const currentPage = await getNamesForAddress(publicClient, {
@@ -110,7 +108,7 @@ it('should get descending names by expiry date correctly, including names with t
 
   const names = []
   // initial result
-  let previousPage: NameWithRelation[] | undefined
+  let previousPage
   do {
     // eslint-disable-next-line no-await-in-loop
     const currentPage = await getNamesForAddress(publicClient, {
@@ -136,7 +134,7 @@ it('should get ascending names by creation date correctly, including names with 
   const expectedNames = fullResults.map((item) => item.name)
 
   const names = []
-  let previousPage: NameWithRelation[] | undefined
+  let previousPage
   do {
     // eslint-disable-next-line no-await-in-loop
     const currentPage = await getNamesForAddress(publicClient, {
@@ -164,7 +162,7 @@ it('should get descending names by creation date correctly, including names with
 
   const names = []
   // initial result
-  let previousPage: NameWithRelation[] | undefined
+  let previousPage
   do {
     // eslint-disable-next-line no-await-in-loop
     const currentPage = await getNamesForAddress(publicClient, {

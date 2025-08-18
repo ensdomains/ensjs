@@ -82,7 +82,7 @@ export class FusesInvalidUnnamedFuseError extends BaseError {
   constructor({ fuse }: { fuse: any }) {
     super(`${fuse} is not a valid unnamed fuse`, {
       metaMessages: [
-        '- If you are trying to set a named fuse, use the named property',
+        `- If you are trying to set a named fuse, use the named property`,
       ],
     })
   }
@@ -138,7 +138,7 @@ export class WrappedLabelTooLargeError extends BaseError {
     super('Supplied label was too long', {
       metaMessages: [
         `- Supplied label: ${label}`,
-        '- Max byte length: 255',
+        `- Max byte length: 255`,
         `- Actual byte length: ${byteLength}`,
       ],
     })

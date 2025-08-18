@@ -1,9 +1,9 @@
 import {
-  type BaseError,
   CallExecutionError,
-  type Hex,
   decodeErrorResult,
   getContractError,
+  type BaseError,
+  type Hex,
 } from 'viem'
 import type { Prettify } from '../types.js'
 import { getRevertErrorData } from './getRevertErrorData.js'
@@ -45,7 +45,7 @@ export const checkSafeUniversalResolverData = (
             data: errorData,
           })
           return false
-        } catch (_error) {}
+        } catch (error) {}
       }
     }
     if (data instanceof CallExecutionError) throw data

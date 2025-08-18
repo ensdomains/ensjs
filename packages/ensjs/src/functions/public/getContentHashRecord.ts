@@ -6,8 +6,8 @@ import type {
   TransactionRequestWithPassthrough,
 } from '../../types.js'
 import {
-  type GeneratedFunction,
   generateFunction,
+  type GeneratedFunction,
 } from '../../utils/generateFunction.js'
 import _getContentHash, {
   type InternalGetContentHashParameters,

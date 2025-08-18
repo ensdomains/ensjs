@@ -24,15 +24,13 @@ export class BaseError extends Error {
 
   version = getVersion()
 
-  cause?: BaseError | Error
-
   constructor(shortMesage: string, args: BaseErrorParameters = {}) {
     super()
 
     const details =
       args.cause instanceof BaseError
         ? args.cause.details
-        : (args.cause?.message ?? args.details!)
+        : args.cause?.message ?? args.details!
 
     this.message = [
       shortMesage || 'An error occurred',

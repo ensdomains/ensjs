@@ -1,10 +1,10 @@
 import {
+  encodeFunctionData,
   type Account,
   type Address,
   type Hash,
   type SendTransactionParameters,
   type Transport,
-  encodeFunctionData,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
@@ -16,8 +16,8 @@ import type {
   WriteTransactionParameters,
 } from '../../types.js'
 import {
-  type RecordOptions,
   generateRecordCallArray,
+  type RecordOptions,
 } from '../../utils/generateRecordCallArray.js'
 import { namehash } from '../../utils/normalise.js'
 

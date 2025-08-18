@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type EncodeSetTextParameters, encodeSetText } from './encodeSetText.js'
+import { encodeSetText, type EncodeSetTextParameters } from './encodeSetText.js'
 
 describe('encodeSetText', () => {
   const namehash =

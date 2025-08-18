@@ -1,10 +1,10 @@
 import {
-  type Codec as InternalCodec,
   decode,
   encode,
   getCodec,
+  type Codec as InternalCodec,
 } from '@ensdomains/content-hash'
-import { type Hex, isHex } from 'viem'
+import { isHex, type Hex } from 'viem'
 import { InvalidContentHashError } from '../errors/utils.js'
 
 export type ProtocolType =

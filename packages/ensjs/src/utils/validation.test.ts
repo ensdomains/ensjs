@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
-  type MockedFunction,
   beforeEach,
   describe,
   expect,
   it,
   vi,
+  type MockedFunction,
 } from 'vitest'
 import { parseInput, validateName } from './validation.js'
 
@@ -44,9 +44,8 @@ describe('validateName()', () => {
     expect(validateName('[root]')).toEqual('[root]')
   })
   it('should throw if the name has [root] as a label and is not the only label', () => {
-    expect(() =>
-      validateName('foo.[root].bar'),
-    ).toThrowErrorMatchingInlineSnapshot(`
+    expect(() => validateName('foo.[root].bar'))
+      .toThrowErrorMatchingInlineSnapshot(`
         [RootNameIncludesOtherLabelsError: Root name cannot have other labels
 
         - Supplied name: foo.[root].bar

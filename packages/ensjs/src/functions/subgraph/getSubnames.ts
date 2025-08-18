@@ -6,17 +6,17 @@ import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { namehash } from '../../utils/normalise.js'
 import { createSubgraphClient } from './client.js'
 import {
+  getExpiryDateOrderFilter,
   type DomainFilter,
   getCreatedAtOrderFilter,
-  getExpiryDateOrderFilter,
 } from './filters.js'
 import {
-  type SubgraphDomain,
   domainDetailsWithoutParentFragment,
   registrationDetailsFragment,
   wrappedDomainDetailsFragment,
+  type SubgraphDomain,
 } from './fragments.js'
-import { type Name, makeNameObject } from './utils.js'
+import { makeNameObject, type Name } from './utils.js'
 
 type GetSubnamesOrderBy = 'expiryDate' | 'name' | 'labelName' | 'createdAt'
 

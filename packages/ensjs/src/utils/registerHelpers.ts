@@ -1,22 +1,22 @@
 import {
-  type Address,
-  type Hex,
   encodeAbiParameters,
   keccak256,
   labelhash,
   pad,
   toBytes,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
 import {
   CampaignReferenceTooLargeError,
   ResolverAddressRequiredError,
 } from '../errors/utils.js'
 import { EMPTY_ADDRESS } from './consts.js'
-import { type EncodeChildFusesInputObject, encodeFuses } from './fuses.js'
+import { encodeFuses, type EncodeChildFusesInputObject } from './fuses.js'
 import {
-  type RecordOptions,
   generateRecordCallArray,
+  type RecordOptions,
 } from './generateRecordCallArray.js'
 import { namehash } from './normalise.js'
 
@@ -114,9 +114,7 @@ export const makeCommitmentTuple = ({
     !coins.find(
       (c) =>
         (typeof c.coin === 'string' && c.coin.toLowerCase() === 'eth') ||
-        (typeof c.coin === 'string'
-          ? Number.parseInt(c.coin) === 60
-          : c.coin === 60),
+        (typeof c.coin === 'string' ? parseInt(c.coin) === 60 : c.coin === 60),
     )
   ) {
     coins.push({ coin: 60, value: owner })

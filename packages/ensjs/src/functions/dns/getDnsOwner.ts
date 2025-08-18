@@ -1,4 +1,4 @@
-import { type Address, getAddress } from 'viem'
+import { getAddress, type Address } from 'viem'
 import {
   DnsDnssecVerificationFailedError,
   DnsInvalidAddressChecksumError,

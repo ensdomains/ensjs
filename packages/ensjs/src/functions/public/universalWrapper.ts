@@ -1,12 +1,12 @@
 import {
-  type Address,
-  type BaseError,
-  type Hex,
+  BaseError,
   decodeFunctionResult,
   encodeFunctionData,
   labelhash,
   toBytes,
   toHex,
+  type Address,
+  type Hex,
 } from 'viem'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
@@ -61,7 +61,7 @@ const encode = (
       ? {
           data: encodeFunctionData({
             abi: universalResolverResolveWithGatewaysSnippet,
-            functionName: 'resolveWithGateways',
+            functionName: 'resolve',
             args: [...args, gatewayUrls] as const,
           }),
           passthrough: {

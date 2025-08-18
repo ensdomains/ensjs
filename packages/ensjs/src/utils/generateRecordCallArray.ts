@@ -1,19 +1,19 @@
-import type { Hex } from 'viem'
+import { type Hex } from 'viem'
 import type { Prettify } from '../types.js'
 import type { EncodedAbi } from './encoders/encodeAbi.js'
 import { encodeClearRecords } from './encoders/encodeClearRecords.js'
 import {
-  type EncodeSetAbiParameters,
   encodeSetAbi,
+  type EncodeSetAbiParameters,
 } from './encoders/encodeSetAbi.js'
 import {
-  type EncodeSetAddrParameters,
   encodeSetAddr,
+  type EncodeSetAddrParameters,
 } from './encoders/encodeSetAddr.js'
 import { encodeSetContentHash } from './encoders/encodeSetContentHash.js'
 import {
-  type EncodeSetTextParameters,
   encodeSetText,
+  type EncodeSetTextParameters,
 } from './encoders/encodeSetText.js'
 
 export type RecordOptions = Prettify<{

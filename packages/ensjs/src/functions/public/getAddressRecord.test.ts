@@ -1,17 +1,9 @@
-import {
-  http,
-  RawContractError,
-  bytesToHex,
-  createPublicClient,
-  encodeErrorResult,
-} from 'viem'
+import { RawContractError, createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import { universalResolverErrors } from '../../contracts/universalResolver.js'
 import { publicClient } from '../../test/addTestContracts.js'
-import { packetToBytes } from '../../utils/hexEncodedName.js'
 import getAddressRecord from './getAddressRecord.js'
 
 const mainnetPublicClient = createPublicClient({
@@ -80,7 +72,7 @@ describe('getAddressRecord()', () => {
   })
   it('should return value for label > 255 bytes', async () => {
     const result = await getAddressRecord(mainnetPublicClient, {
-      name: '696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969.eth',
+      name: `696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969696969.eth`,
     })
     expect(result).toMatchInlineSnapshot(`
       {
@@ -95,11 +87,7 @@ describe('getAddressRecord()', () => {
       getAddressRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: encodeErrorResult({
-            abi: universalResolverErrors,
-            errorName: 'ResolverNotFound',
-            args: [bytesToHex(packetToBytes('test.eth'))],
-          }),
+          data: '0x7199966d', // ResolverNotFound()
         }),
         {
           address: '0x1234567890abcdef',
@@ -114,11 +102,7 @@ describe('getAddressRecord()', () => {
       getAddressRecord.decode(
         {} as ClientWithEns,
         new RawContractError({
-          data: encodeErrorResult({
-            abi: universalResolverErrors,
-            errorName: 'ResolverNotFound',
-            args: [bytesToHex(packetToBytes('test.eth'))],
-          }),
+          data: '0x7199966d', // ResolverNotFound()
         }),
         {
           address: '0x1234567890abcdef',
@@ -130,15 +114,14 @@ describe('getAddressRecord()', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound(bytes name)
-                             (0x04746573740365746800)
+      Error: ResolverNotFound()
        
       Contract Call:
         address:   0x1234567890abcdef
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: viem@2.30.6]
+      Version: 2.21.12]
     `)
   })
 })

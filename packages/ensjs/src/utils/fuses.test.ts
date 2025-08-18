@@ -538,9 +538,8 @@ describe('encodeFuses', () => {
     })
     describe('number input', () => {
       it('does not allow setting larger than uint32 range', () => {
-        expect(() =>
-          encodeFuses({ input: { number: 2n ** 32n + 1n } }),
-        ).toThrowErrorMatchingInlineSnapshot(`
+        expect(() => encodeFuses({ input: { number: 2n ** 32n + 1n } }))
+          .toThrowErrorMatchingInlineSnapshot(`
             [FusesOutOfRangeError: Fuse value out of range
 
             - Fuse value: 4294967297
@@ -552,9 +551,8 @@ describe('encodeFuses', () => {
           `)
       })
       it('does not allow setting smaller than uint32 range', () => {
-        expect(() =>
-          encodeFuses({ input: { number: -1n } }),
-        ).toThrowErrorMatchingInlineSnapshot(`
+        expect(() => encodeFuses({ input: { number: -1n } }))
+          .toThrowErrorMatchingInlineSnapshot(`
             [FusesOutOfRangeError: Fuse value out of range
 
             - Fuse value: -1
@@ -566,9 +564,8 @@ describe('encodeFuses', () => {
           `)
       })
       it('does not allow setting non user-settable fuse', () => {
-        expect(() =>
-          encodeFuses({ input: { number: 0xffffffffn } }),
-        ).toThrowErrorMatchingInlineSnapshot(`
+        expect(() => encodeFuses({ input: { number: 0xffffffffn } }))
+          .toThrowErrorMatchingInlineSnapshot(`
             [FusesOutOfRangeError: Fuse value out of range
 
             - Fuse value: 4294967295

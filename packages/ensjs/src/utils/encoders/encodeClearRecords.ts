@@ -1,4 +1,4 @@
-import { type Hex, encodeFunctionData } from 'viem'
+import { encodeFunctionData, type Hex } from 'viem'
 import { publicResolverClearRecordsSnippet } from '../../contracts/publicResolver.js'
 
 export const encodeClearRecords = (namehash: Hex) =>

@@ -1,19 +1,17 @@
 {
-	"compilerOptions": {
-		"target": "es2020",
-		"module": "nodenext",
-		"strict": true,
-		"esModuleInterop": true,
-		"moduleResolution": "nodenext",
-		"forceConsistentCasingInFileNames": true
-	},
-	"include": [
-		"hardhat.config.cts",
-		"./scripts",
-		"./deploy",
-		"./test",
-		"typechain/**/*",
-		"./utils"
-	],
-	"exclude": ["node_modules"]
+  // This configuration is used for local development and type checking.
+  "extends": "./tsconfig.base.json",
+  "ts-node": {
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS",
+      "allowSyntheticDefaultImports": true
+    }
+  },
+  "include": ["src"],
+  "exclude": [],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "resolveJsonModule": true
+  }
 }

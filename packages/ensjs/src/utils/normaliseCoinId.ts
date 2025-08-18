@@ -1,14 +1,14 @@
 import {
-  type Coin,
   getCoderByCoinName,
   getCoderByCoinType,
+  type Coin,
 } from '@ensdomains/address-encoder'
 import { CoinFormatterNotFoundError } from '../errors/public.js'
 
 export const normaliseCoinId = (coinId: string | number) => {
   const isString = typeof coinId === 'string'
 
-  if (isString && Number.isNaN(Number.parseInt(coinId))) {
+  if (isString && Number.isNaN(parseInt(coinId))) {
     return {
       type: 'name',
       value: coinId.toLowerCase().replace(/legacy$/, 'Legacy'),
@@ -16,7 +16,7 @@ export const normaliseCoinId = (coinId: string | number) => {
   }
   return {
     type: 'id',
-    value: isString ? Number.parseInt(coinId as string) : (coinId as number),
+    value: isString ? parseInt(coinId as string) : (coinId as number),
   } as const
 }
 

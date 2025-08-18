@@ -1,9 +1,9 @@
 import {
+  encodeFunctionData,
   type Account,
   type Hash,
   type SendTransactionParameters,
   type Transport,
-  encodeFunctionData,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
@@ -17,8 +17,8 @@ import type {
 } from '../../types.js'
 import { getNameType } from '../../utils/getNameType.js'
 import {
-  type RegistrationParameters,
   makeCommitment,
+  type RegistrationParameters,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
