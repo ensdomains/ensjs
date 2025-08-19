@@ -19,6 +19,8 @@ export const supportedContracts = [
   'ensRegistry',
   'ensReverseRegistrar',
   'ensUniversalResolver',
+  'legacyEthRegistrarController',
+  'legacyPublicResolver',
 ] as const
 
 export type SupportedChain = (typeof supportedChains)[number]
@@ -56,6 +58,12 @@ export const addresses = {
     ensUniversalResolver: {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
+    legacyEthRegistrarController: {
+      address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
+    },
+    legacyPublicResolver: {
+      address: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+    },
   },
   [holesky.id]: {
     ensBaseRegistrarImplementation: {
@@ -88,6 +96,12 @@ export const addresses = {
     ensUniversalResolver: {
       address: '0xf606bc986635dab91b189aee8f565f45a0336f89',
     },
+    legacyEthRegistrarController: {
+      address: '0xf13fC748601fDc5afA255e9D9166EB43f603a903',
+    },
+    legacyPublicResolver: {
+      address: '0xc5e43b622b5e6C379a984E9BdB34E9A545564fA5',
+    },
   },
   [sepolia.id]: {
     ensBaseRegistrarImplementation: {
@@ -119,6 +133,12 @@ export const addresses = {
     },
     ensUniversalResolver: {
       address: '0x49c9331501b37191d54f5e332b307df82d15e9cc',
+    },
+    legacyEthRegistrarController: {
+      address: '0x7e02892cfc2Bfd53a75275451d73cF620e793fc0',
+    },
+    legacyPublicResolver: {
+      address: '0x0CeEC524b2807841739D3B5E161F5bf1430FFA48',
     },
   },
 } as const satisfies Record<
@@ -159,6 +179,8 @@ type EnsChainContracts = {
   ensReverseRegistrar: ChainContract
   ensBulkRenewal: ChainContract
   ensDnssecImpl: ChainContract
+  legacyEthRegistrarController: ChainContract
+  legacyPublicResolver: ChainContract
 }
 
 type BaseChainContracts = {
