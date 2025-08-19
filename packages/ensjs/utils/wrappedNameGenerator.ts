@@ -43,8 +43,10 @@ const makeNameGenerator = async (
         fuses,
       ])
 
+      const nonce = nonceManager.getNonce(namedOwner)
+      console.log('Nonce for', label, 'by', namedOwner, 'is', nonce)
       return controller.write.commit([commitment], {
-        nonce: nonceManager.getNonce(namedOwner),
+        nonce,
         account: owner,
       })
     },
@@ -70,11 +72,13 @@ const makeNameGenerator = async (
       const price = await controller.read.rentPrice([label, duration])
 
       const priceWithBuffer = (price.base * 105n) / 100n
+      const nonce = nonceManager.getNonce(namedOwner)
+      console.log('Nonce for', label, 'by', namedOwner, 'is', nonce)
       return controller.write.register(
         [label, owner, duration, secret, resolver, data, reverseRecord, fuses],
         {
           value: priceWithBuffer,
-          nonce: nonceManager.getNonce(namedOwner),
+          nonce,
           account: owner,
         },
       )

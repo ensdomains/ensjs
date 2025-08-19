@@ -206,3 +206,44 @@ export const ethRegistrarControllerRenewSnippet = [
     type: 'function',
   },
 ] as const
+
+export const ethRegistrarControllerNameRegisteredEventSnippet = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        name: 'name',
+        type: 'string',
+      },
+      {
+        indexed: true,
+        name: 'label',
+        type: 'bytes32',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        name: 'baseCost',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        name: 'premium',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        name: 'expires',
+        type: 'uint256',
+      },
+    ],
+    name: 'NameRegistered',
+    type: 'event',
+  },
+] as const

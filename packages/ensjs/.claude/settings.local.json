@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(pnpm tenv start:*)",
+      "Bash(pnpm tenv:*)",
+      "Bash(pnpm -F @ensdomains/ensjs tenv start:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm prepack:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(claude mcp list:*)",
+      "mcp__github__list_workflow_runs",
+      "mcp__github__list_workflows",
+      "mcp__github__get_job_logs",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}

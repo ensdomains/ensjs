@@ -1,4 +1,4 @@
-import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
+import type { DeployFunction } from 'hardhat-deploy/dist/types.ts'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
 
