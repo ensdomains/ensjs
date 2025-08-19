@@ -1,13 +1,17 @@
 import {
-  encodeFunctionData,
   type Account,
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  encodeFunctionData,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import {
+  legacyEthRegistrarControllerRegisterSnippet,
+  legacyEthRegistrarControllerRegisterWithConfigSnippet,
+} from '../../contracts/legacyEthRegistrarController.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type {
   Prettify,
@@ -16,15 +20,11 @@ import type {
 } from '../../types.js'
 import { getNameType } from '../../utils/getNameType.js'
 import {
-  makeLegacyRegistrationTuple,
   type LegacyRegistrationParameters,
   isLegacyRegistrationWithConfigParameters,
+  makeLegacyRegistrationTuple,
   makeLegacyRegistrationWithConfigTuple,
 } from '../../utils/legacyRegisterHelpers.js'
-import {
-  legacyEthRegistrarControllerRegisterSnippet,
-  legacyEthRegistrarControllerRegisterWithConfigSnippet,
-} from '../../contracts/legacyEthRegistrarController.js'
 
 export type LegacyRegisterNameDataParameters = LegacyRegistrationParameters & {
   /** Value of registration */

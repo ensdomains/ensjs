@@ -1,12 +1,12 @@
 import {
-  keccak256,
-  labelhash,
   type Address,
   type Hex,
   encodePacked,
+  keccak256,
+  labelhash,
 } from 'viem'
-import { EMPTY_ADDRESS } from './consts.js'
 import { LegacyRegistrationInvalidConfigError } from '../errors/register.js'
+import { EMPTY_ADDRESS } from './consts.js'
 
 export type LegacyRegistrationParameters = {
   /** Name to register */

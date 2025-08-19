@@ -23,7 +23,7 @@ const makeNameGenerator = async (
     }: {
       label: string
       namedOwner: string
-      data?: any[]
+      data?: unknown[]
       reverseRecord?: boolean
       fuses?: number
       duration?: number | bigint
@@ -36,7 +36,16 @@ const makeNameGenerator = async (
 
       console.log('wrapped: nonce for', label, 'by', namedOwner, 'is', nonce)
 
-      console.log('fetching commitment with params: ', { label, owner, duration, secret, resolver, data, reverseRecord, fuses})
+      console.log('fetching commitment with params: ', {
+        label,
+        owner,
+        duration,
+        secret,
+        resolver,
+        data,
+        reverseRecord,
+        fuses,
+      })
 
       const commitment = await controller.read.makeCommitment([
         label,
@@ -64,7 +73,7 @@ const makeNameGenerator = async (
     }: {
       label: string
       namedOwner: string
-      data?: any[]
+      data?: unknown[]
       reverseRecord?: boolean
       fuses?: number
       duration?: number | bigint

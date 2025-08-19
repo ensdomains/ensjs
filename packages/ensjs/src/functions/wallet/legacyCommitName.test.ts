@@ -1,6 +1,7 @@
-import { type Address, type Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { legacyEthRegistrarControllerCommitmentsSnippet } from '../../contracts/legacyEthRegistrarController.js'
 import {
   publicClient,
   testClient,
@@ -8,11 +9,10 @@ import {
   walletClient,
 } from '../../test/addTestContracts.js'
 import {
-  makeLegacyCommitment,
   type LegacyRegistrationParameters,
+  makeLegacyCommitment,
 } from '../../utils/legacyRegisterHelpers.js'
 import legacyCommitName from './legacyCommitName.js'
-import { legacyEthRegistrarControllerCommitmentsSnippet } from '../../contracts/legacyEthRegistrarController.js'
 
 let snapshot: Hex
 let accounts: Address[]

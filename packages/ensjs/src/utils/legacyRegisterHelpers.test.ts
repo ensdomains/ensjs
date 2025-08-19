@@ -1,22 +1,22 @@
-import { type Address, type Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
-import {
-  isLegacyRegistrationWithConfigParameters,
-  makeLegacyCommitment,
-  makeLegacyCommitmentTuple,
-  makeLegacyRegistrationTuple,
-  type LegacyRegistrationParameters,
-  makeLegacyCommitmentWithConfigTuple,
-  makeLegacyRegistrationWithConfigTuple,
-} from './legacyRegisterHelpers.js'
-import { EMPTY_ADDRESS } from './consts.js'
-import { randomSecret } from './registerHelpers.js'
-import { publicClient, walletClient } from '../test/addTestContracts.js'
+import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
 import {
   legacyEthRegistrarControllerMakeCommitmentSnippet,
   legacyEthRegistrarControllerMakeCommitmentWithConfigSnippet,
 } from '../contracts/legacyEthRegistrarController.js'
-import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
+import { publicClient, walletClient } from '../test/addTestContracts.js'
+import { EMPTY_ADDRESS } from './consts.js'
+import {
+  type LegacyRegistrationParameters,
+  isLegacyRegistrationWithConfigParameters,
+  makeLegacyCommitment,
+  makeLegacyCommitmentTuple,
+  makeLegacyCommitmentWithConfigTuple,
+  makeLegacyRegistrationTuple,
+  makeLegacyRegistrationWithConfigTuple,
+} from './legacyRegisterHelpers.js'
+import { randomSecret } from './registerHelpers.js'
 
 let accounts: Address[]
 let resolverAddress: Address
