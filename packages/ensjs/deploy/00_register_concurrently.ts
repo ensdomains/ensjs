@@ -124,36 +124,37 @@ const func: DeployFunction = async (hre) => {
   await network.provider.send('evm_mine')
 
   // Register
-  const registerTxs = await Promise.all(
-    names.map(
-      ({
+  const registerTxs: Hash[] = []
+  for (const {
+    label,
+    type,
+    namedOwner,
+    namedAddr = namedOwner,
+    data = [],
+    reverseRecord = false,
+    fuses = 0,
+    duration = 31536000,
+  } of names) {
+    let tx: Hash
+    if (type === 'legacy') {
+      tx = await legacyNameGenerator.register({
         label,
-        type,
         namedOwner,
-        namedAddr = namedOwner,
-        data = [],
-        reverseRecord = false,
-        fuses = 0,
-        duration = 31536000,
-      }) => {
-        if (type === 'legacy')
-          return legacyNameGenerator.register({
-            label,
-            namedOwner,
-            namedAddr,
-            duration,
-          })
-        return wrappedNameGenerator.register({
-          label,
-          namedOwner,
-          data,
-          reverseRecord,
-          fuses,
-          duration,
-        })
-      },
-    ),
-  )
+        namedAddr,
+        duration,
+      })
+    } else {
+      tx = await wrappedNameGenerator.register({
+        label,
+        namedOwner,
+        data,
+        reverseRecord,
+        fuses,
+        duration,
+      })
+    }
+    registerTxs.push(tx)
+  }
 
   await network.provider.send('evm_mine')
   await Promise.all(
