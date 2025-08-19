@@ -25,6 +25,8 @@ const makeNameGenerator = async (
       const addr = allNamedAccts[namedAddr]
       const nonce = nonceManager.getNonce(namedOwner)
 
+      console.log('Nonce for', label, 'by', namedOwner, 'is', nonce)
+
       const commitment = await controller.read.makeCommitmentWithConfig([
         label,
         registrant,
