@@ -33,6 +33,11 @@ const makeNameGenerator = async (
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
       const nonce = nonceManager.getNonce(namedOwner)
+
+      console.log('wrapped: nonce for', label, 'by', namedOwner, 'is', nonce)
+
+      console.log('fetching commitment with params: ', { label, owner, duration, secret, resolver, data, reverseRecord, fuses})
+
       const commitment = await controller.read.makeCommitment([
         label,
         owner,
