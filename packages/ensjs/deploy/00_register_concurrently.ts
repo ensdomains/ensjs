@@ -75,36 +75,37 @@ const func: DeployFunction = async (hre) => {
   await network.provider.send('evm_setAutomine', [false])
 
   // Commit
-  const commitTxs = await Promise.all(
-    names.map(
-      ({
+  const commitTxs: Hash[] = []
+  for (const {
+    label,
+    type,
+    namedOwner,
+    namedAddr = namedOwner,
+    data = [],
+    reverseRecord = false,
+    fuses = 0,
+    duration = 31536000,
+  } of names) {
+    console.log(`Committing commitment for ${label}.eth...`)
+    let tx: Hash
+    if (type === 'legacy') {
+      tx = await legacyNameGenerator.commit({
         label,
-        type,
         namedOwner,
-        namedAddr = namedOwner,
-        data = [],
-        reverseRecord = false,
-        fuses = 0,
-        duration = 31536000,
-      }) => {
-        console.log(`Committing commitment for ${label}.eth...`)
-        if (type === 'legacy')
-          return legacyNameGenerator.commit({
-            label,
-            namedOwner,
-            namedAddr,
-          })
-        return wrappedNameGenerator.commit({
-          label,
-          namedOwner,
-          data,
-          reverseRecord,
-          fuses,
-          duration,
-        })
-      },
-    ),
-  )
+        namedAddr,
+      })
+    } else {
+      tx = await wrappedNameGenerator.commit({
+        label,
+        namedOwner,
+        data,
+        reverseRecord,
+        fuses,
+        duration,
+      })
+    }
+    commitTxs.push(tx)
+  }
 
   network.provider.send('evm_mine')
   await Promise.all(
