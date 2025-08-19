@@ -88,7 +88,7 @@ const func: DeployFunction = async (hre) => {
         duration = 31536000,
       }) => {
         console.log(`Committing commitment for ${label}.eth...`)
-        if (type === 'legacy')
+        if (type === 'legacy' && false)
           return legacyNameGenerator.commit({
             label,
             namedOwner,
