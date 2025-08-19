@@ -26,7 +26,7 @@ jobs:
         run: pnpm -F @ensdomains/ensjs build
 
       - name: Run tests
-        run: pnpm -F @ensdomains/ensjs tenv start --extra-time 11368000
+        run: pnpm -F @ensdomains/ensjs tenv start --extra-time 11368000 --verbosity 1
   lint:
     name: Lint
     runs-on: ubuntu-latest
