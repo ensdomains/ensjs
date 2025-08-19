@@ -32,6 +32,7 @@ const makeNameGenerator = async (
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
+      const nonce = nonceManager.getNonce(namedOwner)
       const commitment = await controller.read.makeCommitment([
         label,
         owner,
@@ -44,7 +45,7 @@ const makeNameGenerator = async (
       ])
 
       return controller.write.commit([commitment], {
-        nonce: nonceManager.getNonce(namedOwner),
+        nonce,
         account: owner,
       })
     },

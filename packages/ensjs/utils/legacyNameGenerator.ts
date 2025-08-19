@@ -23,6 +23,7 @@ const makeNameGenerator = async (
       const registrant = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
       const addr = allNamedAccts[namedAddr]
+      const nonce = nonceManager.getNonce(namedOwner)
 
       const commitment = await controller.read.makeCommitmentWithConfig([
         label,
@@ -33,7 +34,7 @@ const makeNameGenerator = async (
       ])
 
       return controller.write.commit([commitment], {
-        nonce: nonceManager.getNonce(namedOwner),
+        nonce,
         account: registrant,
       })
     },
