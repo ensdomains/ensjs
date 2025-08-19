@@ -106,7 +106,7 @@ const func: DeployFunction = async (hre) => {
     ),
   )
 
-  network.provider.send('evm_mine')
+  await network.provider.send('evm_mine')
   await Promise.all(
     commitTxs.map(async (tx) => {
       return viem.waitForTransactionSuccess(tx)
