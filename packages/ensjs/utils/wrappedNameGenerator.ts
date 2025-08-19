@@ -43,7 +43,7 @@ const makeNameGenerator = async (
         fuses,
       ])
 
-      const nonce = nonceManager.getNonce(namedOwner) 
+      const nonce = nonceManager.getNonce(namedOwner)
       console.log('Nonce for', label, 'by', namedOwner, 'is', nonce)
       return controller.write.commit([commitment], {
         nonce,

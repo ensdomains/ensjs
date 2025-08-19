@@ -79,7 +79,7 @@ export class FusesFuseNotAllowedError extends BaseError {
 export class FusesInvalidUnnamedFuseError extends BaseError {
   override name = 'FusesInvalidUnnamedFuseError'
 
-  constructor({ fuse }: { fuse: any }) {
+  constructor({ fuse }: { fuse: unknown }) {
     super(`${fuse} is not a valid unnamed fuse`, {
       metaMessages: [
         '- If you are trying to set a named fuse, use the named property',

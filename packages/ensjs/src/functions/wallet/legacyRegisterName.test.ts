@@ -1,18 +1,18 @@
-import { type Address, type Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
+import type { LegacyRegistrationParameters } from '../../utils/legacyRegisterHelpers.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
+import getOwner from '../public/getOwner.js'
 import getPrice from '../public/getPrice.js'
 import legacyCommitName from './legacyCommitName.js'
 import legacyRegisterName from './legacyRegisterName.js'
-import getOwner from '../public/getOwner.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import type { LegacyRegistrationParameters } from '../../utils/legacyRegisterHelpers.js'
 
 let snapshot: Hex
 let accounts: Address[]

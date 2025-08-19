@@ -49,8 +49,7 @@ function generatePackageJson() {
     console.log(key, value)
     if (typeof value === 'string') continue
     if (key === '.') continue
-    if (!value.default)
-      throw new Error('`default` is required.')
+    if (!value.default) throw new Error('`default` is required.')
     if (!fs.existsSync(key)) fs.mkdirSync(key)
     if (!fs.existsSync(`${key}/package.json`))
       fs.writeFileSync(

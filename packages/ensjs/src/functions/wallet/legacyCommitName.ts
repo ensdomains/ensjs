@@ -1,26 +1,26 @@
 import {
-  encodeFunctionData,
   type Account,
   type Hash,
   type SendTransactionParameters,
   type Transport,
+  encodeFunctionData,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import { legacyEthRegistrarControllerCommitSnippet } from '../../contracts/legacyEthRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { legacyEthRegistrarControllerCommitSnippet } from '../../contracts/legacyEthRegistrarController.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
+import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { getNameType } from '../../utils/getNameType.js'
 import {
-  makeLegacyCommitment,
   type LegacyRegistrationParameters,
+  makeLegacyCommitment,
 } from '../../utils/legacyRegisterHelpers.js'
-import { EMPTY_ADDRESS } from '../../utils/consts.js'
 
 export type LegacyCommitNameDataParameters = LegacyRegistrationParameters
 
