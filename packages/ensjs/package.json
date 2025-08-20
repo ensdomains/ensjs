@@ -80,7 +80,6 @@
     "build": "tsc --project tsconfig.build.json",
     "tsn": "TS_NODE_PROJECT=tsconfig.node.json node --loader ts-node/esm",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
-    "prepack": "pnpm tsn ./scripts/prepack.ts",
     "ver": "pnpm tsn ./scripts/updateVersion.ts",
     "generateDocs": "pnpm tsn ./scripts/generateDocs.ts",
     "rcBranchVersion": "pnpm tsn ./scripts/rcBranchVersion.ts",
