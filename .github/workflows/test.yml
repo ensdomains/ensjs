@@ -27,6 +27,10 @@ jobs:
 
       - name: Run tests
         run: pnpm -F @ensdomains/ensjs tenv start --extra-time 11368000 --verbosity 1
+
+      - name: Publish to pkg.pr.new
+        run: pnpm dlx pkg-pr-new publish './packages/ensjs'
+        
   lint:
     name: Lint
     runs-on: ubuntu-latest
