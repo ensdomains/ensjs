@@ -8,6 +8,7 @@
     "publish:local:ens-test-env": "yalc publish packages/ens-test-env --push --up",
     "publish:local:ensjs": "yalc publish packages/ensjs --push --up",
     "chgset:version": "changeset version && pnpm install",
+    "chgset:version:prerelease": "changeset pre enter next && pnpm chgset:version",
     "chgset:run": "changeset",
     "release": "pnpm publish -r --access public && changeset tag",
     "chgset": "pnpm chgset:run && pnpm chgset:version",

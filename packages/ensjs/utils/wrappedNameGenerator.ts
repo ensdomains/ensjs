@@ -23,7 +23,7 @@ const makeNameGenerator = async (
     }: {
       label: string
       namedOwner: string
-      data?: any[]
+      data?: unknown[]
       reverseRecord?: boolean
       fuses?: number
       duration?: number | bigint
@@ -32,6 +32,21 @@ const makeNameGenerator = async (
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const owner = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
+      const nonce = nonceManager.getNonce(namedOwner)
+
+      console.log('wrapped: nonce for', label, 'by', namedOwner, 'is', nonce)
+
+      console.log('fetching commitment with params: ', {
+        label,
+        owner,
+        duration,
+        secret,
+        resolver,
+        data,
+        reverseRecord,
+        fuses,
+      })
+
       const commitment = await controller.read.makeCommitment([
         label,
         owner,
@@ -44,7 +59,7 @@ const makeNameGenerator = async (
       ])
 
       return controller.write.commit([commitment], {
-        nonce: nonceManager.getNonce(namedOwner),
+        nonce,
         account: owner,
       })
     },
@@ -58,7 +73,7 @@ const makeNameGenerator = async (
     }: {
       label: string
       namedOwner: string
-      data?: any[]
+      data?: unknown[]
       reverseRecord?: boolean
       fuses?: number
       duration?: number | bigint
