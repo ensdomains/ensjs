@@ -1,12 +1,17 @@
 import type { ProvableAnswer, SignedSet } from '@ensdomains/dnsprovejs'
 import type * as packet from 'dns-packet'
-import { type Client, type Hex, type Transport, toHex } from 'viem'
+import {
+  type Chain,
+  type Client,
+  getChainContractAddress,
+  type Hex,
+  toHex,
+} from 'viem'
 import { readContract } from 'viem/actions'
-
-import type { ChainWithContract } from '../../contracts/consts.js'
+import type { RequireClientContracts } from '../../clients/chain.js'
 import { dnssecImplVerifyRrSetSnippet } from '../../contracts/dnssecImpl.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { DnsNewerRecordTypeAvailableError } from '../../errors/dns.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import type { Endpoint } from './types.js'
 
 export type GetDnsImportDataParameters = {
@@ -57,15 +62,14 @@ const encodeProofs = (
  *   name: 'example.eth',
  * })
  */
-export async function getDnsImportData<
-  chain extends ChainWithContract<'ensDnssecImpl'>,
->(
-  client: Client<Transport, chain>,
+export async function getDnsImportData<_chain extends Chain>(
+  client: RequireClientContracts<_chain, 'ensDnssecImpl'>,
   {
     name,
     endpoint = 'https://cloudflare-dns.com/dns-query',
   }: GetDnsImportDataParameters,
 ): Promise<GetDnsImportDataReturnType> {
+  ASSERT_NO_TYPE_ERROR(client)
   const { DNSProver } = await import('@ensdomains/dnsprovejs')
   const prover = DNSProver.create(endpoint)
   const result = (await prover.queryWithProof(
@@ -82,7 +86,7 @@ export async function getDnsImportData<
   const [onchainRrData, inception] = await readContract(client, {
     abi: dnssecImplVerifyRrSetSnippet,
     address: getChainContractAddress({
-      client,
+      chain: client.chain,
       contract: 'ensDnssecImpl',
     }),
     functionName: 'verifyRRSet',

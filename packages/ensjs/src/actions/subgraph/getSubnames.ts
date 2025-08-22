@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { gql } from 'graphql-request'
 import { namehash } from 'viem/ens'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'
@@ -105,8 +105,8 @@ const getOrderByFilter = ({
  * })
  * const result = await getSubnames(client, { name: 'ens.eth' })
  */
-const getSubnames = async (
-  client: ClientWithEns,
+const getSubnames = async <_chain extends ChainWithSubgraph>(
+  client: { chain: _chain },
   {
     name,
     searchString,
@@ -118,7 +118,7 @@ const getSubnames = async (
     previousPage,
   }: GetSubnamesParameters,
 ): Promise<GetSubnamesReturnType> => {
-  const subgraphClient = createSubgraphClient({ client })
+  const subgraphClient = createSubgraphClient(client)
 
   const whereFilters: DomainFilter[] = []
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { gql } from 'graphql-request'
 import type { Address } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import {
   FilterKeyRequiredError,
   InvalidFilterKeyError,
@@ -149,7 +149,7 @@ const getOrderByFilter = ({
  * const result = await getNamesForAddress(client, { address: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' })
  */
 const getNamesForAddress = async (
-  client: ClientWithEns,
+  client: { chain: ChainWithSubgraph },
   {
     address,
     filter: _filter,
@@ -171,7 +171,7 @@ const getNamesForAddress = async (
     ..._filter,
   } as const
 
-  const subgraphClient = createSubgraphClient({ client })
+  const subgraphClient = createSubgraphClient(client)
 
   const {
     allowExpired,
@@ -185,7 +185,7 @@ const getNamesForAddress = async (
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
-        if (!supportedOwnerFilters.includes(key as any))
+        if (!supportedOwnerFilters.includes(key as keyof typeof filters))
           throw new InvalidFilterKeyError({
             filterKey: key,
             supportedFilterKeys: supportedOwnerFilters,

@@ -11,18 +11,7 @@ export {
   bulkRenewalRenewAllSnippet,
   bulkRenewalRentPriceSnippet,
 } from './bulkRenewal.js'
-export {
-  addresses,
-  type ChainWithEns,
-  type CheckedChainWithEns,
-  type ClientWithAccount,
-  type ClientWithEns,
-  type SupportedChain,
-  type SupportedContract,
-  subgraphs,
-  supportedChains,
-  supportedContracts,
-} from './consts.js'
+
 export {
   dnsRegistrarErrors,
   dnsRegistrarProveAndClaimSnippet,

@@ -3,7 +3,7 @@ import { parse, print, visit } from 'graphql/language/index.js'
 import type { RequestMiddleware, ResponseMiddleware } from 'graphql-request'
 import { GraphQLClient } from 'graphql-request'
 import { namehash } from 'viem/ens'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 
 const generateSelection = (selection: string): SelectionNode => ({
   kind: 'Field' as Kind.FIELD,
@@ -96,7 +96,9 @@ export const responseMiddleware: ResponseMiddleware = (response) => {
   traverse(response)
 }
 
-export const createSubgraphClient = ({ client }: { client: ClientWithEns }) =>
+export const createSubgraphClient = <_chain extends ChainWithSubgraph>(client: {
+  chain: _chain
+}) =>
   new GraphQLClient(client.chain.subgraphs.ens.url, {
     requestMiddleware,
     responseMiddleware,

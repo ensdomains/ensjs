@@ -1,12 +1,12 @@
 import type { Chain } from 'viem'
-import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
 import {
-  addresses,
-  type CheckedChainWithEns,
-  type SupportedChain,
-  subgraphs,
+  type AnySupportedChain,
+  type ChainWithEns,
+  ensContracts,
+  type SupportedChainId,
   supportedChains,
-} from './consts.js'
+} from '../clients/chain.js'
+import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
 
 /**
  * Adds ENS contract addresses to the viem chain
@@ -22,21 +22,23 @@ import {
  *   transport: http(),
  * })
  */
-export const addEnsContracts = <const chain extends Chain>(chain: chain) => {
+export const addEnsContracts = <const chain extends AnySupportedChain>(
+  chain: chain,
+) => {
   if (!chain) throw new NoChainError()
-  if (!supportedChains.includes(chain.id as SupportedChain))
+  if (!Object.values(supportedChains).includes(chain.id as SupportedChainId))
     throw new UnsupportedChainError({
       chainId: chain.id,
-      supportedChains,
+      supportedChains: Object.values(supportedChains),
     })
   return {
     ...chain,
     contracts: {
       ...chain.contracts,
-      ...addresses[chain.id as SupportedChain],
+      ...ensContracts[chain.id as SupportedChainId],
     },
     subgraphs: {
-      ...subgraphs[chain.id as SupportedChain],
+      ...ensContracts[chain.id as SupportedChainId],
     },
-  } as unknown as CheckedChainWithEns<chain>
+  } as unknown as ChainWithEns<chain>
 }

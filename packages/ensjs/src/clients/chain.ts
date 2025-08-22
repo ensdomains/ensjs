@@ -172,6 +172,8 @@ type EnsSubgraph = {
   }
 }
 
+export type ChainWithSubgraph = { subgraphs: EnsSubgraph }
+
 export const ensSubgraphs = {
   [supportedChains.mainnet]: {
     ens: {

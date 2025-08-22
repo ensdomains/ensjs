@@ -2,7 +2,7 @@ import type { GraphQLClient } from 'graphql-request'
 import { gql } from 'graphql-request'
 import type { Address, Hex } from 'viem'
 import { namehash } from 'viem/ens'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import type { DateWithValue } from '../../types/index.js'
 import { createSubgraphClient } from './client.js'
 
@@ -154,10 +154,10 @@ const getInheritedResolverResult = async (
  * // }
  */
 const getSubgraphRecords = async (
-  client: ClientWithEns,
+  client: { chain: ChainWithSubgraph },
   { name, resolverAddress }: GetSubgraphRecordsParameters,
 ): Promise<GetSubgraphRecordsReturnType> => {
-  const subgraphClient = createSubgraphClient({ client })
+  const subgraphClient = createSubgraphClient(client)
   const id = namehash(name)
 
   const result = resolverAddress

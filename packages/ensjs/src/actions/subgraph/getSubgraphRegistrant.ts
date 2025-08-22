@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 import { type Address, getAddress, labelhash } from 'viem'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import { createSubgraphClient } from './client.js'
@@ -51,8 +51,8 @@ type SubgraphResult = {
  * const result = await getSubgraphRegistrant(client, { name: 'ens.eth' })
  * // 0xb6E040C9ECAaE172a89bD561c5F73e1C48d28cd9
  */
-const getSubgraphRegistrant = async (
-  client: ClientWithEns,
+const getSubgraphRegistrant = async <_chain extends ChainWithSubgraph>(
+  client: { chain: _chain },
   { name }: GetSubgraphRegistrantParameters,
 ): Promise<GetSubgraphRegistrantReturnType> => {
   const labels = name.split('.')
@@ -64,7 +64,7 @@ const getSubgraphRegistrant = async (
       details: 'Registrant can only be fetched for eth-2ld names',
     })
 
-  const subgraphClient = createSubgraphClient({ client })
+  const subgraphClient = createSubgraphClient(client)
 
   const result = await subgraphClient.request<SubgraphResult>(query, {
     id: labelhash(labels[0]),

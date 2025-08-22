@@ -2,7 +2,7 @@ import { getCoderByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
 import { hexToBytes, trim } from 'viem'
 import { namehash } from 'viem/ens'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import { decodeContentHash } from '../../utils/contentHash.js'
 import { createSubgraphClient } from './client.js'
 import type {
@@ -84,10 +84,10 @@ type ReturnResolverEvent = FlattenedEvent<
  * const result = await getNameHistory(client, { name: 'ens.eth' })
  */
 const getNameHistory = async (
-  client: ClientWithEns,
+  client: { chain: ChainWithSubgraph },
   { name }: GetNameHistoryParameters,
 ): Promise<GetNameHistoryReturnType> => {
-  const subgraphClient = createSubgraphClient({ client })
+  const subgraphClient = createSubgraphClient(client)
 
   const query = gql`
     query getNameHistory($id: String!) {

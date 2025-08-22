@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 import { namehash } from 'viem/ens'
-import type { ClientWithEns } from '../../contracts/consts.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import {
   checkIsDecrypted,
   decodeLabelhash,
@@ -45,7 +45,7 @@ type SubgraphResult = {
  * // ens.eth
  */
 const getDecodedName = async (
-  client: ClientWithEns,
+  client: { chain: ChainWithSubgraph },
   { name, allowIncomplete }: GetDecodedNameParameters,
 ): Promise<GetDecodedNameReturnType> => {
   if (checkIsDecrypted(name)) return name
@@ -53,7 +53,7 @@ const getDecodedName = async (
   // also try to fetch the label names from any Domain entities that have a corresponding labelhash
   const labels = name.split('.')
 
-  const subgraphClient = createSubgraphClient({ client })
+  const subgraphClient = createSubgraphClient(client)
 
   let labelsQuery = ''
   for (let i = 0; i < labels.length; i += 1) {

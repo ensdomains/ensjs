@@ -1,16 +1,3 @@
-export {
-  type EnsPublicActions,
-  ensPublicActions,
-} from './clients/decorators/public.js'
-export {
-  type EnsSubgraphActions,
-  ensSubgraphActions,
-} from './clients/decorators/subgraph.js'
-export {
-  type EnsWalletActions,
-  ensWalletActions,
-} from './clients/decorators/wallet.js'
-
 export { addEnsContracts } from './contracts/addEnsContracts.js'
 export { BaseError } from './errors/base.js'
 export { NoChainError, UnsupportedChainError } from './errors/contracts.js'

@@ -1,7 +1,9 @@
 import {
   type Account,
   type Address,
+  type Client,
   encodeFunctionData,
+  getChainContractAddress,
   type Hash,
   type SendTransactionParameters,
   type Transport,
@@ -9,12 +11,11 @@ import {
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
-import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
+import type { ChainWithEns } from '../../clients/chain.js'
 import {
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,
 } from '../../contracts/dnsRegistrar.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
   Prettify,
@@ -66,7 +67,7 @@ export const makeFunctionData = <
   TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: Client<Transport, TChain, TAccount>,
   {
     name,
     dnsImportData,
@@ -76,7 +77,7 @@ export const makeFunctionData = <
 ): ImportDnsNameDataReturnType => {
   const hexEncodedName = toHex(packetToBytes(name))
   const dnsRegistrarAddress = getChainContractAddress({
-    client: wallet,
+    chain: wallet.chain,
     contract: 'ensDnsRegistrar',
   })
 
@@ -100,7 +101,10 @@ export const makeFunctionData = <
 
   const resolverAddress_ =
     resolverAddress ||
-    getChainContractAddress({ client: wallet, contract: 'ensPublicResolver' })
+    getChainContractAddress({
+      chain: wallet.chain,
+      contract: 'ensPublicResolver',
+    })
 
   return {
     to: dnsRegistrarAddress,
@@ -146,7 +150,7 @@ export async function importDnsName<
   TAccount extends Account | undefined,
   TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
-  wallet: ClientWithAccount<Transport, TChain, TAccount>,
+  wallet: Client<Transport, TChain, TAccount>,
   {
     name,
     address,
