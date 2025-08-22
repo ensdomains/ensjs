@@ -233,8 +233,12 @@ type AssertSupportedChain<chain extends Chain> = chain extends AnySupportedChain
   : TypeError<`${chain['name']} is not a supported chain, supported chains are: ${StringConcatenationOrder<keyof typeof supportedChains, ', '>}`>
 
 export type ChainWithEns<chain extends AnySupportedChain = AnySupportedChain> =
-  chain & {
-    contracts: (typeof ensContracts)[chain['id']]
+  Omit<chain, 'contracts' | 'subgraphs'> & {
+    contracts: Omit<
+      chain['contracts'],
+      keyof (typeof ensContracts)[chain['id']]
+    > &
+      (typeof ensContracts)[chain['id']]
     subgraphs: (typeof ensSubgraphs)[chain['id']]
   }
 
@@ -268,7 +272,7 @@ export const extendChainWithEns = <const chain extends Chain>(
 export type ChainWithContracts<
   contracts extends SuggestedContracts,
   chain extends Chain = Chain,
-> = chain & {
+> = Omit<chain, 'contracts'> & {
   contracts: {
     [key in contracts]: ChainContract
   }
@@ -293,7 +297,7 @@ export type ChainWithContracts<
 export type RequireChainContracts<
   chain extends Chain,
   contracts extends SuggestedContracts,
-> = chain extends Chain & {
+> = chain extends Omit<Chain, 'contracts'> & {
   contracts: {
     [key in contracts]: ChainContract
   }
@@ -334,7 +338,7 @@ export type RequireClientContracts<
   chain extends Chain,
   contracts extends SuggestedContracts,
   account extends Account | undefined = Account | undefined,
-> = chain extends Chain & {
+> = chain extends Omit<Chain, 'contracts'> & {
   contracts: {
     [key in contracts]: ChainContract
   }
