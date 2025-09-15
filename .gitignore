@@ -9,3 +9,4 @@ archives/
 data/
 
 *.tsbuildinfo
+*/.claud/settings.local.json
