@@ -186,6 +186,7 @@ type EnsChainContracts = {
   ensEthRegistrarController: ChainContract
   ensNameWrapper: ChainContract
   ensPublicResolver: ChainContract
+  ensRegistry: ChainContract
   ensReverseRegistrar: ChainContract
   ensBulkRenewal: ChainContract
   ensDnssecImpl: ChainContract
@@ -196,7 +197,6 @@ type EnsChainContracts = {
 type BaseChainContracts = {
   multicall3: ChainContract
   ensUniversalResolver: ChainContract
-  ensRegistry: ChainContract
 }
 
 export type ChainWithEns<TChain extends Chain = Chain> = Omit<
