@@ -39,8 +39,7 @@ describe('randomSecret()', () => {
   })
 })
 
-// TODO: Update tests to use new function names from refactored registerHelpers
-describe.skip('makeCommitmentTuple()', () => {
+describe('makeCommitmentTuple()', () => {
   it('generates a commitment tuple', () => {
     const tuple = makeCommitmentTuple({
       name: 'test.eth',
@@ -148,8 +147,7 @@ describe.skip('makeCommitmentTuple()', () => {
   })
 })
 
-// TODO: Update tests to use new function names from refactored registerHelpers
-describe.skip('makeRegistrationTuple()', () => {
+describe('makeRegistrationTuple()', () => {
   it('replaces labelhash from commitment tuple with label', () => {
     const data: RegistrationParameters = {
       name: 'test.eth',
@@ -164,8 +162,7 @@ describe.skip('makeRegistrationTuple()', () => {
   })
 })
 
-// TODO: Update tests to use new function names from refactored registerHelpers
-describe.skip('makeCommitmentFromTuple()', () => {
+describe('makeCommitmentFromTuple()', () => {
   it('generates a commitment from a tuple', () => {
     const tuple = makeCommitmentTuple({
       name: 'test.eth',
@@ -181,8 +178,7 @@ describe.skip('makeCommitmentFromTuple()', () => {
   })
 })
 
-// TODO: Update tests to use new function names from refactored registerHelpers
-describe.skip('makeCommitment()', () => {
+describe('makeCommitment()', () => {
   it('generates a commitment from a RegistrationParameters', () => {
     const commitment = makeCommitment({
       name: 'test.eth',
