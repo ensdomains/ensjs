@@ -17,7 +17,6 @@ import {
   ethRegistrarControllerRenewSnippet,
   wrappedEthRegistrarControllerRenewSnippet,
 } from '../../contracts/ethRegistrarController.js'
-import { legacyEthRegistrarControllerRenewSnippet } from '../../contracts/legacyEthRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   AdditionalParameterSpecifiedError,
@@ -127,61 +126,30 @@ export const makeFunctionData = <
   }
 
   if (labels.length === 1) {
-    // TODO: Remove this temporary fix once test environment deploys new contracts
-    // Use legacy ABI when referrer is not provided (for backward compatibility)
-    const useLegacyAbi = !referrer || referrer === zeroHash
-
     return {
       to: getChainContractAddress({
         client: wallet,
         contract: 'ensEthRegistrarController',
       }),
-      data: useLegacyAbi
-        ? encodeFunctionData({
-            abi: legacyEthRegistrarControllerRenewSnippet,
-            functionName: 'renew',
-            args: [labels[0], BigInt(duration)],
-          })
-        : encodeFunctionData({
-            abi: ethRegistrarControllerRenewSnippet,
-            functionName: 'renew',
-            args: [labels[0], BigInt(duration), referrer],
-          }),
+      data: encodeFunctionData({
+        abi: ethRegistrarControllerRenewSnippet,
+        functionName: 'renew',
+        args: [labels[0], BigInt(duration), referrer],
+      }),
       value,
     }
   }
-
-  // TODO: Remove this temporary fix once test environment deploys new contracts
-  // Use legacy ABI for bulk renewal when referrer is not provided
-  const useLegacyBulkAbi = !referrer || referrer === zeroHash
 
   return {
     to: getChainContractAddress({
       client: wallet,
       contract: 'ensBulkRenewal',
     }),
-    data: useLegacyBulkAbi
-      ? encodeFunctionData({
-          abi: [
-            {
-              inputs: [
-                { name: 'names', type: 'string[]' },
-                { name: 'duration', type: 'uint256' },
-              ],
-              name: 'renewAll',
-              outputs: [],
-              stateMutability: 'payable',
-              type: 'function',
-            },
-          ] as const,
-          functionName: 'renewAll',
-          args: [labels, BigInt(duration)],
-        })
-      : encodeFunctionData({
-          abi: bulkRenewalRenewAllSnippet,
-          functionName: 'renewAll',
-          args: [labels, BigInt(duration), referrer],
-        }),
+    data: encodeFunctionData({
+      abi: bulkRenewalRenewAllSnippet,
+      functionName: 'renewAll',
+      args: [labels, BigInt(duration), referrer],
+    }),
     value,
   }
 }
