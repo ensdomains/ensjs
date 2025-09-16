@@ -29,9 +29,9 @@ describe('randomSecret()', () => {
     ).toThrowErrorMatchingInlineSnapshot(`
       [CampaignReferenceTooLargeError: Campaign reference 4294967296 is too large
 
-        - Max campaign reference: 4294967295
+      - Max campaign reference: 4294967295
 
-        Version: @ensdomains/ensjs@1.0.0-mock.0]
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
       `)
   })
 })
