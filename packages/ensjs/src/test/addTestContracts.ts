@@ -1,6 +1,7 @@
-import { config } from 'dotenv'
 import { resolve } from 'node:path'
+import { config } from 'dotenv'
 import {
+  http,
   type Account,
   type Address,
   type Hash,
@@ -12,7 +13,6 @@ import {
   createPublicClient,
   createTestClient,
   createWalletClient,
-  http,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 

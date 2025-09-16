@@ -169,9 +169,9 @@ async function checkContainsWrappedNames<TChain extends ChainWithEns>(
       const wrapperData = await getWrapperData(wallet, { name })
       // getWrapperData returns null for unwrapped names (owner === EMPTY_ADDRESS)
       return wrapperData !== null
-    })
+    }),
   )
-  return checks.some(isWrapped => isWrapped)
+  return checks.some((isWrapped) => isWrapped)
 }
 
 /**

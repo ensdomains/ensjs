@@ -96,7 +96,8 @@ it('should return a renewAll transaction for multiple names and succeed', async 
 it('should include referrer when renewing unwrapped names', async () => {
   const name = 'to-be-renewed.eth'
   const duration = 31536000n
-  const referrer = '0x000000000000000000000000000000000000000000000000000000000000dead' as Hex
+  const referrer =
+    '0x000000000000000000000000000000000000000000000000000000000000dead' as Hex
 
   const price = await getPrice(publicClient, {
     nameOrNames: name,
@@ -130,7 +131,9 @@ it('should auto-detect wrapped names when containsWrappedNames is not provided',
   // First, verify the name is actually wrapped
   const wrapperData = await getWrapperData(publicClient, { name })
   expect(wrapperData).toBeTruthy()
-  expect(wrapperData?.owner).not.toBe('0x0000000000000000000000000000000000000000')
+  expect(wrapperData?.owner).not.toBe(
+    '0x0000000000000000000000000000000000000000',
+  )
 
   // Spy on makeFunctionData to verify it's called with containsWrappedNames: true
   const originalMakeFunctionData = renewNames.makeFunctionData
@@ -147,13 +150,13 @@ it('should auto-detect wrapped names when containsWrappedNames is not provided',
     value: total,
     account: accounts[0],
   })
-  
+
   // Verify auto-detection set containsWrappedNames to true
   expect(actualContainsWrappedNames).toBe(true)
-  
+
   // Restore original function
   renewNames.makeFunctionData = originalMakeFunctionData
-  
+
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
@@ -189,13 +192,13 @@ it('should auto-detect unwrapped names when containsWrappedNames is not provided
     value: total,
     account: accounts[0],
   })
-  
+
   // Verify auto-detection set containsWrappedNames to false
   expect(actualContainsWrappedNames).toBe(false)
-  
+
   // Restore original function
   renewNames.makeFunctionData = originalMakeFunctionData
-  
+
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
@@ -204,7 +207,8 @@ it('should auto-detect unwrapped names when containsWrappedNames is not provided
 it('should throw error when referrer is provided for wrapped names', async () => {
   const name = 'wrapped-with-subnames.eth'
   const duration = 31536000n
-  const referrer = '0x000000000000000000000000000000000000000000000000000000000000dead' as Hex
+  const referrer =
+    '0x000000000000000000000000000000000000000000000000000000000000dead' as Hex
 
   const price = await getPrice(publicClient, {
     nameOrNames: name,
@@ -224,6 +228,6 @@ it('should throw error when referrer is provided for wrapped names', async () =>
       containsWrappedNames: true,
       referrer,
       account: accounts[0],
-    })
+    }),
   ).rejects.toThrow('referrer cannot be specified when renewing wrapped names')
 })
