@@ -1,22 +1,34 @@
 import {
   type Account,
   type Hash,
+  type Hex,
   type SendTransactionParameters,
   type Transport,
   encodeFunctionData,
+  zeroHash,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import { bulkRenewalRenewAllSnippet } from '../../contracts/bulkRenewal.js'
+import {
+  bulkRenewalRenewAllSnippet,
+  wrappedBulkRenewalRenewAllSnippet,
+} from '../../contracts/bulkRenewal.js'
 import type { ChainWithEns, ClientWithAccount } from '../../contracts/consts.js'
-import { ethRegistrarControllerRenewSnippet } from '../../contracts/ethRegistrarController.js'
+import {
+  ethRegistrarControllerRenewSnippet,
+  wrappedEthRegistrarControllerRenewSnippet,
+} from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { UnsupportedNameTypeError } from '../../errors/general.js'
+import {
+  AdditionalParameterSpecifiedError,
+  UnsupportedNameTypeError,
+} from '../../errors/general.js'
 import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
 import { getNameType } from '../../utils/getNameType.js'
+import getWrapperData from '../public/getWrapperData.js'
 
 export type RenewNamesDataParameters = {
   /** Name or names to renew */
@@ -25,6 +37,10 @@ export type RenewNamesDataParameters = {
   duration: bigint | number
   /** Value of all renewals */
   value: bigint
+  /** Whether any of the names are wrapped - if not provided, will be auto-detected */
+  containsWrappedNames?: boolean
+  /** Referrer value */
+  referrer?: Hex
 }
 
 export type RenewNamesDataReturnType = SimpleTransactionRequest & {
@@ -47,7 +63,13 @@ export const makeFunctionData = <
   TAccount extends Account | undefined,
 >(
   wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { nameOrNames, duration, value }: RenewNamesDataParameters,
+  {
+    nameOrNames,
+    duration,
+    value,
+    containsWrappedNames,
+    referrer,
+  }: RenewNamesDataParameters,
 ): RenewNamesDataReturnType => {
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
   const labels = names.map((name) => {
@@ -62,6 +84,50 @@ export const makeFunctionData = <
     return label[0]
   })
 
+  if (containsWrappedNames) {
+    if (referrer)
+      throw new AdditionalParameterSpecifiedError({
+        parameter: 'referrer',
+        allowedParameters: [
+          'nameOrNames',
+          'duration',
+          'value',
+          'containsWrappedNames',
+        ],
+        details: 'referrer cannot be specified when renewing wrapped names',
+      })
+
+    if (labels.length === 1)
+      return {
+        to: getChainContractAddress({
+          client: wallet,
+          contract: 'ensWrappedEthRegistrarController',
+        }),
+        data: encodeFunctionData({
+          abi: wrappedEthRegistrarControllerRenewSnippet,
+          functionName: 'renew',
+          args: [labels[0], BigInt(duration)],
+        }),
+        value,
+      }
+
+    return {
+      to: getChainContractAddress({
+        client: wallet,
+        contract: 'ensWrappedBulkRenewal',
+      }),
+      data: encodeFunctionData({
+        abi: wrappedBulkRenewalRenewAllSnippet,
+        functionName: 'renewAll',
+        args: [labels, BigInt(duration)],
+      }),
+      value,
+    }
+  }
+
+  // For unwrapped names, use referrer (default to zeroHash if not provided)
+  const effectiveReferrer = referrer ?? zeroHash
+
   if (labels.length === 1) {
     return {
       to: getChainContractAddress({
@@ -71,7 +137,7 @@ export const makeFunctionData = <
       data: encodeFunctionData({
         abi: ethRegistrarControllerRenewSnippet,
         functionName: 'renew',
-        args: [labels[0], BigInt(duration)],
+        args: [labels[0], BigInt(duration), effectiveReferrer],
       }),
       value,
     }
@@ -85,10 +151,30 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: bulkRenewalRenewAllSnippet,
       functionName: 'renewAll',
-      args: [labels, BigInt(duration)],
+      args: [labels, BigInt(duration), effectiveReferrer],
     }),
     value,
   }
+}
+
+/**
+ * Checks if any of the provided names are wrapped
+ * @param wallet - Client to use for checking
+ * @param names - Array of names to check
+ * @returns True if any name is wrapped
+ */
+async function checkContainsWrappedNames<TChain extends ChainWithEns>(
+  wallet: ClientWithAccount<Transport, TChain, Account | undefined>,
+  names: string[],
+): Promise<boolean> {
+  const checks = await Promise.all(
+    names.map(async (name) => {
+      const wrapperData = await getWrapperData(wallet, { name })
+      // getWrapperData returns null for unwrapped names (owner === EMPTY_ADDRESS)
+      return wrapperData !== null
+    }),
+  )
+  return checks.some((isWrapped) => isWrapped)
 }
 
 /**
@@ -137,10 +223,25 @@ async function renewNames<
     nameOrNames,
     duration,
     value,
+    containsWrappedNames,
+    referrer,
     ...txArgs
   }: RenewNamesParameters<TChain, TAccount, TChainOverride>,
 ): Promise<RenewNamesReturnType> {
-  const data = makeFunctionData(wallet, { nameOrNames, duration, value })
+  // If containsWrappedNames is not provided, auto-detect it
+  let hasWrappedNames = containsWrappedNames
+  if (hasWrappedNames === undefined) {
+    const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
+    hasWrappedNames = await checkContainsWrappedNames(wallet, names)
+  }
+
+  const data = makeFunctionData(wallet, {
+    nameOrNames,
+    duration,
+    value,
+    containsWrappedNames: hasWrappedNames,
+    referrer,
+  })
   const writeArgs = {
     ...data,
     ...txArgs,

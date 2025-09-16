@@ -44,7 +44,9 @@ export const deploymentAddresses = JSON.parse(
   | 'ENSRegistry'
   | 'LegacyPublicResolver'
   | 'NoMulticallResolver'
-  | 'OldestResolver',
+  | 'OldestResolver'
+  | 'WrappedBulkRenewal'
+  | 'WrappedEthRegistrarController',
   Address
 >
 
@@ -83,6 +85,12 @@ export const localhost = {
     },
     ensDnssecImpl: {
       address: deploymentAddresses.DNSSECImpl,
+    },
+    ensWrappedBulkRenewal: {
+      address: deploymentAddresses.WrappedBulkRenewal,
+    },
+    ensWrappedEthRegistrarController: {
+      address: deploymentAddresses.WrappedEthRegistrarController,
     },
     legacyEthRegistrarController: {
       address: deploymentAddresses.LegacyETHRegistrarController,

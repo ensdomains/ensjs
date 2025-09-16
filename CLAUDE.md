@@ -145,3 +145,31 @@ import { getNamesForAddress } from '@ensdomains/ensjs/subgraph'
 - Built with TypeScript for full type safety
 - Supports tree-shaking for optimal bundle size
 - Uses viem as the underlying Ethereum library
+
+## CI/CD Guidelines
+
+### Fixing CI Failures
+
+When asked to fix CI issues:
+
+1. **Always wait for CI to complete** - Don't assume the task is done after pushing fixes. Wait for all CI checks to finish running.
+
+2. **Verify actual success** - Check that all CI checks (lint, tests, build) actually pass. Use:
+   ```bash
+   gh pr checks <PR_NUMBER> --repo ensdomains/ensjs --watch
+   ```
+
+3. **Iterative fixing** - If CI fails after your fix:
+   - Check the specific error messages
+   - Fix the issues
+   - Push the changes
+   - **Wait for CI to run again**
+   - Repeat until all checks pass
+
+4. **Common CI checks to monitor**:
+   - Lint (code style and formatting)
+   - Test (unit and integration tests)
+   - Build (TypeScript compilation)
+   - SonarCloud (code quality)
+
+5. **Never declare CI fixed until you see green checks** - The task is only complete when all CI checks show as passing on GitHub.

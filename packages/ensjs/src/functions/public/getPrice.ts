@@ -3,11 +3,12 @@ import {
   type Hex,
   decodeFunctionResult,
   encodeFunctionData,
+  namehash,
 } from 'viem'
 import { bulkRenewalRentPriceSnippet } from '../../contracts/bulkRenewal.js'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import { ethRegistrarControllerRentPriceSnippet } from '../../contracts/ethRegistrarController.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { nameWrapperIsWrappedSnippet } from '../../contracts/nameWrapper.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { SimpleTransactionRequest } from '../../types.js'
 import {
@@ -29,6 +30,8 @@ export type GetPriceReturnType = {
   base: bigint
   /** Price premium */
   premium: bigint
+  /** Whether any of the names are wrapped */
+  containsWrappedNames: boolean
 }
 
 const encode = (
@@ -49,73 +52,76 @@ const encode = (
     },
   )
 
-  if (names.length > 1) {
-    const bulkRenewalAddress = getChainContractAddress({
-      client,
-      contract: 'ensBulkRenewal',
-    })
-    return multicallWrapper.encode(client, {
-      transactions: [
-        {
-          to: bulkRenewalAddress,
-          data: encodeFunctionData({
-            abi: bulkRenewalRentPriceSnippet,
-            functionName: 'rentPrice',
-            args: [names, BigInt(duration)],
-          }),
-        },
-        {
-          to: bulkRenewalAddress,
-          data: encodeFunctionData({
-            abi: bulkRenewalRentPriceSnippet,
-            functionName: 'rentPrice',
-            args: [names, 0n],
-          }),
-        },
-      ],
-    })
-  }
-  return {
-    to: getChainContractAddress({
-      client,
-      contract: 'ensEthRegistrarController',
-    }),
-    data: encodeFunctionData({
-      abi: ethRegistrarControllerRentPriceSnippet,
-      functionName: 'rentPrice',
-      args: [names[0], BigInt(duration)],
-    }),
-  }
+  const bulkRenewalAddress = getChainContractAddress({
+    client,
+    contract: 'ensBulkRenewal',
+  })
+  const nameWrapperAddress = getChainContractAddress({
+    client,
+    contract: 'ensNameWrapper',
+  })
+  return multicallWrapper.encode(client, {
+    transactions: [
+      {
+        to: bulkRenewalAddress,
+        data: encodeFunctionData({
+          abi: bulkRenewalRentPriceSnippet,
+          functionName: 'rentPrice',
+          args: [names, BigInt(duration)],
+        }),
+      },
+      {
+        to: bulkRenewalAddress,
+        data: encodeFunctionData({
+          abi: bulkRenewalRentPriceSnippet,
+          functionName: 'rentPrice',
+          args: [names, 0n],
+        }),
+      },
+      ...names.map((name) => ({
+        to: nameWrapperAddress,
+        data: encodeFunctionData({
+          abi: nameWrapperIsWrappedSnippet,
+          functionName: 'isWrapped',
+          args: [namehash(name)],
+        }),
+      })),
+    ],
+  })
 }
 
 const decode = async (
   client: ClientWithEns,
   data: Hex | BaseError,
-  { nameOrNames }: GetPriceParameters,
+  _params: GetPriceParameters,
 ): Promise<GetPriceReturnType> => {
   if (typeof data === 'object') throw data
-  const isBulkRenewal = Array.isArray(nameOrNames) && nameOrNames.length > 1
-  if (isBulkRenewal) {
-    const result = await multicallWrapper.decode(client, data, [])
-    const price = decodeFunctionResult({
-      abi: bulkRenewalRentPriceSnippet,
-      functionName: 'rentPrice',
-      data: result[0].returnData,
-    })
-    const premium = decodeFunctionResult({
-      abi: bulkRenewalRentPriceSnippet,
-      functionName: 'rentPrice',
-      data: result[1].returnData,
-    })
-    const base = price - premium
-    return { base, premium }
-  }
-
-  return decodeFunctionResult({
-    abi: ethRegistrarControllerRentPriceSnippet,
+  const result = await multicallWrapper.decode(client, data, [])
+  const price = decodeFunctionResult({
+    abi: bulkRenewalRentPriceSnippet,
     functionName: 'rentPrice',
-    data,
+    data: result[0].returnData,
   })
+  const premium = decodeFunctionResult({
+    abi: bulkRenewalRentPriceSnippet,
+    functionName: 'rentPrice',
+    data: result[1].returnData,
+  })
+  const base = price - premium
+
+  const containsWrappedNames = result.slice(2).some((r) =>
+    decodeFunctionResult({
+      abi: nameWrapperIsWrappedSnippet,
+      functionName: 'isWrapped',
+      data: r.returnData,
+    }),
+  )
+
+  return {
+    base,
+    premium,
+    containsWrappedNames,
+  }
 }
 
 type BatchableFunctionObject = GeneratedFunction<typeof encode, typeof decode>

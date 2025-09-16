@@ -387,3 +387,24 @@ export const nameWrapperSetResolverSnippet = [
   ...nameWrapperErrors,
   ...registrySetResolverSnippet,
 ] as const
+
+export const nameWrapperIsWrappedSnippet = [
+  ...nameWrapperErrors,
+  {
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+      },
+    ],
+    name: 'isWrapped',
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const

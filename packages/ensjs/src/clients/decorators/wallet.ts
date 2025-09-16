@@ -138,7 +138,6 @@ export type EnsWalletActions<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
     ...txArgs
   }: CommitNameParameters<
     TChain,
@@ -254,7 +253,6 @@ export type EnsWalletActions<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
     value,
     ...txArgs
   }: RegisterNameParameters<

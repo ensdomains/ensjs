@@ -1,19 +1,19 @@
+import { evmChainIdToCoinType } from '@ensdomains/address-encoder/utils'
 import {
   type Address,
   type Hex,
   encodeAbiParameters,
   keccak256,
-  labelhash,
   pad,
   toBytes,
   toHex,
+  zeroHash,
 } from 'viem'
 import {
   CampaignReferenceTooLargeError,
   ResolverAddressRequiredError,
 } from '../errors/utils.js'
 import { EMPTY_ADDRESS } from './consts.js'
-import { type EncodeChildFusesInputObject, encodeFuses } from './fuses.js'
 import {
   type RecordOptions,
   generateRecordCallArray,
@@ -34,32 +34,21 @@ export type RegistrationParameters = {
   /** Records to set upon registration */
   records?: RecordOptions
   /** Sets primary name upon registration */
-  reverseRecord?: boolean
-  /** Fuses to set upon registration */
-  fuses?: EncodeChildFusesInputObject
+  reverseRecord?: ('ethereum' | 'default')[]
+  /** Referrer value to use for registration */
+  referrer?: Hex
 }
 
-export type CommitmentTuple = [
-  labelHash: Hex,
-  owner: Address,
-  duration: bigint,
-  secret: Hex,
-  resolver: Address,
-  data: Hex[],
-  reverseRecord: boolean,
-  ownerControlledFuses: number,
-]
-
-export type RegistrationTuple = [
-  label: string,
-  owner: Address,
-  duration: bigint,
-  secret: Hex,
-  resolver: Address,
-  data: Hex[],
-  reverseRecord: boolean,
-  ownerControlledFuses: number,
-]
+export type PreparedRegistrationParameters = {
+  label: string
+  owner: Address
+  duration: bigint
+  secret: Hex
+  resolver: Address
+  data: Hex[]
+  reverseRecord: number
+  referrer: Hex
+}
 
 const cryptoRef =
   (typeof crypto !== 'undefined' && crypto) ||
@@ -93,24 +82,27 @@ export const randomSecret = ({
   return toHex(bytes)
 }
 
-export const makeCommitmentTuple = ({
+const reverseRecordBitmask = {
+  ethereum: 1,
+  default: 2,
+}
+
+export const registrationParametersWithDefaults = ({
   name,
   owner,
   duration,
   resolverAddress = EMPTY_ADDRESS,
   records: { coins = [], ...records } = { texts: [], coins: [] },
-  reverseRecord,
-  fuses,
+  reverseRecord = [],
   secret,
-}: RegistrationParameters): CommitmentTuple => {
-  const labelHash = labelhash(name.split('.')[0])
+  referrer = zeroHash,
+}: RegistrationParameters): PreparedRegistrationParameters => {
   const hash = namehash(name)
-  const fuseData = fuses
-    ? encodeFuses({ restriction: 'child', input: fuses })
-    : 0
 
-  if (
-    reverseRecord &&
+  if (reverseRecord.includes('default') && !coins.length)
+    coins.push({ coin: evmChainIdToCoinType(0), value: owner })
+  else if (
+    reverseRecord.includes('ethereum') &&
     !coins.find(
       (c) =>
         (typeof c.coin === 'string' && c.coin.toLowerCase() === 'eth') ||
@@ -118,14 +110,14 @@ export const makeCommitmentTuple = ({
           ? Number.parseInt(c.coin) === 60
           : c.coin === 60),
     )
-  ) {
+  )
     coins.push({ coin: 60, value: owner })
-  }
 
   const data = records
     ? generateRecordCallArray({ namehash: hash, coins, ...records })
     : []
 
+  // this will throw if reverseRecord is going to be set as well
   if (data.length > 0 && resolverAddress === EMPTY_ADDRESS)
     throw new ResolverAddressRequiredError({
       data: {
@@ -135,48 +127,75 @@ export const makeCommitmentTuple = ({
         resolverAddress,
         records,
         reverseRecord,
-        fuses,
+        referrer,
       },
     })
 
-  return [
-    labelHash,
+  return {
+    label: name.split('.')[0],
     owner,
-    BigInt(duration),
+    duration: BigInt(duration),
     secret,
-    resolverAddress,
+    resolver: resolverAddress,
     data,
-    !!reverseRecord,
-    fuseData,
-  ]
+    reverseRecord: reverseRecord.reduce(
+      (acc, curr) => acc | reverseRecordBitmask[curr],
+      0,
+    ),
+    referrer,
+  }
 }
 
-export const makeRegistrationTuple = (
-  params: RegistrationParameters,
-): RegistrationTuple => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_labelhash, ...commitmentData] = makeCommitmentTuple(params)
-  const label = params.name.split('.')[0]
-  return [label, ...commitmentData]
-}
-
-export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {
+export const createCommitmentHash = (
+  params: PreparedRegistrationParameters,
+): Hex => {
   return keccak256(
     encodeAbiParameters(
       [
-        { name: 'name', type: 'bytes32' },
-        { name: 'owner', type: 'address' },
-        { name: 'duration', type: 'uint256' },
-        { name: 'secret', type: 'bytes32' },
-        { name: 'resolver', type: 'address' },
-        { name: 'data', type: 'bytes[]' },
-        { name: 'reverseRecord', type: 'bool' },
-        { name: 'ownerControlledFuses', type: 'uint16' },
+        {
+          components: [
+            {
+              name: 'label',
+              type: 'string',
+            },
+            {
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              name: 'duration',
+              type: 'uint256',
+            },
+            {
+              name: 'secret',
+              type: 'bytes32',
+            },
+            {
+              name: 'resolver',
+              type: 'address',
+            },
+            {
+              name: 'data',
+              type: 'bytes[]',
+            },
+            {
+              name: 'reverseRecord',
+              type: 'uint8',
+            },
+            {
+              name: 'referrer',
+              type: 'bytes32',
+            },
+          ],
+          name: 'registration',
+          type: 'tuple',
+        },
       ],
-      params,
+      [params],
     ),
   )
 }
 
-export const makeCommitment = (params: RegistrationParameters): Hex =>
-  makeCommitmentFromTuple(makeCommitmentTuple(params))
+export const createCommitmentHashWithDefaults = (
+  params: RegistrationParameters,
+): Hex => createCommitmentHash(registrationParametersWithDefaults(params))
