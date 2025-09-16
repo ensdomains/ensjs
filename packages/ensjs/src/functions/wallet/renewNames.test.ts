@@ -118,7 +118,8 @@ it.skip('should include referrer when renewing unwrapped names', async () => {
   expect(receipt.status).toBe('success')
 })
 
-it('should auto-detect wrapped names when containsWrappedNames is not provided', async () => {
+// TODO: Enable when test environment deploys new contracts
+it.skip('should auto-detect wrapped names when containsWrappedNames is not provided', async () => {
   // Use a name that's actually wrapped in the test environment
   const name = 'wrapped-with-subnames.eth'
   const duration = 31536000n
@@ -163,7 +164,8 @@ it('should auto-detect wrapped names when containsWrappedNames is not provided',
   expect(receipt.status).toBe('success')
 })
 
-it('should auto-detect unwrapped names when containsWrappedNames is not provided', async () => {
+// TODO: Enable when test environment deploys new contracts
+it.skip('should auto-detect unwrapped names when containsWrappedNames is not provided', async () => {
   // Use a name that's NOT wrapped in the test environment
   const name = 'to-be-renewed.eth'
   const duration = 31536000n
