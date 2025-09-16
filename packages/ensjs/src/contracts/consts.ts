@@ -212,8 +212,6 @@ type EnsChainContracts = {
   ensReverseRegistrar: ChainContract
   ensWrappedBulkRenewal: ChainContract
   ensWrappedEthRegistrarController: ChainContract
-  ensBulkRenewal: ChainContract
-  ensDnssecImpl: ChainContract
   legacyEthRegistrarController: ChainContract
   legacyPublicResolver: ChainContract
   ensDefaultReverseRegistrar: ChainContract
