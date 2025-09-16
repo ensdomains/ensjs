@@ -1,4 +1,3 @@
-import type { Address } from 'abitype'
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
 import { labelhash, namehash } from 'viem/ens'
 
@@ -17,12 +16,23 @@ const makeNameGenerator = async (
       label,
       namedOwner,
       namedAddr,
-    }: { label: string; namedOwner: string; namedAddr: Address }) => {
+    }: { label: string; namedOwner: string; namedAddr: string }) => {
       const secret =
         '0x0000000000000000000000000000000000000000000000000000000000000000'
       const registrant = allNamedAccts[namedOwner]
       const resolver = publicResolver.address
       const addr = allNamedAccts[namedAddr]
+      const nonce = nonceManager.getNonce(namedOwner)
+
+      console.log('legacy: nonce for', label, 'by', namedOwner, 'is', nonce)
+
+      console.log('fetching commitment with params: ', {
+        label,
+        registrant,
+        secret,
+        resolver,
+        addr,
+      })
 
       const commitment = await controller.read.makeCommitmentWithConfig([
         label,
@@ -33,7 +43,7 @@ const makeNameGenerator = async (
       ])
 
       return controller.write.commit([commitment], {
-        nonce: nonceManager.getNonce(namedOwner),
+        nonce,
         account: registrant,
       })
     },

@@ -19,7 +19,8 @@ const makeNonceManager = async (href: HardhatRuntimeEnvironment) => {
   console.log('Nonce manager initialized', nonceMap)
 
   return {
-    getNonce: (name: string) => {
+    getNonce: (name?: string) => {
+      if (!name) return
       const nonce = nonceMap[name]
       nonceMap[name]++
       return nonce

@@ -34,6 +34,8 @@ type ContractName =
   | 'StaticBulkRenewal'
   | 'DNSSECImpl'
   | 'Root'
+  | 'LegacyETHRegistrarController'
+  | 'LegacyPublicResolver'
 
 export const deploymentAddresses = JSON.parse(
   process.env.DEPLOYMENT_ADDRESSES!,
@@ -89,6 +91,12 @@ export const localhost = {
     },
     ensWrappedEthRegistrarController: {
       address: deploymentAddresses.WrappedEthRegistrarController,
+    },
+    legacyEthRegistrarController: {
+      address: deploymentAddresses.LegacyETHRegistrarController,
+    },
+    legacyPublicResolver: {
+      address: deploymentAddresses.LegacyPublicResolver,
     },
   },
   subgraphs: {

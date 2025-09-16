@@ -383,7 +383,7 @@ const decode = async <
     const result = await multicallWrapper.decode(
       client,
       data,
-      passthrough.calls.filter((c) => c).map((c) => c!.call),
+      passthrough.calls.filter((c) => c).map((c) => c?.call!),
     )
     resolverAddress = resolver.address
     recordData = result.map((r) => r.returnData)
@@ -418,7 +418,7 @@ const decode = async <
         calls[i] = null
         return null
       }
-      return (r.length - 2) % 32 === 0 ? r : null
+      return (r.length - 2) % 64 === 0 ? r : null
     })
   }
 
