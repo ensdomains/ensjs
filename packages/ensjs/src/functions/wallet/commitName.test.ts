@@ -10,7 +10,7 @@ import {
 } from '../../test/addTestContracts.js'
 import {
   type RegistrationParameters,
-  makeCommitment,
+  createCommitmentHashWithDefaults,
 } from '../../utils/registerHelpers.js'
 import commitName from './commitName.js'
 
@@ -53,7 +53,7 @@ it('should return a commit transaction and succeed', async () => {
       client: publicClient,
       contract: 'ensEthRegistrarController',
     }),
-    args: [makeCommitment(params)],
+    args: [createCommitmentHashWithDefaults(params)],
   })
   expect(commitment).toBeTruthy()
 })
