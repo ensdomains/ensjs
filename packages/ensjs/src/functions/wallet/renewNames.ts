@@ -68,7 +68,7 @@ export const makeFunctionData = <
     duration,
     value,
     containsWrappedNames,
-    referrer = zeroHash,
+    referrer,
   }: RenewNamesDataParameters,
 ): RenewNamesDataReturnType => {
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
@@ -125,6 +125,9 @@ export const makeFunctionData = <
     }
   }
 
+  // For unwrapped names, use referrer (default to zeroHash if not provided)
+  const effectiveReferrer = referrer ?? zeroHash
+
   if (labels.length === 1) {
     return {
       to: getChainContractAddress({
@@ -134,7 +137,7 @@ export const makeFunctionData = <
       data: encodeFunctionData({
         abi: ethRegistrarControllerRenewSnippet,
         functionName: 'renew',
-        args: [labels[0], BigInt(duration), referrer],
+        args: [labels[0], BigInt(duration), effectiveReferrer],
       }),
       value,
     }
@@ -148,7 +151,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: bulkRenewalRenewAllSnippet,
       functionName: 'renewAll',
-      args: [labels, BigInt(duration), referrer],
+      args: [labels, BigInt(duration), effectiveReferrer],
     }),
     value,
   }

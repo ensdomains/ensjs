@@ -27,7 +27,7 @@ describe('randomSecret()', () => {
     expect(() =>
       randomSecret({ campaign: 0xffffffff + 1 }),
     ).toThrowErrorMatchingInlineSnapshot(`
-      [CampaignReferenceTooLargeError: Campaign reference is too large
+      [CampaignReferenceTooLargeError: Campaign reference 4294967296 is too large
 
         - Max campaign reference: 4294967295
 
@@ -89,7 +89,7 @@ describe('registrationParametersWithDefaults()', () => {
     })
     // Should add ETH coin data
     expect(params.data).toHaveLength(1)
-    expect(params.data[0]).toMatch(/^0xac9650d8/)
+    expect(params.data[0]).toMatch(/^0x8b95dd71/)
     // Should set reverse record bitmask for ethereum
     expect(params.reverseRecord).toBe(1)
   })
@@ -112,7 +112,7 @@ describe('registrationParametersWithDefaults()', () => {
       },
     })
     expect(params.data).toHaveLength(1)
-    expect(params.data[0]).toMatch(/^0xac9650d8/)
+    expect(params.data[0]).toMatch(/^0x8b95dd71/)
   })
 
   it('throws when records are supplied without a resolver address', () => {
@@ -155,7 +155,7 @@ describe('createCommitmentHash()', () => {
     })
     const commitment = createCommitmentHash(params)
     expect(commitment).toMatchInlineSnapshot(
-      `"0xc1151ff666bc5bf4f528ebe1bf63f0cc0e03e95de23dd982cbda6e25de59cadf"`,
+      `"0x47f42065b3983ae263ef6f461bc4e0987e8a03c13f6cb5bf7b92d90d2c1d33c4"`,
     )
   })
 })
@@ -170,7 +170,7 @@ describe('createCommitmentHashWithDefaults()', () => {
         '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054',
     })
     expect(commitment).toMatchInlineSnapshot(
-      `"0xc1151ff666bc5bf4f528ebe1bf63f0cc0e03e95de23dd982cbda6e25de59cadf"`,
+      `"0x47f42065b3983ae263ef6f461bc4e0987e8a03c13f6cb5bf7b92d90d2c1d33c4"`,
     )
   })
 })
