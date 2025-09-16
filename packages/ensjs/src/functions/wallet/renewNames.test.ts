@@ -93,8 +93,7 @@ it('should return a renewAll transaction for multiple names and succeed', async 
   }
 })
 
-// TODO: Enable when test environment deploys new contracts with referrer support
-it.skip('should include referrer when renewing unwrapped names', async () => {
+it('should include referrer when renewing unwrapped names', async () => {
   const name = 'to-be-renewed.eth'
   const duration = 31536000n
   const referrer =
