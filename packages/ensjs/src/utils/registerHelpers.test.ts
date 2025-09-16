@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { namehash } from './normalise.js'
 import {
-  type RegistrationParameters,
   createCommitmentHash,
   createCommitmentHashWithDefaults,
-  registrationParametersWithDefaults,
   randomSecret,
+  registrationParametersWithDefaults,
 } from './registerHelpers.js'
 
 describe('randomSecret()', () => {
@@ -60,7 +59,9 @@ describe('registrationParametersWithDefaults()', () => {
     // reverse record
     expect(params.reverseRecord).toBe(0)
     // referrer defaults to zeroHash
-    expect(params.referrer).toBe('0x0000000000000000000000000000000000000000000000000000000000000000')
+    expect(params.referrer).toBe(
+      '0x0000000000000000000000000000000000000000000000000000000000000000',
+    )
   })
 
   it('handles referrer when supplied', () => {
@@ -69,9 +70,12 @@ describe('registrationParametersWithDefaults()', () => {
       owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       duration: 31536000,
       secret: '0xsecret',
-      referrer: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      referrer:
+        '0x0000000000000000000000000000000000000000000000000000000000000001',
     })
-    expect(params.referrer).toBe('0x0000000000000000000000000000000000000000000000000000000000000001')
+    expect(params.referrer).toBe(
+      '0x0000000000000000000000000000000000000000000000000000000000000001',
+    )
   })
 
   it('adds ETH coin when reverse record is supplied and no ETH coin is supplied', () => {
