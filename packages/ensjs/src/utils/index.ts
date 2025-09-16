@@ -127,14 +127,12 @@ export {
   type ValidToken,
 } from './normalise.js'
 export {
-  makeCommitment,
-  makeCommitmentFromTuple,
-  makeCommitmentTuple,
-  makeRegistrationTuple,
+  createCommitmentHash,
+  createCommitmentHashWithDefaults,
   randomSecret,
-  type CommitmentTuple,
+  registrationParametersWithDefaults,
+  type PreparedRegistrationParameters,
   type RegistrationParameters,
-  type RegistrationTuple,
 } from './registerHelpers.js'
 export {
   checkIsDotEth,

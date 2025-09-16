@@ -28,6 +28,7 @@ import type {
   WriteTransactionParameters,
 } from '../../types.js'
 import { getNameType } from '../../utils/getNameType.js'
+import getWrapperData from '../public/getWrapperData.js'
 
 export type RenewNamesDataParameters = {
   /** Name or names to renew */
@@ -36,8 +37,8 @@ export type RenewNamesDataParameters = {
   duration: bigint | number
   /** Value of all renewals */
   value: bigint
-  /** Whether any of the names are wrapped */
-  containsWrappedNames: boolean
+  /** Whether any of the names are wrapped - if not provided, will be auto-detected */
+  containsWrappedNames?: boolean
   /** Referrer value */
   referrer?: Hex
 }
@@ -128,7 +129,7 @@ export const makeFunctionData = <
     return {
       to: getChainContractAddress({
         client: wallet,
-        contract: 'ensWrappedEthRegistrarController',
+        contract: 'ensEthRegistrarController',
       }),
       data: encodeFunctionData({
         abi: ethRegistrarControllerRenewSnippet,
@@ -151,6 +152,26 @@ export const makeFunctionData = <
     }),
     value,
   }
+}
+
+/**
+ * Checks if any of the provided names are wrapped
+ * @param wallet - Client to use for checking
+ * @param names - Array of names to check
+ * @returns True if any name is wrapped
+ */
+async function checkContainsWrappedNames<TChain extends ChainWithEns>(
+  wallet: ClientWithAccount<Transport, TChain, Account | undefined>,
+  names: string[],
+): Promise<boolean> {
+  const checks = await Promise.all(
+    names.map(async (name) => {
+      const wrapperData = await getWrapperData(wallet, { name })
+      // getWrapperData returns null for unwrapped names (owner === EMPTY_ADDRESS)
+      return wrapperData !== null
+    })
+  )
+  return checks.some(isWrapped => isWrapped)
 }
 
 /**
@@ -204,11 +225,18 @@ async function renewNames<
     ...txArgs
   }: RenewNamesParameters<TChain, TAccount, TChainOverride>,
 ): Promise<RenewNamesReturnType> {
+  // If containsWrappedNames is not provided, auto-detect it
+  let hasWrappedNames = containsWrappedNames
+  if (hasWrappedNames === undefined) {
+    const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
+    hasWrappedNames = await checkContainsWrappedNames(wallet, names)
+  }
+
   const data = makeFunctionData(wallet, {
     nameOrNames,
     duration,
     value,
-    containsWrappedNames,
+    containsWrappedNames: hasWrappedNames,
     referrer,
   })
   const writeArgs = {
