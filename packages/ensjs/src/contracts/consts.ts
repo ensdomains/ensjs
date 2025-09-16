@@ -23,7 +23,7 @@ export const supportedContracts = [
   'ensWrappedEthRegistrarController',
   'legacyEthRegistrarController',
   'legacyPublicResolver',
-  'ensDefaultReverseRegistrar'
+  'ensDefaultReverseRegistrar',
 ] as const
 
 export type SupportedChain = (typeof supportedChains)[number]
