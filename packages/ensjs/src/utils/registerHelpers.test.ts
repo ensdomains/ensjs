@@ -1,11 +1,15 @@
-import { labelhash } from 'viem'
+import { type Address, type Hex, labelhash } from 'viem'
 import { describe, expect, it } from 'vitest'
+import { ethRegistrarControllerMakeCommitmentSnippet } from '../contracts/ethRegistrarController.js'
+import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
+import { publicClient } from '../test/addTestContracts.js'
 import { namehash } from './normalise.js'
 import {
   type RegistrationParameters,
   makeCommitment,
   makeCommitmentFromTuple,
   makeCommitmentTuple,
+  makeRegistrationCallData,
   makeRegistrationTuple,
   randomSecret,
 } from './registerHelpers.js'
@@ -60,21 +64,11 @@ describe('makeCommitmentTuple()', () => {
     // records
     expect(tuple[5]).toStrictEqual([])
     // reverse record
-    expect(tuple[6]).toBe(false)
-    // owner controlled fuses
-    expect(tuple[7]).toBe(0)
-  })
-  it('encodes fuses when supplied', () => {
-    const tuple = makeCommitmentTuple({
-      name: 'test.eth',
-      owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-      duration: 31536000,
-      secret: '0xsecret',
-      fuses: {
-        named: ['CANNOT_UNWRAP', 'CANNOT_BURN_FUSES'],
-      },
-    })
-    expect(tuple[7]).toBe(3)
+    expect(tuple[6]).toBe(0)
+    // referrer
+    expect(tuple[7]).toBe(
+      '0x0000000000000000000000000000000000000000000000000000000000000000',
+    )
   })
   it('adds ETH coin when reverse record is supplied and no ETH coin is supplied', () => {
     const tuple = makeCommitmentTuple({
@@ -82,7 +76,7 @@ describe('makeCommitmentTuple()', () => {
       owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
       duration: 31536000,
       secret: '0xsecret',
-      reverseRecord: true,
+      reverseRecord: 1,
       resolverAddress: '0xresolverAddress',
     })
     expect(tuple[5]).toMatchInlineSnapshot(`
@@ -90,7 +84,7 @@ describe('makeCommitmentTuple()', () => {
         "0x8b95dd71eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000014f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000",
       ]
     `)
-    expect(tuple[6]).toBe(true)
+    expect(tuple[6]).toBe(1)
   })
   it('does not add ETH coin when reverse record is supplied and ETH coin is supplied', () => {
     const tuple = makeCommitmentTuple({
@@ -104,14 +98,14 @@ describe('makeCommitmentTuple()', () => {
       },
       resolverAddress: '0xresolverAddress',
       secret: '0xsecret',
-      reverseRecord: true,
+      reverseRecord: 1,
     })
     expect(tuple[5]).toMatchInlineSnapshot(`
       [
         "0x8b95dd71eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000003c00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000014f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000",
       ]
     `)
-    expect(tuple[6]).toBe(true)
+    expect(tuple[6]).toBe(1)
   })
   it('throws when records are supplied without a resolver address', () => {
     expect(() =>
@@ -128,7 +122,7 @@ describe('makeCommitmentTuple()', () => {
           ],
         },
         secret: '0xsecret',
-        reverseRecord: true,
+        reverseRecord: 1,
       }),
     ).toThrowErrorMatchingInlineSnapshot(`
       [ResolverAddressRequiredError: Resolver address is required when data is supplied
@@ -139,8 +133,7 @@ describe('makeCommitmentTuple()', () => {
       - duration: 31536000
       - resolverAddress: 0x0000000000000000000000000000000000000000
       - records: [object Object]
-      - reverseRecord: true
-      - fuses: undefined
+      - reverseRecord: 1
 
       Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
@@ -179,16 +172,54 @@ describe('makeCommitmentFromTuple()', () => {
 })
 
 describe('makeCommitment()', () => {
-  it('generates a commitment from a RegistrationParameters', () => {
-    const commitment = makeCommitment({
+  it('generates a commitment from a RegistrationParameters', async () => {
+    const parameters: RegistrationParameters = {
       name: 'test.eth',
-      owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+      owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' as Address,
       duration: 31536000,
       secret:
         '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054',
-    })
-    expect(commitment).toMatchInlineSnapshot(
-      `"0x0d7fe28313600187945700f6c6374cc0ba4a360df039b3e62d435506e69dbe63"`,
+    }
+
+    const parameters2 = {
+      label: 'test',
+      owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' as Address,
+      duration: 31536000n,
+      secret:
+        '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054' as Hex,
+      resolver: getChainContractAddress({
+        client: publicClient,
+        contract: 'ensPublicResolver',
+      }),
+      data: [],
+      reverseRecord: 0,
+      referrer:
+        '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054' as Hex,
+    }
+
+    const commitment = makeCommitment(parameters)
+
+    console.log(
+      'address',
+      getChainContractAddress({
+        client: publicClient,
+        contract: 'ensEthRegistrarController',
+      }),
     )
+
+    console.log('commitment', commitment)
+
+    const commitment2 = await publicClient.readContract({
+      abi: ethRegistrarControllerMakeCommitmentSnippet,
+      functionName: 'makeCommitment',
+      address: getChainContractAddress({
+        client: publicClient,
+        contract: 'ensEthRegistrarController',
+      }),
+      args: [makeRegistrationCallData(parameters)],
+    })
+
+    console.log('commitment2', commitment2)
+    expect(commitment).toEqual(commitment2)
   })
 })

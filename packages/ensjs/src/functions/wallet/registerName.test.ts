@@ -1,14 +1,13 @@
-import type { Address, Hex } from 'viem'
+import { type Address, type Hex, labelhash } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
+import { baseRegistrarOwnerOfSnippet } from '../../contracts/baseRegistrar.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
 import {
   publicClient,
   testClient,
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { namehash } from '../../utils/normalise.js'
 import type { RegistrationParameters } from '../../utils/registerHelpers.js'
 import getPrice from '../public/getPrice.js'
 import commitName from './commitName.js'
@@ -33,13 +32,13 @@ const secret = `0x${'a'.repeat(64)}` as Hex
 
 const getNameWrapperOwner = async (name: string) => {
   return publicClient.readContract({
-    abi: nameWrapperOwnerOfSnippet,
-    functionName: 'ownerOf',
+    abi: baseRegistrarOwnerOfSnippet,
     address: getChainContractAddress({
       client: publicClient,
-      contract: 'ensNameWrapper',
+      contract: 'ensBaseRegistrarImplementation',
     }),
-    args: [BigInt(namehash(name))],
+    functionName: 'ownerOf',
+    args: [BigInt(labelhash(name.split('.')[0]))],
   })
 }
 

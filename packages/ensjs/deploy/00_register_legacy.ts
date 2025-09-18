@@ -376,8 +376,14 @@ const names: {
 ]
 
 const func: DeployFunction = async (hre) => {
-  const { getNamedAccounts, network, viem } = hre
+  const { getNamedAccounts, network, viem, deployments } = hre
   const allNamedAccts = await getNamedAccounts()
+
+  const deployedContracts = await deployments.all()
+  console.log('Currently deployed contracts:')
+  for (const [name, deployment] of Object.entries(deployedContracts)) {
+    console.log(`  - ${name}: ${deployment.address}`)
+  }
 
   const publicResolver = await viem.getContract('LegacyPublicResolver')
 

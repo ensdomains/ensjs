@@ -7,8 +7,8 @@ const makeNameGenerator = async (
 ) => {
   const { getNamedAccounts, viem } = hre
   const allNamedAccts = await getNamedAccounts()
-  const controller = await viem.getContract('ETHRegistrarController')
-  const publicResolver = await viem.getContract('PublicResolver')
+  const controller = await viem.getContract('NameWrapperETHRegistrarController')
+  const publicResolver = await viem.getContract('NameWrapperPublicResolver')
   const nameWrapper = await viem.getContract('NameWrapper')
   const nonceManager = optionalNonceManager ?? { getNonce: () => undefined }
 

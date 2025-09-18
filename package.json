@@ -30,5 +30,11 @@
       "unplugged": true
     }
   },
-  "packageManager": "pnpm@10.10.0"
+  "packageManager": "pnpm@10.10.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "hardhat-deploy": "patches/hardhat-deploy.patch",
+      "@ensdomains/ens-contracts@1.6.0": "patches/@ensdomains__ens-contracts@1.6.0.patch"
+    }
+  }
 }

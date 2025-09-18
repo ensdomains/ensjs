@@ -18,7 +18,7 @@ import type {
 import { getNameType } from '../../utils/getNameType.js'
 import {
   type RegistrationParameters,
-  makeRegistrationTuple,
+  makeRegistrationCallData,
 } from '../../utils/registerHelpers.js'
 import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
@@ -60,6 +60,8 @@ export const makeFunctionData = <
   const labels = args.name.split('.')
   wrappedLabelLengthCheck(labels[0])
 
+  console.log('contract address', args)
+
   return {
     to: getChainContractAddress({
       client: wallet,
@@ -68,7 +70,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: ethRegistrarControllerRegisterSnippet,
       functionName: 'register',
-      args: makeRegistrationTuple(args),
+      args: [makeRegistrationCallData(args)],
     }),
     value,
   }
@@ -128,7 +130,7 @@ async function registerName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
     value,
     ...txArgs
   }: RegisterNameParameters<TChain, TAccount, TChainOverride>,
@@ -141,7 +143,7 @@ async function registerName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
     value,
   })
   const writeArgs = {
