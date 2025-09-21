@@ -15,9 +15,10 @@ type SubgraphResult = {
   }
 }
 
-export type GetRecordHistoryReturnType = {
-  resolverEvents: ReturnResolverEvent[] | null
-} | null
+export type GetRecordHistoryReturnType =
+  | ReturnResolverEvent[]
+  | null
+  | undefined
 
 export type RecordKey = 'name' | 'texts' | 'coins' | 'abi' | 'contentHash'
 
@@ -31,7 +32,7 @@ export type GetRecordHistoryErrorType = Error
 export const getRecordHistory = async <key extends RecordKey = RecordKey>(
   client: { chain: ChainWithSubgraph },
   { name, key }: GetRecordHistoryParameters<key>,
-) => {
+): Promise<GetRecordHistoryReturnType> => {
   const subgraphClient = createSubgraphClient(client)
 
   const query = gql`

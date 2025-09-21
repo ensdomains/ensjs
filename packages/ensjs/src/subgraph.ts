@@ -43,6 +43,7 @@ export {
   type GetNameHistoryErrorType,
   type GetNameHistoryParameters,
   type GetNameHistoryReturnType,
+  type ReturnResolverEvent,
 } from './actions/subgraph/getNameHistory.js'
 export {
   default as getNamesForAddress,
