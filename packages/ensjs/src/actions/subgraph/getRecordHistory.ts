@@ -123,6 +123,7 @@ export const getRecordHistory = async <key extends RecordKey = RecordKey>(
   return result.domain?.resolver?.events
     .filter((el) => events[key].includes(el.type))
     .map((event: ResolverEvent): ReturnResolverEvent => {
+      console.log(event.type)
       switch (event.type) {
         case 'AddrChanged': {
           return {
