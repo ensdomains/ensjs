@@ -19,20 +19,18 @@ export type GetRecordHistoryReturnType = {
   resolverEvents: ReturnResolverEvent[] | null
 } | null
 
-export type GetRecordHistoryParameters<
-  RecordKey extends 'name' | 'texts' | 'coins' | 'abi' | 'contentHash',
-> = {
+export type RecordKey = 'name' | 'texts' | 'coins' | 'abi' | 'contentHash'
+
+export type GetRecordHistoryParameters<key extends RecordKey = RecordKey> = {
   name: string
-  key: RecordKey
+  key: key
 }
 
 export type GetRecordHistoryErrorType = Error
 
-export const getRecordHistory = async <
-  RecordKey extends 'name' | 'texts' | 'coins' | 'abi' | 'contentHash',
->(
+export const getRecordHistory = async <key extends RecordKey = RecordKey>(
   client: { chain: ChainWithSubgraph },
-  { name, key }: GetRecordHistoryParameters<RecordKey>,
+  { name, key }: GetRecordHistoryParameters<key>,
 ) => {
   const subgraphClient = createSubgraphClient(client)
 
