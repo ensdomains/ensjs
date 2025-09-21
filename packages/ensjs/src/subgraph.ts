@@ -52,6 +52,10 @@ export {
   type NameWithRelation,
 } from './actions/subgraph/getNamesForAddress.js'
 export {
+  type GetRecordHistoryReturnType,
+  getRecordHistory,
+} from './actions/subgraph/getRecordHistory.js'
+export {
   default as getSubgraphRecords,
   type GetSubgraphRecordsErrorType,
   type GetSubgraphRecordsParameters,

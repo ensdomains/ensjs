@@ -48,7 +48,7 @@ type FlattenedEvent<TEvent extends {}> = {
 
 type ReturnDomainEvent = FlattenedEvent<DomainEvent>
 type ReturnRegistrationEvent = FlattenedEvent<RegistrationEvent>
-type ReturnResolverEvent = FlattenedEvent<
+export type ReturnResolverEvent = FlattenedEvent<
   | Exclude<ResolverEvent, MulticoinAddrChanged | ContenthashChanged>
   | (BaseResolverEvent & {
       type: 'MulticoinAddrChanged'
