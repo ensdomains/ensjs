@@ -29,6 +29,14 @@ export type GetRecordHistoryParameters<key extends RecordKey = RecordKey> = {
 
 export type GetRecordHistoryErrorType = Error
 
+const events: Record<RecordKey, ResolverEvent['type'][]> = {
+  coins: ['AddrChanged', 'MulticoinAddrChanged'],
+  abi: ['AbiChanged'],
+  contentHash: ['ContenthashChanged'],
+  name: ['NameChanged'],
+  texts: ['TextChanged'],
+} as const
+
 export const getRecordHistory = async <key extends RecordKey = RecordKey>(
   client: { chain: ChainWithSubgraph },
   { name, key }: GetRecordHistoryParameters<key>,
@@ -112,8 +120,9 @@ export const getRecordHistory = async <key extends RecordKey = RecordKey>(
   )
 
   // Filter out null events and return only the relevant ones
-  return result.domain?.resolver?.events.map(
-    (event: ResolverEvent): ReturnResolverEvent => {
+  return result.domain?.resolver?.events
+    .filter((el) => events[key].includes(el.type))
+    .map((event: ResolverEvent): ReturnResolverEvent => {
       switch (event.type) {
         case 'AddrChanged': {
           return {
@@ -161,6 +170,5 @@ export const getRecordHistory = async <key extends RecordKey = RecordKey>(
         default:
           return event
       }
-    },
-  )
+    })
 }
