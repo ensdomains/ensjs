@@ -29,6 +29,16 @@ it('returns the history of a wrapped name', async () => {
   expect(result.resolverEvents).not.toBeNull()
 })
 
+it('returns the history of a referrable name', async () => {
+  const result = await getNameHistory(publicClient, {
+    name: 'referrable.eth',
+  })
+  if (!result) throw new Error('No result')
+  expect(result.domainEvents.length).toBeGreaterThan(0)
+  expect(result.registrationEvents).toBeNull()
+  expect(result.resolverEvents).not.toBeNull()
+})
+
 it('returns the history of a subname', async () => {
   const result = await getNameHistory(publicClient, {
     name: 'test.wrapped-with-subnames.eth',

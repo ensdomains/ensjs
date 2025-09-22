@@ -123,6 +123,11 @@ const dummyABI = [
   },
 ]
 
+type Subname = {
+  label: string
+  namedOwner: string
+}
+
 const names: {
   label: string
   namedOwner: string

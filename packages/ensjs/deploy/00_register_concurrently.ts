@@ -205,6 +205,5 @@ func.id = 'register-concurrent-names'
 func.tags = ['register-concurrent-names']
 func.dependencies = ['ETHRegistrarController', 'register-wrapped-names']
 func.runAtTheEnd = true
-func.skip = () => Promise.resolve(true)
 
 export default func

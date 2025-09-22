@@ -20,7 +20,6 @@ import {
   type RegistrationParameters,
   makeRegistrationCallData,
 } from '../../utils/registerHelpers.js'
-import { wrappedLabelLengthCheck } from '../../utils/wrapper.js'
 
 export type RegisterNameDataParameters = RegistrationParameters & {
   /** Value of registration */
@@ -56,11 +55,6 @@ export const makeFunctionData = <
       supportedNameTypes: ['eth-2ld'],
       details: 'Only 2ld-eth name registration is supported',
     })
-
-  const labels = args.name.split('.')
-  wrappedLabelLengthCheck(labels[0])
-
-  console.log('contract address', args)
 
   return {
     to: getChainContractAddress({
