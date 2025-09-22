@@ -43,6 +43,7 @@ export {
 
 export {
   EMPTY_ADDRESS,
+  EMPTY_BYTES32,
   GRACE_PERIOD_SECONDS,
   MAX_DATE_INT,
   MAX_INT_64,
@@ -146,7 +147,10 @@ export {
   makeCommitmentFromTuple,
   makeCommitmentTuple,
   makeRegistrationTuple,
+  makeRegistrationCallData,
   randomSecret,
+  type RegistrationCallData,
+  type ReverseRecordParameter,
   type CommitmentTuple,
   type RegistrationParameters,
   type RegistrationTuple,
