@@ -9,3 +9,5 @@ archives/
 data/
 
 *.tsbuildinfo
+
+.claude/
