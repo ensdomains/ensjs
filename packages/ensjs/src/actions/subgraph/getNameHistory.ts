@@ -17,6 +17,10 @@ import type {
 export type GetNameHistoryParameters = {
   /** Name to get history for */
   name: string
+  /** Only fetch the first n events */
+  first?: number
+  /** Order direction */
+  orderDirection?: 'asc' | 'desc'
 }
 
 export type GetNameHistoryReturnType = {
@@ -85,14 +89,14 @@ export type ReturnResolverEvent = FlattenedEvent<
  */
 const getNameHistory = async (
   client: { chain: ChainWithSubgraph },
-  { name }: GetNameHistoryParameters,
+  { name, first, orderDirection }: GetNameHistoryParameters,
 ): Promise<GetNameHistoryReturnType> => {
   const subgraphClient = createSubgraphClient(client)
 
   const query = gql`
-    query getNameHistory($id: String!) {
+    query getNameHistory($id: String!, $first: Int, $orderDirection: OrderDirection) {
       domain(id: $id) {
-        events {
+        events($first: Int, $orderDirection: OrderDirection) {
           id
           blockNumber
           transactionID
@@ -213,6 +217,8 @@ const getNameHistory = async (
 
   const queryVars = {
     id: namehash(name),
+    first,
+    orderDirection,
   }
 
   const result = await subgraphClient.request<SubgraphResult, typeof queryVars>(
