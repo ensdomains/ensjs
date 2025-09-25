@@ -144,7 +144,7 @@ const getNameHistory = async (
           }
         }
         registration {
-          events {
+          events(first: $first, orderDirection: $orderDirection) {
             id
             blockNumber
             transactionID
@@ -166,7 +166,7 @@ const getNameHistory = async (
           }
         }
         resolver {
-          events {
+          events(first: $first, orderDirection: $orderDirection) {
             id
             blockNumber
             transactionID
