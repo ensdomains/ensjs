@@ -96,7 +96,7 @@ const getNameHistory = async (
   const query = gql`
     query getNameHistory($id: String!, $first: Int, $orderDirection: OrderDirection) {
       domain(id: $id) {
-        events($first: Int, $orderDirection: OrderDirection) {
+        events(first: $first, orderDirection: $orderDirection) {
           id
           blockNumber
           transactionID
