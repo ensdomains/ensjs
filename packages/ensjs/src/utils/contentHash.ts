@@ -15,6 +15,7 @@ export type ProtocolType =
   | 'onion3'
   | 'sia'
   | 'ar'
+  | 'walrus'
   | null
 
 export type DecodedContentHash = {
@@ -24,7 +25,7 @@ export type DecodedContentHash = {
 
 function matchProtocol(text: string) {
   return (
-    text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave|ar):\/\/(.*)/) ||
+    text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave|ar|walrus):\/\/(.*)/) ||
     text.match(/\/(ipfs)\/(.*)/) ||
     text.match(/\/(ipns)\/(.*)/)
   )
@@ -44,6 +45,8 @@ export const getDisplayCodec = (encoded: string): ProtocolType => {
       return 'sia'
     case 'arweave':
       return 'ar'
+    case 'walrus':
+      return 'walrus'
     default:
       return null
   }
@@ -59,6 +62,8 @@ export const getInternalCodec = (
       return 'skynet'
     case 'ar':
       return 'arweave'
+    case 'walrus':
+      return 'walrus'
     default:
       return displayCodec
   }
