@@ -87,6 +87,9 @@ const getOrderByFilter = ({
 
 /**
  * Gets the subnames for a name from the subgraph.
+ * It's recommended to use a custom subgraph URL to avoid rate limiting.
+ * @see {@link ../../../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetSubnamesParameters}
  * @returns Subname array. {@link GetSubnamesReturnType}

@@ -7,7 +7,7 @@
  * subnames, registrations, and other ENS-related information.
  *
  * Use a custom subgraph URL in production to avoid rate limiting.
- * @see {@link ../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ * @see {@link ../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
  */
 export { createSubgraphClient } from './functions/subgraph/client.js'
 export type {

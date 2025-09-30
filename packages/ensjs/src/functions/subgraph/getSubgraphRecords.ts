@@ -128,7 +128,10 @@ const getInheritedResolverResult = async (
 }
 
 /**
- * Gets the records for a name from the subgraph
+ * Gets the records for a name from the subgraph.
+ * It's recommended to use a custom subgraph URL to avoid rate limiting.
+ * @see {@link ../../../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetSubgraphRecordsParameters}
  * @returns Record object, or null if name was not found. {@link GetSubgraphRecordsReturnType}
