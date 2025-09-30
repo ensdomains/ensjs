@@ -1,3 +1,14 @@
+/**
+ * @module subgraph
+ * Subgraph module for querying indexed ENS data from Ethereum L1.
+ *
+ * This module provides comprehensive functions for interacting with indexed ENS data
+ * through The Graph subgraph. It enables efficient querying of name histories,
+ * subnames, registrations, and other ENS-related information.
+ *
+ * Use a custom subgraph URL in production to avoid rate limiting.
+ * @see {@link ../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ */
 export { createSubgraphClient } from './functions/subgraph/client.js'
 export type {
   AbiChanged,
