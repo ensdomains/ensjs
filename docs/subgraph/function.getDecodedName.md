@@ -10,6 +10,9 @@
 
 Gets the full name for a name with unknown labels from the subgraph.
 
+> [!NOTE]
+> It's recommended to use an API key from TheGraph to avoid rate limiting. Learn more in [Custom Subgraph URIs](../basics/custom-subgraph-uris.md).
+
 ## Example
 
 ```ts

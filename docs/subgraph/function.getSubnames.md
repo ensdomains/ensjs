@@ -10,6 +10,9 @@
 
 Gets the subnames for a name from the subgraph.
 
+> [!NOTE]
+> It's recommended to use an API key from TheGraph to avoid rate limiting. Learn more in [Custom Subgraph URIs](../basics/custom-subgraph-uris.md).
+
 ## Example
 
 ```ts

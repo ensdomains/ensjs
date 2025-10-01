@@ -8,7 +8,10 @@
 
 > **getSubgraphRecords**(`client`, `parameters`): `Promise`\< `GetSubgraphRecordsReturnType` \>
 
-Gets the records for a name from the subgraph
+Gets the records for a name from the subgraph.
+
+> [!NOTE]
+> It's recommended to use an API key from TheGraph to avoid rate limiting. Learn more in [Custom Subgraph URIs](../basics/custom-subgraph-uris.md).
 
 ## Example
 
