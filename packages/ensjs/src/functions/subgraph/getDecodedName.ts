@@ -30,7 +30,7 @@ type SubgraphResult = {
  *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetDecodedNameParameters}
- * @returns Full name, or null if name could not be filled. {@link GetDecodedNameReturnType}
+ * @returns Full name, or null if name was not found. {@link GetDecodedNameReturnType}
  *
  *
  * @example

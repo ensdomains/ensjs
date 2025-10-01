@@ -42,7 +42,7 @@ const result = await getDecodedName(client, {
 
 `Promise`\< `GetDecodedNameReturnType` \>
 
-Full name, or null if name was could not be filled. GetDecodedNameReturnType
+Full name, or null if name was not found. GetDecodedNameReturnType
 
 ## Source
 
