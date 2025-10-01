@@ -8,9 +8,14 @@ import {
   supportedChains,
 } from './consts.js'
 
+type AddEnsContractsOptions = {
+  subgraphApiKey?: string
+}
+
 /**
  * Adds ENS contract addresses to the viem chain
  * @param chain - The viem {@link Chain} object to add the ENS contracts to
+ * @param options.subgraphApiKey - The API key to use for the ENS subgraph
  *
  * @example
  * import { createPublicClient, http } from 'viem'
@@ -22,7 +27,10 @@ import {
  *   transport: http(),
  * })
  */
-export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
+export const addEnsContracts = <const TChain extends Chain>(
+  chain: TChain,
+  options?: AddEnsContractsOptions,
+) => {
   if (!chain) throw new NoChainError()
   if (!supportedChains.includes(chain.id as SupportedChain))
     throw new UnsupportedChainError({
@@ -37,6 +45,16 @@ export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
     },
     subgraphs: {
       ...subgraphs[chain.id as SupportedChain],
+      ...(options?.subgraphApiKey
+        ? {
+            ens: {
+              url:
+                options.subgraphApiKey && chain.id === 1
+                  ? `https://gateway-arbitrum.network.thegraph.com/api/${options.subgraphApiKey}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`
+                  : subgraphs[chain.id as SupportedChain].ens.url,
+            },
+          }
+        : {}),
     },
   } as unknown as CheckedChainWithEns<TChain>
 }
