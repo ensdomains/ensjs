@@ -160,7 +160,7 @@ export const ensContracts = {
   },
   [supportedChains.devnetL1]: {
     ensBaseRegistrarImplementation: {
-      address: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
+      address: '0x851356ae760d987E095750cCeb3bC6014560891C',
     },
     ensBulkRenewal: {
       address: '0x0355B7B8cb128fA5692729Ab3AAa199C1753f726',
@@ -228,7 +228,7 @@ export const ensSubgraphs = {
   },
   [supportedChains.devnetL1]: {
     ens: {
-      url: 'https://localhost:7777',
+      url: 'http://localhost:42069/subgraph',
     },
   },
 } as const satisfies Record<SupportedChainId, EnsSubgraph>
