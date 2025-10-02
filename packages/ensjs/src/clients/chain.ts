@@ -177,7 +177,7 @@ export type ChainWithSubgraph = { subgraphs: EnsSubgraph }
 export const ensSubgraphs = {
   [supportedChains.mainnet]: {
     ens: {
-      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+      url: 'https://api.alpha.blue.ensnode.io/subgraph',
     },
   },
   [supportedChains.holesky]: {
