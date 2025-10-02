@@ -20,6 +20,7 @@ export const supportedChains = {
   mainnet: 1,
   holesky: 17000,
   sepolia: 11155111,
+  devnetL1: 15658733,
 } as const
 
 const supportedChainIds = Object.values(supportedChains)
@@ -157,6 +158,41 @@ export const ensContracts = {
       address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',
     },
   },
+  [supportedChains.devnetL1]: {
+    ensBaseRegistrarImplementation: {
+      address: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
+    },
+    ensBulkRenewal: {
+      address: '0x0355B7B8cb128fA5692729Ab3AAa199C1753f726',
+    },
+    ensDnsRegistrar: {
+      address: '0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc',
+    },
+    ensDnssecImpl: {
+      address: '0x3Aa5ebB10DC797CAC828524e59A333d0A371443c',
+    },
+    ensEthRegistrarController: {
+      address: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
+    },
+    ensL2EthRegistrar: {
+      address: '0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8',
+    },
+    ensNameWrapper: {
+      address: '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2',
+    },
+    ensPublicResolver: {
+      address: '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25',
+    },
+    ensRegistry: {
+      address: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
+    },
+    ensReverseRegistrar: {
+      address: '0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d',
+    },
+    ensUniversalResolver: {
+      address: '0xc351628EB244ec633d5f21fBD6621e1a683B1181',
+    },
+  },
 } as const satisfies Record<
   SupportedChainId,
   Record<SupportedContract, ChainContract>
@@ -188,6 +224,11 @@ export const ensSubgraphs = {
   [supportedChains.sepolia]: {
     ens: {
       url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
+    },
+  },
+  [supportedChains.devnetL1]: {
+    ens: {
+      url: 'https://localhost:7777',
     },
   },
 } as const satisfies Record<SupportedChainId, EnsSubgraph>
