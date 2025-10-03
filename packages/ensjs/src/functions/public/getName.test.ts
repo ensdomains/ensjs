@@ -147,7 +147,7 @@ describe('getName', () => {
         function:  reverse(bytes encodedAddress, uint256 coinType)
         args:             (0x, 60)
 
-      Version: viem@2.30.6]
+      Version: viem@2.37.12]
     `)
   })
   it('should not return unnormalised name', async () => {
