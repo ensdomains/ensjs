@@ -30,10 +30,5 @@
       "unplugged": true
     }
   },
-  "packageManager": "pnpm@10.10.0",
-  "pnpm": {
-    "patchedDependencies": {
-      "hardhat-deploy": "patches/hardhat-deploy.patch"
-    }
-  }
+  "packageManager": "pnpm@10.10.0"
 }
