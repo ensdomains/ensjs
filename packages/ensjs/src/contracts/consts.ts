@@ -57,7 +57,7 @@ export const addresses = {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensUniversalResolver: {
-      address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     legacyEthRegistrarController: {
       address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
@@ -98,7 +98,7 @@ export const addresses = {
       address: '0x65EE0b0B030a76c95a7ff046C0e0c8f7A2d1B004',
     },
     ensUniversalResolver: {
-      address: '0xf606bc986635dab91b189aee8f565f45a0336f89',
+      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     legacyEthRegistrarController: {
       address: '0xf13fC748601fDc5afA255e9D9166EB43f603a903',
@@ -139,7 +139,7 @@ export const addresses = {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensUniversalResolver: {
-      address: '0xb7B7DAdF4D42a08B3eC1d3A1079959Dfbc8CFfCC',
+      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     legacyEthRegistrarController: {
       address: '0x7e02892cfc2Bfd53a75275451d73cF620e793fc0',
