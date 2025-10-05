@@ -31,12 +31,12 @@
     "@ensdomains/ens-test-env": "^1.0.1",
     "ts-node": "^10.9.2",
     "tslib": "^2.7.0",
-    "viem": "2.29.0",
+    "viem": "2.37.12",
     "wagmi": "^2"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.54",
-    "viem": "^2.9.2",
+    "viem": "^2.35.0",
     "wagmi": "^2"
   },
   "engines": {

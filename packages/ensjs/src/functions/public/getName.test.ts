@@ -144,10 +144,10 @@ describe('getName', () => {
        
       Contract Call:
         address:   0x1234567890abcdef
-        function:  reverse(bytes encodedAddress, uint256 coinType)
+        function:  reverse(bytes lookupAddress, uint256 coinType)
         args:             (0x, 60)
 
-      Version: viem@2.30.6]
+      Version: viem@2.37.12]
     `)
   })
   it('should not return unnormalised name', async () => {
