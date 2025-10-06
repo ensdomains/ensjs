@@ -57,7 +57,7 @@ Transaction hash. SetContentHashRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setContentHashRecord.ts:75](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/setContentHashRecord.ts#L75)
+[packages/ensjs/src/functions/wallet/setContentHashRecord.ts:75](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/wallet/setContentHashRecord.ts#L75)
 
 ---
 

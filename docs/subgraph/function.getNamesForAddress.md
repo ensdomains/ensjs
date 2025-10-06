@@ -45,7 +45,7 @@ Name array. GetNamesForAddressReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getNamesForAddress.ts:161](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getNamesForAddress.ts#L161)
+[packages/ensjs/src/functions/subgraph/getNamesForAddress.ts:161](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/subgraph/getNamesForAddress.ts#L161)
 
 ---
 

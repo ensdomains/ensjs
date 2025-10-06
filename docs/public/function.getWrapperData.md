@@ -40,7 +40,7 @@ Wrapper data object, or null if name is not wrapped. GetWrapperDataReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getWrapperData.ts:123](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getWrapperData.ts#L123)
+[packages/ensjs/src/functions/public/getWrapperData.ts:123](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/public/getWrapperData.ts#L123)
 
 ---
 

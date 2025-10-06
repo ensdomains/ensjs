@@ -43,7 +43,7 @@ History object, or null if name could not be found. GetNameHistoryReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getNameHistory.ts:83](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getNameHistory.ts#L83)
+[packages/ensjs/src/functions/subgraph/getNameHistory.ts:83](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/subgraph/getNameHistory.ts#L83)
 
 ---
 

@@ -56,7 +56,7 @@ Transaction hash. SetFusesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setFuses.ts:84](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/setFuses.ts#L84)
+[packages/ensjs/src/functions/wallet/setFuses.ts:84](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/wallet/setFuses.ts#L84)
 
 ---
 
