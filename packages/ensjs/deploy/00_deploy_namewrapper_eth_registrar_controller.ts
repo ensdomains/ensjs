@@ -7,12 +7,12 @@ const func: DeployFunction = async (hre) => {
   const { deploy } = deployments
   const { deployer } = await getNamedAccounts()
 
-  // Load the NameWrapperETHRegistrarController artifact
+  // Load the WrappedEthRegistrarController artifact
   const controllerJson = JSON.parse(
     await readFile(
       resolve(
         import.meta.dirname,
-        '../contracts/NameWrapperEthRegistrarController.json',
+        '../contracts/WrappedEthRegistrarController.json',
       ),
       { encoding: 'utf8' },
     ),
@@ -36,10 +36,10 @@ const func: DeployFunction = async (hre) => {
   const nameWrapper = await deployments.get('NameWrapper')
   const registry = await deployments.get('ENSRegistry')
 
-  console.log('Deploying NameWrapperETHRegistrarController...')
+  console.log('Deploying WrappedEthRegistrarController...')
 
   // Deploy the controller with the correct 7 constructor arguments
-  const controllerDeployment = await deploy('NameWrapperETHRegistrarController', {
+  const controllerDeployment = await deploy('WrappedEthRegistrarController', {
     from: deployer,
     args: [
       baseRegistrar.address, // BaseRegistrarImplementation address
@@ -55,7 +55,7 @@ const func: DeployFunction = async (hre) => {
   })
 
   console.log(
-    `NameWrapperETHRegistrarController deployed at: ${controllerDeployment.address}`,
+    `WrappedEthRegistrarController deployed at: ${controllerDeployment.address}`,
   )
 
   console.log('Deploying NameWrapperPublicResolver...')
@@ -84,7 +84,7 @@ const func: DeployFunction = async (hre) => {
     const owner = allNamedAccts.owner // Get the owner account
     
     const controller = await viem.getContract(
-      'NameWrapperETHRegistrarController',
+      'WrappedEthRegistrarController',
     )
 
     console.log('Setting up controller permissions...')
@@ -132,8 +132,8 @@ const func: DeployFunction = async (hre) => {
   return true
 }
 
-func.id = 'NameWrapperETHRegistrarController_and_Resolver'
-func.tags = ['NameWrapperETHRegistrarController', 'NameWrapperPublicResolver']
+func.id = 'WrappedEthRegistrarController_and_Resolver'
+func.tags = ['WrappedEthRegistrarController', 'NameWrapperPublicResolver']
 func.dependencies = [
   'ENSRegistry',
   'BaseRegistrarImplementation',

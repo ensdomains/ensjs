@@ -11,6 +11,9 @@ patchedDependencies:
   '@ensdomains/ens-contracts@1.6.0':
     hash: 690a84b6dc89077babbf6277c7ba377c4a9b92489488897fc4af09f5e4241aac
     path: patches/@ensdomains__ens-contracts@1.6.0.patch
+  '@ensdomains/ens-test-env@1.0.1':
+    hash: 1d493c55e26853008f0e9fc1baf5a6bc2108fc124273043f8e024b8a42bc910e
+    path: patches/@ensdomains__ens-test-env@1.0.1.patch
   hardhat-deploy:
     hash: c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61
     path: patches/hardhat-deploy.patch
@@ -104,7 +107,7 @@ importers:
         version: 1.6.0(patch_hash=690a84b6dc89077babbf6277c7ba377c4a9b92489488897fc4af09f5e4241aac)(bufferutil@4.0.9)(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@ensdomains/ens-test-env':
         specifier: ^1.0.1
-        version: 1.0.1
+        version: 1.0.1(patch_hash=1d493c55e26853008f0e9fc1baf5a6bc2108fc124273043f8e024b8a42bc910e)
       '@ensdomains/hardhat-toolbox-viem-extended':
         specifier: ^0.0.5
         version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))(hardhat-deploy@1.0.4(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)
@@ -189,7 +192,7 @@ importers:
         version: 0.1.1
       '@ensdomains/ens-test-env':
         specifier: ^1.0.1
-        version: 1.0.1
+        version: 1.0.1(patch_hash=1d493c55e26853008f0e9fc1baf5a6bc2108fc124273043f8e024b8a42bc910e)
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.15.29)(typescript@5.8.3)
@@ -5439,7 +5442,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@ensdomains/ens-test-env@1.0.1':
+  '@ensdomains/ens-test-env@1.0.1(patch_hash=1d493c55e26853008f0e9fc1baf5a6bc2108fc124273043f8e024b8a42bc910e)':
     dependencies:
       cli-progress: 3.12.0
       commander: 14.0.0
