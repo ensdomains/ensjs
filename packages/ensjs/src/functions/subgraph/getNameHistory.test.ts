@@ -35,7 +35,7 @@ it('returns the history of a referrable name', async () => {
   })
   if (!result) throw new Error('No result')
   expect(result.domainEvents.length).toBeGreaterThan(0)
-  expect(result.registrationEvents).toBeNull()
+  expect(result.registrationEvents?.length).toBeGreaterThan(0)
   expect(result.resolverEvents).not.toBeNull()
 })
 
