@@ -21,7 +21,7 @@ index 7b933cecb50874065956f6e16fa214240255a754..65602ef60708a8bc20355eea78c8a1f3
      container_name: ensindexer
 -    image: ghcr.io/namehash/ensnode/ensindexer:0.26.0
 -    pull_policy: always
-+    image: ghcr.io/namehash/ensnode/ensindexer:0.35.0
++    image: ghcr.io/namehash/ensnode/ensindexer:0.35.0-ens-test-env.2
      ports:
        - "42069:42069"
      depends_on:
@@ -61,7 +61,7 @@ index 7b933cecb50874065956f6e16fa214240255a754..65602ef60708a8bc20355eea78c8a1f3
      container_name: ensrainbow
 -    image: ghcr.io/namehash/ensnode/ensrainbow-test:latest
 -    pull_policy: always
-+    image: ghcr.io/namehash/ensnode/ensrainbow:0.35.0
++    image: ghcr.io/namehash/ensnode/ensrainbow:0.35.0-ens-test-env.2
      environment:
 +      DB_SCHEMA_VERSION: 3
 +      LABEL_SET_ID: ens-test-env
@@ -79,7 +79,7 @@ index 7b933cecb50874065956f6e16fa214240255a754..65602ef60708a8bc20355eea78c8a1f3
 +
 +  ensadmin:
 +    container_name: ensadmin
-+    image: ghcr.io/namehash/ensnode/ensadmin:0.35.0
++    image: ghcr.io/namehash/ensnode/ensadmin:0.35.0-ens-test-env.2
 +    ports:
 +      - "4173:4173"
 +    environment:

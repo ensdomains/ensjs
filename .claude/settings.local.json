@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm anvil:*)"
+      "Bash(pnpm anvil:*)",
+      "Bash(pnpm install:*)"
     ],
     "deny": [],
     "ask": []
