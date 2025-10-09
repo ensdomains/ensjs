@@ -14,7 +14,8 @@ const func: DeployFunction = async (hre) => {
 
   const deploymentAddressMapWithENSNodeDatasources = {
     ...deploymentAddressMap,
-    UnwrappedEthRegistrarController: deploymentAddressMap.ETHRegistrarController
+    UnwrappedETHRegistrarController:
+      deploymentAddressMap.ETHRegistrarController,
   }
 
   await writeFile(

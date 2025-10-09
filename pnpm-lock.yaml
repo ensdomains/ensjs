@@ -11,9 +11,9 @@ patchedDependencies:
   '@ensdomains/ens-contracts@1.6.0':
     hash: 690a84b6dc89077babbf6277c7ba377c4a9b92489488897fc4af09f5e4241aac
     path: patches/@ensdomains__ens-contracts@1.6.0.patch
-  '@ensdomains/ens-test-env@1.0.1':
+  '@ensdomains/ens-test-env':
     hash: 86b3ae840e79479c94d6de354dfd2f969f3d24f9ff4f09d7db4d86c13fa12e96
-    path: patches/@ensdomains__ens-test-env@1.0.1.patch
+    path: patches/@ensdomains__ens-test-env.patch
   hardhat-deploy:
     hash: c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61
     path: patches/hardhat-deploy.patch
