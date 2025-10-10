@@ -8,6 +8,9 @@ overrides:
   '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
 
 patchedDependencies:
+  '@ensdomains/dnsprovejs@0.5.1':
+    hash: 613f8e32e5cc6cd20878b81a100193aa6317ad42262f322cfd07dc6bf7027c22
+    path: patches/@ensdomains__dnsprovejs@0.5.1.patch
   '@ensdomains/ens-contracts@1.6.0':
     hash: 690a84b6dc89077babbf6277c7ba377c4a9b92489488897fc4af09f5e4241aac
     path: patches/@ensdomains__ens-contracts@1.6.0.patch
@@ -79,7 +82,7 @@ importers:
         version: 3.1.0-rc.1
       '@ensdomains/dnsprovejs':
         specifier: ^0.5.1
-        version: 0.5.1
+        version: 0.5.1(patch_hash=613f8e32e5cc6cd20878b81a100193aa6317ad42262f322cfd07dc6bf7027c22)
       abitype:
         specifier: ^1.0.0
         version: 1.0.8(typescript@5.8.3)(zod@3.22.4)
@@ -5419,7 +5422,7 @@ snapshots:
       '@noble/curves': 1.9.1
       '@scure/base': 1.2.6
 
-  '@ensdomains/dnsprovejs@0.5.1':
+  '@ensdomains/dnsprovejs@0.5.1(patch_hash=613f8e32e5cc6cd20878b81a100193aa6317ad42262f322cfd07dc6bf7027c22)':
     dependencies:
       '@noble/hashes': 1.8.0
       dns-packet: 5.6.1

@@ -35,7 +35,8 @@
     "patchedDependencies": {
       "hardhat-deploy": "patches/hardhat-deploy.patch",
       "@ensdomains/ens-contracts@1.6.0": "patches/@ensdomains__ens-contracts@1.6.0.patch",
-      "@ensdomains/ens-test-env": "patches/@ensdomains__ens-test-env.patch"
+      "@ensdomains/ens-test-env": "patches/@ensdomains__ens-test-env.patch",
+      "@ensdomains/dnsprovejs@0.5.1": "patches/@ensdomains__dnsprovejs@0.5.1.patch"
     }
   }
 }
