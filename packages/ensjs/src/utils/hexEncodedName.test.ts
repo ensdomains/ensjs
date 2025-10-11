@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { bytesToPacket } from './hexEncodedName.js'
 import { hexToBytes } from 'viem'
+import { describe, expect, it } from 'vitest'
+import { bytesToPacket } from './hexEncodedName.js'
 
 describe('bytesToPacket', () => {
   it('should decode 08383433362E6574680365746800 to 8436.eth', () => {
