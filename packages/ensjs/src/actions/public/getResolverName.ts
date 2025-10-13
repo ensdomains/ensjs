@@ -1,4 +1,4 @@
-import type { PublicClient } from 'viem'
+import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
@@ -34,7 +34,7 @@ export type GetResolverNameErrorType = ReadContractErrorType
  * // l2name.eth
  */
 export async function getResolverName(
-  client: PublicClient,
+  client: Client,
   { resolverAddress }: GetResolverNameParameters,
 ): Promise<GetResolverNameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
