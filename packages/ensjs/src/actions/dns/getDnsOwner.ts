@@ -79,10 +79,10 @@ export async function getDnsOwner({
 
     if (!addressRecord?.data) throw new DnsNoTxtRecordError()
 
-    if (!unwrappedAddressRecord!.match(/^a=0x[a-fA-F0-9]{40}$/g))
+    if (!unwrappedAddressRecord?.match(/^a=0x[a-fA-F0-9]{40}$/g))
       throw new DnsInvalidTxtRecordError({ record: unwrappedAddressRecord! })
 
-    const address = unwrappedAddressRecord!.slice(2)
+    const address = unwrappedAddressRecord?.slice(2)
     const checksumAddress = getAddress(address)
 
     if (address !== checksumAddress)

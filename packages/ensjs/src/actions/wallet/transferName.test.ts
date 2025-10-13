@@ -40,7 +40,7 @@ it('should allow a transfer on the registry', async () => {
     contract: 'registry',
   })
 
-  expect(owner!.owner).toBe(accounts[1])
+  expect(owner?.owner).toBe(accounts[1])
 })
 it('should allow a regular transfer on the registrar', async () => {
   const tx = await transferName(walletClient, {
@@ -57,7 +57,7 @@ it('should allow a regular transfer on the registrar', async () => {
     name: 'test123.eth',
     contract: 'registrar',
   })
-  expect(owner!.registrant).toBe(accounts[2])
+  expect(owner?.registrant).toBe(accounts[2])
 })
 it('should allow a reclaim on the registrar', async () => {
   const changeRegistryOwnerTx = await transferName(walletClient, {
@@ -87,7 +87,7 @@ it('should allow a reclaim on the registrar', async () => {
     name: 'test123.eth',
     contract: 'registry',
   })
-  expect(owner!.owner).toBe(accounts[1])
+  expect(owner?.owner).toBe(accounts[1])
 })
 it('should allow a transfer on the namewrapper', async () => {
   const tx = await transferName(walletClient, {
@@ -104,7 +104,7 @@ it('should allow a transfer on the namewrapper', async () => {
     name: 'wrapped.eth',
     contract: 'nameWrapper',
   })
-  expect(owner!.owner).toBe(accounts[2])
+  expect(owner?.owner).toBe(accounts[2])
 })
 it('errors if unknown contract', async () => {
   await expect(
@@ -159,7 +159,7 @@ describe('subnames/asParent', () => {
       name: 'test.with-subnames.eth',
       contract: 'registry',
     })
-    expect(owner!.owner).toBe(accounts[1])
+    expect(owner?.owner).toBe(accounts[1])
   })
   it('allows transferring a subname on the namewrapper', async () => {
     const tx = await transferName(walletClient, {
@@ -177,7 +177,7 @@ describe('subnames/asParent', () => {
       name: 'test.wrapped-with-subnames.eth',
       contract: 'nameWrapper',
     })
-    expect(owner!.owner).toBe(accounts[1])
+    expect(owner?.owner).toBe(accounts[1])
   })
   it('erorrs when asParent is specified and contract is registrar', async () => {
     await expect(

@@ -1,10 +1,4 @@
-import {
-  type GetSupportedInterfacesParameters,
-  type GetSupportedInterfacesReturnType,
-  getSupportedInterfaces,
-} from '@ensdomains/ensjs/public'
 import type { Hex } from 'viem'
-import type { ParamWithClients, QueryConfig } from '../client.js'
 import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsResolverInterfacesParameters<

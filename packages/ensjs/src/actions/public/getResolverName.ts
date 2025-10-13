@@ -1,7 +1,7 @@
 import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
+import { getAction, padHex } from 'viem/utils'
 import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
@@ -44,7 +44,7 @@ export async function getResolverName(
     address: resolverAddress,
     abi: dedicatedResolverNameSnippet,
     functionName: 'name',
-    args: ['0x0'],
+    args: [padHex('0x0', { size: 32 })],
   })
 
   return result

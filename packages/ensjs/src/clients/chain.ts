@@ -49,7 +49,7 @@ export const supportedContracts = [
   'ensRegistry',
   'ensReverseRegistrar',
   'ensUniversalResolver',
-  'ensVerifiableFactory'
+  'ensVerifiableFactory',
 ] as const
 
 export type SupportedContract = (typeof supportedContracts)[number]
@@ -90,8 +90,8 @@ export const ensContracts = {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
     ensVerifiableFactory: {
-      address: zeroAddress
-    }
+      address: zeroAddress,
+    },
   },
   [supportedChains.holesky]: {
     ensBaseRegistrarImplementation: {
@@ -128,8 +128,8 @@ export const ensContracts = {
       address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
     },
     ensVerifiableFactory: {
-      address: zeroAddress
-    }
+      address: zeroAddress,
+    },
   },
   [supportedChains.sepolia]: {
     ensBaseRegistrarImplementation: {
@@ -166,8 +166,8 @@ export const ensContracts = {
       address: '0x198827b2316e020c48b500fc3cebdbcaf58787ce',
     },
     ensVerifiableFactory: {
-      address: '0x0837b3dce0aa75b801f19c707d75a61ac994b7f7'
-    }
+      address: '0x0837b3dce0aa75b801f19c707d75a61ac994b7f7',
+    },
   },
   [supportedChains.devnetL1]: {
     ensBaseRegistrarImplementation: {
@@ -204,8 +204,8 @@ export const ensContracts = {
       address: '0xc351628EB244ec633d5f21fBD6621e1a683B1181',
     },
     ensVerifiableFactory: {
-      address: zeroAddress
-    }
+      address: zeroAddress,
+    },
   },
 } as const satisfies Record<
   SupportedChainId,

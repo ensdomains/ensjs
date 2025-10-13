@@ -1,5 +1,3 @@
-import { getTextRecord } from '@ensdomains/ensjs/public'
-import type { ParamWithClients, QueryConfig } from '../client.js'
 import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsCredentialsParameters<

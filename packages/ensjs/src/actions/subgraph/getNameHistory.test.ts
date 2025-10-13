@@ -15,8 +15,8 @@ it('returns the history of a name', async () => {
   })
   if (!result) throw new Error('No result')
   expect(result.domainEvents.length).toBeGreaterThan(0)
-  expect(result.registrationEvents!.length).toBeGreaterThan(0)
-  expect(result.resolverEvents!.length).toBeGreaterThan(0)
+  expect(result.registrationEvents?.length).toBeGreaterThan(0)
+  expect(result.resolverEvents?.length).toBeGreaterThan(0)
 })
 
 it('returns the history of a wrapped name', async () => {
@@ -25,7 +25,7 @@ it('returns the history of a wrapped name', async () => {
   })
   if (!result) throw new Error('No result')
   expect(result.domainEvents.length).toBeGreaterThan(0)
-  expect(result.registrationEvents!.length).toBeGreaterThan(0)
+  expect(result.registrationEvents?.length).toBeGreaterThan(0)
   expect(result.resolverEvents).not.toBeNull()
 })
 
@@ -45,10 +45,10 @@ it('returns the history of a name with a null addr record', async () => {
   })
   if (!result) throw new Error('No result')
   expect(result.domainEvents.length).toBeGreaterThan(0)
-  expect(result.registrationEvents!.length).toBeGreaterThan(0)
+  expect(result.registrationEvents?.length).toBeGreaterThan(0)
   expect(result.resolverEvents).not.toBeNull()
   expect(
-    result.resolverEvents!.some(
+    result.resolverEvents?.some(
       (event) => event.type === 'MulticoinAddrChanged' && event.addr === null,
     ),
   ).toBe(true)

@@ -61,8 +61,8 @@ describe('eth 2ld', () => {
     const owner = await getOwner(publicClient, {
       name: 'test123.eth',
     })
-    expect(owner!.owner).toBe(accounts[2])
-    expect(owner!.ownershipLevel).toBe('nameWrapper')
+    expect(owner?.owner).toBe(accounts[2])
+    expect(owner?.ownershipLevel).toBe('nameWrapper')
   })
   it('should allow initial fuses', async () => {
     const tx = await wrapName(walletClient, {
@@ -80,7 +80,7 @@ describe('eth 2ld', () => {
     const wrapperData = await getWrapperData(publicClient, {
       name: 'test123.eth',
     })
-    expect(wrapperData!.fuses.value).toBe(196625)
+    expect(wrapperData?.fuses.value).toBe(196625)
   })
   it('should allow a non-default resolver address', async () => {
     const tx = await wrapName(walletClient, {
@@ -135,8 +135,8 @@ describe('other', () => {
     const owner = await getOwner(publicClient, {
       name: 'test.with-subnames.eth',
     })
-    expect(owner!.owner).toBe(accounts[2])
-    expect(owner!.ownershipLevel).toBe('nameWrapper')
+    expect(owner?.owner).toBe(accounts[2])
+    expect(owner?.ownershipLevel).toBe('nameWrapper')
   })
   it('should allow a non-default resolver address', async () => {
     const tx = await wrapName(walletClient, {

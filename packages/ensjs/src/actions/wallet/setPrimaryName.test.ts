@@ -38,7 +38,7 @@ it('should return a transaction for a name and set successfully', async () => {
   const resolvedName = await getName(publicClient, {
     address: accounts[1],
   })
-  expect(resolvedName!.name).toBe('test123.eth')
+  expect(resolvedName?.name).toBe('test123.eth')
 })
 
 it("should return a transaction for setting another address' name and succeed", async () => {
@@ -68,5 +68,5 @@ it("should return a transaction for setting another address' name and succeed", 
   const resolvedName = await getName(publicClient, {
     address: accounts[1],
   })
-  expect(resolvedName!.name).toBe('test123.eth')
+  expect(resolvedName?.name).toBe('test123.eth')
 })
