@@ -53,3 +53,25 @@ export const dedicatedResolverSetAddrSnippet = [
     type: 'function',
   },
 ] as const
+
+export const dedicatedResolverNameSnippet = [
+  {
+     "inputs": [
+       {
+         "internalType": "bytes32",
+         "name": "",
+         "type": "bytes32"
+       }
+     ],
+     "name": "name",
+     "outputs": [
+       {
+         "internalType": "string",
+         "name": "",
+         "type": "string"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   }
+] as const
