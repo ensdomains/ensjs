@@ -4,10 +4,13 @@ import type { ClientWithEns } from '../contracts/consts.js'
 import type { TransactionRequestWithPassthrough } from '../types.js'
 
 export type EncoderFunction = (
+  // biome-ignore lint/suspicious/noExplicitAny: generic encoder function accepts various argument types
   ...args: any[]
 ) => TransactionRequestWithPassthrough
+// biome-ignore lint/suspicious/noExplicitAny: generic decoder function accepts various argument types and returns various types
 export type DecoderFunction = (...args: any[]) => Promise<any>
 
+// biome-ignore lint/suspicious/noExplicitAny: conditional type matches first argument of any type for extraction
 type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
   ? (...args: P) => R
   : never
@@ -27,7 +30,9 @@ export type BatchFunctionResult<
   args: Parameters<OmitFirstArg<TEncoderFn>>
 } & CoderObject<TEncoderFn, TDecoderFn>
 
+// biome-ignore lint/complexity/noBannedTypes: Function constraint required for generic type matching any function signature
 export type ExtractResult<TFunction extends Function> = TFunction extends (
+  // biome-ignore lint/suspicious/noExplicitAny: conditional type matches promise-returning function with any arguments for result extraction
   ...args: any[]
 ) => Promise<infer U>
   ? U
@@ -36,6 +41,7 @@ export type ExtractResult<TFunction extends Function> = TFunction extends (
 export interface GeneratedFunction<
   TEncoderFn extends EncoderFunction,
   TDecoderFn extends DecoderFunction,
+  // biome-ignore lint/complexity/noBannedTypes: Function type required for extending base function interface with additional properties
 > extends Function,
     CoderObject<TEncoderFn, TDecoderFn> {
   (

@@ -6,6 +6,7 @@ import { makeNameGenerator } from '../utils/wrappedNameGenerator.js'
 const names: {
   label: string
   namedOwner: string
+  // biome-ignore lint/suspicious/noExplicitAny: deployment script only
   data?: any[]
   reverseRecord?: boolean
   fuses?: number

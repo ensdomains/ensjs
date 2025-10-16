@@ -76,7 +76,7 @@
     "test": "vitest --no-file-parallelism",
     "test:watch": "vitest --watch --no-file-parallelism",
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
-    "lint": "eslint ./src/* --no-error-on-unmatched-pattern",
+    "lint": "biome check ./src",
     "build": "tsc --project tsconfig.build.json",
     "tsn": "TS_NODE_PROJECT=tsconfig.node.json node --loader ts-node/esm",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",

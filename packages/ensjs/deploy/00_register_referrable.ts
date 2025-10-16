@@ -1,5 +1,4 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
-import type { Address } from 'viem'
 import type { RecordOptions } from '../src/utils/generateRecordCallArray.js'
 import { makeNameGenerator } from '../utils/referrableNameGenerator.js'
 
@@ -46,10 +45,7 @@ const names: {
 ]
 
 const func: DeployFunction = async (hre) => {
-  const { getNamedAccounts, network, viem } = hre
-  const allNamedAccts = await getNamedAccounts()
-
-  const publicResolver = await viem.getContract('PublicResolver')
+  const { network, viem } = hre
 
   await network.provider.send('anvil_setBlockTimestampInterval', [60])
 
@@ -58,12 +54,10 @@ const func: DeployFunction = async (hre) => {
   for (const {
     label,
     namedOwner,
-    namedAddr,
     records,
     subnames,
     duration = 31536000,
   } of names) {
-    const registrant = allNamedAccts[namedOwner] as Address
     const commitTx = await nameGenerator.commit({
       label,
       namedOwner,

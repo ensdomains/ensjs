@@ -46,9 +46,36 @@ pnpm build
 # Run linter (using Biome)
 pnpm lint
 
+# Auto-fix linting issues
+pnpm biome check --write
+
 # Clean build artifacts
 pnpm clean
 ```
+
+#### Linting with Biome
+
+This project uses **Biome** (not ESLint) for linting and formatting.
+
+**Suppression Directives:**
+- Line-level ignore: `// biome-ignore lint/rule-name: reason`
+- Multiple rules: `// biome-ignore lint/rule1 lint/rule2: reason`
+- **Note**: Biome does NOT support file-level `biome-ignore-all` directives. Use line-level comments only.
+
+**Common Rules:**
+- `lint/suspicious/noExplicitAny` - Avoid using `any` type
+- `lint/complexity/noBannedTypes` - Avoid using `{}` as a type
+
+**File Exclusion:**
+- To exclude entire files/directories from linting, add them to `files.ignore` array in `biome.json`
+- Example: `packages/react` is excluded from linting
+
+**Important for Claude Code:**
+When encountering Biome linter errors or suppression issues:
+1. **Always use WebSearch** to look up the correct Biome syntax before suggesting alternatives
+2. Check Biome documentation at https://biomejs.dev for the latest directives
+3. Do not assume ESLint syntax will work with Biome
+4. Remember: `biome-ignore-all` does NOT exist - only use line-level `biome-ignore`
 
 ### Package Management
 ```bash

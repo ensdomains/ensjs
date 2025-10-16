@@ -82,10 +82,8 @@ const func: DeployFunction = async (hre) => {
     const { viem } = hre
     const allNamedAccts = await getNamedAccounts()
     const owner = allNamedAccts.owner // Get the owner account
-    
-    const controller = await viem.getContract(
-      'WrappedEthRegistrarController',
-    )
+
+    const controller = await viem.getContract('WrappedEthRegistrarController')
 
     console.log('Setting up controller permissions...')
 
@@ -99,7 +97,7 @@ const func: DeployFunction = async (hre) => {
     // 1. Add as controller on BaseRegistrarImplementation (from owner account)
     const addControllerTx = await baseRegistrarContract.write.addController(
       [controller.address],
-      { account: owner }
+      { account: owner },
     )
     console.log(
       `Added as controller on BaseRegistrarImplementation (tx: ${addControllerTx})`,
@@ -110,7 +108,7 @@ const func: DeployFunction = async (hre) => {
     const setNameWrapperControllerTx =
       await nameWrapperContract.write.setController(
         [controller.address, true],
-        { account: owner }
+        { account: owner },
       )
     console.log(
       `Added as controller on NameWrapper (tx: ${setNameWrapperControllerTx})`,
@@ -121,7 +119,7 @@ const func: DeployFunction = async (hre) => {
     const setReverseControllerTx =
       await reverseRegistrarContract.write.setController(
         [controller.address, true],
-        { account: owner }
+        { account: owner },
       )
     console.log(
       `Added as controller on ReverseRegistrar (tx: ${setReverseControllerTx})`,
