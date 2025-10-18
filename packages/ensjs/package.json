@@ -24,6 +24,10 @@
       "types": "./dist/exports/public.d.ts",
       "default": "./dist/exports/public.js"
     },
+    "./public/v2": {
+      "types": "./dist/exports/public/v2.d.ts",
+      "default": "./dist/exports/public/v2.js"
+    },
     "./subgraph": {
       "types": "./dist/subgraph.d.ts",
       "default": "./dist/subgraph.js"

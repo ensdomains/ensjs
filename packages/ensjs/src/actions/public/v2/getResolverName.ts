@@ -2,11 +2,10 @@ import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction, padHex } from 'viem/utils'
-import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
+import { dedicatedResolverNameSnippet } from '../../../contracts/dedicatedResolver.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetResolverNameParameters = {
-  /** Name to get resolver for */
   resolverAddress: Address
 }
 
@@ -24,7 +23,7 @@ export type GetResolverNameErrorType = ReadContractErrorType
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { GetResolverName } from '@ensdomains/ensjs/public'
+ * import { getResolverName } from '@ensdomains/ensjs/public/v2'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),
