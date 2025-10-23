@@ -23,7 +23,7 @@ const func: DeployFunction = async (hre) => {
     await readFile(
       resolve(
         import.meta.dirname,
-        '../contracts/NameWrappedPublicResolver.json',
+        '../contracts/NameWrapperPublicResolver.json',
       ),
       { encoding: 'utf8' },
     ),
