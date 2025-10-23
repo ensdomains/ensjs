@@ -34,6 +34,8 @@ type ContractName =
   | 'StaticBulkRenewal'
   | 'DNSSECImpl'
   | 'Root'
+  | 'WrappedEthRegistrarController'
+  | 'WrappedPublicResolver'
   | 'LegacyETHRegistrarController'
   | 'LegacyPublicResolver'
 
@@ -83,6 +85,12 @@ export const localhost = {
     },
     ensDnssecImpl: {
       address: deploymentAddresses.DNSSECImpl,
+    },
+    wrappedEthRegistrarController: {
+      address: deploymentAddresses.WrappedEthRegistrarController
+    },
+    wrappedPublicResolver: {
+      address: deploymentAddresses.WrappedPublicResolver,
     },
     legacyEthRegistrarController: {
       address: deploymentAddresses.LegacyETHRegistrarController,

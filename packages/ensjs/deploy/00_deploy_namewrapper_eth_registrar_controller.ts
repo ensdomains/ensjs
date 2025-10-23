@@ -18,12 +18,12 @@ const func: DeployFunction = async (hre) => {
     ),
   )
 
-  // Load the NameWrapperPublicResolver artifact
+  // Load the WrappedPublicResolver artifact
   const resolverJson = JSON.parse(
     await readFile(
       resolve(
         import.meta.dirname,
-        '../contracts/NameWrapperPublicResolver.json',
+        '../contracts/WrappedPublicResolver.json',
       ),
       { encoding: 'utf8' },
     ),
@@ -58,10 +58,10 @@ const func: DeployFunction = async (hre) => {
     `WrappedEthRegistrarController deployed at: ${controllerDeployment.address}`,
   )
 
-  console.log('Deploying NameWrapperPublicResolver...')
+  console.log('Deploying WrappedPublicResolver...')
 
   // Deploy the resolver with 4 constructor arguments
-  const resolverDeployment = await deploy('NameWrapperPublicResolver', {
+  const resolverDeployment = await deploy('WrappedPublicResolver', {
     from: deployer,
     args: [
       registry.address, // ENS registry address
@@ -74,7 +74,7 @@ const func: DeployFunction = async (hre) => {
   })
 
   console.log(
-    `NameWrapperPublicResolver deployed at: ${resolverDeployment.address}`,
+    `WrappedPublicResolver deployed at: ${resolverDeployment.address}`,
   )
 
   // Set up controller permissions after deployment
@@ -131,7 +131,7 @@ const func: DeployFunction = async (hre) => {
 }
 
 func.id = 'WrappedEthRegistrarController_and_Resolver'
-func.tags = ['WrappedEthRegistrarController', 'NameWrapperPublicResolver']
+func.tags = ['WrappedEthRegistrarController', 'WrappedPublicResolver']
 func.dependencies = [
   'ENSRegistry',
   'BaseRegistrarImplementation',

@@ -195,7 +195,7 @@ func.id = 'register-wrapped-names'
 func.tags = ['register-wrapped-names']
 func.dependencies = [
   'WrappedEthRegistrarController',
-  'NameWrapperPublicResolver',
+  'WrappedPublicResolver',
 ]
 func.runAtTheEnd = true
 
