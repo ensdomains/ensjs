@@ -69,7 +69,7 @@ it('should import a DNS name with no address', async () => {
   expect(receipt.status).toBe('success')
 
   const owner = await getOwner(publicClient, { name })
-  expect(owner!.owner).toBe(address)
+  expect(owner?.owner).toBe(address)
 })
 
 it('should import a DNS name with an address, using default resolver', async () => {
@@ -90,7 +90,7 @@ it('should import a DNS name with an address, using default resolver', async () 
   expect(receipt.status).toBe('success')
 
   const owner = await getOwner(publicClient, { name })
-  expect(owner!.owner).toBe(address)
+  expect(owner?.owner).toBe(address)
   const resolver = await getResolver(publicClient, { name })
   expect(resolver).toBe(
     getChainContractAddress({
@@ -120,7 +120,7 @@ it('should import a DNS name with an address, using a custom resolver', async ()
   expect(receipt.status).toBe('success')
 
   const owner = await getOwner(publicClient, { name })
-  expect(owner!.owner).toBe(address)
+  expect(owner?.owner).toBe(address)
   const resolver = await getResolver(publicClient, { name })
   expect(resolver).toBe(resolverAddress)
 })

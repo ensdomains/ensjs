@@ -38,9 +38,9 @@ it('should return a .eth unwrap name transaction and succeed', async () => {
   const owner = await getOwner(publicClient, {
     name: 'wrapped.eth',
   })
-  expect(owner!.owner).toBe(accounts[1])
-  expect(owner!.registrant).toBe(accounts[1])
-  expect(owner!.ownershipLevel).toBe('registrar')
+  expect(owner?.owner).toBe(accounts[1])
+  expect(owner?.registrant).toBe(accounts[1])
+  expect(owner?.ownershipLevel).toBe('registrar')
 })
 it('should return a regular unwrap name transaction and succeed', async () => {
   const tx = await unwrapName(walletClient, {
@@ -55,8 +55,8 @@ it('should return a regular unwrap name transaction and succeed', async () => {
   const owner = await getOwner(publicClient, {
     name: 'test.wrapped-with-subnames.eth',
   })
-  expect(owner!.owner).toBe(accounts[1])
-  expect(owner!.ownershipLevel).toBe('registry')
+  expect(owner?.owner).toBe(accounts[1])
+  expect(owner?.ownershipLevel).toBe('registry')
 })
 it('should error if newRegistrantAddress is not specified for .eth', async () => {
   await expect(

@@ -1,11 +1,4 @@
-import {
-  type GetAvailableParameters,
-  type GetAvailableReturnType,
-  getAvailable,
-} from '@ensdomains/ensjs/public'
 import { useChainId, useConfig } from 'wagmi'
-import { type UseQueryReturnType, useQuery } from 'wagmi/query'
-import type { ParamWithClients, QueryConfig } from '../client.js'
 import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseEnsAvailableParameters<

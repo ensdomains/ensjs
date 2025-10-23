@@ -63,9 +63,9 @@ it('should allow an abi record to be set with json content type', async () => {
   const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
-  expect(response!.abi).toEqual(dummyABI)
-  expect(response!.contentType).toEqual(1)
-  expect(response!.decoded).toBe(true)
+  expect(response?.abi).toEqual(dummyABI)
+  expect(response?.contentType).toEqual(1)
+  expect(response?.decoded).toBe(true)
 })
 
 it('should allow an abi record to be set with zlib content type', async () => {
@@ -85,9 +85,9 @@ it('should allow an abi record to be set with zlib content type', async () => {
   const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
-  expect(response!.abi).toEqual(dummyABI)
-  expect(response!.contentType).toEqual(2)
-  expect(response!.decoded).toBe(true)
+  expect(response?.abi).toEqual(dummyABI)
+  expect(response?.contentType).toEqual(2)
+  expect(response?.decoded).toBe(true)
 })
 
 it('should allow an abi record to be set with cbor content type', async () => {
@@ -107,9 +107,9 @@ it('should allow an abi record to be set with cbor content type', async () => {
   const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
-  expect(response!.abi).toEqual(dummyABI)
-  expect(response!.contentType).toEqual(4)
-  expect(response!.decoded).toBe(true)
+  expect(response?.abi).toEqual(dummyABI)
+  expect(response?.contentType).toEqual(4)
+  expect(response?.decoded).toBe(true)
 })
 
 it('should allow an abi record to be set with uri content type', async () => {
@@ -129,9 +129,9 @@ it('should allow an abi record to be set with uri content type', async () => {
   const response = await getAbiRecord(publicClient, {
     name: 'test123.eth',
   })
-  expect(response!.abi).toEqual('https://example.com')
-  expect(response!.contentType).toEqual(8)
-  expect(response!.decoded).toBe(true)
+  expect(response?.abi).toEqual('https://example.com')
+  expect(response?.contentType).toEqual(8)
+  expect(response?.decoded).toBe(true)
 })
 
 it.each([

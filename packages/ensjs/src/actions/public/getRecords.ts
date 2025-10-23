@@ -357,7 +357,7 @@ export async function getRecords<
     )
     const result = await resolveNameDataAction({
       name,
-      data: calls.map((c) => encodeFunctionData<Abi>(c!.parameters)),
+      data: calls.map((c) => encodeFunctionData<Abi>(c?.parameters)),
       gatewayUrls,
     })
     if (!result)

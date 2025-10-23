@@ -5,6 +5,7 @@ import {
   type Client,
   type Transport,
   getChainContractAddress as viem_getChainContractAddress,
+  zeroAddress,
 } from 'viem'
 import type {
   StringConcatenationOrder,
@@ -48,6 +49,7 @@ export const supportedContracts = [
   'ensRegistry',
   'ensReverseRegistrar',
   'ensUniversalResolver',
+  'ensVerifiableFactory',
 ] as const
 
 export type SupportedContract = (typeof supportedContracts)[number]
@@ -87,6 +89,9 @@ export const ensContracts = {
     ensUniversalResolver: {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
+    ensVerifiableFactory: {
+      address: zeroAddress,
+    },
   },
   [supportedChains.holesky]: {
     ensBaseRegistrarImplementation: {
@@ -122,40 +127,46 @@ export const ensContracts = {
     ensUniversalResolver: {
       address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
     },
+    ensVerifiableFactory: {
+      address: zeroAddress,
+    },
   },
   [supportedChains.sepolia]: {
     ensBaseRegistrarImplementation: {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
     ensBulkRenewal: {
-      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
+      address: '0xf4404c962f7b859f6df712bff1f2e11745a238f0',
     },
     ensDnsRegistrar: {
-      address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
+      address: '0xafb9671d00b5152ebd219100f3801d3de1b4d288',
     },
     ensDnssecImpl: {
-      address: '0xe62E4b6cE018Ad6e916fcC24545e20a33b9d8653',
+      address: '0x36f5a471cfa76b421fe9784778fd8cf35014eb11',
     },
     ensEthRegistrarController: {
-      address: '0xFED6a969AaA60E4961FCD3EBF1A2e8913ac65B72',
+      address: '0x99e517db3db5ec5424367b8b50cd11ddcb0008f1',
     },
     ensL2EthRegistrar: {
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0xf9b79ab5f6539846ad639eef6b60e145bf6e5cbe',
     },
     ensNameWrapper: {
-      address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
+      address: '0xca7e6d0ddc5f373197bbe6fc2f09c2314399f028',
     },
     ensPublicResolver: {
-      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
+      address: '0x0e14ee0592da66bb4c8a8090066bc8a5af15f3e6',
     },
     ensRegistry: {
-      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      address: '0x17795c119b8155ab9d3357c77747ba509695d7cb',
     },
     ensReverseRegistrar: {
-      address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
+      address: '0xf79f9970030fe60bd89d21591c7f2d80d7d21242',
     },
     ensUniversalResolver: {
-      address: '0xc8af999e38273d658be1b921b88a9ddf005769cc',
+      address: '0x4d2afc61b84e3475ec19ad9392ee09e9a7b01226',
+    },
+    ensVerifiableFactory: {
+      address: '0x0837b3dce0aa75b801f19c707d75a61ac994b7f7',
     },
   },
   [supportedChains.devnetL1]: {
@@ -191,6 +202,9 @@ export const ensContracts = {
     },
     ensUniversalResolver: {
       address: '0xc351628EB244ec633d5f21fBD6621e1a683B1181',
+    },
+    ensVerifiableFactory: {
+      address: zeroAddress,
     },
   },
 } as const satisfies Record<

@@ -71,7 +71,7 @@ it('should return a transaction to the resolver and set successfully', async () 
     texts: ['foo'],
     abi: true,
   })
-  expect(records.abi!.abi).toStrictEqual(dummyABI)
+  expect(records.abi?.abi).toStrictEqual(dummyABI)
   expect(records.coins).toMatchInlineSnapshot(`
     [
       {
@@ -113,7 +113,7 @@ it('should return a transaction to the resolver and delete successfully', async 
     texts: ['foo'],
     abi: true,
   })
-  expect(checkRecords.abi!.abi).not.toBeNull()
+  expect(checkRecords.abi?.abi).not.toBeNull()
   expect(checkRecords.coins).toHaveLength(1)
   expect(checkRecords.texts).toHaveLength(1)
   const tx = await setRecords(walletClient, {

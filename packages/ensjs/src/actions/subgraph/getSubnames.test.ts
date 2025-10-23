@@ -44,7 +44,7 @@ it('does not include expired names by default - .eth 2ld', async () => {
   })
   if (!result.length) throw new Error('No names found')
   for (const name of result) {
-    expect(name.expiryDate!.value).toBeGreaterThan(Date.now())
+    expect(name.expiryDate?.value).toBeGreaterThan(Date.now())
   }
 })
 it('allows including expired names - .eth 2ld', async () => {
@@ -55,7 +55,7 @@ it('allows including expired names - .eth 2ld', async () => {
   })
   if (!result.length) throw new Error('No names found')
   const expiredNames = result.filter(
-    (name) => name.expiryDate!.value < Date.now(),
+    (name) => name.expiryDate?.value < Date.now(),
   )
   expect(expiredNames.length).toBeGreaterThan(0)
 })
@@ -77,7 +77,7 @@ it('does not include expired names by default - other', async () => {
   const namesWithExpiry = result.filter((name) => name.expiryDate)
   expect(namesWithExpiry.length).toBeGreaterThan(0)
   for (const name of namesWithExpiry) {
-    expect(name.expiryDate!.value).toBeGreaterThan(Date.now())
+    expect(name.expiryDate?.value).toBeGreaterThan(Date.now())
   }
 })
 it('allows including expired names - other', async () => {

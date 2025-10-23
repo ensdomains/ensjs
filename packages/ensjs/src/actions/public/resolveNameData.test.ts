@@ -25,14 +25,8 @@ import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
-import {
-  decodeTextResult,
-  getAddressParameters,
-  getTextParameters,
-  resolverMulticallParameters,
-} from '../../utils/index.js'
+import { getAddressParameters, getTextParameters } from '../../utils/index.js'
 import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
-import { getRecords } from './getRecords.js'
 import { resolveNameData } from './resolveNameData.js'
 
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
@@ -51,7 +45,7 @@ it('encodes labels larger than 255 bytes', async () => {
     data: '0x',
   }).catch(() => {})
   const [{ args }] = mockReadContract.mock.calls[0]
-  const name = bytesToPacket(hexToBytes(args![0] as Hex))
+  const name = bytesToPacket(hexToBytes(args?.[0] as Hex))
   expect(name).toMatchInlineSnapshot(
     `"[5b7e0e47a96f32a88b4f14ca177982790807c40e1a105742ba0fc1babe1ef826].eth"`,
   )
