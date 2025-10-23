@@ -66,10 +66,10 @@ export const addresses = {
       address: '0xED73a03F19e8D849E44a39252d222c6ad5217E1e',
     },
     wrappedEthRegistrarController: {
-      address: '0x253553366Da8546fC250F225fe3d25d0C782303b'
+      address: '0x253553366Da8546fC250F225fe3d25d0C782303b',
     },
     wrappedPublicResolver: {
-      address: '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63'
+      address: '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63',
     },
     legacyEthRegistrarController: {
       address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
@@ -104,7 +104,7 @@ export const addresses = {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensDefaultReverseRegistrar: {
-      address: '0x4F382928805ba0e23B30cFB75fC9E848e82DFD47'
+      address: '0x4F382928805ba0e23B30cFB75fC9E848e82DFD47',
     },
     ensReverseRegistrar: {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
@@ -113,10 +113,10 @@ export const addresses = {
       address: '0x3c85752a5d47DD09D677C645Ff2A938B38fbFEbA',
     },
     wrappedEthRegistrarController: {
-      address: '0x4477cAc137F3353Ca35060E01E5aEb777a1Ca01B'
+      address: '0x4477cAc137F3353Ca35060E01E5aEb777a1Ca01B',
     },
     wrappedPublicResolver: {
-      address: '0x8948458626811dd0c23EB25Cc74291247077cC51'
+      address: '0x8948458626811dd0c23EB25Cc74291247077cC51',
     },
     legacyEthRegistrarController: {
       address: '0x7e02892cfc2Bfd53a75275451d73cF620e793fc0',

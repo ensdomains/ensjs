@@ -87,7 +87,7 @@ export const localhost = {
       address: deploymentAddresses.DNSSECImpl,
     },
     wrappedEthRegistrarController: {
-      address: deploymentAddresses.WrappedEthRegistrarController
+      address: deploymentAddresses.WrappedEthRegistrarController,
     },
     wrappedPublicResolver: {
       address: deploymentAddresses.WrappedPublicResolver,
