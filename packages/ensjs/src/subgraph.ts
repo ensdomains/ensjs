@@ -59,6 +59,11 @@ export {
   getRecordHistory,
 } from './actions/subgraph/getRecordHistory.js'
 export {
+  type GetResolvedNamesForAddressParameters,
+  type GetResolvedNamesForAddressReturnType,
+  getResolvedNamesForAddress,
+} from './actions/subgraph/getResolvedNamesForAddress.js'
+export {
   default as getSubgraphRecords,
   type GetSubgraphRecordsErrorType,
   type GetSubgraphRecordsParameters,
