@@ -20,6 +20,8 @@ export type GetResolvedNamesForAddressReturnType = {
   coinTypes: string[]
 }[]
 
+export type GetResolvedNamesForAddressErrorType = Error
+
 /**
  * Gets domains from the subgraph that resolve to a given address.
  * @param client - {@link ClientWithEns}
