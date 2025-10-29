@@ -37,7 +37,7 @@ export const getResolvedNamesForAddress = async (
 
   const query = `
     query ($address: String!) {
-      domains(where: { addrId: $address }) {
+      domains(where: { resolvedAddress: $address }) {
         name
         resolver {
           coinTypes
