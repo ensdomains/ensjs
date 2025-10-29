@@ -1,14 +1,14 @@
-import type { Address } from "viem"
-import type { ChainWithSubgraph } from "../../clients/chain.js"
-import { createSubgraphClient } from "./client.js"
+import type { Address, Hex } from 'viem'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
+import { createSubgraphClient } from './client.js'
 
 type SubgraphResult = {
   domains: {
-    name: string;
+    name: string
     resolver: {
       coinTypes: string[]
     }
-    }[]
+  }[]
 }
 
 export type GetResolvedNamesForAddressParameters = {
@@ -21,7 +21,7 @@ export type GetResolvedNamesForAddressReturnType = {
 }[]
 
 /**
- * Gets domains that resolve to an address from the subgraph.
+ * Gets domains from the subgraph that resolve to a given address.
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetNamesResolvedToAddressParameters}
  * @returns Name array. {@link GetNamesResolvedToAddressReturnType}
@@ -33,12 +33,11 @@ export const getResolvedNamesForAddress = async (
   client: { chain: ChainWithSubgraph },
   { address }: GetResolvedNamesForAddressParameters,
 ) => {
-
   const subgraphClient = createSubgraphClient(client)
 
   const query = `
     query ($address: String!) {
-      domains(where: { resolvedAddress: $address }) {
+      domains(where: { addrId: $address }) {
         name
         resolver {
           coinTypes
@@ -47,8 +46,12 @@ export const getResolvedNamesForAddress = async (
     }
   `
 
-  const result = await subgraphClient.request<SubgraphResult, GetResolvedNamesForAddressParameters>(query, { address })
-  return result.domains.map(domain => ({
+  const result = await subgraphClient.request<
+    SubgraphResult,
+    GetResolvedNamesForAddressParameters
+  >(query, { address: address.toLowerCase() as Hex })
+
+  return result.domains.map((domain) => ({
     name: domain.name,
     coinTypes: domain.resolver?.coinTypes ?? [],
   }))
