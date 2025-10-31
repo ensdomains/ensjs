@@ -33,7 +33,7 @@ Address of DNS owner. GetDnsOwnerReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/dns/getDnsOwner.ts:90](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/dns/getDnsOwner.ts#L90)
+[packages/ensjs/src/functions/dns/getDnsOwner.ts:90](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/dns/getDnsOwner.ts#L90)
 
 ---
 

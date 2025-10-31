@@ -8,9 +8,14 @@ import {
   supportedChains,
 } from './consts.js'
 
+type AddEnsContractsOptions = {
+  subgraphApiKey?: string
+}
+
 /**
  * Adds ENS contract addresses to the viem chain
  * @param chain - The viem {@link Chain} object to add the ENS contracts to
+ * @param options.subgraphApiKey - The API key to use for the ENS subgraph
  *
  * @example
  * import { createPublicClient, http } from 'viem'
@@ -22,7 +27,10 @@ import {
  *   transport: http(),
  * })
  */
-export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
+export const addEnsContracts = <const TChain extends Chain>(
+  chain: TChain,
+  options?: AddEnsContractsOptions,
+) => {
   if (!chain) throw new NoChainError()
   if (!supportedChains.includes(chain.id as SupportedChain))
     throw new UnsupportedChainError({
@@ -37,6 +45,31 @@ export const addEnsContracts = <const TChain extends Chain>(chain: TChain) => {
     },
     subgraphs: {
       ...subgraphs[chain.id as SupportedChain],
+      ...(options?.subgraphApiKey
+        ? {
+            ens: {
+              url: getSubgraphUrl(
+                chain.id as SupportedChain,
+                options.subgraphApiKey,
+              ),
+            },
+          }
+        : {}),
     },
   } as unknown as CheckedChainWithEns<TChain>
+}
+
+const getSubgraphUrl = (chainId: SupportedChain, subgraphApiKey?: string) => {
+  if (!subgraphApiKey) {
+    return subgraphs[chainId].ens.url
+  }
+
+  switch (chainId) {
+    case 1:
+      return `https://gateway-arbitrum.network.thegraph.com/api/${subgraphApiKey}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`
+    case 17000:
+      return `https://gateway-arbitrum.network.thegraph.com/api/${subgraphApiKey}/subgraphs/id/i5EXyL9MzTXWKCmpJ2LG6sbzBfXneUPVuTXaSjYhDDF`
+    case 11155111:
+      return `https://gateway-arbitrum.network.thegraph.com/api/${subgraphApiKey}/subgraphs/id/G1SxZs317YUb9nQX3CC98hDyvxfMJNZH5pPRGpNrtvwN`
+  }
 }

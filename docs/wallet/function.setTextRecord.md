@@ -58,7 +58,7 @@ Transaction hash. SetTextRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setTextRecord.ts:78](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/setTextRecord.ts#L78)
+[packages/ensjs/src/functions/wallet/setTextRecord.ts:78](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/wallet/setTextRecord.ts#L78)
 
 ---
 

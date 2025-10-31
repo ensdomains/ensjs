@@ -252,7 +252,7 @@ const result = await client.getDecodedName({
 
 `Promise`\< `GetDecodedNameReturnType` \>
 
-Full name, or null if name was could not be filled. GetDecodedNameReturnType
+Full name, or null if name was not found. GetDecodedNameReturnType
 
 ### getExpiry
 
@@ -733,7 +733,7 @@ Full name, or null if name was not found. GetWrapperNameReturnType
 
 ## Source
 
-[packages/ensjs/src/clients/public.ts:56](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/clients/public.ts#L56)
+[packages/ensjs/src/clients/public.ts:56](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/clients/public.ts#L56)
 
 ---
 

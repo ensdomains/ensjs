@@ -73,7 +73,7 @@ const result = await client.getDecodedName({
 
 `Promise`\< `GetDecodedNameReturnType` \>
 
-Full name, or null if name was could not be filled. GetDecodedNameReturnType
+Full name, or null if name was not found. GetDecodedNameReturnType
 
 ### getNameHistory
 
@@ -246,7 +246,7 @@ Subname array. GetSubnamesReturnType
 
 ## Source
 
-[packages/ensjs/src/clients/subgraph.ts:49](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/clients/subgraph.ts#L49)
+[packages/ensjs/src/clients/subgraph.ts:49](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/clients/subgraph.ts#L49)
 
 ---
 

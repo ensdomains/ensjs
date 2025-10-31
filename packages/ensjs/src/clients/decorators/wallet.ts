@@ -423,7 +423,7 @@ export type EnsWalletActions<
    * }).extend(ensWalletActions)
    * const hash = await wallet.setContentHashRecord({
    *   name: 'ens.eth',
-   *   value: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
+   *   contentHash: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
    *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
    * })
    * // 0x...

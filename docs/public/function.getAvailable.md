@@ -41,7 +41,7 @@ Availability as boolean. GetAvailableReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getAvailable.ts:86](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getAvailable.ts#L86)
+[packages/ensjs/src/functions/public/getAvailable.ts:86](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/public/getAvailable.ts#L86)
 
 > **getAvailable**(`client`, ...`args`): `Promise`\< `null` \| `boolean` \>
 
@@ -78,7 +78,7 @@ Availability as boolean. GetAvailableReturnType
 
 ## Source
 
-[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/utils/generateFunction.ts#L41)
+[packages/ensjs/src/utils/generateFunction.ts:41](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/utils/generateFunction.ts#L41)
 
 ---
 
