@@ -42,7 +42,7 @@ ABI record for the name, or `null` if not found. GetAbiRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getAbiRecord.ts:60](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getAbiRecord.ts#L60)
+[packages/ensjs/src/functions/public/getAbiRecord.ts:60](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/public/getAbiRecord.ts#L60)
 
 ---
 

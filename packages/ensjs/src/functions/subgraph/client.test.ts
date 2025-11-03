@@ -1,5 +1,7 @@
 import { namehash } from 'viem'
+import { holesky, mainnet, sepolia } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
+import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import { requestMiddleware, responseMiddleware } from './client.js'
 
 const queryWithoutId = `
@@ -165,5 +167,42 @@ describe('responseMiddleware', () => {
         '0xb54c7c79c89d571f1fbf4c67f524e336a04441eeee4d76f156e835da99a46ddb',
       ),
     )
+  })
+})
+
+describe('createSubgraphClient', () => {
+  it('should create a chain with the default subgraph url for mainnet', () => {
+    const chain = addEnsContracts(mainnet)
+    expect(chain.subgraphs.ens.url).toBe(
+      'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+    )
+  })
+
+  it('should create a chain with the default subgraph url for testnet', () => {
+    const chain = addEnsContracts(sepolia)
+    expect(chain.subgraphs.ens.url).toBe(
+      'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
+    )
+  })
+
+  it('should create a chain with the custom subgraph url', () => {
+    const chain = addEnsContracts(holesky, {
+      subgraphApiKey: '1234567890',
+    })
+    expect(chain.subgraphs.ens.url).toBe(
+      'https://gateway-arbitrum.network.thegraph.com/api/1234567890/subgraphs/id/i5EXyL9MzTXWKCmpJ2LG6sbzBfXneUPVuTXaSjYhDDF',
+    )
+  })
+
+  it('should create a chain with the custom subgraph url', () => {
+    const chain = {
+      ...addEnsContracts(sepolia),
+      subgraphs: {
+        ens: {
+          url: 'http://localhost:42069/subgraph',
+        },
+      },
+    }
+    expect(chain.subgraphs.ens.url).toBe('http://localhost:42069/subgraph')
   })
 })

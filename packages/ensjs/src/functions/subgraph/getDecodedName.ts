@@ -25,9 +25,13 @@ type SubgraphResult = {
 
 /**
  * Gets the full name for a name with unknown labels from the subgraph.
+ * It's recommended to use a custom subgraph URL to avoid rate limiting.
+ * @see {@link ../../../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetDecodedNameParameters}
- * @returns Full name, or null if name was could not be filled. {@link GetDecodedNameReturnType}
+ * @returns Full name, or null if name was not found. {@link GetDecodedNameReturnType}
+ *
  *
  * @example
  * import { createPublicClient, http } from 'viem'

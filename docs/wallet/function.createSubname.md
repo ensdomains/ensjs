@@ -53,7 +53,7 @@ Transaction hash. CreateSubnameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/createSubname.ts:175](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/createSubname.ts#L175)
+[packages/ensjs/src/functions/wallet/createSubname.ts:175](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/wallet/createSubname.ts#L175)
 
 ---
 

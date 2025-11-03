@@ -126,6 +126,9 @@ const getOrderByFilter = ({
 
 /**
  * Gets the names for an address from the subgraph.
+ * It's recommended to use a custom subgraph URL to avoid rate limiting.
+ * @see {@link ../../../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetNamesForAddressParameters}
  * @returns Name array. {@link GetNamesForAddressReturnType}
