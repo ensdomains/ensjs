@@ -81,6 +81,9 @@ export type GetRecordsParameters<
   }
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
+
+  /** Don't throw on invalid coinTypes */
+  ignoreInvalidCoinTypes?: boolean
 }
 
 type WithContentHashResult = {
@@ -128,9 +131,10 @@ const createCalls = <
   coins,
   abi,
   contentHash,
+  ignoreInvalidCoinTypes,
 }: Pick<
   GetRecordsParameters<texts, coins, contentHash, abi>,
-  'name' | 'texts' | 'coins' | 'abi' | 'contentHash'
+  'name' | 'texts' | 'coins' | 'abi' | 'contentHash' | 'ignoreInvalidCoinTypes'
 >) => [
   ...(texts ?? []).map(
     (text) =>
@@ -157,7 +161,11 @@ const createCalls = <
   ...(coins ?? []).map(
     (coin) =>
       ({
-        parameters: getAddressParameters({ name, coin }),
+        parameters: getAddressParameters({
+          name,
+          coin,
+          ignoreInvalidCoinTypes,
+        }),
         addToResult: <shouldDecodeFromPrimitiveTypes extends boolean>({
           currentResult,
           data,
@@ -325,6 +333,7 @@ export async function getRecords<
     contentHash,
     abi,
     gatewayUrls,
+    ignoreInvalidCoinTypes,
   }: GetRecordsParameters<texts, coins, contentHash, abi>,
 ): Promise<GetRecordsReturnType<texts, coins, contentHash, abi>> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -335,6 +344,7 @@ export async function getRecords<
     coins,
     contentHash,
     abi,
+    ignoreInvalidCoinTypes,
   })
   const currentResult = createEmptyResult({ texts, coins, contentHash, abi })
 
