@@ -178,7 +178,8 @@ const createCalls = <
             if (!result) return
 
             currentResult.coins.push(result)
-          } catch {
+          } catch (e) {
+            console.error(e)
             // Don't panic if coming across an unknown coinType
             return
           }
