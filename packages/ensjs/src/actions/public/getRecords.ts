@@ -168,17 +168,20 @@ const createCalls = <
           data: Hex
         }) => {
           try {
-                const result = shouldDecodeFromPrimitiveTypes
-                  ? decodeAddressResultFromPrimitiveTypes({ decodedData: data, coin })
-                  : decodeAddressResult(data, { coin, strict: false })
+            const result = shouldDecodeFromPrimitiveTypes
+              ? decodeAddressResultFromPrimitiveTypes({
+                  decodedData: data,
+                  coin,
+                })
+              : decodeAddressResult(data, { coin, strict: false })
 
-                if (!result) return
+            if (!result) return
 
-                currentResult.coins.push(result)
-              } catch {
-                // Don't panic if coming across an unknown coinType
-                return
-              }
+            currentResult.coins.push(result)
+          } catch {
+            // Don't panic if coming across an unknown coinType
+            return
+          }
         },
       }) as const,
   ),
