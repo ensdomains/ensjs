@@ -1,11 +1,10 @@
-import { getCoderByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
-import { hexToBytes, namehash, trim } from 'viem'
+import { namehash } from 'viem'
 import type { ChainWithSubgraph } from '../../clients/chain.js'
-import { decodeContentHash } from '../../utils/contentHash.js'
 import { createSubgraphClient } from './client.js'
 import type { ResolverEvent } from './events.js'
 import type { ReturnResolverEvent } from './getNameHistory.js'
+import { decodeResolverEvents } from './utils.js'
 
 type SubgraphResult = {
   domain?: {
@@ -119,71 +118,9 @@ export const getRecordHistory = async <key extends RecordKey = RecordKey>(
     queryVars,
   )
 
-  // Filter out null events and return only the relevant ones
-  return result.domain?.resolver?.events
-    .filter((el) => events[key].includes(el.type))
-    .map((event: ResolverEvent): ReturnResolverEvent => {
-      switch (event.type) {
-        case 'AddrChanged': {
-          return {
-            ...event,
-            addr: event.addr.id,
-          }
-        }
-        case 'MulticoinAddrChanged': {
-          const { multiaddr, ...event_ } = event
-          try {
-            const format = getCoderByCoinType(Number.parseInt(event.coinType))
-            if (!format) {
-              return {
-                ...event_,
-                coinName: null,
-                decoded: false,
-                addr: multiaddr,
-              }
-            }
-            if (multiaddr === '0x' || trim(multiaddr) === '0x00') {
-              return {
-                ...event_,
-                coinName: format.name,
-                decoded: true,
-                addr: null,
-              }
-            }
-            return {
-              ...event_,
-              coinName: format.name,
-              decoded: true,
-              addr: format.encode(hexToBytes(multiaddr)),
-            }
-          } catch (e) {
-            if (
-              e instanceof Error &&
-              e.message.includes('Unsupported coin type')
-            ) {
-              return {
-                ...event_,
-                coinName: null,
-                decoded: false,
-                addr: multiaddr,
-              }
-            }
-            throw e
-          }
-        }
-        case 'ContenthashChanged': {
-          const { decoded: contentHash, protocolType } = decodeContentHash(
-            event.hash,
-          ) || { protocolType: null, decoded: null }
-          return {
-            ...event,
-            decoded: contentHash !== null,
-            contentHash,
-            protocolType,
-          }
-        }
-        default:
-          return event
-      }
-    })
+  return decodeResolverEvents(
+    (result.domain?.resolver?.events || []).filter((el) =>
+      events[key].includes(el.type),
+    ),
+  )
 }
