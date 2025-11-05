@@ -132,28 +132,43 @@ export const getRecordHistory = async <key extends RecordKey = RecordKey>(
         }
         case 'MulticoinAddrChanged': {
           const { multiaddr, ...event_ } = event
-          const format = getCoderByCoinType(Number.parseInt(event.coinType))
-          if (!format) {
-            return {
-              ...event_,
-              coinName: null,
-              decoded: false,
-              addr: multiaddr,
+          try {
+            const format = getCoderByCoinType(Number.parseInt(event.coinType))
+            if (!format) {
+              return {
+                ...event_,
+                coinName: null,
+                decoded: false,
+                addr: multiaddr,
+              }
             }
-          }
-          if (multiaddr === '0x' || trim(multiaddr) === '0x00') {
+            if (multiaddr === '0x' || trim(multiaddr) === '0x00') {
+              return {
+                ...event_,
+                coinName: format.name,
+                decoded: true,
+                addr: null,
+              }
+            }
             return {
               ...event_,
               coinName: format.name,
               decoded: true,
-              addr: null,
+              addr: format.encode(hexToBytes(multiaddr)),
             }
-          }
-          return {
-            ...event_,
-            coinName: format.name,
-            decoded: true,
-            addr: format.encode(hexToBytes(multiaddr)),
+          } catch (e) {
+            if (
+              e instanceof Error &&
+              e.message.includes('Unsupported coin type')
+            ) {
+              return {
+                ...event_,
+                coinName: null,
+                decoded: false,
+                addr: multiaddr,
+              }
+            }
+            throw e
           }
         }
         case 'ContenthashChanged': {
