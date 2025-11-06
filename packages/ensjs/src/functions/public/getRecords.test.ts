@@ -158,7 +158,7 @@ describe('getRecords()', () => {
         args:             (0x04746573740365746800, ["0x5678"])
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: viem@2.30.6]
+      Version: viem@2.37.12]
     `)
   })
 })

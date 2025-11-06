@@ -50,6 +50,53 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
+      {
+        internalType: 'string[]',
+        name: 'urls',
+        type: 'string[]',
+      },
+      {
+        internalType: 'bytes',
+        name: 'callData',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes4',
+        name: 'callbackFunction',
+        type: 'bytes4',
+      },
+      {
+        internalType: 'bytes',
+        name: 'extraData',
+        type: 'bytes',
+      },
+    ],
+    name: 'OffchainLookup',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'offset',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'length',
+        type: 'uint256',
+      },
+    ],
+    name: 'OffsetOutOfBoundsError',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
         internalType: 'bytes',
         name: 'errorData',
         type: 'bytes',
@@ -117,19 +164,21 @@ export const universalResolverErrors = [
 const universalResolverReverse = {
   inputs: [
     {
-      name: 'encodedAddress',
+      internalType: 'bytes',
+      name: 'lookupAddress',
       type: 'bytes',
     },
     {
+      internalType: 'uint256',
       name: 'coinType',
       type: 'uint256',
     },
   ],
   name: 'reverse',
   outputs: [
-    { type: 'string', name: 'name' },
-    { type: 'address', name: 'resolver' },
-    { type: 'address', name: 'reverseResolver' },
+    { internalType: 'string', name: 'name', type: 'string' },
+    { internalType: 'address', name: 'resolver', type: 'address' },
+    { internalType: 'address', name: 'reverseResolver', type: 'address' },
   ],
   stateMutability: 'view',
   type: 'function',
