@@ -229,3 +229,25 @@ export const universalResolverFindResolverSnippet = [
     type: 'function',
   },
 ] as const
+
+export const universalResolverFindRegistriesSnippet = [
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'name',
+        type: 'bytes',
+      },
+    ],
+    name: 'findRegistries',
+    outputs: [
+      {
+        internalType: 'contract IRegistry[]',
+        name: '',
+        type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
