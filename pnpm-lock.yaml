@@ -72,8 +72,8 @@ importers:
         specifier: 3.1.0-rc.1
         version: 3.1.0-rc.1
       '@ensdomains/dnsprovejs':
-        specifier: ^0.5.1
-        version: 0.5.1
+        specifier: ^0.5.2
+        version: 0.5.2
       abitype:
         specifier: ^1.0.0
         version: 1.0.8(typescript@5.8.3)(zod@3.22.4)
@@ -378,8 +378,8 @@ packages:
   '@ensdomains/content-hash@3.1.0-rc.1':
     resolution: {integrity: sha512-OzdkXgdFmduzcJKU4KRkkJkQHnm5p7m7FkX8k+bHOEoOIzc0ueGT/Jay4nnb60wNk1wSHRmzY+hHBMpFDiGReg==}
 
-  '@ensdomains/dnsprovejs@0.5.1':
-    resolution: {integrity: sha512-nfm4ggpK5YBVwVwLZKF9WPjRGRTL9aUxX2O4pqv/AnQCz3WeGHsW7VhVFLj2s4EoWSzCXwR1E6nuqgUwnH692w==}
+  '@ensdomains/dnsprovejs@0.5.2':
+    resolution: {integrity: sha512-lSuYnUvUV+kBviQ82XUldtpiE0lA4gWrCilsoCWbTKtc/fH6re9NaTkhbPEy/7OF96MMAG1BDnuoTsfSMAzFBg==}
     engines: {node: '>=16.8'}
 
   '@ensdomains/ens-contracts@1.5.2':
@@ -5337,7 +5337,7 @@ snapshots:
       '@noble/curves': 1.9.1
       '@scure/base': 1.2.6
 
-  '@ensdomains/dnsprovejs@0.5.1':
+  '@ensdomains/dnsprovejs@0.5.2':
     dependencies:
       '@noble/hashes': 1.8.0
       dns-packet: 5.6.1
