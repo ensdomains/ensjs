@@ -163,7 +163,7 @@ export const ensContracts = {
       address: '0xf79f9970030fe60bd89d21591c7f2d80d7d21242',
     },
     ensUniversalResolver: {
-      address: '0x4d2afc61b84e3475ec19ad9392ee09e9a7b01226',
+      address: '0x7dee71DA37b357D61A56c56DbCA91B1FF0c28437',
     },
     ensVerifiableFactory: {
       address: '0x0837b3dce0aa75b801f19c707d75a61ac994b7f7',
