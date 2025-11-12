@@ -4,9 +4,14 @@ import {
   RawContractError,
   bytesToHex,
   encodeErrorResult,
+  labelhash,
+  namehash,
 } from 'viem'
+import { writeContract } from 'viem/actions'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
+import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
+import { registrySetSubnodeRecordSnippet } from '../../contracts/registry.js'
 import { universalResolverErrors } from '../../contracts/universalResolver.js'
 import {
   deploymentAddresses,
@@ -16,8 +21,6 @@ import {
   walletClient,
 } from '../../test/addTestContracts.js'
 import { packetToBytes } from '../../utils/hexEncodedName.js'
-import createSubname from '../wallet/createSubname.js'
-import setAddressRecord from '../wallet/setAddressRecord.js'
 import setPrimaryName from '../wallet/setPrimaryName.js'
 import getName from './getName.js'
 
@@ -151,20 +154,26 @@ describe('getName', () => {
     `)
   })
   it('should not return unnormalised name', async () => {
-    const tx1 = await createSubname(walletClient, {
-      name: 'suB.with-profile.eth',
-      contract: 'registry',
-      owner: accounts[0],
-      resolverAddress: deploymentAddresses.PublicResolver,
-      account: accounts[0],
+    const tx1 = await writeContract(walletClient, {
+      abi: registrySetSubnodeRecordSnippet,
+      account: accounts[2],
+      address: deploymentAddresses.ENSRegistry,
+      functionName: 'setSubnodeRecord',
+      args: [
+        namehash('with-profile.eth'),
+        labelhash('suB'),
+        accounts[0],
+        deploymentAddresses.PublicResolver,
+        0n,
+      ],
     })
     await waitForTransaction(tx1)
-    const tx2 = await setAddressRecord(walletClient, {
-      name: 'suB.with-profile.eth',
-      coin: 'eth',
-      resolverAddress: deploymentAddresses.PublicResolver,
-      value: accounts[0],
+    const tx2 = await writeContract(walletClient, {
+      abi: publicResolverSetAddrSnippet,
       account: accounts[0],
+      address: deploymentAddresses.PublicResolver,
+      functionName: 'setAddr',
+      args: [namehash('suB.with-profile.eth'), 60n, accounts[0]],
     })
     await waitForTransaction(tx2)
     const tx3 = await setPrimaryName(walletClient, {
@@ -173,10 +182,27 @@ describe('getName', () => {
     })
     await waitForTransaction(tx3)
 
-    const result = await getName(publicClient, {
-      address: accounts[0],
-    })
+    // Should throw NameNotNormalisedError
+    await expect(
+      getName(publicClient, {
+        address: accounts[0],
+        strict: true,
+      }),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`
+      [NameNotNormalisedError: Name suB.with-profile.eth resolved from address is not normalised
 
-    expect(result).toBeNull()
+      - Resolved from address: 0x82e01223d51Eb87e16A03E24687EDF0F294da6f1
+      Resolved for coinType: 60
+
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
+    `)
+
+    // should return null when strict is false
+    await expect(
+      getName(publicClient, {
+        address: accounts[0],
+        strict: false,
+      }),
+    ).resolves.toBeNull()
   })
 })
