@@ -80,6 +80,8 @@ export type GetAddressParametersParameters<
   coin?: coin
   /** Optionally return raw bytes value of address record (default: false) */
   bypassFormat?: boolean
+  /** Ignore invalid coinTypes */
+  ignoreInvalidCoinTypes?: boolean
 }
 
 export type GetAddressParametersErrorType =
@@ -93,11 +95,24 @@ export function getAddressParameters<
   name,
   coin = defaultCoinValue,
   bypassFormat,
+  ignoreInvalidCoinTypes,
 }: GetAddressParametersParameters<coin>) {
   // may throw GetCoderFromCoinErrorType
-  const coder = getCoderFromCoin(coin)
+  let coinType: number
 
-  if (coder.coinType === 60)
+  if (ignoreInvalidCoinTypes) {
+    try {
+      coinType = getCoderFromCoin(coin).coinType
+    } catch (e) {
+      const n = typeof coin === 'string' ? Number.parseInt(coin) : coin
+      if (Number.isNaN(n)) throw e
+      coinType = n
+    }
+  } else {
+    coinType = getCoderFromCoin(coin).coinType
+  }
+
+  if (coinType === 60)
     return {
       abi,
       functionName: 'addr',
@@ -119,7 +134,7 @@ export function getAddressParameters<
         // may throw NormalizeErrorType
         normalize(name),
       ),
-      BigInt(bypassFormat ? coin : coder.coinType),
+      BigInt(bypassFormat ? coin : coinType),
     ],
   } as const
 }

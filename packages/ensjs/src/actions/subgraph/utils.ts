@@ -1,8 +1,15 @@
-import { type Address, getAddress, type Hex } from 'viem'
+import {
+  coinTypeToNameMap,
+  getCoderByCoinType,
+} from '@ensdomains/address-encoder'
+import { type Address, getAddress, type Hex, hexToBytes, trim } from 'viem'
+import type { ReturnResolverEvent } from '../../subgraph.js'
 import type { DateWithValue } from '../../types/index.js'
+import { decodeContentHash } from '../../utils/contentHash.js'
 import { truncateFormat } from '../../utils/format.js'
 import { type DecodedFuses, decodeFuses } from '../../utils/fuses.js'
 import { decryptName } from '../../utils/name/labels.js'
+import type { ResolverEvent } from './events.js'
 import type { SubgraphDomain } from './fragments.js'
 
 export type Name = {
@@ -89,4 +96,84 @@ export const makeNameObject = (domain: SubgraphDomain): Name => {
     wrappedOwner: getChecksumAddressOrNull(domain.wrappedOwner?.id),
     resolvedAddress: getChecksumAddressOrNull(domain.resolvedAddress?.id),
   }
+}
+
+export const decodeResolverEvents = (resolverEvents: ResolverEvent[]) => {
+  return resolverEvents.map((event: ResolverEvent): ReturnResolverEvent => {
+    switch (event.type) {
+      case 'AddrChanged': {
+        return {
+          ...event,
+          addr: event.addr.id,
+        }
+      }
+      case 'MulticoinAddrChanged': {
+        const { multiaddr, ...event_ } = event
+        try {
+          const format = getCoderByCoinType(Number.parseInt(event.coinType))
+          if (!format) {
+            return {
+              ...event_,
+              coinName: null,
+              decoded: false,
+              addr: multiaddr,
+            }
+          }
+          if (multiaddr === '0x' || trim(multiaddr) === '0x00') {
+            return {
+              ...event_,
+              coinName: format.name,
+              decoded: true,
+              addr: null,
+            }
+          }
+          return {
+            ...event_,
+            coinName: format.name,
+            decoded: true,
+            addr: format.encode(hexToBytes(multiaddr)),
+          }
+        } catch (e) {
+          if (e instanceof Error) {
+            if (
+              e.message.includes('Unsupported coin type') ||
+              e.message.includes('Coin formatter not found')
+            ) {
+              return {
+                ...event_,
+                coinName: null,
+                decoded: false,
+                addr: multiaddr,
+              }
+            }
+            if (e.message.includes('Unrecognised address format')) {
+              return {
+                ...event_,
+                coinName:
+                  coinTypeToNameMap[
+                    event.coinType as keyof typeof coinTypeToNameMap
+                  ][0],
+                decoded: false,
+                addr: multiaddr,
+              }
+            }
+          }
+          throw e
+        }
+      }
+      case 'ContenthashChanged': {
+        const { decoded: contentHash, protocolType } = decodeContentHash(
+          event.hash,
+        ) || { protocolType: null, decoded: null }
+        return {
+          ...event,
+          decoded: contentHash !== null,
+          contentHash,
+          protocolType,
+        }
+      }
+      default:
+        return event
+    }
+  })
 }

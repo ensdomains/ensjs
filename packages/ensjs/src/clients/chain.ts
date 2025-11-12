@@ -237,7 +237,7 @@ export const ensSubgraphs = {
   },
   [supportedChains.sepolia]: {
     ens: {
-      url: 'https://api.studio.thegraph.com/query/49574/enssepolia/version/latest',
+      url: 'https://ensnode-api-sepolia.up.railway.app/subgraph',
     },
   },
   [supportedChains.devnetL1]: {

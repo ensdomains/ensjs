@@ -39,12 +39,11 @@ export async function getResolverName(
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
-  const result = await readContractAction({
+
+  return readContractAction({
     address: resolverAddress,
     abi: dedicatedResolverNameSnippet,
     functionName: 'name',
     args: [padHex('0x0', { size: 32 })],
   })
-
-  return result
 }

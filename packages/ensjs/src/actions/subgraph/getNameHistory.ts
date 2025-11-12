@@ -1,9 +1,6 @@
-import { getCoderByCoinType } from '@ensdomains/address-encoder'
 import { gql } from 'graphql-request'
-import { hexToBytes, trim } from 'viem'
 import { namehash } from 'viem/ens'
 import type { ChainWithSubgraph } from '../../clients/chain.js'
-import { decodeContentHash } from '../../utils/contentHash.js'
 import { createSubgraphClient } from './client.js'
 import type {
   BaseResolverEvent,
@@ -13,6 +10,7 @@ import type {
   RegistrationEvent,
   ResolverEvent,
 } from './events.js'
+import { decodeResolverEvents } from './utils.js'
 
 export type GetNameHistoryParameters = {
   /** Name to get history for */
@@ -274,56 +272,8 @@ const getNameHistory = async (
     },
   )
 
-  const resolverEvents = result.domain?.resolver?.events.map(
-    (event: ResolverEvent): ReturnResolverEvent => {
-      switch (event.type) {
-        case 'AddrChanged': {
-          return {
-            ...event,
-            addr: event.addr.id,
-          }
-        }
-        case 'MulticoinAddrChanged': {
-          const { multiaddr, ...event_ } = event
-          const format = getCoderByCoinType(Number.parseInt(event.coinType))
-          if (!format) {
-            return {
-              ...event_,
-              coinName: null,
-              decoded: false,
-              addr: multiaddr,
-            }
-          }
-          if (multiaddr === '0x' || trim(multiaddr) === '0x00') {
-            return {
-              ...event_,
-              coinName: format.name,
-              decoded: true,
-              addr: null,
-            }
-          }
-          return {
-            ...event_,
-            coinName: format.name,
-            decoded: true,
-            addr: format.encode(hexToBytes(multiaddr)),
-          }
-        }
-        case 'ContenthashChanged': {
-          const { decoded: contentHash, protocolType } = decodeContentHash(
-            event.hash,
-          ) || { protocolType: null, decoded: null }
-          return {
-            ...event,
-            decoded: contentHash !== null,
-            contentHash,
-            protocolType,
-          }
-        }
-        default:
-          return event
-      }
-    },
+  const resolverEvents = decodeResolverEvents(
+    result.domain?.resolver?.events || [],
   )
 
   return {
