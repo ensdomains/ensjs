@@ -1,12 +1,16 @@
-import {
-  type Address,
-  type Chain,
-  type NamehashErrorType,
-  namehash,
-  type ReadContractErrorType,
+import type {
+  Address,
+  Chain,
+  NamehashErrorType,
+  ReadContractErrorType,
 } from 'viem'
 import { readContract } from 'viem/actions'
-import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
+import { packetToBytes } from 'viem/ens'
+import {
+  type GetChainContractAddressErrorType,
+  getAction,
+  toHex,
+} from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
@@ -46,6 +50,6 @@ export async function getNameRegistries<chain extends Chain>(
     address: universalResolverAddress,
     abi: universalResolverFindRegistriesSnippet,
     functionName: 'findRegistries',
-    args: [namehash(name)],
+    args: [toHex(packetToBytes(name))],
   })
 }

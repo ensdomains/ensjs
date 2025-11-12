@@ -231,6 +231,7 @@ export const universalResolverFindResolverSnippet = [
 ] as const
 
 export const universalResolverFindRegistriesSnippet = [
+  ...universalResolverErrors,
   {
     inputs: [
       {
