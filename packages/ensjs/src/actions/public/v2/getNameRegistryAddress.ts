@@ -3,16 +3,7 @@ import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-
-export const registryGetSubregistrySnippet = [
-  {
-    name: 'getSubregistry',
-    inputs: [{ name: 'label', type: 'string' }],
-    outputs: [{ name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-] as const
+import { registryGetSubregistrySnippet } from '../../../contracts/ethRegistry.js'
 
 export type GetNameRegistryAddressParameters = {
   /**
