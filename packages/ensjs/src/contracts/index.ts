@@ -88,4 +88,8 @@ export {
 } from './universalResolver.js'
 export {
   registryGetSubregistrySnippet,
+  registryOwnerOfSnippet,
 } from './ethRegistry.js'
+export {
+  registryGetNameDataSnippet,
+} from './permissionedRegistry.js'
