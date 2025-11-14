@@ -33,15 +33,10 @@ export async function getRegistryNameData(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const [tokenId, entry] = await readContractAction({
+  return await readContractAction({
     address: registryAddress,
     abi: registryGetNameDataSnippet,
     functionName: 'getNameData',
     args: [label],
   })
-
-  return {
-    tokenId,
-    entry,
-  }
 }

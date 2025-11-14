@@ -33,12 +33,11 @@ export async function getRegistryOwnerByLabel(
     label,
   })
 
-  const owner = await readContractAction({
+  return await readContractAction({
     address: registryAddress,
     abi: registryOwnerOfSnippet,
     functionName: 'ownerOf',
     args: [tokenId],
   })
 
-  return owner as Address
 }
