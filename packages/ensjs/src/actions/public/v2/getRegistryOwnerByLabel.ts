@@ -27,7 +27,7 @@ export async function getRegistryOwnerByLabel(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const { tokenId } = await getRegistryNameData(client, {
+  const [tokenId] = await getRegistryNameData(client, {
     registryAddress,
     label,
   })
