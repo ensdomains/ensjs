@@ -12,9 +12,9 @@ export type GetRegistryNameDataParameters = {
 
 export type RegistryNameDataEntry = {
   expiry: bigint
-  tokenVersionId: bigint
+  tokenVersionId: number
   subregistry: Address
-  eacVersionId: bigint
+  eacVersionId: number
   resolver: Address
 }
 
