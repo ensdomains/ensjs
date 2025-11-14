@@ -1,13 +1,14 @@
-import type { Client } from 'viem'
-import type { Address } from 'viem'
+import type { Client, Address } from 'viem'
+import { type ReadContractErrorType, readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
+
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import { registryOwnerOfSnippet } from '../../../contracts/ethRegistry.js'
+
 import {
   getRegistryNameData,
   type GetRegistryNameDataErrorType,
 } from './getRegistryNameData.js'
-import {
-  getRegistryOwner,
-  type GetRegistryOwnerErrorType,
-} from './getRegistryOwner.js'
 
 export type GetRegistryOwnerByLabelParameters = {
   registryAddress: Address
@@ -16,19 +17,28 @@ export type GetRegistryOwnerByLabelParameters = {
 
 export type GetRegistryOwnerByLabelErrorType =
   | GetRegistryNameDataErrorType
-  | GetRegistryOwnerErrorType
+  | ReadContractErrorType
+
 
 export async function getRegistryOwnerByLabel(
   client: Client,
   { registryAddress, label }: GetRegistryOwnerByLabelParameters,
 ): Promise<Address> {
+  ASSERT_NO_TYPE_ERROR(client)
+
+  const readContractAction = getAction(client, readContract, 'readContract')
+
   const { tokenId } = await getRegistryNameData(client, {
     registryAddress,
     label,
   })
 
-  return getRegistryOwner(client, {
-    registryAddress,
-    tokenId,
+  const owner = await readContractAction({
+    address: registryAddress,
+    abi: registryOwnerOfSnippet,
+    functionName: 'ownerOf',
+    args: [tokenId],
   })
+
+  return owner as Address
 }

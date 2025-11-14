@@ -12,9 +12,9 @@ export type GetRegistryNameDataParameters = {
 
 export type RegistryNameDataEntry = {
   expiry: bigint
-  tokenVersionId: number
+  tokenVersionId: bigint
   subregistry: Address
-  eacVersionId: number
+  eacVersionId: bigint
   resolver: Address
 }
 
@@ -38,16 +38,7 @@ export async function getRegistryNameData(
     abi: registryGetNameDataSnippet,
     functionName: 'getNameData',
     args: [label],
-  }) as [
-    bigint,
-    {
-      expiry: bigint
-      tokenVersionId: number
-      subregistry: Address
-      eacVersionId: number
-      resolver: Address
-    },
-  ]
+  })
 
   return {
     tokenId,
