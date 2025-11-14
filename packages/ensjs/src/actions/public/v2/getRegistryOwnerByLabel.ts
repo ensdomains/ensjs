@@ -1,7 +1,7 @@
 import type { Client, Address } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { erc1155Abi } from 'viem'
+import { erc721Abi } from 'viem'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 import {
@@ -34,7 +34,7 @@ export async function getRegistryOwnerByLabel(
 
   return await readContractAction({
     address: registryAddress,
-    abi: erc1155Abi,
+    abi: erc721Abi,
     functionName: 'ownerOf',
     args: [tokenId],
   })
