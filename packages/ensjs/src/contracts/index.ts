@@ -86,3 +86,6 @@ export {
   universalResolverReverseSnippet,
   universalResolverReverseWithGatewaysSnippet,
 } from './universalResolver.js'
+export {
+  registryGetSubregistrySnippet,
+} from './ethRegistry.js'
