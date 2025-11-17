@@ -7,6 +7,7 @@ import {
 } from 'viem'
 import { type ErrorType, UnknownContentTypeError } from '../../errors/utils.js'
 import type { Prettify } from '../../types/index.js'
+import { deflateToHex } from '../deflate.js'
 
 export type AbiEncodeAs = 'json' | 'zlib' | 'cbor' | 'uri'
 
@@ -116,9 +117,7 @@ export const encodeAbi = async <
     case 'zlib': {
       contentType = 2
       if (data) {
-        const { deflate } = await import('pako')
-        // may throw BytesToHexErrorType
-        encodedData = bytesToHex(deflate(JSON.stringify(data)))
+        encodedData = await deflateToHex(data)
       }
       break
     }

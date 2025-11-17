@@ -14,6 +14,7 @@ import {
 import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAbi, Prettify } from '../../types/index.js'
+import { inflateFromHex } from '../deflate.js'
 
 /** @deprecated */
 export type GetAbiParameters = {
@@ -122,15 +123,7 @@ export async function decodeAbiResultFromPrimitiveTypes({
       break
     // zlib compressed JSON
     case 2: {
-      const { inflate } = await import('pako')
-      abiData = JSON.parse(
-        // external without error types but may throw Error
-        inflate(
-          // may throw HexToBytesErrorType
-          hexToBytes(encodedAbiData),
-          { to: 'string' },
-        ),
-      )
+      abiData = inflateFromHex(encodedAbiData)
       decoded = true
       break
     }

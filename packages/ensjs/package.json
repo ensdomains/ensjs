@@ -112,7 +112,6 @@
     "dns-packet": "^5.3.1",
     "graphql": "^16.11.0",
     "graphql-request": "7.2.0",
-    "pako": "^2.1.0",
     "ts-pattern": "^5.4.0"
   },
   "devDependencies": {
@@ -135,6 +134,7 @@
     "hardhat-abi-exporter": "^2.8.0",
     "hardhat-deploy": "^1.0.2",
     "jsonfile": "^6.1.0",
+    "pako": "^2.1.0",
     "solc": "^0.8.13",
     "ts-node": "^10.9.2",
     "typedoc": "^0.24.8",

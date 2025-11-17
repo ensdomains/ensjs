@@ -81,9 +81,6 @@ importers:
       graphql-request:
         specifier: 7.2.0
         version: 7.2.0(graphql@16.11.0)
-      pako:
-        specifier: ^2.1.0
-        version: 2.1.0
       ts-pattern:
         specifier: ^5.4.0
         version: 5.7.1
@@ -145,6 +142,9 @@ importers:
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
+      pako:
+        specifier: ^2.1.0
+        version: 2.1.0
       solc:
         specifier: ^0.8.13
         version: 0.8.26(debug@4.3.6)

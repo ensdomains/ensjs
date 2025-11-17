@@ -78,7 +78,9 @@ export async function getDnsImportData<_chain extends Chain>(
   )) as ProvableAnswer<packet.TxtAnswer>
 
   const allProofs = (
-    result.proofs as SignedSet<packet.DSAnswer | packet.DnskeyAnswer | packet.TxtAnswer>[]
+    result.proofs as SignedSet<
+      packet.DSAnswer | packet.DnskeyAnswer | packet.TxtAnswer
+    >[]
   ).concat([result.answer])
 
   const rrsets = encodeProofs(allProofs)

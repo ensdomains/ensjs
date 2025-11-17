@@ -89,7 +89,7 @@ describe('decodeTextResult', () => {
       Params: (string)
       Data:   0x1234 (2 bytes)
 
-      Version: viem@2.31.0]
+      Version: viem@2.38.3]
     `)
   })
 })

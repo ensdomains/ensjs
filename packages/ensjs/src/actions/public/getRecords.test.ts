@@ -130,14 +130,14 @@ describe('getRecords()', () => {
       Unable to decode signature "0x4ced43fb" as it was not found on the provided ABI.
       Make sure you are using the correct ABI and that the error exists on it.
       You can look up the decoded signature here: https://openchain.xyz/signatures?query=0x4ced43fb.
-       
+
       Contract Call:
         address:   0x1234
         function:  resolve(bytes name, bytes[] data)
         args:             (0x04746573740365746800, ["0x5678"])
 
       Docs: https://viem.sh/docs/contract/decodeErrorResult
-      Version: viem@2.31.0]
+      Version: viem@2.38.3]
     `)
   })
 })
