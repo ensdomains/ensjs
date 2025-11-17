@@ -22,7 +22,7 @@ export type GetUnderlyingResolverErrorType =
  * Finds the underlying non-mainnet resolver address via offchain lookup.
  * @param client - {@link Client}
  * @param parameters - {@link GetUnderlyingResolverParameters}
- * @returns Resolver address, or null if none is found. {@link GetUnderlyingResolverReturnType}
+ * @returns Resolver address, or null if none is found, and whether it's on mainnet or not. {@link GetUnderlyingResolverReturnType}
  *
  * @example
  * import { createPublicClient, http } from 'viem'
@@ -35,7 +35,7 @@ export type GetUnderlyingResolverErrorType =
  *   transport: http(),
  * })
  * const result = await getUnderlyingAddress(client, { resolverAddress: '0x123' })
- * // l2name.eth
+ * // ['0x352d7aA7a8bd0F6f31635BE5ceCb6Cebb6929A15', false]
  */
 export async function getUnderlyingAddress(
   client: Client,
