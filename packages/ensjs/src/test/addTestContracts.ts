@@ -33,6 +33,7 @@ type ContractName =
   | 'UniversalResolver'
   | 'StaticBulkRenewal'
   | 'DNSSECImpl'
+  | 'USDC'
   | 'Root'
 
 export const deploymentAddresses = JSON.parse(
@@ -84,6 +85,9 @@ export const localhost = {
     },
     ensDnssecImpl: {
       address: deploymentAddresses.DNSSECImpl,
+    },
+    usdc: {
+      address: deploymentAddresses.USDC,
     },
   },
   subgraphs: {
