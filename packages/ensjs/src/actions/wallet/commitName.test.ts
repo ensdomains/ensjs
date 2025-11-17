@@ -1,7 +1,7 @@
 import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
-import { ethRegistrarControllerCommitmentsSnippet } from '../../contracts/ethRegistrarController.js'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { getChainContractAddress } from '../../clients/chain.js'
+import { l2EthRegistrarCommitmentsSnippet } from '../../contracts/l2EthRegistrar.js'
 import {
   publicClient,
   testClient,
@@ -9,9 +9,9 @@ import {
   walletClient,
 } from '../../test/addTestContracts.js'
 import {
-  makeCommitment,
-  type RegistrationParameters,
-} from '../../utils/registerHelpers.js'
+  type L2RegistrationParameters,
+  makeL2Commitment,
+} from '../../utils/l2RegisterHelpers.js'
 import { commitName } from './commitName.js'
 
 let snapshot: Hex
@@ -31,9 +31,9 @@ afterEach(async () => {
 
 const secret = `0x${'a'.repeat(64)}` as Hex
 
-it.skip('should return a commit transaction and succeed', async () => {
-  const params: RegistrationParameters = {
-    name: 'wrapped-with-subnames.eth',
+it('should return a commit transaction and succeed', async () => {
+  const params: L2RegistrationParameters = {
+    label: 'wrapped-with-subnames',
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -47,13 +47,13 @@ it.skip('should return a commit transaction and succeed', async () => {
   expect(receipt.status).toBe('success')
 
   const commitment = await publicClient.readContract({
-    abi: ethRegistrarControllerCommitmentsSnippet,
+    abi: l2EthRegistrarCommitmentsSnippet,
     functionName: 'commitments',
     address: getChainContractAddress({
-      client: publicClient,
-      contract: 'ensEthRegistrarController',
+      chain: publicClient.chain,
+      contract: 'ensL2EthRegistrar',
     }),
-    args: [await makeCommitment(params)],
+    args: [makeL2Commitment(params)],
   })
   expect(commitment).toBeTruthy()
 })
