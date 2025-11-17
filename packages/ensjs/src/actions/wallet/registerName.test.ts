@@ -53,6 +53,7 @@ it.skip('should return a registration transaction and succeed', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
+  // TODO: add test for owner
   // const owner = await publicClient.readContract({
   //   abi: nameWrapperOwnerOfSnippet,
   //   functionName: 'ownerOf',
