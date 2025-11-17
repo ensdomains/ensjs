@@ -33,7 +33,6 @@ it.skip('should return a registration transaction and succeed', async () => {
     owner: accounts[1],
     secret,
   }
-  // const name = `${params.label}.eth`
   const commitTx = await commitName(walletClient, {
     ...params,
     account: accounts[1],
@@ -46,16 +45,9 @@ it.skip('should return a registration transaction and succeed', async () => {
   await testClient.increaseTime({ seconds: 61 })
   await testClient.mine({ blocks: 1 })
 
-  // const price = await getPrice(publicClient, {
-  //   nameOrNames: name,
-  //   duration: params.duration,
-  // })
-  // const total = price?.base + price?.premium
-
   const tx = await registerName(walletClient, {
     ...params,
     account: accounts[1],
-    // value: total,
   })
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
