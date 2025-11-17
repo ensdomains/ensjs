@@ -2,8 +2,8 @@ import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { registryGetSubregistrySnippet } from '../../../contracts/ethRegistry.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetNameRegistryAddressParameters = {
   /**

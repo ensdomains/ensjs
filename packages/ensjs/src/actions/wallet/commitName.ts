@@ -32,32 +32,6 @@ import {
   wrappedLabelLengthCheck,
 } from '../../utils/wrapper.js'
 
-// /** @deprecated */
-// export type CommitNameParameters = RegistrationParameters
-
-// /** @deprecated */
-// type ChainWithContractDependencies =
-//   ChainWithContracts<'ensEthRegistrarController'>
-
-// /** @deprecated */
-// export type CommitNameOptions<
-//   chain extends ChainWithContractDependencies | undefined,
-//   account extends Account | undefined,
-//   chainOverride extends ChainWithContractDependencies | undefined,
-// > = Prettify<
-//   CommitNameParameters &
-//     WriteTransactionParameters<chain, account, chainOverride>
-// >
-
-// /** @deprecated */
-// export type CommitNameReturnType = Hash
-
-// /** @deprecated */
-// export type CommitNameErrorType =
-//   | UnsupportedNameTypeError
-//   | WrappedLabelTooLargeError
-//   | Error
-
 // ================================
 // Write Parameters
 // ================================
@@ -167,6 +141,7 @@ export async function commitName<
     secret,
     resolverAddress,
     subregistryAddress,
+    referrer,
     ...txArgs
   }: CommitNameParameters<chain, account, chainOverride>,
 ): Promise<CommitNameReturnType> {
@@ -181,6 +156,7 @@ export async function commitName<
       secret,
       resolverAddress,
       subregistryAddress,
+      referrer,
     },
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')

@@ -30,6 +30,7 @@ export {
   ethRegistrarControllerRenewSnippet,
   ethRegistrarControllerRentPriceSnippet,
 } from './ethRegistrarController.js'
+export { registryGetSubregistrySnippet } from './ethRegistry.js'
 export { getChainContractAddress } from './getChainContractAddress.js'
 export {
   multicallGetCurrentBlockTimestampSnippet,
@@ -86,6 +87,3 @@ export {
   universalResolverReverseSnippet,
   universalResolverReverseWithGatewaysSnippet,
 } from './universalResolver.js'
-export {
-  registryGetSubregistrySnippet,
-} from './ethRegistry.js'

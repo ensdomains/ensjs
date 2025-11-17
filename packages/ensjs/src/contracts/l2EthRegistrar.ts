@@ -227,41 +227,20 @@ export const l2EthRegistrarAvailableSnippet = [
 export const l2EthRegistrarRegisterSnippet = [
   ...l2EthRegistrarErrors,
   {
-    inputs: [
-      {
-        name: 'name',
-        type: 'string',
-      },
-      {
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        name: 'secret',
-        type: 'bytes32',
-      },
-      {
-        name: 'subregistry',
-        type: 'address',
-      },
-      {
-        name: 'resolver',
-        type: 'address',
-      },
-      {
-        name: 'duration',
-        type: 'uint64',
-      },
-    ],
-    name: 'register',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'payable',
     type: 'function',
+    name: 'register',
+    inputs: [
+      { name: 'label', type: 'string' },
+      { name: 'owner', type: 'address' },
+      { name: 'secret', type: 'bytes32' },
+      { name: 'subregistry', type: 'address' },
+      { name: 'resolver', type: 'address' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'paymentToken', type: 'address' },
+      { name: 'referrer', type: 'bytes32' },
+    ],
+    outputs: [{ name: 'tokenId', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
 ] as const
 

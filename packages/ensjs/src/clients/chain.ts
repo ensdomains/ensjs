@@ -19,7 +19,6 @@ import type {
 
 export const supportedChains = {
   mainnet: 1,
-  holesky: 17000,
   sepolia: 11155111,
   devnetL1: 15658733,
 } as const
@@ -50,6 +49,7 @@ export const supportedContracts = [
   'ensReverseRegistrar',
   'ensUniversalResolver',
   'ensVerifiableFactory',
+  'usdc',
 ] as const
 
 export type SupportedContract = (typeof supportedContracts)[number]
@@ -92,43 +92,8 @@ export const ensContracts = {
     ensVerifiableFactory: {
       address: zeroAddress,
     },
-  },
-  [supportedChains.holesky]: {
-    ensBaseRegistrarImplementation: {
-      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
-    },
-    ensBulkRenewal: {
-      address: '0xbc4cfB363F948E64Cd73Da6438F64CB37E2e33d1',
-    },
-    ensDnsRegistrar: {
-      address: '0x458d278AEd4cE82BAeC384170f39198b01B8351c',
-    },
-    ensDnssecImpl: {
-      address: '0x283af0b28c62c092c9727f1ee09c02ca627eb7f5',
-    },
-    ensEthRegistrarController: {
-      address: '0x179Be112b24Ad4cFC392eF8924DfA08C20Ad8583',
-    },
-    ensL2EthRegistrar: {
-      address: '0x0000000000000000000000000000000000000000',
-    },
-    ensNameWrapper: {
-      address: '0xab50971078225D365994dc1Edcb9b7FD72Bb4862',
-    },
-    ensPublicResolver: {
-      address: '0x9010A27463717360cAD99CEA8bD39b8705CCA238',
-    },
-    ensRegistry: {
-      address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    },
-    ensReverseRegistrar: {
-      address: '0x132AC0B116a73add4225029D1951A9A707Ef673f',
-    },
-    ensUniversalResolver: {
-      address: '0xa6ac935d4971e3cd133b950ae053becd16fe7f3b',
-    },
-    ensVerifiableFactory: {
-      address: zeroAddress,
+    usdc: {
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     },
   },
   [supportedChains.sepolia]: {
@@ -168,6 +133,9 @@ export const ensContracts = {
     ensVerifiableFactory: {
       address: '0x0837b3dce0aa75b801f19c707d75a61ac994b7f7',
     },
+    usdc: {
+      address: '0x9028ab8e872af36c30c959a105cb86d1038412ae',
+    },
   },
   [supportedChains.devnetL1]: {
     ensBaseRegistrarImplementation: {
@@ -206,6 +174,9 @@ export const ensContracts = {
     ensVerifiableFactory: {
       address: zeroAddress,
     },
+    usdc: {
+      address: zeroAddress,
+    },
   },
 } as const satisfies Record<
   SupportedChainId,
@@ -228,11 +199,6 @@ export const ensSubgraphs = {
   [supportedChains.mainnet]: {
     ens: {
       url: 'https://api.alpha.blue.ensnode.io/subgraph',
-    },
-  },
-  [supportedChains.holesky]: {
-    ens: {
-      url: 'https://api.studio.thegraph.com/query/49574/ensholesky/version/latest',
     },
   },
   [supportedChains.sepolia]: {
