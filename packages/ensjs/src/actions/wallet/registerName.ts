@@ -58,7 +58,7 @@ export const registerNameWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const nameType = getNameType(registrationParams.name)
+  const nameType = getNameType(`${registrationParams.label}.eth`)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
       nameType,
@@ -66,8 +66,7 @@ export const registerNameWriteParameters = <
       details: 'Only 2ld-eth name registration is supported',
     })
 
-  const labels = registrationParams.name.split('.')
-  wrappedLabelLengthCheck(labels[0])
+  wrappedLabelLengthCheck(registrationParams.label)
 
   const usdc = getChainContractAddress({
     chain: client.chain,
@@ -82,7 +81,7 @@ export const registerNameWriteParameters = <
     abi: l2EthRegistrarRegisterSnippet,
     functionName: 'register',
     args: [
-      registrationParams.name,
+      registrationParams.label, // V2 ETHRegistrar expects a label, not a full name
       registrationParams.owner,
       registrationParams.secret,
       registrationParams.subregistryAddress || zeroAddress,
@@ -165,7 +164,7 @@ export async function registerName<
 >(
   client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
   {
-    name,
+    label,
     owner,
     duration,
     secret,
@@ -181,7 +180,7 @@ export async function registerName<
   const writeParameters = registerNameWriteParameters(
     clientWithOverrides(client, txArgs),
     {
-      name,
+      label,
       owner,
       duration,
       secret,

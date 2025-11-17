@@ -21,8 +21,8 @@ import {
 } from '../errors/utils.js'
 
 export type L2RegistrationParameters = {
-  /** Name to register */
-  name: string
+  /** Name's label (the thing before .eth) to register */
+  label: string
   /** Address to set owner to */
   owner: Address
   /** Duration of registration */
@@ -100,7 +100,7 @@ export const randomSecret = ({
 export type MakeL2CommitmentTupleErrorType = ErrorType
 
 export const makeL2CommitmentTuple = ({
-  name,
+  label,
   owner,
   duration,
   secret,
@@ -109,7 +109,7 @@ export const makeL2CommitmentTuple = ({
   referrer,
 }: L2RegistrationParameters): L2CommitmentTuple => {
   return [
-    name,
+    label,
     owner,
     secret,
     subregistryAddress,

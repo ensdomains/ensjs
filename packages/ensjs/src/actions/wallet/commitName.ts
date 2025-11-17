@@ -58,15 +58,14 @@ export const commitNameWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const labels = args.name.split('.')
-  const nameType = getNameType(args.name)
+  const nameType = getNameType(`${args.label}.eth`)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
       nameType,
       supportedNameTypes: ['eth-2ld'],
       details: 'Only 2ld-eth name registration is supported',
     })
-  wrappedLabelLengthCheck(labels[0])
+  wrappedLabelLengthCheck(args.label)
   return {
     address: getChainContractAddress({
       chain: client.chain,
@@ -135,7 +134,7 @@ export async function commitName<
 >(
   client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
   {
-    name,
+    label,
     owner,
     duration,
     secret,
@@ -150,7 +149,7 @@ export async function commitName<
   const writeParameters = commitNameWriteParameters(
     clientWithOverrides(client, txArgs),
     {
-      name,
+      label,
       owner,
       duration,
       secret,
