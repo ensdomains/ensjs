@@ -22,9 +22,9 @@ export const supportedContracts = [
   'ensUniversalResolver',
   'wrappedEthRegistrarController',
   'wrappedPublicResolver',
+  'wrappedBulkRenewal',
   'legacyEthRegistrarController',
   'legacyPublicResolver',
-  'ensDefaultReverseRegistrar',
 ] as const
 
 export type SupportedChain = (typeof supportedChains)[number]
@@ -71,6 +71,9 @@ export const addresses = {
     wrappedPublicResolver: {
       address: '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63',
     },
+    wrappedBulkRenewal: {
+      address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A'
+    },
     legacyEthRegistrarController: {
       address: '0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5',
     },
@@ -83,7 +86,7 @@ export const addresses = {
       address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
     },
     ensBulkRenewal: {
-      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1',
+      address: '0x6394b694a8C0DC716e447802E568F0Fb2c4E0965',
     },
     ensDnsRegistrar: {
       address: '0x5a07C75Ae469Bf3ee2657B588e8E6ABAC6741b4f',
@@ -117,6 +120,9 @@ export const addresses = {
     },
     wrappedPublicResolver: {
       address: '0x8948458626811dd0c23EB25Cc74291247077cC51',
+    },
+    wrappedBulkRenewal: {
+      address: '0x4EF77b90762Eddb33C8Eba5B5a19558DaE53D7a1'
     },
     legacyEthRegistrarController: {
       address: '0x7e02892cfc2Bfd53a75275451d73cF620e793fc0',
@@ -156,8 +162,12 @@ type EnsChainContracts = {
   ensNameWrapper: ChainContract
   ensPublicResolver: ChainContract
   ensReverseRegistrar: ChainContract
+  ensDefaultReverseRegistrar: ChainContract
   ensBulkRenewal: ChainContract
   ensDnssecImpl: ChainContract
+  wrappedEthRegistrarController: ChainContract
+  wrappedPublicResolver: ChainContract
+  wrappedBulkRenewal: ChainContract
   legacyEthRegistrarController: ChainContract
   legacyPublicResolver: ChainContract
 }
