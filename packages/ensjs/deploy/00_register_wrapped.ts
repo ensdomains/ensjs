@@ -193,10 +193,7 @@ const func: DeployFunction = async (hre) => {
 
 func.id = 'register-wrapped-names'
 func.tags = ['register-wrapped-names']
-func.dependencies = [
-  'WrappedEthRegistrarController',
-  'WrappedPublicResolver',
-]
+func.dependencies = ['WrappedEthRegistrarController', 'WrappedPublicResolver']
 func.runAtTheEnd = true
 
 export default func
