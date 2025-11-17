@@ -35,7 +35,7 @@ const serialNumberGt = (i1: number, i2: number): boolean =>
   (i1 < i2 && i2 - i1 > 0x7fffffff) || (i1 > i2 && i1 - i2 < 0x7fffffff)
 
 const encodeProofs = (
-  proofs: SignedSet<packet.Ds | packet.Dnskey | packet.Rtxt>[],
+  proofs: SignedSet<packet.DSAnswer | packet.DnskeyAnswer | packet.TxtAnswer>[],
 ): RrSetWithSig[] =>
   proofs.map((proof) => ({
     rrset: toHex(proof.toWire(true)),
@@ -75,10 +75,10 @@ export async function getDnsImportData<_chain extends Chain>(
   const result = (await prover.queryWithProof(
     'TXT',
     `_ens.${name}`,
-  )) as ProvableAnswer<packet.Rtxt>
+  )) as ProvableAnswer<packet.TxtAnswer>
 
   const allProofs = (
-    result.proofs as SignedSet<packet.Ds | packet.Dnskey | packet.Rtxt>[]
+    result.proofs as SignedSet<packet.DSAnswer | packet.DnskeyAnswer | packet.TxtAnswer>[]
   ).concat([result.answer])
 
   const rrsets = encodeProofs(allProofs)

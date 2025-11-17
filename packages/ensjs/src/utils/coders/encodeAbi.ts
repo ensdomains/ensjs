@@ -116,7 +116,7 @@ export const encodeAbi = async <
     case 'zlib': {
       contentType = 2
       if (data) {
-        const { deflate } = await import('pako/dist/pako_deflate.min.js')
+        const { deflate } = await import('pako')
         // may throw BytesToHexErrorType
         encodedData = bytesToHex(deflate(JSON.stringify(data)))
       }

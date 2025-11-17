@@ -122,7 +122,7 @@ export async function decodeAbiResultFromPrimitiveTypes({
       break
     // zlib compressed JSON
     case 2: {
-      const { inflate } = await import('pako/dist/pako_inflate.min.js')
+      const { inflate } = await import('pako')
       abiData = JSON.parse(
         // external without error types but may throw Error
         inflate(
