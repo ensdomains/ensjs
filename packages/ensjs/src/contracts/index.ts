@@ -89,3 +89,6 @@ export {
 export {
   registryGetSubregistrySnippet,
 } from './ethRegistry.js'
+export {
+  registryGetNameDataSnippet,
+} from './permissionedRegistry.js'
