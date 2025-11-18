@@ -1,13 +1,14 @@
-import type {
-  Account,
-  Chain,
-  GetChainContractAddressErrorType,
-  Hash,
-  WriteContractErrorType,
-  WriteContractParameters,
+import {
+  type Account,
+  type Chain,
+  type GetChainContractAddressErrorType,
+  type Hash,
+  type WriteContractErrorType,
+  type WriteContractParameters,
+  zeroAddress,
 } from 'viem'
 import { writeContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
+import { getAction, padHex } from 'viem/utils'
 import {
   type ChainWithContracts,
   getChainContractAddress,
@@ -21,10 +22,9 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../utils/clientWithOverrides.js'
-import {
-  type L2RegistrationParameters,
-  type MakeL2CommitmentTupleErrorType,
-  makeL2CommitmentTuple,
+import type {
+  L2RegistrationParameters,
+  MakeL2CommitmentTupleErrorType,
 } from '../../utils/l2RegisterHelpers.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import {
@@ -36,10 +36,7 @@ import {
 // Write parameters
 // ================================
 
-export type RegisterNameWriteParametersParameters = L2RegistrationParameters & {
-  /** Value of registration */
-  value: bigint
-}
+export type RegisterNameWriteParametersParameters = L2RegistrationParameters
 
 export type RegisterNameWriteParametersReturnType<
   chain extends Chain,
@@ -56,12 +53,12 @@ export const registerNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
-  { value, ...registrationParams }: RegisterNameWriteParametersParameters,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
+  registrationParams: RegisterNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const nameType = getNameType(registrationParams.name)
+  const nameType = getNameType(`${registrationParams.label}.eth`)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
       nameType,
@@ -69,11 +66,12 @@ export const registerNameWriteParameters = <
       details: 'Only 2ld-eth name registration is supported',
     })
 
-  const labels = registrationParams.name.split('.')
-  wrappedLabelLengthCheck(labels[0])
+  wrappedLabelLengthCheck(registrationParams.label)
 
-  // Use the commitment tuple helper for consistency
-  const commitmentTuple = makeL2CommitmentTuple(registrationParams)
+  const usdc = getChainContractAddress({
+    chain: client.chain,
+    contract: 'usdc',
+  })
 
   return {
     address: getChainContractAddress({
@@ -82,10 +80,18 @@ export const registerNameWriteParameters = <
     }),
     abi: l2EthRegistrarRegisterSnippet,
     functionName: 'register',
-    args: commitmentTuple,
+    args: [
+      registrationParams.label, // V2 ETHRegistrar expects a label, not a full name
+      registrationParams.owner,
+      registrationParams.secret,
+      registrationParams.subregistryAddress || zeroAddress,
+      registrationParams.resolverAddress || zeroAddress,
+      BigInt(registrationParams.duration),
+      registrationParams.paymentToken || usdc,
+      registrationParams.referrer || padHex('0x', { size: 32 }),
+    ],
     chain: client.chain,
     account: client.account,
-    value,
   } as const satisfies WriteContractParameters<
     typeof l2EthRegistrarRegisterSnippet
   >
@@ -156,15 +162,16 @@ export async function registerName<
   account extends Account,
   chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
   {
-    name,
+    label,
     owner,
     duration,
     secret,
     resolverAddress,
     subregistryAddress,
-    value,
+    referrer,
+    paymentToken,
     ...txArgs
   }: RegisterNameParameters<chain, account, chainOverride>,
 ): Promise<RegisterNameReturnType> {
@@ -173,13 +180,14 @@ export async function registerName<
   const writeParameters = registerNameWriteParameters(
     clientWithOverrides(client, txArgs),
     {
-      name,
+      label,
       owner,
       duration,
       secret,
       resolverAddress,
       subregistryAddress,
-      value,
+      paymentToken,
+      referrer,
     },
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')

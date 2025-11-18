@@ -1,12 +1,12 @@
-import type { Client, Address } from 'viem'
+import type { Address, Client } from 'viem'
+import { erc721Abi } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { erc721Abi } from 'viem'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 import {
-  getRegistryNameData,
   type GetRegistryNameDataErrorType,
+  getRegistryNameData,
 } from './getRegistryNameData.js'
 
 export type GetRegistryOwnerByLabelParameters = {
@@ -17,7 +17,6 @@ export type GetRegistryOwnerByLabelParameters = {
 export type GetRegistryOwnerByLabelErrorType =
   | GetRegistryNameDataErrorType
   | ReadContractErrorType
-
 
 export async function getRegistryOwnerByLabel(
   client: Client,
@@ -38,5 +37,4 @@ export async function getRegistryOwnerByLabel(
     functionName: 'ownerOf',
     args: [tokenId],
   })
-
 }

@@ -32,32 +32,6 @@ import {
   wrappedLabelLengthCheck,
 } from '../../utils/wrapper.js'
 
-// /** @deprecated */
-// export type CommitNameParameters = RegistrationParameters
-
-// /** @deprecated */
-// type ChainWithContractDependencies =
-//   ChainWithContracts<'ensEthRegistrarController'>
-
-// /** @deprecated */
-// export type CommitNameOptions<
-//   chain extends ChainWithContractDependencies | undefined,
-//   account extends Account | undefined,
-//   chainOverride extends ChainWithContractDependencies | undefined,
-// > = Prettify<
-//   CommitNameParameters &
-//     WriteTransactionParameters<chain, account, chainOverride>
-// >
-
-// /** @deprecated */
-// export type CommitNameReturnType = Hash
-
-// /** @deprecated */
-// export type CommitNameErrorType =
-//   | UnsupportedNameTypeError
-//   | WrappedLabelTooLargeError
-//   | Error
-
 // ================================
 // Write Parameters
 // ================================
@@ -84,15 +58,14 @@ export const commitNameWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const labels = args.name.split('.')
-  const nameType = getNameType(args.name)
+  const nameType = getNameType(`${args.label}.eth`)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
       nameType,
       supportedNameTypes: ['eth-2ld'],
       details: 'Only 2ld-eth name registration is supported',
     })
-  wrappedLabelLengthCheck(labels[0])
+  wrappedLabelLengthCheck(args.label)
   return {
     address: getChainContractAddress({
       chain: client.chain,
@@ -161,12 +134,13 @@ export async function commitName<
 >(
   client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
   {
-    name,
+    label,
     owner,
     duration,
     secret,
     resolverAddress,
     subregistryAddress,
+    referrer,
     ...txArgs
   }: CommitNameParameters<chain, account, chainOverride>,
 ): Promise<CommitNameReturnType> {
@@ -175,12 +149,13 @@ export async function commitName<
   const writeParameters = commitNameWriteParameters(
     clientWithOverrides(client, txArgs),
     {
-      name,
+      label,
       owner,
       duration,
       secret,
       resolverAddress,
       subregistryAddress,
+      referrer,
     },
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')

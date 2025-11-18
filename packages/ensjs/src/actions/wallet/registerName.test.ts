@@ -1,16 +1,11 @@
 import type { Address, Hex } from 'viem'
-import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
 import {
-  publicClient,
   testClient,
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import type { RegistrationParameters } from '../../utils/registerHelpers.js'
-import { getPrice } from '../public/getPrice.js'
+import type { L2RegistrationParameters } from '../../utils/l2RegisterHelpers.js'
 import { commitName } from './commitName.js'
 import { registerName } from './registerName.js'
 
@@ -31,21 +26,9 @@ afterEach(async () => {
 
 const secret = `0x${'a'.repeat(64)}` as Hex
 
-const getNameWrapperOwner = async (name: string) => {
-  return publicClient.readContract({
-    abi: nameWrapperOwnerOfSnippet,
-    functionName: 'ownerOf',
-    address: getChainContractAddress({
-      client: publicClient,
-      contract: 'ensNameWrapper',
-    }),
-    args: [BigInt(namehash(name))],
-  })
-}
-
 it.skip('should return a registration transaction and succeed', async () => {
-  const params: RegistrationParameters = {
-    name: 'cool-swag.eth',
+  const params: L2RegistrationParameters = {
+    label: 'cool-swag',
     duration: 31536000,
     owner: accounts[1],
     secret,
@@ -62,21 +45,23 @@ it.skip('should return a registration transaction and succeed', async () => {
   await testClient.increaseTime({ seconds: 61 })
   await testClient.mine({ blocks: 1 })
 
-  const price = await getPrice(publicClient, {
-    nameOrNames: params.name,
-    duration: params.duration,
-  })
-  const total = price?.base + price?.premium
-
   const tx = await registerName(walletClient, {
     ...params,
     account: accounts[1],
-    value: total,
   })
   expect(tx).toBeTruthy()
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const owner = await getNameWrapperOwner(params.name)
-  expect(owner).toBe(accounts[1])
+  // TODO: add test for owner
+  // const owner = await publicClient.readContract({
+  //   abi: nameWrapperOwnerOfSnippet,
+  //   functionName: 'ownerOf',
+  //   address: getChainContractAddress({
+  //     chain: publicClient.chain,
+  //     contract: 'ensNameWrapper',
+  //   }),
+  //   args: [BigInt(namehash(name))],
+  // })
+  // expect(owner).toBe(params.owner)
 })

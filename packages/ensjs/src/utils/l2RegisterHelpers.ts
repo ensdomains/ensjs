@@ -7,6 +7,7 @@ import {
   keccak256,
   type PadErrorType,
   pad,
+  padHex,
   type ToBytesErrorType,
   type ToHexErrorType,
   toBytes,
@@ -20,8 +21,8 @@ import {
 } from '../errors/utils.js'
 
 export type L2RegistrationParameters = {
-  /** Name to register */
-  name: string
+  /** Name's label (the thing before .eth) to register */
+  label: string
   /** Address to set owner to */
   owner: Address
   /** Duration of registration */
@@ -32,15 +33,20 @@ export type L2RegistrationParameters = {
   subregistryAddress?: Address
   /** Custom resolver address, defaults to current public resolver deployment */
   resolverAddress?: Address
+  /** Referrer address. Optional */
+  referrer?: Hex
+  /** Payment token. USDC is used by default */
+  paymentToken?: Address
 }
 
 export type L2CommitmentTuple = [
-  name: string,
+  label: string,
   owner: Address,
   secret: Hex,
   subregistry: Address,
   resolver: Address,
   duration: bigint,
+  referrer: Hex,
 ]
 
 const cryptoRef =
@@ -94,20 +100,22 @@ export const randomSecret = ({
 export type MakeL2CommitmentTupleErrorType = ErrorType
 
 export const makeL2CommitmentTuple = ({
-  name,
+  label,
   owner,
   duration,
   secret,
   subregistryAddress = zeroAddress,
   resolverAddress = zeroAddress,
+  referrer,
 }: L2RegistrationParameters): L2CommitmentTuple => {
   return [
-    name,
+    label,
     owner,
     secret,
     subregistryAddress,
     resolverAddress,
     BigInt(duration),
+    referrer || padHex('0x', { size: 32 }),
   ]
 }
 
@@ -123,12 +131,13 @@ export const makeL2CommitmentFromTuple = (params: L2CommitmentTuple): Hex => {
   return keccak256(
     encodeAbiParameters(
       [
-        { name: 'name', type: 'string' },
+        { name: 'label', type: 'string' },
         { name: 'owner', type: 'address' },
         { name: 'secret', type: 'bytes32' },
         { name: 'subregistry', type: 'address' },
         { name: 'resolver', type: 'address' },
         { name: 'duration', type: 'uint64' },
+        { name: 'referrer', type: 'bytes32' },
       ],
       params,
     ),
