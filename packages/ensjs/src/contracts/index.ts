@@ -30,10 +30,7 @@ export {
   ethRegistrarControllerRenewSnippet,
   ethRegistrarControllerRentPriceSnippet,
 } from './ethRegistrarController.js'
-export {
-  registryGetSubregistrySnippet,
-  registryGetSubregistrySnippet,
-} from './ethRegistry.js'
+export { registryGetSubregistrySnippet } from './ethRegistry.js'
 export { getChainContractAddress } from './getChainContractAddress.js'
 export {
   multicallGetCurrentBlockTimestampSnippet,
