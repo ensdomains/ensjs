@@ -1,9 +1,8 @@
-import type { Client } from 'viem'
-import type { Address } from 'viem'
+import type { Address, Client } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { registryGetNameDataSnippet } from '../../../contracts/permissionedRegistry.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetRegistryNameDataParameters = {
   registryAddress: Address
@@ -20,7 +19,7 @@ export type RegistryNameDataEntry = {
 
 export type GetRegistryNameDataReturnType = readonly [
   tokenId: bigint,
-  entry: RegistryNameDataEntry
+  entry: RegistryNameDataEntry,
 ]
 
 export type GetRegistryNameDataErrorType = ReadContractErrorType
