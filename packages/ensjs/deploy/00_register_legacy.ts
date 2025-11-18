@@ -144,13 +144,23 @@ const names: {
     contenthash?: string
     abi?:
       | {
-          contentType: 1 | 2 | 4 | 8 | 256
-          data: object | string
+          contentType: 1 | 2 | 4 | 256
+          data: object
         }
       | {
-          contentType: 1 | 2 | 4 | 8 | 256
+          contentType: 8
           data: string
-        }[]
+        }
+      | (
+          | {
+              contentType: 1 | 2 | 4 | 256
+              data: object
+            }
+          | {
+              contentType: 8
+              data: string
+            }
+        )[]
   }
   duration?: number
   subnames?: Subname[]
@@ -477,8 +487,10 @@ const func: DeployFunction = async (hre) => {
             data = pako.deflate(JSON.stringify(abi.data))
           } else if (abi.contentType === 4) {
             data = cbor.encode(abi.data)
+          } else if (abi.contentType === 8) {
+            data = stringToBytes(abi.data as string)
           } else {
-            data = stringToBytes(abi.data)
+            throw new Error(`Unknown ABI content type: ${abi.contentType}`)
           }
           const setABITx = await publicResolver.write.setABI(
             [hash, abi.contentType, bytesToHex(data)],
