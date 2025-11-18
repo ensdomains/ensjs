@@ -129,16 +129,12 @@ export {
 } from './normalise.js'
 export {
   makeCommitment,
-  makeCommitmentFromTuple,
-  makeCommitmentTuple,
-  makeRegistrationTuple,
+  makeCommitmentFromCallData,
   makeRegistrationCallData,
   randomSecret,
   type RegistrationCallData,
   type ReverseRecordParameter,
-  type CommitmentTuple,
   type RegistrationParameters,
-  type RegistrationTuple,
 } from './registerHelpers.js'
 export {
   checkIsDotEth,

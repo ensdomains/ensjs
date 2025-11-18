@@ -50,13 +50,6 @@ it('should return a renew transaction for a single name and succeed', async () =
   })
   const total = price!.base + price!.premium
 
-  console.log('params', walletClient, {
-    nameOrNames: name,
-    duration,
-    value: total,
-    account: accounts[0],
-  })
-
   const tx = await renewNames(walletClient, {
     nameOrNames: name,
     duration,

@@ -55,6 +55,5 @@ it('should return a commit transaction and succeed', async () => {
     }),
     args: [makeCommitment(params)],
   })
-  console.log('commitment', commitment)
   expect(commitment).toBeTruthy()
 })

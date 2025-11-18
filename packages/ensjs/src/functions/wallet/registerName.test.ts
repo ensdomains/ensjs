@@ -30,7 +30,7 @@ afterEach(async () => {
 
 const secret = `0x${'a'.repeat(64)}` as Hex
 
-const getNameWrapperOwner = async (name: string) => {
+const getOwner = async (name: string) => {
   return publicClient.readContract({
     abi: baseRegistrarOwnerOfSnippet,
     address: getChainContractAddress({
@@ -76,6 +76,6 @@ it('should return a registration transaction and succeed', async () => {
   const receipt = await waitForTransaction(tx)
   expect(receipt.status).toBe('success')
 
-  const owner = await getNameWrapperOwner(params.name)
+  const owner = await getOwner(params.name)
   expect(owner).toBe(accounts[1])
 })

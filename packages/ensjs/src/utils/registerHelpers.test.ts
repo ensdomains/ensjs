@@ -181,33 +181,7 @@ describe('makeCommitment()', () => {
         '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054',
     }
 
-    const parameters2 = {
-      label: 'test',
-      owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' as Address,
-      duration: 31536000n,
-      secret:
-        '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054' as Hex,
-      resolver: getChainContractAddress({
-        client: publicClient,
-        contract: 'ensPublicResolver',
-      }),
-      data: [],
-      reverseRecord: 0,
-      referrer:
-        '0xde99acb8241826c5b3012b2c7a05dc28043428744a9c39445b4707c92b3fc054' as Hex,
-    }
-
     const commitment = makeCommitment(parameters)
-
-    console.log(
-      'address',
-      getChainContractAddress({
-        client: publicClient,
-        contract: 'ensEthRegistrarController',
-      }),
-    )
-
-    console.log('commitment', commitment)
 
     const commitment2 = await publicClient.readContract({
       abi: ethRegistrarControllerMakeCommitmentSnippet,
@@ -219,7 +193,6 @@ describe('makeCommitment()', () => {
       args: [makeRegistrationCallData(parameters)],
     })
 
-    console.log('commitment2', commitment2)
     expect(commitment).toEqual(commitment2)
   })
 })
