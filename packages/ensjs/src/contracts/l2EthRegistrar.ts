@@ -145,38 +145,16 @@ export const l2EthRegistrarMakeCommitmentSnippet = [
   ...l2EthRegistrarErrors,
   {
     inputs: [
-      {
-        name: 'name',
-        type: 'string',
-      },
-      {
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        name: 'secret',
-        type: 'bytes32',
-      },
-      {
-        name: 'subregistry',
-        type: 'address',
-      },
-      {
-        name: 'resolver',
-        type: 'address',
-      },
-      {
-        name: 'duration',
-        type: 'uint64',
-      },
+      { name: 'label', type: 'string' },
+      { name: 'owner', type: 'address' },
+      { name: 'secret', type: 'bytes32' },
+      { name: 'subregistry', type: 'address' },
+      { name: 'resolver', type: 'address' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'referrer', type: 'bytes32' },
     ],
     name: 'makeCommitment',
-    outputs: [
-      {
-        name: '',
-        type: 'bytes32',
-      },
-    ],
+    outputs: [{ name: '', type: 'bytes32' }],
     stateMutability: 'pure',
     type: 'function',
   },

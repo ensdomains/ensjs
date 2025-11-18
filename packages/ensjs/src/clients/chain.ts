@@ -113,7 +113,7 @@ export const ensContracts = {
       address: '0x99e517db3db5ec5424367b8b50cd11ddcb0008f1',
     },
     ensL2EthRegistrar: {
-      address: '0xf9b79ab5f6539846ad639eef6b60e145bf6e5cbe',
+      address: '0x774faadcd7e8c4b7441aa2927f10845fea083ea1',
     },
     ensNameWrapper: {
       address: '0xca7e6d0ddc5f373197bbe6fc2f09c2314399f028',

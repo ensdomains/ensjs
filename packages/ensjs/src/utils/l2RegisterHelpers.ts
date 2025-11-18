@@ -40,7 +40,7 @@ export type L2RegistrationParameters = {
 }
 
 export type L2CommitmentTuple = [
-  name: string,
+  label: string,
   owner: Address,
   secret: Hex,
   subregistry: Address,
