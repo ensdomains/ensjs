@@ -46,7 +46,7 @@ Text record string, or null if none is found. GetTextRecordReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getTextRecord.ts:60](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getTextRecord.ts#L60)
+[packages/ensjs/src/functions/public/getTextRecord.ts:60](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/public/getTextRecord.ts#L60)
 
 ---
 

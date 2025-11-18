@@ -69,7 +69,7 @@ Transaction hash. RenewNamesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/renewNames.ts:129](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/renewNames.ts#L129)
+[packages/ensjs/src/functions/wallet/renewNames.ts:129](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/wallet/renewNames.ts#L129)
 
 ---
 

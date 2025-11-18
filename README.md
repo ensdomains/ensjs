@@ -42,4 +42,4 @@ const ethAddress = client.getAddressRecord({ name: 'ens.eth' })
 
 ## Docs
 
-Docs can be found [here](https://github.com/ensdomains/ensjs-v3/tree/main/docs). Full docs site coming soon.
+Docs can be found [here](https://github.com/ensdomains/ensjs-v3/tree/main/docs).
