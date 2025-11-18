@@ -27,20 +27,6 @@ export {
   type DeleteSubnameReturnType,
 } from './functions/wallet/deleteSubname.js'
 export {
-  default as legacyCommitName,
-  type LegacyCommitNameDataParameters,
-  type LegacyCommitNameDataReturnType,
-  type LegacyCommitNameParameters,
-  type LegacyCommitNameReturnType,
-} from './functions/wallet/legacyCommitName.js'
-export {
-  default as legacyRegisterName,
-  type LegacyRegisterNameDataParameters,
-  type LegacyRegisterNameDataReturnType,
-  type LegacyRegisterNameParameters,
-  type LegacyRegisterNameReturnType,
-} from './functions/wallet/legacyRegisterName.js'
-export {
   default as registerName,
   type RegisterNameDataParameters,
   type RegisterNameDataReturnType,
