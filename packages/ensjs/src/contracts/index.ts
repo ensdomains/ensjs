@@ -52,7 +52,10 @@ export {
   nameWrapperUnwrapSnippet,
   nameWrapperWrapSnippet,
 } from './nameWrapper.js'
-export { registryGetNameDataSnippet } from './permissionedRegistry.js'
+export {
+  permissionedRegistryGetNameDataSnippet,
+  permissionedRegistryRoleCountSnippet,
+} from './permissionedRegistry.js'
 export {
   publicResolverAbiSnippet,
   publicResolverClearRecordsSnippet,
