@@ -19,14 +19,14 @@ const mainnetPublicClient = createPublicClient({
 
 const sepoliaPublicClient = createPublicClient({
   chain: addEnsContracts(sepolia),
-  transport: http('https://holesky.gateway.tenderly.co/5S00ox7ZN3mdGqaO74UDsg'),
+  transport: http('https://sepolia.gateway.tenderly.co'),
 })
 
-describe.skip('CCIP', () => {
+describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
       const result = await getRecords(sepoliaPublicClient, {
-        name: 'offchainexample.eth',
+        name: 'testing.ethbuc.eth',
         texts: ['email', 'description'],
         contentHash: true,
         coins: ['btc', '60'],
@@ -35,47 +35,35 @@ describe.skip('CCIP', () => {
         {
           "coins": [
             {
-              "id": 0,
-              "name": "btc",
-              "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-            },
-            {
               "id": 60,
               "name": "eth",
-              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+              "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
             },
           ],
-          "contentHash": {
-            "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-            "protocolType": "ipfs",
-          },
-          "resolverAddress": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547",
+          "contentHash": null,
+          "resolverAddress": "0x7DbcFF94B5b9ccdf2B21f60Ef1F19A566016636B",
           "texts": [
             {
-              "key": "email",
-              "value": "vitalik@ethereum.org",
-            },
-            {
               "key": "description",
-              "value": "hello offchainresolver record",
+              "value": "my first profile",
             },
           ],
         }
       `)
     })
     it('should return records from a ccip-read name with custom ccipRequest', async () => {
-      const holeskyWithEns = addEnsContracts(holesky)
-      const holeskyPublicClientWithCustomCcipRequest = createPublicClient({
-        chain: holeskyWithEns,
-        transport: http('https://holesky.gateway.tenderly.co'),
+      const sepoliaWithEns = addEnsContracts(sepolia)
+      const sepoliaPublicClientWithCustomCcipRequest = createPublicClient({
+        chain: sepoliaWithEns,
+        transport: http('https://sepolia.gateway.tenderly.co'),
         ccipRead: {
-          request: ccipRequest(holeskyWithEns),
+          request: ccipRequest(sepoliaWithEns),
         },
       })
       const result = await getRecords(
-        holeskyPublicClientWithCustomCcipRequest,
+        sepoliaPublicClientWithCustomCcipRequest,
         {
-          name: 'offchainexample.eth',
+          name: 'testing.ethbuc.eth',
           texts: ['email', 'description'],
           contentHash: true,
           coins: ['btc', '60'],
@@ -85,29 +73,17 @@ describe.skip('CCIP', () => {
       {
         "coins": [
           {
-            "id": 0,
-            "name": "btc",
-            "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-          },
-          {
             "id": 60,
             "name": "eth",
-            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
           },
         ],
-        "contentHash": {
-          "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-          "protocolType": "ipfs",
-        },
-        "resolverAddress": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547",
+        "contentHash": null,
+        "resolverAddress": "0x7DbcFF94B5b9ccdf2B21f60Ef1F19A566016636B",
         "texts": [
           {
-            "key": "email",
-            "value": "vitalik@ethereum.org",
-          },
-          {
             "key": "description",
-            "value": "hello offchainresolver record",
+            "value": "my first profile",
           },
         ],
       }
@@ -140,30 +116,26 @@ describe.skip('CCIP', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
         sepoliaPublicClient,
-        getAddressRecord.batch({ name: 'offchainexample.eth' }),
-        getAddressRecord.batch({ name: 'offchainexample.eth', coin: 'btc' }),
-        getText.batch({ name: 'offchainexample.eth', key: 'email' }),
+        getAddressRecord.batch({ name: 'testing.ethbuc.eth' }),
+        getAddressRecord.batch({ name: 'testing.ethbuc.eth', coin: 'btc' }),
+        getText.batch({ name: 'testing.ethbuc.eth', key: 'description' }),
       )
       expect(result).toMatchInlineSnapshot(`
       [
         {
           "id": 60,
           "name": "eth",
-          "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
         },
-        {
-          "id": 0,
-          "name": "btc",
-          "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-        },
-        "vitalik@ethereum.org",
+        null,
+        "my first profile",
       ]
       `)
     })
     it('allows nested batch ccip', async () => {
       const result = await batch(
         sepoliaPublicClient,
-        batch.batch(getAddressRecord.batch({ name: 'offchainexample.eth' })),
+        batch.batch(getAddressRecord.batch({ name: 'testing.ethbuc.eth' })),
       )
       expect(result).toMatchInlineSnapshot(`
         [
@@ -171,7 +143,7 @@ describe.skip('CCIP', () => {
             {
               "id": 60,
               "name": "eth",
-              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+              "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
             },
           ],
         ]
