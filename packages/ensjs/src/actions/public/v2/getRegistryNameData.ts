@@ -1,7 +1,7 @@
 import type { Address, Client } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { registryGetNameDataSnippet } from '../../../contracts/permissionedRegistry.js'
+import { permissionedRegistryGetNameDataSnippet } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetRegistryNameDataParameters = {
@@ -34,7 +34,7 @@ export async function getRegistryNameData(
 
   return await readContractAction({
     address: registryAddress,
-    abi: registryGetNameDataSnippet,
+    abi: permissionedRegistryGetNameDataSnippet,
     functionName: 'getNameData',
     args: [label],
   })
