@@ -36,6 +36,10 @@
       "types": "./dist/utils/index.d.ts",
       "default": "./dist/utils/index.js"
     },
+    "./utils/v2": {
+      "types": "./dist/utils/v2/index.d.ts",
+      "default": "./dist/utils/v2/index.js"
+    },
     "./wallet": {
       "types": "./dist/exports/wallet.d.ts",
       "default": "./dist/exports/wallet.js"
