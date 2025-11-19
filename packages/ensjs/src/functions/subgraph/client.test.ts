@@ -1,5 +1,5 @@
 import { namehash } from 'viem'
-import { holesky, mainnet, sepolia } from 'viem/chains'
+import { mainnet, sepolia } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import { requestMiddleware, responseMiddleware } from './client.js'
@@ -186,11 +186,11 @@ describe('createSubgraphClient', () => {
   })
 
   it('should create a chain with the custom subgraph url', () => {
-    const chain = addEnsContracts(holesky, {
+    const chain = addEnsContracts(mainnet, {
       subgraphApiKey: '1234567890',
     })
     expect(chain.subgraphs.ens.url).toBe(
-      'https://gateway-arbitrum.network.thegraph.com/api/1234567890/subgraphs/id/i5EXyL9MzTXWKCmpJ2LG6sbzBfXneUPVuTXaSjYhDDF',
+      'https://gateway-arbitrum.network.thegraph.com/api/1234567890/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH',
     )
   })
 
