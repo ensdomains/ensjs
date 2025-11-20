@@ -1,0 +1,9 @@
+export const REGISTRY_ROLES = [
+  'REGISTRAR',
+  'RENEW',
+  'SET_SUBREGISTRY',
+  'SET_RESOLVER',
+  'SET_TOKEN_OBSERVER',
+  'CAN_TRANSFER',
+  'UNREGISTER',
+] as const

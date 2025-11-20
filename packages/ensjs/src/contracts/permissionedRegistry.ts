@@ -1,4 +1,4 @@
-export const registryGetNameDataSnippet = [
+export const permissionedRegistryGetNameDataSnippet = [
   {
     inputs: [{ internalType: 'string', name: 'label', type: 'string' }],
     name: 'getNameData',
@@ -19,5 +19,27 @@ export const registryGetNameDataSnippet = [
     ],
     stateMutability: 'view',
     type: 'function',
+  },
+] as const
+
+export const permissionedRegistryRoleCountSnippet = [
+  {
+    type: 'function',
+    name: 'roleCount',
+    inputs: [
+      {
+        name: 'resource',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
   },
 ] as const
