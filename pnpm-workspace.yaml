@@ -3,3 +3,4 @@ packages:
   - examples/*
 patchedDependencies:
   hardhat-deploy: patches/hardhat-deploy.patch
+  '@ensdomains/dnsprovejs': patches/@ensdomains__dnsprovejs.patch
