@@ -11,7 +11,7 @@ import {
 } from '../../../utils/v2/index.js'
 
 export type GetRoleCountsParameters = {
-  resolverAddress: Address
+  registryAddress: Address
   label: string
 }
 
@@ -58,14 +58,14 @@ export type GetRoleCountsErrorType = ReadContractErrorType
  */
 export async function getRoleCounts(
   client: Client,
-  { resolverAddress, label }: GetRoleCountsParameters,
+  { registryAddress, label }: GetRoleCountsParameters,
 ): Promise<GetRoleCountsReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
   const roleBitmap = await readContractAction({
-    address: resolverAddress,
+    address: registryAddress,
     abi: permissionedRegistryRoleCountSnippet,
     functionName: 'roleCount',
     args: [hexToBigInt(labelhash(label))],
