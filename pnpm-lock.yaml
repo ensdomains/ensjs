@@ -8,6 +8,9 @@ overrides:
   '@nomiclabs/hardhat-ethers': npm:hardhat-deploy-ethers@0.3.0-beta.13
 
 patchedDependencies:
+  '@ensdomains/dnsprovejs':
+    hash: e501d515783ac2398bc822c339e1abea0913c58b2139f7fef0a17c7951140f75
+    path: patches/@ensdomains__dnsprovejs.patch
   hardhat-deploy:
     hash: c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61
     path: patches/hardhat-deploy.patch
@@ -73,7 +76,7 @@ importers:
         version: 3.1.0-rc.1
       '@ensdomains/dnsprovejs':
         specifier: ^0.5.2
-        version: 0.5.2
+        version: 0.5.2(patch_hash=e501d515783ac2398bc822c339e1abea0913c58b2139f7fef0a17c7951140f75)
       abitype:
         specifier: ^1.0.0
         version: 1.0.8(typescript@5.8.3)(zod@3.22.4)
@@ -104,7 +107,7 @@ importers:
         version: 1.0.1
       '@ensdomains/hardhat-toolbox-viem-extended':
         specifier: ^0.0.5
-        version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))(hardhat-deploy@1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)
+        version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))(hardhat-deploy@1.0.4(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)
       '@nomicfoundation/hardhat-toolbox-viem':
         specifier: ^3.0.0
         version: 3.0.0(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))(@types/node@22.15.29)(chai@4.5.0)(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))
@@ -149,7 +152,7 @@ importers:
         version: 2.11.0(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))
       hardhat-deploy:
         specifier: ^1.0.2
-        version: 1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+        version: 1.0.4(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
@@ -1290,9 +1293,6 @@ packages:
 
   '@types/pbkdf2@3.1.2':
     resolution: {integrity: sha512-uRwJqmiXmh9++aSu1VNEn3iIxWOhd8AHXNSdlaLfdAAdSTY9jYVeGWnzejM3dvrkbqE3/hyQkQQ29IFATEGlew==}
-
-  '@types/qs@6.14.0':
-    resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
 
   '@types/responselike@1.0.3':
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
@@ -2673,8 +2673,8 @@ packages:
     peerDependencies:
       hardhat: ^2.0.0
 
-  hardhat-deploy@1.0.2:
-    resolution: {integrity: sha512-FCeoGpYLQiGjROURihth6Qye+GWvRqalGbRsCTW33canhAS4g6mJEILbkWbWF8P2cPWgcpxe3cCJksk6n+oD7Q==}
+  hardhat-deploy@1.0.4:
+    resolution: {integrity: sha512-vl6vYQHDtZmILerAIRERI2AjghLH5gJIcQjNrSldn2SjQdY5Y47umXVll4/ywPzBRlsqdpJfL92PhnQ+1xB+Sg==}
 
   hardhat@2.24.1:
     resolution: {integrity: sha512-3iwrO2liEGCw1rz/l/mlB1rSNexCc4CFcMj0DlvjXGChzmD3sGUgLwWDOZPf+ya8MEm5ZhO1oprRVmb/wVi0YA==}
@@ -3328,6 +3328,9 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 
+  neoqs@6.13.0:
+    resolution: {integrity: sha512-IysBpjrEG9qiUb/IT6XrXSz2ASzBxLebp4s8/GBm7STYC315vMNqH0aWdRR+f7KvXK4aRlLcf5r2Z6dOTxQSrQ==}
+
   next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
 
@@ -3718,10 +3721,6 @@ packages:
 
   qs@6.13.0:
     resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
-    engines: {node: '>=0.6'}
-
-  qs@6.14.0:
-    resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
     engines: {node: '>=0.6'}
 
   qs@6.5.3:
@@ -5337,7 +5336,7 @@ snapshots:
       '@noble/curves': 1.9.1
       '@scure/base': 1.2.6
 
-  '@ensdomains/dnsprovejs@0.5.2':
+  '@ensdomains/dnsprovejs@0.5.2(patch_hash=e501d515783ac2398bc822c339e1abea0913c58b2139f7fef0a17c7951140f75)':
     dependencies:
       '@noble/hashes': 1.8.0
       dns-packet: 5.6.1
@@ -5388,11 +5387,11 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@ensdomains/hardhat-toolbox-viem-extended@0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))(hardhat-deploy@1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)':
+  '@ensdomains/hardhat-toolbox-viem-extended@0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4))(hardhat-deploy@1.0.4(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)':
     dependencies:
       '@nomicfoundation/hardhat-viem': 2.0.6(hardhat@2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10))(typescript@5.8.3)(viem@2.30.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
       hardhat: 2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10)
-      hardhat-deploy: 1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      hardhat-deploy: 1.0.4(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       typescript: 5.8.3
 
   '@ensdomains/resolver@0.2.4': {}
@@ -6696,8 +6695,6 @@ snapshots:
   '@types/pbkdf2@3.1.2':
     dependencies:
       '@types/node': 22.15.29
-
-  '@types/qs@6.14.0': {}
 
   '@types/responselike@1.0.3':
     dependencies:
@@ -8822,7 +8819,7 @@ snapshots:
       delete-empty: 3.0.0
       hardhat: 2.24.1(bufferutil@4.0.9)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3))(typescript@5.8.3)(utf-8-validate@5.0.10)
 
-  hardhat-deploy@1.0.2(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10):
+  hardhat-deploy@1.0.4(patch_hash=c9b002689c306ba5344f19cacaf42b412c5f9ed46771e6667640e123ae4dcd61)(bufferutil@4.0.9)(utf-8-validate@5.0.10):
     dependencies:
       '@ethersproject/abi': 5.8.0
       '@ethersproject/abstract-signer': 5.8.0
@@ -8835,7 +8832,6 @@ snapshots:
       '@ethersproject/solidity': 5.8.0
       '@ethersproject/transactions': 5.8.0
       '@ethersproject/wallet': 5.8.0
-      '@types/qs': 6.14.0
       axios: 0.21.4(debug@4.4.1)
       chalk: 4.1.2
       chokidar: 3.6.0
@@ -8846,7 +8842,7 @@ snapshots:
       fs-extra: 10.1.0
       match-all: 1.2.7
       murmur-128: 0.2.1
-      qs: 6.14.0
+      neoqs: 6.13.0
       zksync-ethers: 5.10.0(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
     transitivePeerDependencies:
       - bufferutil
@@ -9528,6 +9524,8 @@ snapshots:
 
   negotiator@0.6.3: {}
 
+  neoqs@6.13.0: {}
+
   next-tick@1.1.0: {}
 
   no-case@2.3.2:
@@ -9892,10 +9890,6 @@ snapshots:
       yargs: 15.4.1
 
   qs@6.13.0:
-    dependencies:
-      side-channel: 1.1.0
-
-  qs@6.14.0:
     dependencies:
       side-channel: 1.1.0
 
