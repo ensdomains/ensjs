@@ -1,6 +1,6 @@
 import { assert, describe, expect, it } from 'vitest'
 import { publicClient } from '../../test/addTestContracts.js'
-import { getWrapperData } from './getWrapperData.js'
+import { getWrapperData } from './v1/getWrapperData.js'
 
 describe('getWrapperData', () => {
   it('should return null for an unwrapped name', async () => {

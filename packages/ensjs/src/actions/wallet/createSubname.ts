@@ -56,7 +56,7 @@ import {
 import {
   type GetWrapperDataErrorType,
   getWrapperData,
-} from '../public/getWrapperData.js'
+} from '../public/v1/getWrapperData.js'
 
 type RegistryCreateSubnameDataParameters = {
   contract: 'registry'

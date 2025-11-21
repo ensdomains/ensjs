@@ -9,18 +9,18 @@ import {
   getRegistryNameData,
 } from './getRegistryNameData.js'
 
-export type GetRegistryOwnerByLabelParameters = {
+export type GetOwnerParameters = {
   registryAddress: Address
   label: string
 }
 
-export type GetRegistryOwnerByLabelErrorType =
+export type GetOwnerErrorType =
   | GetRegistryNameDataErrorType
   | ReadContractErrorType
 
-export async function getRegistryOwnerByLabel(
+export async function getOwner(
   client: Client,
-  { registryAddress, label }: GetRegistryOwnerByLabelParameters,
+  { registryAddress, label }: GetOwnerParameters,
 ): Promise<Address> {
   ASSERT_NO_TYPE_ERROR(client)
 

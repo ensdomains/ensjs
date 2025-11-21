@@ -12,11 +12,11 @@ import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
-} from '../../clients/chain.js'
-import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
-import type { Prettify } from '../../types/index.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
-import { type DecodedFuses, decodeFuses } from '../../utils/fuses.js'
+} from '../../../clients/chain.js'
+import { nameWrapperGetDataSnippet } from '../../../contracts/nameWrapper.js'
+import type { Prettify } from '../../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import { type DecodedFuses, decodeFuses } from '../../../utils/fuses.js'
 
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */
