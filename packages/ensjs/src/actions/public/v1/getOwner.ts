@@ -14,17 +14,17 @@ import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
-} from '../../clients/chain.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
-import { isNullRegistrarOwnerOfError } from '../../utils/errors/isNullRegistrarOwnerOfError.js'
+} from '../../../clients/chain.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import { isNullRegistrarOwnerOfError } from '../../../utils/errors/isNullRegistrarOwnerOfError.js'
 
-import { checkIsDotEth } from '../../utils/name/validation.js'
-import { nullableAddress } from '../../utils/nullableAddress.js'
+import { checkIsDotEth } from '../../../utils/name/validation.js'
+import { nullableAddress } from '../../../utils/nullableAddress.js'
 import {
   type GetContractSpecificOwnerParametersErrorType,
   getContractSpecificOwnerParameters,
   type OwnerContract,
-} from '../../utils/ownerFromContract.js'
+} from '../../../utils/ownerFromContract.js'
 
 export type GetOwnerParameters<
   contract extends OwnerContract | undefined = undefined,

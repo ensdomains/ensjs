@@ -25,7 +25,7 @@ export type GetRoleEventsErrorType =
   | GetFilterLogsErrorType
 
 /**
- * Get role events for a name
+ * Get registry role events for a name
  * @param client - {@link Client}
  * @param parameters - {@link GetRoleEventsParameters}
  * @returns Filtered logs {@link GetRoleEventsReturnType}
