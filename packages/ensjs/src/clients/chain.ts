@@ -20,7 +20,7 @@ import type {
 export const supportedChains = {
   mainnet: 1,
   sepolia: 11155111,
-  devnetL1: 15658733,
+  // devnetL1: 15658733,
 } as const
 
 const supportedChainIds = Object.values(supportedChains)
@@ -42,13 +42,14 @@ export const supportedContracts = [
   'ensDnsRegistrar',
   'ensDnssecImpl',
   'ensEthRegistrarController',
-  'ensL2EthRegistrar',
   'ensNameWrapper',
   'ensPublicResolver',
   'ensRegistry',
   'ensReverseRegistrar',
   'ensUniversalResolver',
-  'ensVerifiableFactory',
+  'ensL2VerifiableFactory',
+  'ensL2EthRegistrar',
+  'ensL2Registry',
   'usdc',
 ] as const
 
@@ -89,7 +90,10 @@ export const ensContracts = {
     ensUniversalResolver: {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
-    ensVerifiableFactory: {
+    ensL2VerifiableFactory: {
+      address: zeroAddress,
+    },
+    ensL2Registry: {
       address: zeroAddress,
     },
     usdc: {
@@ -98,7 +102,7 @@ export const ensContracts = {
   },
   [supportedChains.sepolia]: {
     ensBaseRegistrarImplementation: {
-      address: '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85',
+      address: '0xb16870800de7444f6b2ebd885465412a5e581614',
     },
     ensBulkRenewal: {
       address: '0xf4404c962f7b859f6df712bff1f2e11745a238f0',
@@ -111,9 +115,6 @@ export const ensContracts = {
     },
     ensEthRegistrarController: {
       address: '0x99e517db3db5ec5424367b8b50cd11ddcb0008f1',
-    },
-    ensL2EthRegistrar: {
-      address: '0x774faadcd7e8c4b7441aa2927f10845fea083ea1',
     },
     ensNameWrapper: {
       address: '0xca7e6d0ddc5f373197bbe6fc2f09c2314399f028',
@@ -128,54 +129,19 @@ export const ensContracts = {
       address: '0xf79f9970030fe60bd89d21591c7f2d80d7d21242',
     },
     ensUniversalResolver: {
-      address: '0x7dee71DA37b357D61A56c56DbCA91B1FF0c28437',
+      address: '0x98369eb1318447f787869560b228fa108d1666b3',
     },
-    ensVerifiableFactory: {
-      address: '0x0837b3dce0aa75b801f19c707d75a61ac994b7f7',
+    ensL2VerifiableFactory: {
+      address: '0x24e32c34effb021cc360b6a4e1de2850dcc59956',
+    },
+    ensL2EthRegistrar: {
+      address: '0x774faadcd7e8c4b7441aa2927f10845fea083ea1',
+    },
+    ensL2Registry: {
+      address: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2',
     },
     usdc: {
       address: '0x9028ab8e872af36c30c959a105cb86d1038412ae',
-    },
-  },
-  [supportedChains.devnetL1]: {
-    ensBaseRegistrarImplementation: {
-      address: '0x851356ae760d987E095750cCeb3bC6014560891C',
-    },
-    ensBulkRenewal: {
-      address: '0x0355B7B8cb128fA5692729Ab3AAa199C1753f726',
-    },
-    ensDnsRegistrar: {
-      address: '0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc',
-    },
-    ensDnssecImpl: {
-      address: '0x3Aa5ebB10DC797CAC828524e59A333d0A371443c',
-    },
-    ensEthRegistrarController: {
-      address: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
-    },
-    ensL2EthRegistrar: {
-      address: '0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8',
-    },
-    ensNameWrapper: {
-      address: '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2',
-    },
-    ensPublicResolver: {
-      address: '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25',
-    },
-    ensRegistry: {
-      address: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
-    },
-    ensReverseRegistrar: {
-      address: '0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d',
-    },
-    ensUniversalResolver: {
-      address: '0xc351628EB244ec633d5f21fBD6621e1a683B1181',
-    },
-    ensVerifiableFactory: {
-      address: zeroAddress,
-    },
-    usdc: {
-      address: zeroAddress,
     },
   },
 } as const satisfies Record<
@@ -206,11 +172,11 @@ export const ensSubgraphs = {
       url: 'https://ensnode-api-sepolia.up.railway.app/subgraph',
     },
   },
-  [supportedChains.devnetL1]: {
-    ens: {
-      url: 'http://localhost:42069/subgraph',
-    },
-  },
+  // [supportedChains.devnetL1]: {
+  //   ens: {
+  //     url: 'http://localhost:42069/subgraph',
+  //   },
+  // },
 } as const satisfies Record<SupportedChainId, EnsSubgraph>
 
 // ================================
