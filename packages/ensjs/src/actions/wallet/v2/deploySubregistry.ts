@@ -26,6 +26,15 @@ import {
 } from '../../../utils/clientWithOverrides.js'
 
 // ================================
+// Constants
+// ================================
+
+const DEFAULT_ROLE_BITMAP = BigInt(
+  '0x1111111111111111111111111111111111111111111111111111111111111111',
+)
+const DEFAULT_SALT = BigInt(keccak256(stringToBytes(new Date().toISOString())))
+
+// ================================
 // Write parameters
 // ================================
 
@@ -62,10 +71,8 @@ export const deploySubregistryWriteParameters = <
     factoryAddress,
     implAddress,
     adminAddress,
-    roleBitmap = BigInt(
-      '0x1111111111111111111111111111111111111111111111111111111111111111',
-    ),
-    salt = BigInt(keccak256(stringToBytes(new Date().toISOString()))),
+    roleBitmap = DEFAULT_ROLE_BITMAP,
+    salt = DEFAULT_SALT,
   }: DeploySubregistryWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)

@@ -27,6 +27,12 @@ import {
 } from '../../../utils/clientWithOverrides.js'
 
 // ================================
+// Constants
+// ================================
+
+const DEFAULT_SALT = BigInt(keccak256(stringToBytes(new Date().toISOString())))
+
+// ================================
 // Write parameters
 // ================================
 
@@ -64,7 +70,7 @@ export const deployVerifiableProxyWriteParameters = <
     factoryAddress,
     implAddress,
     callData,
-    salt = BigInt(keccak256(stringToBytes(new Date().toISOString()))),
+    salt = DEFAULT_SALT,
   }: DeployVerifiableProxyWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
