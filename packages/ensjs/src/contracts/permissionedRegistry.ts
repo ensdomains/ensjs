@@ -70,4 +70,33 @@ export const eacRolesGrantedEventSnippet = {
   anonymous: false,
 } as const
 
-export const eacRolesEvents = [eacRolesGrantedEventSnippet] as const
+export const eacRolesRevokedEventSnippet = {
+  type: 'event',
+  name: 'EACRolesRevoked',
+  inputs: [
+    {
+      name: 'resource',
+      type: 'uint256',
+      indexed: false,
+      internalType: 'uint256',
+    },
+    {
+      name: 'roleBitmap',
+      type: 'uint256',
+      indexed: false,
+      internalType: 'uint256',
+    },
+    {
+      name: 'account',
+      type: 'address',
+      indexed: false,
+      internalType: 'address',
+    },
+  ],
+  anonymous: false,
+} as const
+
+export const eacRolesEvents = [
+  eacRolesGrantedEventSnippet,
+  eacRolesRevokedEventSnippet,
+] as const
