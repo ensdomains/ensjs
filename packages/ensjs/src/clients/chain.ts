@@ -48,6 +48,7 @@ export const supportedContracts = [
   'ensReverseRegistrar',
   'ensUniversalResolver',
   'ensL2VerifiableFactory',
+  'ensVerifiableFactory',
   'ensL2EthRegistrar',
   'ensL2Registry',
   'usdc',
@@ -93,6 +94,9 @@ export const ensContracts = {
     ensL2VerifiableFactory: {
       address: zeroAddress,
     },
+    ensVerifiableFactory: {
+      address: zeroAddress,
+    },
     ensL2Registry: {
       address: zeroAddress,
     },
@@ -133,6 +137,9 @@ export const ensContracts = {
     },
     ensL2VerifiableFactory: {
       address: '0x24e32c34effb021cc360b6a4e1de2850dcc59956',
+    },
+    ensVerifiableFactory: {
+      address: '0x698d49dc8c77a4786dc9f90606921930f7420633',
     },
     ensL2EthRegistrar: {
       address: '0x774faadcd7e8c4b7441aa2927f10845fea083ea1',
