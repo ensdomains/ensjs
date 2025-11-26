@@ -69,9 +69,6 @@ importers:
       '@ensdomains/content-hash':
         specifier: 3.1.0-rc.1
         version: 3.1.0-rc.1
-      '@ensdomains/dnsprovejs':
-        specifier: ^0.5.1
-        version: 0.5.1
       dns-packet:
         specifier: ^5.3.1
         version: 5.6.1
@@ -86,8 +83,11 @@ importers:
         version: 5.7.1
     devDependencies:
       '@ensdomains/buffer':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.3
+        version: 0.1.3
+      '@ensdomains/dnsprovejs':
+        specifier: ^0.5.2
+        version: 0.5.2
       '@ensdomains/ens-contracts':
         specifier: 1.5.2
         version: 1.5.2
@@ -183,7 +183,7 @@ importers:
     devDependencies:
       '@ensdomains/buffer':
         specifier: ^0.1.1
-        version: 0.1.1
+        version: 0.1.3
       '@ensdomains/ens-test-env':
         specifier: ^1.0.1
         version: 1.0.1
@@ -372,14 +372,14 @@ packages:
   '@ensdomains/address-encoder@1.1.1':
     resolution: {integrity: sha512-yg7s+suCuKRhaGsgLu57W/jxIs/Lnqs/SU7jT7UwS4ATSnW94jbUCbmyyZ82CQwKsmwaUE8uYvvVb4N6lfz29A==}
 
-  '@ensdomains/buffer@0.1.1':
-    resolution: {integrity: sha512-92SfSiNS8XorgU7OUBHo/i1ZU7JV7iz/6bKuLPNVsMxV79/eI7fJR6jfJJc40zAHjs3ha+Xo965Idomlq3rqnw==}
+  '@ensdomains/buffer@0.1.3':
+    resolution: {integrity: sha512-L/GoCkQFePjSn4DeVnBNfkGdm2CI8UxTxwgQztcZ1L9aHaFefRD+mTUXxtikk946KwwMHRQJDn38wo1IWtEpSg==}
 
   '@ensdomains/content-hash@3.1.0-rc.1':
     resolution: {integrity: sha512-OzdkXgdFmduzcJKU4KRkkJkQHnm5p7m7FkX8k+bHOEoOIzc0ueGT/Jay4nnb60wNk1wSHRmzY+hHBMpFDiGReg==}
 
-  '@ensdomains/dnsprovejs@0.5.1':
-    resolution: {integrity: sha512-nfm4ggpK5YBVwVwLZKF9WPjRGRTL9aUxX2O4pqv/AnQCz3WeGHsW7VhVFLj2s4EoWSzCXwR1E6nuqgUwnH692w==}
+  '@ensdomains/dnsprovejs@0.5.2':
+    resolution: {integrity: sha512-lSuYnUvUV+kBviQ82XUldtpiE0lA4gWrCilsoCWbTKtc/fH6re9NaTkhbPEy/7OF96MMAG1BDnuoTsfSMAzFBg==}
     engines: {node: '>=16.8'}
 
   '@ensdomains/ens-contracts@1.5.2':
@@ -4313,7 +4313,7 @@ snapshots:
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.7
 
-  '@ensdomains/buffer@0.1.1': {}
+  '@ensdomains/buffer@0.1.3': {}
 
   '@ensdomains/content-hash@3.1.0-rc.1':
     dependencies:
@@ -4321,15 +4321,15 @@ snapshots:
       '@noble/curves': 1.4.2
       '@scure/base': 1.1.7
 
-  '@ensdomains/dnsprovejs@0.5.1':
+  '@ensdomains/dnsprovejs@0.5.2':
     dependencies:
-      '@noble/hashes': 1.4.0
+      '@noble/hashes': 1.8.0
       dns-packet: 5.6.1
       typescript-logging: 1.0.1
 
   '@ensdomains/ens-contracts@1.5.2':
     dependencies:
-      '@ensdomains/buffer': 0.1.1
+      '@ensdomains/buffer': 0.1.3
       '@ensdomains/solsha1': 0.0.3
       '@openzeppelin/contracts': 4.9.6
       dns-packet: 5.6.1
