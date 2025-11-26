@@ -3,8 +3,8 @@ import { uint4x64FromUint256 } from './utils.js'
 
 export type DecodeRoleCountsErrorType = NumberToHexErrorType
 
-type RoleNames = readonly string[]
-type RoleName<N extends RoleNames> = N[number] | `${N[number]}_ADMIN`
+export type RoleNames = readonly string[]
+export type RoleName<N extends RoleNames> = N[number] | `${N[number]}_ADMIN`
 
 export type DecodeRoleCountsReturnType<N extends RoleNames> = Record<
   RoleName<N>,
