@@ -10,6 +10,7 @@
 		"target": "esnext",
 		"moduleResolution": "nodenext",
 		"skipLibCheck": true,
-		"strict": true
+		"strict": true,
+		"typeRoots": ["./src/@types", "./node_modules/@types"]
 	}
 }

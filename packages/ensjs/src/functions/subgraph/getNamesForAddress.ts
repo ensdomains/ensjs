@@ -182,6 +182,7 @@ const getNamesForAddress = async (
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
+        // biome-ignore lint/suspicious/noExplicitAny: runtime validation of filter key against supported filters
         if (!supportedOwnerFilters.includes(key as any))
           throw new InvalidFilterKeyError({
             filterKey: key,

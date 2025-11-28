@@ -76,6 +76,7 @@ declare module 'dns-packet' {
     extendedRcode?: number
     ednsVersion?: number
     flags?: number
+    // biome-ignore lint/suspicious/noExplicitAny: third-party type definition
     data?: any
   }
 

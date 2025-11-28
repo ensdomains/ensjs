@@ -94,9 +94,13 @@ export type GetRecordsReturnType<
   TContentHash extends boolean | undefined = true,
   TAbi extends boolean | undefined = true,
 > = Prettify<
+  // biome-ignore lint/complexity/noBannedTypes: empty object represents no data when feature is disabled
   (TContentHash extends true ? WithContentHashResult : {}) &
+    // biome-ignore lint/complexity/noBannedTypes: empty object represents no data when feature is disabled
     (TAbi extends true ? WithAbiResult : {}) &
+    // biome-ignore lint/complexity/noBannedTypes: empty object represents no data when feature is disabled
     (TTexts extends readonly string[] ? WithTextsResult : {}) &
+    // biome-ignore lint/complexity/noBannedTypes: empty object represents no data when feature is disabled
     (TCoins extends readonly (string | number)[] ? WithCoinsResult : {}) & {
       /** Resolver address used for fetch */
       resolverAddress: Address
@@ -129,6 +133,7 @@ type EncodeReturnType = Required<
   TransactionRequestWithPassthrough<{
     calls: (CallObj | null)[]
     address?: Address
+    // biome-ignore lint/suspicious/noExplicitAny: passthrough args can be various types depending on resolver method
     args?: any
   }>
 >
@@ -440,6 +445,7 @@ const decode = async <
 }
 
 type EncoderFunction = typeof encode
+// biome-ignore lint/suspicious/noExplicitAny: generic placeholder for batch function type inference
 type DecoderFunction = typeof decode<any>
 
 type BatchableFunctionObject = {

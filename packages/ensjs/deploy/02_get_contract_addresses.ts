@@ -12,9 +12,15 @@ const func: DeployFunction = async (hre) => {
     ]),
   )
 
+  const deploymentAddressMapWithENSNodeDatasources = {
+    ...deploymentAddressMap,
+    UnwrappedETHRegistrarController:
+      deploymentAddressMap.ETHRegistrarController,
+  }
+
   await writeFile(
     resolve(import.meta.dirname, '../.env.local'),
-    `DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMap)}'`,
+    `DEPLOYMENT_ADDRESSES='${JSON.stringify(deploymentAddressMapWithENSNodeDatasources)}'`,
   )
   console.log('Wrote contract addresses to .env.local')
 

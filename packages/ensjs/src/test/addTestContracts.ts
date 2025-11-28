@@ -30,10 +30,14 @@ type ContractName =
   | 'PublicResolver'
   | 'ENSRegistry'
   | 'ReverseRegistrar'
+  | 'DefaultReverseRegistrar'
   | 'UniversalResolver'
   | 'StaticBulkRenewal'
+  | 'WrappedStaticBulkRenewal'
   | 'DNSSECImpl'
   | 'Root'
+  | 'WrappedEthRegistrarController'
+  | 'WrappedPublicResolver'
   | 'LegacyETHRegistrarController'
   | 'LegacyPublicResolver'
 
@@ -78,11 +82,23 @@ export const localhost = {
     ensReverseRegistrar: {
       address: deploymentAddresses.ReverseRegistrar,
     },
+    ensDefaultReverseRegistrar: {
+      address: deploymentAddresses.DefaultReverseRegistrar,
+    },
     ensBulkRenewal: {
       address: deploymentAddresses.StaticBulkRenewal,
     },
     ensDnssecImpl: {
       address: deploymentAddresses.DNSSECImpl,
+    },
+    wrappedEthRegistrarController: {
+      address: deploymentAddresses.WrappedEthRegistrarController,
+    },
+    wrappedPublicResolver: {
+      address: deploymentAddresses.WrappedPublicResolver,
+    },
+    wrappedBulkRenewal: {
+      address: deploymentAddresses.WrappedStaticBulkRenewal,
     },
     legacyEthRegistrarController: {
       address: deploymentAddresses.LegacyETHRegistrarController,

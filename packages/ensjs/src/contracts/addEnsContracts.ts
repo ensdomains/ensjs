@@ -67,8 +67,6 @@ const getSubgraphUrl = (chainId: SupportedChain, subgraphApiKey?: string) => {
   switch (chainId) {
     case 1:
       return `https://gateway-arbitrum.network.thegraph.com/api/${subgraphApiKey}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`
-    case 17000:
-      return `https://gateway-arbitrum.network.thegraph.com/api/${subgraphApiKey}/subgraphs/id/i5EXyL9MzTXWKCmpJ2LG6sbzBfXneUPVuTXaSjYhDDF`
     case 11155111:
       return `https://gateway-arbitrum.network.thegraph.com/api/${subgraphApiKey}/subgraphs/id/G1SxZs317YUb9nQX3CC98hDyvxfMJNZH5pPRGpNrtvwN`
   }

@@ -49,6 +49,7 @@ export type GetNameParameters = {
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
+  // biome-ignore lint/complexity/noBannedTypes: empty object represents no additional parameters in discriminated union
 } & (GetNameCoinTypeParameters | GetNameChainIdParameters | {})
 
 export type GetNameReturnType = {

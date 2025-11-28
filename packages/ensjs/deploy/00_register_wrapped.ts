@@ -6,6 +6,7 @@ import { makeNameGenerator } from '../utils/wrappedNameGenerator.js'
 const names: {
   label: string
   namedOwner: string
+  // biome-ignore lint/suspicious/noExplicitAny: deployment script only
   data?: any[]
   reverseRecord?: boolean
   fuses?: number
@@ -192,7 +193,7 @@ const func: DeployFunction = async (hre) => {
 
 func.id = 'register-wrapped-names'
 func.tags = ['register-wrapped-names']
-func.dependencies = ['ETHRegistrarController']
+func.dependencies = ['WrappedEthRegistrarController', 'WrappedPublicResolver']
 func.runAtTheEnd = true
 
 export default func

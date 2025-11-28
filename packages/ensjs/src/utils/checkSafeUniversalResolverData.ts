@@ -11,6 +11,7 @@ import { getRevertErrorData } from './getRevertErrorData.js'
 type CheckSafeUniversalResolverDataParameters = Prettify<
   {
     strict: boolean | undefined
+    // biome-ignore lint/suspicious/noExplicitAny: contract function args can be various types depending on the ABI function
     args: any[] | (() => any[])
   } & Omit<Parameters<typeof getContractError>[1], 'args'>
 >

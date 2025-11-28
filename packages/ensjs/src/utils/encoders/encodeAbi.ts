@@ -24,6 +24,7 @@ export type EncodeAbiParameters<TEncodeAs extends AbiEncodeAs = AbiEncodeAs> =
       }
     : {
         encodeAs: TEncodeAs
+        // biome-ignore lint/suspicious/noExplicitAny: ABI data structure can have various key-value types depending on the schema
         data: Record<any, any> | null
       }
 
