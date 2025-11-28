@@ -1,6 +1,6 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
-import { MAX_DATE_INT } from '../dist/utils/consts.js'
-import { encodeFuses } from '../dist/utils/fuses.js'
+import { MAX_DATE_INT } from '../src/utils/consts.js'
+import { encodeFuses } from '../src/utils/fuses.js'
 import { makeNameGenerator } from '../utils/wrappedNameGenerator.js'
 
 const names: {
