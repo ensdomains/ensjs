@@ -1,7 +1,7 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import { labelhash, namehash, packetToBytes } from 'viem/ens'
 import { toHex } from 'viem/utils'
-import { EMPTY_ADDRESS } from '../dist/utils/consts.js'
+import { EMPTY_ADDRESS } from '../src/utils/consts.js'
 
 const func: DeployFunction = async (hre) => {
   const { getNamedAccounts, viem } = hre
