@@ -51,6 +51,8 @@ export const supportedContracts = [
   'ensVerifiableFactory',
   'ensL2EthRegistrar',
   'ensL2Registry',
+  'ensUserRegistry',
+  'ensL2UserRegistry',
   'usdc',
 ] as const
 
@@ -100,6 +102,12 @@ export const ensContracts = {
     ensL2Registry: {
       address: zeroAddress,
     },
+    ensUserRegistry: {
+      address: zeroAddress,
+    },
+    ensL2UserRegistry: {
+      address: zeroAddress,
+    },
     usdc: {
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     },
@@ -146,6 +154,12 @@ export const ensContracts = {
     },
     ensL2Registry: {
       address: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2',
+    },
+    ensUserRegistry: {
+      address: '0x5667b82d9e4c44cf7e9c9d4c4de261469d232412',
+    },
+    ensL2UserRegistry: {
+      address: '0xc3ae19b222d527d3cdda617953ab878a35527e54',
     },
     usdc: {
       address: '0x9028ab8e872af36c30c959a105cb86d1038412ae',
