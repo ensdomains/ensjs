@@ -27,7 +27,7 @@
     "@ensdomains/ensjs": "workspace:*"
   },
   "devDependencies": {
-    "@ensdomains/buffer": "^0.1.1",
+    "@ensdomains/buffer": "^0.1.3",
     "@ensdomains/ens-test-env": "^1.0.1",
     "ts-node": "^10.9.2",
     "tslib": "^2.7.0",
