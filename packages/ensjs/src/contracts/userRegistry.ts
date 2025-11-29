@@ -161,88 +161,6 @@ export const uriEventSnippet = [
 ] as const
 
 // ================================
-// Access Control Events
-// ================================
-
-export const eacAllRolesRevokedEventSnippet = [
-  {
-    inputs: [
-      {
-        indexed: false,
-        name: 'resource',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'account',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    name: 'EACAllRolesRevoked',
-    type: 'event',
-    anonymous: false,
-  },
-] as const
-
-export const eacRolesGrantedEventSnippet = [
-  {
-    inputs: [
-      {
-        indexed: false,
-        name: 'resource',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'roleBitmap',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'account',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    name: 'EACRolesGranted',
-    type: 'event',
-    anonymous: false,
-  },
-] as const
-
-export const eacRolesRevokedEventSnippet = [
-  {
-    inputs: [
-      {
-        indexed: false,
-        name: 'resource',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'roleBitmap',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'account',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    name: 'EACRolesRevoked',
-    type: 'event',
-    anonymous: false,
-  },
-] as const
-
-// ================================
 // Registry-Specific Events
 // ================================
 
@@ -438,9 +356,6 @@ export const userRegistrySetSubregistrySnippet = [
 export const userRegistryAllEventsSnippet = [
   ...approvalEventSnippet,
   ...approvalForAllEventSnippet,
-  ...eacAllRolesRevokedEventSnippet,
-  ...eacRolesGrantedEventSnippet,
-  ...eacRolesRevokedEventSnippet,
   ...nameBurnedEventSnippet,
   ...nameRenewedEventSnippet,
   ...newSubnameEventSnippet,
