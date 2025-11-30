@@ -120,6 +120,7 @@ export const publicClient: PublicClient<typeof transport, typeof localhost> =
   createPublicClient({
     chain: localhost,
     transport,
+    cacheTime: 0,
   })
 
 export const testClient: TestClient<
@@ -141,18 +142,23 @@ export const walletClient: WalletClient<
   transport,
 })
 
-export const waitForTransaction = async (hash: Hash) =>
-  new Promise<TransactionReceipt>((resolveFn, reject) => {
-    publicClient
-      .getTransactionReceipt({ hash })
-      .then(resolveFn)
-      .catch((e) => {
-        if (e instanceof TransactionReceiptNotFoundError) {
-          setTimeout(() => {
-            waitForTransaction(hash).then(resolveFn)
-          }, 100)
-        } else {
-          reject(e)
-        }
-      })
-  })
+export const waitForTransaction = async (
+  hash: Hash,
+): Promise<TransactionReceipt> => {
+  const receipt = await publicClient
+    .getTransactionReceipt({ hash })
+    .catch((e) => {
+      if (e instanceof TransactionReceiptNotFoundError) return null
+      throw e
+    })
+  if (receipt === null) {
+    return new Promise<TransactionReceipt>((resolve, reject) => {
+      setTimeout(() => {
+        waitForTransaction(hash).then(resolve).catch(reject)
+      }, 100)
+    })
+  }
+
+  if (receipt.status !== 'success') throw new Error('Transaction failed')
+  return receipt
+}

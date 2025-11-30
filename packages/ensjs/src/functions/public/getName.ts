@@ -14,6 +14,7 @@ import {
   universalResolverReverseSnippet,
   universalResolverReverseWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
+import { NameNotNormalisedError } from '../../errors/public.js'
 import type {
   GenericPassthrough,
   TransactionRequestWithPassthrough,
@@ -155,9 +156,14 @@ const decode = async (
 
     if (!unnormalisedName) return null
 
-    const normalisedName = normalise(unnormalisedName)
+    if (unnormalisedName !== normalise(unnormalisedName))
+      throw new NameNotNormalisedError({
+        address: passthrough.address,
+        resolvedName: unnormalisedName,
+        coinType: passthrough.args[1] as number,
+      })
     return {
-      name: normalisedName,
+      name: unnormalisedName,
       match: true,
       reverseResolverAddress,
       resolverAddress,
