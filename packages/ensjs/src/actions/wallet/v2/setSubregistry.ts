@@ -38,8 +38,6 @@ export type SetSubregistryWriteParametersReturnType = ReturnType<
   typeof setSubregistryWriteParameters
 >
 
-export type SetSubregistryWriteParametersErrorType = never
-
 export const setSubregistryWriteParameters = <
   chain extends Chain,
   account extends Account,
@@ -83,7 +81,6 @@ export type SetSubregistryParameters<
 export type SetSubregistryReturnType = Hash
 
 export type SetSubregistryErrorType =
-  | SetSubregistryWriteParametersErrorType
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
