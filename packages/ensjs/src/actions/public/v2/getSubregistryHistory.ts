@@ -67,7 +67,7 @@ export async function getSubregistryHistory(
   // Map logs to structured history entries
   return logs
     .filter(
-      (log) => log.args.id !== undefined && log.args.subregistry !== undefined,
+      (log) => Boolean(log.args.id) && Boolean(log.args.subregistry),
     )
     .map((log) => ({
       tokenId: log.args.id as bigint,
