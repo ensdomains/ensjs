@@ -72,6 +72,40 @@ export const verifiableFactoryDeployProxySnippet = [
   },
 ] as const
 
+export const proxyDeployedEventSnippet = [
+  {
+    inputs: [
+      {
+        indexed: true,
+        name: 'sender',
+        type: 'address',
+        internalType: 'address',
+      },
+      {
+        indexed: true,
+        name: 'proxyAddress',
+        type: 'address',
+        internalType: 'address',
+      },
+      {
+        indexed: false,
+        name: 'salt',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        indexed: false,
+        name: 'implementation',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    name: 'ProxyDeployed',
+    type: 'event',
+    anonymous: false,
+  },
+] as const
+
 export const subregistryInitializeSnippet = [
   {
     inputs: [
