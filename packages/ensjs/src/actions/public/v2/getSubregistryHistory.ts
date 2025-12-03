@@ -11,7 +11,7 @@ export type GetSubregistryHistoryParameters = {
   registryAddress: Address
   /** The label to get subregistry history for */
   label: string
-} & Pick<GetLogsParameters, 'fromBlock' | 'toBlock'>
+} & Partial<Pick<GetLogsParameters, 'fromBlock' | 'toBlock'>>
 
 export type SubregistryHistoryEntry = {
   tokenId: bigint
@@ -46,7 +46,12 @@ export type GetSubregistryHistoryErrorType = GetLogsErrorType
  */
 export async function getSubregistryHistory(
   client: Client,
-  { registryAddress, label, ...params }: GetSubregistryHistoryParameters,
+  {
+    registryAddress,
+    label,
+    fromBlock,
+    toBlock,
+  }: GetSubregistryHistoryParameters,
 ): Promise<GetSubregistryHistoryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -55,20 +60,26 @@ export async function getSubregistryHistory(
   const tokenId = labelToCanonicalId(label)
 
   const logs = await getLogsAction({
-    ...params,
     address: registryAddress,
     events: subregistryUpdatedEventSnippet,
-    // @ts-expect-error viem type error
-    args: {
-      tokenId,
-    },
+    fromBlock: fromBlock ?? 0n,
+    toBlock,
   })
 
   // Map logs to structured history entries
   return logs
-    .filter((log) => Boolean(log.args.tokenId) && Boolean(log.args.subregistry))
+    .filter(
+      (
+        log,
+      ): log is typeof log & {
+        args: { tokenId: bigint; subregistry: Address }
+      } =>
+        log.args?.tokenId !== undefined &&
+        log.args?.subregistry !== undefined &&
+        log.args.tokenId === tokenId,
+    )
     .map((log) => ({
-      tokenId: log.args.tokenId as bigint,
+      tokenId: log.args.tokenId,
       subregistry: log.args.subregistry as Address,
     }))
 }
