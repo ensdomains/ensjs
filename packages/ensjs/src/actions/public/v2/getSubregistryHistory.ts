@@ -2,7 +2,7 @@ import type { Client, GetLogsErrorType, GetLogsParameters } from 'viem'
 import type { Address } from 'viem/accounts'
 import { getLogs } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { subregistryUpdateEventSnippet } from '../../../contracts/userRegistry.js'
+import { subregistryUpdatedEventSnippet } from '../../../contracts/userRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
@@ -57,18 +57,18 @@ export async function getSubregistryHistory(
   const logs = await getLogsAction({
     ...params,
     address: registryAddress,
-    events: subregistryUpdateEventSnippet,
+    events: subregistryUpdatedEventSnippet,
     // @ts-expect-error viem type error
     args: {
-      id: tokenId,
+      tokenId,
     },
   })
 
   // Map logs to structured history entries
   return logs
-    .filter((log) => Boolean(log.args.id) && Boolean(log.args.subregistry))
+    .filter((log) => Boolean(log.args.tokenId) && Boolean(log.args.subregistry))
     .map((log) => ({
-      tokenId: log.args.id as bigint,
+      tokenId: log.args.tokenId as bigint,
       subregistry: log.args.subregistry as Address,
     }))
 }

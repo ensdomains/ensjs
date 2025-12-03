@@ -258,12 +258,12 @@ export const resolverUpdateEventSnippet = [
   },
 ] as const
 
-export const subregistryUpdateEventSnippet = [
+export const subregistryUpdatedEventSnippet = [
   {
     inputs: [
       {
         indexed: true,
-        name: 'id',
+        name: 'tokenId',
         type: 'uint256',
         internalType: 'uint256',
       },
@@ -274,7 +274,7 @@ export const subregistryUpdateEventSnippet = [
         internalType: 'address',
       },
     ],
-    name: 'SubregistryUpdate',
+    name: 'SubregistryUpdated',
     type: 'event',
     anonymous: false,
   },
@@ -360,7 +360,7 @@ export const userRegistryAllEventsSnippet = [
   ...nameRenewedEventSnippet,
   ...newSubnameEventSnippet,
   ...resolverUpdateEventSnippet,
-  ...subregistryUpdateEventSnippet,
+  ...subregistryUpdatedEventSnippet,
   ...tokenObserverSetEventSnippet,
   ...tokenRegeneratedEventSnippet,
   ...transferBatchEventSnippet,
