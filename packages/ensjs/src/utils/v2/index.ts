@@ -1,3 +1,5 @@
 export * from './registry/labelToCanonicalId.js'
 export * from './roles/constants.js'
 export * from './roles/decodeRoleCounts.js'
+export * from './roles/encodeRoleBitmap.js'
+export * from './roles/registryRoles.js'
