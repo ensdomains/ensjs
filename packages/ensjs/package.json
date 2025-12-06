@@ -48,6 +48,10 @@
       "types": "./dist/exports/wallet.d.ts",
       "default": "./dist/exports/wallet.js"
     },
+    "./wallet/v2": {
+      "types": "./dist/exports/wallet/v2.d.ts",
+      "default": "./dist/exports/wallet/v2.js"
+    },
     "./chain": {
       "types": "./dist/exports/chain.d.ts",
       "default": "./dist/exports/chain.js"
