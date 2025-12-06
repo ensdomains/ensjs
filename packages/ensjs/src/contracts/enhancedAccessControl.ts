@@ -31,3 +31,44 @@ export const eacRolesChangedEventSnippet = [
     anonymous: false,
   },
 ] as const
+
+export const eacErrors = [
+  {
+    type: 'error',
+    name: 'EACRootResourceNotAllowed',
+    inputs: [],
+  },
+] as const
+
+export const eacGrantRolesSnippet = [
+  ...eacErrors,
+  {
+    type: 'function',
+    name: 'grantRoles',
+    inputs: [
+      {
+        name: 'resource',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'roleBitmap',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+        internalType: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+] as const
