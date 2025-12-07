@@ -11,10 +11,11 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  type ChainWithL1Contracts,
-  type RequireClientL1Contracts,
+import type {
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
 } from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import {
   nameWrapperSetRecordSnippet,
   nameWrapperSetSubnodeRecordSnippet,
@@ -38,7 +39,6 @@ import {
   type MakeLabelNodeAndParentErrorType,
   makeLabelNodeAndParent,
 } from '../../utils/name/makeLabelNodeAndParent.js'
-import { getChainContractAddress } from '../../clients/shared.js'
 
 // ================================
 // Write parameters

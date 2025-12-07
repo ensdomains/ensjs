@@ -10,16 +10,14 @@ import {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction, trim } from 'viem/utils'
-import {
-  type RequireClientL1Contracts,
-} from '../../../clients/l1.js'
+import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
 import { nameWrapperNamesSnippet } from '../../../contracts/nameWrapper.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import {
   type BytesToPacketErrorType,
   bytesToPacket,
 } from '../../../utils/name/hexEncodedName.js'
-import { getChainContractAddress } from '../../../clients/shared.js'
 
 export type GetWrapperNameParameters = {
   /** Name with unknown labels, e.g. "[4ca938ec1b323ca71c4fb47a712abb68cce1cabf39ea4d6789e42fbc1f95459b].eth" */

@@ -1,4 +1,4 @@
-import { addEnsContracts } from '@ensdomains/ensjs'
+import { addEnsL1Contracts } from '@ensdomains/ensjs'
 import { getRecords, resolveNameData } from '@ensdomains/ensjs/public'
 import {
   decodeAddressResult,
@@ -10,7 +10,7 @@ import { createPublicClient, encodeFunctionData, http } from 'viem'
 import { mainnet } from 'viem/chains'
 
 const client = createPublicClient({
-  chain: addEnsContracts(mainnet),
+  chain: addEnsL1Contracts(mainnet),
   transport: http('https://ethereum-rpc.publicnode.com'),
 })
 
