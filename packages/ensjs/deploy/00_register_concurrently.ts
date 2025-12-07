@@ -1,9 +1,8 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
-import type { Hash } from 'viem'
+import type { Address, Hash } from 'viem'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
 import { makeNameGenerator as makeLegacyNameGenerator } from '../utils/legacyNameGenerator.js'
-import { makeNonceManager } from '../utils/nonceManager.js'
 import { makeNameGenerator as makeWrappedNameGenerator } from '../utils/wrappedNameGenerator.js'
 
 const DURATION = 31556000
@@ -11,7 +10,7 @@ const DURATION = 31556000
 const names: {
   label: string
   namedOwner: string
-  namedAddr?: string
+  namedAddr?: Address
   type: 'wrapped' | 'legacy'
   data?: any[]
   reverseRecord?: boolean
@@ -67,9 +66,8 @@ const names: {
 const func: DeployFunction = async (hre) => {
   const { network, viem } = hre
 
-  const nonceManager = await makeNonceManager(hre)
-  const wrappedNameGenerator = await makeWrappedNameGenerator(hre, nonceManager)
-  const legacyNameGenerator = await makeLegacyNameGenerator(hre, nonceManager)
+  const wrappedNameGenerator = await makeWrappedNameGenerator(hre)
+  const legacyNameGenerator = await makeLegacyNameGenerator(hre)
 
   await network.provider.send('evm_setAutomine', [false])
 
