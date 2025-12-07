@@ -12,10 +12,9 @@ import {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+  type ChainWithL1Contracts,
+  type RequireClientL1Contracts,
+} from '../../clients/l1.js'
 import {
   nameWrapperSetRecordSnippet,
   nameWrapperSetSubnodeRecordSnippet,
@@ -39,6 +38,7 @@ import {
   type MakeLabelNodeAndParentErrorType,
   makeLabelNodeAndParent,
 } from '../../utils/name/makeLabelNodeAndParent.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 
 // ================================
 // Write parameters
@@ -68,7 +68,7 @@ export const deleteSubnameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     'ensRegistry' | 'ensNameWrapper',
     account
@@ -168,7 +168,7 @@ export type DeleteSubnameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensRegistry' | 'ensNameWrapper'>
+    | ChainWithL1Contracts<'ensRegistry' | 'ensNameWrapper'>
     | undefined,
 > = Prettify<
   DeleteSubnameWriteParametersParameters &
@@ -208,10 +208,10 @@ export async function deleteSubname<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensRegistry' | 'ensNameWrapper'>
+    | ChainWithL1Contracts<'ensRegistry' | 'ensNameWrapper'>
     | undefined,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     'ensRegistry' | 'ensNameWrapper',
     account

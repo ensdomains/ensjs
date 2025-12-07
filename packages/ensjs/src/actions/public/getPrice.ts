@@ -5,10 +5,8 @@ import type {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type { RequireClientL2Contracts } from '../../clients/l2.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarRentPriceSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -54,7 +52,7 @@ export type GetPriceErrorType =
  * // { base: 352828971668930335n, premium: 0n }
  */
 export async function getPrice<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar'>,
+  client: RequireClientL2Contracts<chain, 'ethRegistrar'>,
   { nameOrNames, duration }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -82,7 +80,7 @@ export async function getPrice<chain extends Chain>(
     const result = await readContractAction({
       address: getChainContractAddress({
         chain: client.chain,
-        contract: 'ensL2EthRegistrar',
+        contract: 'ethRegistrar',
       }),
       abi: l2EthRegistrarRentPriceSnippet,
       functionName: 'rentPrice',

@@ -1,6 +1,6 @@
 import type { Chain, EncodeFunctionDataErrorType } from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import type { Prettify } from '../../types/index.js'
 import type { ExcludeTE } from '../../types/internal.js'
 import {
@@ -51,7 +51,11 @@ export type GetContentHashRecordErrorType =
  * // { protocolType: 'ipfs', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' }
  */
 export async function getContentHashRecord<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   { gatewayUrls, name, strict }: GetContentHashRecordParameters,
 ): Promise<GetContentHashRecordReturnType> {
   const resolveNameDataAction = getAction(

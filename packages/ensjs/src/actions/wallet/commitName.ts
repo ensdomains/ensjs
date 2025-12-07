@@ -8,11 +8,11 @@ import type {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type {
+  ChainWithL2Contracts,
+  RequireClientL2Contracts,
+} from '../../clients/l2.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarCommitSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -53,7 +53,7 @@ export const commitNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
+  client: RequireClientL2Contracts<chain, 'ethRegistrar', account>,
   args: CommitNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -69,7 +69,7 @@ export const commitNameWriteParameters = <
   return {
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensL2EthRegistrar',
+      contract: 'ethRegistrar',
     }),
     abi: l2EthRegistrarCommitSnippet,
     functionName: 'commit',
@@ -88,7 +88,7 @@ export const commitNameWriteParameters = <
 export type CommitNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
+  chainOverride extends ChainWithL2Contracts<'ethRegistrar'> | undefined,
 > = Prettify<
   CommitNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -130,9 +130,9 @@ export type CommitNameErrorType =
 export async function commitName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensL2EthRegistrar'> | undefined,
+  chainOverride extends ChainWithL2Contracts<'ethRegistrar'> | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar', account>,
+  client: RequireClientL2Contracts<chain, 'ethRegistrar', account>,
   {
     label,
     owner,

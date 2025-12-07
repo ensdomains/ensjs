@@ -8,11 +8,11 @@ import type {
 import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type {
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
+} from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { nameWrapperSetFusesSnippet } from '../../contracts/nameWrapper.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -42,7 +42,7 @@ export const setFusesWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensNameWrapper', account>,
+  client: RequireClientL1Contracts<chain, 'ensNameWrapper', account>,
   { name, fuses }: SetFusesWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -70,7 +70,7 @@ export const setFusesWriteParameters = <
 export type SetFusesParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensNameWrapper'>,
+  chainOverride extends ChainWithL1Contracts<'ensNameWrapper'>,
 > = Prettify<
   SetFusesWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -107,9 +107,9 @@ export type SetFusesErrorType = Error
 export async function setFuses<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensNameWrapper'>,
+  chainOverride extends ChainWithL1Contracts<'ensNameWrapper'>,
 >(
-  client: RequireClientContracts<chain, 'ensNameWrapper', account>,
+  client: RequireClientL1Contracts<chain, 'ensNameWrapper', account>,
   { name, fuses, ...txArgs }: SetFusesParameters<chain, account, chainOverride>,
 ): Promise<SetFusesReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

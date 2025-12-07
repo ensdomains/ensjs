@@ -2,13 +2,14 @@ import type {
   Account,
   Address,
   Chain,
+  Client,
   Hash,
+  Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../../clients/chain.js'
 import { userRegistrySetSubregistrySnippet } from '../../../contracts/userRegistry.js'
 import type {
   Prettify,
@@ -42,7 +43,7 @@ export const setSubregistryWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, never, account>,
+  client: Client<Transport, chain, account>,
   {
     registryAddress,
     label,
@@ -111,7 +112,7 @@ export async function setSubregistry<
   account extends Account,
   chainOverride extends Chain | undefined,
 >(
-  client: RequireClientContracts<chain, never, account>,
+  client: Client<Transport, chain, account>,
   {
     registryAddress,
     label,

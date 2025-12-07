@@ -16,7 +16,7 @@ import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
-} from '../../clients/chain.js'
+} from '../../clients/shared.js'
 import { multicallSnippet } from '../../contracts/multicall.js'
 import {
   universalResolverResolveSnippet,
@@ -62,7 +62,11 @@ export async function resolveNameData<
   chain extends Chain,
   data extends Hex | Hex[],
 >(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   { name, data, strict, gatewayUrls }: ResolveNameDataParameters<data>,
 ): Promise<ResolveNameDataReturnType<data>> {
   ASSERT_NO_TYPE_ERROR(client)

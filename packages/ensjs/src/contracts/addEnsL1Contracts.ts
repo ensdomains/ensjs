@@ -1,11 +1,11 @@
 import type { Chain } from 'viem'
 import {
-  type AnySupportedChain,
-  type ChainWithEns,
-  ensContracts,
-  type SupportedChainId,
-  supportedChains,
-} from '../clients/chain.js'
+  type AnySupportedL1Chain,
+  type ChainWithL1Ens,
+  ensL1Contracts,
+  type SupportedL1ChainId,
+  supportedL1Chains,
+} from '../clients/l1.js'
 import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
 
 /**
@@ -22,23 +22,25 @@ import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
  *   transport: http(),
  * })
  */
-export const addEnsContracts = <const chain extends AnySupportedChain>(
+export const addEnsL1Contracts = <const chain extends AnySupportedL1Chain>(
   chain: chain,
 ) => {
   if (!chain) throw new NoChainError()
-  if (!Object.values(supportedChains).includes(chain.id as SupportedChainId))
+  if (
+    !Object.values(supportedL1Chains).includes(chain.id as SupportedL1ChainId)
+  )
     throw new UnsupportedChainError({
       chainId: chain.id,
-      supportedChains: Object.values(supportedChains),
+      supportedChains: Object.values(supportedL1Chains),
     })
   return {
     ...chain,
     contracts: {
       ...chain.contracts,
-      ...ensContracts[chain.id as SupportedChainId],
+      ...ensL1Contracts[chain.id as SupportedL1ChainId],
     },
     subgraphs: {
-      ...ensContracts[chain.id as SupportedChainId],
+      ...ensL1Contracts[chain.id as SupportedL1ChainId],
     },
-  } as unknown as ChainWithEns<chain>
+  } as unknown as ChainWithL1Ens<chain>
 }

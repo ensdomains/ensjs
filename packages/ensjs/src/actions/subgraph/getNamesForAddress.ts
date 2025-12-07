@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { gql } from 'graphql-request'
 import type { Address } from 'viem'
-import type { ChainWithSubgraph } from '../../clients/chain.js'
+import type { ChainWithSubgraph } from '../../clients/l1.js'
 import {
   FilterKeyRequiredError,
   InvalidFilterKeyError,

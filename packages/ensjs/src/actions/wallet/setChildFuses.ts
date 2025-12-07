@@ -11,10 +11,8 @@ import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { labelhash } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { nameWrapperSetChildFusesSnippet } from '../../contracts/nameWrapper.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -55,7 +53,7 @@ export const setChildFusesWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensNameWrapper', account>,
+  client: RequireClientL1Contracts<chain, 'ensNameWrapper', account>,
   { name, fuses, expiry }: SetChildFusesWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -130,7 +128,7 @@ export async function setChildFuses<
   account extends Account,
   chainOverride extends Chain | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensNameWrapper', account>,
+  client: RequireClientL1Contracts<chain, 'ensNameWrapper', account>,
   {
     name,
     fuses,

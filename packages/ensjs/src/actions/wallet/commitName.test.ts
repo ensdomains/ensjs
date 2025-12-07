@@ -1,6 +1,6 @@
 import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
-import { getChainContractAddress } from '../../clients/chain.js'
+import { getChainContractAddress } from '../../clients/l1.js'
 import { l2EthRegistrarCommitmentsSnippet } from '../../contracts/l2EthRegistrar.js'
 import {
   publicClient,

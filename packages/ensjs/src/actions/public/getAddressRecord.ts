@@ -1,6 +1,6 @@
 import type { Chain, EncodeFunctionDataErrorType } from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import type { Prettify } from '../../types/index.js'
 import type { ExcludeTE } from '../../types/internal.js'
 import {
@@ -60,7 +60,11 @@ export async function getAddressRecord<
   chain extends Chain,
   coin extends string | number | undefined = undefined,
 >(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   {
     gatewayUrls,
     strict,

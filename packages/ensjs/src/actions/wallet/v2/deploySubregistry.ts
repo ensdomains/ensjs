@@ -2,15 +2,16 @@ import type {
   Account,
   Address,
   Chain,
+  Client,
   EncodeFunctionDataErrorType,
   Hash,
+  Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
 import { encodeFunctionData, keccak256, stringToBytes } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../../clients/chain.js'
 import {
   subregistryInitializeSnippet,
   verifiableFactoryDeployProxySnippet,
@@ -66,7 +67,7 @@ export const deploySubregistryWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, never, account>,
+  client: Client<Transport, chain, account>,
   {
     factoryAddress,
     implAddress,
@@ -144,7 +145,7 @@ export async function deploySubregistry<
   account extends Account,
   chainOverride extends Chain | undefined,
 >(
-  client: RequireClientContracts<chain, never, account>,
+  client: Client<Transport, chain, account>,
   {
     factoryAddress,
     implAddress,

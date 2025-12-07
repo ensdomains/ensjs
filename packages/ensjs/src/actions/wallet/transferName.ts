@@ -13,11 +13,11 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type {
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
+} from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import {
   baseRegistrarReclaimSnippet,
   baseRegistrarSafeTransferFromSnippet,
@@ -83,7 +83,7 @@ export const transferNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account
@@ -233,7 +233,7 @@ export type TransferNameParameters<
   contract extends 'registry' | 'nameWrapper' | 'registrar',
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<
+  chainOverride extends ChainWithL1Contracts<
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 > = Prettify<
@@ -275,11 +275,11 @@ export async function transferName<
   contract extends TransferNameSupportedContract,
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<
+  chainOverride extends ChainWithL1Contracts<
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account

@@ -13,7 +13,7 @@ import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
-} from '../../clients/chain.js'
+} from '../../clients/shared.js'
 import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
@@ -50,7 +50,11 @@ export type GetResolverErrorType =
  * // 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41
  */
 export async function getResolver<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   { name }: GetResolverParameters,
 ): Promise<GetResolverReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

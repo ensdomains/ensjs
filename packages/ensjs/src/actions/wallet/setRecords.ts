@@ -16,9 +16,9 @@ import {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithContracts,
-  RequireClientContracts,
-} from '../../clients/chain.js'
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
+} from '../../clients/l1.js'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -94,7 +94,7 @@ export const setRecordsWriteParameters = async <
 export type SetRecordsParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensPublicResolver'>,
+  chainOverride extends ChainWithL1Contracts<'ensPublicResolver'>,
 > = Prettify<
   SetRecordsWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -138,9 +138,9 @@ export type SetRecordsErrorType =
 export async function setRecords<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensPublicResolver'>,
+  chainOverride extends ChainWithL1Contracts<'ensPublicResolver'>,
 >(
-  client: RequireClientContracts<chain, 'ensPublicResolver', account>,
+  client: RequireClientL1Contracts<chain, 'ensPublicResolver', account>,
   {
     name,
     resolverAddress,
