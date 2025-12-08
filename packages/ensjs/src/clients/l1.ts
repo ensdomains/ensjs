@@ -134,7 +134,7 @@ export const ensL1Contracts = {
       address: '0xa20b41dc7336c4d974e3c9a6ea01b77647559c46',
     },
     ensV2EthRegistry: {
-      address: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
+      address: '0x3f0920aa92c5f9bce54643c09955c5f241f1f763',
     },
     ensVerifiableFactory: {
       address: '0xe52e7349922730c46a9d35e62303b03bb1058a7f',
