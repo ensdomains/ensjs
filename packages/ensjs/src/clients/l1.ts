@@ -128,10 +128,10 @@ export const ensL1Contracts = {
       address: '0xf79f9970030fe60bd89d21591c7f2d80d7d21242',
     },
     ensUniversalResolver: {
-      address: '0x98369eb1318447f787869560b228fa108d1666b3',
+      address: '0x50168842c0f5c9992a34085d9a6dc5b0a4f306ce',
     },
     ensDedicatedResolver: {
-      address: '0xa20b41dc7336c4d974e3c9a6ea01b77647559c46',
+      address: '0x061377382a03e1f9d7f3c47eeb8dfb053922c910',
     },
     ensV2EthRegistry: {
       address: '0x3f0920aa92c5f9bce54643c09955c5f241f1f763',
