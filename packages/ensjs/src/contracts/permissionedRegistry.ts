@@ -46,57 +46,34 @@ export const permissionedRegistryRoleCountSnippet = [
 
 export const eacRolesGrantedEventSnippet = {
   type: 'event',
-  name: 'EACRolesGranted',
+  name: 'EACRolesChanged',
   inputs: [
     {
       name: 'resource',
       type: 'uint256',
-      indexed: false,
-      internalType: 'uint256',
-    },
-    {
-      name: 'roleBitmap',
-      type: 'uint256',
-      indexed: false,
+      indexed: true,
       internalType: 'uint256',
     },
     {
       name: 'account',
       type: 'address',
-      indexed: false,
+      indexed: true,
       internalType: 'address',
     },
-  ],
-  anonymous: false,
-} as const
-
-export const eacRolesRevokedEventSnippet = {
-  type: 'event',
-  name: 'EACRolesRevoked',
-  inputs: [
     {
-      name: 'resource',
+      name: 'oldRoleBitmap',
       type: 'uint256',
       indexed: false,
       internalType: 'uint256',
     },
     {
-      name: 'roleBitmap',
+      name: 'newRoleBitmap',
       type: 'uint256',
       indexed: false,
       internalType: 'uint256',
-    },
-    {
-      name: 'account',
-      type: 'address',
-      indexed: false,
-      internalType: 'address',
     },
   ],
   anonymous: false,
 } as const
 
-export const eacRolesEvents = [
-  eacRolesGrantedEventSnippet,
-  eacRolesRevokedEventSnippet,
-] as const
+export const eacRolesEvents = [eacRolesGrantedEventSnippet] as const

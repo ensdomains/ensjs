@@ -68,9 +68,9 @@ export async function getNameRoleAccounts(
 
   for (const log of logs) {
     if (log.args.account && log.args.account !== zeroAddress) {
-      if (log.eventName === 'EACRolesGranted') {
+      if (log.eventName === 'EACRolesChanged') {
         // biome-ignore lint/style/noNonNullAssertion: always defined for a granted event
-        const bitmap = log.args.roleBitmap!
+        const bitmap = log.args.newRoleBitmap!
         const counts = decodeRoleCounts(REGISTRY_ROLES, bitmap)
 
         roles.set(
@@ -79,8 +79,6 @@ export async function getNameRoleAccounts(
             (key) => counts[key as keyof typeof counts] === 1,
           ),
         )
-      } else if (log.eventName === 'EACRolesRevoked') {
-        roles.delete(log.args.account)
       }
     }
   }
