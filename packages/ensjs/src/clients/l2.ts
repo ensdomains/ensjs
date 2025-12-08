@@ -34,16 +34,16 @@ export type SupportedL2Contract = (typeof supportedL2Contracts)[number]
 export const ensL2Contracts = {
   [supportedL2Chains.namechainSepolia]: {
     ensDedicatedResolver: {
-      address: '0x061377382a03e1f9d7f3c47eeb8dfb053922c910',
+      address: '0xa20b41dc7336c4d974e3c9a6ea01b77647559c46',
     },
     ensUserRegistry: {
-      address: '0xb1cdc9dc6130cf25465d4950c655dd35a3c81d7a',
+      address: '0x8cfbf4a6b3f546021b9f8e6099bda2cb0297cd25',
     },
     ensV2EthRegistry: {
-      address: '0x3f0920aa92c5f9bce54643c09955c5f241f1f763',
+      address: '0xf332544e6234f1ca149907d0d4658afd5feb6831',
     },
     ensVerifiableFactory: {
-      address: '0xe52e7349922730c46a9d35e62303b03bb1058a7f',
+      address: '0xb9541bdd86c4d01c726a33694f14e8528adcb20d',
     },
     usdc: {
       address: '0x7Fc21ceb0C5003576ab5E101eB240c2b822c95d2',
