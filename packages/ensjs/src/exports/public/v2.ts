@@ -1,3 +1,4 @@
+export * from '../../actions/public/v2/getExpiry.js'
 export * from '../../actions/public/v2/getNameRegistries.js'
 export * from '../../actions/public/v2/getNameRegistryAddress.js'
 export * from '../../actions/public/v2/getNameRolesAccounts.js'
