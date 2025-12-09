@@ -12,11 +12,11 @@ import {
   type Transport,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type {
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
+} from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
 import { registrySetSubnodeRecordSnippet } from '../../contracts/registry.js'
 import { BaseError } from '../../errors/base.js'
@@ -138,7 +138,7 @@ export const makeCreateSubnameFunctionData = <
   chain extends Chain,
   account extends Account | undefined,
 >(
-  wallet: RequireClientContracts<
+  wallet: RequireClientL1Contracts<
     chain,
     'ensPublicResolver' | 'ensNameWrapper',
     account
@@ -232,7 +232,7 @@ type CheckCanCreateSubnameErrorType =
 const checkCanCreateSubname = async (
   wallet: Client<
     Transport,
-    ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
+    ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>
   >,
   {
     name,
@@ -269,7 +269,7 @@ export type CreateSubnameParameters<
   chain extends Chain,
   account extends Account | undefined,
   chainOverride extends
-    | ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
+    | ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>
     | undefined,
 > = Prettify<
   MakeCreateSubnameFunctionDataParameters &
@@ -310,10 +310,10 @@ export async function createSubname<
   chain extends Chain,
   account extends Account | undefined,
   chainOverride extends
-    | ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
-    | undefined = ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>,
+    | ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>
+    | undefined = ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>,
 >(
-  wallet: RequireClientContracts<
+  wallet: RequireClientL1Contracts<
     chain,
     'ensNameWrapper' | 'ensPublicResolver',
     account

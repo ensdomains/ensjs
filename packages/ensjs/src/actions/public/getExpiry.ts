@@ -10,10 +10,8 @@ import {
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import {
   baseRegistrarGracePeriodSnippet,
   baseRegistrarNameExpiresSnippet,
@@ -75,7 +73,7 @@ export type GetExpiryErrorType =
  * const l2Result = await getExpiry(client, { name: 'example.eth', contract: 'l2Registrar' })
  */
 export async function getExpiry<chain extends Chain>(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     | 'ensNameWrapper'
     | 'ensBaseRegistrarImplementation'

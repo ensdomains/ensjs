@@ -5,10 +5,8 @@ import type {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type { RequireClientL2Contracts } from '../../clients/l2.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarAvailableSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { ErrorType } from '../../errors/utils.js'
@@ -48,7 +46,7 @@ export type GetAvailableErrorType =
  * // false
  */
 export async function getAvailable<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar'>,
+  client: RequireClientL2Contracts<chain, 'ensL2EthRegistrar'>,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
   const labels = name.split('.')

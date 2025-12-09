@@ -15,11 +15,11 @@ import {
 import { writeContract } from 'viem/actions'
 import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type {
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
+} from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { baseRegistrarSafeTransferFromWithDataSnippet } from '../../contracts/baseRegistrar.js'
 import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
@@ -78,7 +78,7 @@ export const wrapNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account
@@ -161,7 +161,7 @@ export type WrapNameParameters<
   name extends string,
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensNameWrapper'>,
+  chainOverride extends ChainWithL1Contracts<'ensNameWrapper'>,
 > = WrapNameWriteParameters<name> &
   WriteTransactionParameters<chain, account, chainOverride>
 
@@ -198,11 +198,11 @@ export async function wrapName<
   name extends string,
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<
+  chainOverride extends ChainWithL1Contracts<
     'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     'ensPublicResolver' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account

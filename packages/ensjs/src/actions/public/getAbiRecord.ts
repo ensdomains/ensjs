@@ -1,6 +1,6 @@
 import type { Chain, EncodeFunctionDataErrorType } from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import type { Prettify } from '../../types/index.js'
 import type { ExcludeTE } from '../../types/internal.js'
 import {
@@ -53,7 +53,11 @@ export type GetAbiRecordErrorType =
  * // TODO: real example
  */
 export async function getAbiRecord<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   { gatewayUrls, name, supportedContentTypes, strict }: GetAbiRecordParameters,
 ): Promise<GetAbiRecordReturnType> {
   const resolveNameDataAction = getAction(

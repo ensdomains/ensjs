@@ -1,6 +1,6 @@
 import type { Chain, EncodeFunctionDataErrorType } from 'viem'
 import { encodeFunctionData, getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import type { Prettify } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
@@ -53,7 +53,11 @@ export type GetTextRecordErrorType =
  * // ensdomains
  */
 export async function getTextRecord<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   { gatewayUrls, strict, ...parameters }: GetTextRecordParameters,
 ): Promise<GetTextRecordReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

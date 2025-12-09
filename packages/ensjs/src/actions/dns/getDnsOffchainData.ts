@@ -1,5 +1,5 @@
 import { type Address, type Chain, isAddress } from 'viem'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../clients/l1.js'
 import {
   DnsDnssecVerificationFailedError,
   DnsDnssecWildcardExpansionError,
@@ -49,7 +49,7 @@ type ValidTextRecord = {
 type InvalidTextRecord = { isValid: false; recordData: string }
 
 async function checkValidEnsTxtRecord<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientL1Contracts<chain, 'ensUniversalResolver'>,
   record: DnsResponseItem,
 ): Promise<InvalidTextRecord | ValidTextRecord | null> {
   if (record.type !== DnsRecordType.TXT) return null
@@ -106,7 +106,7 @@ async function checkValidEnsTxtRecord<chain extends Chain>(
  * })
  */
 export async function getDnsOffchainData<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientL1Contracts<chain, 'ensUniversalResolver'>,
   { name, endpoint, strict }: GetDnsOffchainDataParameters,
 ): Promise<GetDnsOffchainDataReturnType> {
   const nameType = getNameType(name)

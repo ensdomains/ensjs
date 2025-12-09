@@ -8,11 +8,11 @@ import type {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  type ChainWithContracts,
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type {
+  ChainWithL1Contracts,
+  RequireClientL1Contracts,
+} from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarRenewSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -48,7 +48,7 @@ export const renewNamesWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensEthRegistrarController', account>,
+  client: RequireClientL1Contracts<chain, 'ensEthRegistrarController', account>,
   { nameOrNames, duration, value }: RenewNamesWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -93,7 +93,7 @@ export type RenewNamesParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensEthRegistrarController'>
+    | ChainWithL1Contracts<'ensEthRegistrarController'>
     | undefined,
 > = Prettify<
   RenewNamesWriteParametersParameters &
@@ -142,10 +142,10 @@ export async function renewNames<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensEthRegistrarController'>
+    | ChainWithL1Contracts<'ensEthRegistrarController'>
     | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensEthRegistrarController', account>,
+  client: RequireClientL1Contracts<chain, 'ensEthRegistrarController', account>,
   {
     nameOrNames,
     duration,

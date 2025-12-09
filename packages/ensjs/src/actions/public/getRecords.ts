@@ -10,7 +10,7 @@ import {
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAddr, DecodedText, Prettify } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -324,7 +324,11 @@ export async function getRecords<
   const contentHash extends boolean | undefined = undefined,
   const abi extends boolean | undefined = undefined,
 >(
-  client: RequireClientContracts<chain, 'ensUniversalResolver' | 'multicall3'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver' | 'multicall3',
+    chain,
+    'ensUniversalResolver' | 'multicall3'
+  >,
   {
     name,
     resolver,
