@@ -44,6 +44,28 @@ export const permissionedRegistryRoleCountSnippet = [
   },
 ] as const
 
+export const permissionedRegistryGetExpirySnippet = [
+  {
+    type: 'function',
+    name: 'getExpiry',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint64',
+        internalType: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const
+
 export const eacRolesGrantedEventSnippet = {
   type: 'event',
   name: 'EACRolesChanged',
@@ -77,3 +99,57 @@ export const eacRolesGrantedEventSnippet = {
 } as const
 
 export const eacRolesEvents = [eacRolesGrantedEventSnippet] as const
+
+export const permissionedRegistryNameRegisteredEventSnippet = {
+  type: 'event',
+  name: 'NameRegistered',
+  inputs: [
+    {
+      name: 'tokenId',
+      type: 'uint256',
+      indexed: true,
+      internalType: 'uint256',
+    },
+    {
+      name: 'label',
+      type: 'string',
+      indexed: false,
+      internalType: 'string',
+    },
+    {
+      name: 'expiry',
+      type: 'uint64',
+      indexed: false,
+      internalType: 'uint64',
+    },
+    {
+      name: 'registeredBy',
+      type: 'address',
+      indexed: false,
+      internalType: 'address',
+    },
+  ],
+  anonymous: false,
+} as const
+
+export const permissionedRegistryGetTokenIdSnippet = [
+  {
+    type: 'function',
+    name: 'getTokenId',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const

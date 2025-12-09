@@ -13,12 +13,12 @@ const client = createPublicClient({
 describe('getNameRolesAccounts', () => {
   it('returns a map of accounts and roles that they have set', async () => {
     const accounts = await getNameRoleAccounts(client, {
-      label: 'raffy',
+      label: 'ens1',
       fromBlock: 9683977n,
-      registryAddress: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2',
+      registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
     })
 
-    expect(accounts.get('0x51050ec063d393217B436747617aD1C2285Aeeee')).toEqual([
+    expect(accounts.get('0x205d2686da3Bf33f64C17f21462c51B5eaD462CF')).toEqual([
       'SET_SUBREGISTRY',
       'SET_SUBREGISTRY_ADMIN',
       'SET_RESOLVER',
