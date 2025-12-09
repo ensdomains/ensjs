@@ -1,11 +1,19 @@
-import { type Chain, type CreateEventFilterParameters, labelhash } from 'viem'
+import {
+  type Chain,
+  type CreateEventFilterErrorType,
+  type CreateEventFilterParameters,
+  type GetBlockErrorType,
+  type GetFilterLogsErrorType,
+  labelhash,
+  type ReadContractErrorType,
+} from 'viem'
 import {
   createEventFilter,
   getBlock,
   getFilterLogs,
   readContract,
 } from 'viem/actions'
-import { getAction } from 'viem/utils'
+import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
 import type { RequireClientL2Contracts } from '../../../clients/l2.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import {
@@ -19,6 +27,13 @@ export type GetRegistrationDateParameters = {
 } & Pick<CreateEventFilterParameters, 'fromBlock' | 'toBlock'>
 
 export type GetRegistrationDateReturnType = bigint | null
+
+export type GetRegistrationDateErrorType =
+  | GetChainContractAddressErrorType
+  | ReadContractErrorType
+  | CreateEventFilterErrorType
+  | GetFilterLogsErrorType
+  | GetBlockErrorType
 
 /**
  * Get a block timestamp of when a name was registered on Namechain
