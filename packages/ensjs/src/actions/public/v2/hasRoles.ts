@@ -1,10 +1,10 @@
 import type { Client, ReadContractErrorType } from 'viem'
 import type { Address } from 'viem/accounts'
 import { readContract } from 'viem/actions'
-import { labelhash } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import { eacHasRolesSnippet } from '../../../contracts/enhancedAccessControl.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {
   encodeRoleBitmap,
   type Role,
@@ -56,7 +56,7 @@ export async function hasRoles(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const resource = BigInt(labelhash(label))
+  const resource = labelToCanonicalId(label)
   const rolesBitmap = encodeRoleBitmap(roles)
 
   return readContractAction({
