@@ -10,10 +10,8 @@ import {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction, trim } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
 import { nameWrapperNamesSnippet } from '../../../contracts/nameWrapper.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import {
@@ -56,7 +54,7 @@ export type GetWrapperNameErrorType =
  * // wrapped.eth
  */
 export async function getWrapperName<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensNameWrapper'>,
+  client: RequireClientL1Contracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperNameParameters,
 ): Promise<GetWrapperNameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

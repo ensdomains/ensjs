@@ -11,13 +11,10 @@ import {
 } from 'viem'
 import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { isNullRegistrarOwnerOfError } from '../../../utils/errors/isNullRegistrarOwnerOfError.js'
-
 import { checkIsDotEth } from '../../../utils/name/validation.js'
 import { nullableAddress } from '../../../utils/nullableAddress.js'
 import {
@@ -110,7 +107,7 @@ export async function getOwner<
   chain extends Chain,
   contract extends OwnerContract | undefined = undefined,
 >(
-  client: RequireClientContracts<
+  client: RequireClientL1Contracts<
     chain,
     | 'ensNameWrapper'
     | 'ensRegistry'

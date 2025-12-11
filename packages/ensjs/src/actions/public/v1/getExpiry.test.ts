@@ -1,5 +1,5 @@
 import { assert, describe, expect, it } from 'vitest'
-import { publicClient } from '../../test/addTestContracts.js'
+import { publicClient } from '../../../test/addTestContracts.js'
 import { getExpiry } from './getExpiry.js'
 
 describe('getExpiry', () => {

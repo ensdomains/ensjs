@@ -12,7 +12,7 @@ import {
   type CcipRequestErrorType as viem_CcipRequestErrorType,
   ccipRequest as viemCcipRequest,
 } from 'viem'
-import { getChainContractAddress } from '../clients/chain.js'
+import { getChainContractAddress } from '../clients/shared.js'
 import {
   type CcipBatchRequestErrorType,
   ccipBatchRequest,

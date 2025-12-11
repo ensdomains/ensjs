@@ -1,4 +1,4 @@
-import type { SupportedContract } from '@ensdomains/ensjs/chain'
+import type { SupportedL1Contract } from '@ensdomains/ensjs/chain'
 import type {
   StringConcatenationOrder,
   // biome-ignore lint/suspicious/noShadowRestrictedNames: import
@@ -15,7 +15,7 @@ export type BaseChainContracts = {
 }
 
 type SuggestedContracts =
-  | SupportedContract
+  | SupportedL1Contract
   | keyof BaseChainContracts
   | (string & {})
 
@@ -38,7 +38,7 @@ export type RequireConfigContracts<
 
 export type RequireConfigContracts2<
   config extends Config,
-  contracts extends SupportedContract,
+  contracts extends SupportedL1Contract,
 > = config extends Config<infer chains, infer transports, infer connectorFns>
   ? chains[number] extends Chain & {
       contracts: {

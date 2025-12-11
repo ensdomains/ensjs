@@ -3,7 +3,7 @@
 import type { EnsPublicActions, EnsWalletActions } from '@ensdomains/ensjs'
 import type {
   ChainWithContracts,
-  SupportedContract,
+  SupportedL1Contract,
 } from '@ensdomains/ensjs/chain'
 import type {
   Account,
@@ -40,7 +40,7 @@ export function getAction<
   name:
     | keyof EnsPublicActions
     | keyof EnsWalletActions<
-        ChainWithContracts<SupportedContract>,
+        ChainWithContracts<SupportedL1Contract>,
         NonNullable<account>
       >,
 ): (parameters: parameters) => returnType {

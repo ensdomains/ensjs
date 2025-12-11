@@ -9,10 +9,8 @@ import {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
 import { nameWrapperGetDataSnippet } from '../../../contracts/nameWrapper.js'
 import type { Prettify } from '../../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
@@ -58,7 +56,7 @@ export type GetWrapperDataErrorType =
  * const result = await getWrapperData(client, { name: 'ilikelasagna.eth' })
  */
 export async function getWrapperData<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensNameWrapper'>,
+  client: RequireClientL1Contracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperDataParameters,
 ): Promise<GetWrapperDataReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

@@ -1,5 +1,5 @@
 import type { Chain } from 'viem'
-import type { RequireClientContracts } from '../../clients/chain.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { Prettify } from '../../types/index.js'
 import {
@@ -49,7 +49,11 @@ const parseCredentials = (credentials: string[]) => {
  * // [{ url: 'https://example.com' }]
  */
 export async function getCredentials<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<
+    'ensUniversalResolver',
+    chain,
+    'ensUniversalResolver'
+  >,
   { gatewayUrls, strict, name }: GetCredentialsParameters,
 ): Promise<GetCredentialsReturnType> {
   const result = await getTextRecord(client, {

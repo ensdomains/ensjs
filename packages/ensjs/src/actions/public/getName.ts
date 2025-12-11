@@ -10,10 +10,8 @@ import type {
 import { readContract } from 'viem/actions'
 import type { PacketToBytesErrorType } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import {
-  getChainContractAddress,
-  type RequireClientContracts,
-} from '../../clients/chain.js'
+import type { RequireClientL1Contracts } from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import {
   universalResolverReverseSnippet,
   universalResolverReverseWithGatewaysSnippet,
@@ -95,7 +93,7 @@ export type GetNameErrorType =
  * // { name: 'nick.eth', match: true, reverseResolverAddress: '0xa2c122be93b0074270ebee7f6b7292c7deb45047', resolverAddress: '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41' }
  */
 export async function getName<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientL1Contracts<chain, 'ensUniversalResolver'>,
   {
     address,
     allowUnnormalized,

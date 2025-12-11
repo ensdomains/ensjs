@@ -44,50 +44,86 @@ export const permissionedRegistryRoleCountSnippet = [
   },
 ] as const
 
+export const permissionedRegistryGetExpirySnippet = [
+  {
+    type: 'function',
+    name: 'getExpiry',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint64',
+        internalType: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const
+
 export const eacRolesGrantedEventSnippet = {
   type: 'event',
-  name: 'EACRolesGranted',
+  name: 'EACRolesChanged',
   inputs: [
     {
       name: 'resource',
       type: 'uint256',
-      indexed: false,
-      internalType: 'uint256',
-    },
-    {
-      name: 'roleBitmap',
-      type: 'uint256',
-      indexed: false,
+      indexed: true,
       internalType: 'uint256',
     },
     {
       name: 'account',
       type: 'address',
-      indexed: false,
+      indexed: true,
       internalType: 'address',
+    },
+    {
+      name: 'oldRoleBitmap',
+      type: 'uint256',
+      indexed: false,
+      internalType: 'uint256',
+    },
+    {
+      name: 'newRoleBitmap',
+      type: 'uint256',
+      indexed: false,
+      internalType: 'uint256',
     },
   ],
   anonymous: false,
 } as const
 
-export const eacRolesRevokedEventSnippet = {
+export const eacRolesEvents = [eacRolesGrantedEventSnippet] as const
+
+export const permissionedRegistryNameRegisteredEventSnippet = {
   type: 'event',
-  name: 'EACRolesRevoked',
+  name: 'NameRegistered',
   inputs: [
     {
-      name: 'resource',
+      name: 'tokenId',
       type: 'uint256',
-      indexed: false,
+      indexed: true,
       internalType: 'uint256',
     },
     {
-      name: 'roleBitmap',
-      type: 'uint256',
+      name: 'label',
+      type: 'string',
       indexed: false,
-      internalType: 'uint256',
+      internalType: 'string',
     },
     {
-      name: 'account',
+      name: 'expiry',
+      type: 'uint64',
+      indexed: false,
+      internalType: 'uint64',
+    },
+    {
+      name: 'registeredBy',
       type: 'address',
       indexed: false,
       internalType: 'address',
@@ -96,7 +132,24 @@ export const eacRolesRevokedEventSnippet = {
   anonymous: false,
 } as const
 
-export const eacRolesEvents = [
-  eacRolesGrantedEventSnippet,
-  eacRolesRevokedEventSnippet,
+export const permissionedRegistryGetTokenIdSnippet = [
+  {
+    type: 'function',
+    name: 'getTokenId',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+  },
 ] as const
