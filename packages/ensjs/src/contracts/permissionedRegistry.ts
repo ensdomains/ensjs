@@ -156,27 +156,27 @@ export const permissionedRegistryGetTokenIdSnippet = [
 
 export const permissionedRegistryRolesSnippet = [
   {
-      "type": "function",
-      "name": "roles",
-      "inputs": [
-        {
-          "name": "anyId",
-          "type": "uint256",
-          "internalType": "uint256"
-        },
-        {
-          "name": "account",
-          "type": "address",
-          "internalType": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256",
-          "internalType": "uint256"
-        }
-      ],
-      "stateMutability": "view"
-    }
-    ] as const
+    type: 'function',
+    name: 'roles',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const
