@@ -10,7 +10,9 @@ const client = createPublicClient({
 })
 
 it('should return non-zero expiry for a V2 name', async () => {
-  const expiry = await getExpiry(client, { name: 'ens2.eth' })
+  const expiry = await getExpiry(client, { name: 'fresh.eth' })
 
-  expect(expiry > 0).toEqual(true)
+  expect(expiry > 0n).toEqual(true)
+
+  expect(expiry).toEqual(1796989872n)
 })
