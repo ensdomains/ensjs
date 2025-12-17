@@ -72,3 +72,35 @@ export const eacGrantRolesSnippet = [
     stateMutability: 'nonpayable',
   },
 ] as const
+
+export const eacHasRolesSnippet = [
+  {
+    type: 'function',
+    name: 'hasRoles',
+    inputs: [
+      {
+        name: 'resource',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'rolesBitmap',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+        internalType: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const
