@@ -1,12 +1,12 @@
 import { expect, it } from 'vitest'
-import { REGISTRY_ROLES } from './constants.js'
 import { decodeRoleCounts } from './decodeRoleCounts.js'
+import * as registryRoles from './registryRoles.js'
 
 it('decodes a role bitmap into a mapping of role counts', () => {
   expect(
     decodeRoleCounts(
-      REGISTRY_ROLES,
       358292832037329894457564098653916839351955968n,
+      registryRoles,
     ),
   ).toEqual({
     CAN_TRANSFER: 0,

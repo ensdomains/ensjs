@@ -44,6 +44,33 @@ export const permissionedRegistryRoleCountSnippet = [
   },
 ] as const
 
+export const permissionedRegistryRolesSnippet = [
+  {
+    type: 'function',
+    name: 'roles',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const
+
 export const eacRolesGrantedEventSnippet = {
   type: 'event',
   name: 'EACRolesChanged',
