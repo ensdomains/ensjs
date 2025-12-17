@@ -9,7 +9,7 @@ import { getLogs } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { eacRolesEvents } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { REGISTRY_ROLES } from '../../../utils/v2/index.js'
+import { registryRoles } from '../../../utils/v2/index.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {
   decodeRoleCounts,
@@ -71,7 +71,7 @@ export async function getNameRoleAccounts(
       if (log.eventName === 'EACRolesChanged') {
         // biome-ignore lint/style/noNonNullAssertion: always defined for a granted event
         const bitmap = log.args.newRoleBitmap!
-        const counts = decodeRoleCounts(REGISTRY_ROLES, bitmap)
+        const counts = decodeRoleCounts(bitmap, registryRoles)
 
         roles.set(
           log.args.account,

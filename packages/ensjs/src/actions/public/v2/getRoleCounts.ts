@@ -7,7 +7,7 @@ import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import {
   type DecodeRoleCountsReturnType,
   decodeRoleCounts,
-  REGISTRY_ROLES,
+  registryRoles,
 } from '../../../utils/v2/index.js'
 
 export type GetRoleCountsParameters = {
@@ -16,7 +16,7 @@ export type GetRoleCountsParameters = {
 }
 
 export type GetRoleCountsReturnType = {
-  decoded: DecodeRoleCountsReturnType<typeof REGISTRY_ROLES>
+  decoded: DecodeRoleCountsReturnType<typeof registryRoles>
   raw: bigint
 }
 
@@ -56,7 +56,7 @@ export async function getRoleCounts(
   })
 
   return {
-    decoded: decodeRoleCounts(REGISTRY_ROLES, roleBitmap),
+    decoded: decodeRoleCounts(roleBitmap, registryRoles),
     raw: roleBitmap,
   }
 }
