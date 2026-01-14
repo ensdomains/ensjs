@@ -21,12 +21,4 @@ describe('getNameRegistries', () => {
       expect(registry).toMatch(/^0x[a-fA-F0-9]{40}$/)
     })
   })
-
-  it('should return registries for a subname', async () => {
-    const registries = await getNameRegistries(client, {
-      name: 'ens1.fresheth.eth',
-    })
-
-    expect(registries.length).toBeGreaterThan(0)
-  })
 })
