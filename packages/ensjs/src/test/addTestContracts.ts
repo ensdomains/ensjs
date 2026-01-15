@@ -49,6 +49,7 @@ export const deploymentAddresses = JSON.parse(
 
 export const localhost = {
   ..._localhost,
+  id: 15658733,
   contracts: {
     ensRegistry: {
       address: deploymentAddresses.ENSRegistry,

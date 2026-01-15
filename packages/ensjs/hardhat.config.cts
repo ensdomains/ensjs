@@ -31,7 +31,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       saveDeployments: false,
-      chainId: 1337,
+      chainId: 15658733,
       accounts: {
         mnemonic: 'test test test test test test test test test test test junk',
       },
@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
     localhost: {
       saveDeployments: false,
       url: 'http://localhost:8545',
-      chainId: 1337,
+      chainId: 15658733,
       accounts: {
         mnemonic: 'test test test test test test test test test test test junk',
       },
@@ -78,7 +78,6 @@ const config: HardhatUserConfig = {
           resolve(ensContractsPath, 'artifacts'),
           resolve(ensContractsPath, './deployments/archive'),
         ],
-        deploy: resolve(ensContractsPath, './build/deploy'),
       },
     ],
   },

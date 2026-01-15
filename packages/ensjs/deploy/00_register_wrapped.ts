@@ -1,7 +1,7 @@
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
-import { makeNameGenerator } from '../utils/wrappedNameGenerator.js'
+import { makeNameGenerator } from '../utils/wrappedNameGenerator.ts'
 
 const names: {
   label: string

@@ -2,8 +2,8 @@ import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import type { Address, Hash } from 'viem'
 import { MAX_DATE_INT } from '../dist/utils/consts.js'
 import { encodeFuses } from '../dist/utils/fuses.js'
-import { makeNameGenerator as makeLegacyNameGenerator } from '../utils/legacyNameGenerator.js'
-import { makeNameGenerator as makeWrappedNameGenerator } from '../utils/wrappedNameGenerator.js'
+import { makeNameGenerator as makeLegacyNameGenerator } from '../utils/legacyNameGenerator.ts'
+import { makeNameGenerator as makeWrappedNameGenerator } from '../utils/wrappedNameGenerator.ts'
 
 const DURATION = 31556000
 
