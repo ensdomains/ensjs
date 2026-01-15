@@ -12,7 +12,9 @@ async function waitForHealthy(timeout: number): Promise<void> {
 
   while (Date.now() - startTime < timeout) {
     try {
-      const { stdout } = await execAsync(`docker compose -f ${DOCKER_COMPOSE_FILE} ps --format json`)
+      const { stdout } = await execAsync(
+        `docker compose -f ${DOCKER_COMPOSE_FILE} ps --format json`,
+      )
       const services = stdout
         .trim()
         .split('\n')
@@ -20,11 +22,16 @@ async function waitForHealthy(timeout: number): Promise<void> {
         .map((line) => JSON.parse(line))
 
       // Check if all services are running or healthy
-      const allRunning = services.every((service) => service.State === 'running')
+      const allRunning = services.every(
+        (service) => service.State === 'running',
+      )
 
       // Check if services with healthchecks are healthy
-      const servicesWithHealth = services.filter((service) => service.Health && service.Health !== '')
-      const allHealthy = servicesWithHealth.length === 0 ||
+      const servicesWithHealth = services.filter(
+        (service) => service.Health && service.Health !== '',
+      )
+      const allHealthy =
+        servicesWithHealth.length === 0 ||
         servicesWithHealth.every((service) => service.Health === 'healthy')
 
       if (allRunning && allHealthy) {
@@ -33,12 +40,16 @@ async function waitForHealthy(timeout: number): Promise<void> {
       }
 
       // Show progress
-      const healthyCount = servicesWithHealth.filter((s) => s.Health === 'healthy').length
+      const healthyCount = servicesWithHealth.filter(
+        (s) => s.Health === 'healthy',
+      ).length
       const totalHealthChecks = servicesWithHealth.length
       if (totalHealthChecks > 0) {
-        console.log(`⏳ Waiting for services to be healthy (${healthyCount}/${totalHealthChecks})...`)
+        console.log(
+          `⏳ Waiting for services to be healthy (${healthyCount}/${totalHealthChecks})...`,
+        )
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors during health check, will retry
     }
 
@@ -56,7 +67,12 @@ async function waitForRPC(url: string, timeout: number): Promise<void> {
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_blockNumber', params: [], id: 1 }),
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'eth_blockNumber',
+          params: [],
+          id: 1,
+        }),
       })
 
       if (response.ok) {
@@ -66,7 +82,7 @@ async function waitForRPC(url: string, timeout: number): Promise<void> {
           return
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors, will retry
     }
 
@@ -93,10 +109,15 @@ export async function setup() {
 
     // Get contract addresses from devnet
     console.log('Fetching contract addresses...')
-    const addressesResponse = await fetch('http://localhost:8545', {
+    const _addressesResponse = await fetch('http://localhost:8545', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_getStorageAt', params: ['0x0000000000000000000000000000000000000000', '0x0', 'latest'], id: 1 }),
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'eth_getStorageAt',
+        params: ['0x0000000000000000000000000000000000000000', '0x0', 'latest'],
+        id: 1,
+      }),
     })
 
     // Export contract addresses as environment variable for hardhat
