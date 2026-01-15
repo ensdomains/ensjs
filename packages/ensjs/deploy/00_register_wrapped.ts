@@ -54,7 +54,7 @@ const names: {
     fuses: encodeFuses({
       input: {
         child: {
-          named: ['CANNOT_UNWRAP'],
+          named: ['CANNOT_UNWRAP'] as const,
         },
       },
     }),
@@ -75,7 +75,7 @@ const names: {
         expiry: Math.floor(Date.now() / 1000),
         fuses: encodeFuses({
           input: {
-            parent: { named: ['PARENT_CANNOT_CONTROL'] },
+            parent: { named: ['PARENT_CANNOT_CONTROL'] as const },
           },
         }),
       },
@@ -85,7 +85,7 @@ const names: {
         expiry: MAX_DATE_INT,
         fuses: encodeFuses({
           input: {
-            parent: { named: ['PARENT_CANNOT_CONTROL'] },
+            parent: { named: ['PARENT_CANNOT_CONTROL'] as const },
           },
         }),
       },
@@ -97,7 +97,7 @@ const names: {
     fuses: encodeFuses({
       input: {
         child: {
-          named: ['CANNOT_UNWRAP'],
+          named: ['CANNOT_UNWRAP'] as const,
         },
       },
     }),
@@ -110,10 +110,10 @@ const names: {
         fuses: encodeFuses({
           input: {
             parent: {
-              named: ['PARENT_CANNOT_CONTROL'],
+              named: ['PARENT_CANNOT_CONTROL'] as const,
             },
             child: {
-              named: ['CANNOT_UNWRAP'],
+              named: ['CANNOT_UNWRAP'] as const,
             },
           },
         }),

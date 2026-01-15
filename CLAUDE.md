@@ -28,7 +28,7 @@ pnpm -F @ensdomains/ensjs test
 pnpm -F @ensdomains/ensjs test:watch
 
 # Run a single test file
-pnpm -F @ensdomains/ensjs test -- src/actions/public/getRecords.test.ts
+pnpm -F @ensdomains/ensjs test src/actions/public/getRecords.test.ts
 
 # Start test environment (with ENS contracts)
 pnpm -F @ensdomains/ensjs denv

@@ -121,7 +121,17 @@ const dummyABI = [
       },
     ],
   },
-]
+] as const
+
+type Subname = {
+  label: string
+  namedOwner: string
+  records?: {
+    texts?: { key: string; value: string }[]
+    coins?: { coin: string; value: string }[]
+    contentHash?: string
+  }
+}
 
 const names: {
   label: string
@@ -144,7 +154,7 @@ const names: {
         }
       | {
           contentType: 1 | 2 | 4 | 8 | 256
-          data: string
+          data: object | string
         }[]
   }
   duration?: number

@@ -1,0 +1,110 @@
+services:
+  devnet:
+    container_name: devnet
+    image: ghcr.io/ensdomains/namechain:feature-fet-2604-fix-devnet-docker-shared-contracts-issue-b0b008d
+    pull_policy: always
+    ports:
+      - "8545:8545" # L1 chain
+      - "8546:8546" # L2 chain
+      - "8547:8547" # Urg
+    expose:
+      - 8545
+      - 8546
+      - 8547
+    environment:
+      ANVIL_IP_ADDR: "0.0.0.0"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  ensindexer:
+    container_name: ensindexer
+    image: ghcr.io/namehash/ensnode/ensindexer:0.36.0-rc.1
+    pull_policy: always
+    ports:
+      - "42069:42069"
+    depends_on:
+      postgres:
+        condition: service_started
+      ensrainbow:
+        condition: service_healthy
+      devnet:
+        condition: service_started
+    environment:
+      PORT: 42069
+      RPC_URL_15658733: http://devnet:8545
+      ENSNODE_PUBLIC_URL: http://localhost:42069
+      ENSADMIN_PUBLIC_URL: http://localhost:4173
+      ENSINDEXER_URL: http://localhost:42069
+      ENSRAINBOW_URL: http://ensrainbow:3223
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/postgres
+      DATABASE_SCHEMA: ens-test-env
+      NAMESPACE: ens-test-env
+      HEAL_REVERSE_ADDRESSES: false
+      INDEX_RESOLVER_RECORDS: false
+      REPLACE_UNNORMALIZED: false
+      PLUGINS: subgraph
+      LABEL_SET_ID: ens-test-env
+      LABEL_SET_VERSION: 0
+
+  ensrainbow:
+    container_name: ensrainbow
+    image: ghcr.io/namehash/ensnode/ensrainbow:0.36.0-rc.1
+    pull_policy: always
+    environment:
+      DB_SCHEMA_VERSION: 3
+      LABEL_SET_ID: ens-test-env
+      LABEL_SET_VERSION: 0
+      LOG_LEVEL: error
+    volumes:
+      - ensrainbow_data:/app/apps/ensrainbow/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3223/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 2
+      start_period: 2m
+      start_interval: 1s
+
+  ensadmin:
+    container_name: ensadmin
+    image: ghcr.io/namehash/ensnode/ensadmin:0.36.0-rc.1
+    pull_policy: always
+    ports:
+      - "4173:4173"
+    environment:
+      ENSADMIN_PUBLIC_URL: http://localhost:4173
+      NEXT_PUBLIC_DEFAULT_ENSNODE_URLS: http://localhost:42069
+    depends_on:
+      - ensindexer
+
+  postgres:
+    container_name: postgres
+    restart: always
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  metadata:
+    container_name: metadata
+    image: ghcr.io/ensdomains/ens-metadata-service:latest
+    depends_on:
+      - devnet
+      - ensindexer
+    ports:
+      - "8080:8080"
+    environment:
+      - ADDRESS_ETH_REGISTRAR=0x36b58F5C1969B7b6591D752ea6F5486D069010AB
+      - ADDRESS_NAME_WRAPPER=0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2
+      - RPC_PROVIDER=http://localhost:8545
+      - SUBGRAPH_URL=http://ensindexer:42069/subgraph
+
+volumes:
+  ensrainbow_data:
+    driver: local

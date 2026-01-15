@@ -37,7 +37,7 @@ const names: {
     fuses: encodeFuses({
       input: {
         child: {
-          named: ['CANNOT_UNWRAP'],
+          named: ['CANNOT_UNWRAP'] as const,
         },
       },
     }),
@@ -51,10 +51,10 @@ const names: {
         fuses: encodeFuses({
           input: {
             parent: {
-              named: ['PARENT_CANNOT_CONTROL'],
+              named: ['PARENT_CANNOT_CONTROL'] as const,
             },
             child: {
-              named: ['CANNOT_UNWRAP'],
+              named: ['CANNOT_UNWRAP'] as const,
             },
           },
         }),
