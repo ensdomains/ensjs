@@ -19,8 +19,7 @@ export default {
   deployCommand: 'pnpm hh deploy --no-compile',
   scripts: [
     {
-      command:
-        process.env.STATIC_ENS === 'true' ? 'pnpm test:static' : 'pnpm test',
+      command: 'pnpm test --coverage',
       name: 'vitest',
       prefixColor: 'yellow.bold',
       finishOnExit: true,
