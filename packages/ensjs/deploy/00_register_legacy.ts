@@ -2,7 +2,7 @@ import cbor from 'cbor'
 import type { DeployFunction } from 'hardhat-deploy/dist/types.js'
 import pako from 'pako'
 import { type Address, bytesToHex, namehash, stringToBytes } from 'viem'
-import { makeNameGenerator } from '../utils/legacyNameGenerator.ts'
+import { makeNameGenerator } from '../utils/legacyNameGenerator.js'
 
 const dummyABI = [
   {
@@ -123,6 +123,16 @@ const dummyABI = [
   },
 ] as const
 
+type Subname = {
+  label: string
+  namedOwner: string
+  records?: {
+    texts?: { key: string; value: string }[]
+    coins?: { coin: string; value: string }[]
+    contentHash?: string
+  }
+}
+
 const names: {
   label: string
   namedOwner: string
@@ -144,7 +154,7 @@ const names: {
         }
       | {
           contentType: 1 | 2 | 4 | 8 | 256
-          data: string
+          data: object | string
         }[]
   }
   duration?: number
