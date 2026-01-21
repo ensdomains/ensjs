@@ -19,6 +19,7 @@ import {
 export const supportedL1Chains = {
   mainnet: 1,
   sepolia: 11155111,
+  anvilL1: 15658733,
 } as const
 
 const SupportedL1ChainIds = Object.values(supportedL1Chains)
@@ -143,6 +144,50 @@ export const ensL1Contracts = {
       address: '0xb1cdc9dc6130cf25465d4950c655dd35a3c81d7a',
     },
   },
+  [supportedL1Chains.anvilL1]: {
+    ensBaseRegistrarImplementation: {
+      address: '0x851356ae760d987E095750cCeb3bC6014560891C',
+    },
+    ensBulkRenewal: {
+      address: '0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d',
+    },
+    ensDnsRegistrar: {
+      address: '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD',
+    },
+    ensDnssecImpl: {
+      address: '0x3Aa5ebB10DC797CAC828524e59A333d0A371443c',
+    },
+    ensEthRegistrarController: {
+      address: '0xD84379CEae14AA33C123Af12424A37803F885889',
+    },
+    ensNameWrapper: {
+      address: '0x162A433068F51e18b7d13932F27e66a3f99E6890',
+    },
+    ensPublicResolver: {
+      address: '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
+    },
+    ensRegistry: {
+      address: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
+    },
+    ensReverseRegistrar: {
+      address: '0xFD471836031dc5108809D173A067e8486B9047A3',
+    },
+    ensUniversalResolver: {
+      address: '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
+    },
+    ensDedicatedResolver: {
+      address: '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
+    },
+    ensV2EthRegistry: {
+      address: '0x1291Be112d480055DaFd8a610b7d1e203891C274',
+    },
+    ensVerifiableFactory: {
+      address: '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9',
+    },
+    ensUserRegistry: {
+      address: '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43',
+    },
+  },
 } as const satisfies Record<
   SupportedL1ChainId,
   Record<SupportedL1Contract, ChainContract>
@@ -169,6 +214,11 @@ export const ensL1Subgraphs = {
   [supportedL1Chains.sepolia]: {
     ens: {
       url: 'https://ensnode-api-sepolia.up.railway.app/subgraph',
+    },
+  },
+  [supportedL1Chains.anvilL1]: {
+    ens: {
+      url: 'http://localhost:42069/subgraph',
     },
   },
 } as const satisfies Record<SupportedL1ChainId, EnsSubgraph>

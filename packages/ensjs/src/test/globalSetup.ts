@@ -3,7 +3,7 @@ import { promisify } from 'node:util'
 
 const execAsync = promisify(exec)
 
-const DOCKER_COMPOSE_FILE = './docker-compose.yaml'
+const DOCKER_COMPOSE_FILE = './compose.yaml'
 const STARTUP_TIMEOUT = 180000 // 3 minutes
 const HEALTH_CHECK_INTERVAL = 2000 // 2 seconds
 
@@ -107,6 +107,10 @@ export async function setup() {
     console.log('Waiting for L1 RPC to be ready...')
     await waitForRPC('http://localhost:8545', 30000)
 
+    // Wait for L2 RPC to be ready
+    console.log('Waiting for L2 RPC to be ready...')
+    await waitForRPC('http://localhost:8546', 30000)
+
     // Get contract addresses from devnet
     console.log('Fetching contract addresses...')
     const _addressesResponse = await fetch('http://localhost:8545', {
@@ -121,6 +125,7 @@ export async function setup() {
     })
 
     // Export contract addresses as environment variable for hardhat
+    // L1 and L2 contracts (namechain deploys same addresses on both chains)
     const contractAddresses = {
       ENSRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
       UniversalResolver: '0x82e01223d51Eb87e16A03E24687EDF0F294da6f1',
@@ -138,6 +143,12 @@ export async function setup() {
       OldestResolver: '0x922D6956C99E12DFeB3224DEA977D0939758A1Fe',
       Root: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
       USDC: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+      // V2 L2 contracts (these need to be verified/updated based on actual deployment)
+      DedicatedResolver: '0x0000000000000000000000000000000000000000',
+      UserRegistry: '0x0000000000000000000000000000000000000000',
+      V2EthRegistry: '0x0000000000000000000000000000000000000000',
+      VerifiableFactory: '0x0000000000000000000000000000000000000000',
+      EthRegistrar: '0x0000000000000000000000000000000000000000',
     }
 
     process.env.DEPLOYMENT_ADDRESSES = JSON.stringify(contractAddresses)

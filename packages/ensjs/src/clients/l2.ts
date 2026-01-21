@@ -8,6 +8,7 @@ import {
 
 export const supportedL2Chains = {
   namechainSepolia: 11155111,
+  anvilL2: 15658734,
 } as const
 
 const supportedL2ChainIds = Object.values(supportedL2Chains)
@@ -50,6 +51,26 @@ export const ensL2Contracts = {
     },
     ethRegistrar: {
       address: '0x3334f0ebcbc4b5b7067f3aff25c6da8973690d54',
+    },
+  },
+  [supportedL2Chains.anvilL2]: {
+    ensDedicatedResolver: {
+      address: '0x9A676e781A523b5d0C0e43731313A708CB607508',
+    },
+    ensUserRegistry: {
+      address: '0x0B306BF915C4d645ff596e518fAf3F9669b97016',
+    },
+    ensV2EthRegistry: {
+      address: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
+    },
+    ensVerifiableFactory: {
+      address: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
+    },
+    usdc: {
+      address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+    },
+    ethRegistrar: {
+      address: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
     },
   },
 } as const satisfies Record<

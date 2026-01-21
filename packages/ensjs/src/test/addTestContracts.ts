@@ -35,6 +35,11 @@ type ContractName =
   | 'DNSSECImpl'
   | 'USDC'
   | 'Root'
+  | 'DedicatedResolver'
+  | 'UserRegistry'
+  | 'V2EthRegistry'
+  | 'VerifiableFactory'
+  | 'EthRegistrar'
 
 export const deploymentAddresses = JSON.parse(
   process.env.DEPLOYMENT_ADDRESSES!,
@@ -98,6 +103,32 @@ export const localhost = {
   },
 } as const
 
+export const localhostL2 = {
+  ..._localhost,
+  id: 15658734,
+  name: 'Localhost L2',
+  contracts: {
+    ensDedicatedResolver: {
+      address: deploymentAddresses.DedicatedResolver,
+    },
+    ensUserRegistry: {
+      address: deploymentAddresses.UserRegistry,
+    },
+    ensV2EthRegistry: {
+      address: deploymentAddresses.V2EthRegistry,
+    },
+    ensVerifiableFactory: {
+      address: deploymentAddresses.VerifiableFactory,
+    },
+    usdc: {
+      address: deploymentAddresses.USDC,
+    },
+    ethRegistrar: {
+      address: deploymentAddresses.EthRegistrar,
+    },
+  },
+} as const
+
 const transport = http('http://localhost:8545')
 
 export const publicClient: PublicClient<typeof transport, typeof localhost> =
@@ -123,6 +154,35 @@ export const walletClient: WalletClient<
 > = createWalletClient({
   chain: localhost,
   transport,
+})
+
+const transportL2 = http('http://localhost:8546')
+
+export const publicClientL2: PublicClient<
+  typeof transportL2,
+  typeof localhostL2
+> = createPublicClient({
+  chain: localhostL2,
+  transport: transportL2,
+})
+
+export const testClientL2: TestClient<
+  'anvil',
+  typeof transportL2,
+  typeof localhostL2
+> = createTestClient({
+  chain: localhostL2,
+  transport: transportL2,
+  mode: 'anvil',
+})
+
+export const walletClientL2: WalletClient<
+  typeof transportL2,
+  typeof localhostL2,
+  Account
+> = createWalletClient({
+  chain: localhostL2,
+  transport: transportL2,
 })
 
 export const waitForTransaction = async (hash: Hash) =>
