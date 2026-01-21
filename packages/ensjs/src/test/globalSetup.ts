@@ -125,20 +125,22 @@ export async function setup() {
     })
 
     // Export contract addresses as environment variable for hardhat
-    // L1 and L2 contracts (namechain deploys same addresses on both chains)
+    // Real addresses from namechain devnet (queried from docker logs)
     const contractAddresses = {
-      ENSRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+      ENSRegistry: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
       UniversalResolver: '0x82e01223d51Eb87e16A03E24687EDF0F294da6f1',
       Multicall: '0xc351628EB244ec633d5f21fBD6621e1a683B1181',
-      BaseRegistrarImplementation: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
+      BaseRegistrarImplementation: '0x851356ae760d987E095750cCeb3bC6014560891C',
       DNSRegistrar: '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9',
-      ETHRegistrarController: '0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f',
-      NameWrapper: '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2',
-      PublicResolver: '0x1429859428C0aBc9C2C47C8Ee9FBaF82cFA0F20f',
-      ReverseRegistrar: '0x9E545E3C0baAB3E08CdfD552C960A1050f373042',
+      LegacyETHRegistrarController: '0x172076E0166D1F9Cc711C77Adf8488051744980C',
+      WrappedETHRegistrarController: '0x253553366Da8546fC250F225fe3d25d0C782303b',
+      NameWrapper: '0x162A433068F51e18b7d13932F27e66a3f99E6890',
+      PublicResolver: '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
+      LegacyPublicResolver: '0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb',
+      ReverseRegistrar: '0xFD471836031dc5108809D173A067e8486B9047A3',
+      DefaultReverseRegistrar: '0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf',
       StaticBulkRenewal: '0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B',
       DNSSECImpl: '0x01D3A140FE0e5DFB9C82366784Bb7f35af49e7CE',
-      LegacyPublicResolver: '0xf8e81D47203A594245E36C48e151709F0C19fBe8',
       NoMulticallResolver: '0x0b306BF915C4d645ff596e518fAf3F9669b97016',
       OldestResolver: '0x922D6956C99E12DFeB3224DEA977D0939758A1Fe',
       Root: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',

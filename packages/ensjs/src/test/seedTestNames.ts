@@ -7,6 +7,7 @@ import {
   type Address,
   createPublicClient,
   createWalletClient,
+  getAddress,
   type Hash,
   http,
   namehash,
@@ -23,10 +24,18 @@ const account2 = privateKeyToAccount(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
 )
 
-async function setupClients(l1Url: string) {
-  // Get contract addresses from environment
-  const addresses = JSON.parse(process.env.DEPLOYMENT_ADDRESSES || '{}')
+// Real devnet addresses from namechain
+const DEVNET_ADDRESSES = {
+  ENSRegistry: getAddress('0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82'),
+  BaseRegistrarImplementation: getAddress('0x851356ae760d987E095750cCeb3bC6014560891C'),
+  LegacyETHRegistrarController: getAddress('0x172076E0166D1F9Cc711C77Adf8488051744980C'),
+  WrappedETHRegistrarController: getAddress('0x253553366Da8546fC250F225fe3d25d0C782303b'),
+  NameWrapper: getAddress('0x162A433068F51e18b7d13932F27e66a3f99E6890'),
+  PublicResolver: getAddress('0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901'),
+  LegacyPublicResolver: getAddress('0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb'),
+}
 
+async function setupClients(l1Url: string) {
   const localhost = {
     id: 15658733,
     name: 'Localhost',
@@ -35,15 +44,15 @@ async function setupClients(l1Url: string) {
       default: { http: [l1Url] },
     },
     contracts: {
-      ensRegistry: { address: addresses.ENSRegistry as Address },
+      ensRegistry: { address: DEVNET_ADDRESSES.ENSRegistry },
       ensBaseRegistrarImplementation: {
-        address: addresses.BaseRegistrarImplementation as Address,
+        address: DEVNET_ADDRESSES.BaseRegistrarImplementation,
       },
       ensEthRegistrarController: {
-        address: addresses.ETHRegistrarController as Address,
+        address: DEVNET_ADDRESSES.LegacyETHRegistrarController,
       },
-      ensNameWrapper: { address: addresses.NameWrapper as Address },
-      ensPublicResolver: { address: addresses.PublicResolver as Address },
+      ensNameWrapper: { address: DEVNET_ADDRESSES.NameWrapper },
+      ensPublicResolver: { address: DEVNET_ADDRESSES.PublicResolver },
     },
   }
 
@@ -60,14 +69,14 @@ async function setupClients(l1Url: string) {
     transport,
   })
 
-  return { publicClient, walletClient, addresses, account, account2 }
+  return { publicClient, walletClient, addresses: DEVNET_ADDRESSES, account, account2 }
 }
 
 async function registerLegacyName(
   walletClient: any,
   publicClient: any,
   registrarController: Address,
-  baseRegistrar: Address,
+  resolver: Address,
   label: string,
   owner: Address,
   duration: number = 31536000, // 1 year
@@ -75,7 +84,27 @@ async function registerLegacyName(
   const secret =
     '0x0000000000000000000000000000000000000000000000000000000000000000' as Hash
 
-  // Prepare commitment
+  // Check if name is available
+  const available = await publicClient.readContract({
+    address: registrarController,
+    abi: [
+      {
+        inputs: [{ name: 'name', type: 'string' }],
+        name: 'available',
+        outputs: [{ name: '', type: 'bool' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ] as const,
+    functionName: 'available',
+    args: [label],
+  })
+
+  if (!available) {
+    throw new Error(`Name ${label}.eth is not available`)
+  }
+
+  // Prepare commitment using legacy makeCommitmentWithConfig
   const commitment = await publicClient.readContract({
     address: registrarController,
     abi: [
@@ -83,21 +112,18 @@ async function registerLegacyName(
         inputs: [
           { name: 'name', type: 'string' },
           { name: 'owner', type: 'address' },
-          { name: 'duration', type: 'uint256' },
           { name: 'secret', type: 'bytes32' },
           { name: 'resolver', type: 'address' },
-          { name: 'data', type: 'bytes[]' },
-          { name: 'reverseRecord', type: 'bool' },
-          { name: 'ownerControlledFuses', type: 'uint16' },
+          { name: 'addr', type: 'address' },
         ],
-        name: 'makeCommitment',
+        name: 'makeCommitmentWithConfig',
         outputs: [{ name: '', type: 'bytes32' }],
         stateMutability: 'pure',
         type: 'function',
       },
     ] as const,
-    functionName: 'makeCommitment',
-    args: [label, owner, BigInt(duration), secret, owner, [], false, 0],
+    functionName: 'makeCommitmentWithConfig',
+    args: [label, owner, secret, resolver, owner],
   })
 
   // Commit
@@ -116,10 +142,13 @@ async function registerLegacyName(
     args: [commitment],
   })
 
-  await waitForTransaction(walletClient, commitTx)
+  await waitForTransaction(publicClient, commitTx)
 
-  // Wait for commitment age
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  // Wait for commitment age (min wait time) and mine several blocks
+  await new Promise((resolve) => setTimeout(resolve, 500))
+  for (let i = 0; i < 10; i++) {
+    await mineBlock() // Mine blocks to pass minimum commitment age
+  }
 
   // Get rental price
   const price = await publicClient.readContract({
@@ -131,16 +160,7 @@ async function registerLegacyName(
           { name: 'duration', type: 'uint256' },
         ],
         name: 'rentPrice',
-        outputs: [
-          {
-            components: [
-              { name: 'base', type: 'uint256' },
-              { name: 'premium', type: 'uint256' },
-            ],
-            name: 'price',
-            type: 'tuple',
-          },
-        ],
+        outputs: [{ name: '', type: 'uint256' }],
         stateMutability: 'view',
         type: 'function',
       },
@@ -149,9 +169,9 @@ async function registerLegacyName(
     args: [label, BigInt(duration)],
   })
 
-  const value = price.base + price.premium
+  console.log(`  Price for ${label}.eth: ${price} wei`)
 
-  // Register
+  // Register using legacy registerWithConfig
   const registerTx = await walletClient.writeContract({
     address: registrarController,
     abi: [
@@ -162,19 +182,17 @@ async function registerLegacyName(
           { name: 'duration', type: 'uint256' },
           { name: 'secret', type: 'bytes32' },
           { name: 'resolver', type: 'address' },
-          { name: 'data', type: 'bytes[]' },
-          { name: 'reverseRecord', type: 'bool' },
-          { name: 'ownerControlledFuses', type: 'uint16' },
+          { name: 'addr', type: 'address' },
         ],
-        name: 'register',
+        name: 'registerWithConfig',
         outputs: [],
         stateMutability: 'payable',
         type: 'function',
       },
     ] as const,
-    functionName: 'register',
-    args: [label, owner, BigInt(duration), secret, owner, [], false, 0],
-    value,
+    functionName: 'registerWithConfig',
+    args: [label, owner, BigInt(duration), secret, resolver, owner],
+    value: price,
   })
 
   return registerTx
@@ -211,18 +229,34 @@ async function createSubname(
   return tx
 }
 
-async function waitForTransaction(walletClient: any, hash: Hash) {
+async function mineBlock() {
+  await fetch('http://localhost:8545', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'evm_mine',
+      params: [],
+      id: 1,
+    }),
+  })
+}
+
+async function waitForTransaction(publicClient: any, hash: Hash) {
+  // Mine a block to include the transaction
+  await mineBlock()
+
   let receipt
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 20; i++) {
     try {
-      receipt = await walletClient.getTransactionReceipt({ hash })
+      receipt = await publicClient.getTransactionReceipt({ hash })
       if (receipt) return receipt
     } catch (e) {
       // Not found yet
     }
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 200))
   }
-  throw new Error(`Transaction ${hash} not found after 10 seconds`)
+  throw new Error(`Transaction ${hash} not found after 4 seconds`)
 }
 
 export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
@@ -236,12 +270,12 @@ export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
     const tx1 = await registerLegacyName(
       walletClient,
       publicClient,
-      addresses.ETHRegistrarController,
-      addresses.BaseRegistrarImplementation,
+      addresses.LegacyETHRegistrarController,
+      addresses.LegacyPublicResolver,
       'with-subnames',
       walletClient.account.address,
     )
-    await waitForTransaction(walletClient, tx1)
+    await waitForTransaction(publicClient, tx1)
     console.log('  ✓ Registered with-subnames.eth')
 
     // Create subname test.with-subnames.eth
@@ -253,7 +287,7 @@ export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
       'test',
       account2.address,
     )
-    await waitForTransaction(walletClient, tx2)
+    await waitForTransaction(publicClient, tx2)
     console.log('  ✓ Created test.with-subnames.eth')
 
     // Register "wrapped.eth"
@@ -261,12 +295,12 @@ export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
     const tx3 = await registerLegacyName(
       walletClient,
       publicClient,
-      addresses.ETHRegistrarController,
-      addresses.BaseRegistrarImplementation,
+      addresses.LegacyETHRegistrarController,
+      addresses.LegacyPublicResolver,
       'wrapped',
       walletClient.account.address,
     )
-    await waitForTransaction(walletClient, tx3)
+    await waitForTransaction(publicClient, tx3)
     console.log('  ✓ Registered wrapped.eth')
 
     // Register "wrapped-with-subnames.eth"
@@ -274,12 +308,12 @@ export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
     const tx4 = await registerLegacyName(
       walletClient,
       publicClient,
-      addresses.ETHRegistrarController,
-      addresses.BaseRegistrarImplementation,
+      addresses.LegacyETHRegistrarController,
+      addresses.LegacyPublicResolver,
       'wrapped-with-subnames',
       walletClient.account.address,
     )
-    await waitForTransaction(walletClient, tx4)
+    await waitForTransaction(publicClient, tx4)
     console.log('  ✓ Registered wrapped-with-subnames.eth')
 
     // Create subname test.wrapped-with-subnames.eth
@@ -291,7 +325,7 @@ export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
       'test',
       account2.address,
     )
-    await waitForTransaction(walletClient, tx5)
+    await waitForTransaction(publicClient, tx5)
     console.log('  ✓ Created test.wrapped-with-subnames.eth')
 
     // Register "wrapped-with-expiring-subnames.eth"
@@ -299,12 +333,12 @@ export async function seedTestNames(l1Url: string = 'http://localhost:8545') {
     const tx6 = await registerLegacyName(
       walletClient,
       publicClient,
-      addresses.ETHRegistrarController,
-      addresses.BaseRegistrarImplementation,
+      addresses.LegacyETHRegistrarController,
+      addresses.LegacyPublicResolver,
       'wrapped-with-expiring-subnames',
       walletClient.account.address,
     )
-    await waitForTransaction(walletClient, tx6)
+    await waitForTransaction(publicClient, tx6)
     console.log('  ✓ Registered wrapped-with-expiring-subnames.eth')
 
     console.log('✅ Test names seeded successfully')
