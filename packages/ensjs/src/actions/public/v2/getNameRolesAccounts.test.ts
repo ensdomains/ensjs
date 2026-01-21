@@ -18,12 +18,14 @@ describe('getNameRolesAccounts', () => {
       registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
     })
 
-    expect(accounts.get('0x205d2686da3Bf33f64C17f21462c51B5eaD462CF')).toEqual([
-      'ROLE_SET_SUBREGISTRY',
-      'ROLE_SET_SUBREGISTRY_ADMIN',
+    expect(
+      accounts.get('0x205d2686da3Bf33f64C17f21462c51B5eaD462CF')?.sort(),
+    ).toEqual([
+      'ROLE_CAN_TRANSFER_ADMIN',
       'ROLE_SET_RESOLVER',
       'ROLE_SET_RESOLVER_ADMIN',
-      'ROLE_CAN_TRANSFER_ADMIN',
+      'ROLE_SET_SUBREGISTRY',
+      'ROLE_SET_SUBREGISTRY_ADMIN',
     ])
   })
   it('returns an empty map for a non-existent label', async () => {
