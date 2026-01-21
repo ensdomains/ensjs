@@ -15,6 +15,7 @@ import {
   type WalletClient,
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
+import { ensL2Contracts, supportedL2Chains } from '../clients/l2.js'
 
 config({
   path: resolve(import.meta.dirname, '../../.env.local'),
@@ -107,26 +108,7 @@ export const localhostL2 = {
   ..._localhost,
   id: 15658734,
   name: 'Localhost L2',
-  contracts: {
-    ensDedicatedResolver: {
-      address: deploymentAddresses.DedicatedResolver,
-    },
-    ensUserRegistry: {
-      address: deploymentAddresses.UserRegistry,
-    },
-    ensV2EthRegistry: {
-      address: deploymentAddresses.V2EthRegistry,
-    },
-    ensVerifiableFactory: {
-      address: deploymentAddresses.VerifiableFactory,
-    },
-    usdc: {
-      address: deploymentAddresses.USDC,
-    },
-    ethRegistrar: {
-      address: deploymentAddresses.EthRegistrar,
-    },
-  },
+  contracts: ensL2Contracts[supportedL2Chains.anvilL2],
 } as const
 
 const transport = http('http://localhost:8545')

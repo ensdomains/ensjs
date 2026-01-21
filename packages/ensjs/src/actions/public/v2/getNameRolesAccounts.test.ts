@@ -19,11 +19,11 @@ describe('getNameRolesAccounts', () => {
     })
 
     expect(accounts.get('0x205d2686da3Bf33f64C17f21462c51B5eaD462CF')).toEqual([
-      'SET_SUBREGISTRY',
-      'SET_SUBREGISTRY_ADMIN',
-      'SET_RESOLVER',
-      'SET_RESOLVER_ADMIN',
-      'CAN_TRANSFER_ADMIN',
+      'ROLE_SET_SUBREGISTRY',
+      'ROLE_SET_SUBREGISTRY_ADMIN',
+      'ROLE_SET_RESOLVER',
+      'ROLE_SET_RESOLVER_ADMIN',
+      'ROLE_CAN_TRANSFER_ADMIN',
     ])
   })
   it('returns an empty map for a non-existent label', async () => {
