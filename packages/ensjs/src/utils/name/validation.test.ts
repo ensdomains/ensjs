@@ -9,12 +9,6 @@ import {
 } from 'vitest'
 import { parseInput, validateName } from './validation.js'
 
-declare namespace localStorage {
-  const getItem: MockedFunction<Storage['getItem']>
-  const setItem: MockedFunction<Storage['setItem']>
-  const removeItem: MockedFunction<Storage['removeItem']>
-}
-
 const labelsMock = {
   '0x68371d7e884c168ae2022c82bd837d51837718a7f7dfb7aa3f753074a35e1d87':
     'something',
@@ -25,9 +19,9 @@ const labelsMockJSON = JSON.stringify(labelsMock)
 
 describe('validateName()', () => {
   beforeEach(() => {
-    localStorage.setItem('ensjs:labels', labelsMockJSON)
-    vi.spyOn(localStorage, 'getItem')
-    vi.spyOn(localStorage, 'setItem')
+    global.localStorage.setItem('ensjs:labels', labelsMockJSON)
+    vi.spyOn(global.localStorage, 'getItem')
+    vi.spyOn(global.localStorage, 'setItem')
   })
   it('should throw if the name has an empty label', () => {
     expect(() => validateName('foo..bar')).toThrowError(
@@ -61,7 +55,7 @@ describe('validateName()', () => {
         'thing.[68371d7e884c168ae2022c82bd837d51837718a7f7dfb7aa3f753074a35e1d87].eth',
       ),
     ).toEqual('thing.something.eth')
-    expect(localStorage.getItem).toHaveBeenCalled()
+    expect(global.localStorage.getItem).toHaveBeenCalled()
   })
   it('should fallback to encoded label hash if the decoded label hash is not in local storage', () => {
     expect(
@@ -71,7 +65,7 @@ describe('validateName()', () => {
     ).toEqual(
       'something.[8c6c947d200f53fa1127b152f95b118f9e1d0eeb06fc678b6fc8a6d5c6fc5e17].eth',
     )
-    expect(localStorage.getItem).toHaveBeenCalled()
+    expect(global.localStorage.getItem).toHaveBeenCalled()
     expect(
       validateName(
         '[8c6c947d200f53fa1127b152f95b118f9e1d0eeb06fc678b6fc8a6d5c6fc5e17]',
@@ -85,7 +79,7 @@ describe('validateName()', () => {
   })
   it('should save the normalized name to local storage', () => {
     validateName('swAgCity.eth')
-    expect(localStorage.setItem).toHaveBeenCalledWith(
+    expect(global.localStorage.setItem).toHaveBeenCalledWith(
       'ensjs:labels',
       JSON.stringify({
         ...labelsMock,
