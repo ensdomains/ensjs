@@ -21,7 +21,7 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { addEnsL1Contracts } from '../../index.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { universalResolverReverseSnippet } from '../../contracts/universalResolver.js'
 import {
@@ -42,7 +42,7 @@ let accounts: Address[]
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
-  chain: addEnsContracts(mainnet),
+  chain: addEnsL1Contracts(mainnet),
 } as unknown as Client<Transport, ChainWithContract<'ensUniversalResolver'>>
 
 beforeAll(async () => {

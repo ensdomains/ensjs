@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 import { holesky, mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
-import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { addEnsL1Contracts } from '../../index.js'
 import { ccipRequest } from '../../utils/ccipRequest.js'
 import { getRecords } from './getRecords.js'
 
@@ -10,12 +10,12 @@ vi.setConfig({
 })
 
 const mainnetPublicClient = createPublicClient({
-  chain: addEnsContracts(mainnet),
+  chain: addEnsL1Contracts(mainnet),
   transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
 const holeskyPublicClient = createPublicClient({
-  chain: addEnsContracts(holesky),
+  chain: addEnsL1Contracts(holesky),
   transport: http('https://holesky.gateway.tenderly.co/5S00ox7ZN3mdGqaO74UDsg'),
 })
 
@@ -61,7 +61,7 @@ describe('CCIP', () => {
       `)
     })
     it('should return records from a ccip-read name with custom ccipRequest', async () => {
-      const holeskyWithEns = addEnsContracts(holesky)
+      const holeskyWithEns = addEnsL1Contracts(holesky)
       const holeskyPublicClientWithCustomCcipRequest = createPublicClient({
         chain: holeskyWithEns,
         transport: http('https://holesky.gateway.tenderly.co'),

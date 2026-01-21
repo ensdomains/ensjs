@@ -12,7 +12,7 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import { addEnsContracts } from '../../index.js'
+import { addEnsL1Contracts } from '../../index.js'
 import { createHttpServer } from '../../test/createHttpServer.js'
 import { getDnsOffchainData } from './getDnsOffchainData.js'
 
@@ -49,7 +49,7 @@ beforeEach(() => {
 })
 
 const mainnetPublicClient = createPublicClient({
-  chain: addEnsContracts(mainnet),
+  chain: addEnsL1Contracts(mainnet),
   transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 

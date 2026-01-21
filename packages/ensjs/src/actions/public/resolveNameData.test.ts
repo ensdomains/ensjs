@@ -14,7 +14,7 @@ import {
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
-import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { addEnsL1Contracts } from '../../index.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { multicallSnippet } from '../../contracts/multicall.js'
 import {
@@ -32,7 +32,7 @@ import { resolveNameData } from './resolveNameData.js'
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
-  chain: addEnsContracts(mainnet),
+  chain: addEnsL1Contracts(mainnet),
 } as unknown as Client<Transport, ChainWithContract<'ensUniversalResolver'>>
 
 beforeEach(() => {

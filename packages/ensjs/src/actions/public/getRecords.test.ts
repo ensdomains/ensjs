@@ -1,7 +1,7 @@
 import { createPublicClient, http, RawContractError } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
-import { addEnsContracts } from '../../index.js'
+import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -9,7 +9,7 @@ import {
 import { getRecords } from './getRecords.js'
 
 const mainnetPublicClient = createPublicClient({
-  chain: addEnsContracts(mainnet),
+  chain: addEnsL1Contracts(mainnet),
   transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
