@@ -154,10 +154,19 @@ export async function setup() {
     process.env.DEPLOYMENT_ADDRESSES = JSON.stringify(contractAddresses)
     console.log('✓ Contract addresses configured')
 
-    // TODO: Register test names
-    // The hardhat deploy scripts require complex setup and are tightly coupled
-    // to hardhat-deploy's deployment management. For now, tests that require
-    // pre-registered names will need to register their own test data.
+    // Seed test names
+    console.log('Seeding test names...')
+    try {
+      const { seedTestNames } = await import('./seedTestNames.js')
+      await seedTestNames('http://localhost:8545')
+      console.log('✓ Test names seeded')
+    } catch (error) {
+      console.warn('⚠ Failed to seed test names:', error)
+      console.warn(
+        '  Tests requiring pre-registered names may fail. This is expected if',
+      )
+      console.warn('  the seeding script is not yet fully implemented.')
+    }
 
     console.log('✓ Test environment is ready')
   } catch (error) {
