@@ -49,14 +49,6 @@ export type SetResolverWriteParametersErrorType =
 // Write parameters
 // ================================
 
-/**
- * Determines if the contract parameter is a v2 registry address
- * (i.e., not 'registry' or 'nameWrapper')
- */
-const isV2Registry = (
-  contract: 'registry' | 'nameWrapper' | Address,
-): contract is Address => contract !== 'registry' && contract !== 'nameWrapper'
-
 export const setResolverWriteParameters = <
   chain extends Chain,
   account extends Account,
@@ -71,7 +63,7 @@ export const setResolverWriteParameters = <
   ASSERT_NO_TYPE_ERROR(client)
 
   // Handle v2 registry (contract is an address)
-  if (isV2Registry(contract)) {
+  if (contract !== 'registry' && contract !== 'nameWrapper') {
     const tokenId = hexToBigInt(toHex(packetToBytes(name)))
     return {
       address: contract,
