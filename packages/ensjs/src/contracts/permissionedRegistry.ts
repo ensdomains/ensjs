@@ -180,3 +180,24 @@ export const permissionedRegistryRolesSnippet = [
     stateMutability: 'view',
   },
 ] as const
+
+export const permissionedRegistrySetResolverSnippet = [
+  {
+    type: 'function',
+    name: 'setResolver',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+] as const
