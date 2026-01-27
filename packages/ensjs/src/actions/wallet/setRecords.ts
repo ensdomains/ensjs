@@ -15,14 +15,9 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { clientWithOverrides } from '../../utils/clientWithOverrides.js'
 import {
   type RecordOptions,
@@ -94,7 +89,7 @@ export const setRecordsWriteParameters = async <
 export type SetRecordsParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<'ensPublicResolver'>,
+  chainOverride extends Chain | undefined,
 > = Prettify<
   SetRecordsWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -138,9 +133,9 @@ export type SetRecordsErrorType =
 export async function setRecords<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<'ensPublicResolver'>,
+  chainOverride extends Chain | undefined,
 >(
-  client: RequireClientL1Contracts<chain, 'ensPublicResolver', account>,
+  client: Client<Transport, chain, account>,
   {
     name,
     resolverAddress,
@@ -152,8 +147,6 @@ export async function setRecords<
     ...txArgs
   }: SetRecordsParameters<chain, account, chainOverride>,
 ): Promise<SetRecordsReturnType> {
-  ASSERT_NO_TYPE_ERROR(client)
-
   const writeParameters = await setRecordsWriteParameters(
     clientWithOverrides(client, txArgs),
     {
