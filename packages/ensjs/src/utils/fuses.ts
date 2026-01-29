@@ -383,4 +383,5 @@ export const decodeFuses = (fuses: number): DecodedFuses => {
 }
 
 export const checkPccBurned = (fuses: bigint) =>
-  (fuses & ParentFuses.PARENT_CANNOT_CONTROL) === 0n
+  (fuses & ParentFuses.PARENT_CANNOT_CONTROL) ===
+  ParentFuses.PARENT_CANNOT_CONTROL
