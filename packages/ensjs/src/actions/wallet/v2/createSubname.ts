@@ -21,8 +21,6 @@ import {
   clientWithOverrides,
 } from '../../../utils/clientWithOverrides.js'
 
-const ONE_YEAR_IN_SECONDS = 365n * 24n * 60n * 60n
-
 // ================================
 // Write parameters
 // ================================
@@ -66,7 +64,7 @@ export const createSubnameV2WriteParameters = <
   ASSERT_NO_TYPE_ERROR(client)
 
   const expiryTimestamp =
-    expires ?? BigInt(Math.floor(Date.now() / 1000)) + ONE_YEAR_IN_SECONDS
+    expires ?? BigInt(Math.floor(Date.now() / 1000)) + 31536000n // 1 year
 
   return {
     address: registryAddress,
