@@ -1,4 +1,6 @@
 import { exec } from 'node:child_process'
+import { writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { promisify } from 'node:util'
 
 const execAsync = promisify(exec)
@@ -127,33 +129,43 @@ export async function setup() {
     // Export contract addresses as environment variable for hardhat
     // Real addresses from namechain devnet (queried from docker logs)
     const contractAddresses = {
-      ENSRegistry: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
-      UniversalResolver: '0x82e01223d51Eb87e16A03E24687EDF0F294da6f1',
-      Multicall: '0xc351628EB244ec633d5f21fBD6621e1a683B1181',
-      BaseRegistrarImplementation: '0x851356ae760d987E095750cCeb3bC6014560891C',
-      DNSRegistrar: '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9',
-      LegacyETHRegistrarController: '0x172076E0166D1F9Cc711C77Adf8488051744980C',
+      // L1 contracts
+      ENSRegistry: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
+      UniversalResolver: '0x4631BCAbD6dF18D94796344963cB60d44a4136b6',
+      Multicall: '0xcA11bde05977b3631167028862bE2a173976CA11',
+      BaseRegistrarImplementation: '0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575',
+      DNSRegistrar: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
+      LegacyETHRegistrarController: '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25',
       WrappedETHRegistrarController: '0x253553366Da8546fC250F225fe3d25d0C782303b',
-      NameWrapper: '0x162A433068F51e18b7d13932F27e66a3f99E6890',
-      PublicResolver: '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
-      LegacyPublicResolver: '0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb',
-      ReverseRegistrar: '0xFD471836031dc5108809D173A067e8486B9047A3',
+      ETHRegistrarController: '0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d',
+      NameWrapper: '0xFD471836031dc5108809D173A067e8486B9047A3',
+      PublicResolver: '0x49fd2BE640DB2910c2fAb69bB8531Ab6E76127ff',
+      LegacyPublicResolver: '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
+      ReverseRegistrar: '0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3',
       DefaultReverseRegistrar: '0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf',
-      StaticBulkRenewal: '0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B',
-      DNSSECImpl: '0x01D3A140FE0e5DFB9C82366784Bb7f35af49e7CE',
-      NoMulticallResolver: '0x0b306BF915C4d645ff596e518fAf3F9669b97016',
-      OldestResolver: '0x922D6956C99E12DFeB3224DEA977D0939758A1Fe',
-      Root: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
-      USDC: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
-      // V2 L2 contracts (these need to be verified/updated based on actual deployment)
-      DedicatedResolver: '0x0000000000000000000000000000000000000000',
-      UserRegistry: '0x0000000000000000000000000000000000000000',
-      V2EthRegistry: '0x0000000000000000000000000000000000000000',
-      VerifiableFactory: '0x0000000000000000000000000000000000000000',
-      EthRegistrar: '0x0000000000000000000000000000000000000000',
+      StaticBulkRenewal: '0xC9a43158891282A2B1475592D5719c001986Aaec',
+      DNSSECImpl: '0x7a2088a1bFc9d81c55368AE168C2C02570cB814F',
+      NoMulticallResolver: '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
+      OldestResolver: '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
+      Root: '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
+      USDC: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
+      // V2 L2 contracts
+      DedicatedResolver: '0x9A676e781A523b5d0C0e43731313A708CB607508',
+      UserRegistry: '0x0B306BF915C4d645ff596e518fAf3F9669b97016',
+      V2EthRegistry: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+      VerifiableFactory: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
+      EthRegistrar: '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
     }
 
     process.env.DEPLOYMENT_ADDRESSES = JSON.stringify(contractAddresses)
+
+    // Write to .env.local so tests can read the addresses
+    // (vitest globalSetup runs in a separate process)
+    const envLocalPath = resolve(import.meta.dirname, '../../.env.local')
+    writeFileSync(
+      envLocalPath,
+      `DEPLOYMENT_ADDRESSES='${JSON.stringify(contractAddresses)}'\n`,
+    )
     console.log('✓ Contract addresses configured')
 
     // Seed test names

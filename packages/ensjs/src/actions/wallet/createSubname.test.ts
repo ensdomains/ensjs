@@ -13,7 +13,7 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { getWrapperData } from '../public/getWrapperData.js'
+import { getWrapperData } from '../public/v1/getWrapperData.js'
 import { createSubname } from './createSubname.js'
 import { setFuses } from './setFuses.js'
 

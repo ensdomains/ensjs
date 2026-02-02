@@ -1,12 +1,11 @@
 import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
-import { getChainContractAddress } from '../../clients/l1.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarCommitmentsSnippet } from '../../contracts/l2EthRegistrar.js'
 import {
-  publicClient,
-  testClient,
-  waitForTransaction,
-  walletClient,
+  publicClientL2,
+  testClientL2,
+  walletClientL2,
 } from '../../test/addTestContracts.js'
 import {
   type L2RegistrationParameters,
@@ -18,15 +17,15 @@ let snapshot: Hex
 let accounts: Address[]
 
 beforeAll(async () => {
-  accounts = await walletClient.getAddresses()
+  accounts = await walletClientL2.getAddresses()
 })
 
 beforeEach(async () => {
-  snapshot = await testClient.snapshot()
+  snapshot = await testClientL2.snapshot()
 })
 
 afterEach(async () => {
-  await testClient.revert({ id: snapshot })
+  await testClientL2.revert({ id: snapshot })
 })
 
 const secret = `0x${'a'.repeat(64)}` as Hex
@@ -38,22 +37,22 @@ it('should return a commit transaction and succeed', async () => {
     owner: accounts[1],
     secret,
   }
-  const tx = await commitName(walletClient, {
+  const tx = await commitName(walletClientL2, {
     ...params,
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
-  const receipt = await waitForTransaction(tx)
+  const receipt = await publicClientL2.waitForTransactionReceipt({ hash: tx })
   expect(receipt.status).toBe('success')
 
-  const commitment = await publicClient.readContract({
+  const commitmentAt = await publicClientL2.readContract({
     abi: l2EthRegistrarCommitmentsSnippet,
-    functionName: 'commitments',
+    functionName: 'commitmentAt',
     address: getChainContractAddress({
-      chain: publicClient.chain,
-      contract: 'ensL2EthRegistrar',
+      chain: publicClientL2.chain,
+      contract: 'ethRegistrar',
     }),
     args: [makeL2Commitment(params)],
   })
-  expect(commitment).toBeTruthy()
+  expect(commitmentAt).toBeGreaterThan(0n)
 })

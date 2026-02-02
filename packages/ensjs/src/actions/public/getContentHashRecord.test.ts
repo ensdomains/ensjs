@@ -21,7 +21,7 @@ describe('getContentHashRecord', () => {
     })
     expect(result).toMatchInlineSnapshot(`
       {
-        "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
+        "decoded": "bafybeiac5y4sk47yumr2xxqmaryqs4pszld2r2yaxeru666yf6pgmtv77q",
         "protocolType": "ipfs",
       }
     `)
@@ -42,8 +42,11 @@ describe('getContentHashRecord', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
+      Error: ResolverNotFound(bytes name)
+                             (0x14746869736e616d65646f65736e6f7465786973740365746800)
+       
       Contract Call:
-        address:   0x82e01223d51Eb87e16A03E24687EDF0F294da6f1
+        address:   0x4631BCAbD6dF18D94796344963cB60d44a4136b6
         function:  resolve(bytes name, bytes data)
         args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0xbc1c58d1287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
 

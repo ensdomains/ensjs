@@ -98,14 +98,14 @@ describe('getAddressRecord()', () => {
 
       Error: ResolverNotFound(bytes name)
                              (0x14746869736e616d65646f65736e6f7465786973740365746800)
-
+       
       Contract Call:
-        address:   0x82e01223d51Eb87e16A03E24687EDF0F294da6f1
+        address:   0x4631BCAbD6dF18D94796344963cB60d44a4136b6
         function:  resolve(bytes name, bytes data)
         args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0x3b3b57de287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
 
       Docs: https://viem.sh/docs/contract/readContract
-      Version: viem@2.38.3]
+      Version: viem@2.40.2]
     `)
   })
 })

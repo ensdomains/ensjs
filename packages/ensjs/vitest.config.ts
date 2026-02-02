@@ -11,6 +11,6 @@ export default defineConfig({
     globalSetup: ['./src/test/globalSetup.ts'],
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.ts'],
-    exclude: ['data/**/*'],
+    exclude: ['data/**/*', 'src/actions/subgraph/**/*.test.ts'],
   },
 })

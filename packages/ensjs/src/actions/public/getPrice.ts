@@ -1,9 +1,11 @@
 import type {
+  Address,
   Chain,
   GetChainContractAddressErrorType,
   ReadContractErrorType,
 } from 'viem'
 import { readContract } from 'viem/actions'
+import { zeroAddress } from 'viem'
 import { getAction } from 'viem/utils'
 import type { RequireClientL2Contracts } from '../../clients/l2.js'
 import { getChainContractAddress } from '../../clients/shared.js'
@@ -17,6 +19,10 @@ export type GetPriceParameters = {
   nameOrNames: string | string[]
   /** Duration in seconds to get price for */
   duration: bigint | number
+  /** Owner address (defaults to zero address) */
+  owner?: Address
+  /** Payment token address (defaults to USDC from chain config) */
+  paymentToken?: Address
 }
 
 export type GetPriceReturnType = {
@@ -52,10 +58,23 @@ export type GetPriceErrorType =
  * // { base: 352828971668930335n, premium: 0n }
  */
 export async function getPrice<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ethRegistrar'>,
-  { nameOrNames, duration }: GetPriceParameters,
+  client: RequireClientL2Contracts<chain, 'ethRegistrar' | 'usdc'>,
+  {
+    nameOrNames,
+    duration,
+    owner = zeroAddress,
+    paymentToken,
+  }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
+
+  // Default to USDC from chain config if no payment token specified
+  const resolvedPaymentToken =
+    paymentToken ??
+    getChainContractAddress({
+      chain: client.chain,
+      contract: 'usdc',
+    })
 
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
 
@@ -77,18 +96,18 @@ export async function getPrice<chain extends Chain>(
         details: 'Currently only the price of eth-2ld names can be fetched',
       })
 
-    const result = await readContractAction({
+    const [base, premium] = await readContractAction({
       address: getChainContractAddress({
         chain: client.chain,
         contract: 'ethRegistrar',
       }),
       abi: l2EthRegistrarRentPriceSnippet,
       functionName: 'rentPrice',
-      args: [labels[0], BigInt(duration)],
+      args: [labels[0], owner, BigInt(duration), resolvedPaymentToken],
     })
 
-    totalBase += result.base
-    totalPremium += result.premium
+    totalBase += base
+    totalPremium += premium
   }
 
   return {

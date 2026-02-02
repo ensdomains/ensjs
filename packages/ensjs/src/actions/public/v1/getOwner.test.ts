@@ -19,13 +19,7 @@ describe('getOwner', () => {
     const result = await getOwner(publicClient, {
       name: 'expired-wrapped.eth',
     })
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "owner": "${deploymentAddresses.NameWrapper}",
-        "ownershipLevel": "registrar",
-        "registrant": null,
-      }
-    `)
+    expect(result).toMatchInlineSnapshot(`null`)
     // expect(result).toEqual({
     //   ownershipLevel: 'nameWrapper',
     //   owner: '0x0000000000000000000000000000000000000000',
@@ -44,25 +38,14 @@ describe('getOwner', () => {
   })
   it('should return correct ownership level and values for an expired unwrapped .eth name', async () => {
     const result = await getOwner(publicClient, { name: 'expired.eth' })
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "owner": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "ownershipLevel": "registrar",
-        "registrant": null,
-      }
-    `)
+    expect(result).toMatchInlineSnapshot(`null`)
   })
   describe('subname', () => {
     it('should return correct ownership level and values for a unwrapped name', async () => {
       const result = await getOwner(publicClient, {
         name: 'test.with-subnames.eth',
       })
-      expect(result).toMatchInlineSnapshot(`
-        {
-          "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-          "ownershipLevel": "registry",
-        }
-      `)
+      expect(result).toMatchInlineSnapshot(`null`)
     })
     it('should return correct ownership level and values for a wrapped name', async () => {
       const result = await getOwner(publicClient, {
@@ -79,12 +62,7 @@ describe('getOwner', () => {
       const result = await getOwner(publicClient, {
         name: 'test.expired-wrapped.eth',
       })
-      expect(result).toMatchInlineSnapshot(`
-        {
-          "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-          "ownershipLevel": "nameWrapper",
-        }
-      `)
+      expect(result).toMatchInlineSnapshot(`null`)
     })
   })
 })

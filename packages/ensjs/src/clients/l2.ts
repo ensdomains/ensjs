@@ -61,16 +61,16 @@ export const ensL2Contracts = {
       address: '0x0B306BF915C4d645ff596e518fAf3F9669b97016',
     },
     ensV2EthRegistry: {
-      address: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
+      address: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
     },
     ensVerifiableFactory: {
-      address: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
+      address: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
     },
     usdc: {
-      address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+      address: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
     },
     ethRegistrar: {
-      address: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
+      address: '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
     },
   },
 } as const satisfies Record<

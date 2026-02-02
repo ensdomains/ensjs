@@ -1,8 +1,9 @@
 services:
   devnet:
     container_name: devnet
-    image: ghcr.io/ensdomains/namechain:feature-fet-2604-fix-devnet-docker-shared-contracts-issue-b0b008d
+    image: ghcr.io/ensdomains/namechain:main-9e31679
     pull_policy: always
+    command: ["bun", "./script/runDevnet.ts", "--testNames"]
     ports:
       - "8545:8545" # L1 chain
       - "8546:8546" # L2 chain
@@ -18,11 +19,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 30s
 
   ensindexer:
     container_name: ensindexer
-    image: ghcr.io/namehash/ensnode/ensindexer:0.36.0-rc.1
+    image: ghcr.io/namehash/ensnode/ensindexer:preview-update-devnet-addresses-cfde6bac
     pull_policy: always
     ports:
       - "42069:42069"
@@ -47,12 +48,13 @@ services:
       INDEX_RESOLVER_RECORDS: false
       REPLACE_UNNORMALIZED: false
       PLUGINS: subgraph
+      IS_SUBGRAPH_COMPATIBLE: true
       LABEL_SET_ID: ens-test-env
       LABEL_SET_VERSION: 0
 
   ensrainbow:
     container_name: ensrainbow
-    image: ghcr.io/namehash/ensnode/ensrainbow:0.36.0-rc.1
+    image: ghcr.io/namehash/ensnode/ensrainbow:preview-update-devnet-addresses-cfde6bac
     pull_policy: always
     environment:
       DB_SCHEMA_VERSION: 3
@@ -71,7 +73,7 @@ services:
 
   ensadmin:
     container_name: ensadmin
-    image: ghcr.io/namehash/ensnode/ensadmin:0.36.0-rc.1
+    image: ghcr.io/namehash/ensnode/ensadmin:preview-update-devnet-addresses-cfde6bac
     pull_policy: always
     ports:
       - "4173:4173"

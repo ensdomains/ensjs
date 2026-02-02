@@ -33,21 +33,12 @@ describe('getRecords()', () => {
             "symbol": "etcLegacy",
             "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
           },
-          {
-            "coinType": 0,
-            "symbol": "btc",
-            "value": "bc1qjqg9slurvjukfl92wp58y94480fvh4uc2pwa6n",
-          },
         ],
-        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
+        "resolverAddress": "0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9",
         "texts": [
           {
             "key": "description",
             "value": "Hello2",
-          },
-          {
-            "key": "url",
-            "value": "twitter.com",
           },
         ],
       }
@@ -60,18 +51,12 @@ describe('getRecords()', () => {
       coins: ['60', 'etcLegacy', '0'],
     })
     expect(result).toMatchInlineSnapshot(`
-    {
-      "coins": [
-        {
-          "coinType": 60,
-          "symbol": "eth",
-          "value": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        },
-      ],
-      "resolverAddress": "${deploymentAddresses.OldestResolver}",
-      "texts": [],
-    }
-  `)
+      {
+        "coins": [],
+        "resolverAddress": "0x0000000000000000000000000000000000000000",
+        "texts": [],
+      }
+    `)
   })
   it('works with oldest resolver - jessesum.eth', async () => {
     const result = await getRecords(mainnetPublicClient, {

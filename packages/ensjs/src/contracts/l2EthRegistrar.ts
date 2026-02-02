@@ -95,29 +95,31 @@ export const l2EthRegistrarRentPriceSnippet = [
   {
     inputs: [
       {
-        name: 'name',
+        name: 'label',
         type: 'string',
       },
       {
+        name: 'owner',
+        type: 'address',
+      },
+      {
         name: 'duration',
-        type: 'uint256',
+        type: 'uint64',
+      },
+      {
+        name: 'paymentToken',
+        type: 'address',
       },
     ],
     name: 'rentPrice',
     outputs: [
       {
-        components: [
-          {
-            name: 'base',
-            type: 'uint256',
-          },
-          {
-            name: 'premium',
-            type: 'uint256',
-          },
-        ],
-        name: 'price',
-        type: 'tuple',
+        name: 'base',
+        type: 'uint256',
+      },
+      {
+        name: 'premium',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -165,15 +167,15 @@ export const l2EthRegistrarCommitmentsSnippet = [
   {
     inputs: [
       {
-        name: '',
+        name: 'commitment',
         type: 'bytes32',
       },
     ],
-    name: 'commitments',
+    name: 'commitmentAt',
     outputs: [
       {
-        name: '',
-        type: 'uint256',
+        name: 'commitTime',
+        type: 'uint64',
       },
     ],
     stateMutability: 'view',
@@ -186,11 +188,11 @@ export const l2EthRegistrarAvailableSnippet = [
   {
     inputs: [
       {
-        name: 'name',
+        name: 'label',
         type: 'string',
       },
     ],
-    name: 'available',
+    name: 'isAvailable',
     outputs: [
       {
         name: '',

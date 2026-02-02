@@ -123,7 +123,7 @@ export async function decodeAbiResultFromPrimitiveTypes({
       break
     // zlib compressed JSON
     case 2: {
-      abiData = inflateFromHex(encodedAbiData)
+      abiData = await inflateFromHex(encodedAbiData)
       decoded = true
       break
     }

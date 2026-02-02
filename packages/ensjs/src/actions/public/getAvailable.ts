@@ -46,7 +46,7 @@ export type GetAvailableErrorType =
  * // false
  */
 export async function getAvailable<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ensL2EthRegistrar'>,
+  client: RequireClientL2Contracts<chain, 'ethRegistrar'>,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
   const labels = name.split('.')
@@ -64,10 +64,10 @@ export async function getAvailable<chain extends Chain>(
   const result = await readContractAction({
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensL2EthRegistrar',
+      contract: 'ethRegistrar',
     }),
     abi: l2EthRegistrarAvailableSnippet,
-    functionName: 'available',
+    functionName: 'isAvailable',
     args: [labels[0]],
   })
   return result
