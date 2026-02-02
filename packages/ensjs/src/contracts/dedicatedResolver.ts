@@ -75,3 +75,30 @@ export const dedicatedResolverNameSnippet = [
     type: 'function',
   },
 ] as const
+
+export const dedicatedResolverMulticallWithNodeCheckSnippet = [
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes[]',
+        name: 'calls',
+        type: 'bytes[]',
+      },
+    ],
+    name: 'multicallWithNodeCheck',
+    outputs: [
+      {
+        internalType: 'bytes[]',
+        name: '',
+        type: 'bytes[]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

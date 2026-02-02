@@ -7,3 +7,13 @@ export const registryGetSubregistrySnippet = [
     type: 'function',
   },
 ] as const
+
+export const registryGetResolverSnippet = [
+  {
+    name: 'getResolver',
+    inputs: [{ name: 'label', type: 'string' }],
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
