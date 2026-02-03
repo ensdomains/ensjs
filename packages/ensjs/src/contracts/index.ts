@@ -43,6 +43,17 @@ export {
 } from './ethRegistry.js'
 export { getChainContractAddress } from './getChainContractAddress.js'
 export {
+  l2EthRegistrarAvailableSnippet,
+  l2EthRegistrarCommitmentsSnippet,
+  l2EthRegistrarCommitSnippet,
+  l2EthRegistrarErrors,
+  l2EthRegistrarIsAvailableSnippet,
+  l2EthRegistrarMakeCommitmentSnippet,
+  l2EthRegistrarRegisterSnippet,
+  l2EthRegistrarRenewSnippet,
+  l2EthRegistrarRentPriceSnippet,
+} from './l2EthRegistrar.js'
+export {
   multicallGetCurrentBlockTimestampSnippet,
   multicallTryAggregateSnippet,
 } from './multicall.js'
