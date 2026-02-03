@@ -15,17 +15,25 @@ import {
 export type SetAbiParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
   Prettify<
     {
-      namehash: Hex
+      namehash?: Hex
     } & EncodeAbiParameters<encodeAs>
   >
 
 export type SetAbiParametersErrorType = EncodeAbiErrorType
 
+/**
+ * Sets ABI parameters for encoding.
+ * Note: setABI is only supported on Public Resolver, so namehash is required.
+ * If namehash is not provided, this function returns undefined.
+ */
 export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
   namehash,
   data,
   encodeAs,
 }: SetAbiParameters<encodeAs>) => {
+  // setABI is only supported on Public Resolver (not Dedicated Resolver)
+  if (!namehash) return undefined
+
   const { contentType, encodedData } = await encodeAbi({
     data,
     encodeAs,
