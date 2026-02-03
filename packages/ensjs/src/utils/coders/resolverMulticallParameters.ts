@@ -39,7 +39,7 @@ export type RecordOptions = Prettify<{
   texts?: Omit<SetTextParameters, 'namehash'>[]
   /** Array of coin records */
   coins?: Omit<SetAddrParametersParameters, 'namehash'>[]
-  /** ABI value (only supported with namehash/Public Resolver) */
+  /** ABI value */
   abi?: EncodeAbiParameters | EncodeAbiParameters[]
 }>
 
@@ -96,11 +96,7 @@ export const resolverMulticallParameters = async ({
     const data = await Promise.all(
       abis.map(async (abiItem) => setAbiParameters({ namehash, ...abiItem })),
     )
-    // Filter out undefined results (setAbi returns undefined when namehash is not provided)
-    const validData = data.filter(
-      (item): item is NonNullable<typeof item> => item !== undefined,
-    )
-    if (validData.length > 0) calls.push(...validData)
+    if (data) calls.push(...data)
   }
 
   if (texts && texts.length > 0) {
