@@ -102,3 +102,24 @@ export const dedicatedResolverMulticallWithNodeCheckSnippet = [
     type: 'function',
   },
 ] as const
+
+export const dedicatedResolverSetAbiSnippet = [
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'contentType',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: 'data',
+        type: 'bytes',
+      },
+    ],
+    name: 'setABI',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

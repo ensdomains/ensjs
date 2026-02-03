@@ -15,6 +15,7 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import { dedicatedResolverMulticallWithNodeCheckSnippet } from '../../contracts/dedicatedResolver.js'
 import { publicResolverMulticallSnippet } from '../../contracts/publicResolver.js'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -33,6 +34,12 @@ export type SetRecordsWriteParametersParameters = {
   name: string
   /** The resolver address to set records on */
   resolverAddress: Address
+  /**
+   * The type of resolver to use:
+   * - `'public'` (default): Individual calls include namehash, uses `multicall(calls)`
+   * - `'dedicated'`: Individual calls don't include namehash, uses `multicallWithNodeCheck(node, calls)`
+   */
+  resolverType?: 'public' | 'dedicated'
 } & RecordOptions
 
 export type SetRecordsWriteParametersReturnType = ReturnType<
@@ -49,10 +56,20 @@ export const setRecordsWriteParameters = async <
   account extends Account,
 >(
   client: Client<Transport, chain, account>,
-  { name, resolverAddress, ...records }: SetRecordsWriteParametersParameters,
+  {
+    name,
+    resolverAddress,
+    resolverType = 'public',
+    ...records
+  }: SetRecordsWriteParametersParameters,
 ) => {
+  const node = namehash(name)
+  const isDedicatedResolver = resolverType === 'dedicated'
+
+  // For dedicated resolver, don't include namehash in individual calls
+  // For public resolver, include namehash in individual calls
   const callArray = await resolverMulticallParameters({
-    namehash: namehash(name),
+    namehash: isDedicatedResolver ? undefined : node,
     ...records,
   })
   if (callArray.length === 0) throw new NoRecordsSpecifiedError()
@@ -63,20 +80,36 @@ export const setRecordsWriteParameters = async <
     chain: client.chain,
   } as const
 
+  // Encode each call to bytes
+  const encodedCalls = callArray.map((call) =>
+    encodeFunctionData(call as EncodeFunctionDataParameters),
+  )
+
   if (callArray.length === 1)
     return {
       ...baseParams,
       ...callArray[0],
-    } as const satisfies WriteContractParameters
+    } as WriteContractParameters
+
+  // Multiple calls: use appropriate multicall
+  if (isDedicatedResolver) {
+    // Dedicated resolver: multicallWithNodeCheck(node, calls)
+    return {
+      ...baseParams,
+      abi: dedicatedResolverMulticallWithNodeCheckSnippet,
+      functionName: 'multicallWithNodeCheck',
+      args: [node, encodedCalls],
+    } as const satisfies WriteContractParameters<
+      typeof dedicatedResolverMulticallWithNodeCheckSnippet
+    >
+  }
+
+  // Public resolver: multicall(calls)
   return {
     ...baseParams,
     abi: publicResolverMulticallSnippet,
     functionName: 'multicall',
-    args: [
-      callArray.map((call) =>
-        encodeFunctionData(call as EncodeFunctionDataParameters),
-      ),
-    ],
+    args: [encodedCalls],
   } as const satisfies WriteContractParameters<
     typeof publicResolverMulticallSnippet
   >
@@ -103,11 +136,17 @@ export type SetRecordsErrorType =
 
 /**
  * Sets multiple records for a name on a resolver.
+ *
+ * Supports both Public Resolver and Dedicated Resolver patterns:
+ * - **`'public'`** (default): Individual calls include namehash, uses `multicall(calls)`
+ * - **`'dedicated'`**: Individual calls don't include namehash, uses `multicallWithNodeCheck(node, calls)`
+ *
  * @param client - {@link Client}
  * @param options - {@link SetRecordsOptions}
  * @returns Transaction hash. {@link SetRecordsReturnType}
  *
  * @example
+ * // Public Resolver (default)
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
@@ -129,6 +168,17 @@ export type SetRecordsErrorType =
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
  * // 0x...
+ *
+ * @example
+ * // Dedicated Resolver
+ * const hash = await setRecords(wallet, {
+ *   name: 'myname.eth',
+ *   coins: [{ coin: 'ETH', value: '0x...' }],
+ *   texts: [{ key: 'foo', value: 'bar' }],
+ *   resolverAddress: '0x...', // dedicated resolver address
+ *   resolverType: 'dedicated',
+ * })
+ * // 0x...
  */
 export async function setRecords<
   chain extends Chain,
@@ -139,6 +189,7 @@ export async function setRecords<
   {
     name,
     resolverAddress,
+    resolverType,
     clearRecords,
     contentHash,
     texts,
@@ -152,6 +203,7 @@ export async function setRecords<
     {
       name,
       resolverAddress,
+      resolverType,
       clearRecords,
       contentHash,
       texts,

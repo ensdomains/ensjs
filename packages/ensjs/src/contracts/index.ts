@@ -15,6 +15,7 @@ export {
 export {
   dedicatedResolverMulticallWithNodeCheckSnippet,
   dedicatedResolverNameSnippet,
+  dedicatedResolverSetAbiSnippet,
   dedicatedResolverSetAddrSnippet,
   dedicatedResolverSetContentHashSnippet,
   dedicatedResolverSetTextSnippet,
