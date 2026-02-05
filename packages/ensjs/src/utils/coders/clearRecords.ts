@@ -28,6 +28,6 @@ export const clearRecordsParametersV2 = () =>
     typeof publicResolverClearRecordsV2Snippet
   >
 
-export type ClearRecordsParametersReturnType = ReturnType<
-  typeof clearRecordsParameters
->
+export type ClearRecordsParametersReturnType =
+  | ReturnType<typeof clearRecordsParameters>
+  | ReturnType<typeof clearRecordsParametersV2>

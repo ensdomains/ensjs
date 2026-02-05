@@ -349,6 +349,53 @@ export const userRegistrySetSubregistrySnippet = [
   },
 ] as const
 
+export const userRegistryRegisterSnippet = [
+  {
+    inputs: [
+      {
+        name: 'label',
+        type: 'string',
+        internalType: 'string',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+        internalType: 'address',
+      },
+      {
+        name: 'registry',
+        type: 'address',
+        internalType: 'contract IRegistry',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+        internalType: 'address',
+      },
+      {
+        name: 'roleBitmap',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'expires',
+        type: 'uint64',
+        internalType: 'uint64',
+      },
+    ],
+    name: 'register',
+    outputs: [
+      {
+        name: 'tokenId',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 // ================================
 // Combined Snippets
 // ================================

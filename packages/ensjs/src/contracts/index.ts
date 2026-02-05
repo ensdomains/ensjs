@@ -13,6 +13,14 @@ export {
 } from './bulkRenewal.js'
 
 export {
+  dedicatedResolverMulticallWithNodeCheckSnippet,
+  dedicatedResolverNameSnippet,
+  dedicatedResolverSetAbiSnippet,
+  dedicatedResolverSetAddrSnippet,
+  dedicatedResolverSetContentHashSnippet,
+  dedicatedResolverSetTextSnippet,
+} from './dedicatedResolver.js'
+export {
   dnsRegistrarErrors,
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,
@@ -30,8 +38,22 @@ export {
   ethRegistrarControllerRenewSnippet,
   ethRegistrarControllerRentPriceSnippet,
 } from './ethRegistrarController.js'
-export { registryGetSubregistrySnippet } from './ethRegistry.js'
+export {
+  registryGetResolverSnippet,
+  registryGetSubregistrySnippet,
+} from './ethRegistry.js'
 export { getChainContractAddress } from './getChainContractAddress.js'
+export {
+  l2EthRegistrarAvailableSnippet,
+  l2EthRegistrarCommitmentsSnippet,
+  l2EthRegistrarCommitSnippet,
+  l2EthRegistrarErrors,
+  l2EthRegistrarIsAvailableSnippet,
+  l2EthRegistrarMakeCommitmentSnippet,
+  l2EthRegistrarRegisterSnippet,
+  l2EthRegistrarRenewSnippet,
+  l2EthRegistrarRentPriceSnippet,
+} from './l2EthRegistrar.js'
 export {
   multicallGetCurrentBlockTimestampSnippet,
   multicallTryAggregateSnippet,
