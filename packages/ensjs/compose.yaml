@@ -1,7 +1,7 @@
 services:
   devnet:
     container_name: devnet
-    image: ghcr.io/ensdomains/namechain:main-9e31679
+    image: ghcr.io/ensdomains/namechain:main-dd75703
     pull_policy: always
     command: ["bun", "./script/runDevnet.ts", "--testNames"]
     ports:

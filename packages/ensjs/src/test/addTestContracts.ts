@@ -1,5 +1,3 @@
-import { resolve } from 'node:path'
-import { config } from 'dotenv'
 import {
   type Account,
   type Address,
@@ -16,11 +14,10 @@ import {
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 import { ensL2Contracts, supportedL2Chains } from '../clients/l2.js'
-
-config({
-  path: resolve(import.meta.dirname, '../../.env.local'),
-  override: true,
-})
+import {
+  L1_DEVNET_ADDRESSES,
+  L2_DEVNET_ADDRESSES,
+} from './devnetAddresses.js'
 
 type ContractName =
   | 'BaseRegistrarImplementation'
@@ -42,9 +39,10 @@ type ContractName =
   | 'VerifiableFactory'
   | 'EthRegistrar'
 
-export const deploymentAddresses = JSON.parse(
-  process.env.DEPLOYMENT_ADDRESSES!,
-) as Record<
+export const deploymentAddresses = {
+  ...L1_DEVNET_ADDRESSES,
+  ...L2_DEVNET_ADDRESSES,
+} as Record<
   | ContractName
   | 'ENSRegistry'
   | 'LegacyPublicResolver'

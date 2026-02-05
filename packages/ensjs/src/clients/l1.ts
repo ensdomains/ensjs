@@ -146,46 +146,46 @@ export const ensL1Contracts = {
   },
   [supportedL1Chains.anvilL1]: {
     ensBaseRegistrarImplementation: {
-      address: '0x851356ae760d987E095750cCeb3bC6014560891C',
+      address: '0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575',
     },
     ensBulkRenewal: {
-      address: '0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d',
+      address: '0xC9a43158891282A2B1475592D5719c001986Aaec',
     },
     ensDnsRegistrar: {
-      address: '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD',
+      address: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
     },
     ensDnssecImpl: {
-      address: '0x3Aa5ebB10DC797CAC828524e59A333d0A371443c',
+      address: '0x7a2088a1bFc9d81c55368AE168C2C02570cB814F',
     },
     ensEthRegistrarController: {
-      address: '0xD84379CEae14AA33C123Af12424A37803F885889',
+      address: '0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d',
     },
     ensNameWrapper: {
-      address: '0x162A433068F51e18b7d13932F27e66a3f99E6890',
-    },
-    ensPublicResolver: {
-      address: '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
-    },
-    ensRegistry: {
-      address: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
-    },
-    ensReverseRegistrar: {
       address: '0xFD471836031dc5108809D173A067e8486B9047A3',
     },
+    ensPublicResolver: {
+      address: '0x49fd2BE640DB2910c2fAb69bB8531Ab6E76127ff',
+    },
+    ensRegistry: {
+      address: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
+    },
+    ensReverseRegistrar: {
+      address: '0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3',
+    },
     ensUniversalResolver: {
-      address: '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
+      address: '0x4631BCAbD6dF18D94796344963cB60d44a4136b6',
     },
     ensDedicatedResolver: {
-      address: '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
+      address: '0x162A433068F51e18b7d13932F27e66a3f99E6890',
     },
     ensV2EthRegistry: {
-      address: '0x1291Be112d480055DaFd8a610b7d1e203891C274',
+      address: '0x0B306BF915C4d645ff596e518fAf3F9669b97016',
     },
     ensVerifiableFactory: {
-      address: '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9',
+      address: '0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f',
     },
     ensUserRegistry: {
-      address: '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43',
+      address: '0x51A1ceB83B83F1985a81C295d1fF28Afef186E02',
     },
   },
 } as const satisfies Record<
