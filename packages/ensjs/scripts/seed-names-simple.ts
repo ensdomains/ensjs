@@ -22,8 +22,12 @@ const account2 = privateKeyToAccount(
 
 // Devnet fixed addresses
 const ADDRESSES = {
-  ETHRegistrarController: getAddress('0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f'),
-  LegacyPublicResolver: getAddress('0xf8e81D47203A594245E36C48e151709F0C19fBe8'),
+  ETHRegistrarController: getAddress(
+    '0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f',
+  ),
+  LegacyPublicResolver: getAddress(
+    '0xf8e81D47203A594245E36C48e151709F0C19fBe8',
+  ),
   ENSRegistry: getAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3'),
 }
 

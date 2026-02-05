@@ -21,9 +21,9 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import { addEnsL1Contracts } from '../../index.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { universalResolverReverseSnippet } from '../../contracts/universalResolver.js'
+import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,
   publicClient,

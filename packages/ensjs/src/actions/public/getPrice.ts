@@ -4,8 +4,8 @@ import type {
   GetChainContractAddressErrorType,
   ReadContractErrorType,
 } from 'viem'
-import { readContract } from 'viem/actions'
 import { zeroAddress } from 'viem'
+import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientL2Contracts } from '../../clients/l2.js'
 import { getChainContractAddress } from '../../clients/shared.js'

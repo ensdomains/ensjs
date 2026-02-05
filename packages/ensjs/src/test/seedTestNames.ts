@@ -20,10 +20,7 @@ import {
   type WalletClient,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import {
-  L1_DEVNET_ADDRESSES,
-  L2_DEVNET_ADDRESSES,
-} from './devnetAddresses.js'
+import { L1_DEVNET_ADDRESSES, L2_DEVNET_ADDRESSES } from './devnetAddresses.js'
 
 // Test account from anvil (account #1 with known private key)
 const account = privateKeyToAccount(
@@ -750,7 +747,9 @@ async function waitForTransaction(publicClient: any, hash: Hash) {
   // Mine a block to include the transaction
   await mineBlock()
 
-  let receipt
+  let receipt:
+    | Awaited<ReturnType<typeof publicClient.getTransactionReceipt>>
+    | undefined
   for (let i = 0; i < 20; i++) {
     try {
       receipt = await publicClient.getTransactionReceipt({ hash })
@@ -774,8 +773,14 @@ async function waitForTransaction(publicClient: any, hash: Hash) {
 export async function seedTestNames(l1Url = 'http://localhost:8545') {
   console.log('🌱 Seeding test names...')
 
-  const { walletClient, walletClient2, publicClient, addresses, account, account2 } =
-    await setupClients(l1Url)
+  const {
+    walletClient,
+    walletClient2,
+    publicClient,
+    addresses,
+    account,
+    account2,
+  } = await setupClients(l1Url)
 
   try {
     // Helper to conditionally wait for transaction
@@ -1230,7 +1235,9 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
     }
 
     // Register "wrapped-with-expiring-subnames.eth" (wrapped)
-    console.log('  📝 Registering wrapped-with-expiring-subnames.eth (wrapped)...')
+    console.log(
+      '  📝 Registering wrapped-with-expiring-subnames.eth (wrapped)...',
+    )
     const tx4 = await registerWrappedName(
       walletClient,
       publicClient,

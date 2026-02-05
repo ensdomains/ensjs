@@ -19,7 +19,7 @@ describe('getOwner', () => {
     const result = await getOwner(publicClient, {
       name: 'expired-wrapped.eth',
     })
-    expect(result).toMatchInlineSnapshot(`null`)
+    expect(result).toMatchInlineSnapshot('null')
     // expect(result).toEqual({
     //   ownershipLevel: 'nameWrapper',
     //   owner: '0x0000000000000000000000000000000000000000',
@@ -38,7 +38,7 @@ describe('getOwner', () => {
   })
   it('should return correct ownership level and values for an expired unwrapped .eth name', async () => {
     const result = await getOwner(publicClient, { name: 'expired.eth' })
-    expect(result).toMatchInlineSnapshot(`null`)
+    expect(result).toMatchInlineSnapshot('null')
   })
   describe('subname', () => {
     it('should return correct ownership level and values for a unwrapped name', async () => {
@@ -67,7 +67,7 @@ describe('getOwner', () => {
       const result = await getOwner(publicClient, {
         name: 'test.expired-wrapped.eth',
       })
-      expect(result).toMatchInlineSnapshot(`null`)
+      expect(result).toMatchInlineSnapshot('null')
     })
   })
 })

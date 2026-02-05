@@ -14,7 +14,6 @@ import {
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
-import { addEnsL1Contracts } from '../../index.js'
 import type { ChainWithContract } from '../../contracts/consts.js'
 import { multicallSnippet } from '../../contracts/multicall.js'
 import {
@@ -25,6 +24,7 @@ import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '../../contracts/universalResolver.js'
+import { addEnsL1Contracts } from '../../index.js'
 import { getAddressParameters, getTextParameters } from '../../utils/index.js'
 import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
 import { resolveNameData } from './resolveNameData.js'

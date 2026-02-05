@@ -14,10 +14,7 @@ import {
 } from 'viem'
 import { localhost as _localhost } from 'viem/chains'
 import { ensL2Contracts, supportedL2Chains } from '../clients/l2.js'
-import {
-  L1_DEVNET_ADDRESSES,
-  L2_DEVNET_ADDRESSES,
-} from './devnetAddresses.js'
+import { L1_DEVNET_ADDRESSES, L2_DEVNET_ADDRESSES } from './devnetAddresses.js'
 
 type ContractName =
   | 'BaseRegistrarImplementation'
