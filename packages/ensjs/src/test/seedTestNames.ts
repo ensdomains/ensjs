@@ -10,7 +10,6 @@ import {
   bytesToHex,
   createPublicClient,
   createWalletClient,
-  getAddress,
   type Hash,
   http,
   keccak256,
@@ -21,6 +20,10 @@ import {
   type WalletClient,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
+import {
+  L1_DEVNET_ADDRESSES,
+  L2_DEVNET_ADDRESSES,
+} from './devnetAddresses.js'
 
 // Test account from anvil (account #1 with known private key)
 const account = privateKeyToAccount(
@@ -32,32 +35,6 @@ const account2 = privateKeyToAccount(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
 )
 
-// Real devnet addresses from namechain - L1
-const DEVNET_ADDRESSES = {
-  ENSRegistry: getAddress('0x0165878A594ca255338adfa4d48449f69242Eb8F'),
-  BaseRegistrarImplementation: getAddress(
-    '0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575',
-  ),
-  LegacyETHRegistrarController: getAddress(
-    '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25',
-  ),
-  WrappedETHRegistrarController: getAddress(
-    '0x253553366Da8546fC250F225fe3d25d0C782303b',
-  ),
-  NameWrapper: getAddress('0xFD471836031dc5108809D173A067e8486B9047A3'),
-  PublicResolver: getAddress('0x49fd2BE640DB2910c2fAb69bB8531Ab6E76127ff'),
-  LegacyPublicResolver: getAddress(
-    '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
-  ),
-  ReverseRegistrar: getAddress('0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3'),
-}
-
-// L2 devnet addresses
-const L2_DEVNET_ADDRESSES = {
-  EthRegistrar: getAddress('0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'),
-  USDC: getAddress('0x8A791620dd6260079BF849Dc5567aDC3F2FdC318'),
-}
-
 async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
   const localhost = {
     id: 15658733,
@@ -67,15 +44,15 @@ async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
       default: { http: [l1Url] },
     },
     contracts: {
-      ensRegistry: { address: DEVNET_ADDRESSES.ENSRegistry },
+      ensRegistry: { address: L1_DEVNET_ADDRESSES.ENSRegistry },
       ensBaseRegistrarImplementation: {
-        address: DEVNET_ADDRESSES.BaseRegistrarImplementation,
+        address: L1_DEVNET_ADDRESSES.BaseRegistrarImplementation,
       },
       ensEthRegistrarController: {
-        address: DEVNET_ADDRESSES.LegacyETHRegistrarController,
+        address: L1_DEVNET_ADDRESSES.LegacyETHRegistrarController,
       },
-      ensNameWrapper: { address: DEVNET_ADDRESSES.NameWrapper },
-      ensPublicResolver: { address: DEVNET_ADDRESSES.PublicResolver },
+      ensNameWrapper: { address: L1_DEVNET_ADDRESSES.NameWrapper },
+      ensPublicResolver: { address: L1_DEVNET_ADDRESSES.PublicResolver },
     },
   }
 
@@ -129,7 +106,7 @@ async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
     walletClient,
     walletClient2,
     walletClientL2,
-    addresses: DEVNET_ADDRESSES,
+    addresses: L1_DEVNET_ADDRESSES,
     l2Addresses: L2_DEVNET_ADDRESSES,
     account,
     account2,
@@ -262,7 +239,28 @@ async function registerUnwrappedName(
   return registerTx
 }
 
-// Register names using WrappedETHRegistrarController (wrapped names)
+// Register names using ETHRegistrarController (wrapped names)
+// The devnet ETHRegistrarController uses a tuple-based interface:
+//   makeCommitment((string,address,uint256,bytes32,address,bytes[],uint8,bytes32))
+//   register((string,address,uint256,bytes32,address,bytes[],uint8,bytes32))
+const registrationParamsTuple = {
+  name: 'params',
+  type: 'tuple',
+  components: [
+    { name: 'name', type: 'string' },
+    { name: 'owner', type: 'address' },
+    { name: 'duration', type: 'uint256' },
+    { name: 'secret', type: 'bytes32' },
+    { name: 'resolver', type: 'address' },
+    { name: 'data', type: 'bytes[]' },
+    { name: 'ownerControlledFuses', type: 'uint8' },
+    { name: 'referralCode', type: 'bytes32' },
+  ],
+} as const
+
+const ZERO_BYTES32 =
+  '0x0000000000000000000000000000000000000000000000000000000000000000' as `0x${string}`
+
 async function registerWrappedName(
   walletClient: WalletClient,
   publicClient: PublicClient,
@@ -270,11 +268,10 @@ async function registerWrappedName(
   resolver: Address,
   label: string,
   owner: Address,
+  baseRegistrar: Address,
+  nameWrapper: Address,
   duration = 31536000, // 1 year
 ): Promise<Hash> {
-  const secret =
-    '0x0000000000000000000000000000000000000000000000000000000000000000' as Hash
-
   // Check if name is available
   const available = await publicClient.readContract({
     address: registrarController,
@@ -296,22 +293,23 @@ async function registerWrappedName(
     return '0x0' as Hash // Return dummy hash to indicate skip
   }
 
-  // Prepare commitment using WrappedETHRegistrarController's makeCommitment
-  // WrappedETHRegistrarController.makeCommitment(name, owner, duration, secret, resolver, data, reverseRecord, ownerControlledFuses)
+  const params = {
+    name: label,
+    owner,
+    duration: BigInt(duration),
+    secret: ZERO_BYTES32,
+    resolver,
+    data: [] as `0x${string}`[],
+    ownerControlledFuses: 0,
+    referralCode: ZERO_BYTES32,
+  }
+
+  // Prepare commitment
   const commitment = await publicClient.readContract({
     address: registrarController,
     abi: [
       {
-        inputs: [
-          { name: 'name', type: 'string' },
-          { name: 'owner', type: 'address' },
-          { name: 'duration', type: 'uint256' },
-          { name: 'secret', type: 'bytes32' },
-          { name: 'resolver', type: 'address' },
-          { name: 'data', type: 'bytes[]' },
-          { name: 'reverseRecord', type: 'bool' },
-          { name: 'ownerControlledFuses', type: 'uint16' },
-        ],
+        inputs: [registrationParamsTuple],
         name: 'makeCommitment',
         outputs: [{ name: '', type: 'bytes32' }],
         stateMutability: 'pure',
@@ -319,7 +317,7 @@ async function registerWrappedName(
       },
     ] as const,
     functionName: 'makeCommitment',
-    args: [label, owner, BigInt(duration), secret, resolver, [], false, 0],
+    args: [params],
   })
 
   // Commit
@@ -340,11 +338,10 @@ async function registerWrappedName(
 
   await waitForTransaction(publicClient, commitTx)
 
-  // Wait for commitment age (min wait time) by advancing blockchain time
-  // minCommitmentAge is typically 60 seconds, we use 120 to be safe
+  // Wait for commitment age by advancing blockchain time
   await increaseTime(120)
 
-  // Get rental price using WrappedETHRegistrarController's rentPrice
+  // Get rental price
   const [base, premium] = await publicClient.readContract({
     address: registrarController,
     abi: [
@@ -369,21 +366,12 @@ async function registerWrappedName(
   const price = base + premium
   console.log(`  Price for ${label}.eth: ${price} wei`)
 
-  // Register using WrappedETHRegistrarController's register
+  // Register
   const registerTx = await walletClient.writeContract({
     address: registrarController,
     abi: [
       {
-        inputs: [
-          { name: 'name', type: 'string' },
-          { name: 'owner', type: 'address' },
-          { name: 'duration', type: 'uint256' },
-          { name: 'secret', type: 'bytes32' },
-          { name: 'resolver', type: 'address' },
-          { name: 'data', type: 'bytes[]' },
-          { name: 'reverseRecord', type: 'bool' },
-          { name: 'ownerControlledFuses', type: 'uint16' },
-        ],
+        inputs: [registrationParamsTuple],
         name: 'register',
         outputs: [],
         stateMutability: 'payable',
@@ -391,11 +379,31 @@ async function registerWrappedName(
       },
     ] as const,
     functionName: 'register',
-    args: [label, owner, BigInt(duration), secret, resolver, [], false, 0],
+    args: [params],
     value: price,
   })
 
-  return registerTx
+  await waitForTransaction(publicClient, registerTx)
+
+  // The devnet ETHRegistrarController does not auto-wrap, so we wrap manually
+  // 1. Approve NameWrapper to manage BaseRegistrar tokens
+  const approveTx = await approveNameWrapper(
+    walletClient,
+    baseRegistrar,
+    nameWrapper,
+  )
+  await waitForTransaction(publicClient, approveTx)
+
+  // 2. Wrap the name via NameWrapper.wrapETH2LD
+  const wrapTx = await wrapETH2LD(
+    walletClient,
+    nameWrapper,
+    label,
+    owner,
+    resolver,
+  )
+
+  return wrapTx
 }
 
 async function createSubname(
@@ -1134,31 +1142,50 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
     await maybeWaitForTx(tx1)
     console.log('  ✓ Registered with-subnames.eth')
 
-    // Register "wrapped.eth" (wrapped via WrappedETHRegistrarController)
+    // Create subname test.with-subnames.eth on the registry for account2
+    // This is needed by wrapName (other) and transferName (registry) tests
+    console.log('  📝 Creating test.with-subnames.eth on registry...')
+    try {
+      const txSubnameTest = await setSubnodeOwnerRegistry(
+        walletClient,
+        addresses.ENSRegistry,
+        'with-subnames.eth',
+        'test',
+        account2.address,
+      )
+      await waitForTransaction(publicClient, txSubnameTest)
+      console.log('  ✓ Created test.with-subnames.eth')
+    } catch (e) {
+      console.log('  ⏭️ Skipping test.with-subnames.eth (may already exist)')
+    }
+
+    // Register "wrapped.eth" (wrapped via ETHRegistrarController + NameWrapper)
+    // Use PublicResolver (NameWrapper-aware) so record operations by NameWrapper owner work
     console.log('  📝 Registering wrapped.eth (wrapped)...')
     const tx2 = await registerWrappedName(
       walletClient,
       publicClient,
-      addresses.WrappedETHRegistrarController,
-      addresses.LegacyPublicResolver,
+      addresses.ETHRegistrarController,
+      addresses.PublicResolver,
       'wrapped',
       account.address,
+      addresses.BaseRegistrarImplementation,
+      addresses.NameWrapper,
     )
     await maybeWaitForTx(tx2)
     console.log('  ✓ Registered wrapped.eth')
-
-    // WrappedETHRegistrarController already registers names as wrapped
-    // No need to manually wrap
 
     // Register "wrapped-with-subnames.eth" (wrapped)
     console.log('  📝 Registering wrapped-with-subnames.eth (wrapped)...')
     const tx3 = await registerWrappedName(
       walletClient,
       publicClient,
-      addresses.WrappedETHRegistrarController,
-      addresses.LegacyPublicResolver,
+      addresses.ETHRegistrarController,
+      addresses.PublicResolver,
       'wrapped-with-subnames',
       account.address,
+      addresses.BaseRegistrarImplementation,
+      addresses.NameWrapper,
     )
     await maybeWaitForTx(tx3)
     console.log('  ✓ Registered wrapped-with-subnames.eth')
@@ -1182,15 +1209,37 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       console.log('  ⏭️ Skipping subname creation (may already exist)')
     }
 
+    // Create subname addr.wrapped-with-subnames.eth for account2
+    // This is needed by deleteSubname (nameWrapper, asOwner) test
+    console.log('  📝 Creating addr.wrapped-with-subnames.eth...')
+    try {
+      const futureExpiry2 = BigInt(Math.floor(Date.now() / 1000) + 31536000 * 2) // 2 years from now
+      const txAddrSubname = await setSubnodeOwner(
+        walletClient,
+        addresses.NameWrapper,
+        'wrapped-with-subnames.eth',
+        'addr',
+        account2.address,
+        0, // no fuses
+        futureExpiry2,
+      )
+      await waitForTransaction(publicClient, txAddrSubname)
+      console.log('  ✓ Created addr.wrapped-with-subnames.eth')
+    } catch (e) {
+      console.log('  ⏭️ Skipping addr subname creation (may already exist)')
+    }
+
     // Register "wrapped-with-expiring-subnames.eth" (wrapped)
     console.log('  📝 Registering wrapped-with-expiring-subnames.eth (wrapped)...')
     const tx4 = await registerWrappedName(
       walletClient,
       publicClient,
-      addresses.WrappedETHRegistrarController,
-      addresses.LegacyPublicResolver,
+      addresses.ETHRegistrarController,
+      addresses.PublicResolver,
       'wrapped-with-expiring-subnames',
       account.address,
+      addresses.BaseRegistrarImplementation,
+      addresses.NameWrapper,
     )
     await maybeWaitForTx(tx4)
     console.log('  ✓ Registered wrapped-with-expiring-subnames.eth')
@@ -1200,10 +1249,12 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
     const txBigDuration = await registerWrappedName(
       walletClient,
       publicClient,
-      addresses.WrappedETHRegistrarController,
-      addresses.LegacyPublicResolver,
+      addresses.ETHRegistrarController,
+      addresses.PublicResolver,
       'wrapped-big-duration',
       account.address,
+      addresses.BaseRegistrarImplementation,
+      addresses.NameWrapper,
       315360000, // 10 years
     )
     await maybeWaitForTx(txBigDuration)

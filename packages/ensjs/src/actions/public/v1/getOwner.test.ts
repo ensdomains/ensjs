@@ -45,7 +45,12 @@ describe('getOwner', () => {
       const result = await getOwner(publicClient, {
         name: 'test.with-subnames.eth',
       })
-      expect(result).toMatchInlineSnapshot(`null`)
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+          "ownershipLevel": "registry",
+        }
+      `)
     })
     it('should return correct ownership level and values for a wrapped name', async () => {
       const result = await getOwner(publicClient, {
