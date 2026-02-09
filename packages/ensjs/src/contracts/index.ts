@@ -77,6 +77,7 @@ export {
 export {
   permissionedRegistryGetNameDataSnippet,
   permissionedRegistryRoleCountSnippet,
+  permissionedRegistrySetResolverSnippet,
 } from './permissionedRegistry.js'
 export {
   publicResolverAbiSnippet,
