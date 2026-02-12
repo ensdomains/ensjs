@@ -31,6 +31,10 @@ export {
 } from './dnssecImpl.js'
 export { erc165SupportsInterfaceSnippet } from './erc165.js'
 export {
+  erc1155BurnSnippet,
+  erc1155SafeTransferFromSnippet,
+} from './erc1155.js'
+export {
   ethRegistrarControllerCommitmentsSnippet,
   ethRegistrarControllerCommitSnippet,
   ethRegistrarControllerErrors,

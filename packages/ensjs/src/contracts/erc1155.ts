@@ -28,3 +28,26 @@ export const erc1155SafeTransferFromSnippet = [
     type: 'function',
   },
 ] as const
+
+export const erc1155BurnSnippet = [
+  {
+    inputs: [
+      {
+        name: 'account',
+        type: 'address',
+      },
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+      {
+        name: 'value',
+        type: 'uint256',
+      },
+    ],
+    name: 'burn',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
