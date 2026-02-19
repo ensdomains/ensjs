@@ -51,3 +51,34 @@ export const erc1155BurnSnippet = [
     type: 'function',
   },
 ] as const
+
+export const erc1155SafeBatchTransferFromSnippet = [
+  {
+    inputs: [
+      {
+        name: 'from',
+        type: 'address',
+      },
+      {
+        name: 'to',
+        type: 'address',
+      },
+      {
+        name: 'ids',
+        type: 'uint256[]',
+      },
+      {
+        name: 'values',
+        type: 'uint256[]',
+      },
+      {
+        name: 'data',
+        type: 'bytes',
+      },
+    ],
+    name: 'safeBatchTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const

@@ -32,6 +32,7 @@ export {
 export { erc165SupportsInterfaceSnippet } from './erc165.js'
 export {
   erc1155BurnSnippet,
+  erc1155SafeBatchTransferFromSnippet,
   erc1155SafeTransferFromSnippet,
 } from './erc1155.js'
 export {
@@ -80,6 +81,7 @@ export {
 } from './nameWrapper.js'
 export {
   permissionedRegistryGetNameDataSnippet,
+  permissionedRegistryGetTokenIdSnippet,
   permissionedRegistryRoleCountSnippet,
   permissionedRegistrySetResolverSnippet,
 } from './permissionedRegistry.js'

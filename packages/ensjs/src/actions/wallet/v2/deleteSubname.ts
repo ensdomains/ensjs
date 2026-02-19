@@ -9,9 +9,10 @@ import type {
   WriteContractParameters,
 } from 'viem'
 import { labelhash } from 'viem'
-import { writeContract } from 'viem/actions'
+import { readContract, writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { erc1155BurnSnippet } from '../../../contracts/erc1155.js'
+import { permissionedRegistryGetTokenIdSnippet } from '../../../contracts/permissionedRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,
@@ -33,6 +34,8 @@ export type DeleteSubnameWriteParametersParameters = {
   label: string
   /** The owner address of the subname (account to burn from) */
   owner: Address
+  /** The resolved token ID from the registry */
+  tokenId: bigint
 }
 
 export type DeleteSubnameV2WriteParametersReturnType = ReturnType<
@@ -46,14 +49,11 @@ export const deleteSubnameV2WriteParameters = <
   client: Client<Transport, chain, account>,
   {
     registryAddress,
-    label,
     owner,
+    tokenId,
   }: DeleteSubnameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
-
-  // The tokenId is the labelhash of the subname label
-  const tokenId = BigInt(labelhash(label))
 
   return {
     address: registryAddress,
@@ -74,7 +74,7 @@ export type DeleteSubnameV2Parameters<
   account extends Account,
   chainOverride extends Chain | undefined,
 > = Prettify<
-  DeleteSubnameWriteParametersParameters &
+  Omit<DeleteSubnameWriteParametersParameters, 'tokenId'> &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
@@ -126,12 +126,22 @@ export async function deleteSubnameV2<
 ): Promise<DeleteSubnameV2ReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
+  // Resolve the actual minted token ID from the registry
+  const readContractAction = getAction(client, readContract, 'readContract')
+  const tokenId = await readContractAction({
+    address: registryAddress,
+    abi: permissionedRegistryGetTokenIdSnippet,
+    functionName: 'getTokenId',
+    args: [BigInt(labelhash(label))],
+  })
+
   const writeParameters = deleteSubnameV2WriteParameters(
     clientWithOverrides(client, txArgs),
     {
       registryAddress,
       label,
       owner,
+      tokenId,
     },
   )
 
