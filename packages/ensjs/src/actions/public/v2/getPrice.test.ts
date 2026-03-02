@@ -9,20 +9,18 @@ const registrarAddress = localhostL2.contracts.ethRegistrar.address
 const paymentToken = localhostL2.contracts.usdc.address
 
 // Pricing constants from StandardRentPriceOracle
-const PRICE_SCALE = 10n ** 12n
+const USDC_DECIMALS = 10n ** 6n
 const SEC_PER_YEAR = 31_557_600n
 
-// Base rates per year (in PRICE_SCALE units)
-const ANNUAL_RATE_3CHAR = 640n * PRICE_SCALE
-const ANNUAL_RATE_4CHAR = 160n * PRICE_SCALE
-const ANNUAL_RATE_5CHAR = 5n * PRICE_SCALE
-
-// Per-second rates (ceiling division to match contract)
-const RATE_3CP = (ANNUAL_RATE_3CHAR + SEC_PER_YEAR - 1n) / SEC_PER_YEAR
-const RATE_4CP = (ANNUAL_RATE_4CHAR + SEC_PER_YEAR - 1n) / SEC_PER_YEAR
-const RATE_5CP = (ANNUAL_RATE_5CHAR + SEC_PER_YEAR - 1n) / SEC_PER_YEAR
+// Annual rates in USDC (6 decimals)
+const ANNUAL_RATE_3CHAR = 640n * USDC_DECIMALS
+const ANNUAL_RATE_4CHAR = 160n * USDC_DECIMALS
+const ANNUAL_RATE_5CHAR = 5n * USDC_DECIMALS
 
 const ONE_DAY = 86400n
+
+// Ceiling division matching the contract's pricing computation
+const ceilDiv = (a: bigint, b: bigint) => (a + b - 1n) / b
 
 describe('getPrice', () => {
   it('should return the correct price for a 5+ char name', async () => {
@@ -34,7 +32,7 @@ describe('getPrice', () => {
     })
 
     // 7 chars -> 5+ char rate, no discount for short duration
-    const expectedBase = RATE_5CP * ONE_DAY
+    const expectedBase = ceilDiv(ANNUAL_RATE_5CHAR * ONE_DAY, SEC_PER_YEAR)
     expect(result.base).toBe(expectedBase)
     expect(result.premium).toBe(0n)
   })
@@ -47,7 +45,7 @@ describe('getPrice', () => {
       paymentToken,
     })
 
-    const expectedBase = RATE_4CP * ONE_DAY
+    const expectedBase = ceilDiv(ANNUAL_RATE_4CHAR * ONE_DAY, SEC_PER_YEAR)
     expect(result.base).toBe(expectedBase)
     expect(result.premium).toBe(0n)
   })
@@ -60,7 +58,7 @@ describe('getPrice', () => {
       paymentToken,
     })
 
-    const expectedBase = RATE_3CP * ONE_DAY
+    const expectedBase = ceilDiv(ANNUAL_RATE_3CHAR * ONE_DAY, SEC_PER_YEAR)
     expect(result.base).toBe(expectedBase)
     expect(result.premium).toBe(0n)
   })
@@ -80,7 +78,13 @@ describe('getPrice', () => {
       paymentToken,
     })
 
-    expect(twoDays.base).toBe(oneDay.base * 2n)
+    const expectedOneDay = ceilDiv(ANNUAL_RATE_5CHAR * ONE_DAY, SEC_PER_YEAR)
+    const expectedTwoDays = ceilDiv(
+      ANNUAL_RATE_5CHAR * ONE_DAY * 2n,
+      SEC_PER_YEAR,
+    )
+    expect(oneDay.base).toBe(expectedOneDay)
+    expect(twoDays.base).toBe(expectedTwoDays)
   })
 
   it('should enforce correct price ordering by name length', async () => {
