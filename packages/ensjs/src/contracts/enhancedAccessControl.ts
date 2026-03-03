@@ -104,3 +104,64 @@ export const eacHasRolesSnippet = [
     stateMutability: 'view',
   },
 ] as const
+
+export const eacRevokeRolesSnippet = [
+  ...eacErrors,
+  {
+    type: 'function',
+    name: 'revokeRoles',
+    inputs: [
+      {
+        name: 'resource',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'roleBitmap',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+        internalType: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+] as const
+
+export const eacRevokeRootRolesSnippet = [
+  ...eacErrors,
+  {
+    type: 'function',
+    name: 'revokeRootRoles',
+    inputs: [
+      {
+        name: 'roleBitmap',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+        internalType: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+] as const
