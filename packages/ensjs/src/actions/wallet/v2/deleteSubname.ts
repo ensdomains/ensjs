@@ -9,10 +9,9 @@ import type {
   WriteContractParameters,
 } from 'viem'
 import { labelhash } from 'viem'
-import { readContract, writeContract } from 'viem/actions'
+import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { erc1155BurnSnippet } from '../../../contracts/erc1155.js'
-import { permissionedRegistryGetTokenIdSnippet } from '../../../contracts/permissionedRegistry.js'
+import { standardRegistryUnregisterSnippet } from '../../../contracts/standardRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,
@@ -27,15 +26,11 @@ import {
 // Write parameters
 // ================================
 
-export type DeleteSubnameWriteParametersParameters = {
-  /** The parent registry address */
+export type DeleteSubnameV2WriteParametersParameters = {
+  /** The parent registry address that contains the subname */
   registryAddress: Address
-  /** The label of the subname to delete */
+  /** The label of the subname to delete (e.g. "sub" for sub.example.eth) */
   label: string
-  /** The owner address of the subname (account to burn from) */
-  owner: Address
-  /** The resolved token ID from the registry */
-  tokenId: bigint
 }
 
 export type DeleteSubnameV2WriteParametersReturnType = ReturnType<
@@ -47,22 +42,20 @@ export const deleteSubnameV2WriteParameters = <
   account extends Account,
 >(
   client: Client<Transport, chain, account>,
-  {
-    registryAddress,
-    owner,
-    tokenId,
-  }: DeleteSubnameWriteParametersParameters,
+  { registryAddress, label }: DeleteSubnameV2WriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
   return {
     address: registryAddress,
-    abi: erc1155BurnSnippet,
-    functionName: 'burn',
-    args: [owner, tokenId, 1n],
+    abi: standardRegistryUnregisterSnippet,
+    functionName: 'unregister',
+    args: [BigInt(labelhash(label))],
     chain: client.chain,
     account: client.account,
-  } as const satisfies WriteContractParameters<typeof erc1155BurnSnippet>
+  } as const satisfies WriteContractParameters<
+    typeof standardRegistryUnregisterSnippet
+  >
 }
 
 // ================================
@@ -74,7 +67,7 @@ export type DeleteSubnameV2Parameters<
   account extends Account,
   chainOverride extends Chain | undefined,
 > = Prettify<
-  Omit<DeleteSubnameWriteParametersParameters, 'tokenId'> &
+  DeleteSubnameV2WriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
@@ -85,11 +78,11 @@ export type DeleteSubnameV2ErrorType =
   | WriteContractErrorType
 
 /**
- * Deletes a subname by burning its ERC1155 token in the parent registry (V2).
+ * Deletes a subname by calling `unregister()` on the parent registry.
  *
- * In ENSv2, subnames are ERC1155 tokens managed by their parent registry.
- * To remove a subname, burn its token which clears the subname's data
- * from the RegistryDatastore, including its subregistry and resolver references.
+ * In ENSv2, subnames are managed by their parent registry (PermissionedRegistry).
+ * The caller must have ROLE_UNREGISTER on the name's resource or on ROOT_RESOURCE.
+ * This burns the ERC1155 token, invalidates all roles, and makes the name AVAILABLE.
  *
  * @param client - {@link Client}
  * @param parameters - {@link DeleteSubnameV2Parameters}
@@ -105,9 +98,8 @@ export type DeleteSubnameV2ErrorType =
  *   transport: custom(window.ethereum),
  * })
  * const hash = await deleteSubnameV2(wallet, {
- *   registryAddress: '0x...', // parent registry
- *   label: 'mysubname',
- *   owner: '0x...', // current owner of the subname
+ *   registryAddress: '0x...', // parent registry (e.g. example.eth's UserRegistry)
+ *   label: 'sub',             // deletes sub.example.eth
  * })
  * // 0x...
  */
@@ -120,29 +112,14 @@ export async function deleteSubnameV2<
   {
     registryAddress,
     label,
-    owner,
     ...txArgs
   }: DeleteSubnameV2Parameters<chain, account, chainOverride>,
 ): Promise<DeleteSubnameV2ReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  // Resolve the actual minted token ID from the registry
-  const readContractAction = getAction(client, readContract, 'readContract')
-  const tokenId = await readContractAction({
-    address: registryAddress,
-    abi: permissionedRegistryGetTokenIdSnippet,
-    functionName: 'getTokenId',
-    args: [BigInt(labelhash(label))],
-  })
-
   const writeParameters = deleteSubnameV2WriteParameters(
     clientWithOverrides(client, txArgs),
-    {
-      registryAddress,
-      label,
-      owner,
-      tokenId,
-    },
+    { registryAddress, label },
   )
 
   const writeContractAction = getAction(client, writeContract, 'writeContract')

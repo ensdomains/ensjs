@@ -4,74 +4,30 @@ import type {
   Chain,
   Client,
   Hash,
-  Hex,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { labelhash, zeroAddress } from 'viem'
+import { labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { erc1155SafeBatchTransferFromSnippet } from '../../../contracts/erc1155.js'
+import { standardRegistryUnregisterSnippet } from '../../../contracts/standardRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,
 } from '../../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import {
-  type ClientWithOverridesErrorType,
-  clientWithOverrides,
-} from '../../../utils/clientWithOverrides.js'
+import type { ClientWithOverridesErrorType } from '../../../utils/clientWithOverrides.js'
 
 // ================================
 // Write parameters
 // ================================
 
-export type DeleteSubnamesWriteParametersParameters = {
+export type DeleteSubnamesV2WriteParametersParameters = {
   /** The parent registry address */
   registryAddress: Address
   /** The labels of the subnames to delete */
   labels: string[]
-  /** The owner address of the subnames (account to burn from) */
-  owner: Address
-  /** Optional data to pass to the transfer (defaults to empty) */
-  data?: Hex
-}
-
-export type DeleteSubnamesV2WriteParametersReturnType = ReturnType<
-  typeof deleteSubnamesV2WriteParameters
->
-
-export const deleteSubnamesV2WriteParameters = <
-  chain extends Chain,
-  account extends Account,
->(
-  client: Client<Transport, chain, account>,
-  {
-    registryAddress,
-    labels,
-    owner,
-    data = '0x',
-  }: DeleteSubnamesWriteParametersParameters,
-) => {
-  ASSERT_NO_TYPE_ERROR(client)
-
-  // Convert labels to tokenIds (labelhashes)
-  const ids = labels.map((label) => BigInt(labelhash(label)))
-  // Each subname token has a value of 1
-  const values = labels.map(() => 1n)
-
-  return {
-    address: registryAddress,
-    abi: erc1155SafeBatchTransferFromSnippet,
-    functionName: 'safeBatchTransferFrom',
-    // Transfer to address(0) burns the tokens
-    args: [owner, zeroAddress, ids, values, data],
-    chain: client.chain,
-    account: client.account,
-  } as const satisfies WriteContractParameters<
-    typeof erc1155SafeBatchTransferFromSnippet
-  >
 }
 
 // ================================
@@ -83,26 +39,27 @@ export type DeleteSubnamesV2Parameters<
   account extends Account,
   chainOverride extends Chain | undefined,
 > = Prettify<
-  DeleteSubnamesWriteParametersParameters &
+  DeleteSubnamesV2WriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type DeleteSubnamesV2ReturnType = Hash
+export type DeleteSubnamesV2ReturnType = Hash[]
 
 export type DeleteSubnamesV2ErrorType =
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
 /**
- * Deletes multiple subnames by batch burning their ERC1155 tokens in the parent registry (V2).
+ * Deletes multiple subnames by calling `unregister()` for each one on the parent registry.
  *
- * In ENSv2, subnames are ERC1155 tokens managed by their parent registry.
- * This function uses `safeBatchTransferFrom` to transfer tokens to address(0),
- * which internally burns them all in a single transaction.
+ * In ENSv2, there is no batch unregister — each subname requires a separate
+ * `unregister()` call. This function sends all transactions and returns
+ * their hashes. The caller must have ROLE_UNREGISTER on each name's resource
+ * or on ROOT_RESOURCE.
  *
  * @param client - {@link Client}
  * @param parameters - {@link DeleteSubnamesV2Parameters}
- * @returns Transaction hash. {@link DeleteSubnamesV2ReturnType}
+ * @returns Array of transaction hashes. {@link DeleteSubnamesV2ReturnType}
  *
  * @example
  * import { createWalletClient, custom } from 'viem'
@@ -113,12 +70,11 @@ export type DeleteSubnamesV2ErrorType =
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })
- * const hash = await deleteSubnamesV2(wallet, {
+ * const hashes = await deleteSubnamesV2(wallet, {
  *   registryAddress: '0x...', // parent registry
  *   labels: ['sub1', 'sub2', 'sub3'],
- *   owner: '0x...', // current owner of the subnames
  * })
- * // 0x...
+ * // ['0x...', '0x...', '0x...']
  */
 export async function deleteSubnamesV2<
   chain extends Chain,
@@ -129,26 +85,26 @@ export async function deleteSubnamesV2<
   {
     registryAddress,
     labels,
-    owner,
-    data,
     ...txArgs
   }: DeleteSubnamesV2Parameters<chain, account, chainOverride>,
 ): Promise<DeleteSubnamesV2ReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const writeParameters = deleteSubnamesV2WriteParameters(
-    clientWithOverrides(client, txArgs),
-    {
-      registryAddress,
-      labels,
-      owner,
-      data,
-    },
-  )
-
   const writeContractAction = getAction(client, writeContract, 'writeContract')
-  return writeContractAction({
-    ...writeParameters,
-    ...txArgs,
-  } as WriteContractParameters)
+  const hashes: Hash[] = []
+
+  for (const label of labels) {
+    const hash = await writeContractAction({
+      address: registryAddress,
+      abi: standardRegistryUnregisterSnippet,
+      functionName: 'unregister',
+      args: [BigInt(labelhash(label))],
+      chain: client.chain,
+      account: client.account,
+      ...txArgs,
+    } as WriteContractParameters)
+    hashes.push(hash)
+  }
+
+  return hashes
 }

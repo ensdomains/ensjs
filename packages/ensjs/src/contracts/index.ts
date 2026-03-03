@@ -112,6 +112,7 @@ export {
   reverseRegistrarSetNameForAddrSnippet,
   reverseRegistrarSetNameSnippet,
 } from './reverseRegistrar.js'
+export { standardRegistryUnregisterSnippet } from './standardRegistry.js'
 export {
   universalResolverErrors,
   universalResolverFindResolverSnippet,
