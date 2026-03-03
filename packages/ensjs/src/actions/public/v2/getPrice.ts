@@ -74,7 +74,7 @@ export async function getPrice(
       address: registrarAddress,
       abi: l2EthRegistrarRentPriceSnippet,
       functionName: 'rentPrice',
-      args: [labels[0], owner, BigInt(duration), paymentToken],
+      args: [labels[0], owner, duration, paymentToken],
     })
 
     totalBase += base
