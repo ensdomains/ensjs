@@ -14,7 +14,8 @@ describe('getNameRolesAccounts', () => {
   it('returns a map of accounts and roles that they have set', async () => {
     const accounts = await getNameRoleAccounts(client, {
       label: 'ens1',
-      fromBlock: 9683977n,
+      fromBlock: 9792300n,
+      toBlock: 9792310n,
       registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
     })
 
