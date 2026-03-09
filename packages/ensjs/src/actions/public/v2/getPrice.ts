@@ -61,14 +61,13 @@ export async function getPrice(
     const labels = name.split('.')
     const nameType = getNameType(name)
 
-    if (nameType !== 'eth-2ld' && nameType !== 'tld'){
+    if (nameType !== 'eth-2ld' && nameType !== 'tld') {
       throw new UnsupportedNameTypeError({
         nameType,
         supportedNameTypes: ['eth-2ld', 'tld'],
         details: 'Currently only the price of eth-2ld names can be fetched',
       })
     }
-     
 
     const [base, premium] = await readContractAction({
       address: registrarAddress,
