@@ -1,16 +1,26 @@
-import type { Client, ReadContractErrorType } from 'viem'
-import type { Address } from 'viem/accounts'
+import type { Address, Client, Hex, ReadContractErrorType } from 'viem'
+import { encodePacked, keccak256, toHex } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { eacHasRolesSnippet } from '../../../contracts/enhancedAccessControl.js'
+import {
+  permissionedResolverHasRolesSnippet,
+  permissionedResolverHasRootRolesSnippet,
+} from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {
   encodeRoleBitmap,
   type Role,
 } from '../../../utils/v2/roles/encodeRoleBitmap.js'
+import {
+  encodeResolverRoleBitmap,
+  type ResolverRole,
+} from '../../../utils/v2/roles/resolverRoles.js'
 
-export type HasRolesParameters = {
+// ─── Registry mode ────────────────────────────────────────────────────
+
+export type HasRolesRegistryParameters = {
   /** The registry address to check */
   registryAddress: Address
   /** The label to check roles for */
@@ -21,48 +31,145 @@ export type HasRolesParameters = {
   account: Address
 }
 
-export type HasRolesReturnType = boolean
+// ─── Resolver root mode ───────────────────────────────────────────────
+
+export type HasRolesResolverRootParameters = {
+  /** The resolver address to check */
+  resolverAddress: Address
+  /** The resolver roles to check */
+  roles: ResolverRole[]
+  /** The account address to check */
+  account: Address
+}
+
+// ─── Resolver mode (with resource) ────────────────────────────────────
+
+export type HasRolesResolverParameters = {
+  /** The resolver address to check */
+  resolverAddress: Address
+  /** The EAC resource to check roles on */
+  resource: bigint
+  /** The resolver roles to check */
+  roles: ResolverRole[]
+  /** The account address to check */
+  account: Address
+}
+
+// ─── Union type ───────────────────────────────────────────────────────
+
+export type HasRolesParameters =
+  | HasRolesRegistryParameters
+  | HasRolesResolverRootParameters
+  | HasRolesResolverParameters
 
 export type HasRolesErrorType = ReadContractErrorType
 
 /**
- * Check if an account has specific roles for a name.
+ * Check if an account has specific roles.
+ *
+ * Supports three modes based on the parameters passed:
+ *
+ * **Registry mode** (pass `registryAddress` + `label`):
+ * Check roles on a registry for a specific name.
+ *
+ * **Resolver root mode** (pass `resolverAddress` only):
+ * Check root-level roles on a resolver (global, any name/record).
+ *
+ * **Resolver mode** (pass `resolverAddress` + `resource`):
+ * Check roles on a resolver for a specific resource.
+ *
  * @param client - {@link Client}
  * @param parameters - {@link HasRolesParameters}
- * @returns Boolean indicating if the account has the roles. {@link HasRolesReturnType}
+ * @returns Boolean indicating if the account has the roles.
  *
  * @example
- * import { createPublicClient, http } from 'viem'
- * import { mainnet } from 'viem/chains'
- * import { hasRoles } from '@ensdomains/ensjs/public'
- *
- * const client = createPublicClient({
- *   chain: mainnet,
- *   transport: http(),
- * })
+ * // Registry mode - check registry roles for a name
  * const hasRole = await hasRoles(client, {
  *   registryAddress: '0x...',
  *   label: 'example',
  *   roles: ['ROLE_SET_SUBREGISTRY'],
  *   account: '0x...',
  * })
- * // true or false
+ *
+ * @example
+ * // Resolver root mode - check global resolver roles
+ * const canSetAlias = await hasRoles(client, {
+ *   resolverAddress: '0x...',
+ *   roles: ['ROLE_SET_ALIAS'],
+ *   account: '0x...',
+ * })
+ *
+ * @example
+ * // Resolver mode - check resolver roles for a specific resource
+ * const canSetText = await hasRoles(client, {
+ *   resolverAddress: '0x...',
+ *   resource: computeResolverResource(namehash('myname.eth'), 0n),
+ *   roles: ['ROLE_SET_TEXT'],
+ *   account: '0x...',
+ * })
  */
 export async function hasRoles(
   client: Client,
-  { registryAddress, label, roles, account }: HasRolesParameters,
-): Promise<HasRolesReturnType> {
+  params: HasRolesParameters,
+): Promise<boolean> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const resource = labelToCanonicalId(label)
-  const rolesBitmap = encodeRoleBitmap(roles)
+  // Registry mode: registryAddress + label
+  if ('registryAddress' in params) {
+    const { registryAddress, label, roles, account } = params
+    const resource = labelToCanonicalId(label)
+    const rolesBitmap = encodeRoleBitmap(roles)
+
+    return readContractAction({
+      address: registryAddress,
+      abi: eacHasRolesSnippet,
+      functionName: 'hasRoles',
+      args: [resource, rolesBitmap, account],
+    })
+  }
+
+  // Resolver mode (with resource): resolverAddress + resource
+  if ('resource' in params) {
+    const { resolverAddress, resource, roles, account } = params
+    const roleBitmap = encodeResolverRoleBitmap(roles)
+
+    return readContractAction({
+      address: resolverAddress,
+      abi: permissionedResolverHasRolesSnippet,
+      functionName: 'hasRoles',
+      args: [resource, roleBitmap, account],
+    })
+  }
+
+  // Resolver root mode: resolverAddress only (no resource)
+  const { resolverAddress, roles, account } = params
+  const roleBitmap = encodeResolverRoleBitmap(roles)
 
   return readContractAction({
-    address: registryAddress,
-    abi: eacHasRolesSnippet,
-    functionName: 'hasRoles',
-    args: [resource, rolesBitmap, account],
+    address: resolverAddress,
+    abi: permissionedResolverHasRootRolesSnippet,
+    functionName: 'hasRootRoles',
+    args: [roleBitmap, account],
   })
+}
+
+/**
+ * Compute a PermissionedResolver EAC resource ID from a node and part.
+ * Mirrors `PermissionedResolverLib.resource(node, part)` in Solidity.
+ *
+ * @param node - The namehash of the name (bytes32). Use 0n for "any name".
+ * @param part - The record-type part (bytes32). Use 0n for "any record type".
+ * @returns The resource ID as a bigint.
+ */
+export function computeResolverResource(
+  node: Hex | bigint,
+  part: Hex | bigint,
+): bigint {
+  const nodeHex = typeof node === 'bigint' ? toHex(node, { size: 32 }) : node
+  const partHex = typeof part === 'bigint' ? toHex(part, { size: 32 }) : part
+  return BigInt(
+    keccak256(encodePacked(['bytes32', 'bytes32'], [nodeHex, partHex])),
+  )
 }
