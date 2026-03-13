@@ -201,3 +201,23 @@ export const permissionedRegistrySetResolverSnippet = [
     stateMutability: 'nonpayable',
   },
 ] as const
+
+export const permissionedResolverAliasSnippet = [
+  {
+    name: 'setAlias',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'fromName', type: 'bytes' },
+      { name: 'toName', type: 'bytes' },
+    ],
+    outputs: [],
+  },
+  {
+    name: 'getAlias',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'fromName', type: 'bytes' }],
+    outputs: [{ name: 'toName', type: 'bytes' }],
+  },
+] as const
