@@ -264,7 +264,49 @@ export const permissionedResolverRolesSnippet = [
   },
 ] as const
 
-// ─── PermissionedResolver: role granting ─────────────────────────────
+// ─── PermissionedResolver: root role granting/revoking (inherited from EAC) ─
+
+export const permissionedResolverGrantRootRolesSnippet = [
+  {
+    name: 'grantRootRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverRevokeRootRolesSnippet = [
+  {
+    name: 'revokeRootRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverRevokeRolesSnippet = [
+  {
+    name: 'revokeRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+// ─── PermissionedResolver: name-aware role granting ──────────────────
 
 export const permissionedResolverGrantNameRolesSnippet = [
   {

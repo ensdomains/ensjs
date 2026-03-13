@@ -81,9 +81,12 @@ export {
   permissionedResolverAliasSnippet,
   permissionedResolverGrantAddrRolesSnippet,
   permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverGrantRootRolesSnippet,
   permissionedResolverGrantTextRolesSnippet,
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
+  permissionedResolverRevokeRolesSnippet,
+  permissionedResolverRevokeRootRolesSnippet,
   permissionedResolverRolesSnippet,
 } from './permissionedRegistry.js'
 export {

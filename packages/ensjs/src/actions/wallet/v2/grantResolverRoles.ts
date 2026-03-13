@@ -13,6 +13,7 @@ import { getAction } from 'viem/utils'
 import {
   permissionedResolverGrantAddrRolesSnippet,
   permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverGrantRootRolesSnippet,
   permissionedResolverGrantTextRolesSnippet,
 } from '../../../contracts/permissionedRegistry.js'
 import {
@@ -39,6 +40,75 @@ function dnsEncodeName(name: string): `0x${string}` {
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('')
   return `0x${hex}`
+}
+
+// ─── grantResolverRootRoles ──────────────────────────────────────────
+
+export type GrantResolverRootRolesParameters = {
+  /** The resolver address */
+  resolverAddress: Address
+  /** The resolver roles to grant on ROOT_RESOURCE (global) */
+  roles: ResolverRole[]
+  /** The account to grant roles to */
+  account: Address
+}
+
+export type GrantResolverRootRolesReturnType = WriteContractReturnType
+
+export type GrantResolverRootRolesErrorType = WriteContractErrorType
+
+/**
+ * Grant root-level roles on a PermissionedResolver.
+ *
+ * Root roles apply globally — they authorize the account for any name
+ * and any record type. Use this for root-only roles like ROLE_SET_ALIAS,
+ * or to create a global admin.
+ *
+ * The caller must hold the admin variant of each role being granted
+ * (e.g., ROLE_SET_ALIAS_ADMIN to grant ROLE_SET_ALIAS).
+ *
+ * This calls `grantRootRoles(roleBitmap, account)` on the resolver,
+ * which is inherited from EnhancedAccessControl and works directly.
+ *
+ * @example
+ * // Grant ROLE_SET_ALIAS to another address
+ * const hash = await grantResolverRootRoles(walletClient, {
+ *   resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
+ *   roles: ['ROLE_SET_ALIAS'],
+ *   account: '0xOTHER_ADDRESS',
+ * })
+ *
+ * @example
+ * // Grant multiple roles at once
+ * const hash = await grantResolverRootRoles(walletClient, {
+ *   resolverAddress: '0x...',
+ *   roles: ['ROLE_SET_ADDR', 'ROLE_SET_TEXT', 'ROLE_SET_ALIAS'],
+ *   account: '0xOTHER_ADDRESS',
+ * })
+ */
+export async function grantResolverRootRoles<
+  chain extends Chain,
+  account extends Account,
+>(
+  client: Client<Transport, chain, account>,
+  {
+    resolverAddress,
+    roles,
+    account: targetAccount,
+  }: GrantResolverRootRolesParameters,
+): Promise<GrantResolverRootRolesReturnType> {
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+
+  const roleBitmap = encodeResolverRoleBitmap(roles)
+
+  return writeContractAction({
+    address: resolverAddress,
+    abi: permissionedResolverGrantRootRolesSnippet,
+    functionName: 'grantRootRoles',
+    args: [roleBitmap, targetAccount],
+    chain: client.chain,
+    account: client.account,
+  } as WriteContractParameters)
 }
 
 // ─── grantResolverNameRoles ──────────────────────────────────────────
