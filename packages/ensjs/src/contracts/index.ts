@@ -79,6 +79,12 @@ export {
   permissionedRegistryRoleCountSnippet,
   permissionedRegistrySetResolverSnippet,
   permissionedResolverAliasSnippet,
+  permissionedResolverGrantAddrRolesSnippet,
+  permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverGrantTextRolesSnippet,
+  permissionedResolverHasRolesSnippet,
+  permissionedResolverHasRootRolesSnippet,
+  permissionedResolverRolesSnippet,
 } from './permissionedRegistry.js'
 export {
   publicResolverAbiSnippet,

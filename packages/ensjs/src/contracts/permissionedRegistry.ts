@@ -221,3 +221,89 @@ export const permissionedResolverAliasSnippet = [
     outputs: [{ name: 'toName', type: 'bytes' }],
   },
 ] as const
+
+// ─── PermissionedResolver: role checks ───────────────────────────────
+
+export const permissionedResolverHasRootRolesSnippet = [
+  {
+    name: 'hasRootRoles',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverHasRolesSnippet = [
+  {
+    name: 'hasRoles',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverRolesSnippet = [
+  {
+    name: 'roles',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+] as const
+
+// ─── PermissionedResolver: role granting ─────────────────────────────
+
+export const permissionedResolverGrantNameRolesSnippet = [
+  {
+    name: 'grantNameRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'toName', type: 'bytes' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverGrantTextRolesSnippet = [
+  {
+    name: 'grantTextRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'toName', type: 'bytes' },
+      { name: 'key', type: 'string' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverGrantAddrRolesSnippet = [
+  {
+    name: 'grantAddrRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'toName', type: 'bytes' },
+      { name: 'coinType', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
