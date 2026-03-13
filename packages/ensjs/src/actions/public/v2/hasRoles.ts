@@ -1,5 +1,5 @@
 import type { Address, Client, Hex, ReadContractErrorType } from 'viem'
-import { encodePacked, keccak256, toHex } from 'viem'
+import { encodePacked, keccak256 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { eacHasRolesSnippet } from '../../../contracts/enhancedAccessControl.js'
@@ -103,7 +103,7 @@ export type HasRolesErrorType = ReadContractErrorType
  * // Resolver mode - check resolver roles for a specific resource
  * const canSetText = await hasRoles(client, {
  *   resolverAddress: '0x...',
- *   resource: computeResolverResource(namehash('myname.eth'), 0n),
+ *   resource: computeResolverResource(namehash('myname.eth'), '0x0000000000000000000000000000000000000000000000000000000000000000'),
  *   roles: ['ROLE_SET_TEXT'],
  *   account: '0x...',
  * })
@@ -159,17 +159,10 @@ export async function hasRoles(
  * Compute a PermissionedResolver EAC resource ID from a node and part.
  * Mirrors `PermissionedResolverLib.resource(node, part)` in Solidity.
  *
- * @param node - The namehash of the name (bytes32). Use 0n for "any name".
- * @param part - The record-type part (bytes32). Use 0n for "any record type".
+ * @param node - The namehash of the name (bytes32). Use '0x00...00' for "any name".
+ * @param part - The record-type part (bytes32). Use '0x00...00' for "any record type".
  * @returns The resource ID as a bigint.
  */
-export function computeResolverResource(
-  node: Hex | bigint,
-  part: Hex | bigint,
-): bigint {
-  const nodeHex = typeof node === 'bigint' ? toHex(node, { size: 32 }) : node
-  const partHex = typeof part === 'bigint' ? toHex(part, { size: 32 }) : part
-  return BigInt(
-    keccak256(encodePacked(['bytes32', 'bytes32'], [nodeHex, partHex])),
-  )
+export function computeResolverResource(node: Hex, part: Hex): bigint {
+  return BigInt(keccak256(encodePacked(['bytes32', 'bytes32'], [node, part])))
 }

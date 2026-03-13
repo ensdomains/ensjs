@@ -113,7 +113,7 @@ export type RevokeResolverRolesErrorType = WriteContractErrorType
  * // Revoke ROLE_SET_TEXT for a specific name
  * const hash = await revokeResolverRoles(walletClient, {
  *   resolverAddress: '0x...',
- *   resource: computeResolverResource(namehash('myname.eth'), 0n),
+ *   resource: computeResolverResource(namehash('myname.eth'), '0x0000000000000000000000000000000000000000000000000000000000000000'),
  *   roles: ['ROLE_SET_TEXT'],
  *   account: '0xOTHER_ADDRESS',
  * })

@@ -109,7 +109,10 @@ describe('hasRoles', () => {
     it('returns false when account does not have role for resource', async () => {
       const result = await hasRoles(client, {
         resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
-        resource: computeResolverResource(1n, 0n),
+        resource: computeResolverResource(
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+        ),
         roles: ['ROLE_SET_TEXT'],
         account: '0x0000000000000000000000000000000000000001',
       })
@@ -120,25 +123,11 @@ describe('hasRoles', () => {
 })
 
 describe('computeResolverResource', () => {
-  it('computes resource from bigint inputs', () => {
-    const resource = computeResolverResource(0n, 0n)
-    expect(typeof resource).toBe('bigint')
-  })
-
   it('computes resource from hex inputs', () => {
     const resource = computeResolverResource(
       '0x0000000000000000000000000000000000000000000000000000000000000000',
       '0x0000000000000000000000000000000000000000000000000000000000000000',
     )
     expect(typeof resource).toBe('bigint')
-  })
-
-  it('returns same result for equivalent bigint and hex inputs', () => {
-    const fromBigint = computeResolverResource(0n, 0n)
-    const fromHex = computeResolverResource(
-      '0x0000000000000000000000000000000000000000000000000000000000000000',
-      '0x0000000000000000000000000000000000000000000000000000000000000000',
-    )
-    expect(fromBigint).toBe(fromHex)
   })
 })
