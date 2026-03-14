@@ -1,10 +1,11 @@
-import { type Client, labelhash } from 'viem'
+import { type Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { permissionedRegistryRolesSnippet } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { decodeRoleCounts, registryRoles } from '../../../utils/v2/index.js'
+import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
 export type GetNameRolesForAccountParameters = {
   registryAddress: Address
@@ -53,7 +54,7 @@ export async function getNameRolesForAccount(
     address: registryAddress,
     abi: permissionedRegistryRolesSnippet,
     functionName: 'roles',
-    args: [BigInt(labelhash(label)), account],
+    args: [labelToCanonicalId(label), account],
   })
 
   const roleCounts = decodeRoleCounts(roleBitmap, registryRoles)
