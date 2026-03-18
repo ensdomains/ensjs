@@ -6,7 +6,7 @@ import {
   labelhash,
   type ReadContractParameters,
 } from 'viem'
-import type { RequireChainL1Contracts } from '../clients/l1.js'
+import type { RequireChainContracts } from '../clients/l1.js'
 import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
 import { registryOwnerSnippet } from '../contracts/registry.js'
 import { InvalidContractTypeError } from '../errors/general.js'
@@ -40,7 +40,7 @@ export type GetContractSpecificOwnerParametersErrorType =
   InvalidContractTypeError | LabelhashErrorType
 
 export const getContractSpecificOwnerParameters = <_chain extends Chain>(
-  chain: RequireChainL1Contracts<
+  chain: RequireChainContracts<
     _chain,
     'ensNameWrapper' | 'ensRegistry' | 'ensBaseRegistrarImplementation'
   >,

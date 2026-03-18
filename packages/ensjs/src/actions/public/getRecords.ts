@@ -324,11 +324,7 @@ export async function getRecords<
   const contentHash extends boolean | undefined = undefined,
   const abi extends boolean | undefined = undefined,
 >(
-  client: RequireClientContracts<
-    'ensUniversalResolver' | 'multicall3',
-    chain,
-    'ensUniversalResolver' | 'multicall3'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver' | 'multicall3'>,
   {
     name,
     resolver,

@@ -1,15 +1,10 @@
-import { type Account, type Chain, type ChainContract, zeroAddress } from 'viem'
+import { type Chain, type ChainContract, zeroAddress } from 'viem'
 import type {
   StringConcatenationOrder,
   // biome-ignore lint/suspicious/noShadowRestrictedNames: yes
   TypeError,
 } from '../types/internal.js'
-import {
-  type AssertSupportedChain,
-  type ChainWithContracts,
-  type RequireClientContracts,
-  type SuggestedContracts,
-} from './shared.js'
+import type { AssertSupportedChain, SuggestedContracts } from './shared.js'
 
 // ================================
 // Supported chains
@@ -101,14 +96,14 @@ export const ensL1Contracts = {
       address: zeroAddress,
     },
     ensEthRegistrar: {
-      address: zeroAddress
+      address: zeroAddress,
     },
     usdc: {
-      address: zeroAddress
+      address: zeroAddress,
     },
     ensUserRegistryImpl: {
-      address: zeroAddress
-    }
+      address: zeroAddress,
+    },
   },
   [supportedL1Chains.sepolia]: {
     ensBaseRegistrarImplementation: {
@@ -151,16 +146,15 @@ export const ensL1Contracts = {
       address: '0x9240c5f31d747d60b3d9aed2f57995094342b1ed',
     },
     ensEthRegistrar: {
-      address: '0x68586418353b771cf2425ed14a07512aa880c532'
+      address: '0x68586418353b771cf2425ed14a07512aa880c532',
     },
     usdc: {
-      address: '0x302edecc2b8d1f3f4625b8a825a42f9adc102e65'
+      address: '0x302edecc2b8d1f3f4625b8a825a42f9adc102e65',
     },
     ensUserRegistryImpl: {
-      address: '0xea93aff7375e8176053ab6ab36b57cab53cbf702'
-    }
+      address: '0xea93aff7375e8176053ab6ab36b57cab53cbf702',
+    },
   },
-
 } as const satisfies Record<
   SupportedL1ChainId,
   Record<SupportedL1Contract, ChainContract>
@@ -199,7 +193,7 @@ export const ensL1Subgraphs = {
 // Assertions
 // ================================
 
-export type ChainWithL1Ens<
+export type ChainWithEns<
   chain extends AnySupportedL1Chain = AnySupportedL1Chain,
 > = Omit<chain, 'contracts' | 'subgraphs'> & {
   contracts: Omit<
@@ -210,13 +204,13 @@ export type ChainWithL1Ens<
   subgraphs: (typeof ensL1Subgraphs)[chain['id']]
 }
 
-export const extendChainWithL1Ens = <const chain extends Chain>(
+export const extendChainWithEns = <const chain extends Chain>(
   chain: AssertSupportedChain<
     chain,
     AnySupportedL1Chain,
     typeof supportedL1Chains
   >,
-): ChainWithL1Ens<Extract<chain, AnySupportedL1Chain>> => {
+): ChainWithEns<Extract<chain, AnySupportedL1Chain>> => {
   const initial = chain as AnySupportedL1Chain
 
   if (!SupportedL1ChainIds.includes(initial.id)) {
@@ -235,7 +229,7 @@ export const extendChainWithL1Ens = <const chain extends Chain>(
         : {}),
       ...ensL1Subgraphs[initial.id],
     },
-  } as ChainWithL1Ens<Extract<chain, AnySupportedL1Chain>>
+  } as ChainWithEns<Extract<chain, AnySupportedL1Chain>>
 }
 
 /**
@@ -254,9 +248,9 @@ export const extendChainWithL1Ens = <const chain extends Chain>(
  * myAction(extendChainWithEns(mainnet))
  * ```
  */
-export type RequireChainL1Contracts<
+export type RequireChainContracts<
   chain extends Chain,
-  contracts extends SuggestedContracts<SupportedL1Contract>,
+  contracts extends SuggestedContracts,
 > = chain extends Omit<Chain, 'contracts'> & {
   contracts: {
     [key in contracts]: ChainContract
@@ -265,14 +259,3 @@ export type RequireChainL1Contracts<
   ? chain
   : TypeError<`Chain "${chain['name']}" is missing required contracts: ${StringConcatenationOrder<contracts, ', '>}`>
 // : TypeError<`Chain "${chain["name"]}" is missing required contracts: ${StringConcatenationOrder<Exclude<contracts, keyof ExtractContracts<chain>>, ", ">}`>;
-
-export type RequireClientL1Contracts<
-  chain extends Chain,
-  contracts extends SuggestedContracts<SupportedL1Contract>,
-  account extends Account | undefined = Account | undefined,
-> = RequireClientContracts<SupportedL1Contract, chain, contracts, account>
-
-export type ChainWithL1Contracts<
-  contracts extends SuggestedContracts<SupportedL1Contract>,
-  chain extends Chain = Chain,
-> = ChainWithContracts<SupportedL1Contract, contracts, chain>

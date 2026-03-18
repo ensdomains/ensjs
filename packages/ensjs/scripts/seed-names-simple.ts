@@ -2,21 +2,14 @@
  * Simple script to register test names directly on devnet
  * Run with: npx tsx scripts/seed-names-simple.ts
  */
-import {
-  type Address,
-  createPublicClient,
-  createWalletClient,
-  getAddress,
-  type Hash,
-  http,
-} from 'viem'
+import { createPublicClient, createWalletClient, getAddress, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 // Anvil test accounts
 const account1 = privateKeyToAccount(
   '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
 )
-const account2 = privateKeyToAccount(
+const _account2 = privateKeyToAccount(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
 )
 
@@ -35,7 +28,7 @@ const publicClient = createPublicClient({
   transport: http('http://localhost:8545'),
 })
 
-const walletClient = createWalletClient({
+const _walletClient = createWalletClient({
   account: account1,
   transport: http('http://localhost:8545'),
 })

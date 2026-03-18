@@ -14,7 +14,7 @@ import {
   readContract,
 } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../../clients/l2.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import {
   permissionedRegistryGetTokenIdSnippet,
@@ -40,7 +40,7 @@ export type GetRegistrationDateErrorType =
  * @returns registration timestamp or null
  */
 export async function getRegistrationDate<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ensV2EthRegistry'>,
+  client: RequireClientContracts<chain, 'ensRegistry'>,
   { label, ...params }: GetRegistrationDateParameters,
 ): Promise<GetRegistrationDateReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -57,7 +57,7 @@ export async function getRegistrationDate<chain extends Chain>(
 
   const address = getChainContractAddress({
     chain: client.chain,
-    contract: 'ensV2EthRegistry',
+    contract: 'ensRegistry',
   })
 
   const tokenId =

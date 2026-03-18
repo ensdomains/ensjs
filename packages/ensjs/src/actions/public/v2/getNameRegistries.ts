@@ -11,7 +11,7 @@ import {
   getAction,
   toHex,
 } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../../clients/l2.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import { universalResolverFindRegistriesSnippet } from '../../../contracts/universalResolver.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
@@ -35,7 +35,7 @@ export type GetNameRegistriesErrorType =
  * @returns Array of registry addresses. {@link GetNameRegistriesReturnType}
  */
 export async function getNameRegistries<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name, address }: GetNameRegistriesParameters,
 ): Promise<GetNameRegistriesReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

@@ -11,7 +11,7 @@ import {
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
-import type { ChainWithL1Ens } from '../../clients/l1.js'
+import type { ChainWithEns } from '../../clients/l1.js'
 import {
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,
@@ -51,9 +51,9 @@ export type ImportDnsNameDataParameters = BaseImportDnsNameDataParameters &
 export type ImportDnsNameDataReturnType = SimpleTransactionRequest
 
 export type ImportDnsNameParameters<
-  TChain extends ChainWithL1Ens,
+  TChain extends ChainWithEns,
   TAccount extends Account | undefined,
-  TChainOverride extends ChainWithL1Ens | undefined,
+  TChainOverride extends ChainWithEns | undefined,
 > = Prettify<
   ImportDnsNameDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
@@ -64,7 +64,7 @@ export type ImportDnsNameReturnType = Hash
 export type ImportDnsNameErrorType = AdditionalParameterSpecifiedError | Error
 
 export const makeFunctionData = <
-  TChain extends ChainWithL1Ens,
+  TChain extends ChainWithEns,
   TAccount extends Account | undefined,
 >(
   wallet: Client<Transport, TChain, TAccount>,
@@ -146,9 +146,9 @@ export const makeFunctionData = <
  * })
  */
 export async function importDnsName<
-  TChain extends ChainWithL1Ens,
+  TChain extends ChainWithEns,
   TAccount extends Account | undefined,
-  TChainOverride extends ChainWithL1Ens | undefined = ChainWithL1Ens,
+  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
 >(
   wallet: Client<Transport, TChain, TAccount>,
   {

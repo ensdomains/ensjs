@@ -62,11 +62,7 @@ export async function resolveNameData<
   chain extends Chain,
   data extends Hex | Hex[],
 >(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name, data, strict, gatewayUrls }: ResolveNameDataParameters<data>,
 ): Promise<ResolveNameDataReturnType<data>> {
   ASSERT_NO_TYPE_ERROR(client)

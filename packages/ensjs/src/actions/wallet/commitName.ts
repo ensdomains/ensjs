@@ -9,9 +9,9 @@ import type {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithL2Contracts,
-  RequireClientL2Contracts,
-} from '../../clients/l2.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarCommitSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
@@ -53,7 +53,7 @@ export const commitNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL2Contracts<chain, 'ethRegistrar', account>,
+  client: RequireClientContracts<chain, 'ethRegistrar', account>,
   args: CommitNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -88,7 +88,7 @@ export const commitNameWriteParameters = <
 export type CommitNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL2Contracts<'ethRegistrar'> | undefined,
+  chainOverride extends ChainWithContracts<'ethRegistrar'> | undefined,
 > = Prettify<
   CommitNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -130,9 +130,9 @@ export type CommitNameErrorType =
 export async function commitName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL2Contracts<'ethRegistrar'> | undefined,
+  chainOverride extends ChainWithContracts<'ethRegistrar'> | undefined,
 >(
-  client: RequireClientL2Contracts<chain, 'ethRegistrar', account>,
+  client: RequireClientContracts<chain, 'ethRegistrar', account>,
   {
     label,
     owner,

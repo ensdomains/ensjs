@@ -3,8 +3,6 @@ import { getChainContractAddress as viem_getChainContractAddress } from 'viem'
 // biome-ignore lint/suspicious/noShadowRestrictedNames: error type with typed message
 import type { StringConcatenationOrder, TypeError } from '../types/internal.js'
 
-
-
 export type AssertSupportedChain<
   chain extends Chain,
   supportedChain extends Chain,
@@ -22,17 +20,13 @@ export type BaseChainContracts = {
     : key]: NonNullable<Chain['contracts']>[key]
 }
 
-export type SuggestedContracts<supportedContract extends string> =
-  | supportedContract
-  | keyof BaseChainContracts
-  | (string & {})
+export type SuggestedContracts = keyof BaseChainContracts | (string & {})
 
 /**
  * Type utility that explicitly enforces the presence of required contracts on the chain
  */
 export type ChainWithContracts<
-  supportedContract extends string,
-  contracts extends SuggestedContracts<supportedContract>,
+  contracts extends SuggestedContracts,
   chain extends Chain = Chain,
 > = Omit<chain, 'contracts'> & {
   contracts: {
@@ -110,9 +104,8 @@ export const getChainContractAddress = <
  * ```
  */
 export type RequireClientContracts<
-  supportedContract extends string,
   chain extends Chain,
-  contracts extends SuggestedContracts<supportedContract>,
+  contracts extends SuggestedContracts,
   account extends Account | undefined = Account | undefined,
 > = chain extends Omit<Chain, 'contracts'> & {
   contracts: {

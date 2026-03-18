@@ -1,11 +1,11 @@
 import { createPublicClient, http } from 'viem'
 import { sepolia } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
-import { extendChainWithL1Ens } from '../../../clients/l1.js'
+import { extendChainWithEns } from '../../../clients/l1.js'
 import { getNameRegistries } from './getNameRegistries.js'
 
 const client = createPublicClient({
-  chain: extendChainWithL1Ens(sepolia),
+  chain: extendChainWithEns(sepolia),
   transport: http(
     'https://lb.drpc.live/sepolia/AnmpasF2C0JBqeAEzxVO8aRo7Ju0xlER8JS4QmlfqV1j',
   ),

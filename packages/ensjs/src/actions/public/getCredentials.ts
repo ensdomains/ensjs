@@ -49,11 +49,7 @@ const parseCredentials = (credentials: string[]) => {
  * // [{ url: 'https://example.com' }]
  */
 export async function getCredentials<chain extends Chain>(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, strict, name }: GetCredentialsParameters,
 ): Promise<GetCredentialsReturnType> {
   const result = await getTextRecord(client, {

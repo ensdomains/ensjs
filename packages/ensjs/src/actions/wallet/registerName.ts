@@ -9,11 +9,11 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction, padHex } from 'viem/utils'
-import type {
-  ChainWithL2Contracts,
-  RequireClientL2Contracts,
-} from '../../clients/l2.js'
-import { getChainContractAddress } from '../../clients/shared.js'
+import {
+  type ChainWithContracts,
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/shared.js'
 import { l2EthRegistrarRegisterSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -53,11 +53,7 @@ export const registerNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL2Contracts<
-    chain,
-    'ensL2EthRegistrar' | 'usdc',
-    account
-  >,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
   registrationParams: RegisterNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -109,7 +105,7 @@ export type RegisterNameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithL2Contracts<'ensL2EthRegistrar' | 'usdc'>
+    | ChainWithContracts<'ensL2EthRegistrar' | 'usdc'>
     | undefined,
 > = Prettify<
   RegisterNameWriteParametersParameters &
@@ -167,14 +163,10 @@ export async function registerName<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithL2Contracts<'ensL2EthRegistrar' | 'usdc'>
+    | ChainWithContracts<'ensL2EthRegistrar' | 'usdc'>
     | undefined,
 >(
-  client: RequireClientL2Contracts<
-    chain,
-    'ensL2EthRegistrar' | 'usdc',
-    account
-  >,
+  client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
   {
     label,
     owner,

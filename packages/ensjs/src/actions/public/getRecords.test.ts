@@ -2,10 +2,7 @@ import { createPublicClient, http, RawContractError } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsL1Contracts } from '../../index.js'
-import {
-  deploymentAddresses,
-  publicClient,
-} from '../../test/addTestContracts.js'
+import { publicClient } from '../../test/addTestContracts.js'
 import { getRecords } from './getRecords.js'
 
 const mainnetPublicClient = createPublicClient({

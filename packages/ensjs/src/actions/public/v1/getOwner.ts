@@ -11,7 +11,7 @@ import {
 } from 'viem'
 import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { isNullRegistrarOwnerOfError } from '../../../utils/errors/isNullRegistrarOwnerOfError.js'
@@ -107,7 +107,7 @@ export async function getOwner<
   chain extends Chain,
   contract extends OwnerContract | undefined = undefined,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     | 'ensNameWrapper'
     | 'ensRegistry'

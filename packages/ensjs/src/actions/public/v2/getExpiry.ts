@@ -1,7 +1,7 @@
 import { type Chain, labelhash, type ReadContractErrorType } from 'viem'
 import { readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../../clients/l2.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import { permissionedRegistryGetExpirySnippet } from '../../../contracts/permissionedRegistry.js'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
@@ -22,7 +22,7 @@ export type GetExpiryErrorType =
   | ReadContractErrorType
 
 export async function getExpiry<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ensV2EthRegistry'>,
+  client: RequireClientContracts<chain, 'ensRegistry'>,
   { name }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -39,7 +39,7 @@ export async function getExpiry<chain extends Chain>(
 
   const address = getChainContractAddress({
     chain: client.chain,
-    contract: 'ensV2EthRegistry',
+    contract: 'ensRegistry',
   })
 
   return readContractAction({

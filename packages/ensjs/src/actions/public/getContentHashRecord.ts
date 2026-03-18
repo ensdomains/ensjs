@@ -51,11 +51,7 @@ export type GetContentHashRecordErrorType =
  * // { protocolType: 'ipfs', decoded: 'k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw' }
  */
 export async function getContentHashRecord<chain extends Chain>(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, name, strict }: GetContentHashRecordParameters,
 ): Promise<GetContentHashRecordReturnType> {
   const resolveNameDataAction = getAction(

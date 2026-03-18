@@ -7,7 +7,7 @@ import type {
 import { zeroAddress } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../clients/l2.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
 import { l2EthRegistrarRentPriceSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
@@ -58,7 +58,7 @@ export type GetPriceErrorType =
  * // { base: 352828971668930335n, premium: 0n }
  */
 export async function getPrice<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ethRegistrar' | 'usdc'>,
+  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc'>,
   {
     nameOrNames,
     duration,

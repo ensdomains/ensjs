@@ -46,7 +46,7 @@ export async function getSupportedInterfaces<
   chain extends Chain,
   const interfaces extends readonly Hex[],
 >(
-  client: RequireClientContracts<'multicall3', chain, 'multicall3'>,
+  client: RequireClientContracts<chain, 'multicall3'>,
   { address, interfaces }: GetSupportedInterfacesParameters<interfaces>,
 ): Promise<GetSupportedInterfacesReturnType<interfaces>> {
   ASSERT_NO_TYPE_ERROR(client)
