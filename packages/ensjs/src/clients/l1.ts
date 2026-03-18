@@ -51,6 +51,7 @@ export const supportedL1Contracts = [
   'ensVerifiableFactory',
   'ensRegistry',
   'ensPermissionedResolverImpl',
+  'ensUserRegistryImpl',
 
   // UR
   'ensUniversalResolver',
@@ -104,53 +105,59 @@ export const ensL1Contracts = {
     },
     usdc: {
       address: zeroAddress
+    },
+    ensUserRegistryImpl: {
+      address: zeroAddress
     }
   },
   [supportedL1Chains.sepolia]: {
     ensBaseRegistrarImplementation: {
-      address: '0xb16870800de7444f6b2ebd885465412a5e581614',
+      address: '0x6409609247722761b8ba96371485de92a6d7b83b',
     },
     ensBulkRenewal: {
-      address: '0xf4404c962f7b859f6df712bff1f2e11745a238f0',
+      address: '0x7f86d816165baf4fd68bfd9a0706601cdd666ac4',
     },
     ensLegacyDnsRegistrar: {
-      address: '0xafb9671d00b5152ebd219100f3801d3de1b4d288',
+      address: '0x9a1cdc8b7b72b6c83225611187e2d7b80eddac6e',
     },
     ensLegacyDnssecImpl: {
-      address: '0x36f5a471cfa76b421fe9784778fd8cf35014eb11',
+      address: '0x18b1373567efa1a4b0abea0a418438b8d1dd9c68',
     },
     ensEthRegistrarController: {
       address: '0x99e517db3db5ec5424367b8b50cd11ddcb0008f1',
     },
     ensNameWrapper: {
-      address: '0xca7e6d0ddc5f373197bbe6fc2f09c2314399f028',
+      address: '0xc7e033b8836e4bd55d069d113f018b98478cb091',
     },
     ensPublicResolver: {
-      address: '0x0e14ee0592da66bb4c8a8090066bc8a5af15f3e6',
+      address: '0x640294a2b2d87e7f522db3e3e3e876764bce170d',
     },
     ensLegacyRegistry: {
       address: '0x17795c119b8155ab9d3357c77747ba509695d7cb',
     },
     ensReverseRegistrar: {
-      address: '0xf79f9970030fe60bd89d21591c7f2d80d7d21242',
+      address: '0xa35e6c5dc06e820cc6716ca33dfcd203503fb1d3',
     },
     ensUniversalResolver: {
-      address: '0x50168842c0f5c9992a34085d9a6dc5b0a4f306ce',
+      address: '0x4dc74fef4fc6b5a810a1554d431f06c8d8b7451c',
     },
     ensPermissionedResolverImpl: {
-      address: zeroAddress,
+      address: '0xe566a1fbaf30ff7c39828fe99f955fc55544cb9c',
     },
     ensRegistry: {
-      address: '0x3f0920aa92c5f9bce54643c09955c5f241f1f763',
+      address: '0x796fff2e907449be8d5921bcc215b1b76d89d080',
     },
     ensVerifiableFactory: {
-      address: '0xe52e7349922730c46a9d35e62303b03bb1058a7f',
+      address: '0x9240c5f31d747d60b3d9aed2f57995094342b1ed',
     },
     ensEthRegistrar: {
-      address: '0x3334f0ebcbc4b5b7067f3aff25c6da8973690d54'
+      address: '0x68586418353b771cf2425ed14a07512aa880c532'
     },
     usdc: {
-      address: '0x7Fc21ceb0C5003576ab5E101eB240c2b822c95d2'
+      address: '0x302edecc2b8d1f3f4625b8a825a42f9adc102e65'
+    },
+    ensUserRegistryImpl: {
+      address: '0xea93aff7375e8176053ab6ab36b57cab53cbf702'
     }
   },
 
