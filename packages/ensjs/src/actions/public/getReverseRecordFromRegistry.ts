@@ -77,8 +77,7 @@ export async function getReverseRecordFromRegistry<chain extends Chain>(
     args: [nodeHash],
   })
 
-  if (!resolverAddress || resolverAddress === zeroAddress)
-    return null
+  if (!resolverAddress || resolverAddress === zeroAddress) return null
 
   const name = await readContractAction({
     address: resolverAddress,
