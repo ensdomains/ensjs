@@ -9,7 +9,6 @@ import {
   type ChainWithContracts,
   type RequireClientContracts,
   type SuggestedContracts,
-  supportedNamechainContracts,
 } from './shared.js'
 
 // ================================
@@ -19,7 +18,6 @@ import {
 export const supportedL1Chains = {
   mainnet: 1,
   sepolia: 11155111,
-  anvilL1: 15658733,
 } as const
 
 const SupportedL1ChainIds = Object.values(supportedL1Chains)
@@ -36,18 +34,23 @@ export type AnySupportedL1Chain = Omit<Chain, 'id'> & {
 // ================================
 
 export const supportedL1Contracts = [
-  ...supportedNamechainContracts,
-
   // v1
   'ensBaseRegistrarImplementation',
   'ensBulkRenewal',
-  'ensDnsRegistrar',
-  'ensDnssecImpl',
+  'ensLegacyDnsRegistrar',
+  'ensLegacyDnssecImpl',
   'ensEthRegistrarController',
   'ensNameWrapper',
   'ensPublicResolver',
-  'ensRegistry',
+  'ensLegacyRegistry',
   'ensReverseRegistrar',
+
+  // v2
+  'ensEthRegistrar',
+  'usdc',
+  'ensVerifiableFactory',
+  'ensRegistry',
+  'ensPermissionedResolverImpl',
 
   // UR
   'ensUniversalResolver',
@@ -63,10 +66,10 @@ export const ensL1Contracts = {
     ensBulkRenewal: {
       address: '0xa12159e5131b1eEf6B4857EEE3e1954744b5033A',
     },
-    ensDnsRegistrar: {
+    ensLegacyDnsRegistrar: {
       address: '0xB32cB5677a7C971689228EC835800432B339bA2B',
     },
-    ensDnssecImpl: {
+    ensLegacyDnssecImpl: {
       address: '0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5',
     },
     ensEthRegistrarController: {
@@ -78,7 +81,7 @@ export const ensL1Contracts = {
     ensPublicResolver: {
       address: '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63',
     },
-    ensRegistry: {
+    ensLegacyRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     },
     ensReverseRegistrar: {
@@ -87,18 +90,21 @@ export const ensL1Contracts = {
     ensUniversalResolver: {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
-    ensDedicatedResolver: {
+    ensPermissionedResolverImpl: {
       address: zeroAddress,
     },
-    ensV2EthRegistry: {
-      address: zeroAddress,
-    },
-    ensUserRegistry: {
+    ensRegistry: {
       address: zeroAddress,
     },
     ensVerifiableFactory: {
       address: zeroAddress,
     },
+    ensEthRegistrar: {
+      address: zeroAddress
+    },
+    usdc: {
+      address: zeroAddress
+    }
   },
   [supportedL1Chains.sepolia]: {
     ensBaseRegistrarImplementation: {
@@ -107,10 +113,10 @@ export const ensL1Contracts = {
     ensBulkRenewal: {
       address: '0xf4404c962f7b859f6df712bff1f2e11745a238f0',
     },
-    ensDnsRegistrar: {
+    ensLegacyDnsRegistrar: {
       address: '0xafb9671d00b5152ebd219100f3801d3de1b4d288',
     },
-    ensDnssecImpl: {
+    ensLegacyDnssecImpl: {
       address: '0x36f5a471cfa76b421fe9784778fd8cf35014eb11',
     },
     ensEthRegistrarController: {
@@ -122,7 +128,7 @@ export const ensL1Contracts = {
     ensPublicResolver: {
       address: '0x0e14ee0592da66bb4c8a8090066bc8a5af15f3e6',
     },
-    ensRegistry: {
+    ensLegacyRegistry: {
       address: '0x17795c119b8155ab9d3357c77747ba509695d7cb',
     },
     ensReverseRegistrar: {
@@ -131,63 +137,23 @@ export const ensL1Contracts = {
     ensUniversalResolver: {
       address: '0x50168842c0f5c9992a34085d9a6dc5b0a4f306ce',
     },
-    ensDedicatedResolver: {
-      address: '0x061377382a03e1f9d7f3c47eeb8dfb053922c910',
+    ensPermissionedResolverImpl: {
+      address: zeroAddress,
     },
-    ensV2EthRegistry: {
+    ensRegistry: {
       address: '0x3f0920aa92c5f9bce54643c09955c5f241f1f763',
     },
     ensVerifiableFactory: {
       address: '0xe52e7349922730c46a9d35e62303b03bb1058a7f',
     },
-    ensUserRegistry: {
-      address: '0xb1cdc9dc6130cf25465d4950c655dd35a3c81d7a',
+    ensEthRegistrar: {
+      address: '0x3334f0ebcbc4b5b7067f3aff25c6da8973690d54'
     },
+    usdc: {
+      address: '0x7Fc21ceb0C5003576ab5E101eB240c2b822c95d2'
+    }
   },
-  [supportedL1Chains.anvilL1]: {
-    ensBaseRegistrarImplementation: {
-      address: '0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575',
-    },
-    ensBulkRenewal: {
-      address: '0xC9a43158891282A2B1475592D5719c001986Aaec',
-    },
-    ensDnsRegistrar: {
-      address: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
-    },
-    ensDnssecImpl: {
-      address: '0x7a2088a1bFc9d81c55368AE168C2C02570cB814F',
-    },
-    ensEthRegistrarController: {
-      address: '0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d',
-    },
-    ensNameWrapper: {
-      address: '0xFD471836031dc5108809D173A067e8486B9047A3',
-    },
-    ensPublicResolver: {
-      address: '0x49fd2BE640DB2910c2fAb69bB8531Ab6E76127ff',
-    },
-    ensRegistry: {
-      address: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
-    },
-    ensReverseRegistrar: {
-      address: '0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3',
-    },
-    ensUniversalResolver: {
-      address: '0x4631BCAbD6dF18D94796344963cB60d44a4136b6',
-    },
-    ensDedicatedResolver: {
-      address: '0x162A433068F51e18b7d13932F27e66a3f99E6890',
-    },
-    ensV2EthRegistry: {
-      address: '0x0B306BF915C4d645ff596e518fAf3F9669b97016',
-    },
-    ensVerifiableFactory: {
-      address: '0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f',
-    },
-    ensUserRegistry: {
-      address: '0x51A1ceB83B83F1985a81C295d1fF28Afef186E02',
-    },
-  },
+
 } as const satisfies Record<
   SupportedL1ChainId,
   Record<SupportedL1Contract, ChainContract>
@@ -214,11 +180,6 @@ export const ensL1Subgraphs = {
   [supportedL1Chains.sepolia]: {
     ens: {
       url: 'https://ensnode-api-sepolia.up.railway.app/subgraph',
-    },
-  },
-  [supportedL1Chains.anvilL1]: {
-    ens: {
-      url: 'http://localhost:42069/subgraph',
     },
   },
 } as const satisfies Record<SupportedL1ChainId, EnsSubgraph>

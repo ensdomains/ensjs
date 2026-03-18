@@ -3,12 +3,7 @@ import { getChainContractAddress as viem_getChainContractAddress } from 'viem'
 // biome-ignore lint/suspicious/noShadowRestrictedNames: error type with typed message
 import type { StringConcatenationOrder, TypeError } from '../types/internal.js'
 
-export const supportedNamechainContracts = [
-  'ensVerifiableFactory',
-  'ensUserRegistry',
-  'ensV2EthRegistry',
-  'ensDedicatedResolver',
-] as const
+
 
 export type AssertSupportedChain<
   chain extends Chain,
