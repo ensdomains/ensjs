@@ -32,7 +32,7 @@ export function packetToBytes(packet: string): ByteArray {
 
 export function bytesToPacket(bytes: ByteArray): string {
   let offset = 0
-  let result = ''
+  const labels: string[] = []
 
   while (offset < bytes.length) {
     const len = bytes[offset]
@@ -40,10 +40,18 @@ export function bytesToPacket(bytes: ByteArray): string {
       offset += 1
       break
     }
-
-    result += `${bytesToString(bytes.subarray(offset + 1, offset + len + 1))}.`
+    labels.push(bytesToString(bytes.subarray(offset + 1, offset + len + 1)))
     offset += len + 1
   }
 
-  return result.replace(/\.$/, '')
+  // If the last label is 'eth' and the previous label ends with '.eth', remove the last 'eth'
+  if (
+    labels.length > 1 &&
+    labels[labels.length - 1] === 'eth' &&
+    labels[labels.length - 2].endsWith('.eth')
+  ) {
+    labels.pop()
+  }
+
+  return labels.join('.')
 }
