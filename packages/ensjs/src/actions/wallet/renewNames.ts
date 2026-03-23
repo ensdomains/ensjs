@@ -13,7 +13,7 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { l2EthRegistrarRenewSnippet } from '../../contracts/l2EthRegistrar.js'
+import { ethRegistrarControllerRenewSnippet } from '../../contracts/ethRegistrarController.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -79,7 +79,7 @@ export const renewNamesWriteParameters = <
       chain: client.chain,
       contract: 'ensEthRegistrarController',
     }),
-    abi: l2EthRegistrarRenewSnippet,
+    abi: ethRegistrarControllerRenewSnippet,
     functionName: 'renew',
     args: [label[0], BigInt(duration)],
   } as const satisfies WriteContractParameters

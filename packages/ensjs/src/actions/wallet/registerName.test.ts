@@ -26,7 +26,7 @@ afterEach(async () => {
 
 const secret = `0x${'a'.repeat(64)}` as Hex
 
-it.skip('should return a registration transaction and succeed', async () => {
+it('should return a registration transaction and succeed', async () => {
   const params: L2RegistrationParameters = {
     label: 'cool-swag',
     duration: 31536000,

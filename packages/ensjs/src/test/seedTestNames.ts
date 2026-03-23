@@ -20,7 +20,7 @@ import {
   type WalletClient,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { L1_DEVNET_ADDRESSES, L2_DEVNET_ADDRESSES } from './devnetAddresses.js'
+import { deploymentAddresses } from './addTestContracts.js'
 
 // Test account from anvil (account #1 with known private key)
 const account = privateKeyToAccount(
@@ -32,51 +32,32 @@ const account2 = privateKeyToAccount(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
 )
 
-async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
+async function setupClients(l1Url: string) {
   const localhost = {
-    id: 15658733,
+    id: 1,
     name: 'Localhost',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
       default: { http: [l1Url] },
     },
     contracts: {
-      ensRegistry: { address: L1_DEVNET_ADDRESSES.ENSRegistry },
+      ensRegistry: { address: deploymentAddresses.ENSRegistry },
       ensBaseRegistrarImplementation: {
-        address: L1_DEVNET_ADDRESSES.BaseRegistrarImplementation,
+        address: deploymentAddresses.BaseRegistrarImplementation,
       },
       ensEthRegistrarController: {
-        address: L1_DEVNET_ADDRESSES.LegacyETHRegistrarController,
+        address: deploymentAddresses.LegacyETHRegistrarController,
       },
-      ensNameWrapper: { address: L1_DEVNET_ADDRESSES.NameWrapper },
-      ensPublicResolver: { address: L1_DEVNET_ADDRESSES.PublicResolver },
-    },
-  }
-
-  const localhostL2 = {
-    id: 15658734,
-    name: 'Localhost L2',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-      default: { http: [l2Url] },
-    },
-    contracts: {
-      ethRegistrar: { address: L2_DEVNET_ADDRESSES.EthRegistrar },
-      usdc: { address: L2_DEVNET_ADDRESSES.USDC },
+      ensNameWrapper: { address: deploymentAddresses.NameWrapper },
+      ensPublicResolver: { address: deploymentAddresses.PublicResolver },
     },
   }
 
   const transport = http(l1Url)
-  const transportL2 = http(l2Url)
 
   const publicClient = createPublicClient({
     chain: localhost,
     transport,
-  })
-
-  const publicClientL2 = createPublicClient({
-    chain: localhostL2,
-    transport: transportL2,
   })
 
   const walletClient = createWalletClient({
@@ -91,20 +72,11 @@ async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
     transport,
   })
 
-  const walletClientL2 = createWalletClient({
-    account,
-    chain: localhostL2,
-    transport: transportL2,
-  })
-
   return {
     publicClient,
-    publicClientL2,
     walletClient,
     walletClient2,
-    walletClientL2,
-    addresses: L1_DEVNET_ADDRESSES,
-    l2Addresses: L2_DEVNET_ADDRESSES,
+    addresses: deploymentAddresses,
     account,
     account2,
   }

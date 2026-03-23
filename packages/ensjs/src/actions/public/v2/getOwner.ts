@@ -1,22 +1,16 @@
 import type { Address, Client } from 'viem'
-import { erc721Abi } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import { permissionedRegistryGetStateSnippet } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-
-import {
-  type GetRegistryNameDataErrorType,
-  getRegistryNameData,
-} from './getRegistryNameData.js'
+import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
 export type GetOwnerParameters = {
   registryAddress: Address
   label: string
 }
 
-export type GetOwnerErrorType =
-  | GetRegistryNameDataErrorType
-  | ReadContractErrorType
+export type GetOwnerErrorType = ReadContractErrorType
 
 export async function getOwner(
   client: Client,
@@ -26,15 +20,14 @@ export async function getOwner(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const [tokenId] = await getRegistryNameData(client, {
-    registryAddress,
-    label,
+  const labelHash = labelToCanonicalId(label)
+
+  const state = await readContractAction({
+    address: registryAddress,
+    abi: permissionedRegistryGetStateSnippet,
+    functionName: 'getState',
+    args: [labelHash],
   })
 
-  return await readContractAction({
-    address: registryAddress,
-    abi: erc721Abi,
-    functionName: 'ownerOf',
-    args: [tokenId],
-  })
+  return (state as { latestOwner: Address }).latestOwner
 }

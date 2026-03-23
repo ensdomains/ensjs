@@ -1,6 +1,5 @@
 import { encodeFunctionData, namehash } from 'viem'
 import { expect, it } from 'vitest'
-import { encodeAbi } from '../index.js'
 import {
   type ResolverMulticallItem,
   resolverMulticallParameters,
@@ -101,42 +100,45 @@ it('adds coin calls when coins array is defined and not empty', async () => {
     ]
   `)
 })
-it.skip('adds abi call when data is null', async () => {
-  const result = await encodeAbi({ encodeAs: 'uri', data: null })
+it('adds abi call when data is null', async () => {
   expect(
-    await resolverMulticallParameters({
-      namehash: namehash('test.eth'),
-      abi: result,
-    }),
+    encodeResult(
+      await resolverMulticallParameters({
+        namehash: namehash('test.eth'),
+        abi: { encodeAs: 'uri', data: null },
+      }),
+    ),
   ).toMatchInlineSnapshot(`
     [
       "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
     ]
   `)
 })
-it.skip('adds abi call when data is not empty', async () => {
-  const result = await encodeAbi({ encodeAs: 'json', data: { foo: 'bar' } })
+it('adds abi call when data is not empty', async () => {
   expect(
-    await resolverMulticallParameters({
-      namehash: namehash('test.eth'),
-      abi: result,
-    }),
+    encodeResult(
+      await resolverMulticallParameters({
+        namehash: namehash('test.eth'),
+        abi: { encodeAs: 'json', data: { foo: 'bar' } },
+      }),
+    ),
   ).toMatchInlineSnapshot(`
     [
       "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d7b22666f6f223a22626172227d00000000000000000000000000000000000000",
     ]
   `)
 })
-it.skip('adds multiple abi calls when multiple abis are added', async () => {
-  const result = [
-    await encodeAbi({ encodeAs: 'json', data: { foo: 'bar' } }),
-    await encodeAbi({ encodeAs: 'uri', data: null }),
-  ]
+it('adds multiple abi calls when multiple abis are added', async () => {
   expect(
-    resolverMulticallParameters({
-      namehash: namehash('test.eth'),
-      abi: result,
-    }),
+    encodeResult(
+      await resolverMulticallParameters({
+        namehash: namehash('test.eth'),
+        abi: [
+          { encodeAs: 'json', data: { foo: 'bar' } },
+          { encodeAs: 'uri', data: null },
+        ],
+      }),
+    ),
   ).toMatchInlineSnapshot(`
     [
       "0x623195b0eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d7b22666f6f223a22626172227d00000000000000000000000000000000000000",

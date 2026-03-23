@@ -1,4 +1,10 @@
-import { type Chain, labelhash, type ReadContractErrorType } from 'viem'
+import {
+  type Address,
+  type Chain,
+  keccak256,
+  type ReadContractErrorType,
+  stringToBytes,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
@@ -12,6 +18,8 @@ import { checkIsDotEth } from '../../../utils/name/validation.js'
 export type GetExpiryParameters = {
   /** Name to get expiry for */
   name: string
+  /** Optional custom registry address (defaults to chain's ensRegistry) */
+  registryAddress?: Address
 }
 
 export type GetExpiryReturnType = bigint
@@ -23,29 +31,42 @@ export type GetExpiryErrorType =
 
 export async function getExpiry<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensRegistry'>,
-  { name }: GetExpiryParameters,
+  { name, registryAddress: customRegistryAddress }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
   const labels = name.split('.')
-  if (!checkIsDotEth(labels))
+  const nameType = getNameType(name)
+  if (!checkIsDotEth(labels) && nameType !== 'eth-subname')
     throw new UnsupportedNameTypeError({
-      nameType: getNameType(name),
-      supportedNameTypes: ['eth-2ld', 'tld'],
+      nameType,
+      supportedNameTypes: ['eth-2ld', 'eth-subname', 'tld'],
       details:
-        'Only the expiry of eth-2ld names can be fetched when using the registrar or l2Registrar contract',
+        'Only the expiry of eth-2ld or eth-subname names can be fetched when using the registry',
+    })
+
+  if (labels.length > 2)
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld', 'eth-subname', 'tld'],
+      details:
+        'Only the expiry of eth-2ld names can be fetched when using the registry',
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const address = getChainContractAddress({
-    chain: client.chain,
-    contract: 'ensRegistry',
-  })
+  const currentRegistry =
+    customRegistryAddress ??
+    getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensRegistry',
+    })
+
+  const labelHash = BigInt(keccak256(stringToBytes(labels[0])))
 
   return readContractAction({
-    address,
+    address: currentRegistry,
     abi: permissionedRegistryGetExpirySnippet,
     functionName: 'getExpiry',
-    args: [BigInt(labelhash(labels[0]))],
+    args: [labelHash],
   })
 }

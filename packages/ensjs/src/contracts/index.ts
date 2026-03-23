@@ -27,6 +27,7 @@ export {
 } from './dnsRegistrar.js'
 export {
   dnssecImplAnchorsSnippet,
+  dnssecImplErrors,
   dnssecImplVerifyRrSetSnippet,
 } from './dnssecImpl.js'
 export { erc165SupportsInterfaceSnippet } from './erc165.js'
@@ -75,7 +76,6 @@ export {
   nameWrapperWrapSnippet,
 } from './nameWrapper.js'
 export {
-  permissionedRegistryGetNameDataSnippet,
   permissionedRegistryRoleCountSnippet,
   permissionedRegistrySetResolverSnippet,
   permissionedResolverAliasSnippet,

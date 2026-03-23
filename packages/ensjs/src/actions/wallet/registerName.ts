@@ -53,7 +53,7 @@ export const registerNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
+  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc', account>,
   registrationParams: RegisterNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -76,7 +76,7 @@ export const registerNameWriteParameters = <
   return {
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensL2EthRegistrar',
+      contract: 'ethRegistrar',
     }),
     abi: l2EthRegistrarRegisterSnippet,
     functionName: 'register',
@@ -104,9 +104,7 @@ export const registerNameWriteParameters = <
 export type RegisterNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends
-    | ChainWithContracts<'ensL2EthRegistrar' | 'usdc'>
-    | undefined,
+  chainOverride extends ChainWithContracts<'ethRegistrar' | 'usdc'> | undefined,
 > = Prettify<
   RegisterNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -162,11 +160,9 @@ export type RegisterNameErrorType =
 export async function registerName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends
-    | ChainWithContracts<'ensL2EthRegistrar' | 'usdc'>
-    | undefined,
+  chainOverride extends ChainWithContracts<'ethRegistrar' | 'usdc'> | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensL2EthRegistrar' | 'usdc', account>,
+  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc', account>,
   {
     label,
     owner,

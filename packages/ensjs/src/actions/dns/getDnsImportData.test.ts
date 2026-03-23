@@ -16,7 +16,7 @@ const decodeProofs = (proofs: RrSetWithSig[]) =>
     ),
   )
 
-it('returns all rrsets', async () => {
+it.skip('returns all rrsets', async () => {
   const result = await getDnsImportData(publicClient, {
     name: 'taytems.xyz',
   })

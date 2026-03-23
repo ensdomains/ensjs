@@ -39,7 +39,7 @@ const getExpiry = async (name: string) => {
 }
 
 it.skip('should return a renew transaction for a single name and succeed', async () => {
-  const name = 'to-be-renewed.eth'
+  const name = 'test123.eth'
   const duration = 31536000n
 
   const oldExpiry = await getExpiry(name)

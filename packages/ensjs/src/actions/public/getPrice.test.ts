@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { publicClientL2 } from '../../test/addTestContracts.js'
+import { publicClient as publicClientL2 } from '../../test/addTestContracts.js'
 import { getPrice } from './getPrice.js'
 
 describe('getPrice', () => {

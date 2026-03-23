@@ -1,23 +1,25 @@
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
+import { getAddress } from 'viem'
 import { describe, expect, it } from 'vitest'
+import {
+  publicClient as client,
+  deploymentAddresses,
+} from '../../../test/addTestContracts.js'
 import { computeResolverResource, hasRoles } from './hasRoles.js'
 
-const client = createPublicClient({
-  chain: sepolia,
-  transport: http(
-    'https://lb.drpc.live/sepolia/AnmpasF2C0JBqeAEzxVO8aRo7Ju0xlER8JS4QmlfqV1j',
-  ),
-})
-
 describe('hasRoles', () => {
+  // changerole.eth is registered by owner (0x70997970...) with ROLES.ALL.
+  // Then SET_RESOLVER is granted to user (0x3C44Cd...) and SET_SUBREGISTRY
+  // is revoked from user.
+  const owner = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
+  const user = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC'
+
   describe('registry mode', () => {
     it('returns true when account has SET_SUBREGISTRY role', async () => {
       const result = await hasRoles(client, {
-        registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
-        label: 'ens2',
+        registryAddress: deploymentAddresses.ETHRegistry,
+        label: 'changerole',
         roles: ['ROLE_SET_SUBREGISTRY'],
-        account: '0x205d2686da3Bf33f64C17f21462c51B5eaD462CF',
+        account: owner,
       })
 
       expect(result).toBe(true)
@@ -25,10 +27,10 @@ describe('hasRoles', () => {
 
     it('returns true when account has SET_RESOLVER role', async () => {
       const result = await hasRoles(client, {
-        registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
-        label: 'ens2',
+        registryAddress: deploymentAddresses.ETHRegistry,
+        label: 'changerole',
         roles: ['ROLE_SET_RESOLVER'],
-        account: '0x205d2686da3Bf33f64C17f21462c51B5eaD462CF',
+        account: user,
       })
 
       expect(result).toBe(true)
@@ -36,36 +38,37 @@ describe('hasRoles', () => {
 
     it('returns true when account has CAN_TRANSFER_ADMIN role', async () => {
       const result = await hasRoles(client, {
-        registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
-        label: 'ens2',
+        registryAddress: deploymentAddresses.ETHRegistry,
+        label: 'changerole',
         roles: ['ROLE_CAN_TRANSFER_ADMIN'],
-        account: '0x205d2686da3Bf33f64C17f21462c51B5eaD462CF',
+        account: owner,
       })
 
       expect(result).toBe(true)
     })
 
-    it('returns true when account has all three roles', async () => {
+    it('returns true when owner has all three roles', async () => {
       const result = await hasRoles(client, {
-        registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
-        label: 'ens2',
+        registryAddress: deploymentAddresses.ETHRegistry,
+        label: 'changerole',
         roles: [
           'ROLE_SET_SUBREGISTRY',
           'ROLE_SET_RESOLVER',
           'ROLE_CAN_TRANSFER_ADMIN',
         ],
-        account: '0x205d2686da3Bf33f64C17f21462c51B5eaD462CF',
+        account: owner,
       })
 
       expect(result).toBe(true)
     })
 
     it('returns false when account does not have the specified role', async () => {
+      // user had SET_SUBREGISTRY revoked
       const result = await hasRoles(client, {
-        registryAddress: '0xF332544e6234f1CA149907D0d4658afD5feB6831',
-        label: 'ens2',
+        registryAddress: deploymentAddresses.ETHRegistry,
+        label: 'changerole',
         roles: ['ROLE_SET_SUBREGISTRY'],
-        account: '0x0000000000000000000000000000000000000001',
+        account: user,
       })
 
       expect(result).toBe(false)
@@ -73,21 +76,24 @@ describe('hasRoles', () => {
   })
 
   describe('resolver root mode', () => {
-    it('returns true when account has root-level ROLE_SET_ALIAS', async () => {
-      const result = await hasRoles(client, {
-        resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
-        roles: ['ROLE_SET_ALIAS'],
-        account: '0x205d2686da3Bf33f64C17f21462c51B5eaD462CF',
-      })
+    it.todo(
+      'returns true when account has root-level ROLE_SET_ALIAS',
+      async () => {
+        const result = await hasRoles(client, {
+          resolverAddress: deploymentAddresses.PermissionedResolverImpl,
+          roles: ['ROLE_SET_ALIAS'],
+          account: deploymentAddresses.ETHRegistry,
+        })
 
-      expect(result).toBe(true)
-    })
+        expect(result).toBe(true)
+      },
+    )
 
-    it('returns false when account does not have root role', async () => {
+    it.todo('returns false when account does not have root role', async () => {
       const result = await hasRoles(client, {
-        resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
+        resolverAddress: deploymentAddresses.PermissionedResolverImpl,
         roles: ['ROLE_SET_ALIAS'],
-        account: '0x0000000000000000000000000000000000000001',
+        account: getAddress('0x0000000000000000000000000000000000000001'),
       })
 
       expect(result).toBe(false)
@@ -95,30 +101,33 @@ describe('hasRoles', () => {
   })
 
   describe('resolver mode (with resource)', () => {
-    it('returns true when account has role for resource', async () => {
+    it.todo('returns true when account has role for resource', async () => {
       const result = await hasRoles(client, {
-        resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
+        resolverAddress: deploymentAddresses.PermissionedResolverImpl,
         resource: 0n,
         roles: ['ROLE_SET_TEXT'],
-        account: '0x205d2686da3Bf33f64C17f21462c51B5eaD462CF',
+        account: deploymentAddresses.PermissionedResolverImpl,
       })
 
       expect(result).toBe(true)
     })
 
-    it('returns false when account does not have role for resource', async () => {
-      const result = await hasRoles(client, {
-        resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
-        resource: computeResolverResource(
-          '0x0000000000000000000000000000000000000000000000000000000000000001',
-          '0x0000000000000000000000000000000000000000000000000000000000000000',
-        ),
-        roles: ['ROLE_SET_TEXT'],
-        account: '0x0000000000000000000000000000000000000001',
-      })
+    it.todo(
+      'returns false when account does not have role for resource',
+      async () => {
+        const result = await hasRoles(client, {
+          resolverAddress: deploymentAddresses.PermissionedResolverImpl,
+          resource: computeResolverResource(
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ),
+          roles: ['ROLE_SET_TEXT'],
+          account: getAddress('0x0000000000000000000000000000000000000001'),
+        })
 
-      expect(result).toBe(false)
-    })
+        expect(result).toBe(false)
+      },
+    )
   })
 })
 

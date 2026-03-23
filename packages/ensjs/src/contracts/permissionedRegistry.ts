@@ -1,24 +1,42 @@
-export const permissionedRegistryGetNameDataSnippet = [
+export const permissionedRegistryGetStateSnippet = [
   {
-    inputs: [{ internalType: 'string', name: 'label', type: 'string' }],
-    name: 'getNameData',
+    type: 'function',
+    name: 'getState',
+    inputs: [{ name: 'anyId', type: 'uint256' }],
     outputs: [
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
       {
-        internalType: 'struct IRegistryDatastore.Entry',
-        name: 'entry',
-        type: 'tuple',
         components: [
-          { internalType: 'uint64', name: 'expiry', type: 'uint64' },
-          { internalType: 'uint32', name: 'tokenVersionId', type: 'uint32' },
-          { internalType: 'address', name: 'subregistry', type: 'address' },
-          { internalType: 'uint32', name: 'eacVersionId', type: 'uint32' },
-          { internalType: 'address', name: 'resolver', type: 'address' },
+          { name: 'status', type: 'uint8' },
+          { name: 'expiry', type: 'uint64' },
+          { name: 'latestOwner', type: 'address' },
+          { name: 'tokenId', type: 'uint256' },
+          { name: 'resource', type: 'uint256' },
         ],
+        name: 'state',
+        type: 'tuple',
       },
     ],
     stateMutability: 'view',
+  },
+] as const
+
+export const permissionedRegistryGetResolverSnippet = [
+  {
     type: 'function',
+    name: 'getResolver',
+    inputs: [{ name: 'label', type: 'string', internalType: 'string' }],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    stateMutability: 'view',
+  },
+] as const
+
+export const permissionedRegistryGetSubregistrySnippet = [
+  {
+    type: 'function',
+    name: 'getSubregistry',
+    inputs: [{ name: 'label', type: 'string', internalType: 'string' }],
+    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    stateMutability: 'view',
   },
 ] as const
 
@@ -100,9 +118,9 @@ export const eacRolesGrantedEventSnippet = {
 
 export const eacRolesEvents = [eacRolesGrantedEventSnippet] as const
 
-export const permissionedRegistryNameRegisteredEventSnippet = {
+export const permissionedRegistryLabelRegisteredEventSnippet = {
   type: 'event',
-  name: 'NameRegistered',
+  name: 'LabelRegistered',
   inputs: [
     {
       name: 'tokenId',
@@ -111,10 +129,22 @@ export const permissionedRegistryNameRegisteredEventSnippet = {
       internalType: 'uint256',
     },
     {
+      name: 'labelHash',
+      type: 'bytes32',
+      indexed: true,
+      internalType: 'bytes32',
+    },
+    {
       name: 'label',
       type: 'string',
       indexed: false,
       internalType: 'string',
+    },
+    {
+      name: 'owner',
+      type: 'address',
+      indexed: false,
+      internalType: 'address',
     },
     {
       name: 'expiry',

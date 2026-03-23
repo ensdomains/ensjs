@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
-  publicClientL2 as client,
-  localhostL2,
+  deploymentAddresses,
+  publicClient,
 } from '../../../test/addTestContracts.js'
 import { getPrice } from './getPrice.js'
 
-const registrarAddress = localhostL2.contracts.ethRegistrar.address
-const paymentToken = localhostL2.contracts.usdc.address
+const registrarAddress = deploymentAddresses.ETHRegistrar
+const paymentToken = deploymentAddresses.USDC
 
 // Pricing constants from StandardRentPriceOracle
 const USDC_DECIMALS = 10n ** 6n
@@ -24,7 +24,7 @@ const ceilDiv = (a: bigint, b: bigint) => (a + b - 1n) / b
 
 describe('getPrice', () => {
   it('should return the correct price for a 5+ char name', async () => {
-    const result = await getPrice(client, {
+    const result = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'test123.eth',
       duration: ONE_DAY,
@@ -38,7 +38,7 @@ describe('getPrice', () => {
   })
 
   it('should return a higher price for a 4 char name', async () => {
-    const result = await getPrice(client, {
+    const result = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'test.eth',
       duration: ONE_DAY,
@@ -51,7 +51,7 @@ describe('getPrice', () => {
   })
 
   it('should return the highest price for a 3 char name', async () => {
-    const result = await getPrice(client, {
+    const result = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'abc.eth',
       duration: ONE_DAY,
@@ -64,14 +64,14 @@ describe('getPrice', () => {
   })
 
   it('should scale price linearly with duration (short durations, no discount)', async () => {
-    const oneDay = await getPrice(client, {
+    const oneDay = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'test123.eth',
       duration: ONE_DAY,
       paymentToken,
     })
 
-    const twoDays = await getPrice(client, {
+    const twoDays = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'test123.eth',
       duration: ONE_DAY * 2n,
@@ -91,19 +91,19 @@ describe('getPrice', () => {
     const duration = ONE_DAY
 
     const [price3, price4, price5] = await Promise.all([
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: 'abc.eth',
         duration,
         paymentToken,
       }),
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: 'abcd.eth',
         duration,
         paymentToken,
       }),
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: 'abcde.eth',
         duration,
@@ -117,19 +117,19 @@ describe('getPrice', () => {
 
   it('should aggregate prices for an array of names', async () => {
     const [single1, single2, combined] = await Promise.all([
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: 'test123.eth',
         duration: ONE_DAY,
         paymentToken,
       }),
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: 'another.eth',
         duration: ONE_DAY,
         paymentToken,
       }),
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: ['test123.eth', 'another.eth'],
         duration: ONE_DAY,
@@ -142,14 +142,14 @@ describe('getPrice', () => {
   })
 
   it('should allow labels as inputs', async () => {
-    const withSuffix = await getPrice(client, {
+    const withSuffix = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'test123.eth',
       duration: ONE_DAY,
       paymentToken,
     })
 
-    const labelOnly = await getPrice(client, {
+    const labelOnly = await getPrice(publicClient, {
       registrarAddress,
       nameOrNames: 'test123',
       duration: ONE_DAY,
@@ -161,7 +161,7 @@ describe('getPrice', () => {
 
   it('should throw for unsupported name types', async () => {
     await expect(
-      getPrice(client, {
+      getPrice(publicClient, {
         registrarAddress,
         nameOrNames: 'sub.test123.eth',
         duration: ONE_DAY,
