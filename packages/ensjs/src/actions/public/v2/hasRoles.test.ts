@@ -1,10 +1,57 @@
-import { getAddress } from 'viem'
-import { describe, expect, it } from 'vitest'
+import type { Address } from 'viem'
+import { encodeFunctionData, getAddress, keccak256 } from 'viem'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { verifiableFactoryDeployProxySnippet } from '../../../contracts/verifiableFactory.js'
 import {
   publicClient as client,
   deploymentAddresses,
+  waitForTransaction,
+  walletClient,
 } from '../../../test/addTestContracts.js'
 import { computeResolverResource, hasRoles } from './hasRoles.js'
+
+const RESOLVER_ROLES_ALL =
+  0x1111111111111111111111111111111111111111111111111111111111111111n
+
+let resolverProxyAddress: `0x${string}` | undefined
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
+  const proxyDeployTx = await walletClient.writeContract({
+    address: deploymentAddresses.VerifiableFactory,
+    abi: verifiableFactoryDeployProxySnippet,
+    functionName: 'deployProxy',
+    args: [
+      deploymentAddresses.PermissionedResolverImpl,
+      BigInt(
+        keccak256(
+          new TextEncoder().encode(`resolver-roles-test-${Date.now()}`),
+        ),
+      ),
+      encodeFunctionData({
+        abi: [
+          {
+            type: 'function',
+            inputs: [
+              { name: 'admin', type: 'address' },
+              { name: 'roleBitmap', type: 'uint256' },
+            ],
+            name: 'initialize',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+        ],
+        functionName: 'initialize',
+        args: [accounts[0], RESOLVER_ROLES_ALL],
+      }),
+    ],
+    account: accounts[0],
+  })
+  const proxyReceipt = await waitForTransaction(proxyDeployTx)
+  resolverProxyAddress = `0x${proxyReceipt.logs[3].topics[2].slice(26)}`
+})
 
 describe('hasRoles', () => {
   // changerole.eth is registered by owner (0x70997970...) with ROLES.ALL.
@@ -76,22 +123,19 @@ describe('hasRoles', () => {
   })
 
   describe('resolver root mode', () => {
-    it.todo(
-      'returns true when account has root-level ROLE_SET_ALIAS',
-      async () => {
-        const result = await hasRoles(client, {
-          resolverAddress: deploymentAddresses.PermissionedResolverImpl,
-          roles: ['ROLE_SET_ALIAS'],
-          account: deploymentAddresses.ETHRegistry,
-        })
-
-        expect(result).toBe(true)
-      },
-    )
-
-    it.todo('returns false when account does not have root role', async () => {
+    it('returns true when account has root-level ROLE_SET_ALIAS', async () => {
       const result = await hasRoles(client, {
-        resolverAddress: deploymentAddresses.PermissionedResolverImpl,
+        resolverAddress: resolverProxyAddress!,
+        roles: ['ROLE_SET_ALIAS'],
+        account: accounts[0],
+      })
+
+      expect(result).toBe(true)
+    })
+
+    it('returns false when account does not have root role', async () => {
+      const result = await hasRoles(client, {
+        resolverAddress: resolverProxyAddress!,
         roles: ['ROLE_SET_ALIAS'],
         account: getAddress('0x0000000000000000000000000000000000000001'),
       })
@@ -101,33 +145,30 @@ describe('hasRoles', () => {
   })
 
   describe('resolver mode (with resource)', () => {
-    it.todo('returns true when account has role for resource', async () => {
+    it('returns true when account has role for resource', async () => {
       const result = await hasRoles(client, {
-        resolverAddress: deploymentAddresses.PermissionedResolverImpl,
+        resolverAddress: resolverProxyAddress!,
         resource: 0n,
         roles: ['ROLE_SET_TEXT'],
-        account: deploymentAddresses.PermissionedResolverImpl,
+        account: accounts[0],
       })
 
       expect(result).toBe(true)
     })
 
-    it.todo(
-      'returns false when account does not have role for resource',
-      async () => {
-        const result = await hasRoles(client, {
-          resolverAddress: deploymentAddresses.PermissionedResolverImpl,
-          resource: computeResolverResource(
-            '0x0000000000000000000000000000000000000000000000000000000000000001',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-          ),
-          roles: ['ROLE_SET_TEXT'],
-          account: getAddress('0x0000000000000000000000000000000000000001'),
-        })
+    it('returns false when account does not have role for resource', async () => {
+      const result = await hasRoles(client, {
+        resolverAddress: resolverProxyAddress!,
+        resource: computeResolverResource(
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+        ),
+        roles: ['ROLE_SET_TEXT'],
+        account: getAddress('0x0000000000000000000000000000000000000001'),
+      })
 
-        expect(result).toBe(false)
-      },
-    )
+      expect(result).toBe(false)
+    })
   })
 })
 
