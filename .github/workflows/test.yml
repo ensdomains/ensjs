@@ -26,7 +26,8 @@ jobs:
         run: pnpm -F @ensdomains/ensjs build
 
       - name: Start test environment
-        run: pnpm -F @ensdomains/ensjs denv:detach
+        run: docker compose up -d devnet
+        working-directory: packages/ensjs
 
       - name: Wait for test environment
         run: |
