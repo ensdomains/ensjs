@@ -791,7 +791,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txAddr)
       console.log('  ✓ Set addr record for with-profile.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping addr record (may already exist)')
     }
 
@@ -805,7 +805,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txPrimary)
       console.log('  ✓ Set primary name for account2')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping primary name (may already exist)')
     }
 
@@ -821,7 +821,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txText)
       console.log('  ✓ Set text record for with-profile.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping text record (may already exist)')
     }
 
@@ -838,7 +838,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txEtc)
       console.log('  ✓ Set etcLegacy address for with-profile.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping etcLegacy record (may already exist)')
     }
 
@@ -867,7 +867,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txSetContenthash)
       console.log('  ✓ Set contenthash for with-contenthash.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping contenthash (may already exist)')
     }
 
@@ -1132,7 +1132,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txSubnameTest)
       console.log('  ✓ Created test.with-subnames.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping test.with-subnames.eth (may already exist)')
     }
 
@@ -1182,7 +1182,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txSubname)
       console.log('  ✓ Created test.wrapped-with-subnames.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping subname creation (may already exist)')
     }
 
@@ -1202,7 +1202,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txAddrSubname)
       console.log('  ✓ Created addr.wrapped-with-subnames.eth')
-    } catch (_e) {
+    } catch {
       console.log('  ⏭️ Skipping addr subname creation (may already exist)')
     }
 
