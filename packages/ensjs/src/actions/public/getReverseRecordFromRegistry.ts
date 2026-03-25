@@ -8,8 +8,10 @@ import {
 import { readContract } from 'viem/actions'
 import { namehash } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import type { RequireClientL1Contracts } from '../../clients/l1.js'
-import { getChainContractAddress } from '../../clients/shared.js'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/shared.js'
 import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
 import { registryResolverSnippet } from '../../contracts/registry.js'
 import type { ErrorType } from '../../errors/utils.js'
@@ -57,7 +59,7 @@ export type GetReverseRecordFromRegistryErrorType =
  * // { name: 'nick.eth', reverseResolverAddress: '0xa2c122be93b0074270ebee7f6b7292c7deb45047' }
  */
 export async function getReverseRecordFromRegistry<chain extends Chain>(
-  client: RequireClientL1Contracts<chain, 'ensRegistry'>,
+  client: RequireClientContracts<chain, 'ensRegistry'>,
   { address }: GetReverseRecordFromRegistryParameters,
 ): Promise<GetReverseRecordFromRegistryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

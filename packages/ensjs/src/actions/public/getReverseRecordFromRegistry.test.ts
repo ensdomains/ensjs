@@ -9,7 +9,6 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import type { SupportedL1Contract } from '../../clients/l1.js'
 import type { ChainWithContracts } from '../../clients/shared.js'
 import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
 import { registryResolverSnippet } from '../../contracts/registry.js'
@@ -30,10 +29,7 @@ const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
   chain: addEnsL1Contracts(mainnet),
-} as unknown as Client<
-  Transport,
-  ChainWithContracts<SupportedL1Contract, 'ensRegistry'>
->
+} as unknown as Client<Transport, ChainWithContracts<'ensRegistry'>>
 
 beforeEach(async () => {
   snapshot = await testClient.snapshot()
