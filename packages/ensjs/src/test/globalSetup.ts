@@ -144,6 +144,11 @@ export async function setup() {
   if (await isDevnetRunning()) {
     console.log('✓ Devnet already running, skipping docker compose')
 
+    // Wait for devnet to be fully ready (contracts deployed + names seeded)
+    // even when devnet was started externally
+    console.log('Waiting for devnet to be ready...')
+    await waitForDevnetReady(STARTUP_TIMEOUT)
+
     // Devnet was started externally — seed test names as a fallback
     // (idempotent, skips already registered names)
     await seedTestNames()
