@@ -76,14 +76,12 @@ export async function getRegistrationDate<chain extends Chain>(
   const logs = await getLogsAction({
     address: registry,
     event: LABEL_REGISTERED_EVENT,
+    args: { tokenId },
     fromBlock: fromBlock ?? 0n,
     toBlock: toBlock ?? undefined,
   })
 
-  const matchingLogs = logs.filter(
-    (log) => (log.args as { tokenId?: bigint }).tokenId === tokenId,
-  )
-  const lastLog = matchingLogs.at(-1)
+  const lastLog = logs.at(-1)
 
   if (!lastLog) return null
 
