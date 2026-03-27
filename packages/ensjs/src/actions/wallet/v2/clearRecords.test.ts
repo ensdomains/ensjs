@@ -10,29 +10,11 @@ import {
 } from '../../../test/addTestContracts.js'
 import {
   RESOLVER_ROLE_CLEAR,
-  RESOLVER_ROLE_SET_ABI,
-  RESOLVER_ROLE_SET_ADDR,
-  RESOLVER_ROLE_SET_ALIAS,
-  RESOLVER_ROLE_SET_CONTENTHASH,
-  RESOLVER_ROLE_SET_INTERFACE,
-  RESOLVER_ROLE_SET_NAME,
-  RESOLVER_ROLE_SET_PUBKEY,
   RESOLVER_ROLE_SET_TEXT,
 } from '../../../utils/v2/roles/resolverRoles.js'
 import { setTextRecord } from '../setTextRecord.js'
 import { clearRecords } from './clearRecords.js'
 import { deployVerifiableProxy } from './deployVerifiableProxy.js'
-
-const RESOLVER_ROLES_ALL =
-  RESOLVER_ROLE_SET_ADDR |
-  RESOLVER_ROLE_SET_TEXT |
-  RESOLVER_ROLE_SET_CONTENTHASH |
-  RESOLVER_ROLE_SET_PUBKEY |
-  RESOLVER_ROLE_SET_ABI |
-  RESOLVER_ROLE_SET_INTERFACE |
-  RESOLVER_ROLE_SET_NAME |
-  RESOLVER_ROLE_SET_ALIAS |
-  RESOLVER_ROLE_CLEAR
 
 it('should allow a name to be cleared v2', async () => {
   const accounts = await walletClient.getAddresses()
@@ -42,7 +24,7 @@ it('should allow a name to be cleared v2', async () => {
     callData: encodeFunctionData({
       abi: subregistryInitializeSnippet,
       functionName: 'initialize',
-      args: [accounts[1], RESOLVER_ROLES_ALL],
+      args: [accounts[1], RESOLVER_ROLE_SET_TEXT | RESOLVER_ROLE_CLEAR],
     }),
     account: accounts[0],
   })
