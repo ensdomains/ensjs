@@ -31,7 +31,7 @@ export type GetExpiryErrorType =
 
 export async function getExpiry<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensRegistry'>,
-  { name, registryAddress: customRegistryAddress }: GetExpiryParameters,
+  { name, registryAddress }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
   const labels = name.split('.')
@@ -55,7 +55,7 @@ export async function getExpiry<chain extends Chain>(
   const readContractAction = getAction(client, readContract, 'readContract')
 
   const currentRegistry =
-    customRegistryAddress ??
+    registryAddress ??
     getChainContractAddress({
       chain: client.chain,
       contract: 'ensRegistry',
