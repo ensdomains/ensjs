@@ -24,11 +24,3 @@ it('should throw for a non-.eth name', async () => {
   ).rejects.toThrowError(UnsupportedNameTypeError)
 })
 
-it('should throw for an eth-subname', async () => {
-  await expect(
-    getExpiry(client, {
-      name: 'sub.parent.eth',
-      registryAddress: deploymentAddresses.ETHRegistry,
-    }),
-  ).rejects.toThrowError(UnsupportedNameTypeError)
-})

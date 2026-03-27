@@ -39,17 +39,9 @@ export async function getExpiry<chain extends Chain>(
   if (!checkIsDotEth(labels) && nameType !== 'eth-subname')
     throw new UnsupportedNameTypeError({
       nameType,
-      supportedNameTypes: ['eth-2ld', 'eth-subname', 'tld'],
+      supportedNameTypes: ['eth-2ld', 'eth-subname'],
       details:
-        'Only the expiry of eth-2ld or eth-subname names can be fetched when using the registry',
-    })
-
-  if (labels.length > 2)
-    throw new UnsupportedNameTypeError({
-      nameType,
-      supportedNameTypes: ['eth-2ld', 'eth-subname', 'tld'],
-      details:
-        'Only the expiry of eth-2ld names can be fetched when using the registry',
+        'Only .eth names can be looked up via the registry',
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
