@@ -40,7 +40,6 @@ beforeAll(async () => {
             name: 'initialize',
             outputs: [],
             stateMutability: 'nonpayable',
-            type: 'function',
           },
         ],
         functionName: 'initialize',

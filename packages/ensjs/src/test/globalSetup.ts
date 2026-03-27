@@ -32,7 +32,7 @@ async function isDevnetRunning(): Promise<boolean> {
   return false
 }
 
-async function waitForHealthy(timeout: number): Promise<void> {
+async function _waitForHealthy(timeout: number): Promise<void> {
   const startTime = Date.now()
 
   while (Date.now() - startTime < timeout) {
@@ -107,7 +107,7 @@ async function waitForDevnetReady(timeout: number): Promise<void> {
   throw new Error(`Devnet did not become ready within ${timeout}ms`)
 }
 
-async function waitForRPC(url: string, timeout: number): Promise<void> {
+async function _waitForRPC(url: string, timeout: number): Promise<void> {
   const startTime = Date.now()
 
   while (Date.now() - startTime < timeout) {
