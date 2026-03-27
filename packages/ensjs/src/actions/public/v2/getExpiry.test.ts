@@ -23,4 +23,3 @@ it('should throw for a non-.eth name', async () => {
     }),
   ).rejects.toThrowError(UnsupportedNameTypeError)
 })
-

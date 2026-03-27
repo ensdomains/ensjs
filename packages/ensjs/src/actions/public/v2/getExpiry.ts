@@ -40,8 +40,7 @@ export async function getExpiry<chain extends Chain>(
     throw new UnsupportedNameTypeError({
       nameType,
       supportedNameTypes: ['eth-2ld', 'eth-subname'],
-      details:
-        'Only .eth names can be looked up via the registry',
+      details: 'Only .eth names can be looked up via the registry',
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
