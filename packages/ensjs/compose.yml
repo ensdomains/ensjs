@@ -2,7 +2,7 @@ services:
   devnet:
     image: ghcr.io/ensdomains/contracts-v2:main-4ac5517
     command: ./script/runDevnet.ts --testNames
-    pull_policy: always
+    pull_policy: missing
     ports:
       - "8545:8545"
       - "8000:8000"
@@ -19,7 +19,7 @@ services:
 
   ensindexer:
     image: ghcr.io/namehash/ensnode/ensindexer:preview-feat-update-devnet-addresses
-    pull_policy: always
+    pull_policy: missing
     depends_on:
       postgres:
         condition: service_started
@@ -47,7 +47,7 @@ services:
 
   ensrainbow:
     image: ghcr.io/namehash/ensnode/ensrainbow:preview-feat-update-devnet-addresses
-    pull_policy: always
+    pull_policy: missing
     environment:
       DB_SCHEMA_VERSION: 3
       LABEL_SET_ID: ens-test-env
@@ -65,7 +65,7 @@ services:
 
   ensapi:
     image: ghcr.io/namehash/ensnode/ensapi:preview-feat-update-devnet-addresses
-    pull_policy: always
+    pull_policy: missing
     ports:
       - "4334:4334"
     depends_on:
@@ -80,7 +80,7 @@ services:
 
   ensadmin:
     image: ghcr.io/namehash/ensnode/ensadmin:preview-feat-update-devnet-addresses
-    pull_policy: always
+    pull_policy: missing
     ports:
       - "4173:4173"
     environment:
