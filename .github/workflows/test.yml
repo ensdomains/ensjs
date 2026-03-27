@@ -25,26 +25,9 @@ jobs:
       - name: Build ensjs
         run: pnpm -F @ensdomains/ensjs build
 
-      - name: Cache Docker images
-        uses: actions/cache@v4
-        with:
-          path: /tmp/docker-images
-          key: docker-images-${{ hashFiles('packages/ensjs/compose.yml') }}
-
-      - name: Load cached Docker images
-        run: |
-          if [ -f /tmp/docker-images/devnet.tar ]; then
-            docker load -i /tmp/docker-images/devnet.tar
-          fi
-
       - name: Start test environment
         run: docker compose up -d devnet
         working-directory: packages/ensjs
-
-      - name: Save Docker images to cache
-        run: |
-          mkdir -p /tmp/docker-images
-          docker save ghcr.io/ensdomains/contracts-v2:main-4ac5517 -o /tmp/docker-images/devnet.tar
 
       - name: Wait for test environment
         run: |
