@@ -3,12 +3,15 @@ import type {
   Address,
   Chain,
   Client,
+  Hash,
+  Hex,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
-  WriteContractReturnType,
 } from 'viem'
+import { toHex } from 'viem'
 import { writeContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import {
   permissionedResolverGrantAddrRolesSnippet,
@@ -16,296 +19,252 @@ import {
   permissionedResolverGrantRootRolesSnippet,
   permissionedResolverGrantTextRolesSnippet,
 } from '../../../contracts/permissionedRegistry.js'
+import type {
+  Prettify,
+  WriteTransactionParameters,
+} from '../../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import {
+  type ClientWithOverridesErrorType,
+  clientWithOverrides,
+} from '../../../utils/clientWithOverrides.js'
 import {
   encodeResolverRoleBitmap,
   type ResolverRole,
 } from '../../../utils/v2/roles/resolverRoles.js'
 
-// ─── DNS encoding helper ─────────────────────────────────────────────
+// ─── Parameter types ─────────────────────────────────────────────────
 
-/**
- * DNS-encode a dotted name into wire format (0x-prefixed hex).
- * Empty string encodes to "0x00" (root / any name).
- */
-function dnsEncodeName(name: string): `0x${string}` {
-  if (name === '') return '0x00'
-  const labels = name.split('.')
-  const parts: number[] = []
-  for (const label of labels) {
-    const encoded = new TextEncoder().encode(label)
-    parts.push(encoded.length, ...encoded)
-  }
-  parts.push(0)
-  const hex = Array.from(new Uint8Array(parts))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
-  return `0x${hex}`
-}
-
-// ─── grantResolverRootRoles ──────────────────────────────────────────
-
-export type GrantResolverRootRolesParameters = {
+type BaseParameters = {
   /** The resolver address */
   resolverAddress: Address
-  /** The resolver roles to grant on ROOT_RESOURCE (global) */
-  roles: ResolverRole[]
   /** The account to grant roles to */
-  account: Address
+  targetAccount: Address
 }
 
-export type GrantResolverRootRolesReturnType = WriteContractReturnType
-
-export type GrantResolverRootRolesErrorType = WriteContractErrorType
-
-/**
- * Grant root-level roles on a PermissionedResolver.
- *
- * Root roles apply globally — they authorize the account for any name
- * and any record type. Use this for root-only roles like ROLE_SET_ALIAS,
- * or to create a global admin.
- *
- * The caller must hold the admin variant of each role being granted
- * (e.g., ROLE_SET_ALIAS_ADMIN to grant ROLE_SET_ALIAS).
- *
- * This calls `grantRootRoles(roleBitmap, account)` on the resolver,
- * which is inherited from EnhancedAccessControl and works directly.
- *
- * @example
- * // Grant ROLE_SET_ALIAS to another address
- * const hash = await grantResolverRootRoles(walletClient, {
- *   resolverAddress: '0x932c8ea8870162b6b4686e86a0df5ab863994627',
- *   roles: ['ROLE_SET_ALIAS'],
- *   account: '0xOTHER_ADDRESS',
- * })
- *
- * @example
- * // Grant multiple roles at once
- * const hash = await grantResolverRootRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   roles: ['ROLE_SET_ADDR', 'ROLE_SET_TEXT', 'ROLE_SET_ALIAS'],
- *   account: '0xOTHER_ADDRESS',
- * })
- */
-export async function grantResolverRootRoles<
-  chain extends Chain,
-  account extends Account,
->(
-  client: Client<Transport, chain, account>,
-  {
-    resolverAddress,
-    roles,
-    account: targetAccount,
-  }: GrantResolverRootRolesParameters,
-): Promise<GrantResolverRootRolesReturnType> {
-  const writeContractAction = getAction(client, writeContract, 'writeContract')
-
-  const roleBitmap = encodeResolverRoleBitmap(roles)
-
-  return writeContractAction({
-    address: resolverAddress,
-    abi: permissionedResolverGrantRootRolesSnippet,
-    functionName: 'grantRootRoles',
-    args: [roleBitmap, targetAccount],
-    chain: client.chain,
-    account: client.account,
-  } as WriteContractParameters)
+export type GrantResolverRolesRootParameters = BaseParameters & {
+  /** Grant roles globally (any name, any record type) */
+  scope: 'root'
+  /** The resolver roles to grant */
+  roles: ResolverRole[]
 }
 
-// ─── grantResolverNameRoles ──────────────────────────────────────────
-
-export type GrantResolverNameRolesParameters = {
-  /** The resolver address */
-  resolverAddress: Address
+export type GrantResolverRolesNameParameters = BaseParameters & {
   /**
-   * The name to grant roles for (dotted format, e.g. "myname.eth").
-   * Use "" (empty string) for ROOT_RESOURCE (any name).
+   * Grant roles scoped to a specific name.
+   * Use `name: ""` for any name (equivalent to root).
    */
+  scope: 'name'
+  /** The name to grant roles for (dotted format, e.g. "myname.eth") */
   name: string
   /** The resolver roles to grant */
   roles: ResolverRole[]
-  /** The account to grant roles to */
-  account: Address
 }
 
-export type GrantResolverNameRolesReturnType = WriteContractReturnType
-
-export type GrantResolverNameRolesErrorType = WriteContractErrorType
-
-/**
- * Grant resolver roles to an account for a specific name.
- *
- * Use `name: ""` to grant on ROOT_RESOURCE (any name), which is equivalent
- * to `grantRootRoles()`. This is required for root-only roles like ROLE_SET_ALIAS.
- *
- * The caller must have the admin version of the roles being granted.
- *
- * @example
- * // Grant ROLE_SET_ALIAS globally to another address
- * const hash = await grantResolverNameRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   name: '',
- *   roles: ['ROLE_SET_ALIAS'],
- *   account: '0xOTHER_ADDRESS',
- * })
- *
- * @example
- * // Grant ROLE_SET_TEXT for a specific name
- * const hash = await grantResolverNameRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   name: 'myname.eth',
- *   roles: ['ROLE_SET_TEXT'],
- *   account: '0xOTHER_ADDRESS',
- * })
- */
-export async function grantResolverNameRoles<
-  chain extends Chain,
-  account extends Account,
->(
-  client: Client<Transport, chain, account>,
-  {
-    resolverAddress,
-    name,
-    roles,
-    account: targetAccount,
-  }: GrantResolverNameRolesParameters,
-): Promise<GrantResolverNameRolesReturnType> {
-  const writeContractAction = getAction(client, writeContract, 'writeContract')
-
-  const roleBitmap = encodeResolverRoleBitmap(roles)
-  const dnsName = dnsEncodeName(name)
-
-  return writeContractAction({
-    address: resolverAddress,
-    abi: permissionedResolverGrantNameRolesSnippet,
-    functionName: 'grantNameRoles',
-    args: [dnsName, roleBitmap, targetAccount],
-    chain: client.chain,
-    account: client.account,
-  } as WriteContractParameters)
-}
-
-// ─── grantResolverTextRoles ──────────────────────────────────────────
-
-export type GrantResolverTextRolesParameters = {
-  /** The resolver address */
-  resolverAddress: Address
-  /**
-   * The name to grant text roles for (dotted format).
-   * Use "" for ROOT_RESOURCE (any name).
-   */
+export type GrantResolverRolesTextParameters = BaseParameters & {
+  /** Grant ROLE_SET_TEXT scoped to a specific text key on a name */
+  scope: 'text'
+  /** The name to grant roles for (dotted format, use "" for any name) */
   name: string
   /** The specific text key to grant ROLE_SET_TEXT for */
   key: string
-  /** The account to grant roles to */
-  account: Address
 }
 
-export type GrantResolverTextRolesReturnType = WriteContractReturnType
-
-export type GrantResolverTextRolesErrorType = WriteContractErrorType
-
-/**
- * Grant ROLE_SET_TEXT to an account for a specific text key on a name.
- *
- * This is more fine-grained than `grantResolverNameRoles` with ROLE_SET_TEXT —
- * it restricts the grant to a single text key (e.g., only "avatar").
- *
- * The caller must have ROLE_SET_TEXT admin on the name's resource.
- *
- * @example
- * // Let someone only edit the "avatar" text record for myname.eth
- * const hash = await grantResolverTextRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   name: 'myname.eth',
- *   key: 'avatar',
- *   account: '0xOTHER_ADDRESS',
- * })
- */
-export async function grantResolverTextRoles<
-  chain extends Chain,
-  account extends Account,
->(
-  client: Client<Transport, chain, account>,
-  {
-    resolverAddress,
-    name,
-    key,
-    account: targetAccount,
-  }: GrantResolverTextRolesParameters,
-): Promise<GrantResolverTextRolesReturnType> {
-  const writeContractAction = getAction(client, writeContract, 'writeContract')
-
-  const dnsName = dnsEncodeName(name)
-
-  return writeContractAction({
-    address: resolverAddress,
-    abi: permissionedResolverGrantTextRolesSnippet,
-    functionName: 'grantTextRoles',
-    args: [dnsName, key, targetAccount],
-    chain: client.chain,
-    account: client.account,
-  } as WriteContractParameters)
-}
-
-// ─── grantResolverAddrRoles ──────────────────────────────────────────
-
-export type GrantResolverAddrRolesParameters = {
-  /** The resolver address */
-  resolverAddress: Address
-  /**
-   * The name to grant addr roles for (dotted format).
-   * Use "" for ROOT_RESOURCE (any name).
-   */
+export type GrantResolverRolesAddrParameters = BaseParameters & {
+  /** Grant ROLE_SET_ADDR scoped to a specific coin type on a name */
+  scope: 'addr'
+  /** The name to grant roles for (dotted format, use "" for any name) */
   name: string
   /** The specific coin type to grant ROLE_SET_ADDR for (e.g., 60n for ETH) */
   coinType: bigint
-  /** The account to grant roles to */
-  account: Address
 }
 
-export type GrantResolverAddrRolesReturnType = WriteContractReturnType
+export type GrantResolverRolesBaseParameters =
+  | GrantResolverRolesRootParameters
+  | GrantResolverRolesNameParameters
+  | GrantResolverRolesTextParameters
+  | GrantResolverRolesAddrParameters
 
-export type GrantResolverAddrRolesErrorType = WriteContractErrorType
+export type GrantResolverRolesReturnType = Hash
 
-/**
- * Grant ROLE_SET_ADDR to an account for a specific coin type on a name.
- *
- * This is more fine-grained than `grantResolverNameRoles` with ROLE_SET_ADDR —
- * it restricts the grant to a single coin type (e.g., only ETH addresses).
- *
- * The caller must have ROLE_SET_ADDR admin on the name's resource.
- *
- * @example
- * // Let someone only edit the ETH address record for myname.eth
- * const hash = await grantResolverAddrRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   name: 'myname.eth',
- *   coinType: 60n,
- *   account: '0xOTHER_ADDRESS',
- * })
- */
-export async function grantResolverAddrRoles<
+export type GrantResolverRolesErrorType =
+  | WriteContractErrorType
+  | ClientWithOverridesErrorType
+
+// ─── Write parameters ────────────────────────────────────────────────
+
+function dnsEncode(name: string): Hex {
+  return toHex(packetToBytes(name))
+}
+
+export const grantResolverRolesWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
   client: Client<Transport, chain, account>,
-  {
-    resolverAddress,
-    name,
-    coinType,
-    account: targetAccount,
-  }: GrantResolverAddrRolesParameters,
-): Promise<GrantResolverAddrRolesReturnType> {
-  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  params: GrantResolverRolesBaseParameters,
+) => {
+  ASSERT_NO_TYPE_ERROR(client)
 
-  const dnsName = dnsEncodeName(name)
-
-  return writeContractAction({
-    address: resolverAddress,
-    abi: permissionedResolverGrantAddrRolesSnippet,
-    functionName: 'grantAddrRoles',
-    args: [dnsName, coinType, targetAccount],
+  const base = {
+    address: params.resolverAddress,
     chain: client.chain,
     account: client.account,
+  } as const
+
+  switch (params.scope) {
+    case 'root':
+      return {
+        ...base,
+        abi: permissionedResolverGrantRootRolesSnippet,
+        functionName: 'grantRootRoles',
+        args: [encodeResolverRoleBitmap(params.roles), params.targetAccount],
+      } as const
+
+    case 'name':
+      return {
+        ...base,
+        abi: permissionedResolverGrantNameRolesSnippet,
+        functionName: 'grantNameRoles',
+        args: [
+          dnsEncode(params.name),
+          encodeResolverRoleBitmap(params.roles),
+          params.targetAccount,
+        ],
+      } as const
+
+    case 'text':
+      return {
+        ...base,
+        abi: permissionedResolverGrantTextRolesSnippet,
+        functionName: 'grantTextRoles',
+        args: [dnsEncode(params.name), params.key, params.targetAccount],
+      } as const
+
+    case 'addr':
+      return {
+        ...base,
+        abi: permissionedResolverGrantAddrRolesSnippet,
+        functionName: 'grantAddrRoles',
+        args: [dnsEncode(params.name), params.coinType, params.targetAccount],
+      } as const
+  }
+}
+
+// ─── Action ──────────────────────────────────────────────────────────
+
+export type GrantResolverRolesParameters<
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends Chain | undefined,
+> = Prettify<
+  GrantResolverRolesBaseParameters &
+    WriteTransactionParameters<chain, account, chainOverride>
+>
+
+/**
+ * Grant roles on a PermissionedResolver.
+ *
+ * The `scope` parameter determines the granularity of the grant:
+ *
+ * - **`'root'`**: Grant roles globally (any name, any record type).
+ *   The caller must hold the admin variant of each role.
+ *
+ * - **`'name'`**: Grant roles scoped to a specific name.
+ *   Use `name: ""` for any name (equivalent to root scope).
+ *
+ * - **`'text'`**: Grant `ROLE_SET_TEXT` for a specific text key on a name.
+ *   The caller must have `ROLE_SET_TEXT` admin on the name's resource.
+ *
+ * - **`'addr'`**: Grant `ROLE_SET_ADDR` for a specific coin type on a name.
+ *   The caller must have `ROLE_SET_ADDR` admin on the name's resource.
+ *
+ * @param client - Wallet client
+ * @param parameters - {@link GrantResolverRolesParameters}
+ * @returns Transaction hash. {@link GrantResolverRolesReturnType}
+ *
+ * @example
+ * // Grant roles globally
+ * const hash = await grantResolverRoles(walletClient, {
+ *   resolverAddress: '0x...',
+ *   targetAccount: '0xOTHER',
+ *   scope: 'root',
+ *   roles: ['ROLE_SET_TEXT', 'ROLE_SET_ADDR'],
+ * })
+ *
+ * @example
+ * // Grant roles scoped to a specific name
+ * const hash = await grantResolverRoles(walletClient, {
+ *   resolverAddress: '0x...',
+ *   targetAccount: '0xOTHER',
+ *   scope: 'name',
+ *   name: 'myname.eth',
+ *   roles: ['ROLE_SET_TEXT'],
+ * })
+ *
+ * @example
+ * // Grant ROLE_SET_TEXT for a specific text key
+ * const hash = await grantResolverRoles(walletClient, {
+ *   resolverAddress: '0x...',
+ *   targetAccount: '0xOTHER',
+ *   scope: 'text',
+ *   name: 'myname.eth',
+ *   key: 'avatar',
+ * })
+ *
+ * @example
+ * // Grant ROLE_SET_ADDR for a specific coin type
+ * const hash = await grantResolverRoles(walletClient, {
+ *   resolverAddress: '0x...',
+ *   targetAccount: '0xOTHER',
+ *   scope: 'addr',
+ *   name: 'myname.eth',
+ *   coinType: 60n,
+ * })
+ */
+export async function grantResolverRoles<
+  chain extends Chain,
+  account extends Account,
+  chainOverride extends Chain | undefined,
+>(
+  client: Client<Transport, chain, account>,
+  {
+    resolverAddress,
+    targetAccount,
+    ...rest
+  }: GrantResolverRolesParameters<chain, account, chainOverride>,
+): Promise<GrantResolverRolesReturnType> {
+  ASSERT_NO_TYPE_ERROR(client)
+
+  // Extract scope-specific params vs tx args
+  const scopeParams = { resolverAddress, targetAccount } as Record<
+    string,
+    unknown
+  >
+  const txArgs = {} as Record<string, unknown>
+
+  for (const [key, value] of Object.entries(rest)) {
+    if (
+      key === 'scope' ||
+      key === 'roles' ||
+      key === 'name' ||
+      key === 'key' ||
+      key === 'coinType'
+    ) {
+      scopeParams[key] = value
+    } else {
+      txArgs[key] = value
+    }
+  }
+
+  const writeParameters = grantResolverRolesWriteParameters(
+    clientWithOverrides(client, txArgs),
+    scopeParams as GrantResolverRolesBaseParameters,
+  )
+
+  const writeContractAction = getAction(client, writeContract, 'writeContract')
+  return writeContractAction({
+    ...writeParameters,
+    ...txArgs,
   } as WriteContractParameters)
 }
