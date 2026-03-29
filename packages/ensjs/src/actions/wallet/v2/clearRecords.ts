@@ -11,6 +11,7 @@ import type {
 import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import { permissionedResolverClearRecordsSnippet } from '../../../contracts/permissionedRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,
@@ -20,22 +21,6 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../utils/clientWithOverrides.js'
-
-const permissionedResolverClearRecordsSnippet = [
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'node',
-        type: 'bytes32',
-      },
-    ],
-    name: 'clearRecords',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-] as const
 
 export type ClearRecordsWriteParametersParameters = {
   name: string

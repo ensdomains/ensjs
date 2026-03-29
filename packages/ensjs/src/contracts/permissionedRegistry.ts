@@ -379,3 +379,15 @@ export const permissionedResolverGrantAddrRolesSnippet = [
     outputs: [{ name: '', type: 'bool' }],
   },
 ] as const
+
+// ─── PermissionedResolver: clear records ─────────────────────────────
+
+export const permissionedResolverClearRecordsSnippet = [
+  {
+    inputs: [{ name: 'node', type: 'bytes32' }],
+    name: 'clearRecords',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
