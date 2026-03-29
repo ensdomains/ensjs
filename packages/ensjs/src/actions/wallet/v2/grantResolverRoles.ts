@@ -228,38 +228,54 @@ export async function grantResolverRoles<
   chainOverride extends Chain | undefined,
 >(
   client: Client<Transport, chain, account>,
-  {
-    resolverAddress,
-    targetAccount,
-    ...rest
-  }: GrantResolverRolesParameters<chain, account, chainOverride>,
+  params: GrantResolverRolesParameters<chain, account, chainOverride>,
 ): Promise<GrantResolverRolesReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  // Extract scope-specific params vs tx args
-  const scopeParams = { resolverAddress, targetAccount } as Record<
-    string,
-    unknown
-  >
-  const txArgs = {} as Record<string, unknown>
+  const { scope, resolverAddress, targetAccount, ...txArgs } = params
 
-  for (const [key, value] of Object.entries(rest)) {
-    if (
-      key === 'scope' ||
-      key === 'roles' ||
-      key === 'name' ||
-      key === 'key' ||
-      key === 'coinType'
-    ) {
-      scopeParams[key] = value
-    } else {
-      txArgs[key] = value
-    }
+  let scopeParams: GrantResolverRolesBaseParameters
+  switch (scope) {
+    case 'root':
+      scopeParams = {
+        scope: 'root' as const,
+        resolverAddress,
+        targetAccount,
+        roles: params.roles,
+      }
+      break
+    case 'name':
+      scopeParams = {
+        scope: 'name' as const,
+        resolverAddress,
+        targetAccount,
+        name: params.name,
+        roles: params.roles,
+      }
+      break
+    case 'text':
+      scopeParams = {
+        scope: 'text' as const,
+        resolverAddress,
+        targetAccount,
+        name: params.name,
+        key: params.key,
+      }
+      break
+    case 'addr':
+      scopeParams = {
+        scope: 'addr' as const,
+        resolverAddress,
+        targetAccount,
+        name: params.name,
+        coinType: params.coinType,
+      }
+      break
   }
 
   const writeParameters = grantResolverRolesWriteParameters(
     clientWithOverrides(client, txArgs),
-    scopeParams as GrantResolverRolesBaseParameters,
+    scopeParams,
   )
 
   const writeContractAction = getAction(client, writeContract, 'writeContract')

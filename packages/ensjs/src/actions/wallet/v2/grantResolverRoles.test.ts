@@ -1,5 +1,5 @@
 import type { Address } from 'viem'
-import { encodeFunctionData, encodePacked, keccak256, namehash } from 'viem'
+import { encodeFunctionData, namehash } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { subregistryInitializeSnippet } from '../../../contracts/verifiableFactory.js'
 import {
@@ -9,11 +9,16 @@ import {
   walletClient,
 } from '../../../test/addTestContracts.js'
 import {
+  addrPart,
+  computeResolverResource,
+  textPart,
+} from '../../../utils/v2/roles/resolverResource.js'
+import {
   RESOLVER_ROLE_SET_ADDR_ADMIN,
   RESOLVER_ROLE_SET_ALIAS_ADMIN,
   RESOLVER_ROLE_SET_TEXT_ADMIN,
 } from '../../../utils/v2/roles/resolverRoles.js'
-import { computeResolverResource, hasRoles } from '../../public/v2/hasRoles.js'
+import { hasRoles } from '../../public/v2/hasRoles.js'
 import { deployVerifiableProxy } from './deployVerifiableProxy.js'
 import { grantResolverRoles } from './grantResolverRoles.js'
 
@@ -107,12 +112,10 @@ describe('grantResolverRoles', () => {
       const receipt = await waitForTransaction(tx)
       expect(receipt.status).toBe('success')
 
-      // textPart(key) = keccak256(abi.encodePacked(uint8(2), keccak256(key)))
-      const keyHash = keccak256(new TextEncoder().encode('avatar'))
-      const textPart = keccak256(
-        encodePacked(['uint8', 'bytes32'], [2, keyHash]),
+      const resource = computeResolverResource(
+        namehash('test.eth'),
+        textPart('avatar'),
       )
-      const resource = computeResolverResource(namehash('test.eth'), textPart)
       const result = await hasRoles(publicClient, {
         resolverAddress: resolverProxyAddress,
         resource,
@@ -136,9 +139,10 @@ describe('grantResolverRoles', () => {
       const receipt = await waitForTransaction(tx)
       expect(receipt.status).toBe('success')
 
-      // addrPart(coinType) = keccak256(abi.encodePacked(uint8(1), coinType))
-      const addrPart = keccak256(encodePacked(['uint8', 'uint256'], [1, 60n]))
-      const resource = computeResolverResource(namehash('test.eth'), addrPart)
+      const resource = computeResolverResource(
+        namehash('test.eth'),
+        addrPart(60n),
+      )
       const result = await hasRoles(publicClient, {
         resolverAddress: resolverProxyAddress,
         resource,

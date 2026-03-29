@@ -1,5 +1,4 @@
-import type { Address, Client, Hex, ReadContractErrorType } from 'viem'
-import { encodePacked, keccak256 } from 'viem'
+import type { Address, Client, ReadContractErrorType } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { eacHasRolesSnippet } from '../../../contracts/enhancedAccessControl.js'
@@ -155,14 +154,4 @@ export async function hasRoles(
   })
 }
 
-/**
- * Compute a PermissionedResolver EAC resource ID from a node and part.
- * Mirrors `PermissionedResolverLib.resource(node, part)` in Solidity.
- *
- * @param node - The namehash of the name (bytes32). Use '0x00...00' for "any name".
- * @param part - The record-type part (bytes32). Use '0x00...00' for "any record type".
- * @returns The resource ID as a bigint.
- */
-export function computeResolverResource(node: Hex, part: Hex): bigint {
-  return BigInt(keccak256(encodePacked(['bytes32', 'bytes32'], [node, part])))
-}
+export { computeResolverResource } from '../../../utils/v2/roles/resolverResource.js'
