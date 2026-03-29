@@ -2,7 +2,6 @@ export const dnsRegistrarErrors = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'name',
         type: 'bytes',
       },
@@ -18,12 +17,10 @@ export const dnsRegistrarErrors = [
   {
     inputs: [
       {
-        internalType: 'uint256',
         name: 'offset',
         type: 'uint256',
       },
       {
-        internalType: 'uint256',
         name: 'length',
         type: 'uint256',
       },
@@ -34,12 +31,10 @@ export const dnsRegistrarErrors = [
   {
     inputs: [
       {
-        internalType: 'address',
         name: 'caller',
         type: 'address',
       },
       {
-        internalType: 'address',
         name: 'owner',
         type: 'address',
       },
@@ -100,12 +95,10 @@ export const dnsRegistrarProveAndClaimWithResolverSnippet = [
       {
         components: [
           {
-            internalType: 'bytes',
             name: 'rrset',
             type: 'bytes',
           },
           {
-            internalType: 'bytes',
             name: 'sig',
             type: 'bytes',
           },

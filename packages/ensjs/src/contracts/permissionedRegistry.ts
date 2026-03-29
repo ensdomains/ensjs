@@ -24,8 +24,8 @@ export const permissionedRegistryGetResolverSnippet = [
   {
     type: 'function',
     name: 'getResolver',
-    inputs: [{ name: 'label', type: 'string', internalType: 'string' }],
-    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    inputs: [{ name: 'label', type: 'string' }],
+    outputs: [{ name: '', type: 'address' }],
     stateMutability: 'view',
   },
 ] as const
@@ -34,8 +34,8 @@ export const permissionedRegistryGetSubregistrySnippet = [
   {
     type: 'function',
     name: 'getSubregistry',
-    inputs: [{ name: 'label', type: 'string', internalType: 'string' }],
-    outputs: [{ name: '', type: 'address', internalType: 'address' }],
+    inputs: [{ name: 'label', type: 'string' }],
+    outputs: [{ name: '', type: 'address' }],
     stateMutability: 'view',
   },
 ] as const
@@ -48,14 +48,12 @@ export const permissionedRegistryRoleCountSnippet = [
       {
         name: 'resource',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -70,14 +68,12 @@ export const permissionedRegistryGetExpirySnippet = [
       {
         name: 'anyId',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'uint64',
-        internalType: 'uint64',
       },
     ],
     stateMutability: 'view',
@@ -92,25 +88,21 @@ export const eacRolesGrantedEventSnippet = {
       name: 'resource',
       type: 'uint256',
       indexed: true,
-      internalType: 'uint256',
     },
     {
       name: 'account',
       type: 'address',
       indexed: true,
-      internalType: 'address',
     },
     {
       name: 'oldRoleBitmap',
       type: 'uint256',
       indexed: false,
-      internalType: 'uint256',
     },
     {
       name: 'newRoleBitmap',
       type: 'uint256',
       indexed: false,
-      internalType: 'uint256',
     },
   ],
   anonymous: false,
@@ -126,37 +118,31 @@ export const permissionedRegistryLabelRegisteredEventSnippet = {
       name: 'tokenId',
       type: 'uint256',
       indexed: true,
-      internalType: 'uint256',
     },
     {
       name: 'labelHash',
       type: 'bytes32',
       indexed: true,
-      internalType: 'bytes32',
     },
     {
       name: 'label',
       type: 'string',
       indexed: false,
-      internalType: 'string',
     },
     {
       name: 'owner',
       type: 'address',
       indexed: false,
-      internalType: 'address',
     },
     {
       name: 'expiry',
       type: 'uint64',
       indexed: false,
-      internalType: 'uint64',
     },
     {
       name: 'registeredBy',
       type: 'address',
       indexed: false,
-      internalType: 'address',
     },
   ],
   anonymous: false,
@@ -170,14 +156,12 @@ export const permissionedRegistryGetTokenIdSnippet = [
       {
         name: 'anyId',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -192,19 +176,16 @@ export const permissionedRegistryRolesSnippet = [
       {
         name: 'anyId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -219,12 +200,10 @@ export const permissionedRegistrySetResolverSnippet = [
       {
         name: 'anyId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'resolver',
         type: 'address',
-        internalType: 'address',
       },
     ],
     outputs: [],

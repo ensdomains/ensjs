@@ -5,25 +5,21 @@ export const eacRolesChangedEventSnippet = [
         indexed: true,
         name: 'resource',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: true,
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: false,
         name: 'oldRoleBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'newRoleBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     name: 'EACRolesChanged',
@@ -49,24 +45,20 @@ export const eacGrantRolesSnippet = [
       {
         name: 'resource',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'roleBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
       },
     ],
     stateMutability: 'nonpayable',
@@ -81,24 +73,20 @@ export const eacHasRolesSnippet = [
       {
         name: 'resource',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'rolesBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -114,24 +102,20 @@ export const eacRevokeRolesSnippet = [
       {
         name: 'resource',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'roleBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
       },
     ],
     stateMutability: 'nonpayable',
@@ -147,19 +131,16 @@ export const eacRevokeRootRolesSnippet = [
       {
         name: 'roleBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
     ],
     outputs: [
       {
         name: '',
         type: 'bool',
-        internalType: 'bool',
       },
     ],
     stateMutability: 'nonpayable',

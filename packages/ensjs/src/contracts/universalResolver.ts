@@ -2,7 +2,6 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'dns',
         type: 'bytes',
       },
@@ -13,7 +12,6 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'string',
         name: 'ens',
         type: 'string',
       },
@@ -29,12 +27,10 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'uint16',
         name: 'status',
         type: 'uint16',
       },
       {
-        internalType: 'string',
         name: 'message',
         type: 'string',
       },
@@ -50,7 +46,6 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'errorData',
         type: 'bytes',
       },
@@ -61,12 +56,10 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'name',
         type: 'bytes',
       },
       {
-        internalType: 'address',
         name: 'resolver',
         type: 'address',
       },
@@ -77,7 +70,6 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'name',
         type: 'bytes',
       },
@@ -88,12 +80,10 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'string',
         name: 'primary',
         type: 'string',
       },
       {
-        internalType: 'bytes',
         name: 'primaryAddress',
         type: 'bytes',
       },
@@ -104,7 +94,6 @@ export const universalResolverErrors = [
   {
     inputs: [
       {
-        internalType: 'bytes4',
         name: 'selector',
         type: 'bytes4',
       },
@@ -235,7 +224,6 @@ export const universalResolverFindRegistriesSnippet = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'name',
         type: 'bytes',
       },
