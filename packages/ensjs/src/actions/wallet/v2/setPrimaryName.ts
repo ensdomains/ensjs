@@ -17,7 +17,10 @@ import {
   defaultReverseRegistrarSetNameForAddrSnippet,
   defaultReverseRegistrarSetNameSnippet,
 } from '../../../contracts/defaultReverseRegistrar.js'
-import type { Prettify, WriteTransactionParameters } from '../../../types/index.js'
+import type {
+  Prettify,
+  WriteTransactionParameters,
+} from '../../../types/index.js'
 import {
   ASSERT_NO_TYPE_ERROR,
   EXCLUDE_TYPE_ERROR,
@@ -51,22 +54,17 @@ export type SetPrimaryNameWriteParametersReturnType = ReturnType<
   typeof setPrimaryNameWriteParameters
 >
 
-export type SetPrimaryNameWriteParametersErrorType =
-  never
+export type SetPrimaryNameV2WriteParametersReturnType =
+  SetPrimaryNameWriteParametersReturnType
+
+export type SetPrimaryNameWriteParametersErrorType = never
 
 export const setPrimaryNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<
-    chain,
-    'ensDefaultReverseRegistrar',
-    account
-  >,
-  {
-    name,
-    address,
-  }: SetPrimaryNameWriteParametersParameters,
+  client: RequireClientContracts<chain, 'ensDefaultReverseRegistrar', account>,
+  { name, address }: SetPrimaryNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -146,11 +144,7 @@ export async function setPrimaryName<
   account extends Account,
   chainOverride extends ChainWithContracts<'ensDefaultReverseRegistrar'>,
 >(
-  client: RequireClientContracts<
-    chain,
-    'ensDefaultReverseRegistrar',
-    account
-  >,
+  client: RequireClientContracts<chain, 'ensDefaultReverseRegistrar', account>,
   {
     name,
     address,
