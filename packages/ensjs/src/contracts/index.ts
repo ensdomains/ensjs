@@ -21,6 +21,10 @@ export {
   dedicatedResolverSetTextSnippet,
 } from './dedicatedResolver.js'
 export {
+  defaultReverseRegistrarSetNameForAddrSnippet,
+  defaultReverseRegistrarSetNameSnippet,
+} from './defaultReverseRegistrar.js'
+export {
   dnsRegistrarErrors,
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,
