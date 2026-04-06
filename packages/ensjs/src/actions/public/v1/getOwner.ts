@@ -110,7 +110,7 @@ export async function getOwner<
   client: RequireClientContracts<
     chain,
     | 'ensNameWrapper'
-    | 'ensRegistry'
+    | 'ensLegacyRegistry'
     | 'ensBaseRegistrarImplementation'
     | 'multicall3'
   >,

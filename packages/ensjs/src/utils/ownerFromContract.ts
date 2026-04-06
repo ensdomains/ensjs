@@ -42,7 +42,7 @@ export type GetContractSpecificOwnerParametersErrorType =
 export const getContractSpecificOwnerParameters = <_chain extends Chain>(
   chain: RequireChainContracts<
     _chain,
-    'ensNameWrapper' | 'ensRegistry' | 'ensBaseRegistrarImplementation'
+    'ensNameWrapper' | 'ensLegacyRegistry' | 'ensBaseRegistrarImplementation'
   >,
   { contract, node, labels }: OwnerFromContractArgs,
 ) => {
@@ -61,7 +61,10 @@ export const getContractSpecificOwnerParameters = <_chain extends Chain>(
       } as const satisfies ReadContractParameters<typeof abi, 'ownerOf'>
     case 'registry':
       return {
-        address: getChainContractAddress({ chain, contract: 'ensRegistry' }),
+        address: getChainContractAddress({
+          chain,
+          contract: 'ensLegacyRegistry',
+        }),
         abi,
         functionName: 'owner',
         args: [node],
