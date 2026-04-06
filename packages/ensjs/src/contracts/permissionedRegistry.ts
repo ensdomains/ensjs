@@ -168,6 +168,26 @@ export const permissionedRegistryGetTokenIdSnippet = [
   },
 ] as const
 
+export const permissionedRegistryGetResourceSnippet = [
+  {
+    type: 'function',
+    name: 'getResource',
+    inputs: [
+      {
+        name: 'anyId',
+        type: 'uint256',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+  },
+] as const
+
 export const permissionedRegistryRolesSnippet = [
   {
     type: 'function',
