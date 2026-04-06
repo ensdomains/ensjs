@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { publicClient as client } from '../../../test/addTestContracts.js'
+import {
+  publicClient as client,
+  deploymentAddresses,
+} from '../../../test/addTestContracts.js'
 import { getTokenId } from './getTokenId.js'
-
-const registryAddress = '0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf'
 
 describe('getTokenId', () => {
   it('returns the token ID for a registered label', async () => {
     const tokenId = await getTokenId(client, {
-      registryAddress,
+      registryAddress: deploymentAddresses.ETHRegistry,
       label: 'example',
     })
 
