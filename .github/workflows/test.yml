@@ -52,6 +52,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Build ensjs-abi
+        run: pnpm -F @ensdomains/ensjs-abi build
+
       - name: Lint
         run: pnpm lint
 
