@@ -19,7 +19,7 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: pnpm -r build
+        run: pnpm -r build --filter @ensdomains/ensjs-abi --filter @ensdomains/ensjs
 
       - name: Publish to pkg.pr.new
         run: pnpm dlx pkg-pr-new publish "./packages/ensjs-abi" "./packages/ensjs"
