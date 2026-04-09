@@ -2,9 +2,8 @@ import { permissionedRegistryGetExpirySnippet } from '@ensdomains/ensjs-abi/v2/p
 import {
   type Address,
   type Chain,
-  keccak256,
+  labelhash,
   type ReadContractErrorType,
-  stringToBytes,
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
@@ -52,7 +51,7 @@ export async function getExpiry<chain extends Chain>(
       contract: 'ensRegistry',
     })
 
-  const labelHash = BigInt(keccak256(stringToBytes(labels[0])))
+  const labelHash = BigInt(labelhash(labels[0]))
 
   return readContractAction({
     address: currentRegistry,

@@ -1,11 +1,10 @@
 import { permissionedRegistryGetTokenIdSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
-import type { Address, Chain } from 'viem'
+import { type Address, type Chain, labelhash } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
 export type GetTokenIdParameters = {
   /** Label to get the token ID for */
@@ -41,7 +40,7 @@ export async function getTokenId<chain extends Chain>(
       contract: 'ensRegistry',
     })
 
-  const labelHash = labelToCanonicalId(label)
+  const labelHash = BigInt(labelhash(label))
 
   return readContractAction({
     address: currentRegistry,

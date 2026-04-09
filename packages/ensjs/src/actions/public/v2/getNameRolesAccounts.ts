@@ -6,13 +6,14 @@ import {
   type Client,
   type GetLogsErrorType,
   type GetLogsParameters,
+  labelhash,
   zeroAddress,
 } from 'viem'
 import type { Address } from 'viem/accounts'
 import { getLogs, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { labelToCanonicalId, registryRoles } from '../../../utils/v2/index.js'
+import { registryRoles } from '../../../utils/v2/index.js'
 import {
   decodeRoleCounts,
   type RoleName,
@@ -46,7 +47,7 @@ export async function getNameRoleAccounts(
   const readContractAction = getAction(client, readContract, 'readContract')
   const getLogsAction = getAction(client, getLogs, 'getLogs')
 
-  const labelHash = labelToCanonicalId(label)
+  const labelHash = BigInt(labelhash(label))
 
   const state = await readContractAction({
     address: registryAddress,

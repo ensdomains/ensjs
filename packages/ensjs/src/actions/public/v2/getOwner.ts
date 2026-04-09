@@ -1,9 +1,8 @@
 import { permissionedRegistryGetStateSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
-import type { Address, Client } from 'viem'
+import { type Address, type Client, labelhash } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
 export type GetOwnerParameters = {
   registryAddress: Address
@@ -20,7 +19,7 @@ export async function getOwner(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const labelHash = labelToCanonicalId(label)
+  const labelHash = BigInt(labelhash(label))
 
   const state = await readContractAction({
     address: registryAddress,

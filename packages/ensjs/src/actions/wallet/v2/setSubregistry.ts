@@ -9,6 +9,7 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
+import { labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
@@ -20,7 +21,6 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../utils/clientWithOverrides.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
 // ================================
 // Write parameters
@@ -52,7 +52,7 @@ export const setSubregistryWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const tokenId = labelToCanonicalId(label)
+  const tokenId = BigInt(labelhash(label))
 
   return {
     address: registryAddress,
