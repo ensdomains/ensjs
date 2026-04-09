@@ -57,7 +57,7 @@ export const localhost = {
   contracts: {
     // v1
     ensLegacyRegistry: {
-      address: deploymentAddresses.LegacyENSRegistry,
+      address: deploymentAddresses.ENSRegistry,
     },
     ensRegistry: {
       address: deploymentAddresses.ENSRegistry,
