@@ -5,7 +5,7 @@ export default defineConfig({
     coverage: {
       enabled: true,
       include: ['src/**/*'],
-      exclude: ['data/**/*'],
+      exclude: ['data/**/*', 'src/test/seedTestNames.ts'],
     },
     environment: 'node',
     globalSetup: ['./src/test/globalSetup.ts'],
