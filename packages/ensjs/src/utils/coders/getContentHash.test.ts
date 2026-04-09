@@ -1,6 +1,6 @@
 import { encodeFunctionResult } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
+import { publicResolverContenthashSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   decodeContentHashResult,
   decodeContentHashResultFromPrimitiveTypes,

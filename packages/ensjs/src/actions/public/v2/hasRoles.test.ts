@@ -1,7 +1,7 @@
 import type { Address } from 'viem'
 import { encodeFunctionData, getAddress, keccak256 } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { verifiableFactoryDeployProxySnippet } from '../../../contracts/verifiableFactory.js'
+import { verifiableFactoryDeployProxySnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import {
   publicClient as client,
   deploymentAddresses,
@@ -49,7 +49,7 @@ beforeAll(async () => {
     account: accounts[0],
   })
   const proxyReceipt = await waitForTransaction(proxyDeployTx)
-  resolverProxyAddress = `0x${proxyReceipt.logs[3].topics[2].slice(26)}`
+  resolverProxyAddress = `0x${proxyReceipt.logs[3]!.topics[2]!.slice(26)}`
 })
 
 describe('hasRoles', () => {

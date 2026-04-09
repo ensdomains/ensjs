@@ -2,7 +2,7 @@ import type { Address, Hex } from 'viem'
 import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { nameWrapperGetDataSnippet } from '../../contracts/nameWrapper.js'
+import { nameWrapperGetDataSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   publicClient,
   testClient,

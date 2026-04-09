@@ -14,17 +14,17 @@ import {
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { multicallSnippet } from '../../contracts/multicall.js'
+import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
 import {
   publicResolverSingleAddrSnippet,
   publicResolverTextSnippet,
-} from '../../contracts/publicResolver.js'
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
-} from '../../contracts/universalResolver.js'
+} from '@ensdomains/ensjs-abi/universalResolver'
 import { addEnsL1Contracts } from '../../index.js'
+import type { ChainWithContracts } from '../../clients/shared.js'
 import { getAddressParameters, getTextParameters } from '../../utils/index.js'
 import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
 import { resolveNameData } from './resolveNameData.js'
@@ -33,7 +33,7 @@ const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
   chain: addEnsL1Contracts(mainnet),
-} as unknown as Client<Transport, ChainWithContract<'ensUniversalResolver'>>
+} as unknown as Client<Transport, ChainWithContracts<'ensUniversalResolver'>>
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -127,6 +127,7 @@ it('works with multicall', async () => {
 
         return [data, address]
       }
+      return undefined
     },
   )
 

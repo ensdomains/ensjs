@@ -4,9 +4,9 @@ import type { Address } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { publicClient, walletClient } from '../../test/addTestContracts.js'
 import { GRACE_PERIOD_SECONDS } from '../../utils/consts.js'
-import { getExpiry } from '../public/getExpiry.js'
-import { getOwner } from '../public/getOwner.js'
-import { getWrapperData } from '../public/getWrapperData.js'
+import { getExpiry } from '../public/v1/getExpiry.js'
+import { getOwner } from '../public/v1/getOwner.js'
+import { getWrapperData } from '../public/v1/getWrapperData.js'
 import getNamesForAddress, {
   type NameWithRelation,
 } from './getNamesForAddress.js'

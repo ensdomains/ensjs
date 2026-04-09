@@ -10,8 +10,8 @@ import {
   vi,
 } from 'vitest'
 import type { ChainWithContracts } from '../../clients/shared.js'
-import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
-import { registryResolverSnippet } from '../../contracts/registry.js'
+import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
 import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,

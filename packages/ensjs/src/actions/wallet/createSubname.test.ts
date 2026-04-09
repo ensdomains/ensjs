@@ -5,8 +5,8 @@ import { getChainContractAddress } from '../../contracts/getChainContractAddress
 import {
   nameWrapperGetDataSnippet,
   nameWrapperOwnerOfSnippet,
-} from '../../contracts/nameWrapper.js'
-import { registryOwnerSnippet } from '../../contracts/registry.js'
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
+import { registryOwnerSnippet } from '@ensdomains/ensjs-abi/registry'
 import {
   publicClient,
   testClient,

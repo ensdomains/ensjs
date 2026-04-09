@@ -1,7 +1,7 @@
 import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { l2EthRegistrarCommitmentsSnippet } from '../../contracts/l2EthRegistrar.js'
+import { ethRegistrarCommitmentsSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import {
   publicClient,
   testClient,
@@ -46,7 +46,7 @@ it('should return a commit transaction and succeed', async () => {
   expect(receipt.status).toBe('success')
 
   const commitmentAt = await publicClient.readContract({
-    abi: l2EthRegistrarCommitmentsSnippet,
+    abi: ethRegistrarCommitmentsSnippet,
     functionName: 'commitmentAt',
     address: getChainContractAddress({
       chain: publicClient.chain,

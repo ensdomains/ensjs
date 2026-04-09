@@ -128,36 +128,36 @@ describe('getAbiRecord()', () => {
       name: 'with-type-1-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(1)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result!.contentType).toBe(1)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toMatchObject(dummyABI)
   })
   it('should return object for type 2 ABI', async () => {
     const result = await getAbiRecord(publicClient, {
       name: 'with-type-2-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(2)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result!.contentType).toBe(2)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toMatchObject(dummyABI)
   })
   it('should return object for type 4 ABI', async () => {
     const result = await getAbiRecord(publicClient, {
       name: 'with-type-4-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(4)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result!.contentType).toBe(4)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toMatchObject(dummyABI)
   })
   it('should return unresolved URI for type 8 ABI', async () => {
     const result = await getAbiRecord(publicClient, {
       name: 'with-type-8-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(8)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toBe('https://example.com')
+    expect(result!.contentType).toBe(8)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toBe('https://example.com')
   })
   it('should return null if unsupported contentType (returned as 0x from contract)', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -170,9 +170,9 @@ describe('getAbiRecord()', () => {
       name: 'with-type-all-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(1)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result!.contentType).toBe(1)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toMatchObject(dummyABI)
   })
   it('should return the result of type 2 abi if supportedContentTypes is zlib', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -180,9 +180,9 @@ describe('getAbiRecord()', () => {
       supportedContentTypes: generateSupportedContentTypes('zlib'),
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(2)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result!.contentType).toBe(2)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toMatchObject(dummyABI)
   })
   it('should return the result of type 4 abi if supportedContentTypes is cbor', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -190,9 +190,9 @@ describe('getAbiRecord()', () => {
       supportedContentTypes: generateSupportedContentTypes('cbor'),
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(4)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result!.contentType).toBe(4)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toMatchObject(dummyABI)
   })
   it('should return the result of type 8 abi if supportedContentTypes is uri', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -200,9 +200,9 @@ describe('getAbiRecord()', () => {
       supportedContentTypes: generateSupportedContentTypes('uri'),
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(8)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toBe('https://example.com')
+    expect(result!.contentType).toBe(8)
+    expect(result!.decoded).toBe(true)
+    expect(result!.abi).toBe('https://example.com')
   })
   it('should return null on error when strict is false', async () => {
     const result = await getAbiRecord(publicClient, {

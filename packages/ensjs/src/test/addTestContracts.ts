@@ -92,6 +92,15 @@ export const localhost = {
     ensDnssecImpl: {
       address: deploymentAddresses.DNSSECImpl,
     },
+    ensLegacyDnsRegistrar: {
+      address: deploymentAddresses.DNSRegistrar,
+    },
+    ensLegacyDnssecImpl: {
+      address: deploymentAddresses.DNSSECImpl,
+    },
+    ensEthRegistrar: {
+      address: deploymentAddresses.ETHRegistrar,
+    },
     ensDefaultReverseRegistrar: {
       address: deploymentAddresses.DefaultReverseRegistrar,
     },

@@ -59,6 +59,7 @@ afterEach(async () => {
 })
 
 it.skip('should import a DNS name with no address', async () => {
+  // @ts-expect-error test chain addresses don't match mainnet ChainWithEns literal types
   const tx = await importDnsName(walletClient, {
     name,
     dnsImportData,
@@ -79,6 +80,7 @@ it.skip('should import a DNS name with an address, using default resolver', asyn
     value: parseEther('1'),
   })
 
+  // @ts-expect-error test chain addresses don't match mainnet ChainWithEns literal types
   const tx = await importDnsName(walletClient, {
     name,
     address,
@@ -108,6 +110,7 @@ it.skip('should import a DNS name with an address, using a custom resolver', asy
 
   const resolverAddress = deploymentAddresses.PublicResolver
 
+  // @ts-expect-error test chain addresses don't match mainnet ChainWithEns literal types
   const tx = await importDnsName(walletClient, {
     name,
     address,
@@ -127,6 +130,7 @@ it.skip('should import a DNS name with an address, using a custom resolver', asy
 
 it.skip('should throw error if resolver is specified when claiming without an address', async () => {
   await expect(
+    // @ts-expect-error test chain addresses don't match mainnet ChainWithEns literal types
     importDnsName(walletClient, {
       name,
       resolverAddress: address,

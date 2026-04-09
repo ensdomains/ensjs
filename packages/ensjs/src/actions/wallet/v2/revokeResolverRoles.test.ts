@@ -1,7 +1,7 @@
 import type { Address } from 'viem'
 import { encodeFunctionData, namehash } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { subregistryInitializeSnippet } from '../../../contracts/verifiableFactory.js'
+import { subregistryInitializeSnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import {
   deploymentAddresses,
   publicClient,

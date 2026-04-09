@@ -32,58 +32,6 @@ async function isDevnetRunning(): Promise<boolean> {
   return false
 }
 
-async function _waitForHealthy(timeout: number): Promise<void> {
-  const startTime = Date.now()
-
-  while (Date.now() - startTime < timeout) {
-    try {
-      const { stdout } = await execAsync(
-        `docker compose -f ${DOCKER_COMPOSE_FILE} ps --format json`,
-      )
-      const services = stdout
-        .trim()
-        .split('\n')
-        .filter(Boolean)
-        .map((line) => JSON.parse(line))
-
-      // Check if all services are running or healthy
-      const allRunning = services.every(
-        (service) => service.State === 'running',
-      )
-
-      // Check if services with healthchecks are healthy
-      const servicesWithHealth = services.filter(
-        (service) => service.Health && service.Health !== '',
-      )
-      const allHealthy =
-        servicesWithHealth.length === 0 ||
-        servicesWithHealth.every((service) => service.Health === 'healthy')
-
-      if (allRunning && allHealthy) {
-        console.log('✓ All Docker services are healthy and running')
-        return
-      }
-
-      // Show progress
-      const healthyCount = servicesWithHealth.filter(
-        (s) => s.Health === 'healthy',
-      ).length
-      const totalHealthChecks = servicesWithHealth.length
-      if (totalHealthChecks > 0) {
-        console.log(
-          `⏳ Waiting for services to be healthy (${healthyCount}/${totalHealthChecks})...`,
-        )
-      }
-    } catch (_error) {
-      // Ignore errors during health check, will retry
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, HEALTH_CHECK_INTERVAL))
-  }
-
-  throw new Error(`Docker services did not become healthy within ${timeout}ms`)
-}
-
 async function waitForDevnetReady(timeout: number): Promise<void> {
   const startTime = Date.now()
   // The devnet exposes a healthcheck endpoint on port 8000 that returns 200
@@ -105,39 +53,6 @@ async function waitForDevnetReady(timeout: number): Promise<void> {
   }
 
   throw new Error(`Devnet did not become ready within ${timeout}ms`)
-}
-
-async function _waitForRPC(url: string, timeout: number): Promise<void> {
-  const startTime = Date.now()
-
-  while (Date.now() - startTime < timeout) {
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'eth_blockNumber',
-          params: [],
-          id: 1,
-        }),
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        if (data.result) {
-          console.log(`✓ RPC at ${url} is ready`)
-          return
-        }
-      }
-    } catch (_error) {
-      // ignore
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-  }
-
-  throw new Error(`RPC at ${url} did not become ready within ${timeout}ms`)
 }
 
 export async function setup() {

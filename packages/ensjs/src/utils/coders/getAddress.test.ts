@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   publicResolverMultiAddrSnippet,
   publicResolverSingleAddrSnippet,
-} from '../../contracts/publicResolver.js'
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   decodeAddressResult,
   decodeAddressResultFromPrimitiveTypes,

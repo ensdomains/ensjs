@@ -2,7 +2,7 @@ import type { RequestListener } from 'node:http'
 import { encodeFunctionData, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
 import { expect, it, vi } from 'vitest'
-import { getChainContractAddress } from '../contracts/getChainContractAddress.js'
+import { getChainContractAddress } from '../clients/shared.js'
 import { addEnsL1Contracts } from '../index.js'
 import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipRequest } from './ccipRequest.js'
@@ -33,7 +33,7 @@ it('uses viemCcipRequest for universalresolver request that is not matching sign
   const chain = addEnsL1Contracts(mainnet)
   const result = await ccipRequest(chain)({
     sender: getChainContractAddress({
-      client: { chain },
+      chain,
       contract: 'ensUniversalResolver',
     }),
     urls: [url],
@@ -57,7 +57,7 @@ it('uses ccipBatchRequest for universalresolver request that is matching signatu
   })
   const result = await ccipRequest(chain)({
     sender: getChainContractAddress({
-      client: { chain },
+      chain,
       contract: 'ensUniversalResolver',
     }),
     urls: ['https://example.com'],
