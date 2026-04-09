@@ -12,8 +12,8 @@ import {
   toHex,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
-import { getAction } from 'viem/utils'
 import { packetToBytes } from 'viem/ens'
+import { getAction } from 'viem/utils'
 import type {
   ChainWithContracts,
   RequireClientContracts,
