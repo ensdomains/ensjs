@@ -109,6 +109,7 @@
     "test:watch": "vitest --watch --no-file-parallelism",
     "clean": "rm -rf ./dist ./README.md ./LICENSE",
     "lint": "biome check",
+    "check:types": "tsc --noEmit",
     "build": "tsc --project tsconfig.build.json",
     "tsn": "TS_NODE_PROJECT=tsconfig.node.json node --loader ts-node/esm",
     "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
