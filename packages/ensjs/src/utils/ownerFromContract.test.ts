@@ -55,7 +55,7 @@ it('uses registry contract when contract is registry', () => {
   ).toMatchInlineSnapshot(`
     {
       "data": "0x02571be3eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
-      "to": "${deploymentAddresses.ENSRegistry}",
+      "to": "${deploymentAddresses.LegacyENSRegistry}",
     }
   `)
 })
