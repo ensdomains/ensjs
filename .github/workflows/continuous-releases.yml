@@ -19,12 +19,7 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: pnpm --filter @ensdomains/ensjs build
+        run: pnpm -r build
 
-      - name: Publish ensjs to pkg.pr.new
-        run: |
-          cd ./packages/ensjs
-          # remove prepack script for testing
-          npm pkg delete scripts.prepack
-          cd ../..
-          pnpm dlx pkg-pr-new publish "./packages/ensjs"
+      - name: Publish to pkg.pr.new
+        run: pnpm dlx pkg-pr-new publish "./packages/ensjs-abi" "./packages/ensjs"
