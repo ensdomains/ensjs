@@ -1,3 +1,4 @@
+import { eacGrantRolesSnippet } from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
 import type {
   Account,
   Address,
@@ -6,7 +7,6 @@ import type {
   Transport,
   WriteContractParameters,
 } from 'viem'
-import { eacGrantRolesSnippet } from '../../../contracts/enhancedAccessControl.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import {
   encodeRoleBitmap,

@@ -159,7 +159,7 @@ describe('requestMiddleware', () => {
 describe('responseMiddleware', () => {
   it('should replace name with the namehash when there is an invalid name and id combo', () => {
     const response = { ...mockResponse }
-    responseMiddleware(response as any)
+    responseMiddleware(response as any, {} as any)
     expect(response.data.account.domains[0].name).toBe(
       namehash(
         '0xb54c7c79c89d571f1fbf4c67f524e336a04441eeee4d76f156e835da99a46ddb',

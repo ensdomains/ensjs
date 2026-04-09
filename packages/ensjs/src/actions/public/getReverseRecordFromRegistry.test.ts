@@ -1,3 +1,5 @@
+import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
 import type { Client, PublicClient, Transport } from 'viem'
 import { mainnet } from 'viem/chains'
 import {
@@ -10,8 +12,6 @@ import {
   vi,
 } from 'vitest'
 import type { ChainWithContracts } from '../../clients/shared.js'
-import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
-import { registryResolverSnippet } from '../../contracts/registry.js'
 import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,

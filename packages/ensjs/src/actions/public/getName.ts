@@ -1,4 +1,8 @@
 import { evmChainIdToCoinType } from '@ensdomains/address-encoder/utils'
+import {
+  universalResolverReverseSnippet,
+  universalResolverReverseWithGatewaysSnippet,
+} from '@ensdomains/ensjs-abi/universalResolver'
 import type {
   Address,
   Chain,
@@ -12,10 +16,6 @@ import type { PacketToBytesErrorType } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  universalResolverReverseSnippet,
-  universalResolverReverseWithGatewaysSnippet,
-} from '../../contracts/universalResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'

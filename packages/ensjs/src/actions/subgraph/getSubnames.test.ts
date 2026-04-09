@@ -55,7 +55,7 @@ it('allows including expired names - .eth 2ld', async () => {
   })
   if (!result.length) throw new Error('No names found')
   const expiredNames = result.filter(
-    (name) => name.expiryDate?.value < Date.now(),
+    (name) => name.expiryDate && name.expiryDate?.value < Date.now(),
   )
   expect(expiredNames.length).toBeGreaterThan(0)
 })

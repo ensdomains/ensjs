@@ -1,8 +1,8 @@
+import { subregistryUpdatedEventSnippet } from '@ensdomains/ensjs-abi/v2/userRegistry'
 import type { Client, GetLogsErrorType, GetLogsParameters } from 'viem'
 import type { Address } from 'viem/accounts'
 import { getLogs } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { subregistryUpdatedEventSnippet } from '../../../contracts/userRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 

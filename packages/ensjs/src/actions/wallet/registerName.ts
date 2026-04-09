@@ -1,3 +1,4 @@
+import { ethRegistrarRegisterSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import {
   type Account,
   type Chain,
@@ -14,7 +15,6 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/shared.js'
-import { l2EthRegistrarRegisterSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -78,7 +78,7 @@ export const registerNameWriteParameters = <
       chain: client.chain,
       contract: 'ethRegistrar',
     }),
-    abi: l2EthRegistrarRegisterSnippet,
+    abi: ethRegistrarRegisterSnippet,
     functionName: 'register',
     args: [
       registrationParams.label, // V2 ETHRegistrar expects a label, not a full name
@@ -93,7 +93,7 @@ export const registerNameWriteParameters = <
     chain: client.chain,
     account: client.account,
   } as const satisfies WriteContractParameters<
-    typeof l2EthRegistrarRegisterSnippet
+    typeof ethRegistrarRegisterSnippet
   >
 }
 

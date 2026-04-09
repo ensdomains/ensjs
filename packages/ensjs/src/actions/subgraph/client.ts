@@ -54,7 +54,7 @@ export const requestMiddleware: RequestMiddleware = (request) => {
   }
 }
 
-export const responseMiddleware: ResponseMiddleware = (response) => {
+export const responseMiddleware: ResponseMiddleware = (response, _options) => {
   const traverse = (obj: Record<string, any>) => {
     if (obj && typeof obj === 'object') {
       for (const key in obj) {

@@ -1,3 +1,7 @@
+import {
+  proxyInitializeSnippet,
+  verifiableFactoryDeployProxySnippet,
+} from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import type {
   Account,
   Address,
@@ -13,10 +17,6 @@ import type {
 import { encodeFunctionData, keccak256, stringToBytes } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  proxyInitializeSnippet,
-  verifiableFactoryDeployProxySnippet,
-} from '../../../contracts/verifiableFactory.js'
 import type {
   Prettify,
   WriteTransactionParameters,

@@ -1,3 +1,7 @@
+import {
+  nameWrapperUnwrapEth2ldSnippet,
+  nameWrapperUnwrapSnippet,
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import type {
   Account,
   Address,
@@ -14,10 +18,6 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  nameWrapperUnwrapEth2ldSnippet,
-  nameWrapperUnwrapSnippet,
-} from '../../contracts/nameWrapper.js'
 import {
   AdditionalParameterSpecifiedError,
   RequiredParameterNotSpecifiedError,

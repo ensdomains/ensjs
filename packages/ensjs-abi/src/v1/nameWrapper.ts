@@ -1,6 +1,72 @@
-import { erc721OwnerOfSnippet } from './erc721.js'
-import { erc1155SafeTransferFromSnippet } from './erc1155.js'
-import { registrySetResolverSnippet } from './registry.js'
+const erc721OwnerOfSnippet = [
+  {
+    inputs: [
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+    ],
+    name: 'ownerOf',
+    outputs: [
+      {
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+const erc1155SafeTransferFromSnippet = [
+  {
+    inputs: [
+      {
+        name: 'from',
+        type: 'address',
+      },
+      {
+        name: 'to',
+        type: 'address',
+      },
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+      {
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        name: 'data',
+        type: 'bytes',
+      },
+    ],
+    name: 'safeTransferFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+const registrySetResolverSnippet = [
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+      },
+    ],
+    name: 'setResolver',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
 
 export const nameWrapperErrors = [
   {

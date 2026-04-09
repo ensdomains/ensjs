@@ -1,8 +1,8 @@
+import { erc165SupportsInterfaceSnippet } from '@ensdomains/ensjs-abi/erc165'
 import type { Address, Chain, Hex, MulticallErrorType } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/shared.js'
-import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetSupportedInterfacesParameters<

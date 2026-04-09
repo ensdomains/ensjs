@@ -1,3 +1,9 @@
+import {
+  permissionedResolverGrantAddrRolesSnippet,
+  permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverGrantRootRolesSnippet,
+  permissionedResolverGrantTextRolesSnippet,
+} from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Account,
   Address,
@@ -13,12 +19,6 @@ import { toHex } from 'viem'
 import { writeContract } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import {
-  permissionedResolverGrantAddrRolesSnippet,
-  permissionedResolverGrantNameRolesSnippet,
-  permissionedResolverGrantRootRolesSnippet,
-  permissionedResolverGrantTextRolesSnippet,
-} from '../../../contracts/permissionedRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,

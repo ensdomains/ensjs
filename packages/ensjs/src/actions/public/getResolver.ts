@@ -1,3 +1,4 @@
+import { universalResolverFindResolverSnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import {
   type Address,
   type Chain,
@@ -14,7 +15,6 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/shared.js'
-import { universalResolverFindResolverSnippet } from '../../contracts/universalResolver.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
 export type GetResolverParameters = {

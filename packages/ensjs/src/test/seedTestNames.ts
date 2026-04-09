@@ -141,6 +141,7 @@ async function registerUnwrappedName(
 
   // Commit
   const commitTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -183,6 +184,7 @@ async function registerUnwrappedName(
 
   // Register using legacy registerWithConfig
   const registerTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -291,6 +293,7 @@ async function registerWrappedName(
 
   // Commit
   const commitTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -337,6 +340,7 @@ async function registerWrappedName(
 
   // Register
   const registerTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -375,39 +379,6 @@ async function registerWrappedName(
   return wrapTx
 }
 
-async function _createSubname(
-  walletClient: any,
-  registry: Address,
-  parentName: string,
-  label: string,
-  owner: Address,
-): Promise<Hash> {
-  const parentNode = namehash(parentName)
-  // labelhash is keccak256 of the label string (not namehash)
-  const labelHash = keccak256(toHex(label))
-
-  const tx = await walletClient.writeContract({
-    address: registry,
-    abi: [
-      {
-        inputs: [
-          { name: 'node', type: 'bytes32' },
-          { name: 'label', type: 'bytes32' },
-          { name: 'owner', type: 'address' },
-        ],
-        name: 'setSubnodeOwner',
-        outputs: [{ name: '', type: 'bytes32' }],
-        stateMutability: 'nonpayable',
-        type: 'function',
-      },
-    ] as const,
-    functionName: 'setSubnodeOwner',
-    args: [parentNode, labelHash, owner],
-  })
-
-  return tx
-}
-
 async function mineBlock() {
   await fetch('http://localhost:8545', {
     method: 'POST',
@@ -441,6 +412,7 @@ async function setPrimaryName(
   name: string,
 ): Promise<Hash> {
   const tx = await walletClient.writeContract({
+    chain: null,
     address: reverseRegistrar,
     abi: [
       {
@@ -465,6 +437,7 @@ async function setAddrRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -493,6 +466,7 @@ async function setAddrRecordWithCoin(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -522,6 +496,7 @@ async function setTextRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -550,6 +525,7 @@ async function setContenthashRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -578,6 +554,7 @@ async function setAbiRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -604,6 +581,7 @@ async function approveNameWrapper(
   nameWrapper: Address,
 ): Promise<Hash> {
   const tx = await walletClient.writeContract({
+    chain: null,
     address: baseRegistrar,
     abi: [
       {
@@ -631,6 +609,7 @@ async function wrapETH2LD(
   resolver: Address,
 ): Promise<Hash> {
   const tx = await walletClient.writeContract({
+    chain: null,
     address: nameWrapper,
     abi: [
       {
@@ -663,6 +642,7 @@ async function setSubnodeOwner(
 ): Promise<Hash> {
   const parentNode = namehash(parentName)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: nameWrapper,
     abi: [
       {
@@ -695,6 +675,7 @@ async function setSubnodeOwnerRegistry(
   const parentNode = namehash(parentName)
   const labelHash = keccak256(toHex(label))
   const tx = await walletClient.writeContract({
+    chain: null,
     address: registry,
     abi: [
       {

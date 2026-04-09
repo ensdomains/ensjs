@@ -1,3 +1,4 @@
+import { publicResolverContenthashSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   type DecodeFunctionResultErrorType,
   decodeFunctionResult,
@@ -5,7 +6,6 @@ import {
   type NamehashErrorType,
   namehash,
 } from 'viem'
-import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
 import type { Prettify } from '../../types/index.js'
 import type {
   DecodeContentHashErrorType,

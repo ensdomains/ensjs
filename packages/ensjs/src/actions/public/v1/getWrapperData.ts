@@ -1,3 +1,4 @@
+import { nameWrapperGetDataSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Address,
   type Chain,
@@ -11,7 +12,6 @@ import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import { nameWrapperGetDataSnippet } from '../../../contracts/nameWrapper.js'
 import type { Prettify } from '../../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { type DecodedFuses, decodeFuses } from '../../../utils/fuses.js'

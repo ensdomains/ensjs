@@ -1,4 +1,16 @@
 import {
+  registrySetOwnerSnippet,
+  registrySetSubnodeOwnerSnippet,
+} from '@ensdomains/ensjs-abi/registry'
+import {
+  baseRegistrarReclaimSnippet,
+  baseRegistrarSafeTransferFromSnippet,
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
+import {
+  nameWrapperSafeTransferFromSnippet,
+  nameWrapperSetSubnodeOwnerSnippet,
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
+import {
   type Account,
   type Address,
   type Chain,
@@ -18,18 +30,6 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  baseRegistrarReclaimSnippet,
-  baseRegistrarSafeTransferFromSnippet,
-} from '../../contracts/baseRegistrar.js'
-import {
-  nameWrapperSafeTransferFromSnippet,
-  nameWrapperSetSubnodeOwnerSnippet,
-} from '../../contracts/nameWrapper.js'
-import {
-  registrySetOwnerSnippet,
-  registrySetSubnodeOwnerSnippet,
-} from '../../contracts/registry.js'
 import {
   AdditionalParameterSpecifiedError,
   InvalidContractTypeError,

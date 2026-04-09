@@ -1,6 +1,6 @@
+import { dedicatedResolverSetContentHashSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { publicResolverSetContenthashSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { EncodeFunctionDataParameters, Hex } from 'viem'
-import { dedicatedResolverSetContentHashSnippet } from '../../contracts/dedicatedResolver.js'
-import { publicResolverSetContenthashSnippet } from '../../contracts/publicResolver.js'
 import {
   type EncodeContentHashErrorType,
   encodeContentHash,

@@ -1,3 +1,4 @@
+import { permissionedResolverAliasSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Account,
   Address,
@@ -11,7 +12,6 @@ import type {
 import { writeContract } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
 import { getAction, toHex } from 'viem/utils'
-import { permissionedResolverAliasSnippet } from '../../../contracts/permissionedRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,

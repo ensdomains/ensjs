@@ -1,9 +1,9 @@
+import { permissionedRegistryGetResourceSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import type { Address, Chain } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import { permissionedRegistryGetResourceSnippet } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 

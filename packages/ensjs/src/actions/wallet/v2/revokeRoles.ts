@@ -1,3 +1,7 @@
+import {
+  eacRevokeRolesSnippet,
+  eacRevokeRootRolesSnippet,
+} from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
 import type {
   Account,
   Address,
@@ -10,10 +14,6 @@ import type {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  eacRevokeRolesSnippet,
-  eacRevokeRootRolesSnippet,
-} from '../../../contracts/enhancedAccessControl.js'
 import type {
   Prettify,
   WriteTransactionParameters,

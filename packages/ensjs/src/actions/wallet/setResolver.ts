@@ -1,3 +1,5 @@
+import { registrySetResolverSnippet } from '@ensdomains/ensjs-abi/registry'
+import { nameWrapperSetResolverSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import type {
   Account,
   Address,
@@ -15,8 +17,6 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
-import { registrySetResolverSnippet } from '../../contracts/registry.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'

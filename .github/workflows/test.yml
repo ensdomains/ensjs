@@ -22,8 +22,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Build ensjs
-        run: pnpm -F @ensdomains/ensjs build
+      - name: Build ensjs-abi and ensjs
+        run: pnpm -F @ensdomains/ensjs-abi -F @ensdomains/ensjs build
 
       - name: Start test environment
         run: docker compose up -d devnet
@@ -52,8 +52,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Build ensjs-abi
+        run: pnpm -F @ensdomains/ensjs-abi build
+
       - name: Lint
         run: pnpm lint
 
       - name: Type check
-        run: pnpm -F @ensdomains/ensjs build
+        run: pnpm -F @ensdomains/ensjs check:types

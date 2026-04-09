@@ -1,7 +1,6 @@
-import { afterEach } from 'node:test'
 import { type Address, type Hex, parseAbi, parseEther } from 'viem'
-import { beforeAll, beforeEach, expect, it, vi } from 'vitest'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest'
+import { getChainContractAddress } from '../../clients/shared.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -94,7 +93,7 @@ it.skip('should import a DNS name with an address, using default resolver', asyn
   const resolver = await getResolver(publicClient, { name })
   expect(resolver).toBe(
     getChainContractAddress({
-      client: publicClient,
+      chain: publicClient.chain,
       contract: 'ensPublicResolver',
     }),
   )
@@ -127,12 +126,13 @@ it.skip('should import a DNS name with an address, using a custom resolver', asy
 
 it.skip('should throw error if resolver is specified when claiming without an address', async () => {
   await expect(
+    // @ts-expect-error intentionally passing resolverAddress without address to test runtime validation
     importDnsName(walletClient, {
       name,
       resolverAddress: address,
       dnsImportData: await getDnsImportData(publicClient, { name }),
       account: accounts[0],
-    } as any),
+    }),
   ).rejects.toThrowErrorMatchingInlineSnapshot(`
     [AdditionalParameterSpecifiedError: Additional parameter specified: resolverAddress
 

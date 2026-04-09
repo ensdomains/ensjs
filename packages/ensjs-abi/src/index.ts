@@ -1,0 +1,12 @@
+export * from './compositeResolver.js'
+export * from './dedicatedResolver.js'
+export * from './dnsRegistrar.js'
+export * from './dnssecImpl.js'
+export * from './erc165.js'
+export * from './multicall.js'
+export * from './registry.js'
+export * from './reverseRegistrar.js'
+export * from './universalResolver.js'
+
+export * as v1 from './v1/index.js'
+export * as v2 from './v2/index.js'
