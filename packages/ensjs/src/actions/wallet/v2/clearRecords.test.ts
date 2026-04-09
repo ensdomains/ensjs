@@ -1,7 +1,7 @@
-import { encodeFunctionData, namehash } from 'viem'
-import { expect, it } from 'vitest'
 import { publicResolverTextSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import { subregistryInitializeSnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
+import { encodeFunctionData, namehash } from 'viem'
+import { expect, it } from 'vitest'
 import {
   deploymentAddresses,
   publicClient,

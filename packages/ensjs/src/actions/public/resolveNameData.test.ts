@@ -1,3 +1,12 @@
+import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
+import {
+  universalResolverResolveSnippet,
+  universalResolverResolveWithGatewaysSnippet,
+} from '@ensdomains/ensjs-abi/universalResolver'
+import {
+  publicResolverSingleAddrSnippet,
+  publicResolverTextSnippet,
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   BaseError,
   type Client,
@@ -14,17 +23,8 @@ import {
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
-import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
-import {
-  publicResolverSingleAddrSnippet,
-  publicResolverTextSnippet,
-} from '@ensdomains/ensjs-abi/v1/publicResolver'
-import {
-  universalResolverResolveSnippet,
-  universalResolverResolveWithGatewaysSnippet,
-} from '@ensdomains/ensjs-abi/universalResolver'
-import { addEnsL1Contracts } from '../../index.js'
 import type { ChainWithContracts } from '../../clients/shared.js'
+import { addEnsL1Contracts } from '../../index.js'
 import { getAddressParameters, getTextParameters } from '../../utils/index.js'
 import { bytesToPacket } from '../../utils/name/hexEncodedName.js'
 import { resolveNameData } from './resolveNameData.js'

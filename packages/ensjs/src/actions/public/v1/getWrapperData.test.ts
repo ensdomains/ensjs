@@ -14,8 +14,8 @@ describe('getWrapperData', () => {
       name: 'test.wrapped-with-subnames.eth',
     })
     assert.isNotNull(result)
-    expect(result!.fuses.child.CAN_DO_EVERYTHING).toBe(true)
-    expect(result!.fuses.value).toBe(0)
+    expect(result?.fuses.child.CAN_DO_EVERYTHING).toBe(true)
+    expect(result?.fuses.value).toBe(0)
   })
   // it('should return with other correct fuses', async () => {
   //   const tx = await ensInstance.setFuses('wrapped.eth', {
@@ -46,13 +46,13 @@ describe('getWrapperData', () => {
     })
     expect(result).toBeTruthy()
     assert.isNotNull(result)
-    expect(result!.expiry).toBeTypeOf('bigint')
+    expect(result?.expiry).toBeTypeOf('bigint')
   })
   it('should return correct expiry for large expiry', async () => {
     const result = await getWrapperData(publicClient, {
       name: 'wrapped-big-duration.eth',
     })
     assert.isNotNull(result)
-    expect(result!.expiry).toBeTypeOf('bigint')
+    expect(result?.expiry).toBeTypeOf('bigint')
   })
 })

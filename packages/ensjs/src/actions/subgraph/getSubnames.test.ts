@@ -55,7 +55,7 @@ it('allows including expired names - .eth 2ld', async () => {
   })
   if (!result.length) throw new Error('No names found')
   const expiredNames = result.filter(
-    (name) => name.expiryDate && name.expiryDate!.value < Date.now(),
+    (name) => name.expiryDate && name.expiryDate?.value < Date.now(),
   )
   expect(expiredNames.length).toBeGreaterThan(0)
 })
@@ -173,45 +173,46 @@ describe.each([
       return bCreatedAt - aCreatedAt
     },
   },
-])('filters by $orderBy $orderDirection', ({
-  orderBy,
-  orderDirection,
-  compareFn,
-}) => {
-  it('is consistent between full result and paginated results', async () => {
-    const fullResult = await getSubnames(publicClient, {
-      name: 'eth',
-      orderBy: orderBy as any,
-      orderDirection: orderDirection as any,
-      pageSize: 1000,
-    })
-    if (!fullResult.length) throw new Error('No names found')
-    const paginatedResults = []
-    let lastResult: Name[] = []
-    do {
-      const result = await getSubnames(publicClient, {
+])(
+  'filters by $orderBy $orderDirection',
+  ({ orderBy, orderDirection, compareFn }) => {
+    it('is consistent between full result and paginated results', async () => {
+      const fullResult = await getSubnames(publicClient, {
         name: 'eth',
         orderBy: orderBy as any,
         orderDirection: orderDirection as any,
-        previousPage: lastResult,
-        pageSize: 5,
+        pageSize: 1000,
       })
-      paginatedResults.push(...result)
-      lastResult = result
-    } while (lastResult.length)
+      if (!fullResult.length) throw new Error('No names found')
+      const paginatedResults = []
+      let lastResult: Name[] = []
+      do {
+        const result = await getSubnames(publicClient, {
+          name: 'eth',
+          orderBy: orderBy as any,
+          orderDirection: orderDirection as any,
+          previousPage: lastResult,
+          pageSize: 5,
+        })
+        paginatedResults.push(...result)
+        lastResult = result
+      } while (lastResult.length)
 
-    expect(paginatedResults.length).toBe(fullResult.length)
-    expect(JSON.stringify(paginatedResults)).toEqual(JSON.stringify(fullResult))
-  })
-  it('is sorted correctly', async () => {
-    const fullResult = await getSubnames(publicClient, {
-      name: 'eth',
-      orderBy: orderBy as any,
-      orderDirection: orderDirection as any,
-      pageSize: 1000,
+      expect(paginatedResults.length).toBe(fullResult.length)
+      expect(JSON.stringify(paginatedResults)).toEqual(
+        JSON.stringify(fullResult),
+      )
     })
-    if (!fullResult.length) throw new Error('No names found')
-    const sortedResult = [...fullResult].sort(compareFn)
-    expect(fullResult).toStrictEqual(sortedResult)
-  })
-})
+    it('is sorted correctly', async () => {
+      const fullResult = await getSubnames(publicClient, {
+        name: 'eth',
+        orderBy: orderBy as any,
+        orderDirection: orderDirection as any,
+        pageSize: 1000,
+      })
+      if (!fullResult.length) throw new Error('No names found')
+      const sortedResult = [...fullResult].sort(compareFn)
+      expect(fullResult).toStrictEqual(sortedResult)
+    })
+  },
+)

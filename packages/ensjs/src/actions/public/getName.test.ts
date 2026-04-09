@@ -1,3 +1,4 @@
+import { universalResolverReverseSnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import {
   type Address,
   BaseError,
@@ -22,7 +23,6 @@ import {
   vi,
 } from 'vitest'
 import type { ChainWithContracts } from '../../clients/shared.js'
-import { universalResolverReverseSnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,

@@ -1,12 +1,12 @@
-import type { Address, Hex } from 'viem'
-import { namehash } from 'viem/ens'
-import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
-import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
+import { registryOwnerSnippet } from '@ensdomains/ensjs-abi/registry'
 import {
   nameWrapperGetDataSnippet,
   nameWrapperOwnerOfSnippet,
 } from '@ensdomains/ensjs-abi/v1/nameWrapper'
-import { registryOwnerSnippet } from '@ensdomains/ensjs-abi/registry'
+import type { Address, Hex } from 'viem'
+import { namehash } from 'viem/ens'
+import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
+import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
   publicClient,
   testClient,
