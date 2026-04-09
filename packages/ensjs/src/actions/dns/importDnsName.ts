@@ -5,23 +5,27 @@ import {
 import {
   type Account,
   type Address,
-  type Client,
+  type Chain,
   encodeFunctionData,
-  getChainContractAddress,
   type Hash,
   type SendTransactionParameters,
-  type Transport,
   toHex,
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import { packetToBytes } from 'viem/ens'
-import type { ChainWithEns } from '../../clients/l1.js'
+import type {
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
+import { getChainContractAddress } from '../../clients/shared.js'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
   Prettify,
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import type { GetDnsImportDataReturnType } from './getDnsImportData.js'
 
 type BaseImportDnsNameDataParameters = {
@@ -50,10 +54,12 @@ export type ImportDnsNameDataParameters = BaseImportDnsNameDataParameters &
 
 export type ImportDnsNameDataReturnType = SimpleTransactionRequest
 
+type ImportDnsNameContracts = 'ensDnsRegistrar' | 'ensPublicResolver'
+
 export type ImportDnsNameParameters<
-  TChain extends ChainWithEns,
+  TChain extends Chain,
   TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined,
+  TChainOverride extends ChainWithContracts<ImportDnsNameContracts>,
 > = Prettify<
   ImportDnsNameDataParameters &
     WriteTransactionParameters<TChain, TAccount, TChainOverride>
@@ -63,11 +69,8 @@ export type ImportDnsNameReturnType = Hash
 
 export type ImportDnsNameErrorType = AdditionalParameterSpecifiedError | Error
 
-export const makeFunctionData = <
-  TChain extends ChainWithEns,
-  TAccount extends Account | undefined,
->(
-  wallet: Client<Transport, TChain, TAccount>,
+export const makeFunctionData = (
+  chain: ChainWithContracts<ImportDnsNameContracts>,
   {
     name,
     dnsImportData,
@@ -77,7 +80,7 @@ export const makeFunctionData = <
 ): ImportDnsNameDataReturnType => {
   const hexEncodedName = toHex(packetToBytes(name))
   const dnsRegistrarAddress = getChainContractAddress({
-    chain: wallet.chain,
+    chain,
     contract: 'ensDnsRegistrar',
   })
 
@@ -102,7 +105,7 @@ export const makeFunctionData = <
   const resolverAddress_ =
     resolverAddress ||
     getChainContractAddress({
-      chain: wallet.chain,
+      chain,
       contract: 'ensPublicResolver',
     })
 
@@ -146,11 +149,11 @@ export const makeFunctionData = <
  * })
  */
 export async function importDnsName<
-  TChain extends ChainWithEns,
+  TChain extends Chain,
   TAccount extends Account | undefined,
-  TChainOverride extends ChainWithEns | undefined = ChainWithEns,
+  TChainOverride extends ChainWithContracts<ImportDnsNameContracts>,
 >(
-  wallet: Client<Transport, TChain, TAccount>,
+  wallet: RequireClientContracts<TChain, ImportDnsNameContracts, TAccount>,
   {
     name,
     address,
@@ -159,17 +162,22 @@ export async function importDnsName<
     ...txArgs
   }: ImportDnsNameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<ImportDnsNameReturnType> {
-  const data = makeFunctionData(wallet, {
+  ASSERT_NO_TYPE_ERROR(wallet)
+  const data = makeFunctionData(wallet.chain, {
     name,
     address,
     dnsImportData,
     resolverAddress,
   } as ImportDnsNameDataParameters)
-  const writeArgs = {
+  const sendTransactionAction = getAction(
+    wallet,
+    sendTransaction,
+    'sendTransaction',
+  )
+  return sendTransactionAction({
     ...data,
     ...txArgs,
-  } as SendTransactionParameters<TChain, TAccount, TChainOverride>
-  return sendTransaction(wallet, writeArgs)
+  } as SendTransactionParameters)
 }
 
 importDnsName.makeFunctionData = makeFunctionData
