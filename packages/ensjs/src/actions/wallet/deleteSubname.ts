@@ -1,4 +1,12 @@
 import {
+  registrySetRecordSnippet,
+  registrySetSubnodeRecordSnippet,
+} from '@ensdomains/ensjs-abi/registry'
+import {
+  nameWrapperSetRecordSnippet,
+  nameWrapperSetSubnodeRecordSnippet,
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
+import {
   type Account,
   type Chain,
   type GetChainContractAddressErrorType,
@@ -16,14 +24,6 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  nameWrapperSetRecordSnippet,
-  nameWrapperSetSubnodeRecordSnippet,
-} from '@ensdomains/ensjs-abi/v1/nameWrapper'
-import {
-  registrySetRecordSnippet,
-  registrySetSubnodeRecordSnippet,
-} from '@ensdomains/ensjs-abi/registry'
 import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,

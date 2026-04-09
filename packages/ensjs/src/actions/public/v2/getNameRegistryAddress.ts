@@ -1,8 +1,8 @@
+import { registryGetSubregistrySnippet } from '@ensdomains/ensjs-abi/registry'
 import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { registryGetSubregistrySnippet } from '@ensdomains/ensjs-abi/registry'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetNameRegistryAddressParameters = {

@@ -1,3 +1,4 @@
+import { ethRegistrarRegisterSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import {
   type Account,
   type Chain,
@@ -14,7 +15,6 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/shared.js'
-import { ethRegistrarRegisterSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'

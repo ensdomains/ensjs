@@ -1,8 +1,8 @@
-import type { EncodeFunctionDataParameters, Hex } from 'viem'
 import {
   publicResolverClearRecordsSnippet,
   publicResolverClearRecordsV2Snippet,
 } from '@ensdomains/ensjs-abi/v1/publicResolver'
+import type { EncodeFunctionDataParameters, Hex } from 'viem'
 
 // ================================
 // Clear records parameters

@@ -1,3 +1,4 @@
+import { permissionedResolverClearRecordsSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Account,
   Address,
@@ -11,7 +12,6 @@ import type {
 import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { permissionedResolverClearRecordsSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Prettify,
   WriteTransactionParameters,

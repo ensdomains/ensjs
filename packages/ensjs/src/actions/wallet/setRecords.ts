@@ -1,3 +1,5 @@
+import { dedicatedResolverMulticallWithNodeCheckSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { publicResolverMulticallSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   type Account,
   type Address,
@@ -15,8 +17,6 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { dedicatedResolverMulticallWithNodeCheckSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
-import { publicResolverMulticallSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import { NoRecordsSpecifiedError } from '../../errors/public.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { clientWithOverrides } from '../../utils/clientWithOverrides.js'

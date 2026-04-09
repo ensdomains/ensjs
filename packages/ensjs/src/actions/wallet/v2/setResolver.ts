@@ -1,3 +1,4 @@
+import { permissionedRegistrySetResolverSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import type {
   Account,
   Address,
@@ -12,7 +13,6 @@ import { hexToBigInt } from 'viem'
 import { writeContract } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
 import { getAction, toHex } from 'viem/utils'
-import { permissionedRegistrySetResolverSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import type {
   Prettify,
   WriteTransactionParameters,

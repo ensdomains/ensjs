@@ -1,6 +1,6 @@
-import type { EncodeFunctionDataParameters, Hex } from 'viem'
 import { dedicatedResolverSetTextSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
 import { publicResolverSetTextSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
+import type { EncodeFunctionDataParameters, Hex } from 'viem'
 
 // ================================
 // Set text parameters

@@ -1,3 +1,4 @@
+import { userRegistryRegisterSnippet } from '@ensdomains/ensjs-abi/v2/userRegistry'
 import type {
   Account,
   Address,
@@ -10,7 +11,6 @@ import type {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { userRegistryRegisterSnippet } from '@ensdomains/ensjs-abi/v2/userRegistry'
 import type {
   Prettify,
   WriteTransactionParameters,

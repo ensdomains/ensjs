@@ -1,11 +1,11 @@
-import type { Address, Client, ReadContractErrorType } from 'viem'
-import { readContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
 import { eacHasRolesSnippet } from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
 import {
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
+import type { Address, Client, ReadContractErrorType } from 'viem'
+import { readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {

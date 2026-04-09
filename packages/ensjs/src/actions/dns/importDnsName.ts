@@ -1,4 +1,8 @@
 import {
+  dnsRegistrarProveAndClaimSnippet,
+  dnsRegistrarProveAndClaimWithResolverSnippet,
+} from '@ensdomains/ensjs-abi/dnsRegistrar'
+import {
   type Account,
   type Address,
   type Client,
@@ -12,10 +16,6 @@ import {
 import { sendTransaction } from 'viem/actions'
 import { packetToBytes } from 'viem/ens'
 import type { ChainWithEns } from '../../clients/l1.js'
-import {
-  dnsRegistrarProveAndClaimSnippet,
-  dnsRegistrarProveAndClaimWithResolverSnippet,
-} from '@ensdomains/ensjs-abi/dnsRegistrar'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
   Prettify,

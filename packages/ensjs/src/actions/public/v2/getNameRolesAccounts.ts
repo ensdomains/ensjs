@@ -1,4 +1,8 @@
 import {
+  eacRolesEvents,
+  permissionedRegistryGetStateSnippet,
+} from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
+import {
   type Client,
   type GetLogsErrorType,
   type GetLogsParameters,
@@ -7,10 +11,6 @@ import {
 import type { Address } from 'viem/accounts'
 import { getLogs, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import {
-  eacRolesEvents,
-  permissionedRegistryGetStateSnippet,
-} from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId, registryRoles } from '../../../utils/v2/index.js'
 import {

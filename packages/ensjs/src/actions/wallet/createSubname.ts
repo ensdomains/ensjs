@@ -1,3 +1,5 @@
+import { registrySetSubnodeRecordSnippet } from '@ensdomains/ensjs-abi/registry'
+import { nameWrapperSetSubnodeRecordSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Account,
   type Address,
@@ -17,8 +19,6 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { nameWrapperSetSubnodeRecordSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
-import { registrySetSubnodeRecordSnippet } from '@ensdomains/ensjs-abi/registry'
 import { BaseError } from '../../errors/base.js'
 import {
   InvalidContractTypeError,

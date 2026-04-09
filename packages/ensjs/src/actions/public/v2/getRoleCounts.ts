@@ -1,8 +1,8 @@
+import { permissionedRegistryRoleCountSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { type Client, labelhash } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction, hexToBigInt } from 'viem/utils'
-import { permissionedRegistryRoleCountSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import {
   type DecodeRoleCountsReturnType,

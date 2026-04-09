@@ -1,3 +1,4 @@
+import { permissionedRegistryGetExpirySnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import {
   type Address,
   type Chain,
@@ -9,7 +10,6 @@ import { readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import { permissionedRegistryGetExpirySnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { getNameType } from '../../../utils/name/getNameType.js'

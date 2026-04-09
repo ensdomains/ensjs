@@ -1,4 +1,8 @@
 import {
+  publicResolverMultiAddrSnippet,
+  publicResolverSingleAddrSnippet,
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
+import {
   type Address,
   type DecodeFunctionResultErrorType,
   decodeFunctionResult,
@@ -11,10 +15,6 @@ import {
   trim,
 } from 'viem'
 import { type NormalizeErrorType, normalize } from 'viem/ens'
-import {
-  publicResolverMultiAddrSnippet,
-  publicResolverSingleAddrSnippet,
-} from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAddr, Prettify } from '../../types/index.js'
 import {

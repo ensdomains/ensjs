@@ -1,3 +1,4 @@
+import { ethRegistrarAvailableSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type {
   Chain,
   GetChainContractAddressErrorType,
@@ -7,7 +8,6 @@ import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { ethRegistrarAvailableSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { ErrorType } from '../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
