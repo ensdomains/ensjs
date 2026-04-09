@@ -11,7 +11,7 @@ import {
   type TrimErrorType,
   trim,
 } from 'viem'
-import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'
+import { publicResolverAbiSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAbi, Prettify } from '../../types/index.js'
 import { inflateFromHex } from '../deflate.js'

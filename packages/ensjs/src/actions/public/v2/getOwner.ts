@@ -1,7 +1,7 @@
 import type { Address, Client } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { permissionedRegistryGetStateSnippet } from '../../../contracts/permissionedRegistry.js'
+import { permissionedRegistryGetStateSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 

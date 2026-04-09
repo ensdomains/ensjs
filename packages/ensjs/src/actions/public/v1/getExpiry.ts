@@ -14,9 +14,9 @@ import { getChainContractAddress } from '../../../clients/shared.js'
 import {
   baseRegistrarGracePeriodSnippet,
   baseRegistrarNameExpiresSnippet,
-} from '../../../contracts/baseRegistrar.js'
-import { multicallGetCurrentBlockTimestampSnippet } from '../../../contracts/multicall.js'
-import { nameWrapperGetDataSnippet } from '../../../contracts/nameWrapper.js'
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
+import { multicallGetCurrentBlockTimestampSnippet } from '@ensdomains/ensjs-abi/multicall'
+import { nameWrapperGetDataSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import type { Prettify } from '../../../types/index.js'
 import type { ExcludeTE } from '../../../types/internal.js'

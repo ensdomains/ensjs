@@ -15,7 +15,7 @@ import { getAction } from 'viem/utils'
 import {
   subregistryInitializeSnippet,
   verifiableFactoryDeployProxySnippet,
-} from '../../../contracts/verifiableFactory.js'
+} from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import type {
   Prettify,
   WriteTransactionParameters,

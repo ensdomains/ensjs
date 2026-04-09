@@ -17,11 +17,11 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/shared.js'
-import { multicallSnippet } from '../../contracts/multicall.js'
+import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
 import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
-} from '../../contracts/universalResolver.js'
+} from '@ensdomains/ensjs-abi/universalResolver'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
 import {

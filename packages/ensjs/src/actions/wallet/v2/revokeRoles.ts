@@ -13,7 +13,7 @@ import { getAction } from 'viem/utils'
 import {
   eacRevokeRolesSnippet,
   eacRevokeRootRolesSnippet,
-} from '../../../contracts/enhancedAccessControl.js'
+} from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
 import type {
   Prettify,
   WriteTransactionParameters,

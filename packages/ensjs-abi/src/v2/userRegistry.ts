@@ -1,7 +1,3 @@
-// ================================
-// Standard ERC Events
-// ================================
-
 export const approvalEventSnippet = [
   {
     inputs: [
@@ -141,10 +137,6 @@ export const uriEventSnippet = [
     anonymous: false,
   },
 ] as const
-
-// ================================
-// Registry-Specific Events
-// ================================
 
 export const nameBurnedEventSnippet = [
   {
@@ -291,10 +283,6 @@ export const tokenRegeneratedEventSnippet = [
   },
 ] as const
 
-// ================================
-// Functions
-// ================================
-
 export const userRegistrySetSubregistrySnippet = [
   {
     inputs: [
@@ -355,10 +343,6 @@ export const userRegistryRegisterSnippet = [
     type: 'function',
   },
 ] as const
-
-// ================================
-// Combined Snippets
-// ================================
 
 export const userRegistryAllEventsSnippet = [
   ...approvalEventSnippet,

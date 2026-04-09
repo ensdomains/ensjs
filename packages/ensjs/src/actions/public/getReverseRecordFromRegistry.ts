@@ -12,8 +12,8 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/shared.js'
-import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
-import { registryResolverSnippet } from '../../contracts/registry.js'
+import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
 import type { ErrorType } from '../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 

@@ -17,7 +17,7 @@ import { getChainContractAddress } from '../../clients/shared.js'
 import {
   nameWrapperUnwrapEth2ldSnippet,
   nameWrapperUnwrapSnippet,
-} from '../../contracts/nameWrapper.js'
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   AdditionalParameterSpecifiedError,
   RequiredParameterNotSpecifiedError,

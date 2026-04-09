@@ -17,7 +17,7 @@ import { getChainContractAddress } from '../../clients/shared.js'
 import {
   reverseRegistrarSetNameForAddrSnippet,
   reverseRegistrarSetNameSnippet,
-} from '../../contracts/reverseRegistrar.js'
+} from '@ensdomains/ensjs-abi/reverseRegistrar'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import {
   ASSERT_NO_TYPE_ERROR,

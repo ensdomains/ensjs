@@ -13,7 +13,7 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { ethRegistrarControllerRenewSnippet } from '../../contracts/ethRegistrarController.js'
+import { ethRegistrarControllerRenewSnippet } from '@ensdomains/ensjs-abi/v1/ethRegistrarController'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'

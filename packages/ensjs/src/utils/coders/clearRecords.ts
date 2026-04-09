@@ -2,7 +2,7 @@ import type { EncodeFunctionDataParameters, Hex } from 'viem'
 import {
   publicResolverClearRecordsSnippet,
   publicResolverClearRecordsV2Snippet,
-} from '../../contracts/publicResolver.js'
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
 
 // ================================
 // Clear records parameters

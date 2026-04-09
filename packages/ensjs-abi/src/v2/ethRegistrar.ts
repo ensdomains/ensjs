@@ -1,4 +1,22 @@
-export const l2EthRegistrarErrors = [
+export const ethRegistrarNameRegisteredEventSnippet = {
+  type: 'event',
+  name: 'NameRegistered',
+  inputs: [
+    { name: 'tokenId', type: 'uint256', indexed: true },
+    { name: 'label', type: 'string', indexed: false },
+    { name: 'owner', type: 'address', indexed: false },
+    { name: 'subregistry', type: 'address', indexed: true },
+    { name: 'resolver', type: 'address', indexed: true },
+    { name: 'duration', type: 'uint64', indexed: false },
+    { name: 'paymentToken', type: 'address', indexed: false },
+    { name: 'referrer', type: 'bytes32', indexed: true },
+    { name: 'base', type: 'uint256', indexed: false },
+    { name: 'premium', type: 'uint256', indexed: false },
+  ],
+  anonymous: false,
+} as const
+
+export const ethRegistrarErrors = [
   {
     inputs: [
       {
@@ -90,8 +108,8 @@ export const l2EthRegistrarErrors = [
   },
 ] as const
 
-export const l2EthRegistrarRentPriceSnippet = [
-  ...l2EthRegistrarErrors,
+export const ethRegistrarRentPriceSnippet = [
+  ...ethRegistrarErrors,
   {
     inputs: [
       {
@@ -127,8 +145,8 @@ export const l2EthRegistrarRentPriceSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarCommitSnippet = [
-  ...l2EthRegistrarErrors,
+export const ethRegistrarCommitSnippet = [
+  ...ethRegistrarErrors,
   {
     inputs: [
       {
@@ -143,8 +161,8 @@ export const l2EthRegistrarCommitSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarMakeCommitmentSnippet = [
-  ...l2EthRegistrarErrors,
+export const ethRegistrarMakeCommitmentSnippet = [
+  ...ethRegistrarErrors,
   {
     inputs: [
       { name: 'label', type: 'string' },
@@ -162,8 +180,8 @@ export const l2EthRegistrarMakeCommitmentSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarCommitmentsSnippet = [
-  ...l2EthRegistrarErrors,
+export const ethRegistrarCommitmentsSnippet = [
+  ...ethRegistrarErrors,
   {
     inputs: [
       {
@@ -183,8 +201,8 @@ export const l2EthRegistrarCommitmentsSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarAvailableSnippet = [
-  ...l2EthRegistrarErrors,
+export const ethRegistrarAvailableSnippet = [
+  ...ethRegistrarErrors,
   {
     inputs: [
       {
@@ -204,7 +222,7 @@ export const l2EthRegistrarAvailableSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarIsAvailableSnippet = [
+export const ethRegistrarIsAvailableSnippet = [
   {
     name: 'isAvailable',
     inputs: [{ name: 'name', type: 'string' }],
@@ -214,8 +232,8 @@ export const l2EthRegistrarIsAvailableSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarRegisterSnippet = [
-  ...l2EthRegistrarErrors,
+export const ethRegistrarRegisterSnippet = [
+  ...ethRegistrarErrors,
   {
     type: 'function',
     name: 'register',
@@ -234,7 +252,7 @@ export const l2EthRegistrarRegisterSnippet = [
   },
 ] as const
 
-export const l2EthRegistrarRenewErrors = [
+export const ethRegistrarRenewErrors = [
   {
     inputs: [
       {
@@ -251,8 +269,8 @@ export const l2EthRegistrarRenewErrors = [
   },
 ] as const
 
-export const l2EthRegistrarRenewSnippet = [
-  ...l2EthRegistrarRenewErrors,
+export const ethRegistrarRenewSnippet = [
+  ...ethRegistrarRenewErrors,
   {
     inputs: [
       {

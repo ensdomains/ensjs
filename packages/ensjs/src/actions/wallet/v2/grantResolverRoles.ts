@@ -18,7 +18,7 @@ import {
   permissionedResolverGrantNameRolesSnippet,
   permissionedResolverGrantRootRolesSnippet,
   permissionedResolverGrantTextRolesSnippet,
-} from '../../../contracts/permissionedRegistry.js'
+} from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Prettify,
   WriteTransactionParameters,

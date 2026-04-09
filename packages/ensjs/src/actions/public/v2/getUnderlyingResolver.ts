@@ -3,7 +3,7 @@ import type { Address } from 'viem/accounts'
 import { readContract } from 'viem/actions'
 import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
 import { bytesToHex, getAction } from 'viem/utils'
-import { compositeResolverGetResolver } from '../../../contracts/compositeResolver.js'
+import { compositeResolverGetResolver } from '@ensdomains/ensjs-abi/compositeResolver'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetUnderlyingResolverParameters = {

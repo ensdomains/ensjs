@@ -10,7 +10,7 @@ import { getAction } from 'viem/utils'
 import {
   eacRolesEvents,
   permissionedRegistryGetStateSnippet,
-} from '../../../contracts/permissionedRegistry.js'
+} from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { labelToCanonicalId, registryRoles } from '../../../utils/v2/index.js'
 import {

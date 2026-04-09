@@ -10,7 +10,7 @@ import type {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { userRegistrySetSubregistrySnippet } from '../../../contracts/userRegistry.js'
+import { userRegistrySetSubregistrySnippet } from '@ensdomains/ensjs-abi/v2/userRegistry'
 import type {
   Prettify,
   WriteTransactionParameters,

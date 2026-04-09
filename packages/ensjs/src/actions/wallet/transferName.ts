@@ -21,15 +21,15 @@ import { getChainContractAddress } from '../../clients/shared.js'
 import {
   baseRegistrarReclaimSnippet,
   baseRegistrarSafeTransferFromSnippet,
-} from '../../contracts/baseRegistrar.js'
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
 import {
   nameWrapperSafeTransferFromSnippet,
   nameWrapperSetSubnodeOwnerSnippet,
-} from '../../contracts/nameWrapper.js'
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   registrySetOwnerSnippet,
   registrySetSubnodeOwnerSnippet,
-} from '../../contracts/registry.js'
+} from '@ensdomains/ensjs-abi/registry'
 import {
   AdditionalParameterSpecifiedError,
   InvalidContractTypeError,

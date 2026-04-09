@@ -19,11 +19,11 @@ import { getChainContractAddress } from '../../clients/shared.js'
 import {
   nameWrapperSetRecordSnippet,
   nameWrapperSetSubnodeRecordSnippet,
-} from '../../contracts/nameWrapper.js'
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   registrySetRecordSnippet,
   registrySetSubnodeRecordSnippet,
-} from '../../contracts/registry.js'
+} from '@ensdomains/ensjs-abi/registry'
 import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,

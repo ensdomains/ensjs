@@ -2,7 +2,7 @@ import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction, padHex } from 'viem/utils'
-import { dedicatedResolverNameSnippet } from '../../../contracts/dedicatedResolver.js'
+import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetResolverNameParameters = {

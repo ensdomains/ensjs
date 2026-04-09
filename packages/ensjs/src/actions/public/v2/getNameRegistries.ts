@@ -13,7 +13,7 @@ import {
 } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import { universalResolverFindRegistriesSnippet } from '../../../contracts/universalResolver.js'
+import { universalResolverFindRegistriesSnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetNameRegistriesParameters = {

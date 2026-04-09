@@ -7,8 +7,8 @@ import {
   type ReadContractParameters,
 } from 'viem'
 import type { RequireChainContracts } from '../clients/l1.js'
-import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
-import { registryOwnerSnippet } from '../contracts/registry.js'
+import { nameWrapperOwnerOfSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
+import { registryOwnerSnippet } from '@ensdomains/ensjs-abi/registry'
 import { InvalidContractTypeError } from '../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../types/internal.js'
 

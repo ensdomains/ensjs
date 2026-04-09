@@ -14,7 +14,7 @@ import { type NormalizeErrorType, normalize } from 'viem/ens'
 import {
   publicResolverMultiAddrSnippet,
   publicResolverSingleAddrSnippet,
-} from '../../contracts/publicResolver.js'
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAddr, Prettify } from '../../types/index.js'
 import {

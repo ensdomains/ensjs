@@ -5,8 +5,8 @@ import {
   type EncodeFunctionDataParameters,
   type Hex,
 } from 'viem'
-import { dedicatedResolverSetAddrSnippet } from '../../contracts/dedicatedResolver.js'
-import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
+import { dedicatedResolverSetAddrSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { publicResolverSetAddrSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { ErrorType } from '../../errors/utils.js'
 import {
   type GetCoderFromCoinErrorType,

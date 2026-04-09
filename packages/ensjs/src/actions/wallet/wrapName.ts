@@ -20,8 +20,8 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { baseRegistrarSafeTransferFromWithDataSnippet } from '../../contracts/baseRegistrar.js'
-import { nameWrapperWrapSnippet } from '../../contracts/nameWrapper.js'
+import { baseRegistrarSafeTransferFromWithDataSnippet } from '@ensdomains/ensjs-abi/v1/baseRegistrar'
+import { nameWrapperWrapSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
   ErrorType,

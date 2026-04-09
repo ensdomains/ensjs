@@ -15,7 +15,7 @@ import { getChainContractAddress } from '../../clients/shared.js'
 import {
   universalResolverReverseSnippet,
   universalResolverReverseWithGatewaysSnippet,
-} from '../../contracts/universalResolver.js'
+} from '@ensdomains/ensjs-abi/universalResolver'
 import type { ErrorType } from '../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'

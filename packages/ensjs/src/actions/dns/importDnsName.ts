@@ -15,7 +15,7 @@ import type { ChainWithEns } from '../../clients/l1.js'
 import {
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,
-} from '../../contracts/dnsRegistrar.js'
+} from '@ensdomains/ensjs-abi/dnsRegistrar'
 import { AdditionalParameterSpecifiedError } from '../../errors/general.js'
 import type {
   Prettify,

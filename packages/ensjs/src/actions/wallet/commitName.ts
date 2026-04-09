@@ -13,7 +13,7 @@ import type {
   RequireClientContracts,
 } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { l2EthRegistrarCommitSnippet } from '../../contracts/l2EthRegistrar.js'
+import { ethRegistrarCommitSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -71,14 +71,12 @@ export const commitNameWriteParameters = <
       chain: client.chain,
       contract: 'ethRegistrar',
     }),
-    abi: l2EthRegistrarCommitSnippet,
+    abi: ethRegistrarCommitSnippet,
     functionName: 'commit',
     args: [makeL2Commitment(args)],
     chain: client.chain,
     account: client.account,
-  } as const satisfies WriteContractParameters<
-    typeof l2EthRegistrarCommitSnippet
-  >
+  } as const satisfies WriteContractParameters<typeof ethRegistrarCommitSnippet>
 }
 
 // ================================

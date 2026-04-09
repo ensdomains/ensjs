@@ -14,7 +14,7 @@ import { getAction } from 'viem/utils'
 import {
   permissionedResolverRevokeRolesSnippet,
   permissionedResolverRevokeRootRolesSnippet,
-} from '../../../contracts/permissionedRegistry.js'
+} from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Prettify,
   WriteTransactionParameters,
