@@ -3,11 +3,15 @@ import {
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
-import type { Address, Client, ReadContractErrorType } from 'viem'
+import {
+  type Address,
+  type Client,
+  labelhash,
+  type ReadContractErrorType,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {
   encodeRoleBitmap,
   type Role,
@@ -118,7 +122,7 @@ export async function hasRoles(
   // Registry mode: registryAddress + label
   if ('registryAddress' in params) {
     const { registryAddress, label, roles, account } = params
-    const resource = labelToCanonicalId(label)
+    const resource = BigInt(labelhash(label))
     const rolesBitmap = encodeRoleBitmap(roles)
 
     return readContractAction({

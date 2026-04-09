@@ -4,9 +4,8 @@ import {
   type Chain,
   type GetBlockErrorType,
   type GetLogsErrorType,
-  keccak256,
+  labelhash,
   type ReadContractErrorType,
-  stringToBytes,
 } from 'viem'
 import { getBlock, getLogs, readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
@@ -70,7 +69,7 @@ export async function getRegistrationDate<chain extends Chain>(
     address: registry,
     abi: permissionedRegistryGetTokenIdSnippet,
     functionName: 'getTokenId',
-    args: [BigInt(keccak256(stringToBytes(label)))],
+    args: [BigInt(labelhash(label))],
   })
 
   const logs = await getLogsAction({

@@ -9,10 +9,9 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { hexToBigInt } from 'viem'
+import { labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
-import { packetToBytes } from 'viem/ens'
-import { getAction, toHex } from 'viem/utils'
+import { getAction } from 'viem/utils'
 import type {
   Prettify,
   WriteTransactionParameters,
@@ -28,8 +27,8 @@ import {
 // ================================
 
 export type SetResolverWriteParametersParameters = {
-  /** Name to set resolver for */
-  name: string
+  /** Label to set resolver for */
+  label: string
   /** The v2 registry address */
   registryAddress: Address
   /** Resolver address to set */
@@ -46,14 +45,14 @@ export const setResolverWriteParameters = <
 >(
   client: Client<Transport, chain, account>,
   {
-    name,
+    label,
     registryAddress,
     resolverAddress,
   }: SetResolverWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const tokenId = hexToBigInt(toHex(packetToBytes(name)))
+  const tokenId = BigInt(labelhash(label))
 
   return {
     address: registryAddress,
@@ -102,7 +101,7 @@ export type SetResolverErrorType =
  *   transport: custom(window.ethereum),
  * })
  * const hash = await setResolver(wallet, {
- *   name: 'myname.eth',
+ *   label: 'myname',
  *   registryAddress: '0x1234...', // v2 registry address
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
@@ -115,7 +114,7 @@ export async function setResolver<
 >(
   client: Client<Transport, chain, account>,
   {
-    name,
+    label,
     registryAddress,
     resolverAddress,
     ...txArgs
@@ -126,7 +125,7 @@ export async function setResolver<
   const writeParameters = setResolverWriteParameters(
     clientWithOverrides(client, txArgs),
     {
-      name,
+      label,
       registryAddress,
       resolverAddress,
     },
