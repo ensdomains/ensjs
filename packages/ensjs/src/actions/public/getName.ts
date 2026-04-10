@@ -1,4 +1,8 @@
 import { evmChainIdToCoinType } from '@ensdomains/address-encoder/utils'
+import {
+  universalResolverReverseSnippet,
+  universalResolverReverseWithGatewaysSnippet,
+} from '@ensdomains/ensjs-abi/universalResolver'
 import type {
   Address,
   Chain,
@@ -10,12 +14,8 @@ import type {
 import { readContract } from 'viem/actions'
 import type { PacketToBytesErrorType } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import type { RequireClientL1Contracts } from '../../clients/l1.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  universalResolverReverseSnippet,
-  universalResolverReverseWithGatewaysSnippet,
-} from '../../contracts/universalResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
@@ -93,7 +93,7 @@ export type GetNameErrorType =
  * // { name: 'nick.eth', match: true, reverseResolverAddress: '0xa2c122be93b0074270ebee7f6b7292c7deb45047', resolverAddress: '0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41' }
  */
 export async function getName<chain extends Chain>(
-  client: RequireClientL1Contracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   {
     address,
     allowUnnormalized,

@@ -1,7 +1,7 @@
+import { registrySetApprovalForAllSnippet } from '@ensdomains/ensjs-abi/registry'
 import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { registrySetApprovalForAllSnippet } from '../../contracts/registry.js'
 import {
   publicClient,
   testClient,

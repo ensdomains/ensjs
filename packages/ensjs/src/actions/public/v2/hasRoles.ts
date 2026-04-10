@@ -1,14 +1,17 @@
-import type { Address, Client, Hex, ReadContractErrorType } from 'viem'
-import { encodePacked, keccak256 } from 'viem'
-import { readContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
-import { eacHasRolesSnippet } from '../../../contracts/enhancedAccessControl.js'
+import { eacHasRolesSnippet } from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
 import {
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
-} from '../../../contracts/permissionedRegistry.js'
+} from '@ensdomains/ensjs-abi/v2/permissionedResolver'
+import {
+  type Address,
+  type Client,
+  labelhash,
+  type ReadContractErrorType,
+} from 'viem'
+import { readContract } from 'viem/actions'
+import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {
   encodeRoleBitmap,
   type Role,
@@ -119,7 +122,7 @@ export async function hasRoles(
   // Registry mode: registryAddress + label
   if ('registryAddress' in params) {
     const { registryAddress, label, roles, account } = params
-    const resource = labelToCanonicalId(label)
+    const resource = BigInt(labelhash(label))
     const rolesBitmap = encodeRoleBitmap(roles)
 
     return readContractAction({
@@ -155,14 +158,4 @@ export async function hasRoles(
   })
 }
 
-/**
- * Compute a PermissionedResolver EAC resource ID from a node and part.
- * Mirrors `PermissionedResolverLib.resource(node, part)` in Solidity.
- *
- * @param node - The namehash of the name (bytes32). Use '0x00...00' for "any name".
- * @param part - The record-type part (bytes32). Use '0x00...00' for "any record type".
- * @returns The resource ID as a bigint.
- */
-export function computeResolverResource(node: Hex, part: Hex): bigint {
-  return BigInt(keccak256(encodePacked(['bytes32', 'bytes32'], [node, part])))
-}
+export { computeResolverResource } from '../../../utils/v2/roles/resolverResource.js'

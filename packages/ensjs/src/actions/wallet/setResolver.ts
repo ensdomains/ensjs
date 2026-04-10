@@ -1,3 +1,5 @@
+import { registrySetResolverSnippet } from '@ensdomains/ensjs-abi/registry'
+import { nameWrapperSetResolverSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import type {
   Account,
   Address,
@@ -11,12 +13,10 @@ import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { nameWrapperSetResolverSnippet } from '../../contracts/nameWrapper.js'
-import { registrySetResolverSnippet } from '../../contracts/registry.js'
 import type { ErrorType } from '../../errors/utils.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -51,7 +51,7 @@ export const setResolverWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensNameWrapper' | 'ensRegistry',
     account
@@ -102,7 +102,7 @@ export const setResolverWriteParameters = <
 export type SetResolverParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<'ensNameWrapper' | 'ensRegistry'>,
+  chainOverride extends ChainWithContracts<'ensNameWrapper' | 'ensRegistry'>,
 > = Prettify<
   SetResolverWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -141,9 +141,9 @@ export type SetResolverErrorType =
 export async function setResolver<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<'ensNameWrapper' | 'ensRegistry'>,
+  chainOverride extends ChainWithContracts<'ensNameWrapper' | 'ensRegistry'>,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensNameWrapper' | 'ensRegistry',
     account

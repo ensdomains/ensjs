@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  deploymentAddresses,
-  publicClient,
-} from '../../../test/addTestContracts.js'
+import { publicClient } from '../../../test/addTestContracts.js'
 import { getOwner } from './getOwner.js'
 
 describe('getOwner', () => {

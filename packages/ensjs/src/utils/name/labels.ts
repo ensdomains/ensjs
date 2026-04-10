@@ -73,7 +73,7 @@ export function isEncodedLabelhash(hash: string) {
 // Save Label
 // ================================
 
-function _saveLabel(hash: string, label: any) {
+function _saveLabel(hash: string, label: string) {
   if (!hasLocalStorage) return hash
   const labels = getLabels()
   localStorage.setItem(
@@ -163,7 +163,7 @@ export type DecryptNameErrorType = CheckLabelErrorType
 export function decryptName(name: string) {
   return name
     .split('.')
-    .map((label: any) => checkLabel(label))
+    .map((label: string) => checkLabel(label))
     .join('.')
 }
 

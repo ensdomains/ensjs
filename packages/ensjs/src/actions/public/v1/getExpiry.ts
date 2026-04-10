@@ -1,3 +1,9 @@
+import { multicallGetCurrentBlockTimestampSnippet } from '@ensdomains/ensjs-abi/multicall'
+import {
+  baseRegistrarGracePeriodSnippet,
+  baseRegistrarNameExpiresSnippet,
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
+import { nameWrapperGetDataSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Chain,
   type GetChainContractAddressErrorType,
@@ -9,14 +15,8 @@ import {
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import {
-  baseRegistrarGracePeriodSnippet,
-  baseRegistrarNameExpiresSnippet,
-} from '../../../contracts/baseRegistrar.js'
-import { multicallGetCurrentBlockTimestampSnippet } from '../../../contracts/multicall.js'
-import { nameWrapperGetDataSnippet } from '../../../contracts/nameWrapper.js'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import type { Prettify } from '../../../types/index.js'
 import type { ExcludeTE } from '../../../types/internal.js'
@@ -69,7 +69,7 @@ export type GetExpiryErrorType =
 
  */
 export async function getExpiry<chain extends Chain>(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     | 'ensNameWrapper'
     | 'ensBaseRegistrarImplementation'

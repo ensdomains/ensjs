@@ -1,21 +1,23 @@
 import {
+  eacRolesEvents,
+  permissionedRegistryGetStateSnippet,
+} from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
+import {
   type Client,
   type GetLogsErrorType,
   type GetLogsParameters,
+  labelhash,
   zeroAddress,
 } from 'viem'
 import type { Address } from 'viem/accounts'
-import { getLogs } from 'viem/actions'
+import { getLogs, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { eacRolesEvents } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { registryRoles } from '../../../utils/v2/index.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 import {
   decodeRoleCounts,
   type RoleName,
 } from '../../../utils/v2/roles/decodeRoleCounts.js'
-import { getRegistryNameData } from './getRegistryNameData.js'
 
 export type GetNameRolesAccountsParameters = {
   registryAddress: Address
@@ -42,22 +44,25 @@ export async function getNameRoleAccounts(
 ): Promise<GetNameRolesAccountsReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
+  const readContractAction = getAction(client, readContract, 'readContract')
   const getLogsAction = getAction(client, getLogs, 'getLogs')
 
-  const getRegistryNameDataAction = getAction(
-    client,
-    getRegistryNameData,
-    'getRegistryNameData',
-  )
+  const labelHash = BigInt(labelhash(label))
 
-  const [_, entry] = await getRegistryNameDataAction({ label, registryAddress })
+  const state = await readContractAction({
+    address: registryAddress,
+    abi: permissionedRegistryGetStateSnippet,
+    functionName: 'getState',
+    args: [labelHash],
+  })
 
-  const resource = labelToCanonicalId(label) | BigInt(entry.eacVersionId)
+  const resource = (state as { resource: bigint }).resource
 
   const logs = await getLogsAction({
-    ...params,
     address: registryAddress,
     events: eacRolesEvents,
+    fromBlock: params.fromBlock ?? 0n,
+    toBlock: params.toBlock ?? undefined,
     // @ts-expect-error viem type error
     args: {
       resource,
@@ -69,7 +74,6 @@ export async function getNameRoleAccounts(
   for (const log of logs) {
     if (log.args.account && log.args.account !== zeroAddress) {
       if (log.eventName === 'EACRolesChanged') {
-        // biome-ignore lint/style/noNonNullAssertion: always defined for a granted event
         const bitmap = log.args.newRoleBitmap!
         const counts = decodeRoleCounts(bitmap, registryRoles)
 

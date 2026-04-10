@@ -1,3 +1,4 @@
+import { universalResolverReverseSnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import {
   type Address,
   BaseError,
@@ -21,8 +22,7 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import type { ChainWithContract } from '../../contracts/consts.js'
-import { universalResolverReverseSnippet } from '../../contracts/universalResolver.js'
+import type { ChainWithContracts } from '../../clients/shared.js'
 import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,
@@ -43,7 +43,7 @@ const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
   chain: addEnsL1Contracts(mainnet),
-} as unknown as Client<Transport, ChainWithContract<'ensUniversalResolver'>>
+} as unknown as Client<Transport, ChainWithContracts<'ensUniversalResolver'>>
 
 beforeAll(async () => {
   accounts = await walletClient.getAddresses()

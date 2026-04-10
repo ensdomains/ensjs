@@ -1,3 +1,4 @@
+import { ethRegistrarAvailableSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type {
   Chain,
   GetChainContractAddressErrorType,
@@ -5,9 +6,8 @@ import type {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../clients/l2.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { l2EthRegistrarAvailableSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { ErrorType } from '../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -46,7 +46,7 @@ export type GetAvailableErrorType =
  * // false
  */
 export async function getAvailable<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ethRegistrar'>,
+  client: RequireClientContracts<chain, 'ethRegistrar'>,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
   const labels = name.split('.')
@@ -66,7 +66,7 @@ export async function getAvailable<chain extends Chain>(
       chain: client.chain,
       contract: 'ethRegistrar',
     }),
-    abi: l2EthRegistrarAvailableSnippet,
+    abi: ethRegistrarAvailableSnippet,
     functionName: 'isAvailable',
     args: [labels[0]],
   })

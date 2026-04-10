@@ -1,4 +1,16 @@
 import {
+  registrySetOwnerSnippet,
+  registrySetSubnodeOwnerSnippet,
+} from '@ensdomains/ensjs-abi/registry'
+import {
+  baseRegistrarReclaimSnippet,
+  baseRegistrarSafeTransferFromSnippet,
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
+import {
+  nameWrapperSafeTransferFromSnippet,
+  nameWrapperSetSubnodeOwnerSnippet,
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
+import {
   type Account,
   type Address,
   type Chain,
@@ -14,22 +26,10 @@ import {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  baseRegistrarReclaimSnippet,
-  baseRegistrarSafeTransferFromSnippet,
-} from '../../contracts/baseRegistrar.js'
-import {
-  nameWrapperSafeTransferFromSnippet,
-  nameWrapperSetSubnodeOwnerSnippet,
-} from '../../contracts/nameWrapper.js'
-import {
-  registrySetOwnerSnippet,
-  registrySetSubnodeOwnerSnippet,
-} from '../../contracts/registry.js'
 import {
   AdditionalParameterSpecifiedError,
   InvalidContractTypeError,
@@ -83,7 +83,7 @@ export const transferNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account
@@ -233,7 +233,7 @@ export type TransferNameParameters<
   contract extends 'registry' | 'nameWrapper' | 'registrar',
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<
+  chainOverride extends ChainWithContracts<
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 > = Prettify<
@@ -275,11 +275,11 @@ export async function transferName<
   contract extends TransferNameSupportedContract,
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<
+  chainOverride extends ChainWithContracts<
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account

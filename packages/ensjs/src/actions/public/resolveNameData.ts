@@ -1,3 +1,8 @@
+import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
+import {
+  universalResolverResolveSnippet,
+  universalResolverResolveWithGatewaysSnippet,
+} from '@ensdomains/ensjs-abi/universalResolver'
 import {
   type Address,
   type Chain,
@@ -17,11 +22,6 @@ import {
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../clients/shared.js'
-import { multicallSnippet } from '../../contracts/multicall.js'
-import {
-  universalResolverResolveSnippet,
-  universalResolverResolveWithGatewaysSnippet,
-} from '../../contracts/universalResolver.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { isNullUniversalResolverError } from '../../utils/errors/isNullUniversalResolverError.js'
 import {
@@ -62,11 +62,7 @@ export async function resolveNameData<
   chain extends Chain,
   data extends Hex | Hex[],
 >(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { name, data, strict, gatewayUrls }: ResolveNameDataParameters<data>,
 ): Promise<ResolveNameDataReturnType<data>> {
   ASSERT_NO_TYPE_ERROR(client)

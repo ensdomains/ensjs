@@ -1,3 +1,5 @@
+import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
 import type { Client, PublicClient, Transport } from 'viem'
 import { mainnet } from 'viem/chains'
 import {
@@ -9,10 +11,7 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import type { SupportedL1Contract } from '../../clients/l1.js'
 import type { ChainWithContracts } from '../../clients/shared.js'
-import { dedicatedResolverNameSnippet } from '../../contracts/dedicatedResolver.js'
-import { registryResolverSnippet } from '../../contracts/registry.js'
 import { addEnsL1Contracts } from '../../index.js'
 import {
   deploymentAddresses,
@@ -30,10 +29,7 @@ const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
   chain: addEnsL1Contracts(mainnet),
-} as unknown as Client<
-  Transport,
-  ChainWithContracts<SupportedL1Contract, 'ensRegistry'>
->
+} as unknown as Client<Transport, ChainWithContracts<'ensRegistry'>>
 
 beforeEach(async () => {
   snapshot = await testClient.snapshot()

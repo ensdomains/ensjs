@@ -1,7 +1,7 @@
 import type { Chain } from 'viem'
 import {
   type AnySupportedL1Chain,
-  type ChainWithL1Ens,
+  type ChainWithEns,
   ensL1Contracts,
   type SupportedL1ChainId,
   supportedL1Chains,
@@ -42,5 +42,5 @@ export const addEnsL1Contracts = <const chain extends AnySupportedL1Chain>(
     subgraphs: {
       ...ensL1Contracts[chain.id as SupportedL1ChainId],
     },
-  } as unknown as ChainWithL1Ens<chain>
+  } as unknown as ChainWithEns<chain>
 }

@@ -1,3 +1,7 @@
+import {
+  nameWrapperUnwrapEth2ldSnippet,
+  nameWrapperUnwrapSnippet,
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import type {
   Account,
   Address,
@@ -10,14 +14,10 @@ import type {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  nameWrapperUnwrapEth2ldSnippet,
-  nameWrapperUnwrapSnippet,
-} from '../../contracts/nameWrapper.js'
 import {
   AdditionalParameterSpecifiedError,
   RequiredParameterNotSpecifiedError,
@@ -68,7 +68,7 @@ export const unwrapNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL1Contracts<chain, 'ensNameWrapper', account>,
+  client: RequireClientContracts<chain, 'ensNameWrapper', account>,
   {
     name,
     newOwnerAddress,
@@ -128,7 +128,7 @@ export type UnwrapNameParameters<
   name extends string,
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<'ensNameWrapper'>,
+  chainOverride extends ChainWithContracts<'ensNameWrapper'>,
 > = UnwrapNameWriteParametersParameters<name> &
   WriteTransactionParameters<chain, account, chainOverride>
 
@@ -166,9 +166,9 @@ export async function unwrapName<
   name extends string,
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<'ensNameWrapper'>,
+  chainOverride extends ChainWithContracts<'ensNameWrapper'>,
 >(
-  client: RequireClientL1Contracts<chain, 'ensNameWrapper', account>,
+  client: RequireClientContracts<chain, 'ensNameWrapper', account>,
   {
     name,
     newOwnerAddress,

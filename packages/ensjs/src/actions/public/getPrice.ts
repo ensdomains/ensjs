@@ -1,3 +1,4 @@
+import { ethRegistrarRentPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type {
   Address,
   Chain,
@@ -7,9 +8,8 @@ import type {
 import { zeroAddress } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../clients/l2.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { l2EthRegistrarRentPriceSnippet } from '../../contracts/l2EthRegistrar.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import { getNameType } from '../../utils/name/getNameType.js'
@@ -58,7 +58,7 @@ export type GetPriceErrorType =
  * // { base: 352828971668930335n, premium: 0n }
  */
 export async function getPrice<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ethRegistrar' | 'usdc'>,
+  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc'>,
   {
     nameOrNames,
     duration,
@@ -101,7 +101,7 @@ export async function getPrice<chain extends Chain>(
         chain: client.chain,
         contract: 'ethRegistrar',
       }),
-      abi: l2EthRegistrarRentPriceSnippet,
+      abi: ethRegistrarRentPriceSnippet,
       functionName: 'rentPrice',
       args: [labels[0], owner, BigInt(duration), resolvedPaymentToken],
     })

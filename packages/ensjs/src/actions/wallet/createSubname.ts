@@ -1,3 +1,5 @@
+import { registrySetSubnodeRecordSnippet } from '@ensdomains/ensjs-abi/registry'
+import { nameWrapperSetSubnodeRecordSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Account,
   type Address,
@@ -13,12 +15,10 @@ import {
 } from 'viem'
 import { sendTransaction } from 'viem/actions'
 import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { nameWrapperSetSubnodeRecordSnippet } from '../../contracts/nameWrapper.js'
-import { registrySetSubnodeRecordSnippet } from '../../contracts/registry.js'
 import { BaseError } from '../../errors/base.js'
 import {
   InvalidContractTypeError,
@@ -138,7 +138,7 @@ export const makeCreateSubnameFunctionData = <
   chain extends Chain,
   account extends Account | undefined,
 >(
-  wallet: RequireClientL1Contracts<
+  wallet: RequireClientContracts<
     chain,
     'ensPublicResolver' | 'ensNameWrapper',
     account
@@ -232,7 +232,7 @@ type CheckCanCreateSubnameErrorType =
 const checkCanCreateSubname = async (
   wallet: Client<
     Transport,
-    ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>
+    ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
   >,
   {
     name,
@@ -269,7 +269,7 @@ export type CreateSubnameParameters<
   chain extends Chain,
   account extends Account | undefined,
   chainOverride extends
-    | ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>
+    | ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
     | undefined,
 > = Prettify<
   MakeCreateSubnameFunctionDataParameters &
@@ -310,10 +310,10 @@ export async function createSubname<
   chain extends Chain,
   account extends Account | undefined,
   chainOverride extends
-    | ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>
-    | undefined = ChainWithL1Contracts<'ensPublicResolver' | 'ensNameWrapper'>,
+    | ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
+    | undefined = ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>,
 >(
-  wallet: RequireClientL1Contracts<
+  wallet: RequireClientContracts<
     chain,
     'ensNameWrapper' | 'ensPublicResolver',
     account

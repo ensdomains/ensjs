@@ -1,6 +1,6 @@
+import { publicResolverAbiSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import { encodeFunctionResult, stringToHex } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { publicResolverAbiSnippet } from '../../contracts/publicResolver.js'
 import {
   decodeAbiResult,
   decodeAbiResultFromPrimitiveTypes,

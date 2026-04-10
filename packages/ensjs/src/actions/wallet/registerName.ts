@@ -1,3 +1,4 @@
+import { ethRegistrarRegisterSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import {
   type Account,
   type Chain,
@@ -9,12 +10,11 @@ import {
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction, padHex } from 'viem/utils'
-import type {
-  ChainWithL2Contracts,
-  RequireClientL2Contracts,
-} from '../../clients/l2.js'
-import { getChainContractAddress } from '../../clients/shared.js'
-import { l2EthRegistrarRegisterSnippet } from '../../contracts/l2EthRegistrar.js'
+import {
+  type ChainWithContracts,
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../clients/shared.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
@@ -53,11 +53,7 @@ export const registerNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL2Contracts<
-    chain,
-    'ensL2EthRegistrar' | 'usdc',
-    account
-  >,
+  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc', account>,
   registrationParams: RegisterNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -80,9 +76,9 @@ export const registerNameWriteParameters = <
   return {
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensL2EthRegistrar',
+      contract: 'ethRegistrar',
     }),
-    abi: l2EthRegistrarRegisterSnippet,
+    abi: ethRegistrarRegisterSnippet,
     functionName: 'register',
     args: [
       registrationParams.label, // V2 ETHRegistrar expects a label, not a full name
@@ -97,7 +93,7 @@ export const registerNameWriteParameters = <
     chain: client.chain,
     account: client.account,
   } as const satisfies WriteContractParameters<
-    typeof l2EthRegistrarRegisterSnippet
+    typeof ethRegistrarRegisterSnippet
   >
 }
 
@@ -108,9 +104,7 @@ export const registerNameWriteParameters = <
 export type RegisterNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends
-    | ChainWithL2Contracts<'ensL2EthRegistrar' | 'usdc'>
-    | undefined,
+  chainOverride extends ChainWithContracts<'ethRegistrar' | 'usdc'> | undefined,
 > = Prettify<
   RegisterNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -166,15 +160,9 @@ export type RegisterNameErrorType =
 export async function registerName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends
-    | ChainWithL2Contracts<'ensL2EthRegistrar' | 'usdc'>
-    | undefined,
+  chainOverride extends ChainWithContracts<'ethRegistrar' | 'usdc'> | undefined,
 >(
-  client: RequireClientL2Contracts<
-    chain,
-    'ensL2EthRegistrar' | 'usdc',
-    account
-  >,
+  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc', account>,
   {
     label,
     owner,

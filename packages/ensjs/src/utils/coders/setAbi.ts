@@ -1,6 +1,6 @@
+import { dedicatedResolverSetAbiSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { publicResolverSetAbiSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { EncodeFunctionDataParameters, Hex } from 'viem'
-import { dedicatedResolverSetAbiSnippet } from '../../contracts/dedicatedResolver.js'
-import { publicResolverSetAbiSnippet } from '../../contracts/publicResolver.js'
 import type { Prettify } from '../../types/index.js'
 import {
   type AbiEncodeAs,

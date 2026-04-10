@@ -1,7 +1,3 @@
-// ================================
-// Standard ERC Events
-// ================================
-
 export const approvalEventSnippet = [
   {
     inputs: [
@@ -9,19 +5,16 @@ export const approvalEventSnippet = [
         indexed: true,
         name: 'owner',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'approved',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     name: 'Approval',
@@ -37,19 +30,16 @@ export const approvalForAllEventSnippet = [
         indexed: true,
         name: 'account',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'operator',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: false,
         name: 'approved',
         type: 'bool',
-        internalType: 'bool',
       },
     ],
     name: 'ApprovalForAll',
@@ -65,31 +55,26 @@ export const transferSingleEventSnippet = [
         indexed: true,
         name: 'operator',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'from',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'to',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: false,
         name: 'id',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'value',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     name: 'TransferSingle',
@@ -105,31 +90,26 @@ export const transferBatchEventSnippet = [
         indexed: true,
         name: 'operator',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'from',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: true,
         name: 'to',
         type: 'address',
-        internalType: 'address',
       },
       {
         indexed: false,
         name: 'ids',
         type: 'uint256[]',
-        internalType: 'uint256[]',
       },
       {
         indexed: false,
         name: 'values',
         type: 'uint256[]',
-        internalType: 'uint256[]',
       },
     ],
     name: 'TransferBatch',
@@ -145,13 +125,11 @@ export const uriEventSnippet = [
         indexed: false,
         name: 'value',
         type: 'string',
-        internalType: 'string',
       },
       {
         indexed: true,
         name: 'id',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     name: 'URI',
@@ -160,10 +138,6 @@ export const uriEventSnippet = [
   },
 ] as const
 
-// ================================
-// Registry-Specific Events
-// ================================
-
 export const nameBurnedEventSnippet = [
   {
     inputs: [
@@ -171,13 +145,11 @@ export const nameBurnedEventSnippet = [
         indexed: true,
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'burnedBy',
         type: 'address',
-        internalType: 'address',
       },
     ],
     name: 'NameBurned',
@@ -193,19 +165,16 @@ export const nameRenewedEventSnippet = [
         indexed: true,
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'newExpiration',
         type: 'uint64',
-        internalType: 'uint64',
       },
       {
         indexed: false,
         name: 'renewedBy',
         type: 'address',
-        internalType: 'address',
       },
     ],
     name: 'NameRenewed',
@@ -221,13 +190,11 @@ export const newSubnameEventSnippet = [
         indexed: true,
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'label',
         type: 'string',
-        internalType: 'string',
       },
     ],
     name: 'NewSubname',
@@ -243,13 +210,11 @@ export const resolverUpdateEventSnippet = [
         indexed: true,
         name: 'id',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'resolver',
         type: 'address',
-        internalType: 'address',
       },
     ],
     name: 'ResolverUpdate',
@@ -265,13 +230,11 @@ export const subregistryUpdatedEventSnippet = [
         indexed: true,
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'subregistry',
         type: 'address',
-        internalType: 'address',
       },
     ],
     name: 'SubregistryUpdated',
@@ -287,13 +250,11 @@ export const tokenObserverSetEventSnippet = [
         indexed: true,
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'observer',
         type: 'address',
-        internalType: 'address',
       },
     ],
     name: 'TokenObserverSet',
@@ -309,13 +270,11 @@ export const tokenRegeneratedEventSnippet = [
         indexed: false,
         name: 'oldTokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         indexed: false,
         name: 'newTokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     name: 'TokenRegenerated',
@@ -324,17 +283,12 @@ export const tokenRegeneratedEventSnippet = [
   },
 ] as const
 
-// ================================
-// Functions
-// ================================
-
 export const userRegistrySetSubregistrySnippet = [
   {
     inputs: [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'registry',
@@ -355,12 +309,10 @@ export const userRegistryRegisterSnippet = [
       {
         name: 'label',
         type: 'string',
-        internalType: 'string',
       },
       {
         name: 'owner',
         type: 'address',
-        internalType: 'address',
       },
       {
         name: 'registry',
@@ -370,17 +322,14 @@ export const userRegistryRegisterSnippet = [
       {
         name: 'resolver',
         type: 'address',
-        internalType: 'address',
       },
       {
         name: 'roleBitmap',
         type: 'uint256',
-        internalType: 'uint256',
       },
       {
         name: 'expires',
         type: 'uint64',
-        internalType: 'uint64',
       },
     ],
     name: 'register',
@@ -388,17 +337,12 @@ export const userRegistryRegisterSnippet = [
       {
         name: 'tokenId',
         type: 'uint256',
-        internalType: 'uint256',
       },
     ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const
-
-// ================================
-// Combined Snippets
-// ================================
 
 export const userRegistryAllEventsSnippet = [
   ...approvalEventSnippet,

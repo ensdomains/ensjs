@@ -1,6 +1,9 @@
 import type { Address, Hex } from 'viem'
+import { maxUint256, parseAbi } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import {
+  deploymentAddresses,
+  publicClient,
   testClient,
   waitForTransaction,
   walletClient,
@@ -26,7 +29,7 @@ afterEach(async () => {
 
 const secret = `0x${'a'.repeat(64)}` as Hex
 
-it.skip('should return a registration transaction and succeed', async () => {
+it('should return a registration transaction and succeed', async () => {
   const params: L2RegistrationParameters = {
     label: 'cool-swag',
     duration: 31536000,
@@ -44,6 +47,21 @@ it.skip('should return a registration transaction and succeed', async () => {
 
   await testClient.increaseTime({ seconds: 61 })
   await testClient.mine({ blocks: 1 })
+
+  // Approve the ETH Registrar to spend USDC on behalf of accounts[1]
+  const approveTx = await walletClient.writeContract({
+    address: deploymentAddresses.USDC,
+    abi: parseAbi([
+      'function approve(address spender, uint256 amount) returns (bool)',
+    ]),
+    functionName: 'approve',
+    args: [deploymentAddresses.ETHRegistrar, maxUint256],
+    account: accounts[1],
+  })
+  const approveReceipt = await publicClient.waitForTransactionReceipt({
+    hash: approveTx,
+  })
+  expect(approveReceipt.status).toBe('success')
 
   const tx = await registerName(walletClient, {
     ...params,

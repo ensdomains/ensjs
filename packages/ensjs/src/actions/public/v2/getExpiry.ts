@@ -1,9 +1,14 @@
-import { type Chain, labelhash, type ReadContractErrorType } from 'viem'
+import { permissionedRegistryGetExpirySnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
+import {
+  type Address,
+  type Chain,
+  labelhash,
+  type ReadContractErrorType,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
-import type { RequireClientL2Contracts } from '../../../clients/l2.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import { permissionedRegistryGetExpirySnippet } from '../../../contracts/permissionedRegistry.js'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { getNameType } from '../../../utils/name/getNameType.js'
@@ -12,6 +17,8 @@ import { checkIsDotEth } from '../../../utils/name/validation.js'
 export type GetExpiryParameters = {
   /** Name to get expiry for */
   name: string
+  /** Optional custom registry address (defaults to chain's ensRegistry) */
+  registryAddress?: Address
 }
 
 export type GetExpiryReturnType = bigint
@@ -22,30 +29,34 @@ export type GetExpiryErrorType =
   | ReadContractErrorType
 
 export async function getExpiry<chain extends Chain>(
-  client: RequireClientL2Contracts<chain, 'ensV2EthRegistry'>,
-  { name }: GetExpiryParameters,
+  client: RequireClientContracts<chain, 'ensRegistry'>,
+  { name, registryAddress }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
   const labels = name.split('.')
-  if (!checkIsDotEth(labels))
+  const nameType = getNameType(name)
+  if (!checkIsDotEth(labels) && nameType !== 'eth-subname')
     throw new UnsupportedNameTypeError({
-      nameType: getNameType(name),
-      supportedNameTypes: ['eth-2ld', 'tld'],
-      details:
-        'Only the expiry of eth-2ld names can be fetched when using the registrar or l2Registrar contract',
+      nameType,
+      supportedNameTypes: ['eth-2ld', 'eth-subname'],
+      details: 'Only .eth names can be looked up via the registry',
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const address = getChainContractAddress({
-    chain: client.chain,
-    contract: 'ensV2EthRegistry',
-  })
+  const currentRegistry =
+    registryAddress ??
+    getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensRegistry',
+    })
+
+  const labelHash = BigInt(labelhash(labels[0]))
 
   return readContractAction({
-    address,
+    address: currentRegistry,
     abi: permissionedRegistryGetExpirySnippet,
     functionName: 'getExpiry',
-    args: [BigInt(labelhash(labels[0]))],
+    args: [labelHash],
   })
 }

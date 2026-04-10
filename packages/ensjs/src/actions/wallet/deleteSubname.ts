@@ -1,4 +1,12 @@
 import {
+  registrySetRecordSnippet,
+  registrySetSubnodeRecordSnippet,
+} from '@ensdomains/ensjs-abi/registry'
+import {
+  nameWrapperSetRecordSnippet,
+  nameWrapperSetSubnodeRecordSnippet,
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
+import {
   type Account,
   type Chain,
   type GetChainContractAddressErrorType,
@@ -12,18 +20,10 @@ import {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  nameWrapperSetRecordSnippet,
-  nameWrapperSetSubnodeRecordSnippet,
-} from '../../contracts/nameWrapper.js'
-import {
-  registrySetRecordSnippet,
-  registrySetSubnodeRecordSnippet,
-} from '../../contracts/registry.js'
 import {
   InvalidContractTypeError,
   UnsupportedNameTypeError,
@@ -68,7 +68,7 @@ export const deleteSubnameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensRegistry' | 'ensNameWrapper',
     account
@@ -168,7 +168,7 @@ export type DeleteSubnameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithL1Contracts<'ensRegistry' | 'ensNameWrapper'>
+    | ChainWithContracts<'ensRegistry' | 'ensNameWrapper'>
     | undefined,
 > = Prettify<
   DeleteSubnameWriteParametersParameters &
@@ -208,10 +208,10 @@ export async function deleteSubname<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithL1Contracts<'ensRegistry' | 'ensNameWrapper'>
+    | ChainWithContracts<'ensRegistry' | 'ensNameWrapper'>
     | undefined,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensRegistry' | 'ensNameWrapper',
     account

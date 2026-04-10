@@ -1,4 +1,16 @@
+export const dnssecImplErrors = [
+  {
+    inputs: [
+      { name: 'inception', type: 'uint32' },
+      { name: 'now', type: 'uint32' },
+    ],
+    name: 'SignatureExpired',
+    type: 'error',
+  },
+] as const
+
 export const dnssecImplVerifyRrSetSnippet = [
+  ...dnssecImplErrors,
   {
     inputs: [
       {

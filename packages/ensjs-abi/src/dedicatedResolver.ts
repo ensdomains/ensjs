@@ -21,7 +21,6 @@ export const dedicatedResolverSetContentHashSnippet = [
   {
     inputs: [
       {
-        internalType: 'bytes',
         name: 'hash',
         type: 'bytes',
       },
@@ -37,12 +36,10 @@ export const dedicatedResolverSetAddrSnippet = [
   {
     inputs: [
       {
-        internalType: 'uint256',
         name: 'coinType',
         type: 'uint256',
       },
       {
-        internalType: 'bytes',
         name: 'addressBytes',
         type: 'bytes',
       },
@@ -58,7 +55,6 @@ export const dedicatedResolverNameSnippet = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
         name: '',
         type: 'bytes32',
       },
@@ -66,7 +62,6 @@ export const dedicatedResolverNameSnippet = [
     name: 'name',
     outputs: [
       {
-        internalType: 'string',
         name: '',
         type: 'string',
       },
@@ -80,12 +75,10 @@ export const dedicatedResolverMulticallWithNodeCheckSnippet = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
         name: '',
         type: 'bytes32',
       },
       {
-        internalType: 'bytes[]',
         name: 'calls',
         type: 'bytes[]',
       },
@@ -93,7 +86,6 @@ export const dedicatedResolverMulticallWithNodeCheckSnippet = [
     name: 'multicallWithNodeCheck',
     outputs: [
       {
-        internalType: 'bytes[]',
         name: '',
         type: 'bytes[]',
       },
@@ -107,12 +99,10 @@ export const dedicatedResolverSetAbiSnippet = [
   {
     inputs: [
       {
-        internalType: 'uint256',
         name: 'contentType',
         type: 'uint256',
       },
       {
-        internalType: 'bytes',
         name: 'data',
         type: 'bytes',
       },
