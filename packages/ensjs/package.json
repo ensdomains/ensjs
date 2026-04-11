@@ -100,10 +100,6 @@
   "author": "TateB <yo@taytems.xyz>",
   "license": "MIT",
   "scripts": {
-    "denv": "docker compose up",
-    "denv:detach": "docker compose up -d",
-    "denv:stop": "docker compose down -v",
-    "anvil": "docker run -p 8545:8545 ghcr.io/foundry-rs/foundry:latest anvil --host 0.0.0.0",
     "start": "ts-node --files src/index.test.ts",
     "test": "vitest --no-file-parallelism",
     "test:watch": "vitest --watch --no-file-parallelism",

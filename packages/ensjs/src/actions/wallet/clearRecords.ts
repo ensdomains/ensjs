@@ -3,12 +3,12 @@ import type {
   Address,
   Chain,
   Client,
+  NamehashErrorType,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -48,7 +48,7 @@ export const clearRecordsWriteParameters = <
   client: Client<Transport, chain, account>,
   { name, resolverAddress }: ClearRecordsWriteParametersParameters,
 ) => {
-  const _clearRecordsParameters = clearRecordsParameters(namehash(name))
+  const _clearRecordsParameters = clearRecordsParameters(name)
   return {
     address: resolverAddress,
     chain: client.chain,

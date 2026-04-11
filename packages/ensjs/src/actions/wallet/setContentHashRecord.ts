@@ -4,11 +4,11 @@ import type {
   Chain,
   Client,
   Hash,
+  NamehashErrorType,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { type NamehashErrorType } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'

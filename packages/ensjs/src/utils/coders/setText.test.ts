@@ -39,7 +39,7 @@ describe('setTextParameters', () => {
           },
         ],
         "args": [
-          "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
+          "0xeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
           "email",
           "test@example.com",
         ],

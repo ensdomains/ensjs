@@ -29,7 +29,7 @@ describe('setContentHashParameters', () => {
           },
         ],
         "args": [
-          "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
+          "0xeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
           "0xe301017012208e9cc47fde7ff64028480ec671a4ddb8f767a71ff71a73247f51a495a6f29634",
         ],
         "functionName": "setContenthash",
@@ -61,7 +61,7 @@ describe('setContentHashParameters', () => {
           },
         ],
         "args": [
-          "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
+          "0xeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
           "0x",
         ],
         "functionName": "setContenthash",
