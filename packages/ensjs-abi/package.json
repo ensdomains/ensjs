@@ -23,10 +23,6 @@
       "types": "./dist/reverseRegistrar.d.ts",
       "default": "./dist/reverseRegistrar.js"
     },
-    "./dedicatedResolver": {
-      "types": "./dist/dedicatedResolver.d.ts",
-      "default": "./dist/dedicatedResolver.js"
-    },
     "./multicall": {
       "types": "./dist/multicall.d.ts",
       "default": "./dist/multicall.js"

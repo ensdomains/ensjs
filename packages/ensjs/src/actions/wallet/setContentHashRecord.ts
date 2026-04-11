@@ -28,7 +28,7 @@ import {
 
 export type SetContentHashRecordWriteParametersParameters = {
   /** Name to set content hash for */
-  name?: string
+  name: string
   /** Content hash value */
   contentHash: string | null
   /** The resolver address to use */
@@ -54,11 +54,10 @@ export const setContentHashRecordWriteParameters = <
     address: resolverAddress,
     chain: client.chain,
     account: client.account,
-    ...setContentHashParameters(
-      typeof name === 'string'
-        ? { namehash: namehash(name), contentHash }
-        : { contentHash },
-    ),
+    ...setContentHashParameters({
+      namehash: namehash(name),
+      contentHash,
+    }),
   } as const satisfies WriteContractParameters<
     SetContentHashParametersReturnType['abi']
   >

@@ -4,7 +4,6 @@ import {
   type ClearRecordsParametersErrorType,
   type ClearRecordsParametersReturnType,
   clearRecordsParameters,
-  clearRecordsParametersV2,
 } from './clearRecords.js'
 import type { EncodeAbiParameters } from './encodeAbi.js'
 import {
@@ -65,8 +64,7 @@ export type ResolverMulticallItemErrorType =
 
 /**
  * Generates multicall parameters for setting records.
- * @param namehash - If provided, uses Public Resolver ABI (with namehash in each call).
- *                   If not provided, uses Dedicated Resolver ABI (without namehash).
+ * All individual calls include the namehash.
  */
 export const resolverMulticallParameters = async ({
   namehash,
@@ -76,14 +74,12 @@ export const resolverMulticallParameters = async ({
   coins,
   abi,
 }: {
-  namehash?: Hex
+  namehash: Hex
 } & RecordOptions): Promise<ResolverMulticallParametersReturnType> => {
   const calls: ResolverMulticallParametersReturnType = []
 
   if (clearRecords) {
-    calls.push(
-      namehash ? clearRecordsParameters(namehash) : clearRecordsParametersV2(),
-    )
+    calls.push(clearRecordsParameters(namehash))
   }
 
   if (contentHash !== undefined) {

@@ -1,4 +1,4 @@
-import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
 import {
   type Address,
@@ -83,7 +83,7 @@ export async function getReverseRecordFromRegistry<chain extends Chain>(
 
   const name = await readContractAction({
     address: resolverAddress,
-    abi: dedicatedResolverNameSnippet,
+    abi: permissionedResolverNameSnippet,
     functionName: 'name',
     args: [nodeHash],
   })

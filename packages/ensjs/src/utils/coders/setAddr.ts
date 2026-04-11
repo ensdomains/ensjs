@@ -1,4 +1,3 @@
-import { dedicatedResolverSetAddrSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
 import { publicResolverSetAddrSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   type Address,
@@ -18,7 +17,7 @@ import {
 // ================================
 
 export type SetAddrParametersParameters = {
-  namehash?: Hex
+  namehash: Hex
   coin: string | number
   value: Address | string | null
 }
@@ -43,21 +42,12 @@ export const setAddrParameters = ({
     encodedAddress = bytesToHex(encodedAddress)
   }
 
-  if (namehash) {
-    return {
-      abi: publicResolverSetAddrSnippet,
-      functionName: 'setAddr',
-      args: [namehash, BigInt(inputCoinType), encodedAddress],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof publicResolverSetAddrSnippet
-    >
-  }
   return {
-    abi: dedicatedResolverSetAddrSnippet,
+    abi: publicResolverSetAddrSnippet,
     functionName: 'setAddr',
-    args: [BigInt(inputCoinType), encodedAddress],
+    args: [namehash, BigInt(inputCoinType), encodedAddress],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof dedicatedResolverSetAddrSnippet
+    typeof publicResolverSetAddrSnippet
   >
 }
 

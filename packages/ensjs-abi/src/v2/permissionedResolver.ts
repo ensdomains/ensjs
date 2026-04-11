@@ -140,6 +140,50 @@ export const permissionedResolverGrantAddrRolesSnippet = [
   },
 ] as const
 
+export const permissionedResolverNameSnippet = [
+  {
+    inputs: [
+      {
+        name: 'node',
+        type: 'bytes32',
+      },
+    ],
+    name: 'name',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverMulticallWithNodeCheckSnippet = [
+  {
+    inputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        name: 'calls',
+        type: 'bytes[]',
+      },
+    ],
+    name: 'multicallWithNodeCheck',
+    outputs: [
+      {
+        name: '',
+        type: 'bytes[]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 export const permissionedResolverClearRecordsSnippet = [
   {
     inputs: [{ name: 'node', type: 'bytes32' }],

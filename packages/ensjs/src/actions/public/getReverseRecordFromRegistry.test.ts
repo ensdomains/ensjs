@@ -1,4 +1,4 @@
-import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
 import type { Client, PublicClient, Transport } from 'viem'
 import { mainnet } from 'viem/chains'
@@ -129,7 +129,7 @@ describe('getReverseRecordFromRegistry', () => {
       2,
       expect.objectContaining({
         address: resolverAddress,
-        abi: dedicatedResolverNameSnippet,
+        abi: permissionedResolverNameSnippet,
         functionName: 'name',
       }),
     )

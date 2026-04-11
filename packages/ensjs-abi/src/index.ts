@@ -1,5 +1,4 @@
 export * from './compositeResolver.js'
-export * from './dedicatedResolver.js'
 export * from './dnsRegistrar.js'
 export * from './dnssecImpl.js'
 export * from './erc165.js'

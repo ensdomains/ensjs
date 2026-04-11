@@ -1,12 +1,4 @@
 export {
-  dedicatedResolverMulticallWithNodeCheckSnippet,
-  dedicatedResolverNameSnippet,
-  dedicatedResolverSetAbiSnippet,
-  dedicatedResolverSetAddrSnippet,
-  dedicatedResolverSetContentHashSnippet,
-  dedicatedResolverSetTextSnippet,
-} from '@ensdomains/ensjs-abi/dedicatedResolver'
-export {
   dnsRegistrarErrors,
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,

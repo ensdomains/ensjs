@@ -1,4 +1,3 @@
-import { dedicatedResolverSetContentHashSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
 import { publicResolverSetContenthashSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import type { EncodeFunctionDataParameters, Hex } from 'viem'
 import {
@@ -11,7 +10,7 @@ import {
 // ================================
 
 export type SetContentHashParameters = {
-  namehash?: Hex
+  namehash: Hex
   contentHash: string | null
 }
 
@@ -22,21 +21,12 @@ export const setContentHashParameters = ({
   contentHash,
 }: SetContentHashParameters) => {
   const encodedHash = contentHash ? encodeContentHash(contentHash) : '0x'
-  if (namehash) {
-    return {
-      abi: publicResolverSetContenthashSnippet,
-      functionName: 'setContenthash',
-      args: [namehash, encodedHash],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof publicResolverSetContenthashSnippet
-    >
-  }
   return {
-    abi: dedicatedResolverSetContentHashSnippet,
+    abi: publicResolverSetContenthashSnippet,
     functionName: 'setContenthash',
-    args: [encodedHash],
+    args: [namehash, encodedHash],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof dedicatedResolverSetContentHashSnippet
+    typeof publicResolverSetContenthashSnippet
   >
 }
 

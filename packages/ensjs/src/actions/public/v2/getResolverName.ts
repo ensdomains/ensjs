@@ -1,4 +1,4 @@
-import { dedicatedResolverNameSnippet } from '@ensdomains/ensjs-abi/dedicatedResolver'
+import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type { Client } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
@@ -14,7 +14,7 @@ export type GetResolverNameReturnType = string | null
 export type GetResolverNameErrorType = ReadContractErrorType
 
 /**
- * Gets the name of a dedicated resolver.
+ * Gets the name of a permissioned resolver.
  * @param client - {@link Client}
  * @param parameters - {@link GetResolverNameParameters}
  * @returns Resolver address, or null if none is found. {@link GetResolverNameReturnType}
@@ -42,7 +42,7 @@ export async function getResolverName(
 
   return readContractAction({
     address: resolverAddress,
-    abi: dedicatedResolverNameSnippet,
+    abi: permissionedResolverNameSnippet,
     functionName: 'name',
     args: [padHex('0x0', { size: 32 })],
   })
