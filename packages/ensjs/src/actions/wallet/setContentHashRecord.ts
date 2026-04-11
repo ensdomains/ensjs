@@ -8,7 +8,7 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
+import { type NamehashErrorType } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -55,7 +55,7 @@ export const setContentHashRecordWriteParameters = <
     chain: client.chain,
     account: client.account,
     ...setContentHashParameters({
-      namehash: namehash(name),
+      name,
       contentHash,
     }),
   } as const satisfies WriteContractParameters<

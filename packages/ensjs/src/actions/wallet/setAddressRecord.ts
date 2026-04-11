@@ -8,7 +8,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
+import { type NamehashErrorType } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -86,7 +86,7 @@ export const setAddressRecordWriteParameters = <
     chain: client.chain,
     account: client.account,
     ...setAddrParameters({
-      namehash: namehash(name),
+      name,
       coin,
       value,
     }),

@@ -1,4 +1,4 @@
-import { encodeFunctionData, namehash } from 'viem'
+import { encodeFunctionData } from 'viem'
 import { expect, it } from 'vitest'
 import {
   type ResolverMulticallItem,
@@ -14,7 +14,7 @@ it('generates a record call array', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         clearRecords: true,
         coins: [
           { coin: 'ETH', value: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' },
@@ -35,7 +35,7 @@ it('adds clearRecords call when clearRecords is true', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         clearRecords: true,
       }),
     ),
@@ -49,7 +49,7 @@ it('adds contentHash call when contentHash is defined', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         contentHash: 'ipfs://Qma8mnp6xV3J2cRNf3mTth5C8nV11CAnceVinc3y8jSbio',
       }),
     ),
@@ -62,7 +62,7 @@ it('adds contentHash call when contentHash is defined', async () => {
 it('does not add abi call when abi is undefined', async () => {
   expect(
     await resolverMulticallParameters({
-      namehash: namehash('test.eth'),
+      name: 'test.eth',
       abi: undefined,
     }),
   ).toMatchInlineSnapshot('[]')
@@ -71,7 +71,7 @@ it('adds text calls when texts array is defined and not empty', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         texts: [{ key: 'email', value: 'cool' }],
       }),
     ),
@@ -85,7 +85,7 @@ it('adds coin calls when coins array is defined and not empty', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         coins: [
           {
             coin: 'ETH',
@@ -104,7 +104,7 @@ it('adds abi call when data is null', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         abi: { encodeAs: 'uri', data: null },
       }),
     ),
@@ -118,7 +118,7 @@ it('adds abi call when data is not empty', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         abi: { encodeAs: 'json', data: { foo: 'bar' } },
       }),
     ),
@@ -132,7 +132,7 @@ it('adds multiple abi calls when multiple abis are added', async () => {
   expect(
     encodeResult(
       await resolverMulticallParameters({
-        namehash: namehash('test.eth'),
+        name: 'test.eth',
         abi: [
           { encodeAs: 'json', data: { foo: 'bar' } },
           { encodeAs: 'uri', data: null },

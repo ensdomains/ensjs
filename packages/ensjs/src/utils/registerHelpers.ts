@@ -138,7 +138,6 @@ export const makeCommitmentTuple = async ({
   secret,
 }: RegistrationParameters): Promise<CommitmentTuple> => {
   const labelHash = labelhash(name.split('.')[0])
-  const hash = namehash(name)
   const fuseData = fuses
     ? encodeFuses({ restriction: 'child', input: fuses })
     : 0
@@ -157,7 +156,7 @@ export const makeCommitmentTuple = async ({
   }
 
   const data = records
-    ? (await resolverMulticallParameters({ namehash: hash, coins, ...records }))
+    ? (await resolverMulticallParameters({ name, coins, ...records }))
         // @ts-expect-error needs TS magic
         .map((item) => encodeFunctionData(item))
     : []

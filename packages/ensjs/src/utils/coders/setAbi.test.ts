@@ -2,12 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { setAbiParameters } from './setAbi.js'
 
 describe('setAbiParameters', () => {
-  const namehash =
-    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+  const name = 'test.eth'
 
   it('returns correct parameters with null data', async () => {
     await expect(
-      setAbiParameters({ namehash, data: null, encodeAs: 'json' }),
+      setAbiParameters({ name, data: null, encodeAs: 'json' }),
     ).resolves.toMatchInlineSnapshot(`
       {
         "abi": [
@@ -33,7 +32,7 @@ describe('setAbiParameters', () => {
           },
         ],
         "args": [
-          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
           1n,
           "0x",
         ],
@@ -44,7 +43,7 @@ describe('setAbiParameters', () => {
 
   it('returns correct parameters ', async () => {
     await expect(
-      setAbiParameters({ namehash, data: { foo: 'bar' }, encodeAs: 'json' }),
+      setAbiParameters({ name, data: { foo: 'bar' }, encodeAs: 'json' }),
     ).resolves.toMatchInlineSnapshot(`
       {
         "abi": [
@@ -70,7 +69,7 @@ describe('setAbiParameters', () => {
           },
         ],
         "args": [
-          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
           1n,
           "0x7b22666f6f223a22626172227d",
         ],

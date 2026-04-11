@@ -5,6 +5,8 @@ import {
   bytesToHex,
   type EncodeFunctionDataParameters,
   type Hex,
+  type NamehashErrorType,
+  namehash,
 } from 'viem'
 import type { ErrorType } from '../../errors/utils.js'
 import {
@@ -17,7 +19,8 @@ import {
 // ================================
 
 export type SetAddrParametersParameters = {
-  namehash: Hex
+  /** Name to set address record for (namehash is computed internally) */
+  name: string
   coin: string | number
   value: Address | string | null
 }
@@ -26,9 +29,10 @@ export type SetAddrParametersErrorType =
   | GetCoderFromCoinErrorType
   | BytesToHexErrorType
   | ErrorType
+  | NamehashErrorType
 
 export const setAddrParameters = ({
-  namehash,
+  name,
   coin,
   value,
 }: SetAddrParametersParameters) => {
@@ -45,7 +49,7 @@ export const setAddrParameters = ({
   return {
     abi: publicResolverSetAddrSnippet,
     functionName: 'setAddr',
-    args: [namehash, BigInt(inputCoinType), encodedAddress],
+    args: [namehash(name), BigInt(inputCoinType), encodedAddress],
   } as const satisfies EncodeFunctionDataParameters<
     typeof publicResolverSetAddrSnippet
   >

@@ -8,7 +8,6 @@ import {
   type EncodeFunctionDataParameters,
   encodeFunctionData,
   type NamehashErrorType,
-  namehash,
   type Transport,
   type WriteContractErrorType,
   type WriteContractParameters,
@@ -51,10 +50,8 @@ export const setRecordsWriteParameters = async <
   client: Client<Transport, chain, account>,
   { name, resolverAddress, ...records }: SetRecordsWriteParametersParameters,
 ) => {
-  const node = namehash(name)
-
   const callArray = await resolverMulticallParameters({
-    namehash: node,
+    name,
     ...records,
   })
   if (callArray.length === 0) throw new NoRecordsSpecifiedError()

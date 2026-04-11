@@ -1,15 +1,12 @@
 import { describe, expect, suite, test } from 'vitest'
 import { setAddrParameters } from './setAddr.js'
 
-const namehash =
-  '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
-
 describe('setAddrParameters', () => {
   suite('returns the correct parameters', () => {
     test('with eth address', () => {
       expect(
         setAddrParameters({
-          namehash,
+          name: 'test.eth',
           coin: 'eth',
           value: '0x1234567890123456789012345678901234567890',
         }),
@@ -38,7 +35,7 @@ describe('setAddrParameters', () => {
             },
           ],
           "args": [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
             60n,
             "0x1234567890123456789012345678901234567890",
           ],
@@ -49,7 +46,7 @@ describe('setAddrParameters', () => {
     test('with btc address', () => {
       expect(
         setAddrParameters({
-          namehash,
+          name: 'test.eth',
           coin: 'btc',
           value: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
         }),
@@ -78,7 +75,7 @@ describe('setAddrParameters', () => {
             },
           ],
           "args": [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
             0n,
             "0x0014e8df018c7e326cc253faac7e46cdc51e68542c42",
           ],
@@ -90,7 +87,7 @@ describe('setAddrParameters', () => {
     test('with coin type as number', () => {
       expect(
         setAddrParameters({
-          namehash,
+          name: 'test.eth',
           coin: 60,
           value: '0x1234567890123456789012345678901234567890',
         }),
@@ -119,7 +116,7 @@ describe('setAddrParameters', () => {
             },
           ],
           "args": [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
             60n,
             "0x1234567890123456789012345678901234567890",
           ],
@@ -131,7 +128,7 @@ describe('setAddrParameters', () => {
     test('with coin type as string', () => {
       expect(
         setAddrParameters({
-          namehash,
+          name: 'test.eth',
           coin: '60',
           value: '0x1234567890123456789012345678901234567890',
         }),
@@ -160,7 +157,7 @@ describe('setAddrParameters', () => {
             },
           ],
           "args": [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
             60n,
             "0x1234567890123456789012345678901234567890",
           ],
@@ -172,7 +169,7 @@ describe('setAddrParameters', () => {
     test('with null value', () => {
       expect(
         setAddrParameters({
-          namehash,
+          name: 'test.eth',
           coin: 'ETH',
           value: null,
         }),
@@ -201,7 +198,7 @@ describe('setAddrParameters', () => {
             },
           ],
           "args": [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "0xcdfbb5d12d55552d36d5138c Greer71e19f9f2c14d3f90f1be98d4e69fcc6546f0",
             60n,
             "0x0000000000000000000000000000000000000000",
           ],

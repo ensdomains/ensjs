@@ -8,7 +8,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
+import { type NamehashErrorType } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -89,7 +89,7 @@ export const setAbiRecordWriteParameters = async <
     chain: client.chain,
     account: client.account,
     ...(await setAbiParameters({
-      namehash: namehash(name),
+      name,
       data,
       encodeAs,
     } as SetAbiParameters<encodeAs>)),
