@@ -1,5 +1,5 @@
-import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
+import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import {
   type Address,
   type Chain,

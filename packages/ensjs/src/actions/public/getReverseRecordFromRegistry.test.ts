@@ -1,5 +1,5 @@
-import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import { registryResolverSnippet } from '@ensdomains/ensjs-abi/registry'
+import { permissionedResolverNameSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type { Client, PublicClient, Transport } from 'viem'
 import { mainnet } from 'viem/chains'
 import {
