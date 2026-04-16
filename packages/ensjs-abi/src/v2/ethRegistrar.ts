@@ -274,17 +274,25 @@ export const ethRegistrarRenewSnippet = [
   {
     inputs: [
       {
-        name: 'name',
+        name: 'label',
         type: 'string',
       },
       {
         name: 'duration',
         type: 'uint64',
       },
+      {
+        name: 'paymentToken',
+        type: 'address',
+      },
+      {
+        name: 'referrer',
+        type: 'bytes32',
+      },
     ],
     name: 'renew',
     outputs: [],
-    stateMutability: 'payable',
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const
