@@ -84,6 +84,6 @@ export async function getSubregistryHistory(
     )
     .map((log) => ({
       tokenId: log.args.tokenId,
-      subregistry: log.args.subregistry as Address,
+      subregistry: log.args.subregistry,
     }))
 }

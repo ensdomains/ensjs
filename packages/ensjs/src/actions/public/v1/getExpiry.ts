@@ -19,7 +19,7 @@ import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import type { Prettify } from '../../../types/index.js'
-import type { ExcludeTE } from '../../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { getNameType } from '../../../utils/name/getNameType.js'
 import { checkIsDotEth } from '../../../utils/name/validation.js'
 
@@ -78,7 +78,9 @@ export async function getExpiry<chain extends Chain>(
   >,
   { name, contract: contractOption }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
-  const chain = (client as ExcludeTE<typeof client>).chain
+  ASSERT_NO_TYPE_ERROR(client)
+
+  const { chain } = client
   const labels = name.split('.')
   const contract = (() => {
     if (contractOption) {
@@ -95,11 +97,7 @@ export async function getExpiry<chain extends Chain>(
     return 'nameWrapper'
   })()
 
-  const multicallAction = getAction(
-    client as ExcludeTE<typeof client>,
-    multicall,
-    'multicall',
-  )
+  const multicallAction = getAction(client, multicall, 'multicall')
 
   const getCurrentBlockTimestampParameters = {
     address: getChainContractAddress({

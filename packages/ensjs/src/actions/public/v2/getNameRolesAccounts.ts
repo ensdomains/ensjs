@@ -56,7 +56,7 @@ export async function getNameRoleAccounts(
     args: [labelHash],
   })
 
-  const resource = (state as { resource: bigint }).resource
+  const resource = state.resource
 
   const logs = await getLogsAction({
     address: registryAddress,

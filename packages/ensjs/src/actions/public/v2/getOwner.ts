@@ -28,5 +28,5 @@ export async function getOwner(
     args: [labelHash],
   })
 
-  return (state as { latestOwner: Address }).latestOwner
+  return state.latestOwner
 }
