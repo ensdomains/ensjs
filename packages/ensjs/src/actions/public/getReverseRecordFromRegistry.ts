@@ -59,7 +59,7 @@ export type GetReverseRecordFromRegistryErrorType =
  * // { name: 'nick.eth', reverseResolverAddress: '0xa2c122be93b0074270ebee7f6b7292c7deb45047' }
  */
 export async function getReverseRecordFromRegistry<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensRegistry'>,
+  client: RequireClientContracts<chain, 'ensLegacyRegistry'>,
   { address }: GetReverseRecordFromRegistryParameters,
 ): Promise<GetReverseRecordFromRegistryReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -68,7 +68,7 @@ export async function getReverseRecordFromRegistry<chain extends Chain>(
   const nodeHash = namehash(reverseNode)
   const registryAddress = getChainContractAddress({
     chain: client.chain,
-    contract: 'ensRegistry',
+    contract: 'ensLegacyRegistry',
   })
   const readContractAction = getAction(client, readContract, 'readContract')
 

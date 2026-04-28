@@ -131,7 +131,7 @@ export const ensL1Contracts = {
       address: '0x7e89b563f936c68c31a360840eb7f9a4aacaf014',
     },
     ensReverseRegistrar: {
-      address: '0xa35e6c5dc06e820cc6716ca33dfcd203503fb1d3',
+      address: '0x075703fd8f8ef6b1e8e593dacab2dd702fc28196',
     },
     ensUniversalResolver: {
       address: '0x4dc74fef4fc6b5a810a1554d431f06c8d8b7451c',
