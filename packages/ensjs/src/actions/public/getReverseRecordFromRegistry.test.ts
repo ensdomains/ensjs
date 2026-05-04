@@ -29,7 +29,7 @@ const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
   chain: addEnsL1Contracts(mainnet),
-} as unknown as Client<Transport, ChainWithContracts<'ensRegistry'>>
+} as unknown as Client<Transport, ChainWithContracts<'ensLegacyRegistry'>>
 
 beforeEach(async () => {
   snapshot = await testClient.snapshot()
