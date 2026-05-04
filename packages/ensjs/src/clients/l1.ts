@@ -134,22 +134,22 @@ export const ensL1Contracts = {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensUniversalResolver: {
-      address: '0xd307d60cfee6f2f74b6daafebf878437e353c1f6',
+      address: '0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
     },
     ensPermissionedResolverImpl: {
       address: '0xe566a1fbaf30ff7c39828fe99f955fc55544cb9c',
     },
     ensRegistry: {
-      address: '0x28356dacb84ee3ebdb007d1f5920b24c87e90d40',
+      address: '0x31a2bb5d933557cce1b3129993193896d074db92',
     },
     ensVerifiableFactory: {
-      address: '0x04fd5ee60b015b6efd21a54d1e662d68868683c5',
+      address: '0x26997c9d0f3dcbae3f78c69e621a3926ee30bb98',
     },
     ensEthRegistrar: {
-      address: '0x29e8a042ea34b7ee720c12b52720027b5e9049c6',
+      address: '0x26e5e80e8f36607ef401443fb34eea363c86e8f7',
     },
     usdc: {
-      address: '0xc39c1eec68a9e3c08c4f6cbebbb0fbf7aa4be06b',
+      address: '0xf2942507cb33422a800ff9aa4cb05522a5e1d9e6',
     },
     ensUserRegistryImpl: {
       address: '0xea93aff7375e8176053ab6ab36b57cab53cbf702',
