@@ -101,6 +101,7 @@ export {
 export {
   permissionedRegistryRoleCountSnippet,
   permissionedRegistrySetResolverSnippet,
+  permissionedRegistryUnregisterSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 export {
   permissionedResolverAliasSnippet,
