@@ -1,6 +1,7 @@
 export * from '../../actions/wallet/v2/deleteAlias.js'
 export * from '../../actions/wallet/v2/grantResolverRoles.js'
 export * from '../../actions/wallet/v2/grantRoles.js'
+export * from '../../actions/wallet/v2/renewEthRegistrarName.js'
 export * from '../../actions/wallet/v2/revokeResolverRoles.js'
 export * from '../../actions/wallet/v2/revokeRoles.js'
 export * from '../../actions/wallet/v2/setAlias.js'
