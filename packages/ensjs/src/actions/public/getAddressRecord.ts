@@ -60,11 +60,7 @@ export async function getAddressRecord<
   chain extends Chain,
   coin extends string | number | undefined = undefined,
 >(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   {
     gatewayUrls,
     strict,

@@ -4,11 +4,11 @@ import type {
   Chain,
   Client,
   Hash,
+  NamehashErrorType,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -28,7 +28,7 @@ import {
 
 export type SetContentHashRecordWriteParametersParameters = {
   /** Name to set content hash for */
-  name?: string
+  name: string
   /** Content hash value */
   contentHash: string | null
   /** The resolver address to use */
@@ -54,11 +54,10 @@ export const setContentHashRecordWriteParameters = <
     address: resolverAddress,
     chain: client.chain,
     account: client.account,
-    ...setContentHashParameters(
-      typeof name === 'string'
-        ? { namehash: namehash(name), contentHash }
-        : { contentHash },
-    ),
+    ...setContentHashParameters({
+      name,
+      contentHash,
+    }),
   } as const satisfies WriteContractParameters<
     SetContentHashParametersReturnType['abi']
   >

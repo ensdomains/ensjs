@@ -5,12 +5,13 @@ export default defineConfig({
     coverage: {
       enabled: true,
       include: ['src/**/*'],
-      exclude: ['data/**/*'],
+      exclude: ['data/**/*', 'src/test/seedTestNames.ts'],
     },
     environment: 'node',
     globalSetup: ['./src/test/globalSetup.ts'],
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.ts'],
     exclude: ['data/**/*', 'src/actions/subgraph/**/*.test.ts'],
+    fileParallelism: false,
   },
 })

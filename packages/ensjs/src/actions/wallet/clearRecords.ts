@@ -3,12 +3,12 @@ import type {
   Address,
   Chain,
   Client,
+  NamehashErrorType,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -19,7 +19,6 @@ import {
 import {
   type ClearRecordsParametersErrorType,
   clearRecordsParameters,
-  clearRecordsParametersV2,
 } from '../../utils/coders/clearRecords.js'
 
 // ================================
@@ -28,7 +27,7 @@ import {
 
 export type ClearRecordsWriteParametersParameters = {
   /** The name to clear records for */
-  name?: string | null
+  name: string
   /** The resolver address to use */
   resolverAddress: Address
 }
@@ -49,9 +48,7 @@ export const clearRecordsWriteParameters = <
   client: Client<Transport, chain, account>,
   { name, resolverAddress }: ClearRecordsWriteParametersParameters,
 ) => {
-  const _clearRecordsParameters = !name
-    ? clearRecordsParametersV2()
-    : clearRecordsParameters(namehash(name))
+  const _clearRecordsParameters = clearRecordsParameters(name)
   return {
     address: resolverAddress,
     chain: client.chain,
@@ -83,7 +80,7 @@ export type ClearRecordsErrorType =
 /**
  * Clears the records for a name on a resolver.
  * @param client - {@link Client}
- * @param options - {@link ClearRecordsOptions}
+ * @param options - {@link ClearRecordsParameters}
  * @returns Transaction hash. {@link ClearRecordsReturnType}
  *
  * @example
@@ -114,18 +111,12 @@ export async function clearRecords<
     ...txArgs
   }: ClearRecordsParameters<chain, account, chainOverride>,
 ): Promise<ClearRecordsReturnType> {
-  const params = !name
-    ? {
-        resolverAddress,
-      }
-    : {
-        name,
-        resolverAddress,
-      }
-
   const writeParameters = clearRecordsWriteParameters(
     clientWithOverrides(client, txArgs),
-    params,
+    {
+      name,
+      resolverAddress,
+    },
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')
   return writeContractAction({

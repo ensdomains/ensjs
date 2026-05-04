@@ -1,4 +1,43 @@
 export {
+  dnsRegistrarErrors,
+  dnsRegistrarProveAndClaimSnippet,
+  dnsRegistrarProveAndClaimWithResolverSnippet,
+} from '@ensdomains/ensjs-abi/dnsRegistrar'
+export {
+  dnssecImplAnchorsSnippet,
+  dnssecImplErrors,
+  dnssecImplVerifyRrSetSnippet,
+} from '@ensdomains/ensjs-abi/dnssecImpl'
+export { erc165SupportsInterfaceSnippet } from '@ensdomains/ensjs-abi/erc165'
+export {
+  multicallGetCurrentBlockTimestampSnippet,
+  multicallTryAggregateSnippet,
+} from '@ensdomains/ensjs-abi/multicall'
+export {
+  registryGetResolverSnippet,
+  registryGetSubregistrySnippet,
+  registryOwnerSnippet,
+  registryResolverSnippet,
+  registrySetApprovalForAllSnippet,
+  registrySetOwnerSnippet,
+  registrySetRecordSnippet,
+  registrySetResolverSnippet,
+  registrySetSubnodeOwnerSnippet,
+  registrySetSubnodeRecordSnippet,
+} from '@ensdomains/ensjs-abi/registry'
+export {
+  reverseRegistrarSetNameForAddrSnippet,
+  reverseRegistrarSetNameSnippet,
+} from '@ensdomains/ensjs-abi/reverseRegistrar'
+export {
+  universalResolverErrors,
+  universalResolverFindResolverSnippet,
+  universalResolverResolveSnippet,
+  universalResolverResolveWithGatewaysSnippet,
+  universalResolverReverseSnippet,
+  universalResolverReverseWithGatewaysSnippet,
+} from '@ensdomains/ensjs-abi/universalResolver'
+export {
   baseRegistrarAvailableSnippet,
   baseRegistrarGracePeriodSnippet,
   baseRegistrarNameExpiresSnippet,
@@ -6,31 +45,11 @@ export {
   baseRegistrarReclaimSnippet,
   baseRegistrarSafeTransferFromSnippet,
   baseRegistrarSafeTransferFromWithDataSnippet,
-} from './baseRegistrar.js'
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
 export {
   bulkRenewalRenewAllSnippet,
   bulkRenewalRentPriceSnippet,
-} from './bulkRenewal.js'
-
-export {
-  dedicatedResolverMulticallWithNodeCheckSnippet,
-  dedicatedResolverNameSnippet,
-  dedicatedResolverSetAbiSnippet,
-  dedicatedResolverSetAddrSnippet,
-  dedicatedResolverSetContentHashSnippet,
-  dedicatedResolverSetTextSnippet,
-} from './dedicatedResolver.js'
-export {
-  dnsRegistrarErrors,
-  dnsRegistrarProveAndClaimSnippet,
-  dnsRegistrarProveAndClaimWithResolverSnippet,
-} from './dnsRegistrar.js'
-export {
-  dnssecImplAnchorsSnippet,
-  dnssecImplVerifyRrSetSnippet,
-} from './dnssecImpl.js'
-export { erc165SupportsInterfaceSnippet } from './erc165.js'
-export { erc1155SafeTransferFromSnippet } from './erc1155.js'
+} from '@ensdomains/ensjs-abi/v1/bulkRenewal'
 export {
   ethRegistrarControllerCommitmentsSnippet,
   ethRegistrarControllerCommitSnippet,
@@ -38,27 +57,7 @@ export {
   ethRegistrarControllerRegisterSnippet,
   ethRegistrarControllerRenewSnippet,
   ethRegistrarControllerRentPriceSnippet,
-} from './ethRegistrarController.js'
-export {
-  registryGetResolverSnippet,
-  registryGetSubregistrySnippet,
-} from './ethRegistry.js'
-export { getChainContractAddress } from './getChainContractAddress.js'
-export {
-  l2EthRegistrarAvailableSnippet,
-  l2EthRegistrarCommitmentsSnippet,
-  l2EthRegistrarCommitSnippet,
-  l2EthRegistrarErrors,
-  l2EthRegistrarIsAvailableSnippet,
-  l2EthRegistrarMakeCommitmentSnippet,
-  l2EthRegistrarRegisterSnippet,
-  l2EthRegistrarRenewSnippet,
-  l2EthRegistrarRentPriceSnippet,
-} from './l2EthRegistrar.js'
-export {
-  multicallGetCurrentBlockTimestampSnippet,
-  multicallTryAggregateSnippet,
-} from './multicall.js'
+} from '@ensdomains/ensjs-abi/v1/ethRegistrarController'
 export {
   nameWrapperErrors,
   nameWrapperGetDataSnippet,
@@ -74,13 +73,7 @@ export {
   nameWrapperUnwrapEth2ldSnippet,
   nameWrapperUnwrapSnippet,
   nameWrapperWrapSnippet,
-} from './nameWrapper.js'
-export {
-  permissionedRegistryGetNameDataSnippet,
-  permissionedRegistryGetTokenIdSnippet,
-  permissionedRegistryRoleCountSnippet,
-  permissionedRegistrySetResolverSnippet,
-} from './permissionedRegistry.js'
+} from '@ensdomains/ensjs-abi/v1/nameWrapper'
 export {
   publicResolverAbiSnippet,
   publicResolverClearRecordsSnippet,
@@ -93,27 +86,33 @@ export {
   publicResolverSetTextSnippet,
   publicResolverSingleAddrSnippet,
   publicResolverTextSnippet,
-} from './publicResolver.js'
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
 export {
-  registryOwnerSnippet,
-  registryResolverSnippet,
-  registrySetApprovalForAllSnippet,
-  registrySetOwnerSnippet,
-  registrySetRecordSnippet,
-  registrySetResolverSnippet,
-  registrySetSubnodeOwnerSnippet,
-  registrySetSubnodeRecordSnippet,
-} from './registry.js'
+  ethRegistrarAvailableSnippet as l2EthRegistrarAvailableSnippet,
+  ethRegistrarCommitmentsSnippet as l2EthRegistrarCommitmentsSnippet,
+  ethRegistrarCommitSnippet as l2EthRegistrarCommitSnippet,
+  ethRegistrarErrors as l2EthRegistrarErrors,
+  ethRegistrarIsAvailableSnippet as l2EthRegistrarIsAvailableSnippet,
+  ethRegistrarMakeCommitmentSnippet as l2EthRegistrarMakeCommitmentSnippet,
+  ethRegistrarRegisterSnippet as l2EthRegistrarRegisterSnippet,
+  ethRegistrarRenewSnippet as l2EthRegistrarRenewSnippet,
+  ethRegistrarRentPriceSnippet as l2EthRegistrarRentPriceSnippet,
+} from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 export {
-  reverseRegistrarSetNameForAddrSnippet,
-  reverseRegistrarSetNameSnippet,
-} from './reverseRegistrar.js'
+  permissionedRegistryRoleCountSnippet,
+  permissionedRegistrySetResolverSnippet,
+} from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
+export {
+  permissionedResolverAliasSnippet,
+  permissionedResolverGrantAddrRolesSnippet,
+  permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverGrantRootRolesSnippet,
+  permissionedResolverGrantTextRolesSnippet,
+  permissionedResolverHasRolesSnippet,
+  permissionedResolverHasRootRolesSnippet,
+  permissionedResolverRevokeRolesSnippet,
+  permissionedResolverRevokeRootRolesSnippet,
+  permissionedResolverRolesSnippet,
+} from '@ensdomains/ensjs-abi/v2/permissionedResolver'
+export { getChainContractAddress } from './getChainContractAddress.js'
 export { standardRegistryUnregisterSnippet } from './standardRegistry.js'
-export {
-  universalResolverErrors,
-  universalResolverFindResolverSnippet,
-  universalResolverResolveSnippet,
-  universalResolverResolveWithGatewaysSnippet,
-  universalResolverReverseSnippet,
-  universalResolverReverseWithGatewaysSnippet,
-} from './universalResolver.js'

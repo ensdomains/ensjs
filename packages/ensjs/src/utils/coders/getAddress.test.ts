@@ -1,9 +1,9 @@
-import { encodeFunctionResult } from 'viem'
-import { describe, expect, it } from 'vitest'
 import {
   publicResolverMultiAddrSnippet,
   publicResolverSingleAddrSnippet,
-} from '../../contracts/publicResolver.js'
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
+import { encodeFunctionResult } from 'viem'
+import { describe, expect, it } from 'vitest'
 import {
   decodeAddressResult,
   decodeAddressResultFromPrimitiveTypes,
@@ -184,7 +184,7 @@ describe('decodeAddressResult', () => {
       Params: (address)
       Data:   0x1234 (2 bytes)
 
-      Version: viem@2.40.2]
+      Version: viem@2.47.10]
     `)
   })
 

@@ -1,12 +1,13 @@
+import { publicResolverSetAddrSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   type Address,
   type BytesToHexErrorType,
   bytesToHex,
   type EncodeFunctionDataParameters,
   type Hex,
+  type NamehashErrorType,
+  namehash,
 } from 'viem'
-import { dedicatedResolverSetAddrSnippet } from '../../contracts/dedicatedResolver.js'
-import { publicResolverSetAddrSnippet } from '../../contracts/publicResolver.js'
 import type { ErrorType } from '../../errors/utils.js'
 import {
   type GetCoderFromCoinErrorType,
@@ -18,7 +19,8 @@ import {
 // ================================
 
 export type SetAddrParametersParameters = {
-  namehash?: Hex
+  /** Name to set address record for (namehash is computed internally) */
+  name: string
   coin: string | number
   value: Address | string | null
 }
@@ -27,9 +29,10 @@ export type SetAddrParametersErrorType =
   | GetCoderFromCoinErrorType
   | BytesToHexErrorType
   | ErrorType
+  | NamehashErrorType
 
 export const setAddrParameters = ({
-  namehash,
+  name,
   coin,
   value,
 }: SetAddrParametersParameters) => {
@@ -43,21 +46,12 @@ export const setAddrParameters = ({
     encodedAddress = bytesToHex(encodedAddress)
   }
 
-  if (namehash) {
-    return {
-      abi: publicResolverSetAddrSnippet,
-      functionName: 'setAddr',
-      args: [namehash, BigInt(inputCoinType), encodedAddress],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof publicResolverSetAddrSnippet
-    >
-  }
   return {
-    abi: dedicatedResolverSetAddrSnippet,
+    abi: publicResolverSetAddrSnippet,
     functionName: 'setAddr',
-    args: [BigInt(inputCoinType), encodedAddress],
+    args: [namehash(name), BigInt(inputCoinType), encodedAddress],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof dedicatedResolverSetAddrSnippet
+    typeof publicResolverSetAddrSnippet
   >
 }
 

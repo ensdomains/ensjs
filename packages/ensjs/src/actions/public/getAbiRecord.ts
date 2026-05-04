@@ -53,11 +53,7 @@ export type GetAbiRecordErrorType =
  * // TODO: real example
  */
 export async function getAbiRecord<chain extends Chain>(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, name, supportedContentTypes, strict }: GetAbiRecordParameters,
 ): Promise<GetAbiRecordReturnType> {
   const resolveNameDataAction = getAction(

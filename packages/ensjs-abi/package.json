@@ -1,0 +1,117 @@
+{
+  "name": "@ensdomains/ensjs-abi",
+  "version": "5.0.0-alpha.1",
+  "description": "ENS ABI snippets for contract interaction",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./erc165": {
+      "types": "./dist/erc165.d.ts",
+      "default": "./dist/erc165.js"
+    },
+    "./registry": {
+      "types": "./dist/registry.d.ts",
+      "default": "./dist/registry.js"
+    },
+    "./reverseRegistrar": {
+      "types": "./dist/reverseRegistrar.d.ts",
+      "default": "./dist/reverseRegistrar.js"
+    },
+    "./multicall": {
+      "types": "./dist/multicall.d.ts",
+      "default": "./dist/multicall.js"
+    },
+    "./universalResolver": {
+      "types": "./dist/universalResolver.d.ts",
+      "default": "./dist/universalResolver.js"
+    },
+    "./compositeResolver": {
+      "types": "./dist/compositeResolver.d.ts",
+      "default": "./dist/compositeResolver.js"
+    },
+    "./dnsRegistrar": {
+      "types": "./dist/dnsRegistrar.d.ts",
+      "default": "./dist/dnsRegistrar.js"
+    },
+    "./dnssecImpl": {
+      "types": "./dist/dnssecImpl.d.ts",
+      "default": "./dist/dnssecImpl.js"
+    },
+    "./v1": {
+      "types": "./dist/v1/index.d.ts",
+      "default": "./dist/v1/index.js"
+    },
+    "./v1/ethRegistrarController": {
+      "types": "./dist/v1/ethRegistrarController.d.ts",
+      "default": "./dist/v1/ethRegistrarController.js"
+    },
+    "./v1/publicResolver": {
+      "types": "./dist/v1/publicResolver.d.ts",
+      "default": "./dist/v1/publicResolver.js"
+    },
+    "./v1/nameWrapper": {
+      "types": "./dist/v1/nameWrapper.d.ts",
+      "default": "./dist/v1/nameWrapper.js"
+    },
+    "./v1/baseRegistrar": {
+      "types": "./dist/v1/baseRegistrar.d.ts",
+      "default": "./dist/v1/baseRegistrar.js"
+    },
+    "./v1/bulkRenewal": {
+      "types": "./dist/v1/bulkRenewal.d.ts",
+      "default": "./dist/v1/bulkRenewal.js"
+    },
+    "./v2": {
+      "types": "./dist/v2/index.d.ts",
+      "default": "./dist/v2/index.js"
+    },
+    "./v2/ethRegistrar": {
+      "types": "./dist/v2/ethRegistrar.d.ts",
+      "default": "./dist/v2/ethRegistrar.js"
+    },
+    "./v2/userRegistry": {
+      "types": "./dist/v2/userRegistry.d.ts",
+      "default": "./dist/v2/userRegistry.js"
+    },
+    "./v2/permissionedRegistry": {
+      "types": "./dist/v2/permissionedRegistry.d.ts",
+      "default": "./dist/v2/permissionedRegistry.js"
+    },
+    "./v2/permissionedResolver": {
+      "types": "./dist/v2/permissionedResolver.d.ts",
+      "default": "./dist/v2/permissionedResolver.js"
+    },
+    "./v2/enhancedAccessControl": {
+      "types": "./dist/v2/enhancedAccessControl.d.ts",
+      "default": "./dist/v2/enhancedAccessControl.js"
+    },
+    "./v2/verifiableFactory": {
+      "types": "./dist/v2/verifiableFactory.d.ts",
+      "default": "./dist/v2/verifiableFactory.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ensdomains/ensjs.git",
+    "directory": "packages/ensjs-abi"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=22"
+  }
+}

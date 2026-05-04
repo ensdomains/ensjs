@@ -1,12 +1,12 @@
+import {
+  registryOwnerSnippet,
+  registryResolverSnippet,
+} from '@ensdomains/ensjs-abi/registry'
+import { nameWrapperOwnerOfSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import { type Address, type Hex, zeroAddress } from 'viem'
 import { namehash } from 'viem/ens'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
-import { nameWrapperOwnerOfSnippet } from '../../contracts/nameWrapper.js'
-import {
-  registryOwnerSnippet,
-  registryResolverSnippet,
-} from '../../contracts/registry.js'
 import {
   publicClient,
   testClient,

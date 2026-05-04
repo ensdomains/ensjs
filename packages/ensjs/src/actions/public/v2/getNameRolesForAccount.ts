@@ -1,8 +1,8 @@
+import { permissionedRegistryRolesSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import { type Client, labelhash } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { permissionedRegistryRolesSnippet } from '../../../contracts/permissionedRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { decodeRoleCounts, registryRoles } from '../../../utils/v2/index.js'
 

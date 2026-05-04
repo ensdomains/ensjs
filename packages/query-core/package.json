@@ -61,6 +61,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm run clean && pnpm run build:esm+types",
+    "clean": "rm -rf dist",
     "build:esm+types": "tsc --project tsconfig.build.json --outDir ./dist/esm --declaration --declarationMap --declarationDir ./dist/types",
     "check:types": "tsc --noEmit",
     "lint": "biome check"

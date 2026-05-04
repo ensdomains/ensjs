@@ -1,3 +1,4 @@
+import { nameWrapperNamesSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Chain,
   type GetChainContractAddressErrorType,
@@ -10,9 +11,8 @@ import {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction, trim } from 'viem/utils'
-import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import { nameWrapperNamesSnippet } from '../../../contracts/nameWrapper.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import {
   type BytesToPacketErrorType,
@@ -54,7 +54,7 @@ export type GetWrapperNameErrorType =
  * // wrapped.eth
  */
 export async function getWrapperName<chain extends Chain>(
-  client: RequireClientL1Contracts<chain, 'ensNameWrapper'>,
+  client: RequireClientContracts<chain, 'ensNameWrapper'>,
   { name }: GetWrapperNameParameters,
 ): Promise<GetWrapperNameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

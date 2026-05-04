@@ -20,7 +20,7 @@ import {
   type WalletClient,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { L1_DEVNET_ADDRESSES, L2_DEVNET_ADDRESSES } from './devnetAddresses.js'
+import { deploymentAddresses } from './addTestContracts.js'
 
 // Test account from anvil (account #1 with known private key)
 const account = privateKeyToAccount(
@@ -32,51 +32,32 @@ const account2 = privateKeyToAccount(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
 )
 
-async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
+async function setupClients(l1Url: string) {
   const localhost = {
-    id: 15658733,
+    id: 1,
     name: 'Localhost',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
       default: { http: [l1Url] },
     },
     contracts: {
-      ensRegistry: { address: L1_DEVNET_ADDRESSES.ENSRegistry },
+      ensRegistry: { address: deploymentAddresses.ENSRegistry },
       ensBaseRegistrarImplementation: {
-        address: L1_DEVNET_ADDRESSES.BaseRegistrarImplementation,
+        address: deploymentAddresses.BaseRegistrarImplementation,
       },
       ensEthRegistrarController: {
-        address: L1_DEVNET_ADDRESSES.LegacyETHRegistrarController,
+        address: deploymentAddresses.LegacyETHRegistrarController,
       },
-      ensNameWrapper: { address: L1_DEVNET_ADDRESSES.NameWrapper },
-      ensPublicResolver: { address: L1_DEVNET_ADDRESSES.PublicResolver },
-    },
-  }
-
-  const localhostL2 = {
-    id: 15658734,
-    name: 'Localhost L2',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-      default: { http: [l2Url] },
-    },
-    contracts: {
-      ethRegistrar: { address: L2_DEVNET_ADDRESSES.EthRegistrar },
-      usdc: { address: L2_DEVNET_ADDRESSES.USDC },
+      ensNameWrapper: { address: deploymentAddresses.NameWrapper },
+      ensPublicResolver: { address: deploymentAddresses.PublicResolver },
     },
   }
 
   const transport = http(l1Url)
-  const transportL2 = http(l2Url)
 
   const publicClient = createPublicClient({
     chain: localhost,
     transport,
-  })
-
-  const publicClientL2 = createPublicClient({
-    chain: localhostL2,
-    transport: transportL2,
   })
 
   const walletClient = createWalletClient({
@@ -91,20 +72,11 @@ async function setupClients(l1Url: string, l2Url = 'http://localhost:8546') {
     transport,
   })
 
-  const walletClientL2 = createWalletClient({
-    account,
-    chain: localhostL2,
-    transport: transportL2,
-  })
-
   return {
     publicClient,
-    publicClientL2,
     walletClient,
     walletClient2,
-    walletClientL2,
-    addresses: L1_DEVNET_ADDRESSES,
-    l2Addresses: L2_DEVNET_ADDRESSES,
+    addresses: deploymentAddresses,
     account,
     account2,
   }
@@ -169,6 +141,7 @@ async function registerUnwrappedName(
 
   // Commit
   const commitTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -211,6 +184,7 @@ async function registerUnwrappedName(
 
   // Register using legacy registerWithConfig
   const registerTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -319,6 +293,7 @@ async function registerWrappedName(
 
   // Commit
   const commitTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -365,6 +340,7 @@ async function registerWrappedName(
 
   // Register
   const registerTx = await walletClient.writeContract({
+    chain: null,
     address: registrarController,
     abi: [
       {
@@ -403,39 +379,6 @@ async function registerWrappedName(
   return wrapTx
 }
 
-async function createSubname(
-  walletClient: any,
-  registry: Address,
-  parentName: string,
-  label: string,
-  owner: Address,
-): Promise<Hash> {
-  const parentNode = namehash(parentName)
-  // labelhash is keccak256 of the label string (not namehash)
-  const labelHash = keccak256(toHex(label))
-
-  const tx = await walletClient.writeContract({
-    address: registry,
-    abi: [
-      {
-        inputs: [
-          { name: 'node', type: 'bytes32' },
-          { name: 'label', type: 'bytes32' },
-          { name: 'owner', type: 'address' },
-        ],
-        name: 'setSubnodeOwner',
-        outputs: [{ name: '', type: 'bytes32' }],
-        stateMutability: 'nonpayable',
-        type: 'function',
-      },
-    ] as const,
-    functionName: 'setSubnodeOwner',
-    args: [parentNode, labelHash, owner],
-  })
-
-  return tx
-}
-
 async function mineBlock() {
   await fetch('http://localhost:8545', {
     method: 'POST',
@@ -469,6 +412,7 @@ async function setPrimaryName(
   name: string,
 ): Promise<Hash> {
   const tx = await walletClient.writeContract({
+    chain: null,
     address: reverseRegistrar,
     abi: [
       {
@@ -493,6 +437,7 @@ async function setAddrRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -521,6 +466,7 @@ async function setAddrRecordWithCoin(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -550,6 +496,7 @@ async function setTextRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -578,6 +525,7 @@ async function setContenthashRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -606,6 +554,7 @@ async function setAbiRecord(
 ): Promise<Hash> {
   const node = namehash(name)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: resolver,
     abi: [
       {
@@ -632,6 +581,7 @@ async function approveNameWrapper(
   nameWrapper: Address,
 ): Promise<Hash> {
   const tx = await walletClient.writeContract({
+    chain: null,
     address: baseRegistrar,
     abi: [
       {
@@ -659,6 +609,7 @@ async function wrapETH2LD(
   resolver: Address,
 ): Promise<Hash> {
   const tx = await walletClient.writeContract({
+    chain: null,
     address: nameWrapper,
     abi: [
       {
@@ -691,6 +642,7 @@ async function setSubnodeOwner(
 ): Promise<Hash> {
   const parentNode = namehash(parentName)
   const tx = await walletClient.writeContract({
+    chain: null,
     address: nameWrapper,
     abi: [
       {
@@ -723,6 +675,7 @@ async function setSubnodeOwnerRegistry(
   const parentNode = namehash(parentName)
   const labelHash = keccak256(toHex(label))
   const tx = await walletClient.writeContract({
+    chain: null,
     address: registry,
     abi: [
       {
@@ -819,7 +772,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txAddr)
       console.log('  ✓ Set addr record for with-profile.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping addr record (may already exist)')
     }
 
@@ -833,7 +786,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txPrimary)
       console.log('  ✓ Set primary name for account2')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping primary name (may already exist)')
     }
 
@@ -849,7 +802,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txText)
       console.log('  ✓ Set text record for with-profile.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping text record (may already exist)')
     }
 
@@ -866,7 +819,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txEtc)
       console.log('  ✓ Set etcLegacy address for with-profile.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping etcLegacy record (may already exist)')
     }
 
@@ -895,7 +848,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txSetContenthash)
       console.log('  ✓ Set contenthash for with-contenthash.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping contenthash (may already exist)')
     }
 
@@ -1160,7 +1113,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txSubnameTest)
       console.log('  ✓ Created test.with-subnames.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping test.with-subnames.eth (may already exist)')
     }
 
@@ -1210,7 +1163,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txSubname)
       console.log('  ✓ Created test.wrapped-with-subnames.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping subname creation (may already exist)')
     }
 
@@ -1230,7 +1183,7 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
       )
       await waitForTransaction(publicClient, txAddrSubname)
       console.log('  ✓ Created addr.wrapped-with-subnames.eth')
-    } catch (e) {
+    } catch {
       console.log('  ⏭️ Skipping addr subname creation (may already exist)')
     }
 

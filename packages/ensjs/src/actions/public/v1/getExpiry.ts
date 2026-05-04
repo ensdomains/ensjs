@@ -1,3 +1,9 @@
+import { multicallGetCurrentBlockTimestampSnippet } from '@ensdomains/ensjs-abi/multicall'
+import {
+  baseRegistrarGracePeriodSnippet,
+  baseRegistrarNameExpiresSnippet,
+} from '@ensdomains/ensjs-abi/v1/baseRegistrar'
+import { nameWrapperGetDataSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Chain,
   type GetChainContractAddressErrorType,
@@ -9,17 +15,11 @@ import {
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientL1Contracts } from '../../../clients/l1.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
-import {
-  baseRegistrarGracePeriodSnippet,
-  baseRegistrarNameExpiresSnippet,
-} from '../../../contracts/baseRegistrar.js'
-import { multicallGetCurrentBlockTimestampSnippet } from '../../../contracts/multicall.js'
-import { nameWrapperGetDataSnippet } from '../../../contracts/nameWrapper.js'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import type { Prettify } from '../../../types/index.js'
-import type { ExcludeTE } from '../../../types/internal.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { getNameType } from '../../../utils/name/getNameType.js'
 import { checkIsDotEth } from '../../../utils/name/validation.js'
 
@@ -69,7 +69,7 @@ export type GetExpiryErrorType =
 
  */
 export async function getExpiry<chain extends Chain>(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     | 'ensNameWrapper'
     | 'ensBaseRegistrarImplementation'
@@ -78,7 +78,9 @@ export async function getExpiry<chain extends Chain>(
   >,
   { name, contract: contractOption }: GetExpiryParameters,
 ): Promise<GetExpiryReturnType> {
-  const chain = (client as ExcludeTE<typeof client>).chain
+  ASSERT_NO_TYPE_ERROR(client)
+
+  const { chain } = client
   const labels = name.split('.')
   const contract = (() => {
     if (contractOption) {
@@ -95,11 +97,7 @@ export async function getExpiry<chain extends Chain>(
     return 'nameWrapper'
   })()
 
-  const multicallAction = getAction(
-    client as ExcludeTE<typeof client>,
-    multicall,
-    'multicall',
-  )
+  const multicallAction = getAction(client, multicall, 'multicall')
 
   const getCurrentBlockTimestampParameters = {
     address: getChainContractAddress({

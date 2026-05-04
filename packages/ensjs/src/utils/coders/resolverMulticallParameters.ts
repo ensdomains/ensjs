@@ -1,10 +1,8 @@
-import type { Hex } from 'viem'
 import type { Prettify } from '../../types/index.js'
 import {
   type ClearRecordsParametersErrorType,
   type ClearRecordsParametersReturnType,
   clearRecordsParameters,
-  clearRecordsParametersV2,
 } from './clearRecords.js'
 import type { EncodeAbiParameters } from './encodeAbi.js'
 import {
@@ -36,9 +34,9 @@ export type RecordOptions = Prettify<{
   /** ContentHash value */
   contentHash?: string | null
   /** Array of text records */
-  texts?: Omit<SetTextParameters, 'namehash'>[]
+  texts?: Omit<SetTextParameters, 'name'>[]
   /** Array of coin records */
-  coins?: Omit<SetAddrParametersParameters, 'namehash'>[]
+  coins?: Omit<SetAddrParametersParameters, 'name'>[]
   /** ABI value */
   abi?: EncodeAbiParameters | EncodeAbiParameters[]
 }>
@@ -65,50 +63,47 @@ export type ResolverMulticallItemErrorType =
 
 /**
  * Generates multicall parameters for setting records.
- * @param namehash - If provided, uses Public Resolver ABI (with namehash in each call).
- *                   If not provided, uses Dedicated Resolver ABI (without namehash).
+ * All individual calls compute the namehash internally.
  */
 export const resolverMulticallParameters = async ({
-  namehash,
+  name,
   clearRecords,
   contentHash,
   texts,
   coins,
   abi,
 }: {
-  namehash?: Hex
+  name: string
 } & RecordOptions): Promise<ResolverMulticallParametersReturnType> => {
   const calls: ResolverMulticallParametersReturnType = []
 
   if (clearRecords) {
-    calls.push(
-      namehash ? clearRecordsParameters(namehash) : clearRecordsParametersV2(),
-    )
+    calls.push(clearRecordsParameters(name))
   }
 
   if (contentHash !== undefined) {
-    const data = setContentHashParameters({ namehash, contentHash })
+    const data = setContentHashParameters({ name, contentHash })
     if (data) calls.push(data)
   }
 
   if (abi !== undefined) {
     const abis = Array.isArray(abi) ? abi : [abi]
     const data = await Promise.all(
-      abis.map(async (abiItem) => setAbiParameters({ namehash, ...abiItem })),
+      abis.map(async (abiItem) => setAbiParameters({ name, ...abiItem })),
     )
     if (data) calls.push(...data)
   }
 
   if (texts && texts.length > 0) {
     const data = texts.map((textItem) =>
-      setTextParameters({ namehash, ...textItem }),
+      setTextParameters({ name, ...textItem }),
     )
     if (data) calls.push(...data)
   }
 
   if (coins && coins.length > 0) {
     const data = coins.map((coinItem) =>
-      setAddrParameters({ namehash, ...coinItem }),
+      setAddrParameters({ name, ...coinItem }),
     )
     if (data) calls.push(...data)
   }

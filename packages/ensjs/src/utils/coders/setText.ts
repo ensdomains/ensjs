@@ -1,39 +1,30 @@
-import type { EncodeFunctionDataParameters, Hex } from 'viem'
-import { dedicatedResolverSetTextSnippet } from '../../contracts/dedicatedResolver.js'
-import { publicResolverSetTextSnippet } from '../../contracts/publicResolver.js'
+import { publicResolverSetTextSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
+import {
+  type EncodeFunctionDataParameters,
+  type NamehashErrorType,
+  namehash,
+} from 'viem'
 
 // ================================
 // Set text parameters
 // ================================
 
 export type SetTextParameters = {
-  namehash?: Hex
+  /** Name to set text record for (namehash is computed internally) */
+  name: string
   key: string
   value: string | null
 }
 
-export type SetTextParametersErrorType = never
+export type SetTextParametersErrorType = NamehashErrorType
 
-export const setTextParameters = ({
-  namehash,
-  key,
-  value,
-}: SetTextParameters) => {
-  if (namehash) {
-    return {
-      abi: publicResolverSetTextSnippet,
-      functionName: 'setText',
-      args: [namehash, key, value ?? ''],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof publicResolverSetTextSnippet
-    >
-  }
+export const setTextParameters = ({ name, key, value }: SetTextParameters) => {
   return {
-    abi: dedicatedResolverSetTextSnippet,
+    abi: publicResolverSetTextSnippet,
     functionName: 'setText',
-    args: [key, value ?? ''],
+    args: [namehash(name), key, value ?? ''],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof dedicatedResolverSetTextSnippet
+    typeof publicResolverSetTextSnippet
   >
 }
 

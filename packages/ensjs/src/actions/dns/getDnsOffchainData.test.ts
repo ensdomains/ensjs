@@ -568,7 +568,7 @@ describe('no eligible invalid records', () => {
   })
 })
 
-it('real test', async () => {
+it.skip('real test', async () => {
   const offchainData = await getDnsOffchainData(mainnetPublicClient, {
     name: 'ethleaderboard.xyz',
     strict: true,

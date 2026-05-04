@@ -53,11 +53,7 @@ export type GetTextRecordErrorType =
  * // ensdomains
  */
 export async function getTextRecord<chain extends Chain>(
-  client: RequireClientContracts<
-    'ensUniversalResolver',
-    chain,
-    'ensUniversalResolver'
-  >,
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
   { gatewayUrls, strict, ...parameters }: GetTextRecordParameters,
 ): Promise<GetTextRecordReturnType> {
   ASSERT_NO_TYPE_ERROR(client)

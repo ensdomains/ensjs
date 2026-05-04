@@ -1,3 +1,7 @@
+import {
+  reverseRegistrarSetNameForAddrSnippet,
+  reverseRegistrarSetNameSnippet,
+} from '@ensdomains/ensjs-abi/reverseRegistrar'
 import type {
   Account,
   Address,
@@ -10,14 +14,10 @@ import type {
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
-  ChainWithL1Contracts,
-  RequireClientL1Contracts,
-} from '../../clients/l1.js'
+  ChainWithContracts,
+  RequireClientContracts,
+} from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import {
-  reverseRegistrarSetNameForAddrSnippet,
-  reverseRegistrarSetNameSnippet,
-} from '../../contracts/reverseRegistrar.js'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
 import {
   ASSERT_NO_TYPE_ERROR,
@@ -63,7 +63,7 @@ export const setPrimaryNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensPublicResolver' | 'ensReverseRegistrar',
     account
@@ -117,7 +117,7 @@ export const setPrimaryNameWriteParameters = <
 export type SetPrimaryNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<
+  chainOverride extends ChainWithContracts<
     'ensPublicResolver' | 'ensReverseRegistrar'
   >,
 > = Prettify<
@@ -155,11 +155,11 @@ export type SetPrimaryNameErrorType =
 export async function setPrimaryName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithL1Contracts<
+  chainOverride extends ChainWithContracts<
     'ensPublicResolver' | 'ensReverseRegistrar'
   >,
 >(
-  client: RequireClientL1Contracts<
+  client: RequireClientContracts<
     chain,
     'ensPublicResolver' | 'ensReverseRegistrar',
     account

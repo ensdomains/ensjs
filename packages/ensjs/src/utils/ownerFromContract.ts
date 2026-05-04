@@ -1,3 +1,5 @@
+import { registryOwnerSnippet } from '@ensdomains/ensjs-abi/registry'
+import { nameWrapperOwnerOfSnippet } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 import {
   type Chain,
   getChainContractAddress,
@@ -6,9 +8,7 @@ import {
   labelhash,
   type ReadContractParameters,
 } from 'viem'
-import type { RequireChainL1Contracts } from '../clients/l1.js'
-import { nameWrapperOwnerOfSnippet } from '../contracts/nameWrapper.js'
-import { registryOwnerSnippet } from '../contracts/registry.js'
+import type { RequireChainContracts } from '../clients/l1.js'
 import { InvalidContractTypeError } from '../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../types/internal.js'
 
@@ -40,9 +40,9 @@ export type GetContractSpecificOwnerParametersErrorType =
   InvalidContractTypeError | LabelhashErrorType
 
 export const getContractSpecificOwnerParameters = <_chain extends Chain>(
-  chain: RequireChainL1Contracts<
+  chain: RequireChainContracts<
     _chain,
-    'ensNameWrapper' | 'ensRegistry' | 'ensBaseRegistrarImplementation'
+    'ensNameWrapper' | 'ensLegacyRegistry' | 'ensBaseRegistrarImplementation'
   >,
   { contract, node, labels }: OwnerFromContractArgs,
 ) => {
@@ -61,7 +61,10 @@ export const getContractSpecificOwnerParameters = <_chain extends Chain>(
       } as const satisfies ReadContractParameters<typeof abi, 'ownerOf'>
     case 'registry':
       return {
-        address: getChainContractAddress({ chain, contract: 'ensRegistry' }),
+        address: getChainContractAddress({
+          chain,
+          contract: 'ensLegacyRegistry',
+        }),
         abi,
         functionName: 'owner',
         args: [node],

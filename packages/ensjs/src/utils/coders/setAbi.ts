@@ -1,6 +1,9 @@
-import type { EncodeFunctionDataParameters, Hex } from 'viem'
-import { dedicatedResolverSetAbiSnippet } from '../../contracts/dedicatedResolver.js'
-import { publicResolverSetAbiSnippet } from '../../contracts/publicResolver.js'
+import { publicResolverSetAbiSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
+import {
+  type EncodeFunctionDataParameters,
+  type NamehashErrorType,
+  namehash,
+} from 'viem'
 import type { Prettify } from '../../types/index.js'
 import {
   type AbiEncodeAs,
@@ -16,19 +19,19 @@ import {
 export type SetAbiParameters<encodeAs extends AbiEncodeAs = AbiEncodeAs> =
   Prettify<
     {
-      namehash?: Hex
+      /** Name to set ABI for (namehash is computed internally) */
+      name: string
     } & EncodeAbiParameters<encodeAs>
   >
 
-export type SetAbiParametersErrorType = EncodeAbiErrorType
+export type SetAbiParametersErrorType = EncodeAbiErrorType | NamehashErrorType
 
 /**
  * Sets ABI parameters for encoding.
- * - With namehash: uses Public Resolver ABI `setABI(node, contentType, data)`
- * - Without namehash: uses Dedicated Resolver ABI `setABI(contentType, data)`
+ * Uses Public Resolver ABI `setABI(node, contentType, data)`
  */
 export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
-  namehash,
+  name,
   data,
   encodeAs,
 }: SetAbiParameters<encodeAs>) => {
@@ -37,22 +40,12 @@ export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
     encodeAs,
   } as EncodeAbiParameters<encodeAs>)
 
-  if (namehash) {
-    return {
-      abi: publicResolverSetAbiSnippet,
-      functionName: 'setABI',
-      args: [namehash, BigInt(contentType), encodedData],
-    } as const satisfies EncodeFunctionDataParameters<
-      typeof publicResolverSetAbiSnippet
-    >
-  }
-
   return {
-    abi: dedicatedResolverSetAbiSnippet,
+    abi: publicResolverSetAbiSnippet,
     functionName: 'setABI',
-    args: [BigInt(contentType), encodedData],
+    args: [namehash(name), BigInt(contentType), encodedData],
   } as const satisfies EncodeFunctionDataParameters<
-    typeof dedicatedResolverSetAbiSnippet
+    typeof publicResolverSetAbiSnippet
   >
 }
 

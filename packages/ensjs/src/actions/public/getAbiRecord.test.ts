@@ -128,36 +128,36 @@ describe('getAbiRecord()', () => {
       name: 'with-type-1-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(1)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result?.contentType).toBe(1)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toMatchObject(dummyABI)
   })
   it('should return object for type 2 ABI', async () => {
     const result = await getAbiRecord(publicClient, {
       name: 'with-type-2-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(2)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result?.contentType).toBe(2)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toMatchObject(dummyABI)
   })
   it('should return object for type 4 ABI', async () => {
     const result = await getAbiRecord(publicClient, {
       name: 'with-type-4-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(4)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result?.contentType).toBe(4)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toMatchObject(dummyABI)
   })
   it('should return unresolved URI for type 8 ABI', async () => {
     const result = await getAbiRecord(publicClient, {
       name: 'with-type-8-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(8)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toBe('https://example.com')
+    expect(result?.contentType).toBe(8)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toBe('https://example.com')
   })
   it('should return null if unsupported contentType (returned as 0x from contract)', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -170,9 +170,9 @@ describe('getAbiRecord()', () => {
       name: 'with-type-all-abi.eth',
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(1)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result?.contentType).toBe(1)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toMatchObject(dummyABI)
   })
   it('should return the result of type 2 abi if supportedContentTypes is zlib', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -180,9 +180,9 @@ describe('getAbiRecord()', () => {
       supportedContentTypes: generateSupportedContentTypes('zlib'),
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(2)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result?.contentType).toBe(2)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toMatchObject(dummyABI)
   })
   it('should return the result of type 4 abi if supportedContentTypes is cbor', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -190,9 +190,9 @@ describe('getAbiRecord()', () => {
       supportedContentTypes: generateSupportedContentTypes('cbor'),
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(4)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toMatchObject(dummyABI)
+    expect(result?.contentType).toBe(4)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toMatchObject(dummyABI)
   })
   it('should return the result of type 8 abi if supportedContentTypes is uri', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -200,9 +200,9 @@ describe('getAbiRecord()', () => {
       supportedContentTypes: generateSupportedContentTypes('uri'),
     })
     assert.isNotNull(result)
-    expect(result.contentType).toBe(8)
-    expect(result.decoded).toBe(true)
-    expect(result.abi).toBe('https://example.com')
+    expect(result?.contentType).toBe(8)
+    expect(result?.decoded).toBe(true)
+    expect(result?.abi).toBe('https://example.com')
   })
   it('should return null on error when strict is false', async () => {
     const result = await getAbiRecord(publicClient, {
@@ -219,16 +219,17 @@ describe('getAbiRecord()', () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(`
       [ContractFunctionExecutionError: The contract function "resolve" reverted.
 
-      Error: ResolverNotFound(bytes name)
-                             (0x14746869736e616d65646f65736e6f7465786973740365746800)
+      Error: ResolverError(bytes errorData)
+                          (0x5fe9a5df0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a14746869736e616d65646f65736e6f7465786973740365746800000000000000)
        
       Contract Call:
-        address:   0x4631BCAbD6dF18D94796344963cB60d44a4136b6
+        address:   0x5067457698Fd6Fa1C6964e416b3f42713513B3dD
         function:  resolve(bytes name, bytes data)
         args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0x2203ab56287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e000000000000000000000000000000000000000000000000000000000000000f)
 
       Docs: https://viem.sh/docs/contract/readContract
-      Version: viem@2.40.2]
+      Details: execution reverted: custom error 0x95c0c752: 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000645fe9a5df0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a14746869736e616d65646f65736e6f746578697374036574680000000000000000000000000000000000000000000000000000000000000000000000
+      Version: viem@2.47.10]
     `)
   })
 })

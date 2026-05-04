@@ -1,10 +1,10 @@
 import type { ProvableAnswer, SignedSet } from '@ensdomains/dnsprovejs'
+import { dnssecImplVerifyRrSetSnippet } from '@ensdomains/ensjs-abi/dnssecImpl'
 import type * as packet from 'dns-packet'
 import { type Chain, type Client, type Hex, toHex } from 'viem'
 import { readContract } from 'viem/actions'
-import type { RequireClientL1Contracts } from '../../clients/l1.js'
+import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
-import { dnssecImplVerifyRrSetSnippet } from '../../contracts/dnssecImpl.js'
 import { DnsNewerRecordTypeAvailableError } from '../../errors/dns.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import type { Endpoint } from './types.js'
@@ -58,7 +58,7 @@ const encodeProofs = (
  * })
  */
 export async function getDnsImportData<_chain extends Chain>(
-  client: RequireClientL1Contracts<_chain, 'ensDnssecImpl'>,
+  client: RequireClientContracts<_chain, 'ensDnssecImpl'>,
   {
     name,
     endpoint = 'https://cloudflare-dns.com/dns-query',

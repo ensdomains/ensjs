@@ -1,3 +1,4 @@
+import { publicResolverTextSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
   type DecodeFunctionResultErrorType,
   decodeFunctionResult,
@@ -5,7 +6,6 @@ import {
   type NamehashErrorType,
   namehash,
 } from 'viem'
-import { publicResolverTextSnippet } from '../../contracts/publicResolver.js'
 
 /** @deprecated */
 export type GetTextParameters = {

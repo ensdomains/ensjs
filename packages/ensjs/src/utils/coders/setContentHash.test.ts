@@ -2,13 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { setContentHashParameters } from './setContentHash.js'
 
 describe('setContentHashParameters', () => {
-  const namehash =
-    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+  const name = 'test.eth'
   const contentHash = 'ipfs://QmXwMFNjzjRvZuPvzJfYJZ1QqX2QJjzj1YJZ1QqX2QJjzj'
 
   it('returns the correct parameters when contentHash is not null', () => {
     expect(
-      setContentHashParameters({ namehash, contentHash }),
+      setContentHashParameters({ name, contentHash }),
     ).toMatchInlineSnapshot(`
       {
         "abi": [
@@ -30,7 +29,7 @@ describe('setContentHashParameters', () => {
           },
         ],
         "args": [
-          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          "0xeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
           "0xe301017012208e9cc47fde7ff64028480ec671a4ddb8f767a71ff71a73247f51a495a6f29634",
         ],
         "functionName": "setContenthash",
@@ -40,7 +39,7 @@ describe('setContentHashParameters', () => {
 
   it('returns the correct parameters when contentHash is null', () => {
     expect(
-      setContentHashParameters({ namehash, contentHash: null }),
+      setContentHashParameters({ name, contentHash: null }),
     ).toMatchInlineSnapshot(`
       {
         "abi": [
@@ -62,7 +61,7 @@ describe('setContentHashParameters', () => {
           },
         ],
         "args": [
-          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          "0xeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
           "0x",
         ],
         "functionName": "setContenthash",
@@ -73,7 +72,7 @@ describe('setContentHashParameters', () => {
   it('throws an error when contentHash is invalid', () => {
     expect(() =>
       setContentHashParameters({
-        namehash,
+        name,
         contentHash: 'invalid-content-hash',
       }),
     ).toThrowErrorMatchingInlineSnapshot(`
@@ -81,30 +80,5 @@ describe('setContentHashParameters', () => {
 
         Version: @ensdomains/ensjs@1.0.0-mock.0]
       `)
-  })
-  it('uses DedicatedResolver ABI when namehash is not specified', () => {
-    expect(setContentHashParameters({ contentHash })).toMatchInlineSnapshot(`
-			{
-			  "abi": [
-			    {
-			      "inputs": [
-			        {
-			          "internalType": "bytes",
-			          "name": "hash",
-			          "type": "bytes",
-			        },
-			      ],
-			      "name": "setContenthash",
-			      "outputs": [],
-			      "stateMutability": "nonpayable",
-			      "type": "function",
-			    },
-			  ],
-			  "args": [
-			    "0xe301017012208e9cc47fde7ff64028480ec671a4ddb8f767a71ff71a73247f51a495a6f29634",
-			  ],
-			  "functionName": "setContenthash",
-			}
-		`)
   })
 })

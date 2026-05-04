@@ -1,33 +1,25 @@
-import type { EncodeFunctionDataParameters, Hex } from 'viem'
+import { publicResolverClearRecordsSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import {
-  publicResolverClearRecordsSnippet,
-  publicResolverClearRecordsV2Snippet,
-} from '../../contracts/publicResolver.js'
+  type EncodeFunctionDataParameters,
+  type NamehashErrorType,
+  namehash,
+} from 'viem'
 
 // ================================
 // Clear records parameters
 // ================================
 
-export type ClearRecordsParametersErrorType = never
+export type ClearRecordsParametersErrorType = NamehashErrorType
 
-export const clearRecordsParameters = (namehash: Hex) =>
+export const clearRecordsParameters = (name: string) =>
   ({
     abi: publicResolverClearRecordsSnippet,
     functionName: 'clearRecords',
-    args: [namehash],
+    args: [namehash(name)],
   }) as const satisfies EncodeFunctionDataParameters<
     typeof publicResolverClearRecordsSnippet
   >
 
-export const clearRecordsParametersV2 = () =>
-  ({
-    abi: publicResolverClearRecordsV2Snippet,
-    functionName: 'clearRecords',
-    args: [],
-  }) as const satisfies EncodeFunctionDataParameters<
-    typeof publicResolverClearRecordsV2Snippet
-  >
-
-export type ClearRecordsParametersReturnType =
-  | ReturnType<typeof clearRecordsParameters>
-  | ReturnType<typeof clearRecordsParametersV2>
+export type ClearRecordsParametersReturnType = ReturnType<
+  typeof clearRecordsParameters
+>

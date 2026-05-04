@@ -2,13 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { setTextParameters } from './setText.js'
 
 describe('setTextParameters', () => {
-  const namehash =
-    '0x1234567890123456789012345678901234567890123456789012345678901234'
+  const name = 'test.eth'
   const key = 'email'
   const value = 'test@example.com'
 
   const parameters = {
-    namehash,
+    name,
     key,
     value,
   } as const
@@ -40,42 +39,12 @@ describe('setTextParameters', () => {
           },
         ],
         "args": [
-          "0x1234567890123456789012345678901234567890123456789012345678901234",
+          "0xeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1",
           "email",
           "test@example.com",
         ],
         "functionName": "setText",
       }
     `)
-  })
-  it('uses DedicatedResolver if namehash is not provided', () => {
-    const result = setTextParameters({ key: 'email', value })
-    expect(result).toMatchInlineSnapshot(`
-			{
-			  "abi": [
-			    {
-			      "inputs": [
-			        {
-			          "name": "key",
-			          "type": "string",
-			        },
-			        {
-			          "name": "value",
-			          "type": "string",
-			        },
-			      ],
-			      "name": "setText",
-			      "outputs": [],
-			      "stateMutability": "nonpayable",
-			      "type": "function",
-			    },
-			  ],
-			  "args": [
-			    "email",
-			    "test@example.com",
-			  ],
-			  "functionName": "setText",
-			}
-		`)
   })
 })

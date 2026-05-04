@@ -1,10 +1,14 @@
-import type { Client, GetLogsErrorType, GetLogsParameters } from 'viem'
+import { subregistryUpdatedEventSnippet } from '@ensdomains/ensjs-abi/v2/userRegistry'
+import {
+  type Client,
+  type GetLogsErrorType,
+  type GetLogsParameters,
+  labelhash,
+} from 'viem'
 import type { Address } from 'viem/accounts'
 import { getLogs } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { subregistryUpdatedEventSnippet } from '../../../contracts/userRegistry.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { labelToCanonicalId } from '../../../utils/v2/registry/labelToCanonicalId.js'
 
 export type GetSubregistryHistoryParameters = {
   /** The registry address to query */
@@ -57,7 +61,7 @@ export async function getSubregistryHistory(
 
   const getLogsAction = getAction(client, getLogs, 'getLogs')
 
-  const tokenId = labelToCanonicalId(label)
+  const tokenId = BigInt(labelhash(label))
 
   const logs = await getLogsAction({
     address: registryAddress,
@@ -80,6 +84,6 @@ export async function getSubregistryHistory(
     )
     .map((log) => ({
       tokenId: log.args.tokenId,
-      subregistry: log.args.subregistry as Address,
+      subregistry: log.args.subregistry,
     }))
 }

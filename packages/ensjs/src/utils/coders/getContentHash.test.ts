@@ -1,6 +1,6 @@
+import { publicResolverContenthashSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import { encodeFunctionResult } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { publicResolverContenthashSnippet } from '../../contracts/publicResolver.js'
 import {
   decodeContentHashResult,
   decodeContentHashResultFromPrimitiveTypes,
@@ -94,7 +94,7 @@ describe('decodeContenthashResult', () => {
       Params: (bytes)
       Data:   0x1234 (2 bytes)
 
-      Version: viem@2.40.2]
+      Version: viem@2.47.10]
     `)
   })
 })

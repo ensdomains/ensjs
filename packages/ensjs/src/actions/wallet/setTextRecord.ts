@@ -3,12 +3,12 @@ import type {
   Address,
   Chain,
   Client,
+  NamehashErrorType,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
@@ -24,7 +24,7 @@ import {
 
 export type SetTextRecordWriteParametersParameters = {
   /** The name to set a text record for */
-  name?: string
+  name: string
   /** The text record key to set */
   key: string
   /** The text record value to set */
@@ -52,11 +52,11 @@ export const setTextRecordWriteParameters = <
     address: resolverAddress,
     chain: client.chain,
     account: client.account,
-    ...setTextParameters(
-      typeof name === 'string'
-        ? { namehash: namehash(name), key, value }
-        : { key, value },
-    ),
+    ...setTextParameters({
+      name,
+      key,
+      value,
+    }),
   } as const satisfies WriteContractParameters<
     SetTextParametersReturnType['abi']
   >
