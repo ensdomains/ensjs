@@ -180,7 +180,7 @@ export const ensL1Subgraphs = {
   },
   [supportedL1Chains.sepolia]: {
     ens: {
-      url: 'https://ensnode-api-sepolia.up.railway.app/subgraph',
+      url: 'https://ensnode-api-sepolia-migration-v1.up.railway.app/subgraph',
     },
   },
 } as const satisfies Record<SupportedL1ChainId, EnsSubgraph>
