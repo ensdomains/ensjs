@@ -19,13 +19,13 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../utils/clientWithOverrides.js'
-import { deleteSubnameV2WriteParameters } from './deleteSubname.js'
+import { deleteSubnameWriteParameters } from './deleteSubname.js'
 
 // ================================
 // Write parameters
 // ================================
 
-export type DeleteSubnamesV2WriteParametersParameters = {
+export type DeleteSubnamesWriteParametersParameters = {
   /** The parent registry address */
   registryAddress: Address
   /** The labels of the subnames to delete */
@@ -36,18 +36,18 @@ export type DeleteSubnamesV2WriteParametersParameters = {
 // Action
 // ================================
 
-export type DeleteSubnamesV2Parameters<
+export type DeleteSubnamesParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
 > = Prettify<
-  DeleteSubnamesV2WriteParametersParameters &
+  DeleteSubnamesWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type DeleteSubnamesV2ReturnType = Hash[]
+export type DeleteSubnamesReturnType = Hash[]
 
-export type DeleteSubnamesV2ErrorType =
+export type DeleteSubnamesErrorType =
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
@@ -65,25 +65,25 @@ export type DeleteSubnamesV2ErrorType =
  * cleaned up automatically.
  *
  * @param client - {@link Client}
- * @param parameters - {@link DeleteSubnamesV2Parameters}
- * @returns Array of transaction hashes. {@link DeleteSubnamesV2ReturnType}
+ * @param parameters - {@link DeleteSubnamesParameters}
+ * @returns Array of transaction hashes. {@link DeleteSubnamesReturnType}
  *
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { deleteSubnamesV2 } from '@ensdomains/ensjs/wallet'
+ * import { deleteSubnames } from '@ensdomains/ensjs/wallet'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })
- * const hashes = await deleteSubnamesV2(wallet, {
+ * const hashes = await deleteSubnames(wallet, {
  *   registryAddress: '0x...', // parent registry
  *   labels: ['sub1', 'sub2', 'sub3'],
  * })
  * // ['0x...', '0x...', '0x...']
  */
-export async function deleteSubnamesV2<
+export async function deleteSubnames<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
@@ -93,8 +93,8 @@ export async function deleteSubnamesV2<
     registryAddress,
     labels,
     ...txArgs
-  }: DeleteSubnamesV2Parameters<chain, account, chainOverride>,
-): Promise<DeleteSubnamesV2ReturnType> {
+  }: DeleteSubnamesParameters<chain, account, chainOverride>,
+): Promise<DeleteSubnamesReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const overriddenClient = clientWithOverrides(client, txArgs)
@@ -102,7 +102,7 @@ export async function deleteSubnamesV2<
   const hashes: Hash[] = []
 
   for (const label of labels) {
-    const writeParameters = deleteSubnameV2WriteParameters(overriddenClient, {
+    const writeParameters = deleteSubnameWriteParameters(overriddenClient, {
       registryAddress,
       label,
     })

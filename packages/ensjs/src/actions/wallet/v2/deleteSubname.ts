@@ -26,23 +26,23 @@ import {
 // Write parameters
 // ================================
 
-export type DeleteSubnameV2WriteParametersParameters = {
+export type DeleteSubnameWriteParametersParameters = {
   /** The parent registry address that contains the subname */
   registryAddress: Address
   /** The label of the subname to delete (e.g. "sub" for sub.example.eth) */
   label: string
 }
 
-export type DeleteSubnameV2WriteParametersReturnType = ReturnType<
-  typeof deleteSubnameV2WriteParameters
+export type DeleteSubnameWriteParametersReturnType = ReturnType<
+  typeof deleteSubnameWriteParameters
 >
 
-export const deleteSubnameV2WriteParameters = <
+export const deleteSubnameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
   client: Client<Transport, chain, account>,
-  { registryAddress, label }: DeleteSubnameV2WriteParametersParameters,
+  { registryAddress, label }: DeleteSubnameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -62,18 +62,18 @@ export const deleteSubnameV2WriteParameters = <
 // Action
 // ================================
 
-export type DeleteSubnameV2Parameters<
+export type DeleteSubnameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
 > = Prettify<
-  DeleteSubnameV2WriteParametersParameters &
+  DeleteSubnameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type DeleteSubnameV2ReturnType = Hash
+export type DeleteSubnameReturnType = Hash
 
-export type DeleteSubnameV2ErrorType =
+export type DeleteSubnameErrorType =
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
@@ -91,25 +91,25 @@ export type DeleteSubnameV2ErrorType =
  * or any deeper subnames — those must be cleaned up separately.
  *
  * @param client - {@link Client}
- * @param parameters - {@link DeleteSubnameV2Parameters}
- * @returns Transaction hash. {@link DeleteSubnameV2ReturnType}
+ * @param parameters - {@link DeleteSubnameParameters}
+ * @returns Transaction hash. {@link DeleteSubnameReturnType}
  *
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { deleteSubnameV2 } from '@ensdomains/ensjs/wallet'
+ * import { deleteSubname } from '@ensdomains/ensjs/wallet'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })
- * const hash = await deleteSubnameV2(wallet, {
+ * const hash = await deleteSubname(wallet, {
  *   registryAddress: '0x...', // parent registry (e.g. example.eth's UserRegistry)
  *   label: 'sub',             // deletes sub.example.eth
  * })
  * // 0x...
  */
-export async function deleteSubnameV2<
+export async function deleteSubname<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
@@ -119,11 +119,11 @@ export async function deleteSubnameV2<
     registryAddress,
     label,
     ...txArgs
-  }: DeleteSubnameV2Parameters<chain, account, chainOverride>,
-): Promise<DeleteSubnameV2ReturnType> {
+  }: DeleteSubnameParameters<chain, account, chainOverride>,
+): Promise<DeleteSubnameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const writeParameters = deleteSubnameV2WriteParameters(
+  const writeParameters = deleteSubnameWriteParameters(
     clientWithOverrides(client, txArgs),
     { registryAddress, label },
   )
