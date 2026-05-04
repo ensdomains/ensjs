@@ -1,3 +1,4 @@
+import { permissionedRegistryUnregisterSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import type {
   Account,
   Address,
@@ -11,7 +12,6 @@ import type {
 import { labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { standardRegistryUnregisterSnippet } from '../../../contracts/standardRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,
@@ -48,13 +48,13 @@ export const deleteSubnameWriteParameters = <
 
   return {
     address: registryAddress,
-    abi: standardRegistryUnregisterSnippet,
+    abi: permissionedRegistryUnregisterSnippet,
     functionName: 'unregister',
     args: [BigInt(labelhash(label))],
     chain: client.chain,
     account: client.account,
   } as const satisfies WriteContractParameters<
-    typeof standardRegistryUnregisterSnippet
+    typeof permissionedRegistryUnregisterSnippet
   >
 }
 

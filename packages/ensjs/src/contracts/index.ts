@@ -101,6 +101,7 @@ export {
 export {
   permissionedRegistryRoleCountSnippet,
   permissionedRegistrySetResolverSnippet,
+  permissionedRegistryUnregisterSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 export {
   permissionedResolverAliasSnippet,
@@ -115,4 +116,3 @@ export {
   permissionedResolverRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 export { getChainContractAddress } from './getChainContractAddress.js'
-export { standardRegistryUnregisterSnippet } from './standardRegistry.js'

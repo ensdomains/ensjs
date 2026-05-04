@@ -230,3 +230,13 @@ export const permissionedRegistrySetResolverSnippet = [
     stateMutability: 'nonpayable',
   },
 ] as const
+
+export const permissionedRegistryUnregisterSnippet = [
+  {
+    type: 'function',
+    name: 'unregister',
+    inputs: [{ name: 'anyId', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+] as const
