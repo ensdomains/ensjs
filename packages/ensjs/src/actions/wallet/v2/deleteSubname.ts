@@ -82,7 +82,13 @@ export type DeleteSubnameV2ErrorType =
  *
  * In ENSv2, subnames are managed by their parent registry (PermissionedRegistry).
  * The caller must have ROLE_UNREGISTER on the name's resource or on ROOT_RESOURCE.
- * This burns the ERC1155 token, invalidates all roles, and makes the name AVAILABLE.
+ * If the name is REGISTERED, this burns the ERC1155 token and invalidates all
+ * roles on its resource (via an `eacVersionId` + `tokenVersionId` bump).
+ * If the name is RESERVED, no burn or version bump occurs. In both cases the
+ * name becomes AVAILABLE immediately.
+ *
+ * Note: unregistering does not clear resolver records, the linked subregistry,
+ * or any deeper subnames — those must be cleaned up separately.
  *
  * @param client - {@link Client}
  * @param parameters - {@link DeleteSubnameV2Parameters}

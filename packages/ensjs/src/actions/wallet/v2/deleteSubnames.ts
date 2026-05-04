@@ -8,16 +8,18 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { labelhash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { standardRegistryUnregisterSnippet } from '../../../contracts/standardRegistry.js'
 import type {
   Prettify,
   WriteTransactionParameters,
 } from '../../../types/index.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import type { ClientWithOverridesErrorType } from '../../../utils/clientWithOverrides.js'
+import {
+  type ClientWithOverridesErrorType,
+  clientWithOverrides,
+} from '../../../utils/clientWithOverrides.js'
+import { deleteSubnameV2WriteParameters } from './deleteSubname.js'
 
 // ================================
 // Write parameters
@@ -52,10 +54,15 @@ export type DeleteSubnamesV2ErrorType =
 /**
  * Deletes multiple subnames by calling `unregister()` for each one on the parent registry.
  *
- * In ENSv2, there is no batch unregister — each subname requires a separate
- * `unregister()` call. This function sends all transactions and returns
- * their hashes. The caller must have ROLE_UNREGISTER on each name's resource
- * or on ROOT_RESOURCE.
+ * In ENSv2 there is no batch unregister — each subname requires a separate
+ * `unregister()` call. This function sends them sequentially (each tx is awaited
+ * before the next is signed) and returns their hashes in input order. The caller
+ * must have ROLE_UNREGISTER on each name's resource or on ROOT_RESOURCE.
+ *
+ * For REGISTERED names this burns the ERC1155 token and invalidates roles;
+ * RESERVED names are unregistered without a burn. In both cases the name becomes
+ * AVAILABLE. Resolver records, linked subregistries, and deeper subnames are not
+ * cleaned up automatically.
  *
  * @param client - {@link Client}
  * @param parameters - {@link DeleteSubnamesV2Parameters}
@@ -90,17 +97,17 @@ export async function deleteSubnamesV2<
 ): Promise<DeleteSubnamesV2ReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
+  const overriddenClient = clientWithOverrides(client, txArgs)
   const writeContractAction = getAction(client, writeContract, 'writeContract')
   const hashes: Hash[] = []
 
   for (const label of labels) {
+    const writeParameters = deleteSubnameV2WriteParameters(overriddenClient, {
+      registryAddress,
+      label,
+    })
     const hash = await writeContractAction({
-      address: registryAddress,
-      abi: standardRegistryUnregisterSnippet,
-      functionName: 'unregister',
-      args: [BigInt(labelhash(label))],
-      chain: client.chain,
-      account: client.account,
+      ...writeParameters,
       ...txArgs,
     } as WriteContractParameters)
     hashes.push(hash)
