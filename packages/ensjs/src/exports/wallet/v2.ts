@@ -1,4 +1,6 @@
 export * from '../../actions/wallet/v2/deleteAlias.js'
+export * from '../../actions/wallet/v2/deleteSubname.js'
+export * from '../../actions/wallet/v2/deleteSubnames.js'
 export * from '../../actions/wallet/v2/grantResolverRoles.js'
 export * from '../../actions/wallet/v2/grantRoles.js'
 export * from '../../actions/wallet/v2/renewEthRegistrarName.js'
