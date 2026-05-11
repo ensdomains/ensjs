@@ -1,12 +1,12 @@
 import { type Address, zeroHash } from 'viem'
 import { expect, it } from 'vitest'
-import { encodeRenewEthRegistrarNameData } from './renewEthRegistrarName.js'
+import { encodeRenewNameData } from './renewName.js'
 
 const token = '0x302edecc2b8d1f3f4625b8a825a42f9adc102e65' as Address
 
-it('encodeRenewEthRegistrarNameData rejects non-eth-2ld names', () => {
+it('encodeRenewNameData rejects non-eth-2ld names', () => {
   expect(() =>
-    encodeRenewEthRegistrarNameData({
+    encodeRenewNameData({
       name: 'foo.bar.eth',
       duration: 31_536_000n,
       paymentToken: token,
@@ -14,8 +14,8 @@ it('encodeRenewEthRegistrarNameData rejects non-eth-2ld names', () => {
   ).toThrow()
 })
 
-it('encodeRenewEthRegistrarNameData produces calldata for a 2ld name', () => {
-  const data = encodeRenewEthRegistrarNameData({
+it('encodeRenewNameData produces calldata for a 2ld name', () => {
+  const data = encodeRenewNameData({
     name: 'example.eth',
     duration: 31_536_000,
     paymentToken: token,

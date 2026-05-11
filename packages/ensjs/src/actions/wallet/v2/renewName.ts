@@ -33,7 +33,7 @@ import { getNameType } from '../../../utils/name/getNameType.js'
 // Write parameters
 // ================================
 
-export type RenewEthRegistrarNameArgs = {
+export type RenewNameWriteParametersParameters = {
   /** Full 2LD .eth name (e.g. example.eth) */
   name: string
   /** Renewal duration in seconds */
@@ -46,12 +46,12 @@ export type RenewEthRegistrarNameArgs = {
   referrer?: Hex
 }
 
-const renewEthRegistrarNameArgs = ({
+const renewNameCalldataArgs = ({
   name,
   duration,
   paymentToken,
   referrer = zeroHash,
-}: RenewEthRegistrarNameArgs) => {
+}: RenewNameWriteParametersParameters) => {
   const nameType = getNameType(name)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
@@ -68,10 +68,10 @@ const renewEthRegistrarNameArgs = ({
 /**
  * ABI-encoded calldata for {@link ethRegistrarRenewSnippet} `renew`.
  */
-export function encodeRenewEthRegistrarNameData(
-  parameters: RenewEthRegistrarNameArgs,
+export function encodeRenewNameData(
+  parameters: RenewNameWriteParametersParameters,
 ): Hex {
-  const args = renewEthRegistrarNameArgs(parameters)
+  const args = renewNameCalldataArgs(parameters)
   return encodeFunctionData({
     abi: ethRegistrarRenewSnippet,
     functionName: 'renew',
@@ -79,27 +79,20 @@ export function encodeRenewEthRegistrarNameData(
   })
 }
 
-export type RenewEthRegistrarNameWriteParametersParameters =
-  RenewEthRegistrarNameArgs
-
-export type RenewEthRegistrarNameWriteParametersReturnType = ReturnType<
-  typeof renewEthRegistrarNameWriteParameters
->
-
-export type RenewEthRegistrarNameWriteParametersErrorType =
+export type RenewNameWriteParametersErrorType =
   | UnsupportedNameTypeError
   | GetChainContractAddressErrorType
 
-export const renewEthRegistrarNameWriteParameters = <
+export const renewNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
   client: RequireClientContracts<chain, 'ensEthRegistrar', account>,
-  parameters: RenewEthRegistrarNameWriteParametersParameters,
+  parameters: RenewNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const args = renewEthRegistrarNameArgs(parameters)
+  const args = renewNameCalldataArgs(parameters)
 
   const baseParams = {
     chain: client.chain,
@@ -119,23 +112,27 @@ export const renewEthRegistrarNameWriteParameters = <
   } as const satisfies WriteContractParameters
 }
 
+export type RenewNameWriteParametersReturnType = ReturnType<
+  typeof renewNameWriteParameters
+>
+
 // ================================
 // Action
 // ================================
 
-export type RenewEthRegistrarNameParameters<
+export type RenewNameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends ChainWithContracts<'ensEthRegistrar'> | undefined,
 > = Prettify<
-  RenewEthRegistrarNameWriteParametersParameters &
+  RenewNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type RenewEthRegistrarNameReturnType = WriteContractReturnType
+export type RenewNameReturnType = WriteContractReturnType
 
-export type RenewEthRegistrarNameErrorType =
-  | RenewEthRegistrarNameWriteParametersErrorType
+export type RenewNameErrorType =
+  | RenewNameWriteParametersErrorType
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
@@ -144,16 +141,16 @@ export type RenewEthRegistrarNameErrorType =
  *
  * @example
  * ```ts
- * import { renewEthRegistrarName } from '@ensdomains/ensjs/wallet/v2'
+ * import { renewName } from '@ensdomains/ensjs/wallet/v2'
  *
- * const hash = await renewEthRegistrarName(wallet, {
+ * const hash = await renewName(wallet, {
  *   name: 'example.eth',
  *   duration: 31536000n,
  *   paymentToken: usdcAddress,
  * })
  * ```
  */
-export async function renewEthRegistrarName<
+export async function renewName<
   chain extends Chain,
   account extends Account,
   chainOverride extends ChainWithContracts<'ensEthRegistrar'> | undefined,
@@ -165,11 +162,11 @@ export async function renewEthRegistrarName<
     paymentToken,
     referrer,
     ...txArgs
-  }: RenewEthRegistrarNameParameters<chain, account, chainOverride>,
-): Promise<RenewEthRegistrarNameReturnType> {
+  }: RenewNameParameters<chain, account, chainOverride>,
+): Promise<RenewNameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const writeParameters = renewEthRegistrarNameWriteParameters(
+  const writeParameters = renewNameWriteParameters(
     clientWithOverrides(client, txArgs),
     { name, duration, paymentToken, referrer },
   )
