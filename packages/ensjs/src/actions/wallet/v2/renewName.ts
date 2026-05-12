@@ -46,25 +46,6 @@ export type RenewNameWriteParametersParameters = {
   referrer?: Hex
 }
 
-const renewNameCalldataArgs = ({
-  name,
-  duration,
-  paymentToken,
-  referrer = zeroHash,
-}: RenewNameWriteParametersParameters) => {
-  const nameType = getNameType(name)
-  if (nameType !== 'eth-2ld')
-    throw new UnsupportedNameTypeError({
-      nameType,
-      supportedNameTypes: ['eth-2ld'],
-      details: 'Only 2ld-eth renewals are supported',
-    })
-
-  const [label] = name.split('.')
-
-  return [label, BigInt(duration), paymentToken, referrer] as const
-}
-
 export type RenewNameWriteParametersErrorType =
   | UnsupportedNameTypeError
   | GetChainContractAddressErrorType
@@ -78,7 +59,19 @@ export const renewNameWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const args = renewNameCalldataArgs(parameters)
+  const { name, duration, paymentToken, referrer = zeroHash } = parameters
+
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-2ld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld'],
+      details: 'Only 2ld-eth renewals are supported',
+    })
+
+  const [label] = name.split('.')
+
+  const args = [label, BigInt(duration), paymentToken, referrer] as const
 
   const baseParams = {
     chain: client.chain,
