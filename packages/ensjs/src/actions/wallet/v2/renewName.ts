@@ -9,7 +9,7 @@ import type {
   WriteContractParameters,
   WriteContractReturnType,
 } from 'viem'
-import { encodeFunctionData, zeroHash } from 'viem'
+import { zeroHash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
@@ -63,20 +63,6 @@ const renewNameCalldataArgs = ({
   const [label] = name.split('.')
 
   return [label, BigInt(duration), paymentToken, referrer] as const
-}
-
-/**
- * ABI-encoded calldata for {@link ethRegistrarRenewSnippet} `renew`.
- */
-export function encodeRenewNameData(
-  parameters: RenewNameWriteParametersParameters,
-): Hex {
-  const args = renewNameCalldataArgs(parameters)
-  return encodeFunctionData({
-    abi: ethRegistrarRenewSnippet,
-    functionName: 'renew',
-    args,
-  })
 }
 
 export type RenewNameWriteParametersErrorType =
