@@ -77,7 +77,7 @@ export const renewNameWriteParameters = <
     chain: client.chain,
     account: client.account,
     value: 0n,
-  } as const
+  }
 
   return {
     ...baseParams,
