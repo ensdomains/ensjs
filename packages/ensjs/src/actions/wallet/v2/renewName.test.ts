@@ -1,56 +1,49 @@
+import { type Address, encodeFunctionData, zeroHash } from 'viem'
+import { beforeAll, expect, it } from 'vitest'
 import {
-  type Address,
-  createWalletClient,
-  encodeFunctionData,
-  http,
-  zeroHash,
-} from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { sepolia } from 'viem/chains'
-import { expect, it } from 'vitest'
-import { extendChainWithEns } from '../../../clients/l1.js'
+  deploymentAddresses,
+  walletClient,
+} from '../../../test/addTestContracts.js'
+import { clientWithOverrides } from '../../../utils/clientWithOverrides.js'
 import { renewNameWriteParameters } from './renewName.js'
 
-const token = '0x302edecc2b8d1f3f4625b8a825a42f9adc102e65' as Address
+const paymentToken = deploymentAddresses.USDC
 
-const chain = extendChainWithEns(sepolia)
-const account = privateKeyToAccount(
-  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-)
-const walletClient = createWalletClient({
-  chain,
-  transport: http(),
-  account,
+let accounts: Address[]
+
+beforeAll(async () => {
+  accounts = await walletClient.getAddresses()
 })
-
-function encodeRenewCalldata(
-  parameters: Parameters<typeof renewNameWriteParameters>[1],
-) {
-  const wp = renewNameWriteParameters(walletClient, parameters)
-  return encodeFunctionData({
-    abi: wp.abi,
-    functionName: wp.functionName,
-    args: wp.args,
-  })
-}
 
 it('renewNameWriteParameters rejects non-eth-2ld names', () => {
   expect(() =>
-    encodeRenewCalldata({
-      name: 'foo.bar.eth',
-      duration: 31_536_000n,
-      paymentToken: token,
-    }),
+    renewNameWriteParameters(
+      clientWithOverrides(walletClient, { account: accounts[0] }),
+      {
+        name: 'foo.bar.eth',
+        duration: 31_536_000n,
+        paymentToken,
+      },
+    ),
   ).toThrow()
 })
 
 it('renewNameWriteParameters encodes renew calldata for a 2ld name', () => {
-  const data = encodeRenewCalldata({
-    name: 'example.eth',
-    duration: 31_536_000,
-    paymentToken: token,
-    referrer: zeroHash,
+  const writeParameters = renewNameWriteParameters(
+    clientWithOverrides(walletClient, { account: accounts[0] }),
+    {
+      name: 'example.eth',
+      duration: 31_536_000,
+      paymentToken,
+      referrer: zeroHash,
+    },
+  )
+  const data = encodeFunctionData({
+    abi: writeParameters.abi,
+    functionName: writeParameters.functionName,
+    args: writeParameters.args,
   })
+
   expect(data).toMatch(/^0x[0-9a-f]+$/i)
   expect(data.length).toBeGreaterThan(10)
 })
