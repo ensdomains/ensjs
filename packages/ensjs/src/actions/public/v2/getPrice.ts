@@ -1,6 +1,5 @@
-import { ethRegistrarRentPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
+import { ethRegistrarGetRegisterPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type { Address, Client, ReadContractErrorType } from 'viem'
-import { zeroAddress } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
@@ -14,8 +13,6 @@ export type GetPriceParameters = {
   nameOrNames: string | string[]
   /** Duration in seconds to get price for */
   duration: bigint
-  /** Owner address (defaults to zero address) */
-  owner?: Address
   /** Payment token address */
   paymentToken: Address
 }
@@ -33,20 +30,20 @@ export type GetPriceErrorType =
   | TypeError
 
 /**
- * Gets the price of a name, or array of names, for a given duration.
+ * Gets the registration price of a name, or array of names, for a given duration.
+ *
+ * Internally calls `ETHRegistrar.getRegisterPrice(label, duration, paymentToken)`. The
+ * registrar derives the `available` period (time elapsed since `expiry + GRACE_PERIOD`)
+ * from on-chain state and passes it to the rent price oracle; this means the returned
+ * `premium` already reflects the post-expiry exponential-decay premium curve.
+ *
  * @param client - {@link Client}
  * @param parameters - {@link GetPriceParameters}
  * @returns Price data object. {@link GetPriceReturnType}
  */
 export async function getPrice(
   client: Client,
-  {
-    registrarAddress,
-    nameOrNames,
-    duration,
-    owner = zeroAddress,
-    paymentToken,
-  }: GetPriceParameters,
+  { registrarAddress, nameOrNames, duration, paymentToken }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -71,9 +68,9 @@ export async function getPrice(
 
     const [base, premium] = await readContractAction({
       address: registrarAddress,
-      abi: ethRegistrarRentPriceSnippet,
-      functionName: 'rentPrice',
-      args: [labels[0], owner, duration, paymentToken],
+      abi: ethRegistrarGetRegisterPriceSnippet,
+      functionName: 'getRegisterPrice',
+      args: [labels[0], duration, paymentToken],
     })
 
     totalBase += base

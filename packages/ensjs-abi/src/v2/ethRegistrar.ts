@@ -9,7 +9,7 @@ export const ethRegistrarNameRegisteredEventSnippet = {
     { name: 'resolver', type: 'address', indexed: false },
     { name: 'duration', type: 'uint64', indexed: false },
     { name: 'paymentToken', type: 'address', indexed: false },
-    { name: 'referrer', type: 'bytes32', indexed: false },
+    { name: 'referrer', type: 'bytes32', indexed: true },
     { name: 'base', type: 'uint256', indexed: false },
     { name: 'premium', type: 'uint256', indexed: false },
   ],
@@ -25,9 +25,23 @@ export const ethRegistrarNameRenewedEventSnippet = {
     { name: 'duration', type: 'uint64', indexed: false },
     { name: 'newExpiry', type: 'uint64', indexed: false },
     { name: 'paymentToken', type: 'address', indexed: false },
-    { name: 'referrer', type: 'bytes32', indexed: false },
-    { name: 'base', type: 'uint256', indexed: false },
+    { name: 'referrer', type: 'bytes32', indexed: true },
+    { name: 'amount', type: 'uint256', indexed: false },
   ],
+  anonymous: false,
+} as const
+
+export const ethRegistrarCommitmentMadeEventSnippet = {
+  type: 'event',
+  name: 'CommitmentMade',
+  inputs: [{ name: 'commitment', type: 'bytes32', indexed: false }],
+  anonymous: false,
+} as const
+
+export const ethRegistrarRentPriceOracleUpdatedEventSnippet = {
+  type: 'event',
+  name: 'RentPriceOracleUpdated',
+  inputs: [{ name: 'oracle', type: 'address', indexed: false }],
   anonymous: false,
 } as const
 
@@ -70,19 +84,21 @@ export const ethRegistrarErrors = [
   },
   {
     inputs: [{ name: 'label', type: 'string' }],
-    name: 'NameIsAvailable',
-    type: 'error',
-  },
-  {
-    inputs: [{ name: 'label', type: 'string' }],
     name: 'NameNotAvailable',
     type: 'error',
   },
   {
     inputs: [{ name: 'label', type: 'string' }],
+    name: 'NameNotRenewable',
+    type: 'error',
+  },
+  // bubbled from `IRentPriceOracle` via `getRegisterPrice` / `getRenewPrice`
+  {
+    inputs: [{ name: 'label', type: 'string' }],
     name: 'NotValid',
     type: 'error',
   },
+  // bubbled from `IRentPriceOracle` via `getRegisterPrice` / `getRenewPrice`
   {
     inputs: [{ name: 'paymentToken', type: 'address' }],
     name: 'PaymentTokenNotSupported',
@@ -100,20 +116,54 @@ export const ethRegistrarErrors = [
   },
 ] as const
 
-export const ethRegistrarRentPriceSnippet = [
+export const ethRegistrarGetRegisterPriceSnippet = [
   ...ethRegistrarErrors,
   {
     inputs: [
       { name: 'label', type: 'string' },
-      { name: 'owner', type: 'address' },
       { name: 'duration', type: 'uint64' },
       { name: 'paymentToken', type: 'address' },
     ],
-    name: 'rentPrice',
+    name: 'getRegisterPrice',
     outputs: [
       { name: 'base', type: 'uint256' },
       { name: 'premium', type: 'uint256' },
     ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const ethRegistrarGetRenewPriceSnippet = [
+  ...ethRegistrarErrors,
+  {
+    inputs: [
+      { name: 'label', type: 'string' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'paymentToken', type: 'address' },
+    ],
+    name: 'getRenewPrice',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const ethRegistrarIsRenewableSnippet = [
+  {
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'isRenewable',
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const ethRegistrarGetRemainingGracePeriodSnippet = [
+  {
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'getRemainingGracePeriod',
+    outputs: [{ name: '', type: 'uint64' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -210,6 +260,12 @@ export const ethRegistrarRenewErrors = [
     name: 'DurationTooShort',
     type: 'error',
   },
+  {
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'NameNotRenewable',
+    type: 'error',
+  },
+  // bubbled from `IRentPriceOracle` via `getRenewPrice`
   {
     inputs: [{ name: 'paymentToken', type: 'address' }],
     name: 'PaymentTokenNotSupported',

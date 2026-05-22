@@ -1,11 +1,10 @@
-import { ethRegistrarRentPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
+import { ethRegistrarGetRegisterPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type {
   Address,
   Chain,
   GetChainContractAddressErrorType,
   ReadContractErrorType,
 } from 'viem'
-import { zeroAddress } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/shared.js'
@@ -19,8 +18,6 @@ export type GetPriceParameters = {
   nameOrNames: string | string[]
   /** Duration in seconds to get price for */
   duration: bigint | number
-  /** Owner address (defaults to zero address) */
-  owner?: Address
   /** Payment token address (defaults to USDC from chain config) */
   paymentToken?: Address
 }
@@ -39,7 +36,12 @@ export type GetPriceErrorType =
   | TypeError
 
 /**
- * Gets the price of a name, or array of names, for a given duration.
+ * Gets the registration price of a name, or array of names, for a given duration.
+ *
+ * Calls `ETHRegistrar.getRegisterPrice(label, duration, paymentToken)`. The `owner`
+ * parameter from earlier revisions has been removed: pricing is owner-agnostic in
+ * the post-audit `ETHRegistrar`.
+ *
  * @param client - {@link Client}
  * @param parameters - {@link GetPriceParameters}
  * @returns Price data object. {@link GetPriceReturnType}
@@ -59,12 +61,7 @@ export type GetPriceErrorType =
  */
 export async function getPrice<chain extends Chain>(
   client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc'>,
-  {
-    nameOrNames,
-    duration,
-    owner = zeroAddress,
-    paymentToken,
-  }: GetPriceParameters,
+  { nameOrNames, duration, paymentToken }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -83,8 +80,6 @@ export async function getPrice<chain extends Chain>(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  // Process each name individually and aggregate the results
-  // TODO: not sure if this is the best way to do this, ask Jakob
   for (const name of names) {
     const labels = name.split('.')
     const nameType = getNameType(name)
@@ -101,9 +96,9 @@ export async function getPrice<chain extends Chain>(
         chain: client.chain,
         contract: 'ethRegistrar',
       }),
-      abi: ethRegistrarRentPriceSnippet,
-      functionName: 'rentPrice',
-      args: [labels[0], owner, BigInt(duration), resolvedPaymentToken],
+      abi: ethRegistrarGetRegisterPriceSnippet,
+      functionName: 'getRegisterPrice',
+      args: [labels[0], BigInt(duration), resolvedPaymentToken],
     })
 
     totalBase += base

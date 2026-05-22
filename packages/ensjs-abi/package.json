@@ -87,6 +87,10 @@
       "types": "./dist/v2/permissionedResolver.d.ts",
       "default": "./dist/v2/permissionedResolver.js"
     },
+    "./v2/standardRentPriceOracle": {
+      "types": "./dist/v2/standardRentPriceOracle.d.ts",
+      "default": "./dist/v2/standardRentPriceOracle.js"
+    },
     "./v2/enhancedAccessControl": {
       "types": "./dist/v2/enhancedAccessControl.d.ts",
       "default": "./dist/v2/enhancedAccessControl.js"

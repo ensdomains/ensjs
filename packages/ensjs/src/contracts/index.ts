@@ -92,11 +92,14 @@ export {
   ethRegistrarCommitmentsSnippet as l2EthRegistrarCommitmentsSnippet,
   ethRegistrarCommitSnippet as l2EthRegistrarCommitSnippet,
   ethRegistrarErrors as l2EthRegistrarErrors,
+  ethRegistrarGetRegisterPriceSnippet as l2EthRegistrarGetRegisterPriceSnippet,
+  ethRegistrarGetRemainingGracePeriodSnippet as l2EthRegistrarGetRemainingGracePeriodSnippet,
+  ethRegistrarGetRenewPriceSnippet as l2EthRegistrarGetRenewPriceSnippet,
   ethRegistrarIsAvailableSnippet as l2EthRegistrarIsAvailableSnippet,
+  ethRegistrarIsRenewableSnippet as l2EthRegistrarIsRenewableSnippet,
   ethRegistrarMakeCommitmentSnippet as l2EthRegistrarMakeCommitmentSnippet,
   ethRegistrarRegisterSnippet as l2EthRegistrarRegisterSnippet,
   ethRegistrarRenewSnippet as l2EthRegistrarRenewSnippet,
-  ethRegistrarRentPriceSnippet as l2EthRegistrarRentPriceSnippet,
 } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 export {
   permissionedRegistryRoleCountSnippet,

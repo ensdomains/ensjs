@@ -140,9 +140,9 @@ export const permissionedRegistryLabelRegisteredEventSnippet = {
       indexed: false,
     },
     {
-      name: 'registeredBy',
+      name: 'sender',
       type: 'address',
-      indexed: false,
+      indexed: true,
     },
   ],
   anonymous: false,
