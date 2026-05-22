@@ -296,3 +296,77 @@ export const ethRegistrarRenewSnippet = [
     type: 'function',
   },
 ] as const
+
+/**
+ * Post-audit state-aware pricing errors (the registrar delegates to its
+ * `IRentPriceOracle`). Included so reverts from the `getRegisterPrice` /
+ * `getRenewPrice` reads decode to readable names instead of raw selectors.
+ */
+export const ethRegistrarPriceErrors = [
+  {
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'NameNotAvailable',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'NameNotRenewable',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'NotValid',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'paymentToken', type: 'address' }],
+    name: 'PaymentTokenNotSupported',
+    type: 'error',
+  },
+] as const
+
+/** Post-audit `getRegisterPrice(label, duration, paymentToken) → (base, premium)`. */
+export const ethRegistrarGetRegisterPriceSnippet = [
+  ...ethRegistrarPriceErrors,
+  {
+    inputs: [
+      { name: 'label', type: 'string' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'paymentToken', type: 'address' },
+    ],
+    name: 'getRegisterPrice',
+    outputs: [
+      { name: 'base', type: 'uint256' },
+      { name: 'premium', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+/** Post-audit `getRenewPrice(label, duration, paymentToken) → uint256`. */
+export const ethRegistrarGetRenewPriceSnippet = [
+  ...ethRegistrarPriceErrors,
+  {
+    inputs: [
+      { name: 'label', type: 'string' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'paymentToken', type: 'address' },
+    ],
+    name: 'getRenewPrice',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+/** Minimum delay (seconds) between commit and register. */
+export const ethRegistrarMinCommitmentAgeSnippet = [
+  {
+    inputs: [],
+    name: 'MIN_COMMITMENT_AGE',
+    outputs: [{ name: '', type: 'uint64' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
