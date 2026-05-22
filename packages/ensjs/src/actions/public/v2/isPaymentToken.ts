@@ -16,7 +16,7 @@ export type IsPaymentTokenReturnType = boolean
 export type IsPaymentTokenErrorType = ReadContractErrorType
 
 /**
- * Checks whether a token is accepted for register/renew payment. Post-audit,
+ * Checks whether a token is accepted for register/renew payment.
  * payment-token validation lives on the StandardRentPriceOracle (the registrar
  * delegates pricing/payment to a swappable oracle).
  *

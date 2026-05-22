@@ -25,7 +25,7 @@ export type GetRenewPriceErrorType =
   | TypeError
 
 /**
- * Gets the state-aware renewal price for a v2 name (post-audit ETHRegistrar,
+ * Gets the state-aware renewal price for a v2 name ETHRegistrar,
  * which delegates to its `IRentPriceOracle`). Renewals are premium-exempt, so a
  * single amount is returned. Reverts on-chain (`NameNotRenewable`) if the name
  * isn't currently registered/renewable.

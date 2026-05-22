@@ -30,7 +30,7 @@ export type GetRegisterPriceErrorType =
   | TypeError
 
 /**
- * Gets the state-aware registration price for a v2 name (post-audit
+ * Gets the state-aware registration price for a v2 name
  * ETHRegistrar, which delegates to its `IRentPriceOracle`). Reverts on-chain if
  * the name isn't registerable.
  *
