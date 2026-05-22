@@ -23,7 +23,11 @@ beforeEach(() => {
 
 describe('getPremiumDecayParams', () => {
   it('multicalls the three immutable premium getters and maps the result', async () => {
-    mockMulticall.mockResolvedValue([100_000_000n, 86_400n, 2_419_200n] as never)
+    mockMulticall.mockResolvedValue([
+      100_000_000n,
+      86_400n,
+      2_419_200n,
+    ] as never)
 
     const result = await getPremiumDecayParams(mockClient, { oracleAddress })
 
