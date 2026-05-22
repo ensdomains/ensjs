@@ -31,6 +31,9 @@ import {
 // Constants
 // ================================
 
+const DEFAULT_ROLE_BITMAP = BigInt(
+  '0x1111111111111111111111111111111111111111111111111111111111111111',
+)
 const DEFAULT_SALT = BigInt(keccak256(stringToBytes(new Date().toISOString())))
 
 // ================================
@@ -44,9 +47,16 @@ export type DeployVerifiableProxyWriteParametersParameters = {
   implAddress: Address
   /**
    * The initialization calldata.
-   * If omitted, defaults to `initialize(client.account.address)`.
+   * If omitted, defaults to
+   * `initialize(client.account.address, DEFAULT_ROLE_BITMAP)`.
    */
   callData?: Hex
+  /**
+   * The role bitmap granted to the proxy admin when generating default
+   * calldata. Ignored when `callData` is provided. Defaults to a bitmap
+   * containing every role.
+   */
+  roleBitmap?: bigint
   /**
    * The salt for proxy deployment.
    * If omitted, a timestamp-based salt is generated via
@@ -71,6 +81,7 @@ export const deployVerifiableProxyWriteParameters = <
     factoryAddress,
     implAddress,
     callData,
+    roleBitmap = DEFAULT_ROLE_BITMAP,
     salt = DEFAULT_SALT,
   }: DeployVerifiableProxyWriteParametersParameters,
 ) => {
@@ -81,7 +92,7 @@ export const deployVerifiableProxyWriteParameters = <
     encodeFunctionData({
       abi: proxyInitializeSnippet,
       functionName: 'initialize',
-      args: [client.account.address],
+      args: [client.account.address, roleBitmap],
     })
 
   return {

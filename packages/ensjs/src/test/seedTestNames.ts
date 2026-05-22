@@ -34,7 +34,7 @@ const account2 = privateKeyToAccount(
 
 async function setupClients(l1Url: string) {
   const localhost = {
-    id: 1,
+    id: 31337,
     name: 'Localhost',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {

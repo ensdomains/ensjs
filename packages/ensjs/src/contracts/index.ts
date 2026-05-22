@@ -105,10 +105,11 @@ export {
 } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 export {
   permissionedResolverAliasSnippet,
-  permissionedResolverGrantAddrRolesSnippet,
-  permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverAuthorizeAddrRolesSnippet,
+  permissionedResolverAuthorizeDataRolesSnippet,
+  permissionedResolverAuthorizeNameRolesSnippet,
+  permissionedResolverAuthorizeTextRolesSnippet,
   permissionedResolverGrantRootRolesSnippet,
-  permissionedResolverGrantTextRolesSnippet,
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
   permissionedResolverRevokeRolesSnippet,

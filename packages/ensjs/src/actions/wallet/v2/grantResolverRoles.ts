@@ -1,8 +1,8 @@
 import {
-  permissionedResolverGrantAddrRolesSnippet,
-  permissionedResolverGrantNameRolesSnippet,
+  permissionedResolverAuthorizeAddrRolesSnippet,
+  permissionedResolverAuthorizeNameRolesSnippet,
+  permissionedResolverAuthorizeTextRolesSnippet,
   permissionedResolverGrantRootRolesSnippet,
-  permissionedResolverGrantTextRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Account,
@@ -124,29 +124,35 @@ export const grantResolverRolesWriteParameters = <
     case 'name':
       return {
         ...base,
-        abi: permissionedResolverGrantNameRolesSnippet,
-        functionName: 'grantNameRoles',
+        abi: permissionedResolverAuthorizeNameRolesSnippet,
+        functionName: 'authorizeNameRoles',
         args: [
           dnsEncode(params.name),
           encodeResolverRoleBitmap(params.roles),
           params.targetAccount,
+          true,
         ],
       } as const
 
     case 'text':
       return {
         ...base,
-        abi: permissionedResolverGrantTextRolesSnippet,
-        functionName: 'grantTextRoles',
-        args: [dnsEncode(params.name), params.key, params.targetAccount],
+        abi: permissionedResolverAuthorizeTextRolesSnippet,
+        functionName: 'authorizeTextRoles',
+        args: [dnsEncode(params.name), params.key, params.targetAccount, true],
       } as const
 
     case 'addr':
       return {
         ...base,
-        abi: permissionedResolverGrantAddrRolesSnippet,
-        functionName: 'grantAddrRoles',
-        args: [dnsEncode(params.name), params.coinType, params.targetAccount],
+        abi: permissionedResolverAuthorizeAddrRolesSnippet,
+        functionName: 'authorizeAddrRoles',
+        args: [
+          dnsEncode(params.name),
+          params.coinType,
+          params.targetAccount,
+          true,
+        ],
       } as const
   }
 }

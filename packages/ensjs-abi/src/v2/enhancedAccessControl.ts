@@ -31,8 +31,61 @@ export const eacRolesChangedEventSnippet = [
 export const eacErrors = [
   {
     type: 'error',
+    name: 'EACCannotGrantRoles',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+  },
+  {
+    type: 'error',
+    name: 'EACCannotRevokeRoles',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+  },
+  {
+    type: 'error',
+    name: 'EACInvalidAccount',
+    inputs: [],
+  },
+  {
+    type: 'error',
+    name: 'EACInvalidRoleBitmap',
+    inputs: [{ name: 'roleBitmap', type: 'uint256' }],
+  },
+  {
+    type: 'error',
+    name: 'EACMaxAssignees',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+    ],
+  },
+  {
+    type: 'error',
+    name: 'EACMinAssignees',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+    ],
+  },
+  {
+    type: 'error',
     name: 'EACRootResourceNotAllowed',
     inputs: [],
+  },
+  {
+    type: 'error',
+    name: 'EACUnauthorizedAccountRoles',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
   },
 ] as const
 

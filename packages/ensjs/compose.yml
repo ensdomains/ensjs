@@ -1,6 +1,6 @@
 services:
   devnet:
-    image: ghcr.io/ensdomains/contracts-v2:main-4ac5517
+    image: ghcr.io/ensdomains/contracts-v2:main-5677359
     command: ./script/runDevnet.ts --testNames
     pull_policy: always
     ports:

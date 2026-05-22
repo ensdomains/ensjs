@@ -1,5 +1,7 @@
 import {
-  permissionedResolverRevokeRolesSnippet,
+  permissionedResolverAuthorizeAddrRolesSnippet,
+  permissionedResolverAuthorizeNameRolesSnippet,
+  permissionedResolverAuthorizeTextRolesSnippet,
   permissionedResolverRevokeRootRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
@@ -8,12 +10,14 @@ import type {
   Chain,
   Client,
   Hash,
+  Hex,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { namehash } from 'viem'
+import { toHex } from 'viem'
 import { writeContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import type {
   Prettify,
@@ -25,21 +29,11 @@ import {
   clientWithOverrides,
 } from '../../../utils/clientWithOverrides.js'
 import {
-  addrPart,
-  computeResolverResource,
-  textPart,
-} from '../../../utils/v2/roles/resolverResource.js'
-import {
   encodeResolverRoleBitmap,
-  RESOLVER_ROLE_SET_ADDR,
-  RESOLVER_ROLE_SET_TEXT,
   type ResolverRole,
 } from '../../../utils/v2/roles/resolverRoles.js'
 
 // ─── Parameter types ─────────────────────────────────────────────────
-
-const ZERO_BYTES32 =
-  '0x0000000000000000000000000000000000000000000000000000000000000000' as const
 
 type BaseParameters = {
   /** The resolver address */
@@ -96,6 +90,10 @@ export type RevokeResolverRolesErrorType =
 
 // ─── Write parameters ────────────────────────────────────────────────
 
+function dnsEncode(name: string): Hex {
+  return toHex(packetToBytes(name))
+}
+
 export const revokeResolverRolesWriteParameters = <
   chain extends Chain,
   account extends Account,
@@ -120,48 +118,39 @@ export const revokeResolverRolesWriteParameters = <
         args: [encodeResolverRoleBitmap(params.roles), params.targetAccount],
       } as const
 
-    case 'name': {
-      const resource = computeResolverResource(
-        namehash(params.name),
-        ZERO_BYTES32,
-      )
+    case 'name':
       return {
         ...base,
-        abi: permissionedResolverRevokeRolesSnippet,
-        functionName: 'revokeRoles',
+        abi: permissionedResolverAuthorizeNameRolesSnippet,
+        functionName: 'authorizeNameRoles',
         args: [
-          resource,
+          dnsEncode(params.name),
           encodeResolverRoleBitmap(params.roles),
           params.targetAccount,
+          false,
         ],
       } as const
-    }
 
-    case 'text': {
-      const resource = computeResolverResource(
-        namehash(params.name),
-        textPart(params.key),
-      )
+    case 'text':
       return {
         ...base,
-        abi: permissionedResolverRevokeRolesSnippet,
-        functionName: 'revokeRoles',
-        args: [resource, RESOLVER_ROLE_SET_TEXT, params.targetAccount],
+        abi: permissionedResolverAuthorizeTextRolesSnippet,
+        functionName: 'authorizeTextRoles',
+        args: [dnsEncode(params.name), params.key, params.targetAccount, false],
       } as const
-    }
 
-    case 'addr': {
-      const resource = computeResolverResource(
-        namehash(params.name),
-        addrPart(params.coinType),
-      )
+    case 'addr':
       return {
         ...base,
-        abi: permissionedResolverRevokeRolesSnippet,
-        functionName: 'revokeRoles',
-        args: [resource, RESOLVER_ROLE_SET_ADDR, params.targetAccount],
+        abi: permissionedResolverAuthorizeAddrRolesSnippet,
+        functionName: 'authorizeAddrRoles',
+        args: [
+          dnsEncode(params.name),
+          params.coinType,
+          params.targetAccount,
+          false,
+        ],
       } as const
-    }
   }
 }
 

@@ -98,43 +98,61 @@ export const permissionedResolverRevokeRolesSnippet = [
   },
 ] as const
 
-export const permissionedResolverGrantNameRolesSnippet = [
+export const permissionedResolverAuthorizeNameRolesSnippet = [
   {
-    name: 'grantNameRoles',
+    name: 'authorizeNameRoles',
     type: 'function',
     stateMutability: 'nonpayable',
     inputs: [
       { name: 'toName', type: 'bytes' },
       { name: 'roleBitmap', type: 'uint256' },
       { name: 'account', type: 'address' },
+      { name: 'grant', type: 'bool' },
     ],
     outputs: [{ name: '', type: 'bool' }],
   },
 ] as const
 
-export const permissionedResolverGrantTextRolesSnippet = [
+export const permissionedResolverAuthorizeTextRolesSnippet = [
   {
-    name: 'grantTextRoles',
+    name: 'authorizeTextRoles',
     type: 'function',
     stateMutability: 'nonpayable',
     inputs: [
       { name: 'toName', type: 'bytes' },
       { name: 'key', type: 'string' },
       { name: 'account', type: 'address' },
+      { name: 'grant', type: 'bool' },
     ],
     outputs: [{ name: '', type: 'bool' }],
   },
 ] as const
 
-export const permissionedResolverGrantAddrRolesSnippet = [
+export const permissionedResolverAuthorizeAddrRolesSnippet = [
   {
-    name: 'grantAddrRoles',
+    name: 'authorizeAddrRoles',
     type: 'function',
     stateMutability: 'nonpayable',
     inputs: [
       { name: 'toName', type: 'bytes' },
       { name: 'coinType', type: 'uint256' },
       { name: 'account', type: 'address' },
+      { name: 'grant', type: 'bool' },
+    ],
+    outputs: [{ name: 'updated', type: 'bool' }],
+  },
+] as const
+
+export const permissionedResolverAuthorizeDataRolesSnippet = [
+  {
+    name: 'authorizeDataRoles',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'toName', type: 'bytes' },
+      { name: 'key', type: 'string' },
+      { name: 'account', type: 'address' },
+      { name: 'grant', type: 'bool' },
     ],
     outputs: [{ name: '', type: 'bool' }],
   },
