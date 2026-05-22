@@ -43,10 +43,13 @@ export const supportedL1Contracts = [
   // v2
   'ensEthRegistrar',
   'usdc',
+  'dai',
   'ensVerifiableFactory',
   'ensRegistry',
   'ensPermissionedResolverImpl',
   'ensUserRegistryImpl',
+  'ensStandardRentPriceOracle',
+  'ensHcaFactory',
 
   // UR
   'ensUniversalResolver',
@@ -101,7 +104,16 @@ export const ensL1Contracts = {
     usdc: {
       address: zeroAddress,
     },
+    dai: {
+      address: zeroAddress,
+    },
     ensUserRegistryImpl: {
+      address: zeroAddress,
+    },
+    ensStandardRentPriceOracle: {
+      address: zeroAddress,
+    },
+    ensHcaFactory: {
       address: zeroAddress,
     },
   },
@@ -134,25 +146,34 @@ export const ensL1Contracts = {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensUniversalResolver: {
-      address: '0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
+      address: '0x651d670ce0d0f1ed0893f39d51fd0dbd4546c9ef',
     },
     ensPermissionedResolverImpl: {
-      address: '0xe566a1fbaf30ff7c39828fe99f955fc55544cb9c',
+      address: '0xaccbdb224df4110c86441f8f2b967af19e60e6e0',
     },
     ensRegistry: {
-      address: '0x31a2bb5d933557cce1b3129993193896d074db92',
+      address: '0x64c81210d0e580cfc7746f3fb910bf0e8f6378e1',
     },
     ensVerifiableFactory: {
-      address: '0x26997c9d0f3dcbae3f78c69e621a3926ee30bb98',
+      address: '0x7dd7f5b46005c11c89ec3eeecbfcce6234ef5a36',
     },
     ensEthRegistrar: {
-      address: '0x26e5e80e8f36607ef401443fb34eea363c86e8f7',
+      address: '0xb68e594a47fe057bd31e7a8229ffcfd85b2e28af',
     },
     usdc: {
-      address: '0xf2942507cb33422a800ff9aa4cb05522a5e1d9e6',
+      address: '0x6fdfd2a902ae83a1617abc47eec6d9d2cbe7d38e',
+    },
+    dai: {
+      address: '0xa4e569b57e0d6ac518c73ebdaa67e11c96dbd7a4',
     },
     ensUserRegistryImpl: {
-      address: '0xea93aff7375e8176053ab6ab36b57cab53cbf702',
+      address: '0x12e91b2749aa81af8cee62f903af8122202a1a75',
+    },
+    ensStandardRentPriceOracle: {
+      address: '0xf33d548997e2975c8ff04f66219564d8c7a95e26',
+    },
+    ensHcaFactory: {
+      address: '0x4327e31b4111dc0fb54517cd0fed82680840f32e',
     },
   },
 } as const satisfies Record<
