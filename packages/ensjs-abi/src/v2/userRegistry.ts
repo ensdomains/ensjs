@@ -1,46 +1,11 @@
-export const approvalEventSnippet = [
-  {
-    inputs: [
-      {
-        indexed: true,
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'approved',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-    ],
-    name: 'Approval',
-    type: 'event',
-    anonymous: false,
-  },
-] as const
+// ─── ERC1155 events ────────────────────────────────────────────────
 
 export const approvalForAllEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        name: 'approved',
-        type: 'bool',
-      },
+      { indexed: true, name: 'account', type: 'address' },
+      { indexed: true, name: 'operator', type: 'address' },
+      { indexed: false, name: 'approved', type: 'bool' },
     ],
     name: 'ApprovalForAll',
     type: 'event',
@@ -51,31 +16,11 @@ export const approvalForAllEventSnippet = [
 export const transferSingleEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'from',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'to',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        name: 'id',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'value',
-        type: 'uint256',
-      },
+      { indexed: true, name: 'operator', type: 'address' },
+      { indexed: true, name: 'from', type: 'address' },
+      { indexed: true, name: 'to', type: 'address' },
+      { indexed: false, name: 'id', type: 'uint256' },
+      { indexed: false, name: 'value', type: 'uint256' },
     ],
     name: 'TransferSingle',
     type: 'event',
@@ -86,31 +31,11 @@ export const transferSingleEventSnippet = [
 export const transferBatchEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'operator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'from',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'to',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        name: 'ids',
-        type: 'uint256[]',
-      },
-      {
-        indexed: false,
-        name: 'values',
-        type: 'uint256[]',
-      },
+      { indexed: true, name: 'operator', type: 'address' },
+      { indexed: true, name: 'from', type: 'address' },
+      { indexed: true, name: 'to', type: 'address' },
+      { indexed: false, name: 'ids', type: 'uint256[]' },
+      { indexed: false, name: 'values', type: 'uint256[]' },
     ],
     name: 'TransferBatch',
     type: 'event',
@@ -121,16 +46,8 @@ export const transferBatchEventSnippet = [
 export const uriEventSnippet = [
   {
     inputs: [
-      {
-        indexed: false,
-        name: 'value',
-        type: 'string',
-      },
-      {
-        indexed: true,
-        name: 'id',
-        type: 'uint256',
-      },
+      { indexed: false, name: 'value', type: 'string' },
+      { indexed: true, name: 'id', type: 'uint256' },
     ],
     name: 'URI',
     type: 'event',
@@ -138,86 +55,85 @@ export const uriEventSnippet = [
   },
 ] as const
 
-export const nameBurnedEventSnippet = [
+// ─── Registry lifecycle events ─────────────────────────────────────
+
+export const labelRegisteredEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'burnedBy',
-        type: 'address',
-      },
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'labelHash', type: 'bytes32' },
+      { indexed: false, name: 'label', type: 'string' },
+      { indexed: false, name: 'owner', type: 'address' },
+      { indexed: false, name: 'expiry', type: 'uint64' },
+      { indexed: true, name: 'sender', type: 'address' },
     ],
-    name: 'NameBurned',
+    name: 'LabelRegistered',
     type: 'event',
     anonymous: false,
   },
 ] as const
 
-export const nameRenewedEventSnippet = [
+export const labelReservedEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'newExpiration',
-        type: 'uint64',
-      },
-      {
-        indexed: false,
-        name: 'renewedBy',
-        type: 'address',
-      },
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'labelHash', type: 'bytes32' },
+      { indexed: false, name: 'label', type: 'string' },
+      { indexed: false, name: 'expiry', type: 'uint64' },
+      { indexed: true, name: 'sender', type: 'address' },
     ],
-    name: 'NameRenewed',
+    name: 'LabelReserved',
     type: 'event',
     anonymous: false,
   },
 ] as const
 
-export const newSubnameEventSnippet = [
+export const labelUnregisteredEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'label',
-        type: 'string',
-      },
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'sender', type: 'address' },
     ],
-    name: 'NewSubname',
+    name: 'LabelUnregistered',
     type: 'event',
     anonymous: false,
   },
 ] as const
 
-export const resolverUpdateEventSnippet = [
+export const expiryUpdatedEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'id',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'resolver',
-        type: 'address',
-      },
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'newExpiry', type: 'uint64' },
+      { indexed: true, name: 'sender', type: 'address' },
     ],
-    name: 'ResolverUpdate',
+    name: 'ExpiryUpdated',
+    type: 'event',
+    anonymous: false,
+  },
+] as const
+
+export const parentUpdatedEventSnippet = [
+  {
+    inputs: [
+      { indexed: true, name: 'parent', type: 'address' },
+      { indexed: false, name: 'label', type: 'string' },
+      { indexed: true, name: 'sender', type: 'address' },
+    ],
+    name: 'ParentUpdated',
+    type: 'event',
+    anonymous: false,
+  },
+] as const
+
+export const resolverUpdatedEventSnippet = [
+  {
+    inputs: [
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'resolver', type: 'address' },
+      { indexed: true, name: 'sender', type: 'address' },
+    ],
+    name: 'ResolverUpdated',
     type: 'event',
     anonymous: false,
   },
@@ -226,16 +142,9 @@ export const resolverUpdateEventSnippet = [
 export const subregistryUpdatedEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'subregistry',
-        type: 'address',
-      },
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'subregistry', type: 'address' },
+      { indexed: true, name: 'sender', type: 'address' },
     ],
     name: 'SubregistryUpdated',
     type: 'event',
@@ -243,58 +152,34 @@ export const subregistryUpdatedEventSnippet = [
   },
 ] as const
 
-export const tokenObserverSetEventSnippet = [
+export const tokenResourceEventSnippet = [
   {
     inputs: [
-      {
-        indexed: true,
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'observer',
-        type: 'address',
-      },
+      { indexed: true, name: 'tokenId', type: 'uint256' },
+      { indexed: true, name: 'resource', type: 'uint256' },
     ],
-    name: 'TokenObserverSet',
+    name: 'TokenResource',
     type: 'event',
     anonymous: false,
   },
 ] as const
 
-export const tokenRegeneratedEventSnippet = [
+export const upgradedEventSnippet = [
   {
-    inputs: [
-      {
-        indexed: false,
-        name: 'oldTokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        name: 'newTokenId',
-        type: 'uint256',
-      },
-    ],
-    name: 'TokenRegenerated',
+    inputs: [{ indexed: true, name: 'implementation', type: 'address' }],
+    name: 'Upgraded',
     type: 'event',
     anonymous: false,
   },
 ] as const
+
+// ─── Functions ─────────────────────────────────────────────────────
 
 export const userRegistrySetSubregistrySnippet = [
   {
     inputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        name: 'registry',
-        type: 'address',
-        internalType: 'contract IRegistry',
-      },
+      { name: 'anyId', type: 'uint256' },
+      { name: 'registry', type: 'address' },
     ],
     name: 'setSubregistry',
     outputs: [],
@@ -306,55 +191,81 @@ export const userRegistrySetSubregistrySnippet = [
 export const userRegistryRegisterSnippet = [
   {
     inputs: [
-      {
-        name: 'label',
-        type: 'string',
-      },
-      {
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        name: 'registry',
-        type: 'address',
-        internalType: 'contract IRegistry',
-      },
-      {
-        name: 'resolver',
-        type: 'address',
-      },
-      {
-        name: 'roleBitmap',
-        type: 'uint256',
-      },
-      {
-        name: 'expires',
-        type: 'uint64',
-      },
+      { name: 'label', type: 'string' },
+      { name: 'owner', type: 'address' },
+      { name: 'registry', type: 'address' },
+      { name: 'resolver', type: 'address' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'expiry', type: 'uint64' },
     ],
     name: 'register',
-    outputs: [
-      {
-        name: 'tokenId',
-        type: 'uint256',
-      },
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const userRegistryRenewSnippet = [
+  {
+    inputs: [
+      { name: 'tokenId', type: 'uint256' },
+      { name: 'expiry', type: 'uint64' },
     ],
+    name: 'renew',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const userRegistryUnregisterSnippet = [
+  {
+    inputs: [{ name: 'tokenId', type: 'uint256' }],
+    name: 'unregister',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const userRegistrySetResolverSnippet = [
+  {
+    inputs: [
+      { name: 'tokenId', type: 'uint256' },
+      { name: 'resolver', type: 'address' },
+    ],
+    name: 'setResolver',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const userRegistryInitializeSnippet = [
+  {
+    inputs: [
+      { name: 'admin', type: 'address' },
+      { name: 'roleBitmap', type: 'uint256' },
+    ],
+    name: 'initialize',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const
 
 export const userRegistryAllEventsSnippet = [
-  ...approvalEventSnippet,
   ...approvalForAllEventSnippet,
-  ...nameBurnedEventSnippet,
-  ...nameRenewedEventSnippet,
-  ...newSubnameEventSnippet,
-  ...resolverUpdateEventSnippet,
+  ...expiryUpdatedEventSnippet,
+  ...labelRegisteredEventSnippet,
+  ...labelReservedEventSnippet,
+  ...labelUnregisteredEventSnippet,
+  ...parentUpdatedEventSnippet,
+  ...resolverUpdatedEventSnippet,
   ...subregistryUpdatedEventSnippet,
-  ...tokenObserverSetEventSnippet,
-  ...tokenRegeneratedEventSnippet,
+  ...tokenResourceEventSnippet,
   ...transferBatchEventSnippet,
   ...transferSingleEventSnippet,
+  ...upgradedEventSnippet,
   ...uriEventSnippet,
 ] as const

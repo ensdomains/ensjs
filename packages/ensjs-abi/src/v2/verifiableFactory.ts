@@ -1,20 +1,4 @@
-export const verifiableFactoryErrors = [
-  {
-    inputs: [],
-    name: 'FailedCall',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        name: 'roleBitmap',
-        type: 'uint256',
-      },
-    ],
-    name: 'EACInvalidRoleBitmap',
-    type: 'error',
-  },
-] as const
+export const verifiableFactoryErrors = [] as const
 
 export const verifiableFactoryDeployProxySnippet = [
   ...verifiableFactoryErrors,
@@ -124,14 +108,35 @@ export const subregistryInitializeSnippet = [
 export const proxyInitializeSnippet = [
   {
     inputs: [
-      {
-        name: 'admin',
-        type: 'address',
-      },
+      { name: 'admin', type: 'address' },
+      { name: 'roleBitmap', type: 'uint256' },
     ],
     name: 'initialize',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const verifiableFactoryProxyLogicSnippet = [
+  {
+    inputs: [],
+    name: 'proxyLogic',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const verifiableFactoryVerifyContractSnippet = [
+  {
+    inputs: [
+      { name: 'proxy', type: 'address' },
+      { name: 'implementation', type: 'address' },
+    ],
+    name: 'verifyContract',
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
     type: 'function',
   },
 ] as const

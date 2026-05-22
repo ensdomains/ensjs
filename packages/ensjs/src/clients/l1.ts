@@ -107,7 +107,7 @@ export const ensL1Contracts = {
   },
   [supportedL1Chains.sepolia]: {
     ensBaseRegistrarImplementation: {
-      address: '0x6409609247722761b8ba96371485de92a6d7b83b',
+      address: '0xa51c9e6efe589407c72984e93b45e35a71a398ec',
     },
     ensBulkRenewal: {
       address: '0x7f86d816165baf4fd68bfd9a0706601cdd666ac4',
@@ -119,40 +119,40 @@ export const ensL1Contracts = {
       address: '0x18b1373567efa1a4b0abea0a418438b8d1dd9c68',
     },
     ensEthRegistrarController: {
-      address: '0x99e517db3db5ec5424367b8b50cd11ddcb0008f1',
+      address: '0xb5778cf6cc9586d9ce740039c84dfb1802f307bc',
     },
     ensNameWrapper: {
-      address: '0xc7e033b8836e4bd55d069d113f018b98478cb091',
+      address: '0x250a6c640297f605b63c6e91c7cd376f04b288da',
     },
     ensPublicResolver: {
-      address: '0x640294a2b2d87e7f522db3e3e3e876764bce170d',
+      address: '0xb441cb480460eb8b2964dcb82b64a883b14abf3e',
     },
     ensLegacyRegistry: {
-      address: '0x7e89b563f936c68c31a360840eb7f9a4aacaf014',
+      address: '0xb6fb46e1458915dd828633d91e1df8e4c3f2d4dd',
     },
     ensReverseRegistrar: {
-      address: '0x075703fd8f8ef6b1e8e593dacab2dd702fc28196',
+      address: '0x26e5e80e8f36607ef401443fb34eea363c86e8f7',
     },
     ensUniversalResolver: {
-      address: '0x4dc74fef4fc6b5a810a1554d431f06c8d8b7451c',
+      address: '0x651d670ce0d0f1ed0893f39d51fd0dbd4546c9ef',
     },
     ensPermissionedResolverImpl: {
-      address: '0xe566a1fbaf30ff7c39828fe99f955fc55544cb9c',
+      address: '0xaccbdb224df4110c86441f8f2b967af19e60e6e0',
     },
     ensRegistry: {
-      address: '0x796fff2e907449be8d5921bcc215b1b76d89d080',
+      address: '0x64c81210d0e580cfc7746f3fb910bf0e8f6378e1',
     },
     ensVerifiableFactory: {
-      address: '0x9240c5f31d747d60b3d9aed2f57995094342b1ed',
+      address: '0x7dd7f5b46005c11c89ec3eeecbfcce6234ef5a36',
     },
     ensEthRegistrar: {
-      address: '0x68586418353b771cf2425ed14a07512aa880c532',
+      address: '0xb68e594a47fe057bd31e7a8229ffcfd85b2e28af',
     },
     usdc: {
-      address: '0x302edecc2b8d1f3f4625b8a825a42f9adc102e65',
+      address: '0x6fdfd2a902ae83a1617abc47eec6d9d2cbe7d38e',
     },
     ensUserRegistryImpl: {
-      address: '0xea93aff7375e8176053ab6ab36b57cab53cbf702',
+      address: '0x12e91b2749aa81af8cee62f903af8122202a1a75',
     },
   },
 } as const satisfies Record<

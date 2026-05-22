@@ -5,13 +5,28 @@ export const ethRegistrarNameRegisteredEventSnippet = {
     { name: 'tokenId', type: 'uint256', indexed: true },
     { name: 'label', type: 'string', indexed: false },
     { name: 'owner', type: 'address', indexed: false },
-    { name: 'subregistry', type: 'address', indexed: true },
-    { name: 'resolver', type: 'address', indexed: true },
+    { name: 'subregistry', type: 'address', indexed: false },
+    { name: 'resolver', type: 'address', indexed: false },
     { name: 'duration', type: 'uint64', indexed: false },
     { name: 'paymentToken', type: 'address', indexed: false },
-    { name: 'referrer', type: 'bytes32', indexed: true },
+    { name: 'referrer', type: 'bytes32', indexed: false },
     { name: 'base', type: 'uint256', indexed: false },
     { name: 'premium', type: 'uint256', indexed: false },
+  ],
+  anonymous: false,
+} as const
+
+export const ethRegistrarNameRenewedEventSnippet = {
+  type: 'event',
+  name: 'NameRenewed',
+  inputs: [
+    { name: 'tokenId', type: 'uint256', indexed: true },
+    { name: 'label', type: 'string', indexed: false },
+    { name: 'duration', type: 'uint64', indexed: false },
+    { name: 'newExpiry', type: 'uint64', indexed: false },
+    { name: 'paymentToken', type: 'address', indexed: false },
+    { name: 'referrer', type: 'bytes32', indexed: false },
+    { name: 'base', type: 'uint256', indexed: false },
   ],
   anonymous: false,
 } as const
@@ -19,66 +34,33 @@ export const ethRegistrarNameRegisteredEventSnippet = {
 export const ethRegistrarErrors = [
   {
     inputs: [
-      {
-        name: 'commitment',
-        type: 'bytes32',
-      },
-      {
-        name: 'validFrom',
-        type: 'uint256',
-      },
-      {
-        name: 'blockTimestamp',
-        type: 'uint256',
-      },
+      { name: 'commitment', type: 'bytes32' },
+      { name: 'validFrom', type: 'uint64' },
+      { name: 'blockTimestamp', type: 'uint64' },
     ],
     name: 'CommitmentTooNew',
     type: 'error',
   },
   {
     inputs: [
-      {
-        name: 'commitment',
-        type: 'bytes32',
-      },
-      {
-        name: 'validTo',
-        type: 'uint256',
-      },
-      {
-        name: 'blockTimestamp',
-        type: 'uint256',
-      },
+      { name: 'commitment', type: 'bytes32' },
+      { name: 'validTo', type: 'uint64' },
+      { name: 'blockTimestamp', type: 'uint64' },
     ],
     name: 'CommitmentTooOld',
     type: 'error',
   },
   {
     inputs: [
-      {
-        name: 'duration',
-        type: 'uint64',
-      },
-      {
-        name: 'minDuration',
-        type: 'uint256',
-      },
+      { name: 'duration', type: 'uint64' },
+      { name: 'minDuration', type: 'uint64' },
     ],
     name: 'DurationTooShort',
     type: 'error',
   },
   {
-    inputs: [
-      {
-        name: 'required',
-        type: 'uint256',
-      },
-      {
-        name: 'provided',
-        type: 'uint256',
-      },
-    ],
-    name: 'InsufficientValue',
+    inputs: [],
+    name: 'InvalidOwner',
     type: 'error',
   },
   {
@@ -87,22 +69,32 @@ export const ethRegistrarErrors = [
     type: 'error',
   },
   {
-    inputs: [
-      {
-        name: 'name',
-        type: 'string',
-      },
-    ],
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'NameIsAvailable',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'label', type: 'string' }],
     name: 'NameNotAvailable',
     type: 'error',
   },
   {
-    inputs: [
-      {
-        name: 'commitment',
-        type: 'bytes32',
-      },
-    ],
+    inputs: [{ name: 'label', type: 'string' }],
+    name: 'NotValid',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'paymentToken', type: 'address' }],
+    name: 'PaymentTokenNotSupported',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'token', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'commitment', type: 'bytes32' }],
     name: 'UnexpiredCommitmentExists',
     type: 'error',
   },
@@ -112,33 +104,15 @@ export const ethRegistrarRentPriceSnippet = [
   ...ethRegistrarErrors,
   {
     inputs: [
-      {
-        name: 'label',
-        type: 'string',
-      },
-      {
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        name: 'duration',
-        type: 'uint64',
-      },
-      {
-        name: 'paymentToken',
-        type: 'address',
-      },
+      { name: 'label', type: 'string' },
+      { name: 'owner', type: 'address' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'paymentToken', type: 'address' },
     ],
     name: 'rentPrice',
     outputs: [
-      {
-        name: 'base',
-        type: 'uint256',
-      },
-      {
-        name: 'premium',
-        type: 'uint256',
-      },
+      { name: 'base', type: 'uint256' },
+      { name: 'premium', type: 'uint256' },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -148,12 +122,7 @@ export const ethRegistrarRentPriceSnippet = [
 export const ethRegistrarCommitSnippet = [
   ...ethRegistrarErrors,
   {
-    inputs: [
-      {
-        name: 'commitment',
-        type: 'bytes32',
-      },
-    ],
+    inputs: [{ name: 'commitment', type: 'bytes32' }],
     name: 'commit',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -183,19 +152,9 @@ export const ethRegistrarMakeCommitmentSnippet = [
 export const ethRegistrarCommitmentsSnippet = [
   ...ethRegistrarErrors,
   {
-    inputs: [
-      {
-        name: 'commitment',
-        type: 'bytes32',
-      },
-    ],
+    inputs: [{ name: 'commitment', type: 'bytes32' }],
     name: 'commitmentAt',
-    outputs: [
-      {
-        name: 'commitTime',
-        type: 'uint64',
-      },
-    ],
+    outputs: [{ name: 'commitTime', type: 'uint64' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -204,19 +163,9 @@ export const ethRegistrarCommitmentsSnippet = [
 export const ethRegistrarAvailableSnippet = [
   ...ethRegistrarErrors,
   {
-    inputs: [
-      {
-        name: 'label',
-        type: 'string',
-      },
-    ],
+    inputs: [{ name: 'label', type: 'string' }],
     name: 'isAvailable',
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{ name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -225,7 +174,7 @@ export const ethRegistrarAvailableSnippet = [
 export const ethRegistrarIsAvailableSnippet = [
   {
     name: 'isAvailable',
-    inputs: [{ name: 'name', type: 'string' }],
+    inputs: [{ name: 'label', type: 'string' }],
     outputs: [{ name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function',
@@ -255,16 +204,20 @@ export const ethRegistrarRegisterSnippet = [
 export const ethRegistrarRenewErrors = [
   {
     inputs: [
-      {
-        name: 'required',
-        type: 'uint256',
-      },
-      {
-        name: 'provided',
-        type: 'uint256',
-      },
+      { name: 'duration', type: 'uint64' },
+      { name: 'minDuration', type: 'uint64' },
     ],
-    name: 'InsufficientValue',
+    name: 'DurationTooShort',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'paymentToken', type: 'address' }],
+    name: 'PaymentTokenNotSupported',
+    type: 'error',
+  },
+  {
+    inputs: [{ name: 'token', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
     type: 'error',
   },
 ] as const
@@ -273,22 +226,10 @@ export const ethRegistrarRenewSnippet = [
   ...ethRegistrarRenewErrors,
   {
     inputs: [
-      {
-        name: 'label',
-        type: 'string',
-      },
-      {
-        name: 'duration',
-        type: 'uint64',
-      },
-      {
-        name: 'paymentToken',
-        type: 'address',
-      },
-      {
-        name: 'referrer',
-        type: 'bytes32',
-      },
+      { name: 'label', type: 'string' },
+      { name: 'duration', type: 'uint64' },
+      { name: 'paymentToken', type: 'address' },
+      { name: 'referrer', type: 'bytes32' },
     ],
     name: 'renew',
     outputs: [],
