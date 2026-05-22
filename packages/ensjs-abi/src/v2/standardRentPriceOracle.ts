@@ -1,10 +1,3 @@
-/**
- * StandardRentPriceOracle (contracts-v2 post-audit). The ETHRegistrar delegates
- * pricing and payment-token validation to a swappable `IRentPriceOracle`; this
- * is the canonical implementation. Only the read fragments the apps consume are
- * declared here.
- */
-
 export const standardRentPriceOracleErrors = [
   {
     inputs: [{ name: 'label', type: 'string' }],
