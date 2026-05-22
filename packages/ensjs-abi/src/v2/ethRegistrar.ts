@@ -297,11 +297,6 @@ export const ethRegistrarRenewSnippet = [
   },
 ] as const
 
-/**
- * Post-audit state-aware pricing errors (the registrar delegates to its
- * `IRentPriceOracle`). Included so reverts from the `getRegisterPrice` /
- * `getRenewPrice` reads decode to readable names instead of raw selectors.
- */
 export const ethRegistrarPriceErrors = [
   {
     inputs: [{ name: 'label', type: 'string' }],
@@ -325,7 +320,6 @@ export const ethRegistrarPriceErrors = [
   },
 ] as const
 
-/** Post-audit `getRegisterPrice(label, duration, paymentToken) → (base, premium)`. */
 export const ethRegistrarGetRegisterPriceSnippet = [
   ...ethRegistrarPriceErrors,
   {
@@ -344,7 +338,6 @@ export const ethRegistrarGetRegisterPriceSnippet = [
   },
 ] as const
 
-/** Post-audit `getRenewPrice(label, duration, paymentToken) → uint256`. */
 export const ethRegistrarGetRenewPriceSnippet = [
   ...ethRegistrarPriceErrors,
   {
