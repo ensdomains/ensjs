@@ -1,6 +1,5 @@
-import { ethRegistrarGetRegisterPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
+import { ethRegistrarControllerRentPriceSnippet } from '@ensdomains/ensjs-abi/v1/ethRegistrarController'
 import type {
-  Address,
   Chain,
   GetChainContractAddressErrorType,
   MulticallErrorType,
@@ -19,14 +18,12 @@ export type GetPriceParameters = {
   nameOrNames: string | string[]
   /** Duration in seconds to get price for */
   duration: bigint | number
-  /** Payment token address (defaults to USDC from chain config) */
-  paymentToken?: Address
 }
 
 export type GetPriceReturnType = {
-  /** Price base value */
+  /** Price base value (wei) */
   base: bigint
-  /** Price premium */
+  /** Price premium (wei) */
   premium: bigint
 }
 
@@ -51,9 +48,13 @@ const extractLabel = (name: string): string => {
 /**
  * Gets the registration price of a name, or array of names, for a given duration.
  *
- * Calls `ETHRegistrar.getRegisterPrice(label, duration, paymentToken)`. When given an
- * array of names, the reads are batched into a single Multicall3 round-trip and the
- * returned `base`/`premium` are summed across all names (atomic against one block).
+ * Calls `ETHRegistrarController.rentPrice(label, duration)` on the legacy v1 controller.
+ * Pricing is ETH-native (no payment token), and `premium` reflects the post-expiry
+ * exponential-decay premium curve on the legacy price oracle.
+ *
+ * When given an array of names, the reads are batched into a single Multicall3
+ * round-trip and the returned `base`/`premium` are summed across all names (atomic
+ * against one block).
  *
  * @param client - {@link Client}
  * @param parameters - {@link GetPriceParameters}
@@ -73,32 +74,28 @@ const extractLabel = (name: string): string => {
  * // { base: 352828971668930335n, premium: 0n }
  */
 export async function getPrice<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ethRegistrar' | 'usdc'>,
-  { nameOrNames, duration, paymentToken }: GetPriceParameters,
+  client: RequireClientContracts<chain, 'ensEthRegistrarController'>,
+  { nameOrNames, duration }: GetPriceParameters,
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const resolvedPaymentToken =
-    paymentToken ??
-    getChainContractAddress({ chain: client.chain, contract: 'usdc' })
-
-  const registrarAddress = getChainContractAddress({
+  const controllerAddress = getChainContractAddress({
     chain: client.chain,
-    contract: 'ethRegistrar',
+    contract: 'ensEthRegistrarController',
   })
 
   const durationBigInt = BigInt(duration)
 
   if (!Array.isArray(nameOrNames)) {
-    const [base, premium] = await getAction(
+    const { base, premium } = await getAction(
       client,
       readContract,
       'readContract',
     )({
-      address: registrarAddress,
-      abi: ethRegistrarGetRegisterPriceSnippet,
-      functionName: 'getRegisterPrice',
-      args: [extractLabel(nameOrNames), durationBigInt, resolvedPaymentToken],
+      address: controllerAddress,
+      abi: ethRegistrarControllerRentPriceSnippet,
+      functionName: 'rentPrice',
+      args: [extractLabel(nameOrNames), durationBigInt],
     })
     return { base, premium }
   }
@@ -114,17 +111,17 @@ export async function getPrice<chain extends Chain>(
     contracts: labels.map(
       (label) =>
         ({
-          address: registrarAddress,
-          abi: ethRegistrarGetRegisterPriceSnippet,
-          functionName: 'getRegisterPrice',
-          args: [label, durationBigInt, resolvedPaymentToken],
+          address: controllerAddress,
+          abi: ethRegistrarControllerRentPriceSnippet,
+          functionName: 'rentPrice',
+          args: [label, durationBigInt],
         }) as const,
     ),
   })
 
   let totalBase = 0n
   let totalPremium = 0n
-  for (const [base, premium] of results) {
+  for (const { base, premium } of results) {
     totalBase += base
     totalPremium += premium
   }
