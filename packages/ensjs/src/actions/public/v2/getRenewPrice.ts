@@ -2,9 +2,7 @@ import { ethRegistrarGetRenewPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRe
 import type { Address, Client, ReadContractErrorType } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-import { getNameType } from '../../../utils/name/getNameType.js'
 
 export type GetRenewPriceParameters = {
   /**
@@ -13,8 +11,8 @@ export type GetRenewPriceParameters = {
    * `IETHRenewer` interface.
    */
   renewerAddress: Address
-  /** Name, or array of names, to price renewal for */
-  nameOrNames: string | string[]
+  /** Label to price renewal for. Must be a bare label (e.g. `"foo"`), not a name (`"foo.eth"`). */
+  label: string
   /** Renewal duration in seconds */
   duration: bigint
   /** Payment token address */
@@ -22,17 +20,14 @@ export type GetRenewPriceParameters = {
 }
 
 export type GetRenewPriceReturnType = {
-  /** Total renewal price across all provided names */
+  /** Renewal price */
   amount: bigint
 }
 
-export type GetRenewPriceErrorType =
-  | UnsupportedNameTypeError
-  | ReadContractErrorType
-  | TypeError
+export type GetRenewPriceErrorType = ReadContractErrorType | TypeError
 
 /**
- * Gets the renewal price of a name, or array of names, for a given duration.
+ * Gets the renewal price of a label for a given duration.
  *
  * Internally calls `getRenewPrice(label, duration, paymentToken)` on a contract implementing
  * `IETHRenewer` — either `ETHRegistrar` or `ETHRenewerV1`. The renewer fetches the current
@@ -45,43 +40,20 @@ export type GetRenewPriceErrorType =
  */
 export async function getRenewPrice(
   client: Client,
-  {
-    renewerAddress,
-    nameOrNames,
-    duration,
-    paymentToken,
-  }: GetRenewPriceParameters,
+  { renewerAddress, label, duration, paymentToken }: GetRenewPriceParameters,
 ): Promise<GetRenewPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
+  const amount = await getAction(
+    client,
+    readContract,
+    'readContract',
+  )({
+    address: renewerAddress,
+    abi: ethRegistrarGetRenewPriceSnippet,
+    functionName: 'getRenewPrice',
+    args: [label, duration, paymentToken],
+  })
 
-  let total = 0n
-
-  const readContractAction = getAction(client, readContract, 'readContract')
-
-  for (const name of names) {
-    const labels = name.split('.')
-    const nameType = getNameType(name)
-
-    if (nameType !== 'eth-2ld' && nameType !== 'tld') {
-      throw new UnsupportedNameTypeError({
-        nameType,
-        supportedNameTypes: ['eth-2ld', 'tld'],
-        details:
-          'Currently only the renewal price of eth-2ld names can be fetched',
-      })
-    }
-
-    const amount = await readContractAction({
-      address: renewerAddress,
-      abi: ethRegistrarGetRenewPriceSnippet,
-      functionName: 'getRenewPrice',
-      args: [labels[0], duration, paymentToken],
-    })
-
-    total += amount
-  }
-
-  return { amount: total }
+  return { amount }
 }

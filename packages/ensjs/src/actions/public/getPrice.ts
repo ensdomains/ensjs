@@ -3,9 +3,10 @@ import type {
   Address,
   Chain,
   GetChainContractAddressErrorType,
+  MulticallErrorType,
   ReadContractErrorType,
 } from 'viem'
-import { readContract } from 'viem/actions'
+import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../clients/shared.js'
 import { getChainContractAddress } from '../../clients/shared.js'
@@ -33,14 +34,26 @@ export type GetPriceErrorType =
   | UnsupportedNameTypeError
   | GetChainContractAddressErrorType
   | ReadContractErrorType
+  | MulticallErrorType
   | TypeError
+
+const extractLabel = (name: string): string => {
+  const nameType = getNameType(name)
+  if (nameType !== 'eth-2ld' && nameType !== 'tld')
+    throw new UnsupportedNameTypeError({
+      nameType,
+      supportedNameTypes: ['eth-2ld', 'tld'],
+      details: 'Currently only the price of eth-2ld names can be fetched',
+    })
+  return name.split('.')[0]
+}
 
 /**
  * Gets the registration price of a name, or array of names, for a given duration.
  *
- * Calls `ETHRegistrar.getRegisterPrice(label, duration, paymentToken)`. The `owner`
- * parameter from earlier revisions has been removed: pricing is owner-agnostic in
- * the post-audit `ETHRegistrar`.
+ * Calls `ETHRegistrar.getRegisterPrice(label, duration, paymentToken)`. When given an
+ * array of names, the reads are batched into a single Multicall3 round-trip and the
+ * returned `base`/`premium` are summed across all names (atomic against one block).
  *
  * @param client - {@link Client}
  * @param parameters - {@link GetPriceParameters}
@@ -65,48 +78,56 @@ export async function getPrice<chain extends Chain>(
 ): Promise<GetPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  // Default to USDC from chain config if no payment token specified
   const resolvedPaymentToken =
     paymentToken ??
-    getChainContractAddress({
-      chain: client.chain,
-      contract: 'usdc',
-    })
+    getChainContractAddress({ chain: client.chain, contract: 'usdc' })
 
-  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
+  const registrarAddress = getChainContractAddress({
+    chain: client.chain,
+    contract: 'ethRegistrar',
+  })
+
+  const durationBigInt = BigInt(duration)
+
+  if (!Array.isArray(nameOrNames)) {
+    const [base, premium] = await getAction(
+      client,
+      readContract,
+      'readContract',
+    )({
+      address: registrarAddress,
+      abi: ethRegistrarGetRegisterPriceSnippet,
+      functionName: 'getRegisterPrice',
+      args: [extractLabel(nameOrNames), durationBigInt, resolvedPaymentToken],
+    })
+    return { base, premium }
+  }
+
+  const labels = nameOrNames.map(extractLabel)
+
+  const results = await getAction(
+    client,
+    multicall,
+    'multicall',
+  )({
+    allowFailure: false,
+    contracts: labels.map(
+      (label) =>
+        ({
+          address: registrarAddress,
+          abi: ethRegistrarGetRegisterPriceSnippet,
+          functionName: 'getRegisterPrice',
+          args: [label, durationBigInt, resolvedPaymentToken],
+        }) as const,
+    ),
+  })
 
   let totalBase = 0n
   let totalPremium = 0n
-
-  const readContractAction = getAction(client, readContract, 'readContract')
-
-  for (const name of names) {
-    const labels = name.split('.')
-    const nameType = getNameType(name)
-
-    if (nameType !== 'eth-2ld' && nameType !== 'tld')
-      throw new UnsupportedNameTypeError({
-        nameType,
-        supportedNameTypes: ['eth-2ld', 'tld'],
-        details: 'Currently only the price of eth-2ld names can be fetched',
-      })
-
-    const [base, premium] = await readContractAction({
-      address: getChainContractAddress({
-        chain: client.chain,
-        contract: 'ethRegistrar',
-      }),
-      abi: ethRegistrarGetRegisterPriceSnippet,
-      functionName: 'getRegisterPrice',
-      args: [labels[0], BigInt(duration), resolvedPaymentToken],
-    })
-
+  for (const [base, premium] of results) {
     totalBase += base
     totalPremium += premium
   }
 
-  return {
-    base: totalBase,
-    premium: totalPremium,
-  }
+  return { base: totalBase, premium: totalPremium }
 }
