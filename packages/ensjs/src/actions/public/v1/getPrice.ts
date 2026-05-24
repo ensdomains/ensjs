@@ -7,11 +7,11 @@ import type {
 } from 'viem'
 import { multicall, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/shared.js'
-import { getChainContractAddress } from '../../clients/shared.js'
-import { UnsupportedNameTypeError } from '../../errors/general.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
-import { getNameType } from '../../utils/name/getNameType.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
+import { UnsupportedNameTypeError } from '../../../errors/general.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import { getNameType } from '../../../utils/name/getNameType.js'
 
 export type GetPriceParameters = {
   /** Name, or array of names, to get price for */
@@ -64,7 +64,7 @@ const extractLabel = (name: string): string => {
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getPrice } from '@ensdomains/ensjs/public'
+ * import { getPrice } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),
