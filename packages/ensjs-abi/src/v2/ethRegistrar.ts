@@ -149,6 +149,16 @@ export const ethRegistrarGetRenewPriceSnippet = [
   },
 ] as const
 
+export const ethRegistrarRentPriceOracleSnippet = [
+  {
+    inputs: [],
+    name: 'rentPriceOracle',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 export const ethRegistrarIsRenewableSnippet = [
   {
     inputs: [{ name: 'label', type: 'string' }],
