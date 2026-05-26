@@ -26,10 +26,13 @@ describe('getRoleCounts', () => {
       ROLE_SET_RESOLVER_ADMIN: 1,
       ROLE_SET_SUBREGISTRY: 1,
       ROLE_SET_SUBREGISTRY_ADMIN: 1,
+      ROLE_SET_URI: 0,
+      ROLE_SET_URI_ADMIN: 0,
       ROLE_UNREGISTER: 0,
       ROLE_UNREGISTER_ADMIN: 0,
       ROLE_UPGRADE: 0,
       ROLE_UPGRADE_ADMIN: 0,
+      ROLE_WAS_RESERVED: 0,
     })
   })
 
@@ -53,10 +56,13 @@ describe('getRoleCounts', () => {
       ROLE_SET_RESOLVER_ADMIN: 1,
       ROLE_SET_SUBREGISTRY: 1,
       ROLE_SET_SUBREGISTRY_ADMIN: 1,
+      ROLE_SET_URI: 0,
+      ROLE_SET_URI_ADMIN: 0,
       ROLE_UNREGISTER: 0,
       ROLE_UNREGISTER_ADMIN: 0,
       ROLE_UPGRADE: 0,
       ROLE_UPGRADE_ADMIN: 0,
+      ROLE_WAS_RESERVED: 0,
     })
   })
 
@@ -80,10 +86,13 @@ describe('getRoleCounts', () => {
       ROLE_SET_RESOLVER_ADMIN: 0,
       ROLE_SET_SUBREGISTRY: 0,
       ROLE_SET_SUBREGISTRY_ADMIN: 0,
+      ROLE_SET_URI: 0,
+      ROLE_SET_URI_ADMIN: 0,
       ROLE_UNREGISTER: 0,
       ROLE_UNREGISTER_ADMIN: 0,
       ROLE_UPGRADE: 0,
       ROLE_UPGRADE_ADMIN: 0,
+      ROLE_WAS_RESERVED: 0,
     })
   })
 })

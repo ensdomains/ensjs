@@ -8,45 +8,53 @@ import { getRegisterPrice } from './getRegisterPrice.js'
 const registrarAddress = deploymentAddresses.ETHRegistrar
 const paymentToken = deploymentAddresses.USDC
 
-// Pricing constants from StandardRentPriceOracle
-const USDC_DECIMALS = 10n ** 6n
-const SEC_PER_YEAR = 31_557_600n
+// Per-second base rates from StandardRentPriceOracle.getBaseRates(), indexed by label length.
+// (Lengths 0/1/2 are zero; the oracle rejects labels shorter than 3 chars as invalid.)
+const BASE_RATE_PER_SEC_3CHAR = 20_280_377n
+const BASE_RATE_PER_SEC_4CHAR = 5_070_095n
+const BASE_RATE_PER_SEC_5CHAR = 253_505n
 
-// Annual rates in USDC (6 decimals)
-const ANNUAL_RATE_3CHAR = 640n * USDC_DECIMALS
-const ANNUAL_RATE_4CHAR = 160n * USDC_DECIMALS
-const ANNUAL_RATE_5CHAR = 5n * USDC_DECIMALS
+// USDC payment token ratio (numer / denom) from getPaymentTokenRatio()
+const RATIO_NUMER = 1n
+const RATIO_DENOM = 1_000_000n
 
+// Oracle enforces a 28-day minimum duration; use that as the unit duration for the tests
 const ONE_DAY = 86400n
+const MIN_DURATION = ONE_DAY * 28n
 
 // Ceiling division matching the contract's pricing computation
 const ceilDiv = (a: bigint, b: bigint) => (a + b - 1n) / b
+
+const expectedBasePrice = (perSecRate: bigint, duration: bigint) =>
+  ceilDiv(perSecRate * duration * RATIO_NUMER, RATIO_DENOM)
 
 describe('getRegisterPrice', () => {
   it('should return the correct price for a 5+ char label', async () => {
     const result = await getRegisterPrice(publicClient, {
       registrarAddress,
       label: 'test123',
-      duration: ONE_DAY,
+      duration: MIN_DURATION,
       paymentToken,
     })
 
     // 7 chars -> 5+ char rate, no discount for short duration
-    const expectedBase = ceilDiv(ANNUAL_RATE_5CHAR * ONE_DAY, SEC_PER_YEAR)
-    expect(result.base).toBe(expectedBase)
+    expect(result.base).toBe(
+      expectedBasePrice(BASE_RATE_PER_SEC_5CHAR, MIN_DURATION),
+    )
     expect(result.premium).toBe(0n)
   })
 
   it('should return a higher price for a 4 char label', async () => {
     const result = await getRegisterPrice(publicClient, {
       registrarAddress,
-      label: 'test',
-      duration: ONE_DAY,
+      label: 'wxyz',
+      duration: MIN_DURATION,
       paymentToken,
     })
 
-    const expectedBase = ceilDiv(ANNUAL_RATE_4CHAR * ONE_DAY, SEC_PER_YEAR)
-    expect(result.base).toBe(expectedBase)
+    expect(result.base).toBe(
+      expectedBasePrice(BASE_RATE_PER_SEC_4CHAR, MIN_DURATION),
+    )
     expect(result.premium).toBe(0n)
   })
 
@@ -54,41 +62,41 @@ describe('getRegisterPrice', () => {
     const result = await getRegisterPrice(publicClient, {
       registrarAddress,
       label: 'abc',
-      duration: ONE_DAY,
+      duration: MIN_DURATION,
       paymentToken,
     })
 
-    const expectedBase = ceilDiv(ANNUAL_RATE_3CHAR * ONE_DAY, SEC_PER_YEAR)
-    expect(result.base).toBe(expectedBase)
+    expect(result.base).toBe(
+      expectedBasePrice(BASE_RATE_PER_SEC_3CHAR, MIN_DURATION),
+    )
     expect(result.premium).toBe(0n)
   })
 
   it('should scale price linearly with duration (short durations, no discount)', async () => {
-    const oneDay = await getRegisterPrice(publicClient, {
+    const oneUnit = await getRegisterPrice(publicClient, {
       registrarAddress,
       label: 'test123',
-      duration: ONE_DAY,
+      duration: MIN_DURATION,
       paymentToken,
     })
 
-    const twoDays = await getRegisterPrice(publicClient, {
+    const twoUnits = await getRegisterPrice(publicClient, {
       registrarAddress,
       label: 'test123',
-      duration: ONE_DAY * 2n,
+      duration: MIN_DURATION * 2n,
       paymentToken,
     })
 
-    const expectedOneDay = ceilDiv(ANNUAL_RATE_5CHAR * ONE_DAY, SEC_PER_YEAR)
-    const expectedTwoDays = ceilDiv(
-      ANNUAL_RATE_5CHAR * ONE_DAY * 2n,
-      SEC_PER_YEAR,
+    expect(oneUnit.base).toBe(
+      expectedBasePrice(BASE_RATE_PER_SEC_5CHAR, MIN_DURATION),
     )
-    expect(oneDay.base).toBe(expectedOneDay)
-    expect(twoDays.base).toBe(expectedTwoDays)
+    expect(twoUnits.base).toBe(
+      expectedBasePrice(BASE_RATE_PER_SEC_5CHAR, MIN_DURATION * 2n),
+    )
   })
 
   it('should enforce correct price ordering by label length', async () => {
-    const duration = ONE_DAY
+    const duration = MIN_DURATION
 
     const price3 = await getRegisterPrice(publicClient, {
       registrarAddress,

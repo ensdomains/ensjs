@@ -35,6 +35,6 @@ describe('registryRoles', () => {
   })
 
   it('exports the expected number of roles', () => {
-    expect(Object.keys(roles)).toHaveLength(17)
+    expect(Object.keys(roles)).toHaveLength(20)
   })
 })

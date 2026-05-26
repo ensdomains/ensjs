@@ -1,6 +1,6 @@
 services:
   devnet:
-    image: ghcr.io/ensdomains/contracts-v2:fix-docker-runtime-ci-arm
+    image: ghcr.io/ensdomains/contracts-v2:fix-docker-runtime-ci-arm-1d9b670
     command: ./script/runDevnet.ts --testNames
     pull_policy: always
     ports:
