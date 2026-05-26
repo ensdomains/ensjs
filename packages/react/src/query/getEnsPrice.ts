@@ -3,7 +3,7 @@ import {
   type GetPriceParameters as ensjs_GetEnsPriceParameters,
   type GetPriceReturnType as ensjs_GetEnsPriceReturnType,
   getPrice,
-} from '@ensdomains/ensjs/public'
+} from '@ensdomains/ensjs/public/v1'
 import type { QueryOptions } from '@tanstack/react-query'
 import type { ConfigWithEns } from '../types/config.js'
 import type {

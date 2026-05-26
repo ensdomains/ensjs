@@ -7,7 +7,7 @@ import {
   type GetPriceParameters as ensjs_GetPriceParameters,
   type GetPriceReturnType as ensjs_GetPriceReturnType,
   getPrice as ensjs_getPrice,
-} from '@ensdomains/ensjs/public'
+} from '@ensdomains/ensjs/public/v1'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'
