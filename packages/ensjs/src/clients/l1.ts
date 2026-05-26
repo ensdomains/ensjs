@@ -140,7 +140,7 @@ export const ensL1Contracts = {
       address: '0xdce5205a553573ffd47629327dddf36186022ffa',
     },
     ensRegistry: {
-      address: '0xc960f7217d3643b525ef36bec8adf86953cd9ab8',
+      address: '0xdedb92913a25abe1f7bcdd85d8a344a43b398b67',
     },
     ensVerifiableFactory: {
       address: '0xd2a632d8a8b67c2c4398c255cbd7af8dd7236198',
