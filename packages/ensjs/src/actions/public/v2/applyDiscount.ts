@@ -16,7 +16,7 @@ export type ApplyDiscountParameters = {
   /** Undiscounted value (e.g. baseRate × duration), in standard units */
   value: bigint
   /** Term length in seconds — selects the discount tier */
-  duration: bigint | number
+  duration: bigint
 }
 
 export type ApplyDiscountReturnType = bigint
@@ -49,6 +49,6 @@ export async function applyDiscount<chain extends Chain>(
     }),
     abi: standardRentPriceOracleApplyDiscountSnippet,
     functionName: 'applyDiscount',
-    args: [value, BigInt(duration)],
+    args: [value, duration],
   })
 }

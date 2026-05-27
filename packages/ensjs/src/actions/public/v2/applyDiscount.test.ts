@@ -33,20 +33,6 @@ describe('applyDiscount', () => {
     expect(result).toBe(0n)
   })
 
-  it('coerces a number duration to bigint without loss', async () => {
-    const asNumber = await applyDiscount(publicClient, {
-      value: 10_000n,
-      duration: Number(ONE_YEAR),
-    })
-    const asBigint = await applyDiscount(publicClient, {
-      value: 10_000n,
-      duration: ONE_YEAR,
-    })
-
-    expect(typeof asNumber).toBe('bigint')
-    expect(asNumber).toBe(asBigint)
-  })
-
   it('discounts longer durations more aggressively than linearly scaling 1y', async () => {
     const oneYear = await applyDiscount(publicClient, {
       value: 10_000n,
