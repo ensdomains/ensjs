@@ -6,7 +6,7 @@
 //                 Thibault Poisson <https://github.com/OrIOg>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-enum constants {
+declare enum constants {
   // FlushValues
   Z_NO_FLUSH = 0,
   Z_PARTIAL_FLUSH = 1,
@@ -61,6 +61,7 @@ interface DeflateOptions {
   windowBits?: number | undefined
   memLevel?: number | undefined
   strategy?: StrategyValues | undefined
+  // biome-ignore lint/suspicious/noExplicitAny: third-party type definition
   dictionary?: any
   raw?: boolean | undefined
   chunkSize?: number | undefined
@@ -73,12 +74,14 @@ interface DeflateFunctionOptions {
   windowBits?: number | undefined
   memLevel?: number | undefined
   strategy?: StrategyValues | undefined
+  // biome-ignore lint/suspicious/noExplicitAny: third-party type definition
   dictionary?: any
   raw?: boolean | undefined
 }
 
 interface InflateOptions {
   windowBits?: number | undefined
+  // biome-ignore lint/suspicious/noExplicitAny: third-party type definition
   dictionary?: any
   raw?: boolean | undefined
   to?: 'string' | undefined

@@ -10,6 +10,9 @@
 
 Gets the subnames for a name from the subgraph.
 
+> [!NOTE]
+> It's recommended to use an API key from TheGraph to avoid rate limiting. Learn more in [Custom Subgraph URIs](../basics/custom-subgraph-uris.md).
+
 ## Example
 
 ```ts
@@ -40,7 +43,7 @@ Subname array. GetSubnamesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubnames.ts:129](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubnames.ts#L129)
+[packages/ensjs/src/functions/subgraph/getSubnames.ts:129](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubnames.ts#L129)
 
 ---
 

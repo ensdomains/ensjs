@@ -59,7 +59,7 @@ Transaction hash. SetChildFusesReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/wallet/setChildFuses.ts:89](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/wallet/setChildFuses.ts#L89)
+[packages/ensjs/src/functions/wallet/setChildFuses.ts:89](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/wallet/setChildFuses.ts#L89)
 
 ---
 

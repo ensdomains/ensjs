@@ -126,6 +126,9 @@ const getOrderByFilter = ({
 
 /**
  * Gets the names for an address from the subgraph.
+ * It's recommended to use a custom subgraph URL to avoid rate limiting.
+ * @see {@link ../../../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetNamesForAddressParameters}
  * @returns Name array. {@link GetNamesForAddressReturnType}
@@ -179,6 +182,7 @@ const getNamesForAddress = async (
   const ownerWhereFilters: DomainFilter[] = Object.entries(filters).reduce(
     (prev, [key, value]) => {
       if (value) {
+        // biome-ignore lint/suspicious/noExplicitAny: runtime validation of filter key against supported filters
         if (!supportedOwnerFilters.includes(key as any))
           throw new InvalidFilterKeyError({
             filterKey: key,

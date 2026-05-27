@@ -32,7 +32,11 @@ jobs:
         with:
           cache: 'pnpm'
           node-version: 22
-          registry-url: 'https://registry.npmjs.org'
+
+      # Ensure latest npm with OIDC support (npm 11.5.1+)
+      - name: Ensure modern npm (OIDC support)
+        shell: bash
+        run: npm install -g npm@11.6
 
       - name: Install dependencies
         run: pnpm install
@@ -40,22 +44,15 @@ jobs:
       - name: Build Packages
         run: pnpm -r build
 
-      - name: Fix npmrc
-        run: npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
           # Note: pnpm install after versioning is necessary to refresh lockfile
           version: pnpm chgset:version
-          publish: pnpm release
+          publish: pnpm publish -r --access public && changeset tag
           commit: "chore: release"
           title: "[ci] release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Needs access to publish to npm
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true

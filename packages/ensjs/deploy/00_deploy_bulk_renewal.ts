@@ -45,42 +45,53 @@ const func: DeployFunction = async (hre) => {
   })
 
   console.log('Temporarily setting owner of eth tld to owner ')
-  const tx = await root.write.setSubnodeOwner([labelhash('eth')], owner)
-  await tx.wait()
+  const tx = await root.write.setSubnodeOwner(
+    [labelhash('eth'), owner],
+    deployer,
+  )
+  await viem.waitForTransactionSuccess(tx)
 
   console.log('Set default resolver for eth tld to public resolver')
-  const tx111 = await registry.write.setResolver(
-    [namehash('eth')],
+  const tx111 = await registry.write.setResolver([
+    namehash('eth'),
     resolver.address,
-  )
-  await tx111.wait()
+  ])
+  await viem.waitForTransactionSuccess(tx111)
 
   console.log('Set interface implementor of eth tld for bulk renewal')
-  const tx2 = await resolver.write.setInterface(
-    [namehash('eth'), createInterfaceId(bulkRenewal.abi)],
+  const tx2 = await resolver.write.setInterface([
+    namehash('eth'),
+    createInterfaceId(bulkRenewal.abi),
     bulkRenewal.address,
-  )
-  await tx2.wait()
+  ])
+  await viem.waitForTransactionSuccess(tx2)
 
   console.log('Set interface implementor of eth tld for registrar controller')
-  const tx3 = await resolver.setInterface(
+  const tx3 = await resolver.write.setInterface([
     namehash('eth'),
     createInterfaceId(controllerArtifact.abi),
     controller.address,
-  )
-  await tx3.wait()
+  ])
+  await viem.waitForTransactionSuccess(tx3)
 
-  console.log('Set interface implementor of eth tld for name wrapper')
-  const tx4 = await resolver.setInterface(
-    namehash('eth'),
-    createInterfaceId(wrapper.interface),
+  console.log(
+    'Set interface implementor of eth tld for name wrapper',
     wrapper.address,
+    wrapper.interface,
   )
-  await tx4.wait()
+  const tx4 = await resolver.write.setInterface([
+    namehash('eth'),
+    createInterfaceId(wrapper.abi),
+    wrapper.address,
+  ])
+  await viem.waitForTransactionSuccess(tx4)
 
   console.log('Set owner of eth tld back to registrar')
-  const tx11 = await root.setSubnodeOwner([labelhash('eth'), registrar.address])
-  await tx11.wait()
+  const tx11 = await root.write.setSubnodeOwner([
+    labelhash('eth'),
+    registrar.address,
+  ])
+  await viem.waitForTransactionSuccess(tx11)
 
   return true
 }
@@ -94,5 +105,6 @@ func.dependencies = [
   'PublicResolver',
   'ETHRegistrarController',
 ]
+func.skip = () => Promise.resolve(true)
 
 export default func

@@ -10,7 +10,7 @@
     "chgset:version": "changeset version && pnpm install",
     "chgset:version:prerelease": "changeset pre enter next && pnpm chgset:version",
     "chgset:run": "changeset",
-    "release": "pnpm publish -r --access public && changeset tag",
+    "release": "NPM_CONFIG_PROVENANCE=true pnpm publish -r --access public && changeset tag",
     "chgset": "pnpm chgset:run && pnpm chgset:version",
     "lint": "biome check"
   },
@@ -22,7 +22,8 @@
     "typescript": "^5.8.3"
   },
   "resolutions": {
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.13"
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.13",
+    "@ensdomains/buffer": "0.1.3"
   },
   "dependenciesMeta": {
     "ens-contracts": {
@@ -30,5 +31,13 @@
       "unplugged": true
     }
   },
-  "packageManager": "pnpm@10.10.0"
+  "packageManager": "pnpm@10.10.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "hardhat-deploy": "patches/hardhat-deploy.patch",
+      "@ensdomains/ens-contracts@1.6.0": "patches/@ensdomains__ens-contracts@1.6.0.patch",
+      "@ensdomains/ens-test-env@1.0.1": "patches/@ensdomains__ens-test-env@1.0.1.patch",
+      "@ensdomains/dnsprovejs@0.5.1": "patches/@ensdomains__dnsprovejs@0.5.1.patch"
+    }
+  }
 }

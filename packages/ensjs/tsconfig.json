@@ -5,7 +5,8 @@
 		"strict": true,
 		"esModuleInterop": true,
 		"moduleResolution": "nodenext",
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"typeRoots": ["./src/@types", "./node_modules/@types"]
 	},
 	"include": [
 		"hardhat.config.cts",
@@ -13,7 +14,8 @@
 		"./deploy",
 		"./test",
 		"typechain/**/*",
-		"./utils"
+		"./utils",
+		"./src"
 	],
 	"exclude": ["node_modules"]
 }

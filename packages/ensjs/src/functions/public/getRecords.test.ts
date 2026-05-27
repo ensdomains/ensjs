@@ -1,9 +1,9 @@
 import {
-  http,
-  RawContractError,
   bytesToHex,
   createPublicClient,
   encodeErrorResult,
+  http,
+  RawContractError,
 } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
@@ -18,7 +18,7 @@ import getRecords from './getRecords.js'
 
 const mainnetPublicClient = createPublicClient({
   chain: addEnsContracts(mainnet),
-  transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
+  transport: http('https://mainnet.gateway.tenderly.co/2RdFWVR5pcKseVOhmZRyBR'),
 })
 
 describe('getRecords()', () => {
@@ -97,6 +97,28 @@ describe('getRecords()', () => {
           },
         ],
         "resolverAddress": "0x1da022710dF5002339274AaDEe8D58218e9D6AB5",
+        "texts": [],
+      }
+    `)
+  })
+
+  it('works with records/resolvers that throw non-null errors', async () => {
+    const result = await getRecords(mainnetPublicClient, {
+      // TODO: switch to stateless-offchain-import.com once setup
+      name: 'taytems.xyz',
+      texts: ['description', 'url'],
+      coins: ['60', 'etcLegacy', '0'],
+    })
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "coins": [
+          {
+            "id": 60,
+            "name": "eth",
+            "value": "0x8e8Db5CcEF88cca9d624701Db544989C996E3216",
+          },
+        ],
+        "resolverAddress": "0xF142B308cF687d4358410a4cB885513b30A42025",
         "texts": [],
       }
     `)

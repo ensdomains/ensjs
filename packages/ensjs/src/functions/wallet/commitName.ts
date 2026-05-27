@@ -106,7 +106,7 @@ async function commitName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
     ...txArgs
   }: CommitNameParameters<TChain, TAccount, TChainOverride>,
 ): Promise<CommitNameReturnType> {
@@ -118,7 +118,7 @@ async function commitName<
     resolverAddress,
     records,
     reverseRecord,
-    fuses,
+    referrer,
   })
   const writeArgs = {
     ...data,

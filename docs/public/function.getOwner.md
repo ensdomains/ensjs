@@ -41,7 +41,7 @@ Owner data object, or `null` if no owners exist. GetOwnerReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/public/getOwner.ts:245](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/public/getOwner.ts#L245)
+[packages/ensjs/src/functions/public/getOwner.ts:245](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/public/getOwner.ts#L245)
 
 ---
 

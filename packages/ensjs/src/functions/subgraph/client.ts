@@ -55,6 +55,7 @@ export const requestMiddleware: RequestMiddleware = (request) => {
 }
 
 export const responseMiddleware: ResponseMiddleware = (response) => {
+  // biome-ignore lint/suspicious/noExplicitAny: recursively traverses unknown GraphQL response structure
   const traverse = (obj: Record<string, any>) => {
     if (obj && typeof obj === 'object') {
       for (const key in obj) {

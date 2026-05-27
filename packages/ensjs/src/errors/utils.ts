@@ -79,6 +79,7 @@ export class FusesFuseNotAllowedError extends BaseError {
 export class FusesInvalidUnnamedFuseError extends BaseError {
   override name = 'FusesInvalidUnnamedFuseError'
 
+  // biome-ignore lint/suspicious/noExplicitAny: error class accepts invalid input of any type for error message
   constructor({ fuse }: { fuse: any }) {
     super(`${fuse} is not a valid unnamed fuse`, {
       metaMessages: [

@@ -28,11 +28,13 @@ export type SimpleTransactionRequest = {
   >
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: generic default for passthrough data of various types
 export type TransactionRequestWithPassthrough<TPassthrough = any> =
   SimpleTransactionRequest & {
     passthrough?: TPassthrough
   }
 
+// biome-ignore lint/suspicious/noExplicitAny: args can be various types depending on the function being called
 export type GenericPassthrough = { args: any; address: Address }
 
 export type Extended = { [K in keyof Client]?: undefined } & {

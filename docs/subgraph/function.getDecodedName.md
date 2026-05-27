@@ -10,6 +10,9 @@
 
 Gets the full name for a name with unknown labels from the subgraph.
 
+> [!NOTE]
+> It's recommended to use an API key from TheGraph to avoid rate limiting. Learn more in [Custom Subgraph URIs](../basics/custom-subgraph-uris.md).
+
 ## Example
 
 ```ts
@@ -39,11 +42,11 @@ const result = await getDecodedName(client, {
 
 `Promise`\< `GetDecodedNameReturnType` \>
 
-Full name, or null if name was could not be filled. GetDecodedNameReturnType
+Full name, or null if name was not found. GetDecodedNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getDecodedName.ts:45](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getDecodedName.ts#L45)
+[packages/ensjs/src/functions/subgraph/getDecodedName.ts:45](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/subgraph/getDecodedName.ts#L45)
 
 ---
 

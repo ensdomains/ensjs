@@ -49,6 +49,7 @@ function getLabels() {
     : {}
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: label data stored in localStorage can be various types
 function _saveLabel(hash: string, label: any) {
   if (!hasLocalStorage) return hash
   const labels = getLabels()
@@ -89,8 +90,11 @@ export function checkIsDecrypted(string: string | string[]) {
 }
 
 export function decryptName(name: string) {
-  return name
-    .split('.')
-    .map((label: any) => checkLabel(label))
-    .join('.')
+  return (
+    name
+      .split('.')
+      // biome-ignore lint/suspicious/noExplicitAny: label is a string from split but type inference needs explicit annotation
+      .map((label: any) => checkLabel(label))
+      .join('.')
+  )
 }

@@ -1,5 +1,5 @@
 import { http, createPublicClient } from 'viem'
-import { holesky, mainnet } from 'viem/chains'
+import { sepolia, mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
 import { ccipRequest } from '../../utils/ccipRequest.js'
@@ -17,16 +17,16 @@ const mainnetPublicClient = createPublicClient({
   transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
-const holeskyPublicClient = createPublicClient({
-  chain: addEnsContracts(holesky),
-  transport: http('https://holesky.gateway.tenderly.co/5S00ox7ZN3mdGqaO74UDsg'),
+const sepoliaPublicClient = createPublicClient({
+  chain: addEnsContracts(sepolia),
+  transport: http('https://sepolia.gateway.tenderly.co'),
 })
 
 describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
-      const result = await getRecords(holeskyPublicClient, {
-        name: 'offchainexample.eth',
+      const result = await getRecords(sepoliaPublicClient, {
+        name: 'testing.ethbuc.eth',
         texts: ['email', 'description'],
         contentHash: true,
         coins: ['btc', '60'],
@@ -35,47 +35,35 @@ describe('CCIP', () => {
         {
           "coins": [
             {
-              "id": 0,
-              "name": "btc",
-              "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-            },
-            {
               "id": 60,
               "name": "eth",
-              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+              "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
             },
           ],
-          "contentHash": {
-            "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-            "protocolType": "ipfs",
-          },
-          "resolverAddress": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547",
+          "contentHash": null,
+          "resolverAddress": "0x7DbcFF94B5b9ccdf2B21f60Ef1F19A566016636B",
           "texts": [
             {
-              "key": "email",
-              "value": "vitalik@ethereum.org",
-            },
-            {
               "key": "description",
-              "value": "hello offchainresolver record",
+              "value": "my first profile",
             },
           ],
         }
       `)
     })
     it('should return records from a ccip-read name with custom ccipRequest', async () => {
-      const holeskyWithEns = addEnsContracts(holesky)
-      const holeskyPublicClientWithCustomCcipRequest = createPublicClient({
-        chain: holeskyWithEns,
-        transport: http('https://holesky.gateway.tenderly.co'),
+      const sepoliaWithEns = addEnsContracts(sepolia)
+      const sepoliaPublicClientWithCustomCcipRequest = createPublicClient({
+        chain: sepoliaWithEns,
+        transport: http('https://sepolia.gateway.tenderly.co'),
         ccipRead: {
-          request: ccipRequest(holeskyWithEns),
+          request: ccipRequest(sepoliaWithEns),
         },
       })
       const result = await getRecords(
-        holeskyPublicClientWithCustomCcipRequest,
+        sepoliaPublicClientWithCustomCcipRequest,
         {
-          name: 'offchainexample.eth',
+          name: 'testing.ethbuc.eth',
           texts: ['email', 'description'],
           contentHash: true,
           coins: ['btc', '60'],
@@ -85,29 +73,17 @@ describe('CCIP', () => {
       {
         "coins": [
           {
-            "id": 0,
-            "name": "btc",
-            "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-          },
-          {
             "id": 60,
             "name": "eth",
-            "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
           },
         ],
-        "contentHash": {
-          "decoded": "bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y",
-          "protocolType": "ipfs",
-        },
-        "resolverAddress": "0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547",
+        "contentHash": null,
+        "resolverAddress": "0x7DbcFF94B5b9ccdf2B21f60Ef1F19A566016636B",
         "texts": [
           {
-            "key": "email",
-            "value": "vitalik@ethereum.org",
-          },
-          {
             "key": "description",
-            "value": "hello offchainresolver record",
+            "value": "my first profile",
           },
         ],
       }
@@ -139,31 +115,27 @@ describe('CCIP', () => {
   describe('batch', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
-        holeskyPublicClient,
-        getAddressRecord.batch({ name: 'offchainexample.eth' }),
-        getAddressRecord.batch({ name: 'offchainexample.eth', coin: 'btc' }),
-        getText.batch({ name: 'offchainexample.eth', key: 'email' }),
+        sepoliaPublicClient,
+        getAddressRecord.batch({ name: 'testing.ethbuc.eth' }),
+        getAddressRecord.batch({ name: 'testing.ethbuc.eth', coin: 'btc' }),
+        getText.batch({ name: 'testing.ethbuc.eth', key: 'description' }),
       )
       expect(result).toMatchInlineSnapshot(`
       [
         {
           "id": 60,
           "name": "eth",
-          "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
         },
-        {
-          "id": 0,
-          "name": "btc",
-          "value": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-        },
-        "vitalik@ethereum.org",
+        null,
+        "my first profile",
       ]
       `)
     })
     it('allows nested batch ccip', async () => {
       const result = await batch(
-        holeskyPublicClient,
-        batch.batch(getAddressRecord.batch({ name: 'offchainexample.eth' })),
+        sepoliaPublicClient,
+        batch.batch(getAddressRecord.batch({ name: 'testing.ethbuc.eth' })),
       )
       expect(result).toMatchInlineSnapshot(`
         [
@@ -171,7 +143,7 @@ describe('CCIP', () => {
             {
               "id": 60,
               "name": "eth",
-              "value": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+              "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
             },
           ],
         ]

@@ -123,6 +123,11 @@ const dummyABI = [
   },
 ]
 
+type Subname = {
+  label: string
+  namedOwner: string
+}
+
 const names: {
   label: string
   namedOwner: string
@@ -139,13 +144,23 @@ const names: {
     contenthash?: string
     abi?:
       | {
-          contentType: 1 | 2 | 4 | 8 | 256
-          data: object | string
+          contentType: 1 | 2 | 4 | 256
+          data: object
         }
       | {
-          contentType: 1 | 2 | 4 | 8 | 256
+          contentType: 8
           data: string
-        }[]
+        }
+      | (
+          | {
+              contentType: 1 | 2 | 4 | 256
+              data: object
+            }
+          | {
+              contentType: 8
+              data: string
+            }
+        )[]
   }
   duration?: number
   subnames?: Subname[]
@@ -376,8 +391,14 @@ const names: {
 ]
 
 const func: DeployFunction = async (hre) => {
-  const { getNamedAccounts, network, viem } = hre
+  const { getNamedAccounts, network, viem, deployments } = hre
   const allNamedAccts = await getNamedAccounts()
+
+  const deployedContracts = await deployments.all()
+  console.log('Currently deployed contracts:')
+  for (const [name, deployment] of Object.entries(deployedContracts)) {
+    console.log(`  - ${name}: ${deployment.address}`)
+  }
 
   const publicResolver = await viem.getContract('LegacyPublicResolver')
 
@@ -466,8 +487,10 @@ const func: DeployFunction = async (hre) => {
             data = pako.deflate(JSON.stringify(abi.data))
           } else if (abi.contentType === 4) {
             data = cbor.encode(abi.data)
+          } else if (abi.contentType === 8) {
+            data = stringToBytes(abi.data as string)
           } else {
-            data = stringToBytes(abi.data)
+            throw new Error(`Unknown ABI content type: ${abi.contentType}`)
           }
           const setABITx = await publicResolver.write.setABI(
             [hash, abi.contentType, bytesToHex(data)],

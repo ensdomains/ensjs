@@ -14,6 +14,7 @@ const names: {
   namedOwner: string
   namedAddr?: string
   type: 'wrapped' | 'legacy'
+  // biome-ignore lint/suspicious/noExplicitAny: deployment script only
   data?: any[]
   reverseRecord?: boolean
   fuses?: number

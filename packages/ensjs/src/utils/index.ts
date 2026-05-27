@@ -43,6 +43,7 @@ export {
 
 export {
   EMPTY_ADDRESS,
+  EMPTY_BYTES32,
   GRACE_PERIOD_SECONDS,
   MAX_DATE_INT,
   MAX_INT_64,
@@ -104,21 +105,6 @@ export {
   saveLabel,
   saveName,
 } from './labels.js'
-export {
-  makeLegacyCommitment,
-  makeLegacyCommitmentFromTuple,
-  makeLegacyCommitmentTuple,
-  makeLegacyCommitmentWithConfigTuple,
-  makeLegacyRegistrationTuple,
-  makeLegacyRegistrationWithConfigTuple,
-  isLegacyRegistrationWithConfigParameters,
-  type LegacyCommitmentTuple,
-  type LegacyCommitmentWithConfigTuple,
-  type LegacyRegistrationParameters,
-  type LegacyRegistrationWithConfigParameters,
-  type LegacyRegistrationTuple,
-  type LegacyRegistrationWithConfigTuple,
-} from './legacyRegisterHelpers.js'
 export { makeSafeSecondsDate } from './makeSafeSecondsDate.js'
 export {
   beautify,
@@ -143,13 +129,12 @@ export {
 } from './normalise.js'
 export {
   makeCommitment,
-  makeCommitmentFromTuple,
-  makeCommitmentTuple,
-  makeRegistrationTuple,
+  makeCommitmentFromCallData,
+  makeRegistrationCallData,
   randomSecret,
-  type CommitmentTuple,
+  type RegistrationCallData,
+  type ReverseRecordParameter,
   type RegistrationParameters,
-  type RegistrationTuple,
 } from './registerHelpers.js'
 export {
   checkIsDotEth,

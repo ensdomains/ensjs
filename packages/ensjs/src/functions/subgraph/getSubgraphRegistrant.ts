@@ -32,6 +32,9 @@ type SubgraphResult = {
 
 /**
  * Gets the name registrant from the subgraph.
+ * It's recommended to use a custom subgraph URL to avoid rate limiting.
+ * @see {@link ../../../../../docs/basics/custom-subgraph-uris.md | Custom Subgraph URIs Guide}
+ *
  * @param client - {@link ClientWithEns}
  * @param parameters - {@link GetSubgraphRegistrantParameters}
  * @returns Registrant address, or null if name was not found. {@link GetSubgraphRegistrantReturnType}

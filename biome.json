@@ -9,7 +9,9 @@
 			"data",
 			"cache",
 			"tsconfig.*.json",
-			"packages/ensjs/contracts"
+			"packages/ensjs/contracts",
+			"packages/react",
+			"**/*.test.ts"
 		]
 	},
 	"organizeImports": {

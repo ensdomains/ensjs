@@ -59,7 +59,7 @@ A transaction hash. ImportDnsNameReturnType
 
 ## Source
 
-[packages/ensjs/src/functions/dns/importDnsName.ts:152](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/dns/importDnsName.ts#L152)
+[packages/ensjs/src/functions/dns/importDnsName.ts:152](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/dns/importDnsName.ts#L152)
 
 ---
 

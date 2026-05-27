@@ -10,6 +10,9 @@
 
 Gets the name registrant from the subgraph.
 
+> [!NOTE]
+> It's recommended to use an API key from TheGraph to avoid rate limiting. Learn more in [Custom Subgraph URIs](../basics/custom-subgraph-uris.md).
+
 ## Example
 
 ```ts
@@ -41,7 +44,7 @@ Registrant address, or null if name was not found. GetSubgraphRegistrantReturnTy
 
 ## Source
 
-[packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts:52](https://github.com/ensdomains/ensjs-v3/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts#L52)
+[packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts:52](https://github.com/ensdomains/ensjs/blob/1b90b888/packages/ensjs/src/functions/subgraph/getSubgraphRegistrant.ts#L52)
 
 ---
 

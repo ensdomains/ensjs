@@ -13,6 +13,7 @@ import {
 import multicallWrapper from './multicallWrapper.js'
 
 type ExtractResult<TFunction extends BatchFunctionResult> = TFunction extends {
+  // biome-ignore lint/suspicious/noExplicitAny: conditional type needs to match any decode function signature for type extraction
   decode: (...args: any[]) => Promise<infer U>
 }
   ? U

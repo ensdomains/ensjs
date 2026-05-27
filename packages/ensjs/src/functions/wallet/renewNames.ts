@@ -1,6 +1,7 @@
 import {
   type Account,
   type Hash,
+  type Hex,
   type SendTransactionParameters,
   type Transport,
   encodeFunctionData,
@@ -16,6 +17,7 @@ import type {
   SimpleTransactionRequest,
   WriteTransactionParameters,
 } from '../../types.js'
+import { EMPTY_BYTES32 } from '../../utils/consts.js'
 import { getNameType } from '../../utils/getNameType.js'
 
 export type RenewNamesDataParameters = {
@@ -23,6 +25,8 @@ export type RenewNamesDataParameters = {
   nameOrNames: string | string[]
   /** Duration to renew name(s) for */
   duration: bigint | number
+  /** Referrer data */
+  referrer?: Hex
   /** Value of all renewals */
   value: bigint
 }
@@ -47,7 +51,12 @@ export const makeFunctionData = <
   TAccount extends Account | undefined,
 >(
   wallet: ClientWithAccount<Transport, TChain, TAccount>,
-  { nameOrNames, duration, value }: RenewNamesDataParameters,
+  {
+    nameOrNames,
+    duration,
+    referrer = EMPTY_BYTES32,
+    value,
+  }: RenewNamesDataParameters,
 ): RenewNamesDataReturnType => {
   const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames]
   const labels = names.map((name) => {
@@ -71,7 +80,7 @@ export const makeFunctionData = <
       data: encodeFunctionData({
         abi: ethRegistrarControllerRenewSnippet,
         functionName: 'renew',
-        args: [labels[0], BigInt(duration)],
+        args: [labels[0], BigInt(duration), referrer],
       }),
       value,
     }
@@ -85,7 +94,7 @@ export const makeFunctionData = <
     data: encodeFunctionData({
       abi: bulkRenewalRenewAllSnippet,
       functionName: 'renewAll',
-      args: [labels, BigInt(duration)],
+      args: [labels, BigInt(duration), referrer],
     }),
     value,
   }

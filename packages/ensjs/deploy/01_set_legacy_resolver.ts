@@ -61,6 +61,7 @@ const func: DeployFunction = async (hre) => {
 
 func.id = 'set-legacy-resolver'
 func.tags = ['set-legacy-resolver']
+func.dependencies = ['register-unwrapped-names']
 func.runAtTheEnd = true
 
 export default func
