@@ -1,6 +1,5 @@
 export * from '../actions/public/getAbiRecord.js'
 export * from '../actions/public/getAddressRecord.js'
-export * from '../actions/public/getAvailable.js'
 export * from '../actions/public/getContentHashRecord.js'
 export * from '../actions/public/getCredentials.js'
 export * from '../actions/public/getName.js'
