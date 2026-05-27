@@ -8,8 +8,9 @@ import { getRegisterPrice } from './getRegisterPrice.js'
 const registrarAddress = deploymentAddresses.ETHRegistrar
 const paymentToken = deploymentAddresses.USDC
 
-// Per-second base rates from StandardRentPriceOracle.getBaseRates(), indexed by label length.
-// (Lengths 0/1/2 are zero; the oracle rejects labels shorter than 3 chars as invalid.)
+// Per-second base rates from StandardRentPriceOracle.getBaseRates(), indexed
+// by `label length - 1`. Lengths 1-2 are zero (oracle rejects sub-3-char labels);
+// lengths beyond the table clamp to the tail entry (5+ chars).
 const BASE_RATE_PER_SEC_3CHAR = 20_280_377n
 const BASE_RATE_PER_SEC_4CHAR = 5_070_095n
 const BASE_RATE_PER_SEC_5CHAR = 253_505n
