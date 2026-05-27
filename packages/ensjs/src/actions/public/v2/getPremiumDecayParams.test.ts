@@ -1,18 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import {
-  deploymentAddresses,
-  publicClient,
-} from '../../../test/addTestContracts.js'
+import { publicClient } from '../../../test/addTestContracts.js'
 import { getPremiumDecayParams } from './getPremiumDecayParams.js'
-
-const oracleAddress = deploymentAddresses.StandardRentPriceOracle
 
 describe('getPremiumDecayParams', () => {
   it('reads the three immutable premium-decay constants from the oracle', async () => {
-    const { priceInitial, halvingPeriod, period } = await getPremiumDecayParams(
-      publicClient,
-      { oracleAddress },
-    )
+    const { priceInitial, halvingPeriod, period } =
+      await getPremiumDecayParams(publicClient)
 
     expect(typeof priceInitial).toBe('bigint')
     expect(typeof halvingPeriod).toBe('bigint')
@@ -20,20 +13,13 @@ describe('getPremiumDecayParams', () => {
   })
 
   it('returns a positive initial premium', async () => {
-    const { priceInitial } = await getPremiumDecayParams(publicClient, {
-      oracleAddress,
-    })
+    const { priceInitial } = await getPremiumDecayParams(publicClient)
 
     expect(priceInitial).toBeGreaterThan(0n)
   })
 
   it('returns a halvingPeriod that strictly divides into the premium window', async () => {
-    const { halvingPeriod, period } = await getPremiumDecayParams(
-      publicClient,
-      {
-        oracleAddress,
-      },
-    )
+    const { halvingPeriod, period } = await getPremiumDecayParams(publicClient)
 
     expect(halvingPeriod).toBeGreaterThan(0n)
     expect(period).toBeGreaterThan(0n)
@@ -43,8 +29,8 @@ describe('getPremiumDecayParams', () => {
   })
 
   it('returns stable values across calls (constants are immutable)', async () => {
-    const a = await getPremiumDecayParams(publicClient, { oracleAddress })
-    const b = await getPremiumDecayParams(publicClient, { oracleAddress })
+    const a = await getPremiumDecayParams(publicClient)
+    const b = await getPremiumDecayParams(publicClient)
 
     expect(a).toEqual(b)
   })

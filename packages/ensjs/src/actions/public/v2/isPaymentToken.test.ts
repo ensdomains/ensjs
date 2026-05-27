@@ -5,12 +5,9 @@ import {
 } from '../../../test/addTestContracts.js'
 import { isPaymentToken } from './isPaymentToken.js'
 
-const oracleAddress = deploymentAddresses.StandardRentPriceOracle
-
 describe('isPaymentToken', () => {
   it('returns true for a configured payment token (USDC)', async () => {
     const result = await isPaymentToken(publicClient, {
-      oracleAddress,
       paymentToken: deploymentAddresses.USDC,
     })
 
@@ -27,7 +24,6 @@ describe('isPaymentToken', () => {
     ['ERC-20 deployed but not configured (DAI)', deploymentAddresses.DAI],
   ] as const)('returns false for %s', async (_, paymentToken) => {
     const result = await isPaymentToken(publicClient, {
-      oracleAddress,
       paymentToken,
     })
 

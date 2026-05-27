@@ -132,6 +132,9 @@ export const localhost = {
     ensUserRegistryImpl: {
       address: deploymentAddresses.UserRegistryImpl,
     },
+    ensStandardRentPriceOracle: {
+      address: deploymentAddresses.StandardRentPriceOracle,
+    },
   },
   subgraphs: {
     ens: {

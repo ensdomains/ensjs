@@ -1,12 +1,18 @@
 import { standardRentPriceOracleApplyDiscountSnippet } from '@ensdomains/ensjs-abi/v2/standardRentPriceOracle'
-import type { Address, Client, ReadContractErrorType } from 'viem'
+import type {
+  Chain,
+  GetChainContractAddressErrorType,
+  ReadContractErrorType,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type ApplyDiscountParameters = {
-  /** Address of the StandardRentPriceOracle contract */
-  oracleAddress: Address
   /** Undiscounted value (e.g. baseRate × duration), in standard units */
   value: bigint
   /** Term length in seconds — selects the discount tier */
@@ -15,7 +21,9 @@ export type ApplyDiscountParameters = {
 
 export type ApplyDiscountReturnType = bigint
 
-export type ApplyDiscountErrorType = ReadContractErrorType
+export type ApplyDiscountErrorType =
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
 
 /**
  * Applies the oracle's duration-tiered discount to an arbitrary value. The
@@ -26,16 +34,19 @@ export type ApplyDiscountErrorType = ReadContractErrorType
  * @param parameters - {@link ApplyDiscountParameters}
  * @returns The discounted value. {@link ApplyDiscountReturnType}
  */
-export async function applyDiscount(
-  client: Client,
-  { oracleAddress, value, duration }: ApplyDiscountParameters,
+export async function applyDiscount<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensStandardRentPriceOracle'>,
+  { value, duration }: ApplyDiscountParameters,
 ): Promise<ApplyDiscountReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
   return readContractAction({
-    address: oracleAddress,
+    address: getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensStandardRentPriceOracle',
+    }),
     abi: standardRentPriceOracleApplyDiscountSnippet,
     functionName: 'applyDiscount',
     args: [value, BigInt(duration)],

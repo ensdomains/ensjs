@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import {
-  deploymentAddresses,
-  publicClient,
-} from '../../../test/addTestContracts.js'
+import { publicClient } from '../../../test/addTestContracts.js'
 import { getBaseRates } from './getBaseRates.js'
-
-const oracleAddress = deploymentAddresses.StandardRentPriceOracle
 
 // Pinned base-rate table from the devnet StandardRentPriceOracle deployment.
 // Array is indexed by `label length - 1`; lengths 1-2 return 0 (oracle
@@ -21,13 +16,13 @@ const EXPECTED_RATES = [
 
 describe('getBaseRates', () => {
   it('returns the pinned per-length base-rate table from the oracle', async () => {
-    const rates = await getBaseRates(publicClient, { oracleAddress })
+    const rates = await getBaseRates(publicClient)
 
     expect(rates).toEqual(EXPECTED_RATES)
   })
 
   it('returns rates that are monotonically non-increasing across the valid (3+ char) range', async () => {
-    const rates = await getBaseRates(publicClient, { oracleAddress })
+    const rates = await getBaseRates(publicClient)
 
     for (let i = 3; i < rates.length; i++) {
       expect(rates[i]).toBeLessThanOrEqual(rates[i - 1])
@@ -35,7 +30,7 @@ describe('getBaseRates', () => {
   })
 
   it('returns zero rates for the two sub-3-character slots and positive thereafter', async () => {
-    const rates = await getBaseRates(publicClient, { oracleAddress })
+    const rates = await getBaseRates(publicClient)
 
     expect(rates[0]).toBe(0n) // length 1
     expect(rates[1]).toBe(0n) // length 2

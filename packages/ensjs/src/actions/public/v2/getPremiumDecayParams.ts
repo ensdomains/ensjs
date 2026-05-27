@@ -1,13 +1,16 @@
 import { standardRentPriceOracleConstantsSnippet } from '@ensdomains/ensjs-abi/v2/standardRentPriceOracle'
-import type { Address, Client, MulticallErrorType } from 'viem'
+import type {
+  Chain,
+  GetChainContractAddressErrorType,
+  MulticallErrorType,
+} from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
-
-export type GetPremiumDecayParamsParameters = {
-  /** Address of the StandardRentPriceOracle contract */
-  oracleAddress: Address
-}
 
 export type GetPremiumDecayParamsReturnType = {
   /** Starting value of the expiry-premium exponential decay, in standard units */
@@ -18,7 +21,9 @@ export type GetPremiumDecayParamsReturnType = {
   period: bigint
 }
 
-export type GetPremiumDecayParamsErrorType = MulticallErrorType
+export type GetPremiumDecayParamsErrorType =
+  | MulticallErrorType
+  | GetChainContractAddressErrorType
 
 /**
  * Reads the StandardRentPriceOracle's immutable expiry-premium decay parameters
@@ -27,14 +32,17 @@ export type GetPremiumDecayParamsErrorType = MulticallErrorType
  * sampling `getPremiumPriceAfter` repeatedly.
  *
  * @param client - {@link Client}
- * @param parameters - {@link GetPremiumDecayParamsParameters}
  * @returns Premium decay parameters. {@link GetPremiumDecayParamsReturnType}
  */
-export async function getPremiumDecayParams(
-  client: Client,
-  { oracleAddress }: GetPremiumDecayParamsParameters,
+export async function getPremiumDecayParams<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensStandardRentPriceOracle'>,
 ): Promise<GetPremiumDecayParamsReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
+
+  const oracleAddress = getChainContractAddress({
+    chain: client.chain,
+    contract: 'ensStandardRentPriceOracle',
+  })
 
   const multicallAction = getAction(client, multicall, 'multicall')
 

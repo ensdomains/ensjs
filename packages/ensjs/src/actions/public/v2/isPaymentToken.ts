@@ -1,19 +1,28 @@
 import { standardRentPriceOracleIsPaymentTokenSnippet } from '@ensdomains/ensjs-abi/v2/standardRentPriceOracle'
-import type { Address, Client, ReadContractErrorType } from 'viem'
+import type {
+  Address,
+  Chain,
+  GetChainContractAddressErrorType,
+  ReadContractErrorType,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type IsPaymentTokenParameters = {
-  /** Address of the StandardRentPriceOracle contract */
-  oracleAddress: Address
   /** ERC-20 token address to check */
   paymentToken: Address
 }
 
 export type IsPaymentTokenReturnType = boolean
 
-export type IsPaymentTokenErrorType = ReadContractErrorType
+export type IsPaymentTokenErrorType =
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
 
 /**
  * Checks whether a token is accepted for register/renew payment.
@@ -24,16 +33,19 @@ export type IsPaymentTokenErrorType = ReadContractErrorType
  * @param parameters - {@link IsPaymentTokenParameters}
  * @returns `true` if the token is supported. {@link IsPaymentTokenReturnType}
  */
-export async function isPaymentToken(
-  client: Client,
-  { oracleAddress, paymentToken }: IsPaymentTokenParameters,
+export async function isPaymentToken<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensStandardRentPriceOracle'>,
+  { paymentToken }: IsPaymentTokenParameters,
 ): Promise<IsPaymentTokenReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
   return readContractAction({
-    address: oracleAddress,
+    address: getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensStandardRentPriceOracle',
+    }),
     abi: standardRentPriceOracleIsPaymentTokenSnippet,
     functionName: 'isPaymentToken',
     args: [paymentToken],
