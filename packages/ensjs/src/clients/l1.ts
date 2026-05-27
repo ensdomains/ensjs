@@ -47,6 +47,9 @@ export const supportedL1Contracts = [
   'ensRegistry',
   'ensPermissionedResolverImpl',
   'ensUserRegistryImpl',
+  'ensLockedMigrationController',
+  'ensUnlockedMigrationController',
+  'ensMigrationHelper',
 
   // UR
   'ensUniversalResolver',
@@ -104,6 +107,15 @@ export const ensL1Contracts = {
     ensUserRegistryImpl: {
       address: zeroAddress,
     },
+    ensLockedMigrationController: {
+      address: zeroAddress,
+    },
+    ensUnlockedMigrationController: {
+      address: zeroAddress,
+    },
+    ensMigrationHelper: {
+      address: zeroAddress,
+    },
   },
   [supportedL1Chains.sepolia]: {
     ensBaseRegistrarImplementation: {
@@ -153,6 +165,15 @@ export const ensL1Contracts = {
     },
     ensUserRegistryImpl: {
       address: '0x0f99e7ea74903afcb7224d0354fd7428a6f92917',
+    },
+    ensLockedMigrationController: {
+      address: '0xf91c34ed840889ed96f806f882fd50506a336edb',
+    },
+    ensUnlockedMigrationController: {
+      address: '0x056138ef5660f7113a3b0adc08ac3683310e7fbc',
+    },
+    ensMigrationHelper: {
+      address: '0x11cfa7e034dafb7439cc1cc8b6e547f5c82ad021',
     },
   },
 } as const satisfies Record<

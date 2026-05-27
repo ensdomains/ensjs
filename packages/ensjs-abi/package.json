@@ -99,6 +99,18 @@
       "types": "./dist/v2/verifiableFactory.d.ts",
       "default": "./dist/v2/verifiableFactory.js"
     },
+    "./v2/migrationHelper": {
+      "types": "./dist/v2/migrationHelper.d.ts",
+      "default": "./dist/v2/migrationHelper.js"
+    },
+    "./v2/lockedMigrationController": {
+      "types": "./dist/v2/lockedMigrationController.d.ts",
+      "default": "./dist/v2/lockedMigrationController.js"
+    },
+    "./v2/unlockedMigrationController": {
+      "types": "./dist/v2/unlockedMigrationController.d.ts",
+      "default": "./dist/v2/unlockedMigrationController.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
