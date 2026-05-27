@@ -1,12 +1,19 @@
 import { ethRegistrarGetRegisterPriceSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
-import type { Address, Client, ReadContractErrorType } from 'viem'
+import type {
+  Address,
+  Chain,
+  GetChainContractAddressErrorType,
+  ReadContractErrorType,
+} from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
+import {
+  getChainContractAddress,
+  type RequireClientContracts,
+} from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetRegisterPriceParameters = {
-  /** Address of the L2 ETH registrar contract */
-  registrarAddress: Address
   /** Label to get price for. Must be a bare label (e.g. `"foo"`), not a name (`"foo.eth"`). */
   label: string
   /** Duration in seconds to get price for */
@@ -22,7 +29,10 @@ export type GetRegisterPriceReturnType = {
   premium: bigint
 }
 
-export type GetRegisterPriceErrorType = ReadContractErrorType | TypeError
+export type GetRegisterPriceErrorType =
+  | ReadContractErrorType
+  | GetChainContractAddressErrorType
+  | TypeError
 
 /**
  * Gets the registration price of a label for a given duration.
@@ -36,14 +46,9 @@ export type GetRegisterPriceErrorType = ReadContractErrorType | TypeError
  * @param parameters - {@link GetRegisterPriceParameters}
  * @returns Price data object. {@link GetRegisterPriceReturnType}
  */
-export async function getRegisterPrice(
-  client: Client,
-  {
-    registrarAddress,
-    label,
-    duration,
-    paymentToken,
-  }: GetRegisterPriceParameters,
+export async function getRegisterPrice<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensEthRegistrar'>,
+  { label, duration, paymentToken }: GetRegisterPriceParameters,
 ): Promise<GetRegisterPriceReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -52,7 +57,10 @@ export async function getRegisterPrice(
     readContract,
     'readContract',
   )({
-    address: registrarAddress,
+    address: getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensEthRegistrar',
+    }),
     abi: ethRegistrarGetRegisterPriceSnippet,
     functionName: 'getRegisterPrice',
     args: [label, duration, paymentToken],

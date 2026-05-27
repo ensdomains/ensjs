@@ -15,7 +15,7 @@ export type GetRenewPriceParameters = {
   label: string
   /** Renewal duration in seconds */
   duration: bigint
-  /** Payment token address */
+  /** ERC-20 payment token address */
   paymentToken: Address
 }
 
@@ -36,7 +36,17 @@ export type GetRenewPriceErrorType = ReadContractErrorType | TypeError
  *
  * @param client - {@link Client}
  * @param parameters - {@link GetRenewPriceParameters}
- * @returns Renewal price object. {@link GetRenewPriceReturnType}
+ * @returns Renewal price in `paymentToken` units. {@link GetRenewPriceReturnType}
+ *
+ * @example
+ * import { getRenewPrice } from '@ensdomains/ensjs/public/v2'
+ *
+ * const price = await getRenewPrice(client, {
+ *   renewerAddress: '0x...',
+ *   label: 'example',
+ *   duration: 31536000n,
+ *   paymentToken: usdcAddress,
+ * })
  */
 export async function getRenewPrice(
   client: Client,

@@ -43,10 +43,13 @@ export const supportedL1Contracts = [
   // v2
   'ensEthRegistrar',
   'usdc',
+  'dai',
   'ensVerifiableFactory',
   'ensRegistry',
   'ensPermissionedResolverImpl',
   'ensUserRegistryImpl',
+  'ensStandardRentPriceOracle',
+  'ensHcaFactory',
   'ensLockedMigrationController',
   'ensUnlockedMigrationController',
   'ensMigrationHelper',
@@ -102,9 +105,18 @@ export const ensL1Contracts = {
       address: zeroAddress,
     },
     usdc: {
-      address: zeroAddress,
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    },
+    dai: {
+      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     ensUserRegistryImpl: {
+      address: zeroAddress,
+    },
+    ensStandardRentPriceOracle: {
+      address: zeroAddress,
+    },
+    ensHcaFactory: {
       address: zeroAddress,
     },
     ensLockedMigrationController: {
@@ -163,8 +175,17 @@ export const ensL1Contracts = {
     usdc: {
       address: '0x3dfc8b53dafa5ebbb071a8b97678ab534ed838d9',
     },
+    dai: {
+      address: '0xa4e569b57e0d6ac518c73ebdaa67e11c96dbd7a4',
+    },
     ensUserRegistryImpl: {
       address: '0x0f99e7ea74903afcb7224d0354fd7428a6f92917',
+    },
+    ensStandardRentPriceOracle: {
+      address: '0xf33d548997e2975c8ff04f66219564d8c7a95e26',
+    },
+    ensHcaFactory: {
+      address: '0x4327e31b4111dc0fb54517cd0fed82680840f32e',
     },
     ensLockedMigrationController: {
       address: '0xf91c34ed840889ed96f806f882fd50506a336edb',

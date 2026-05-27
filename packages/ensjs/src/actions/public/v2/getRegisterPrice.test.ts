@@ -5,11 +5,11 @@ import {
 } from '../../../test/addTestContracts.js'
 import { getRegisterPrice } from './getRegisterPrice.js'
 
-const registrarAddress = deploymentAddresses.ETHRegistrar
 const paymentToken = deploymentAddresses.USDC
 
-// Per-second base rates from StandardRentPriceOracle.getBaseRates(), indexed by label length.
-// (Lengths 0/1/2 are zero; the oracle rejects labels shorter than 3 chars as invalid.)
+// Per-second base rates from StandardRentPriceOracle.getBaseRates(), indexed
+// by `label length - 1`. Lengths 1-2 are zero (oracle rejects sub-3-char labels);
+// lengths beyond the table clamp to the tail entry (5+ chars).
 const BASE_RATE_PER_SEC_3CHAR = 20_280_377n
 const BASE_RATE_PER_SEC_4CHAR = 5_070_095n
 const BASE_RATE_PER_SEC_5CHAR = 253_505n
@@ -31,7 +31,6 @@ const expectedBasePrice = (perSecRate: bigint, duration: bigint) =>
 describe('getRegisterPrice', () => {
   it('should return the correct price for a 5+ char label', async () => {
     const result = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'test123',
       duration: MIN_DURATION,
       paymentToken,
@@ -46,7 +45,6 @@ describe('getRegisterPrice', () => {
 
   it('should return a higher price for a 4 char label', async () => {
     const result = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'wxyz',
       duration: MIN_DURATION,
       paymentToken,
@@ -60,7 +58,6 @@ describe('getRegisterPrice', () => {
 
   it('should return the highest price for a 3 char label', async () => {
     const result = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'abc',
       duration: MIN_DURATION,
       paymentToken,
@@ -74,14 +71,12 @@ describe('getRegisterPrice', () => {
 
   it('should scale price linearly with duration (short durations, no discount)', async () => {
     const oneUnit = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'test123',
       duration: MIN_DURATION,
       paymentToken,
     })
 
     const twoUnits = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'test123',
       duration: MIN_DURATION * 2n,
       paymentToken,
@@ -99,19 +94,16 @@ describe('getRegisterPrice', () => {
     const duration = MIN_DURATION
 
     const price3 = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'abc',
       duration,
       paymentToken,
     })
     const price4 = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'abcd',
       duration,
       paymentToken,
     })
     const price5 = await getRegisterPrice(publicClient, {
-      registrarAddress,
       label: 'abcde',
       duration,
       paymentToken,

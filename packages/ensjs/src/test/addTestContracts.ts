@@ -52,6 +52,8 @@ export const deploymentAddresses = {
   MigrationHelper: '0xCace1b78160AE76398F486c8a18044da0d66d86D',
   StandardRentPriceOracle: '0x21dF544947ba3E8b3c32561399E88B52Dc8b2823',
   USDC: '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f',
+  DAI: '0xe915cebbc1570a74177b6c589fed1e8f53117559',
+  HCAFactory: '0x358680728dedb552adaa9f5eb5d4395b291cf943',
 } as const
 
 export const localhost = {
@@ -129,6 +131,9 @@ export const localhost = {
     },
     ensUserRegistryImpl: {
       address: deploymentAddresses.UserRegistryImpl,
+    },
+    ensStandardRentPriceOracle: {
+      address: deploymentAddresses.StandardRentPriceOracle,
     },
   },
   subgraphs: {
