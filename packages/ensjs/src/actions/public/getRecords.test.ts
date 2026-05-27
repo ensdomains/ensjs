@@ -31,7 +31,7 @@ describe('getRecords()', () => {
             "value": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
           },
         ],
-        "resolverAddress": "0xA4899D35897033b927acFCf422bc745916139776",
+        "resolverAddress": "0x5067457698Fd6Fa1C6964e416b3f42713513B3dD",
         "texts": [
           {
             "key": "description",

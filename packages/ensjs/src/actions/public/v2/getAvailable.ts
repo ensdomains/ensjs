@@ -6,12 +6,12 @@ import type {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../clients/shared.js'
-import { getChainContractAddress } from '../../clients/shared.js'
-import { UnsupportedNameTypeError } from '../../errors/general.js'
-import type { ErrorType } from '../../errors/utils.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
-import { getNameType } from '../../utils/name/getNameType.js'
+import type { RequireClientContracts } from '../../../clients/shared.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
+import { UnsupportedNameTypeError } from '../../../errors/general.js'
+import type { ErrorType } from '../../../errors/utils.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+import { getNameType } from '../../../utils/name/getNameType.js'
 
 export type GetAvailableParameters = {
   /** Name to check availability for, only compatible for eth 2ld */
@@ -36,7 +36,7 @@ export type GetAvailableErrorType =
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getAvailable } from '@ensdomains/ensjs/public'
+ * import { getAvailable } from '@ensdomains/ensjs/public/v2'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),
@@ -46,7 +46,7 @@ export type GetAvailableErrorType =
  * // false
  */
 export async function getAvailable<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ethRegistrar'>,
+  client: RequireClientContracts<chain, 'ensEthRegistrar'>,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
   const labels = name.split('.')
@@ -64,7 +64,7 @@ export async function getAvailable<chain extends Chain>(
   const result = await readContractAction({
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ethRegistrar',
+      contract: 'ensEthRegistrar',
     }),
     abi: ethRegistrarAvailableSnippet,
     functionName: 'isAvailable',

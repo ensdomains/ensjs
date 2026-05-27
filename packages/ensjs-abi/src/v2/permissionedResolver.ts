@@ -84,11 +84,41 @@ export const permissionedResolverRevokeRootRolesSnippet = [
   },
 ] as const
 
+/**
+ * @deprecated `revokeRoles` on `PermissionedResolver` is `pure` and always reverts with
+ * `EACCannotRevokeRoles`. Use {@link permissionedResolverRevokeRootRolesSnippet} for root
+ * roles, or {@link permissionedResolverAuthorizeNameRolesSnippet} /
+ * {@link permissionedResolverAuthorizeTextRolesSnippet} /
+ * {@link permissionedResolverAuthorizeAddrRolesSnippet} /
+ * {@link permissionedResolverAuthorizeDataRolesSnippet} for name- or part-scoped roles.
+ */
 export const permissionedResolverRevokeRolesSnippet = [
   {
     name: 'revokeRoles',
     type: 'function',
-    stateMutability: 'nonpayable',
+    stateMutability: 'pure',
+    inputs: [
+      { name: 'resource', type: 'uint256' },
+      { name: 'roleBitmap', type: 'uint256' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const
+
+/**
+ * @deprecated `grantRoles` on `PermissionedResolver` is `pure` and always reverts with
+ * `EACCannotGrantRoles`. Use {@link permissionedResolverGrantRootRolesSnippet} for root
+ * roles, or {@link permissionedResolverAuthorizeNameRolesSnippet} /
+ * {@link permissionedResolverAuthorizeTextRolesSnippet} /
+ * {@link permissionedResolverAuthorizeAddrRolesSnippet} /
+ * {@link permissionedResolverAuthorizeDataRolesSnippet} for name- or part-scoped roles.
+ */
+export const permissionedResolverGrantRolesSnippet = [
+  {
+    name: 'grantRoles',
+    type: 'function',
+    stateMutability: 'pure',
     inputs: [
       { name: 'resource', type: 'uint256' },
       { name: 'roleBitmap', type: 'uint256' },

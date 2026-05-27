@@ -22,9 +22,12 @@ it('decodes a role bitmap into a mapping of role counts', () => {
     ROLE_SET_RESOLVER_ADMIN: 1,
     ROLE_SET_SUBREGISTRY: 2,
     ROLE_SET_SUBREGISTRY_ADMIN: 1,
+    ROLE_SET_URI: 0,
+    ROLE_SET_URI_ADMIN: 0,
     ROLE_UNREGISTER: 0,
     ROLE_UNREGISTER_ADMIN: 0,
     ROLE_UPGRADE: 0,
     ROLE_UPGRADE_ADMIN: 0,
+    ROLE_WAS_RESERVED: 0,
   })
 })

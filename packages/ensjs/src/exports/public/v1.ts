@@ -1,4 +1,6 @@
+export * from '../../actions/public/v1/getAvailable.js'
 export * from '../../actions/public/v1/getExpiry.js'
 export * from '../../actions/public/v1/getOwner.js'
+export * from '../../actions/public/v1/getPrice.js'
 export * from '../../actions/public/v1/getWrapperData.js'
 export * from '../../actions/public/v1/getWrapperName.js'

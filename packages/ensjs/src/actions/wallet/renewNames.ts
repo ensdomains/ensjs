@@ -117,7 +117,7 @@ export type RenewNamesErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getPrice } from '@ensdomains/ensjs/public'
+ * import { getPrice } from '@ensdomains/ensjs/public/v1'
  * import { renewNames } from '@ensdomains/ensjs/wallet'
  *
  * const wallet = createWalletClient({

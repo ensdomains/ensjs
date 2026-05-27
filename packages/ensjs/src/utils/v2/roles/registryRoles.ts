@@ -29,6 +29,16 @@ const ROLE_SET_RESOLVER_ADMIN = ROLE_SET_RESOLVER << 128n
 /** Nybble 7 — authorizes ERC1155 token transfers. Admin-only (checked on token owner). */
 const ROLE_CAN_TRANSFER_ADMIN = (1n << 28n) << 128n
 
+/**
+ * Nybble 8 — tags a name that was registered via `ROLE_REGISTER_RESERVED`. Token-only.
+ * Not revocable. Useful for indexers to identify pre-migrated names.
+ */
+const ROLE_WAS_RESERVED = 1n << 32n
+
+/** Nybble 9 — authorizes setting the registry metadata URI. Root only. */
+const ROLE_SET_URI = 1n << 36n
+const ROLE_SET_URI_ADMIN = ROLE_SET_URI << 128n
+
 /** Nybble 31 — authorizes UUPS proxy upgrades. Root only. */
 const ROLE_UPGRADE = 1n << 124n
 const ROLE_UPGRADE_ADMIN = ROLE_UPGRADE << 128n
@@ -47,8 +57,11 @@ export {
   ROLE_SET_RESOLVER_ADMIN,
   ROLE_SET_SUBREGISTRY,
   ROLE_SET_SUBREGISTRY_ADMIN,
+  ROLE_SET_URI,
+  ROLE_SET_URI_ADMIN,
   ROLE_UNREGISTER,
   ROLE_UNREGISTER_ADMIN,
   ROLE_UPGRADE,
   ROLE_UPGRADE_ADMIN,
+  ROLE_WAS_RESERVED,
 }
