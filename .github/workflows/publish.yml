@@ -43,8 +43,15 @@ jobs:
         with:
           # Note: pnpm install after versioning is necessary to refresh lockfile
           version: pnpm chgset:version
-          publish: pnpm publish -r --access public --provenance && changeset tag
+          # `changeset publish` shells out to `pnpm publish` under the hood
+          # (auto-detected from packageManager). Using it directly is what
+          # lets changesets/action parse the `🦋 New tag:` output and push
+          # git tags + create GitHub releases for each published package.
+          publish: pnpm exec changeset publish
           commit: "chore: release"
           title: "[ci] release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # changeset publish doesn't pass --provenance to the underlying
+          # `pnpm publish` invocation, so opt in via env (pnpm picks it up).
+          NPM_CONFIG_PROVENANCE: true
