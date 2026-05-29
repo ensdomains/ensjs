@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs-react",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
   "types": "./dist/types/index.d.ts",
