@@ -561,12 +561,12 @@ describe('no eligible invalid records', () => {
 
 it('real test', async () => {
   const offchainData = await getDnsOffchainData(mainnetPublicClient, {
-    name: 'ethleaderboard.xyz',
+    name: 'taytems.xyz',
     strict: true,
   })
   expect(offchainData).toMatchInlineSnapshot(`
     {
-      "extraData": "0xD0AeA65bb96b823cb30724ee0a6B7588c77dE486",
+      "extraData": "0x8e8Db5CcEF88cca9d624701Db544989C996E3216",
       "resolverAddress": "0x238A8F792dFA6033814B18618aD4100654aeef01",
     }
   `)

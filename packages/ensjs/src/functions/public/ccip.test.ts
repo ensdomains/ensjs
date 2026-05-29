@@ -1,8 +1,10 @@
-import { http, createPublicClient } from 'viem'
+import { http, type PublicClient, createPublicClient, toHex, parseAbi } from 'viem'
 import { sepolia, mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { erc165SupportsInterfaceSnippet } from '../../contracts/erc165.js'
 import { ccipRequest } from '../../utils/ccipRequest.js'
+import { packetToBytes } from '../../utils/hexEncodedName.js'
 import batch from './batch.js'
 import getAddressRecord from './getAddressRecord.js'
 import getRecords from './getRecords.js'
@@ -22,6 +24,33 @@ const sepoliaPublicClient = createPublicClient({
   transport: http('https://sepolia.gateway.tenderly.co'),
 })
 
+// Temporary patch: on sepolia, old .eth names are reached via an ENSV1Resolver
+// shim that wraps the underlying resolver. Unwrap it so the snapshots compare
+// against the real underlying resolver address.
+const unwrapSepoliaV1Resolver = async (
+  client: PublicClient,
+  name: string,
+  resolverAddress: `0x${string}`,
+): Promise<`0x${string}`> => {
+  const supports = await client
+    .readContract({
+      address: resolverAddress,
+      abi: erc165SupportsInterfaceSnippet,
+      functionName: 'supportsInterface',
+      args: ['0xeea330f9'], // getResolver(bytes) selector
+    })
+    .catch(() => false)
+
+  if (!supports) return resolverAddress
+
+  return client.readContract({
+    address: resolverAddress,
+    abi: parseAbi(['function getResolver(bytes) returns (address)']),
+    functionName: 'getResolver',
+    args: [toHex(packetToBytes(name))],
+  })
+}
+
 describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
@@ -31,6 +60,11 @@ describe('CCIP', () => {
         contentHash: true,
         coins: ['btc', '60'],
       })
+      result.resolverAddress = await unwrapSepoliaV1Resolver(
+        sepoliaPublicClient,
+        'testing.ethbuc.eth',
+        result.resolverAddress,
+      )
       expect(result).toMatchInlineSnapshot(`
         {
           "coins": [
@@ -68,6 +102,11 @@ describe('CCIP', () => {
           contentHash: true,
           coins: ['btc', '60'],
         },
+      )
+      result.resolverAddress = await unwrapSepoliaV1Resolver(
+        sepoliaPublicClient,
+        'testing.ethbuc.eth',
+        result.resolverAddress,
       )
       expect(result).toMatchInlineSnapshot(`
       {

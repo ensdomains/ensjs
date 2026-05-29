@@ -63,7 +63,7 @@ export const addresses = {
       address: '0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9',
     },
     ensUniversalResolver: {
-      address: '0xED73a03F19e8D849E44a39252d222c6ad5217E1e',
+      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     wrappedEthRegistrarController: {
       address: '0x253553366Da8546fC250F225fe3d25d0C782303b',
@@ -113,7 +113,7 @@ export const addresses = {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensUniversalResolver: {
-      address: '0x3c85752a5d47DD09D677C645Ff2A938B38fbFEbA',
+      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     wrappedEthRegistrarController: {
       address: '0x4477cAc137F3353Ca35060E01E5aEb777a1Ca01B',

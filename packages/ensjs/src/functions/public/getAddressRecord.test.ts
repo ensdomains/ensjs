@@ -32,6 +32,22 @@ describe('getAddressRecord()', () => {
       }
     `)
   })
+  // https://docs.ens.domains/web/ensv2-readiness#preparing-for-ensv2
+  // The integration-test resolver returns 0x2222…2222 via ENSIP-10 resolve()
+  // and 0x1111…1111 via the legacy addr() path; resolving to 0x2222…2222
+  // proves we go through the new Universal Resolver / ENSIP-10 path.
+  it('ENSv2 forward-compat: ur.integration-tests.eth resolves to 0x2222…2222 on mainnet', async () => {
+    const result = await getAddressRecord(mainnetPublicClient, {
+      name: 'ur.integration-tests.eth',
+    })
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "id": 60,
+        "name": "eth",
+        "value": "0x2222222222222222222222222222222222222222",
+      }
+    `)
+  })
   it('should return the correct address based on a coin ID input as a number', async () => {
     const result = await getAddressRecord(publicClient, {
       name: 'with-profile.eth',
@@ -138,7 +154,7 @@ describe('getAddressRecord()', () => {
         function:  resolve(bytes name, bytes data)
         args:             (0x, 0x)
 
-      Version: viem@2.30.6]
+      Version: viem@2.37.12]
     `)
   })
 })
