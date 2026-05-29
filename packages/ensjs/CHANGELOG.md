@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 4.2.3
+
+### Patch Changes
+
+- [#332](https://github.com/ensdomains/ensjs/pull/332) [`a271edf`](https://github.com/ensdomains/ensjs/commit/a271edff8f06f7bdf41b9df2e98d47817ddd2b00) Thanks [@v1rtl](https://github.com/v1rtl)! - Update Universal Resolver address and ABI to the new canonical deployment at `0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe` on mainnet and Sepolia (#262). The new UR adds extra error variants surfaced through `universalResolverErrors`; consumer code that already routes through `getRecords`, `getName`, etc. picks this up automatically.
+
 ## 4.2.2
 
 ### Patch Changes
