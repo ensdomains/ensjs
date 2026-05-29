@@ -10,7 +10,7 @@
     "chgset:version": "changeset version && pnpm install",
     "chgset:version:prerelease": "changeset pre enter next && pnpm chgset:version",
     "chgset:run": "changeset",
-    "release": "NPM_CONFIG_PROVENANCE=true pnpm publish -r --access public && changeset tag",
+    "release": "pnpm publish -r --access public --provenance && changeset tag",
     "chgset": "pnpm chgset:run && pnpm chgset:version",
     "lint": "biome check"
   },
@@ -31,13 +31,5 @@
       "unplugged": true
     }
   },
-  "packageManager": "pnpm@10.10.0",
-  "pnpm": {
-    "patchedDependencies": {
-      "hardhat-deploy": "patches/hardhat-deploy.patch",
-      "@ensdomains/ens-contracts@1.6.0": "patches/@ensdomains__ens-contracts@1.6.0.patch",
-      "@ensdomains/ens-test-env@1.0.1": "patches/@ensdomains__ens-test-env@1.0.1.patch",
-      "@ensdomains/dnsprovejs@0.5.1": "patches/@ensdomains__dnsprovejs@0.5.1.patch"
-    }
-  }
+  "packageManager": "pnpm@11.5.0"
 }

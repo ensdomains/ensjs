@@ -3,3 +3,24 @@ packages:
   - examples/*
 patchedDependencies:
   hardhat-deploy: patches/hardhat-deploy.patch
+  '@ensdomains/ens-contracts@1.6.0': patches/@ensdomains__ens-contracts@1.6.0.patch
+  '@ensdomains/ens-test-env@1.0.1': patches/@ensdomains__ens-test-env@1.0.1.patch
+  '@ensdomains/dnsprovejs@0.5.1': patches/@ensdomains__dnsprovejs@0.5.1.patch
+# pnpm 11 sets `blockExoticSubdeps: true` by default. @ensdomains/ens-contracts
+# pulls in `clones-with-immutable-args` as a git-hosted transitive dep, so we
+# need to explicitly allow exotic subdeps.
+blockExoticSubdeps: false
+# pnpm 11 sets `strictDepBuilds: true` by default. Packages that need to
+# run install/build scripts must be explicitly allowlisted.
+allowBuilds:
+  clones-with-immutable-args: true
+  '@biomejs/biome': true
+  bufferutil: true
+  es5-ext: true
+  esbuild: true
+  keccak: true
+  secp256k1: true
+  utf-8-validate: true
+  web3: true
+  web3-bzz: true
+  web3-shh: true
