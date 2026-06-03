@@ -176,16 +176,16 @@ export const ensL1Contracts = {
       address: '0x3dfc8b53dafa5ebbb071a8b97678ab534ed838d9',
     },
     dai: {
-      address: '0xa4e569b57e0d6ac518c73ebdaa67e11c96dbd7a4',
+      address: '0xe915cebbc1570a74177b6c589fed1e8f53117559',
     },
     ensUserRegistryImpl: {
       address: '0x0f99e7ea74903afcb7224d0354fd7428a6f92917',
     },
     ensStandardRentPriceOracle: {
-      address: '0xf33d548997e2975c8ff04f66219564d8c7a95e26',
+      address: '0xe19d37839f42f7d2694d8c5712f412c66a218161',
     },
     ensHcaFactory: {
-      address: '0x4327e31b4111dc0fb54517cd0fed82680840f32e',
+      address: '0x358680728dedb552adaa9f5eb5d4395b291cf943',
     },
     ensLockedMigrationController: {
       address: '0xf91c34ed840889ed96f806f882fd50506a336edb',
