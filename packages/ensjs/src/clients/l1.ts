@@ -222,7 +222,7 @@ export const ensL1Subgraphs = {
   },
   [supportedL1Chains.sepolia]: {
     ens: {
-      url: 'https://ensnode-api-sepolia.up.railway.app/subgraph',
+      url: 'https://api.sepolia.ensnode.io/subgraph',
     },
   },
 } as const satisfies Record<SupportedL1ChainId, EnsSubgraph>
