@@ -34,6 +34,17 @@ export type HasRolesRegistryParameters = {
   account: Address
 }
 
+// ─── Registry root mode ───────────────────────────────────────────────
+
+export type HasRolesRegistryRootParameters = {
+  /** The registry address to check */
+  registryAddress: Address
+  /** The roles to check at the registry root resource */
+  roles: Role[]
+  /** The account address to check */
+  account: Address
+}
+
 // ─── Resolver root mode ───────────────────────────────────────────────
 
 export type HasRolesResolverRootParameters = {
@@ -62,6 +73,7 @@ export type HasRolesResolverParameters = {
 
 export type HasRolesParameters =
   | HasRolesRegistryParameters
+  | HasRolesRegistryRootParameters
   | HasRolesResolverRootParameters
   | HasRolesResolverParameters
 
@@ -70,10 +82,13 @@ export type HasRolesErrorType = ReadContractErrorType
 /**
  * Check if an account has specific roles.
  *
- * Supports three modes based on the parameters passed:
+ * Supports four modes based on the parameters passed:
  *
  * **Registry mode** (pass `registryAddress` + `label`):
  * Check roles on a registry for a specific name.
+ *
+ * **Registry root mode** (pass `registryAddress` only):
+ * Check registry-wide roles at the root resource (resource = 0).
  *
  * **Resolver root mode** (pass `resolverAddress` only):
  * Check root-level roles on a resolver (global, any name/record).
@@ -91,6 +106,14 @@ export type HasRolesErrorType = ReadContractErrorType
  *   registryAddress: '0x...',
  *   label: 'example',
  *   roles: ['ROLE_SET_SUBREGISTRY'],
+ *   account: '0x...',
+ * })
+ *
+ * @example
+ * // Registry root mode - check registry-wide root roles
+ * const isAdmin = await hasRoles(client, {
+ *   registryAddress: '0x...',
+ *   roles: ['ROLE_REGISTRAR_ADMIN'],
  *   account: '0x...',
  * })
  *
@@ -119,10 +142,10 @@ export async function hasRoles(
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  // Registry mode: registryAddress + label
+  // Registry mode: registryAddress + (label | root resource)
   if ('registryAddress' in params) {
-    const { registryAddress, label, roles, account } = params
-    const resource = BigInt(labelhash(label))
+    const { registryAddress, roles, account } = params
+    const resource = 'label' in params ? BigInt(labelhash(params.label)) : 0n
     const rolesBitmap = encodeRoleBitmap(roles)
 
     return readContractAction({
