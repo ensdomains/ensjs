@@ -1,4 +1,7 @@
-import { eacGrantRolesSnippet } from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
+import {
+  eacGrantRolesSnippet,
+  eacGrantRootRolesSnippet,
+} from '@ensdomains/ensjs-abi/v2/enhancedAccessControl'
 import type {
   Account,
   Address,
@@ -34,12 +37,31 @@ export const grantRolesWriteParameters = <
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
+  const isRootResource = resource === 0n
+  const roleBitmap = encodeRoleBitmap(roles)
+
+  // ROOT_RESOURCE grants must use the dedicated `grantRootRoles` entrypoint;
+  // the general `grantRoles` reverts with `EACRootResourceNotAllowed`. Mirrors
+  // `revokeRolesWriteParameters`.
+  if (isRootResource) {
+    return {
+      address: registryAddress,
+      functionName: 'grantRootRoles',
+      abi: eacGrantRootRolesSnippet,
+      chain: client.chain,
+      account: client.account,
+      args: [roleBitmap, account] as const,
+    } as const satisfies WriteContractParameters<
+      typeof eacGrantRootRolesSnippet
+    >
+  }
+
   return {
     address: registryAddress,
     functionName: 'grantRoles',
     abi: eacGrantRolesSnippet,
     chain: client.chain,
     account: client.account,
-    args: [resource, encodeRoleBitmap(roles), account],
+    args: [resource, roleBitmap, account] as const,
   } as const satisfies WriteContractParameters<typeof eacGrantRolesSnippet>
 }

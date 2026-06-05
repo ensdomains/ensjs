@@ -118,6 +118,31 @@ export const eacGrantRolesSnippet = [
   },
 ] as const
 
+export const eacGrantRootRolesSnippet = [
+  ...eacErrors,
+  {
+    type: 'function',
+    name: 'grantRootRoles',
+    inputs: [
+      {
+        name: 'roleBitmap',
+        type: 'uint256',
+      },
+      {
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+] as const
+
 export const eacHasRolesSnippet = [
   {
     type: 'function',
