@@ -173,10 +173,10 @@ export const ensL1Contracts = {
       address: '0x8c2e866b439358c41ae05de9cbe8a00bfefaffca',
     },
     usdc: {
-      address: '0x3dfc8b53dafa5ebbb071a8b97678ab534ed838d9',
+      address: '0xba11ebdb3f9a2c5946d8629517f06364e53a2e10',
     },
     dai: {
-      address: '0xe915cebbc1570a74177b6c589fed1e8f53117559',
+      address: '0x2922bcd677af690fcd1ecc699519e4bfabc73ff8',
     },
     ensUserRegistryImpl: {
       address: '0x0f99e7ea74903afcb7224d0354fd7428a6f92917',
