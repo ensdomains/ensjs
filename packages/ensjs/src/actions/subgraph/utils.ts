@@ -104,7 +104,7 @@ export const decodeResolverEvents = (resolverEvents: ResolverEvent[]) => {
       case 'AddrChanged': {
         return {
           ...event,
-          addr: event.addr.id,
+          addr: event.addr?.id ?? null,
         }
       }
       case 'MulticoinAddrChanged': {

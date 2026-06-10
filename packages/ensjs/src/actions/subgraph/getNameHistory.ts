@@ -44,8 +44,13 @@ type SubgraphResult = {
   }
 }
 
+// Nested `{ id }` references are flattened to their id string. ENSNode can
+// return `null` for these references (e.g. a `NewResolver` event that clears
+// the resolver), so the flattened value is `string | null`.
 type FlattenedEvent<TEvent extends {}> = {
-  [K in keyof TEvent]: TEvent[K] extends { id: string } ? string : TEvent[K]
+  [K in keyof TEvent]: TEvent[K] extends { id: string }
+    ? string | null
+    : TEvent[K]
 }
 
 type ReturnDomainEvent = FlattenedEvent<DomainEvent>
@@ -230,9 +235,11 @@ const getNameHistory = async (
     (event: DomainEvent): ReturnDomainEvent => {
       switch (event.type) {
         case 'NewResolver': {
+          // ENSNode returns `resolver: null` when the resolver is cleared
+          // (set to the zero address), so guard against a missing reference.
           return {
             ...event,
-            resolver: event.resolver.id.split('-')[0],
+            resolver: event.resolver?.id.split('-')[0] ?? null,
           }
         }
         case 'NewOwner':
@@ -242,7 +249,7 @@ const getNameHistory = async (
         case 'NameUnwrapped': {
           return {
             ...event,
-            owner: event.owner.id,
+            owner: event.owner?.id ?? null,
           }
         }
         default:
@@ -257,13 +264,13 @@ const getNameHistory = async (
         case 'NameRegistered': {
           return {
             ...event,
-            registrant: event.registrant.id,
+            registrant: event.registrant?.id ?? null,
           }
         }
         case 'NameTransferred': {
           return {
             ...event,
-            newOwner: event.newOwner.id,
+            newOwner: event.newOwner?.id ?? null,
           }
         }
         default:
