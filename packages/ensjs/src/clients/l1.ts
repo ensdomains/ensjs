@@ -149,7 +149,7 @@ export const ensL1Contracts = {
       address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
     },
     ensPublicResolver: {
-      address: '0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5',
+      address: '0x5239A812ec9A62F46dbb5de8f346C8eFe7553A9f',
     },
     ensLegacyRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
