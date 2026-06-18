@@ -23,6 +23,10 @@
       "types": "./dist/reverseRegistrar.d.ts",
       "default": "./dist/reverseRegistrar.js"
     },
+    "./defaultReverseResolver": {
+      "types": "./dist/defaultReverseResolver.d.ts",
+      "default": "./dist/defaultReverseResolver.js"
+    },
     "./multicall": {
       "types": "./dist/multicall.d.ts",
       "default": "./dist/multicall.js"

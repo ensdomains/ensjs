@@ -56,6 +56,9 @@ export const supportedL1Contracts = [
 
   // UR
   'ensUniversalResolver',
+
+  // reverse
+  'ensDefaultReverseResolver',
 ] as const
 
 export type SupportedL1Contract = (typeof supportedL1Contracts)[number]
@@ -91,6 +94,9 @@ export const ensL1Contracts = {
     },
     ensUniversalResolver: {
       address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
+    },
+    ensDefaultReverseResolver: {
+      address: zeroAddress,
     },
     ensPermissionedResolverImpl: {
       address: zeroAddress,
@@ -159,6 +165,9 @@ export const ensL1Contracts = {
     },
     ensUniversalResolver: {
       address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
+    },
+    ensDefaultReverseResolver: {
+      address: '0x7cd0016f722f34394110738eec10265b00c6c7d9',
     },
     ensPermissionedResolverImpl: {
       address: '0xdce5205a553573ffd47629327dddf36186022ffa',
