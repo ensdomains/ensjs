@@ -47,6 +47,12 @@ const arweave = {
     '0x90b2ca05cacdf63edf2e0bb4eb5711dd38b0723aca5f3c4ab62ceeb7c1110740833d4894',
 } as const
 
+const adnl = {
+  decoded: '61bd855da6c07e8d1c807e880c2a9a6272011cfc2b34b2e9de32cd37ff6f4ae5',
+  encoded:
+    '0x90b2da0561bd855da6c07e8d1c807e880c2a9a6272011cfc2b34b2e9de32cd37ff6f4ae5',
+} as const
+
 const typeArray = [
   {
     type: 'ipfs',
@@ -75,6 +81,10 @@ const typeArray = [
   {
     type: 'ar',
     ...arweave,
+  },
+  {
+    type: 'adnl',
+    ...adnl,
   },
 ] as const
 
