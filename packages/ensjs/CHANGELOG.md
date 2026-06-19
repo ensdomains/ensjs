@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 4.3.0
+
+### Minor Changes
+
+- [#339](https://github.com/ensdomains/ensjs/pull/339) [`5248ffa`](https://github.com/ensdomains/ensjs/commit/5248ffa82f000050a5f703eefc8a93c836b8c151) Thanks [@TONresistor](https://github.com/TONresistor)! - Add adnl contenthash protocol
+
 ## 4.2.3
 
 ### Patch Changes
