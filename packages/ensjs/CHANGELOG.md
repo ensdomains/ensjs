@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 4.3.1
+
+### Patch Changes
+
+- [#345](https://github.com/ensdomains/ensjs/pull/345) [`477befd`](https://github.com/ensdomains/ensjs/commit/477befdc26104501880219ca5028b333e3cf7886) Thanks [@v1rtl](https://github.com/v1rtl)! - `getName` now enforces normalization: it only returns a primary name if the value returned by reverse resolution is already in its normalised form, returning `null` otherwise (instead of silently coercing it). This mirrors viem's `getEnsName` behaviour (wevm/viem#4756) and brings v4 in line with v5 (WEB-533). The normalization check is applied to both the matching and `allowMismatch` paths.
+
 ## 4.3.0
 
 ### Minor Changes
