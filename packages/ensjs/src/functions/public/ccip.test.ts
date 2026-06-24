@@ -55,14 +55,14 @@ describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name', async () => {
       const result = await getRecords(sepoliaPublicClient, {
-        name: 'testing.ethbuc.eth',
-        texts: ['email', 'description'],
+        name: 'gregskril.eth',
+        texts: ['email', 'avatar'],
         contentHash: true,
         coins: ['btc', '60'],
       })
       result.resolverAddress = await unwrapSepoliaV1Resolver(
         sepoliaPublicClient,
-        'testing.ethbuc.eth',
+        'gregskril.eth',
         result.resolverAddress,
       )
       expect(result).toMatchInlineSnapshot(`
@@ -71,15 +71,18 @@ describe('CCIP', () => {
             {
               "id": 60,
               "name": "eth",
-              "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
+              "value": "0x179A862703a4adfb29896552DF9e307980D19285",
             },
           ],
-          "contentHash": null,
-          "resolverAddress": "0x7DbcFF94B5b9ccdf2B21f60Ef1F19A566016636B",
+          "contentHash": {
+            "decoded": "bafybeifgil7fclzl5nsmikh6ml6lwphs3vrandqwhkm6d73yos2fb7a36y",
+            "protocolType": "ipfs",
+          },
+          "resolverAddress": "0x8FADE66B79cC9f707aB26799354482EB93a5B7dD",
           "texts": [
             {
-              "key": "description",
-              "value": "my first profile",
+              "key": "avatar",
+              "value": "https://euc.li/sepolia/gregskril.eth",
             },
           ],
         }
@@ -97,15 +100,15 @@ describe('CCIP', () => {
       const result = await getRecords(
         sepoliaPublicClientWithCustomCcipRequest,
         {
-          name: 'testing.ethbuc.eth',
-          texts: ['email', 'description'],
+          name: 'gregskril.eth',
+          texts: ['email', 'avatar'],
           contentHash: true,
           coins: ['btc', '60'],
         },
       )
       result.resolverAddress = await unwrapSepoliaV1Resolver(
         sepoliaPublicClient,
-        'testing.ethbuc.eth',
+        'gregskril.eth',
         result.resolverAddress,
       )
       expect(result).toMatchInlineSnapshot(`
@@ -114,15 +117,18 @@ describe('CCIP', () => {
           {
             "id": 60,
             "name": "eth",
-            "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
+            "value": "0x179A862703a4adfb29896552DF9e307980D19285",
           },
         ],
-        "contentHash": null,
-        "resolverAddress": "0x7DbcFF94B5b9ccdf2B21f60Ef1F19A566016636B",
+        "contentHash": {
+          "decoded": "bafybeifgil7fclzl5nsmikh6ml6lwphs3vrandqwhkm6d73yos2fb7a36y",
+          "protocolType": "ipfs",
+        },
+        "resolverAddress": "0x8FADE66B79cC9f707aB26799354482EB93a5B7dD",
         "texts": [
           {
-            "key": "description",
-            "value": "my first profile",
+            "key": "avatar",
+            "value": "https://euc.li/sepolia/gregskril.eth",
           },
         ],
       }
@@ -155,26 +161,26 @@ describe('CCIP', () => {
     it('allows batch ccip', async () => {
       const result = await batch(
         sepoliaPublicClient,
-        getAddressRecord.batch({ name: 'testing.ethbuc.eth' }),
-        getAddressRecord.batch({ name: 'testing.ethbuc.eth', coin: 'btc' }),
-        getText.batch({ name: 'testing.ethbuc.eth', key: 'description' }),
+        getAddressRecord.batch({ name: 'gregskril.eth' }),
+        getAddressRecord.batch({ name: 'gregskril.eth', coin: 'btc' }),
+        getText.batch({ name: 'gregskril.eth', key: 'avatar' }),
       )
       expect(result).toMatchInlineSnapshot(`
       [
         {
           "id": 60,
           "name": "eth",
-          "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
+          "value": "0x179A862703a4adfb29896552DF9e307980D19285",
         },
         null,
-        "my first profile",
+        "https://euc.li/sepolia/gregskril.eth",
       ]
       `)
     })
     it('allows nested batch ccip', async () => {
       const result = await batch(
         sepoliaPublicClient,
-        batch.batch(getAddressRecord.batch({ name: 'testing.ethbuc.eth' })),
+        batch.batch(getAddressRecord.batch({ name: 'gregskril.eth' })),
       )
       expect(result).toMatchInlineSnapshot(`
         [
@@ -182,7 +188,7 @@ describe('CCIP', () => {
             {
               "id": 60,
               "name": "eth",
-              "value": "0xb6B8B9dD5Ad1582f854bB7e7CBE49B9E4EC60eb7",
+              "value": "0x179A862703a4adfb29896552DF9e307980D19285",
             },
           ],
         ]
