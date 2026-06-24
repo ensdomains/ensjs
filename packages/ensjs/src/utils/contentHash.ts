@@ -15,6 +15,7 @@ export type ProtocolType =
   | 'onion3'
   | 'sia'
   | 'ar'
+  | 'adnl'
   | null
 
 export type DecodedContentHash = {
@@ -24,7 +25,7 @@ export type DecodedContentHash = {
 
 function matchProtocol(text: string) {
   return (
-    text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave|ar):\/\/(.*)/) ||
+    text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave|ar|adnl):\/\/(.*)/) ||
     text.match(/\/(ipfs)\/(.*)/) ||
     text.match(/\/(ipns)\/(.*)/)
   )
@@ -37,6 +38,7 @@ export const getDisplayCodec = (encoded: string): ProtocolType => {
     case 'ipns':
     case 'onion':
     case 'onion3':
+    case 'adnl':
       return codec
     case 'swarm':
       return 'bzz'
