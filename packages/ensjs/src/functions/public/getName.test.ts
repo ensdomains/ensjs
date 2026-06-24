@@ -4,10 +4,15 @@ import {
   RawContractError,
   bytesToHex,
   encodeErrorResult,
+  encodeFunctionResult,
+  zeroAddress,
 } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import type { ClientWithEns } from '../../contracts/consts.js'
-import { universalResolverErrors } from '../../contracts/universalResolver.js'
+import {
+  universalResolverErrors,
+  universalResolverReverseSnippet,
+} from '../../contracts/universalResolver.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -149,6 +154,66 @@ describe('getName', () => {
 
       Version: viem@2.37.12]
     `)
+  })
+  it('should return null for an unnormalised name in the match path', async () => {
+    const result = await getName.decode(
+      {} as ClientWithEns,
+      encodeFunctionResult({
+        abi: universalResolverReverseSnippet,
+        functionName: 'reverse',
+        result: ['Nick.eth', zeroAddress, zeroAddress],
+      }),
+      {
+        address: '0x1234567890abcdef',
+        args: ['0x', 60n],
+      },
+      {
+        address: accounts[0],
+        strict: false,
+      },
+    )
+    expect(result).toBeNull()
+  })
+  it('should return a normalised match unchanged', async () => {
+    const result = await getName.decode(
+      {} as ClientWithEns,
+      encodeFunctionResult({
+        abi: universalResolverReverseSnippet,
+        functionName: 'reverse',
+        result: ['nick.eth', zeroAddress, zeroAddress],
+      }),
+      {
+        address: '0x1234567890abcdef',
+        args: ['0x', 60n],
+      },
+      {
+        address: accounts[0],
+        strict: false,
+      },
+    )
+    expect(result).toMatchObject({ name: 'nick.eth', match: true })
+  })
+  it('should return null for an unnormalised name in the mismatch path', async () => {
+    const result = await getName.decode(
+      {} as ClientWithEns,
+      new RawContractError({
+        data: encodeErrorResult({
+          abi: universalResolverErrors,
+          errorName: 'ReverseAddressMismatch',
+          args: ['Nick.eth', accounts[0]],
+        }),
+      }),
+      {
+        address: '0x1234567890abcdef',
+        args: ['0x', 60n],
+      },
+      {
+        address: accounts[0],
+        allowMismatch: true,
+        strict: false,
+      },
+    )
+    expect(result).toBeNull()
   })
   it('should not return unnormalised name', async () => {
     const tx1 = await createSubname(walletClient, {
