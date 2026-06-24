@@ -8,6 +8,7 @@ import {
   encodeFunctionData,
   zeroAddress,
 } from 'viem'
+import { normalize } from 'viem/ens'
 import type { ClientWithEns } from '../../contracts/consts.js'
 import { getChainContractAddress } from '../../contracts/getChainContractAddress.js'
 import {
@@ -24,7 +25,21 @@ import {
   generateFunction,
 } from '../../utils/generateFunction.js'
 import { getRevertErrorData } from '../../utils/getRevertErrorData.js'
-import { normalise } from '../../utils/normalise.js'
+
+/**
+ * Checks whether a name is already normalised, without coercing it.
+ *
+ * Mirrors viem's `getEnsName` normalization enforcement (wevm/viem#4756):
+ * a name is only returned if it is already in its normalised form. Returns
+ * `false` if the name cannot be normalised (i.e. `normalize` throws).
+ */
+const isNormalised = (name: string): boolean => {
+  try {
+    return name === normalize(name)
+  } catch {
+    return false
+  }
+}
 
 type GetNameCoinTypeParameters = {
   coinType: number
@@ -134,8 +149,10 @@ const decode = async (
         data: errorData,
       })
       if (decodedError.errorName !== 'ReverseAddressMismatch') return null
+      const [name] = decodedError.args
+      if (!isNormalised(name)) return null
       return {
-        name: decodedError.args[0],
+        name,
         match: false,
         reverseResolverAddress: zeroAddress,
         resolverAddress: zeroAddress,
@@ -155,9 +172,9 @@ const decode = async (
 
     if (!unnormalisedName) return null
 
-    const normalisedName = normalise(unnormalisedName)
+    if (!isNormalised(unnormalisedName)) return null
     return {
-      name: normalisedName,
+      name: unnormalisedName,
       match: true,
       reverseResolverAddress,
       resolverAddress,
