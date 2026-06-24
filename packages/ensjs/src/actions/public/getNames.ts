@@ -32,9 +32,10 @@ export type GetNamesErrorType =
  *
  * This is the ENSIP-19 `default.reverse` resolver from `ens-contracts` (not a
  * v2-specific contract — ENSv2 has no reverse resolver of its own). It is read
- * directly because the Universal Resolver `reverse()` path — used by
- * {@link getName} — only resolves `addr.reverse` and does not return these
- * default reverse records.
+ * directly because {@link getName} goes through the Universal Resolver's
+ * per-coin reverse lookup (defaulting to coinType `60`, i.e. `addr.reverse`),
+ * which does not surface the chain-agnostic `default.reverse` records this
+ * resolver holds.
  *
  * Note: results are NOT forward-verified. Callers that need a verified primary
  * name should check forward resolution themselves.
