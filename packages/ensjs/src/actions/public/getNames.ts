@@ -27,12 +27,14 @@ export type GetNamesErrorType =
   | ErrorType
 
 /**
- * Gets the default (v2) primary names for a batch of addresses by reading the
- * `DefaultReverseResolver`'s `resolveNames`.
+ * Gets the ENSIP-19 default (chain-agnostic) primary names for a batch of
+ * addresses by reading the `DefaultReverseResolver`'s `resolveNames`.
  *
- * Unlike {@link getName} — which goes through the Universal Resolver `reverse()`
- * path — this reads the ENSIP-19 default reverse records used by the v2
- * deployment, which the Universal Resolver path does not resolve.
+ * This is the ENSIP-19 `default.reverse` resolver from `ens-contracts` (not a
+ * v2-specific contract — ENSv2 has no reverse resolver of its own). It is read
+ * directly because the Universal Resolver `reverse()` path — used by
+ * {@link getName} — only resolves `addr.reverse` and does not return these
+ * default reverse records.
  *
  * Note: results are NOT forward-verified. Callers that need a verified primary
  * name should check forward resolution themselves.

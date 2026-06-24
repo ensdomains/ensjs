@@ -39,6 +39,7 @@ export const supportedL1Contracts = [
   'ensPublicResolver',
   'ensLegacyRegistry',
   'ensReverseRegistrar',
+  'ensDefaultReverseResolver',
 
   // v2
   'ensEthRegistrar',
@@ -56,9 +57,6 @@ export const supportedL1Contracts = [
 
   // UR
   'ensUniversalResolver',
-
-  // reverse
-  'ensDefaultReverseResolver',
 ] as const
 
 export type SupportedL1Contract = (typeof supportedL1Contracts)[number]
@@ -92,11 +90,11 @@ export const ensL1Contracts = {
     ensReverseRegistrar: {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
-    ensUniversalResolver: {
-      address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
-    },
     ensDefaultReverseResolver: {
       address: zeroAddress,
+    },
+    ensUniversalResolver: {
+      address: '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
     },
     ensPermissionedResolverImpl: {
       address: zeroAddress,
@@ -163,11 +161,11 @@ export const ensL1Contracts = {
     ensReverseRegistrar: {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
-    ensUniversalResolver: {
-      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
-    },
     ensDefaultReverseResolver: {
       address: '0x7cd0016f722f34394110738eec10265b00c6c7d9',
+    },
+    ensUniversalResolver: {
+      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     ensPermissionedResolverImpl: {
       address: '0xdce5205a553573ffd47629327dddf36186022ffa',
