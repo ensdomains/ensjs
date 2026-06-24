@@ -150,6 +150,35 @@ describe('getName', () => {
       Version: viem@2.37.12]
     `)
   })
+  it('should return a normalised name in the mismatch path', async () => {
+    const result = await getName.decode(
+      {} as ClientWithEns,
+      new RawContractError({
+        data: encodeErrorResult({
+          abi: universalResolverErrors,
+          errorName: 'ReverseAddressMismatch',
+          args: ['Nick.eth', accounts[0]],
+        }),
+      }),
+      {
+        address: '0x1234567890abcdef',
+        args: ['0x', 60n],
+      },
+      {
+        address: accounts[0],
+        allowMismatch: true,
+        strict: false,
+      },
+    )
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "match": false,
+        "name": "nick.eth",
+        "resolverAddress": "0x0000000000000000000000000000000000000000",
+        "reverseResolverAddress": "0x0000000000000000000000000000000000000000",
+      }
+    `)
+  })
   it('should not return unnormalised name', async () => {
     const tx1 = await createSubname(walletClient, {
       name: 'suB.with-profile.eth',

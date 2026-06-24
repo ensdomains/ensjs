@@ -135,7 +135,7 @@ const decode = async (
       })
       if (decodedError.errorName !== 'ReverseAddressMismatch') return null
       return {
-        name: decodedError.args[0],
+        name: normalise(decodedError.args[0]),
         match: false,
         reverseResolverAddress: zeroAddress,
         resolverAddress: zeroAddress,
