@@ -1,10 +1,14 @@
+import { universalResolverV2FindParentRegistrySnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import { ethRegistrarAvailableSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
+import { permissionedRegistryGetStatusSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import type {
   Chain,
   GetChainContractAddressErrorType,
   ReadContractErrorType,
 } from 'viem'
+import { labelhash, toHex, zeroAddress } from 'viem'
 import { readContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../clients/shared.js'
 import { getChainContractAddress } from '../../../clients/shared.js'
@@ -14,7 +18,14 @@ import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { getNameType } from '../../../utils/name/getNameType.js'
 
 export type GetAvailableParameters = {
-  /** Name to check availability for, only compatible for eth 2ld */
+  /**
+   * Name to check availability for. Only `.eth` names are supported:
+   * - `eth-2ld` names (e.g. `name.eth`)
+   * - `eth-subname` names of any depth (e.g. `sub.name.eth`)
+   *
+   * DNS names are not supported (they have both on-chain and off-chain
+   * import paths, so a single availability answer would be ambiguous).
+   */
   name: string
 }
 
@@ -27,7 +38,15 @@ export type GetAvailableErrorType =
   | ErrorType
 
 /**
- * Gets the availability of a name to register
+ * Gets the availability of a `.eth` name to register.
+ *
+ * For `eth-2ld` names, availability is read from the `.eth` registrar via
+ * `isAvailable`, which accounts for grace periods and premium decay.
+ *
+ * For `eth-subname` names, the Universal Resolver V2's `findParentRegistry`
+ * is used to traverse the registry tree and locate the parent registry, then
+ * the leaf label's status is checked against it.
+ *
  * @param client - {@link Client}
  * @param parameters - {@link GetAvailableParameters}
  * @returns Availability as boolean. {@link GetAvailableReturnType}
@@ -42,33 +61,68 @@ export type GetAvailableErrorType =
  *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
- * const result = await getAvailable(client, { name: 'ens.eth' })
+ *
+ * // eth-2ld via the .eth registrar
+ * const a = await getAvailable(client, { name: 'ens.eth' })
  * // false
+ *
+ * // eth-subname with auto-traversal via Universal Resolver
+ * const b = await getAvailable(client, { name: 'sub.ens.eth' })
  */
 export async function getAvailable<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensEthRegistrar'>,
+  client: RequireClientContracts<
+    chain,
+    'ensEthRegistrar' | 'ensUniversalResolver'
+  >,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
+  ASSERT_NO_TYPE_ERROR(client)
+
   const labels = name.split('.')
   const nameType = getNameType(name)
-  ASSERT_NO_TYPE_ERROR(client)
-  if (nameType !== 'eth-2ld')
+
+  if (nameType !== 'eth-2ld' && nameType !== 'eth-subname')
     throw new UnsupportedNameTypeError({
       nameType,
-      supportedNameTypes: ['eth-2ld'],
-      details: 'Currently only eth-2ld names can be checked for availability',
+      supportedNameTypes: ['eth-2ld', 'eth-subname'],
+      details:
+        'Only .eth 2LD and subname names can be checked for availability',
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
+  const leafLabel = labels[0]
 
-  const result = await readContractAction({
+  // eth-2ld: availability comes from the .eth registrar (rent/premium aware).
+  if (nameType === 'eth-2ld') {
+    return readContractAction({
+      address: getChainContractAddress({
+        chain: client.chain,
+        contract: 'ensEthRegistrar',
+      }),
+      abi: ethRegistrarAvailableSnippet,
+      functionName: 'isAvailable',
+      args: [leafLabel],
+    })
+  }
+
+  // eth-subname: use URv2 to find the parent registry, then check the leaf
+  // label's status. A missing parent registry means the name is available.
+  const parentRegistry = await readContractAction({
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensEthRegistrar',
+      contract: 'ensUniversalResolver',
     }),
-    abi: ethRegistrarAvailableSnippet,
-    functionName: 'isAvailable',
-    args: [labels[0]],
+    abi: universalResolverV2FindParentRegistrySnippet,
+    functionName: 'findParentRegistry',
+    args: [toHex(packetToBytes(name))],
   })
-  return result
+  if (parentRegistry === zeroAddress) return true
+
+  const status = await readContractAction({
+    address: parentRegistry,
+    abi: permissionedRegistryGetStatusSnippet,
+    functionName: 'getStatus',
+    args: [BigInt(labelhash(leafLabel))],
+  })
+  return status === 0
 }

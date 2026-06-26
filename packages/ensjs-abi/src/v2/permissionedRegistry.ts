@@ -20,6 +20,16 @@ export const permissionedRegistryGetStateSnippet = [
   },
 ] as const
 
+export const permissionedRegistryGetStatusSnippet = [
+  {
+    type: 'function',
+    name: 'getStatus',
+    inputs: [{ name: 'anyId', type: 'uint256' }],
+    outputs: [{ name: '', type: 'uint8' }],
+    stateMutability: 'view',
+  },
+] as const
+
 export const permissionedRegistryGetResolverSnippet = [
   {
     type: 'function',

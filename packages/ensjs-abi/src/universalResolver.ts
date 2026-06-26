@@ -219,6 +219,46 @@ export const universalResolverFindResolverSnippet = [
   },
 ] as const
 
+export const universalResolverV2FindOwnerSnippet = [
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'bytes',
+      },
+    ],
+    name: 'findOwner',
+    outputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const universalResolverV2FindParentRegistrySnippet = [
+  {
+    inputs: [
+      {
+        name: 'name',
+        type: 'bytes',
+      },
+    ],
+    name: 'findParentRegistry',
+    outputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 export const universalResolverFindRegistriesSnippet = [
   ...universalResolverErrors,
   {
