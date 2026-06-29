@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "0.0.0-remove-deploy-scripts.20260626T185524279",
+  "version": "5.0.0-alpha.1",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
   "module": "./dist/index.js",
