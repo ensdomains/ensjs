@@ -68,7 +68,7 @@ export const localhost = {
       address: deploymentAddresses.ENSRegistry,
     },
     ensUniversalResolver: {
-      address: deploymentAddresses.UpgradableUniversalResolverProxy,
+      address: deploymentAddresses.UniversalResolver,
     },
     multicall3: {
       address: deploymentAddresses.Multicall,

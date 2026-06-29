@@ -165,7 +165,7 @@ export const ensL1Contracts = {
       address: '0x7cD0016F722f34394110738eEc10265b00c6C7d9',
     },
     ensUniversalResolver: {
-      address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
+      address: '0x2f8a180604c42457cb56c7c4f708748ff1f91df1',
     },
     ensPermissionedResolverImpl: {
       address: '0xdcE5205A553573FFd47629327DDdf36186022FfA',
