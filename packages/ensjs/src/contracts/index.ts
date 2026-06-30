@@ -1,4 +1,8 @@
 export {
+  defaultReverseRegistrarSetNameForAddrWithSignatureSnippet,
+  defaultReverseRegistrarSetNameSnippet,
+} from '@ensdomains/ensjs-abi/defaultReverseRegistrar'
+export {
   dnsRegistrarErrors,
   dnsRegistrarProveAndClaimSnippet,
   dnsRegistrarProveAndClaimWithResolverSnippet,

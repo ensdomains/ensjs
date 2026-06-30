@@ -1,4 +1,5 @@
 export * from './compositeResolver.js'
+export * from './defaultReverseRegistrar.js'
 export * from './defaultReverseResolver.js'
 export * from './dnsRegistrar.js'
 export * from './dnssecImpl.js'
