@@ -23,6 +23,10 @@
       "types": "./dist/reverseRegistrar.d.ts",
       "default": "./dist/reverseRegistrar.js"
     },
+    "./defaultReverseRegistrar": {
+      "types": "./dist/defaultReverseRegistrar.d.ts",
+      "default": "./dist/defaultReverseRegistrar.js"
+    },
     "./defaultReverseResolver": {
       "types": "./dist/defaultReverseResolver.d.ts",
       "default": "./dist/defaultReverseResolver.js"
