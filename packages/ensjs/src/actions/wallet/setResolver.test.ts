@@ -26,7 +26,7 @@ afterEach(async () => {
 
 it('should return a setResolver transaction to the registry and succeed', async () => {
   const tx = await setResolver(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     contract: 'registry',
     resolverAddress: '0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC',
     account: accounts[1],
@@ -36,7 +36,7 @@ it('should return a setResolver transaction to the registry and succeed', async 
   expect(receipt.status).toBe('success')
 
   const resolver = await getResolver(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(resolver).toBe('0xAEfF4f4d8e2cB51854BEa2244B3C5Fb36b41C7fC')
 })

@@ -28,7 +28,7 @@ afterEach(async () => {
 
 it('should return a transaction for a name and set successfully', async () => {
   const tx = await setPrimaryName(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     account: accounts[1],
   })
   expect(tx).toBeTruthy()
@@ -38,7 +38,7 @@ it('should return a transaction for a name and set successfully', async () => {
   const resolvedName = await getName(publicClient, {
     address: accounts[1],
   })
-  expect(resolvedName?.name).toBe('test123.eth')
+  expect(resolvedName?.name).toBe('with-subnames.eth')
 })
 
 it("should return a transaction for setting another address' name and succeed", async () => {
@@ -57,7 +57,7 @@ it("should return a transaction for setting another address' name and succeed", 
   expect(setApprovedForAllReceipt.status).toBe('success')
 
   const tx = await setPrimaryName(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     address: accounts[1],
     account: accounts[2],
   })
@@ -68,5 +68,5 @@ it("should return a transaction for setting another address' name and succeed", 
   const resolvedName = await getName(publicClient, {
     address: accounts[1],
   })
-  expect(resolvedName?.name).toBe('test123.eth')
+  expect(resolvedName?.name).toBe('with-subnames.eth')
 })

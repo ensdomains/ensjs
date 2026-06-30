@@ -34,25 +34,13 @@ describe('getContentHashRecord', () => {
     expect(result).toBeNull()
   })
   it('should throw on error when strict is true', async () => {
+    // The name is neither registered on v1 nor reserved on v2, so the Universal
+    // Resolver reverts with ResolverNotFound; strict mode surfaces it.
     await expect(
       getContentHashRecord(publicClient, {
         name: 'thisnamedoesnotexist.eth',
         strict: true,
       }),
-    ).rejects.toThrowErrorMatchingInlineSnapshot(`
-      [ContractFunctionExecutionError: The contract function "resolve" reverted.
-
-      Error: ResolverError(bytes errorData)
-                          (0x5fe9a5df0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a14746869736e616d65646f65736e6f7465786973740365746800000000000000)
-       
-      Contract Call:
-        address:   0x4b6aB5F819A515382B0dEB6935D793817bB4af28
-        function:  resolve(bytes name, bytes data)
-        args:             (0x14746869736e616d65646f65736e6f7465786973740365746800, 0xbc1c58d1287cee1ffaaa678d79079ce4ecc357370874e29f72642e32beaf9bc904adf20e)
-
-      Docs: https://viem.sh/docs/contract/readContract
-      Details: execution reverted: custom error 0x95c0c752: 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000645fe9a5df0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001a14746869736e616d65646f65736e6f746578697374036574680000000000000000000000000000000000000000000000000000000000000000000000
-      Version: viem@2.47.10]
-    `)
+    ).rejects.toThrowError('ResolverNotFound')
   })
 })

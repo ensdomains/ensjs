@@ -40,6 +40,10 @@ export const deploymentAddresses = {
   // ENS v2
   ETHRegistry: '0x4c5859f0F772848b2D91F1D83E2Fe57935348029',
   RootRegistry: '0x610178dA211FEF7D417bC0e6FeD39F05609AD788',
+  // ENSv1 mirror resolver. Reserved v1 names point at this on v2 so the
+  // Universal Resolver can resolve unmigrated v1 names (matches sepolia
+  // pre-migration).
+  ENSV1Resolver: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
   UniversalResolverV2: '0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb',
   UpgradableUniversalResolverProxy:
     '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
@@ -68,7 +72,11 @@ export const localhost = {
       address: deploymentAddresses.ENSRegistry,
     },
     ensUniversalResolver: {
-      address: deploymentAddresses.UniversalResolver,
+      // The devnet's Universal Resolver is the UpgradableUniversalResolverProxy,
+      // which fronts UniversalResolverV2. It resolves both v1 and v2 names and
+      // exposes the v2-only methods (e.g. findParentRegistry) that the bare v1
+      // UniversalResolver lacks.
+      address: deploymentAddresses.UpgradableUniversalResolverProxy,
     },
     multicall3: {
       address: deploymentAddresses.Multicall,

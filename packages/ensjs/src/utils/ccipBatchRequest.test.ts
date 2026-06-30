@@ -4,14 +4,12 @@ import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipBatchRequest } from './ccipBatchRequest.js'
 
 it('returns array of responses', async () => {
-  const handler = vi
-    .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
-    .mockImplementation((_, res) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      })
-      res.end(JSON.stringify({ data: '0xdeadbeef' }))
+  const handler = vi.fn<RequestListener>().mockImplementation((_, res) => {
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
     })
+    res.end(JSON.stringify({ data: '0xdeadbeef' }))
+  })
   const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef01'],
@@ -37,14 +35,12 @@ it('returns array of responses', async () => {
   // await close()
 })
 it('removes duplicate requests', async () => {
-  const handler = vi
-    .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
-    .mockImplementation((_, res) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      })
-      res.end(JSON.stringify({ data: '0xdeadbeef' }))
+  const handler = vi.fn<RequestListener>().mockImplementation((_, res) => {
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
     })
+    res.end(JSON.stringify({ data: '0xdeadbeef' }))
+  })
   const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
@@ -70,12 +66,10 @@ it('removes duplicate requests', async () => {
   // await close()
 })
 it('handles and correctly returns HttpRequestError', async () => {
-  const handler = vi
-    .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
-    .mockImplementation((_, res) => {
-      res.writeHead(404)
-      res.end()
-    })
+  const handler = vi.fn<RequestListener>().mockImplementation((_, res) => {
+    res.writeHead(404)
+    res.end()
+  })
   const { url } = await createHttpServer(handler)
   const items = [
     ['0x8464135c8F25Da09e49BC8782676a84730C318bC', [url], '0xdeadbeef'],
@@ -94,14 +88,12 @@ it('handles and correctly returns HttpRequestError', async () => {
   // await close()
 })
 it('handles and correctly returns misc. error', async () => {
-  const handler = vi
-    .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
-    .mockImplementation((_, res) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      })
-      res.end('invalid json')
+  const handler = vi.fn<RequestListener>().mockImplementation((_, res) => {
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
     })
+    res.end('invalid json')
+  })
 
   const { url } = await createHttpServer(handler)
 

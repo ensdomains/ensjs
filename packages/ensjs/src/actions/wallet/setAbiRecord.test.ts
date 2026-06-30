@@ -48,11 +48,11 @@ const dummyABI = [
 
 it('should allow an abi record to be set with json content type', async () => {
   const tx = await setAbiRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     data: dummyABI,
     encodeAs: 'json',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -61,7 +61,7 @@ it('should allow an abi record to be set with json content type', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getAbiRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(response?.abi).toEqual(dummyABI)
   expect(response?.contentType).toEqual(1)
@@ -70,11 +70,11 @@ it('should allow an abi record to be set with json content type', async () => {
 
 it('should allow an abi record to be set with zlib content type', async () => {
   const tx = await setAbiRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     data: dummyABI,
     encodeAs: 'zlib',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -83,7 +83,7 @@ it('should allow an abi record to be set with zlib content type', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getAbiRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(response?.abi).toEqual(dummyABI)
   expect(response?.contentType).toEqual(2)
@@ -92,11 +92,11 @@ it('should allow an abi record to be set with zlib content type', async () => {
 
 it('should allow an abi record to be set with cbor content type', async () => {
   const tx = await setAbiRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     data: dummyABI,
     encodeAs: 'cbor',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -105,7 +105,7 @@ it('should allow an abi record to be set with cbor content type', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getAbiRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(response?.abi).toEqual(dummyABI)
   expect(response?.contentType).toEqual(4)
@@ -114,11 +114,11 @@ it('should allow an abi record to be set with cbor content type', async () => {
 
 it('should allow an abi record to be set with uri content type', async () => {
   const tx = await setAbiRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     data: 'https://example.com',
     encodeAs: 'uri',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -127,7 +127,7 @@ it('should allow an abi record to be set with uri content type', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getAbiRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(response?.abi).toEqual('https://example.com')
   expect(response?.contentType).toEqual(8)

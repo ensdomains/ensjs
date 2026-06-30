@@ -17,38 +17,6 @@ import type { ErrorType } from '../../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { getNameType } from '../../../utils/name/getNameType.js'
 
-/**
- * TEMPORARY: hardcoded Universal Resolver V2 addresses used solely for the
- * `findParentRegistry` traversal in the eth-subname availability path.
- *
- * Why this is needed (the URv1 / URv2 / proxy situation):
- * - The chain config's `ensUniversalResolver` is intentionally pointed at a UR
- *   that can RESOLVE both v1 and v2 names (records, addr, text, etc.). On
- *   sepolia that is the unified UniversalResolverV2 `0x2f8a…`; on the local
- *   devnet image it is the legacy `UniversalResolver` (`0x4b6a…`), which bridges
- *   to v2 for resolution but predates the v2-only registry-traversal methods.
- * - `findParentRegistry` is a UniversalResolverV2-only method. The devnet's
- *   legacy `UniversalResolver` does NOT implement it (it reverts), and the
- *   devnet's `UpgradableUniversalResolverProxy` DOES implement it but cannot
- *   resolve unmigrated v1 names. No single devnet UR currently satisfies both
- *   needs, so we can't use one shared `ensUniversalResolver` binding for both
- *   resolution and traversal on that image.
- * - On sepolia the same address (`0x2f8a…`) happens to do both, so this map
- *   simply mirrors the config value there.
- *
- * Once the devnet image ships a unified UniversalResolverV2 that resolves v1
- * names AND exposes `findParentRegistry` (matching sepolia's `0x2f8a…`), delete
- * this map and read the address from `getChainContractAddress({ contract:
- * 'ensUniversalResolver' })` again (or introduce a dedicated
- * `ensUniversalResolverV2` contract key).
- */
-const TEMP_UNIVERSAL_RESOLVER_V2_BY_CHAIN_ID: Record<number, `0x${string}`> = {
-  // sepolia: unified UniversalResolverV2 (resolves v1+v2 AND has findParentRegistry)
-  11155111: '0x2f8a180604c42457cb56c7c4f708748ff1f91df1',
-  // local devnet: UpgradableUniversalResolverProxy (has findParentRegistry)
-  31337: '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
-}
-
 export type GetAvailableParameters = {
   /**
    * Name to check availability for. Only `.eth` names are supported:
@@ -137,21 +105,16 @@ export async function getAvailable<chain extends Chain>(
     })
   }
 
-  // eth-subname: use URv2 to find the parent registry, then check the leaf
-  // label's status. A missing parent registry means the name is available.
-  //
-  // TEMPORARY: `findParentRegistry` is a UniversalResolverV2-only method, but
-  // the configured `ensUniversalResolver` is not always a URv2 that exposes it
-  // (see TEMP_UNIVERSAL_RESOLVER_V2_BY_CHAIN_ID above). Fall back to the chain
-  // config when no temporary override is registered for this chain.
-  const universalResolverV2Address =
-    TEMP_UNIVERSAL_RESOLVER_V2_BY_CHAIN_ID[client.chain.id] ??
-    getChainContractAddress({
-      chain: client.chain,
-      contract: 'ensUniversalResolver',
-    })
+  // eth-subname: use the Universal Resolver to find the parent registry, then
+  // check the leaf label's status. A missing parent registry means the name is
+  // available. The configured `ensUniversalResolver` exposes `findParentRegistry`
+  // for both v1 and v2 names.
+  const universalResolverAddress = getChainContractAddress({
+    chain: client.chain,
+    contract: 'ensUniversalResolver',
+  })
   const parentRegistry = await readContractAction({
-    address: universalResolverV2Address,
+    address: universalResolverAddress,
     abi: universalResolverV2FindParentRegistrySnippet,
     functionName: 'findParentRegistry',
     args: [toHex(packetToBytes(name))],

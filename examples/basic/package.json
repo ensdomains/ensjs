@@ -1,18 +1,14 @@
 {
-  "name": "basic-tsnode-esm",
+  "name": "basic",
   "private": true,
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "start": "tsx src/index.ts"
+    "start": "node src/index.ts"
   },
   "dependencies": {
     "@ensdomains/ensjs": "workspace:*",
-    "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "viem": "^2.30.6"
-  },
-  "devDependencies": {
-    "tsx": "^4.20.3"
   }
 }
