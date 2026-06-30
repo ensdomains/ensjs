@@ -47,9 +47,9 @@ const dummyABI = [
 
 it('should return a transaction to the resolver and set successfully', async () => {
   const tx = await setRecords(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     coins: [
       {
@@ -66,7 +66,7 @@ it('should return a transaction to the resolver and set successfully', async () 
   expect(receipt.status).toBe('success')
 
   const records = await getRecords(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     coins: ['etcLegacy'],
     texts: ['foo'],
     abi: true,
@@ -92,9 +92,9 @@ it('should return a transaction to the resolver and set successfully', async () 
 })
 it('should return a transaction to the resolver and delete successfully', async () => {
   const setupTx = await setRecords(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     coins: [
       {
@@ -108,7 +108,7 @@ it('should return a transaction to the resolver and delete successfully', async 
   })
   await waitForTransaction(setupTx)
   const checkRecords = await getRecords(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     coins: ['etcLegacy'],
     texts: ['foo'],
     abi: true,
@@ -117,9 +117,9 @@ it('should return a transaction to the resolver and delete successfully', async 
   expect(checkRecords.coins).toHaveLength(1)
   expect(checkRecords.texts).toHaveLength(1)
   const tx = await setRecords(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     coins: [
       {
@@ -134,7 +134,7 @@ it('should return a transaction to the resolver and delete successfully', async 
   await waitForTransaction(tx)
 
   const records = await getRecords(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     coins: ['etcLegacy'],
     texts: ['foo'],
     abi: true,
@@ -160,7 +160,7 @@ it('should return a transaction to the resolver and delete all abis successfully
   await waitForTransaction(tx)
 
   const records = await getRecords(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     abi: true,
   })
   expect(records.abi).toBeNull()
@@ -168,9 +168,9 @@ it('should return a transaction to the resolver and delete all abis successfully
 it('should error if there are no records to set', async () => {
   await expect(
     setRecords(walletClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
       resolverAddress: (await getResolver(publicClient, {
-        name: 'test123.eth',
+        name: 'with-subnames.eth',
       }))!,
 
       account: accounts[1],
@@ -183,9 +183,9 @@ it('should error if there are no records to set', async () => {
 })
 it('should not wrap with multicall if only setting a single record', async () => {
   const writeParameters = await setRecordsWriteParameters(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     coins: [
       {

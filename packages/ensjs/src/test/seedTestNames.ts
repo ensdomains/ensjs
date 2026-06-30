@@ -4,6 +4,7 @@
  */
 
 import { cborEncode } from '@ensdomains/address-encoder/utils'
+import { permissionedRegistryGetStatusSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import pako from 'pako'
 import {
   type Address,
@@ -18,6 +19,8 @@ import {
   stringToHex,
   toHex,
   type WalletClient,
+  zeroAddress,
+  zeroHash,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { deploymentAddresses } from './addTestContracts.js'
@@ -30,6 +33,13 @@ const account = privateKeyToAccount(
 // Anvil account #2: 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
 const account2 = privateKeyToAccount(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
+)
+
+// Anvil account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 — the devnet
+// deployer, which holds the REGISTRAR role on the v2 ETHRegistry and so can
+// create the reserved v2 entries used by pre-migration.
+const deployer = privateKeyToAccount(
+  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
 )
 
 async function setupClients(l1Url: string) {
@@ -72,13 +82,21 @@ async function setupClients(l1Url: string) {
     transport,
   })
 
+  const deployerClient = createWalletClient({
+    account: deployer,
+    chain: localhost,
+    transport,
+  })
+
   return {
     publicClient,
     walletClient,
     walletClient2,
+    deployerClient,
     addresses: deploymentAddresses,
     account,
     account2,
+    deployer,
   }
 }
 
@@ -93,8 +111,7 @@ async function registerUnwrappedName(
   owner: Address,
   duration = 31536000, // 1 year
 ): Promise<Hash> {
-  const secret =
-    '0x0000000000000000000000000000000000000000000000000000000000000000' as Hash
+  const secret = zeroHash
 
   // Check if name is available
   const available = await publicClient.readContract({
@@ -229,9 +246,6 @@ const registrationParamsTuple = {
   ],
 } as const
 
-const ZERO_BYTES32 =
-  '0x0000000000000000000000000000000000000000000000000000000000000000' as `0x${string}`
-
 async function registerWrappedName(
   walletClient: WalletClient,
   publicClient: PublicClient,
@@ -268,11 +282,11 @@ async function registerWrappedName(
     name: label,
     owner,
     duration: BigInt(duration),
-    secret: ZERO_BYTES32,
+    secret: zeroHash,
     resolver,
     data: [] as `0x${string}`[],
     ownerControlledFuses: 0,
-    referralCode: ZERO_BYTES32,
+    referralCode: zeroHash,
   }
 
   // Prepare commitment
@@ -723,12 +737,67 @@ async function waitForTransaction(publicClient: any, hash: Hash) {
   throw new Error(`Transaction ${hash} not found after 4 seconds`)
 }
 
+// Max uint64, used as the v2 reservation expiry (no expiry).
+const MAX_EXPIRY = 18446744073709551615n
+
+// Mirror of the on-chain pre-migration: reserve a v1 `.eth` 2LD in the v2
+// ETHRegistry with its resolver pointed at the ENSv1 mirror resolver, so the
+// Universal Resolver (URv2) can resolve the unmigrated v1 name. On sepolia the
+// migration's pre-migration phase does this via BatchRegistrar; the devnet runs
+// no migration, so we replicate it here for the v1 names seeded above.
+//
+// Idempotent: skips names already present in the v2 ETHRegistry.
+async function preMigrateName(
+  deployerClient: WalletClient,
+  publicClient: PublicClient,
+  ethRegistry: Address,
+  ensV1Resolver: Address,
+  label: string,
+  owner: Address,
+): Promise<Hash> {
+  const status = await publicClient.readContract({
+    address: ethRegistry,
+    abi: permissionedRegistryGetStatusSnippet,
+    functionName: 'getStatus',
+    args: [BigInt(keccak256(stringToHex(label)))],
+  })
+
+  // Non-zero status means the label already exists on v2 (registered or
+  // reserved); leave it untouched.
+  if (status !== 0) return '0x0' as Hash
+
+  return deployerClient.writeContract({
+    chain: null,
+    account: deployerClient.account!,
+    address: ethRegistry,
+    abi: [
+      {
+        inputs: [
+          { name: 'label', type: 'string' },
+          { name: 'owner', type: 'address' },
+          { name: 'registry', type: 'address' },
+          { name: 'resolver', type: 'address' },
+          { name: 'roleBitmap', type: 'uint256' },
+          { name: 'expiry', type: 'uint64' },
+        ],
+        name: 'register',
+        outputs: [{ name: '', type: 'uint256' }],
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+    ] as const,
+    functionName: 'register',
+    args: [label, owner, zeroAddress, ensV1Resolver, 0n, MAX_EXPIRY],
+  })
+}
+
 export async function seedTestNames(l1Url = 'http://localhost:8545') {
   console.log('🌱 Seeding test names...')
 
   const {
     walletClient,
     walletClient2,
+    deployerClient,
     publicClient,
     addresses,
     account,
@@ -1219,6 +1288,42 @@ export async function seedTestNames(l1Url = 'http://localhost:8545') {
     )
     await maybeWaitForTx(txBigDuration)
     console.log('  ✓ Registered wrapped-big-duration.eth')
+
+    // Pre-migration: reserve the seeded v1 `.eth` 2LDs in the v2 ETHRegistry,
+    // pointed at the ENSv1 mirror resolver, so the Universal Resolver can
+    // resolve these unmigrated v1 names (mirrors sepolia pre-migration). Each
+    // reservation is owned by the name's v1 registrant.
+    console.log('  📝 Pre-migrating v1 names onto v2...')
+    const namesToPreMigrate: { label: string; owner: Address }[] = [
+      { label: 'with-profile', owner: account2.address },
+      { label: 'with-contenthash', owner: account.address },
+      { label: 'with-type-1-abi', owner: account.address },
+      { label: 'with-type-2-abi', owner: account.address },
+      { label: 'with-type-4-abi', owner: account.address },
+      { label: 'with-type-8-abi', owner: account.address },
+      { label: 'with-type-256-abi', owner: account.address },
+      { label: 'with-type-all-abi', owner: account.address },
+      // NB: `test123` is intentionally NOT pre-migrated. It stays a v1-only
+      // name so the v2 getRegisterPrice tests can treat it as available on v2.
+      { label: 'with-subnames', owner: account.address },
+      { label: 'wrapped', owner: account.address },
+      { label: 'wrapped-with-subnames', owner: account.address },
+      { label: 'wrapped-with-expiring-subnames', owner: account.address },
+      { label: 'wrapped-big-duration', owner: account.address },
+    ]
+    for (const { label, owner } of namesToPreMigrate) {
+      const tx = await preMigrateName(
+        deployerClient,
+        publicClient,
+        addresses.ETHRegistry,
+        addresses.ENSV1Resolver,
+        label,
+        owner,
+      )
+      if (await maybeWaitForTx(tx)) {
+        console.log(`  ✓ Pre-migrated ${label}.eth`)
+      }
+    }
 
     console.log('✅ Test names seeded successfully')
     return true

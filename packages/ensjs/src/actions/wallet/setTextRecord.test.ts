@@ -27,11 +27,11 @@ afterEach(async () => {
 
 it('should allow a text record to be set', async () => {
   const tx = await setTextRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     key: 'foo',
     value: 'bar',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -40,7 +40,7 @@ it('should allow a text record to be set', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getTextRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     key: 'foo',
   })
   expect(response).toBe('bar')
@@ -48,11 +48,11 @@ it('should allow a text record to be set', async () => {
 
 it('should allow a text record to be set to blank', async () => {
   const tx = await setTextRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     key: 'url',
     value: null,
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -61,7 +61,7 @@ it('should allow a text record to be set to blank', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getTextRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     key: 'url',
   })
   expect(response).toBeNull()

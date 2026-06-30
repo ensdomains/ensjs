@@ -27,11 +27,11 @@ afterEach(async () => {
 
 it('should allow a contenthash record to be set', async () => {
   const tx = await setContentHashRecord(walletClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
     contentHash:
       'ipns://k51qzi5uqu5dgox2z23r6e99oqency055a6xt92xzmyvpz8mwz5ycjavm0u150',
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -40,7 +40,7 @@ it('should allow a contenthash record to be set', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getContentHashRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(response).toMatchInlineSnapshot(`
     {
@@ -55,7 +55,7 @@ it('should allow a contenthash record to be set to blank', async () => {
     name: 'with-contenthash.eth',
     contentHash: null,
     resolverAddress: (await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-subnames.eth',
     }))!,
     account: accounts[1],
   })
@@ -64,7 +64,7 @@ it('should allow a contenthash record to be set to blank', async () => {
   expect(receipt.status).toBe('success')
 
   const response = await getContentHashRecord(publicClient, {
-    name: 'test123.eth',
+    name: 'with-subnames.eth',
   })
   expect(response).toBeNull()
 })

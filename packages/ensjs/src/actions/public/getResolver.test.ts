@@ -10,6 +10,9 @@ describe('getResolver', () => {
     const result = await getResolver(publicClient, {
       name: 'with-profile.eth',
     })
+    // with-profile.eth is a v1 name pre-migrated onto v2 behind the ENSv1 mirror
+    // resolver; getResolver unwraps the composite mirror to the final, writable
+    // v1 resolver.
     expect(result).toBe(deploymentAddresses.LegacyPublicResolver)
   })
 })

@@ -50,7 +50,7 @@ const approve = async () => {
 describe('eth 2ld', () => {
   it('should return a wrap name transaction and succeed', async () => {
     const tx = await wrapName(walletClient, {
-      name: 'test123.eth',
+      name: 'with-contenthash.eth',
       newOwnerAddress: accounts[2],
       account: accounts[1],
     })
@@ -59,14 +59,14 @@ describe('eth 2ld', () => {
     expect(receipt.status).toBe('success')
 
     const owner = await getOwner(publicClient, {
-      name: 'test123.eth',
+      name: 'with-contenthash.eth',
     })
     expect(owner?.owner).toBe(accounts[2])
     expect(owner?.ownershipLevel).toBe('nameWrapper')
   })
   it('should allow initial fuses', async () => {
     const tx = await wrapName(walletClient, {
-      name: 'test123.eth',
+      name: 'with-contenthash.eth',
       newOwnerAddress: accounts[2],
       fuses: {
         named: ['CANNOT_UNWRAP', 'CANNOT_SET_TTL'],
@@ -78,13 +78,13 @@ describe('eth 2ld', () => {
     expect(receipt.status).toBe('success')
 
     const wrapperData = await getWrapperData(publicClient, {
-      name: 'test123.eth',
+      name: 'with-contenthash.eth',
     })
     expect(wrapperData?.fuses.value).toBe(196625)
   })
   it('should allow a non-default resolver address', async () => {
     const tx = await wrapName(walletClient, {
-      name: 'test123.eth',
+      name: 'with-contenthash.eth',
       newOwnerAddress: accounts[2],
       resolverAddress: '0x42D63ae25990889E35F215bC95884039Ba354115',
       account: accounts[1],
@@ -94,7 +94,7 @@ describe('eth 2ld', () => {
     expect(receipt.status).toBe('success')
 
     const resolver = await getResolver(publicClient, {
-      name: 'test123.eth',
+      name: 'with-contenthash.eth',
     })
     expect(resolver).toBe('0x42D63ae25990889E35F215bC95884039Ba354115')
   })

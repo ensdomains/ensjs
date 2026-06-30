@@ -1,3 +1,5 @@
+import { compositeResolverGetResolver } from '@ensdomains/ensjs-abi/compositeResolver'
+import { erc165SupportsInterfaceSnippet } from '@ensdomains/ensjs-abi/erc165'
 import { universalResolverFindResolverSnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import {
   type Address,
@@ -17,6 +19,11 @@ import {
 } from '../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 
+// ICompositeResolver interface id (ERC-165). A composite resolver (e.g. the
+// ENSv1 mirror resolver the Universal Resolver reports for unmigrated v1
+// names) delegates to an underlying resolver, exposed via `getResolver(name)`.
+const COMPOSITE_RESOLVER_INTERFACE_ID = '0xeea330f9'
+
 export type GetResolverParameters = {
   /** Name to get resolver for */
   name: string
@@ -32,6 +39,14 @@ export type GetResolverErrorType =
 
 /**
  * Gets the resolver address for a name.
+ *
+ * Returns the address records should be read from and written to. The Universal
+ * Resolver locates the resolver bound to the name; when that resolver is a
+ * composite resolver (it delegates to an underlying resolver, such as the ENSv1
+ * mirror used for unmigrated v1 names), the underlying resolver is returned so
+ * callers get a writable resolver. A plain (non-composite) resolver is already
+ * final and is returned as-is.
+ *
  * @param client - {@link Client}
  * @param parameters - {@link GetResolverParameters}
  * @returns Resolver address, or null if none is found. {@link GetResolverReturnType}
@@ -56,16 +71,36 @@ export async function getResolver<chain extends Chain>(
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
-  const result = await readContractAction({
+  const encodedName = toHex(packetToBytes(name))
+  const [resolver] = await readContractAction({
     address: getChainContractAddress({
       chain: client.chain,
       contract: 'ensUniversalResolver',
     }),
     abi: universalResolverFindResolverSnippet,
     functionName: 'findResolver',
-    args: [toHex(packetToBytes(name))],
+    args: [encodedName],
   })
 
-  if (result[0] === zeroAddress) return null
-  return result[0]
+  if (resolver === zeroAddress) return null
+
+  // A composite resolver delegates to an underlying resolver; unwrap it to the
+  // final (writable) resolver. Non-composite resolvers are already final.
+  const isComposite = await readContractAction({
+    address: resolver,
+    abi: erc165SupportsInterfaceSnippet,
+    functionName: 'supportsInterface',
+    args: [COMPOSITE_RESOLVER_INTERFACE_ID],
+  }).catch(() => false)
+
+  if (!isComposite) return resolver
+
+  const [underlyingResolver] = await readContractAction({
+    address: resolver,
+    abi: compositeResolverGetResolver,
+    functionName: 'getResolver',
+    args: [encodedName],
+  })
+
+  return underlyingResolver === zeroAddress ? null : underlyingResolver
 }

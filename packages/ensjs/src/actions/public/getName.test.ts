@@ -63,13 +63,15 @@ describe('getName', () => {
     const result = await getName(publicClient, {
       address: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
     })
+    // Reverse resolution runs through the Universal Resolver, which reports the
+    // ENSv1 mirror resolver for these v1 names (forward and reverse).
     expect(result).toMatchInlineSnapshot(`
       {
         "match": true,
         "name": "with-profile.eth",
         "normalized": true,
-        "resolverAddress": "${deploymentAddresses.LegacyPublicResolver}",
-        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
+        "resolverAddress": "${deploymentAddresses.ENSV1Resolver}",
+        "reverseResolverAddress": "${deploymentAddresses.ENSV1Resolver}",
       }
     `)
   })
@@ -236,8 +238,8 @@ describe('getName', () => {
         "match": true,
         "name": "suB.with-profile.eth",
         "normalized": false,
-        "resolverAddress": "${deploymentAddresses.PublicResolver}",
-        "reverseResolverAddress": "${deploymentAddresses.PublicResolver}",
+        "resolverAddress": "${deploymentAddresses.ENSV1Resolver}",
+        "reverseResolverAddress": "${deploymentAddresses.ENSV1Resolver}",
       }
     `)
   })

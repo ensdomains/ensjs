@@ -7,14 +7,12 @@ import { addEnsL1Contracts } from '../index.js'
 import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipRequest } from './ccipRequest.js'
 
-const handler = vi
-  .fn<Parameters<RequestListener>, ReturnType<RequestListener>>()
-  .mockImplementation((_, res) => {
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-    })
-    res.end(JSON.stringify({ data: '0xdeadbeef' }))
+const handler = vi.fn<RequestListener>().mockImplementation((_, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
   })
+  res.end(JSON.stringify({ data: '0xdeadbeef' }))
+})
 
 it('uses viemCcipRequest for standard request', async () => {
   const { url } = await createHttpServer(handler)
