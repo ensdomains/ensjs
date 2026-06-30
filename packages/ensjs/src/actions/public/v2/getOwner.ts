@@ -1,32 +1,55 @@
-import { permissionedRegistryGetStateSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
-import { type Address, type Client, labelhash } from 'viem'
-import { type ReadContractErrorType, readContract } from 'viem/actions'
-import { getAction } from 'viem/utils'
+import { universalResolverV2FindOwnerSnippet } from '@ensdomains/ensjs-abi/universalResolver'
+import type {
+  Address,
+  Chain,
+  NamehashErrorType,
+  ReadContractErrorType,
+} from 'viem'
+import { readContract } from 'viem/actions'
+import { packetToBytes } from 'viem/ens'
+import {
+  type GetChainContractAddressErrorType,
+  getAction,
+  toHex,
+} from 'viem/utils'
+import type { RequireClientContracts } from '../../../clients/shared.js'
+import { getChainContractAddress } from '../../../clients/shared.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 
 export type GetOwnerParameters = {
-  registryAddress: Address
-  label: string
+  name: string
 }
 
-export type GetOwnerErrorType = ReadContractErrorType
+export type GetOwnerReturnType = Address
 
-export async function getOwner(
-  client: Client,
-  { registryAddress, label }: GetOwnerParameters,
-): Promise<Address> {
+export type GetOwnerErrorType =
+  | GetChainContractAddressErrorType
+  | ReadContractErrorType
+  | NamehashErrorType
+
+/**
+ * Find the owner for a V2 name of any depth.
+ * @param client - {@link Client}
+ * @param parameters - {@link GetOwnerParameters}
+ * @returns The owner address, or the zero address if unowned or not found. {@link GetOwnerReturnType}
+ */
+export async function getOwner<chain extends Chain>(
+  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  { name }: GetOwnerParameters,
+): Promise<GetOwnerReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
+
+  const contractAddress = getChainContractAddress({
+    chain: client.chain,
+    contract: 'ensUniversalResolver',
+  })
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
-  const labelHash = BigInt(labelhash(label))
-
-  const state = await readContractAction({
-    address: registryAddress,
-    abi: permissionedRegistryGetStateSnippet,
-    functionName: 'getState',
-    args: [labelHash],
+  return readContractAction({
+    address: contractAddress,
+    abi: universalResolverV2FindOwnerSnippet,
+    functionName: 'findOwner',
+    args: [toHex(packetToBytes(name))],
   })
-
-  return state.latestOwner
 }
