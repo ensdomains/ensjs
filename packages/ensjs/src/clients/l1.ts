@@ -168,40 +168,40 @@ export const ensL1Contracts = {
       address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     ensPermissionedResolverImpl: {
-      address: '0xdcE5205A553573FFd47629327DDdf36186022FfA',
+      address: '0x7E4B2d59938930168024201752EE5503df402303',
     },
     ensRegistry: {
-      address: '0xDEDB92913A25abE1f7BCDD85D8A344a43B398B67',
+      address: '0x67b728a792e789a8978b30cF1b3b641f19354b43',
     },
     ensVerifiableFactory: {
-      address: '0xD2a632D8a8b67c2c4398c255CbD7aF8dd7236198',
+      address: '0x118Bc31A50d559F7015a8Da26d54B3b030CdB70F',
     },
     ensEthRegistrar: {
-      address: '0x8c2E866B439358c41AE05De9cbE8A00BFEFafFcA',
+      address: '0xa4449a0dD2b83007553D9b1d28b583A46A805a30',
     },
     usdc: {
-      address: '0xBA11ebdB3f9a2c5946D8629517f06364E53A2E10',
+      address: '0xD3322B29a7BdEe707D1684676f149bf41Aa3422f',
     },
     dai: {
-      address: '0x2922bCD677Af690fCD1eCC699519e4bfaBc73fF8',
+      address: '0xE33a01a41eE4a68616B5278183aa88808326ED8E',
     },
     ensUserRegistryImpl: {
-      address: '0x0F99e7Ea74903AfCB7224d0354fD7428A6f92917',
+      address: '0x840Fa461059862Ea466A711E8C98c8dE732061C0',
     },
     ensStandardRentPriceOracle: {
-      address: '0xe19D37839F42F7d2694D8C5712f412C66A218161',
+      address: '0x09340d50a6489E7BFb2959ACC4E32BcbC401e203',
     },
     ensHcaFactory: {
       address: '0x358680728dEDb552adaA9f5eb5d4395B291Cf943',
     },
     ensLockedMigrationController: {
-      address: '0xF91c34ED840889Ed96F806f882fD50506A336Edb',
+      address: '0x681802eFf57b83eDce99D688C023ab1284495176',
     },
     ensUnlockedMigrationController: {
-      address: '0x056138Ef5660F7113a3B0ADC08ac3683310e7FBC',
+      address: '0xd021a69DB7f9e276A59CBBCCf06e7F1E5434215C',
     },
     ensMigrationHelper: {
-      address: '0x11Cfa7E034DaFB7439cC1CC8b6e547F5C82ad021',
+      address: '0xd54A53c1567b26F9653C8565dcCC39bCeb6aB327',
     },
   },
 } as const satisfies Record<
