@@ -114,6 +114,9 @@ export const localhost = {
     ensEthRegistrar: {
       address: deploymentAddresses.ETHRegistrar,
     },
+    ensEthRenewerV1: {
+      address: deploymentAddresses.ETHRegistrar,
+    },
     ensDefaultReverseRegistrar: {
       address: deploymentAddresses.DefaultReverseRegistrar,
     },
