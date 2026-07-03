@@ -184,7 +184,7 @@ export const ensL1Contracts = {
       address: '0x8c2E866B439358c41AE05De9cbE8A00BFEFafFcA',
     },
     ensEthRenewerV1: {
-      address: '0x1BE516Ae1B72765aE55bD5e9ca628c9058a1C622',
+      address: '0xB359d7d04F750E9C008A5a47Bd2b64134bD180F9',
     },
     usdc: {
       address: '0xBA11ebdB3f9a2c5946D8629517f06364E53A2E10',
