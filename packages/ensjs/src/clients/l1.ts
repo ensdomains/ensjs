@@ -40,6 +40,7 @@ export const supportedL1Contracts = [
   'ensLegacyRegistry',
   'ensReverseRegistrar',
   'ensDefaultReverseResolver',
+  'ensEthRenewerV1',
 
   // v2
   'ensEthRegistrar',
@@ -106,6 +107,9 @@ export const ensL1Contracts = {
       address: zeroAddress,
     },
     ensEthRegistrar: {
+      address: zeroAddress,
+    },
+    ensEthRenewerV1: {
       address: zeroAddress,
     },
     usdc: {
@@ -178,6 +182,9 @@ export const ensL1Contracts = {
     },
     ensEthRegistrar: {
       address: '0x8c2E866B439358c41AE05De9cbE8A00BFEFafFcA',
+    },
+    ensEthRenewerV1: {
+      address: '0x1BE516Ae1B72765aE55bD5e9ca628c9058a1C622',
     },
     usdc: {
       address: '0xBA11ebdB3f9a2c5946D8629517f06364E53A2E10',
