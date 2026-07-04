@@ -17,12 +17,12 @@ describe('isRenewable', () => {
     expect(renewable).toBe(true)
   })
 
-  it('returns a boolean for a label that was never registered', async () => {
+  it('returns false for a label that was never registered', async () => {
     const renewable = await isRenewable(publicClient, {
       renewerAddress,
       label: 'this-label-does-not-exist-on-the-devnet',
     })
 
-    expect(typeof renewable).toBe('boolean')
+    expect(renewable).toBe(false)
   })
 })
