@@ -50,7 +50,6 @@ export const supportedL1Contracts = [
   'ensPermissionedResolverImpl',
   'ensUserRegistryImpl',
   'ensStandardRentPriceOracle',
-  'ensHcaFactory',
   'ensLockedMigrationController',
   'ensUnlockedMigrationController',
   'ensMigrationHelper',
@@ -120,9 +119,6 @@ export const ensL1Contracts = {
     ensStandardRentPriceOracle: {
       address: zeroAddress,
     },
-    ensHcaFactory: {
-      address: zeroAddress,
-    },
     ensLockedMigrationController: {
       address: zeroAddress,
     },
@@ -168,40 +164,37 @@ export const ensL1Contracts = {
       address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     ensPermissionedResolverImpl: {
-      address: '0xdcE5205A553573FFd47629327DDdf36186022FfA',
+      address: '0x7e4b2d59938930168024201752EE5503DF402303',
     },
     ensRegistry: {
-      address: '0xDEDB92913A25abE1f7BCDD85D8A344a43B398B67',
+      address: '0x67b728A792e789a8978B30cf1B3B641F19354B43',
     },
     ensVerifiableFactory: {
-      address: '0xD2a632D8a8b67c2c4398c255CbD7aF8dd7236198',
+      address: '0x118Bc31A50D559f7015A8DA26D54b3b030CdB70F',
     },
     ensEthRegistrar: {
-      address: '0x8c2E866B439358c41AE05De9cbE8A00BFEFafFcA',
+      address: '0xa4449a0dd2b83007553d9B1D28b583a46A805a30',
     },
     usdc: {
-      address: '0xBA11ebdB3f9a2c5946D8629517f06364E53A2E10',
+      address: '0xd3322b29a7BdEe707d1684676F149Bf41AA3422F',
     },
     dai: {
-      address: '0x2922bCD677Af690fCD1eCC699519e4bfaBc73fF8',
+      address: '0xe33A01A41Ee4a68616B5278183AA88808326eD8E',
     },
     ensUserRegistryImpl: {
-      address: '0x0F99e7Ea74903AfCB7224d0354fD7428A6f92917',
+      address: '0x840FA461059862EA466a711e8c98c8De732061c0',
     },
     ensStandardRentPriceOracle: {
-      address: '0xe19D37839F42F7d2694D8C5712f412C66A218161',
-    },
-    ensHcaFactory: {
-      address: '0x358680728dEDb552adaA9f5eb5d4395B291Cf943',
+      address: '0x09340d50a6489E7bFb2959acc4E32bcBC401E203',
     },
     ensLockedMigrationController: {
-      address: '0xF91c34ED840889Ed96F806f882fD50506A336Edb',
+      address: '0x681802eFF57b83edCE99D688c023aB1284495176',
     },
     ensUnlockedMigrationController: {
-      address: '0x056138Ef5660F7113a3B0ADC08ac3683310e7FBC',
+      address: '0xd021A69DB7F9e276a59cbbCcf06E7f1e5434215c',
     },
     ensMigrationHelper: {
-      address: '0x11Cfa7E034DaFB7439cC1CC8b6e547F5C82ad021',
+      address: '0xd54A53c1567B26f9653c8565Dccc39bceb6ab327',
     },
   },
 } as const satisfies Record<
