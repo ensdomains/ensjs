@@ -1,13 +1,3 @@
-// ABI snippets for the `ETHRenewerV1` contract — the v2-era renewer for legacy
-// (ENSv1) .eth names that have NOT yet migrated. Legacy `ETHRegistrarController`s
-// were revoked at the v2 migration cutover, so an unmigrated v1 name renews here.
-//
-// It implements the same `IETHRenewer` interface as the v2 `ETHRegistrar`
-// (`renew` / `getRenewPrice` / `isRenewable` / `getRemainingGracePeriod`), so the
-// `renew` calldata is byte-identical (selector 0x89d779c3). It is nevertheless a
-// distinct contract, so it gets its own ABI rather than borrowing the
-// `ethRegistrar` snippets.
-
 export const ethRenewerV1NameRenewedEventSnippet = {
   type: 'event',
   name: 'NameRenewed',
@@ -32,8 +22,6 @@ export const ethRenewerV1Errors = [
     name: 'DurationTooShort',
     type: 'error',
   },
-  // Reverted for an active, not-yet-migrated v1 name (only RESERVED/in-grace
-  // names are renewable). Gate with `isRenewable` before calling `renew`.
   {
     inputs: [{ name: 'label', type: 'string' }],
     name: 'NameNotRenewable',
