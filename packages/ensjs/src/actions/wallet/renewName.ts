@@ -15,29 +15,26 @@ import { getAction } from 'viem/utils'
 import type {
   ChainWithContracts,
   RequireClientContracts,
-} from '../../../clients/shared.js'
-import { getChainContractAddress } from '../../../clients/shared.js'
-import { UnsupportedNameTypeError } from '../../../errors/general.js'
-import type {
-  Prettify,
-  WriteTransactionParameters,
-} from '../../../types/index.js'
-import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
+} from '../../clients/shared.js'
+import { getChainContractAddress } from '../../clients/shared.js'
+import { UnsupportedNameTypeError } from '../../errors/general.js'
+import type { Prettify, WriteTransactionParameters } from '../../types/index.js'
+import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
-} from '../../../utils/clientWithOverrides.js'
-import { getNameType } from '../../../utils/name/getNameType.js'
+} from '../../utils/clientWithOverrides.js'
+import { getNameType } from '../../utils/name/getNameType.js'
 
 // ================================
 // Write parameters
 // ================================
 
-export type RenewNameV1WriteParametersParameters = {
-  /** Full 2LD .eth name (e.g. example.eth) */
+export type RenewNameWriteParametersParameters = {
+  /** Full 2LD .eth name to renew (e.g. example.eth) */
   name: string
   /** Renewal duration in seconds */
-  duration: bigint | number
+  duration: bigint
   /** ERC-20 token used for payment (must be approved for the renewer) */
   paymentToken: Address
   /**
@@ -46,20 +43,27 @@ export type RenewNameV1WriteParametersParameters = {
   referrer?: Hex
 }
 
-export type RenewNameV1WriteParametersErrorType =
+export type RenewNameWriteParametersReturnType = ReturnType<
+  typeof renewNameWriteParameters
+>
+
+export type RenewNameWriteParametersErrorType =
   | UnsupportedNameTypeError
   | GetChainContractAddressErrorType
 
-export const renewNameV1WriteParameters = <
+export const renewNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
   client: RequireClientContracts<chain, 'ensEthRenewerV1', account>,
-  parameters: RenewNameV1WriteParametersParameters,
+  {
+    name,
+    duration,
+    paymentToken,
+    referrer = zeroHash,
+  }: RenewNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
-
-  const { name, duration, paymentToken, referrer = zeroHash } = parameters
 
   const nameType = getNameType(name)
   if (nameType !== 'eth-2ld')
@@ -71,47 +75,37 @@ export const renewNameV1WriteParameters = <
 
   const [label] = name.split('.')
 
-  const args = [label, BigInt(duration), paymentToken, referrer] as const
-
-  const baseParams = {
+  return {
     chain: client.chain,
     account: client.account,
     value: 0n,
-  }
-
-  return {
-    ...baseParams,
     address: getChainContractAddress({
       chain: client.chain,
       contract: 'ensEthRenewerV1',
     }),
     abi: ethRenewerV1RenewSnippet,
     functionName: 'renew',
-    args,
+    args: [label, duration, paymentToken, referrer],
   } as const satisfies WriteContractParameters
 }
 
-export type RenewNameV1WriteParametersReturnType = ReturnType<
-  typeof renewNameV1WriteParameters
->
-
 // ================================
-// Action
+// Renew name action
 // ================================
 
-export type RenewNameV1Parameters<
+export type RenewNameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends ChainWithContracts<'ensEthRenewerV1'> | undefined,
 > = Prettify<
-  RenewNameV1WriteParametersParameters &
+  RenewNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type RenewNameV1ReturnType = WriteContractReturnType
+export type RenewNameReturnType = WriteContractReturnType
 
-export type RenewNameV1ErrorType =
-  | RenewNameV1WriteParametersErrorType
+export type RenewNameErrorType =
+  | RenewNameWriteParametersErrorType
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
@@ -124,20 +118,34 @@ export type RenewNameV1ErrorType =
  * `ETHRenewerV1` renews it and syncs the underlying BaseRegistrar. It only
  * renews RESERVED (pre-migration) or in-grace names; an active, not-yet-migrated
  * v1 name reverts `NameNotRenewable` (gate with {@link isRenewable} first). Use
- * {@link renewName} for names registered on v2.
+ * `renewName` from `@ensdomains/ensjs/wallet/v2` for names registered on v2.
+ *
+ * Renews a single name — `ETHRenewerV1.renew` has no batch entrypoint and the
+ * contract is not `Multicallable`, so there is no on-chain bulk-renewal path.
+ *
+ * @param client - {@link Client}
+ * @param options - {@link RenewNameParameters}
+ * @returns Transaction hash. {@link RenewNameReturnType}
  *
  * @example
- * ```ts
- * import { renewNameV1 } from '@ensdomains/ensjs/wallet/v2'
+ * import { createWalletClient, custom } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { renewName } from '@ensdomains/ensjs/wallet'
  *
- * const hash = await renewNameV1(wallet, {
+ * const wallet = createWalletClient({
+ *   chain: addEnsContracts(mainnet),
+ *   transport: custom(window.ethereum),
+ * })
+ *
+ * const hash = await renewName(wallet, {
  *   name: 'example.eth',
- *   duration: 31536000n,
+ *   duration: 31536000n, // 1 year
  *   paymentToken: usdcAddress,
  * })
- * ```
+ * // 0x...
  */
-export async function renewNameV1<
+export async function renewName<
   chain extends Chain,
   account extends Account,
   chainOverride extends ChainWithContracts<'ensEthRenewerV1'> | undefined,
@@ -149,11 +157,11 @@ export async function renewNameV1<
     paymentToken,
     referrer,
     ...txArgs
-  }: RenewNameV1Parameters<chain, account, chainOverride>,
-): Promise<RenewNameV1ReturnType> {
+  }: RenewNameParameters<chain, account, chainOverride>,
+): Promise<RenewNameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const writeParameters = renewNameV1WriteParameters(
+  const writeParameters = renewNameWriteParameters(
     clientWithOverrides(client, txArgs),
     { name, duration, paymentToken, referrer },
   )

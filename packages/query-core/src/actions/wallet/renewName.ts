@@ -3,10 +3,10 @@ import {
   type ExcludeTE,
 } from '@ensdomains/ensjs/internal'
 import {
-  type RenewNamesErrorType as ensjs_RenewNamesErrorType,
-  type RenewNamesParameters as ensjs_RenewNamesParameters,
-  type RenewNamesReturnType as ensjs_RenewNamesReturnType,
-  renewNames as ensjs_renewNames,
+  type RenewNameErrorType as ensjs_RenewNameErrorType,
+  type RenewNameParameters as ensjs_RenewNameParameters,
+  type RenewNameReturnType as ensjs_RenewNameReturnType,
+  renewName as ensjs_renewName,
 } from '@ensdomains/ensjs/wallet'
 import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
@@ -18,30 +18,27 @@ import type { Account, Chain, Client } from 'viem'
 import type { RequireConfigContracts } from '../../utils/chain.js'
 import { getAction } from '../../utils/getAction.js'
 
-export type RenewNamesParameters<
+export type RenewNameParameters<
   config extends Config = Config,
   chainId extends
     config['chains'][number]['id'] = config['chains'][number]['id'],
   chains extends readonly Chain[] = SelectChains<config, chainId>,
 > = {
   [key in keyof chains]: Compute<
-    Omit<ensjs_RenewNamesParameters<chains[key], Account, any>, 'chain'> &
+    Omit<ensjs_RenewNameParameters<chains[key], Account, any>, 'chain'> &
       ChainIdParameter<config, chainId> &
       ConnectorParameter
   >
 }[number]
 
-export type RenewNamesReturnType = ensjs_RenewNamesReturnType
+export type RenewNameReturnType = ensjs_RenewNameReturnType
 
-export type RenewNamesErrorType = ensjs_RenewNamesErrorType
+export type RenewNameErrorType = ensjs_RenewNameErrorType
 
-export async function renewNames<chains extends readonly [Chain, ...Chain[]]>(
-  config: RequireConfigContracts<
-    chains,
-    'ensEthRegistrarController' | 'ensBulkRenewal'
-  >,
-  parameters: RenewNamesParameters<ExcludeTE<typeof config>>,
-): Promise<RenewNamesReturnType> {
+export async function renewName<chains extends readonly [Chain, ...Chain[]]>(
+  config: RequireConfigContracts<chains, 'ensEthRenewerV1'>,
+  parameters: RenewNameParameters<ExcludeTE<typeof config>>,
+): Promise<RenewNameReturnType> {
   ASSERT_NO_TYPE_ERROR(config)
 
   const { account, chainId, connector, ...rest } = parameters
@@ -56,7 +53,7 @@ export async function renewNames<chains extends readonly [Chain, ...Chain[]]>(
       connector,
     })
 
-  const action = getAction(client, ensjs_renewNames, 'renewNames')
+  const action = getAction(client, ensjs_renewName, 'renewName')
   return await action({
     ...(rest as any),
     ...(account ? { account } : {}),

@@ -29,11 +29,11 @@ export {
   registerName,
 } from './registerName.js'
 export {
-  type RenewNamesErrorType,
-  type RenewNamesParameters,
-  type RenewNamesReturnType,
-  renewNames,
-} from './renewNames.js'
+  type RenewNameErrorType,
+  type RenewNameParameters,
+  type RenewNameReturnType,
+  renewName,
+} from './renewName.js'
 export {
   type SetAbiRecordErrorType,
   type SetAbiRecordParameters,
