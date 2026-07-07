@@ -1,4 +1,9 @@
-import { type Address, encodeFunctionData, isAddressEqual } from 'viem'
+import {
+  type Address,
+  decodeFunctionData,
+  encodeFunctionData,
+  isAddressEqual,
+} from 'viem'
 import { beforeAll, expect, it } from 'vitest'
 import {
   deploymentAddresses,
@@ -52,6 +57,11 @@ it('transferNameWriteParameters encodes valid safeTransferFrom calldata', () => 
     args: writeParameters.args,
   })
 
-  expect(data).toMatch(/^0x[0-9a-f]+$/i)
-  expect(data.length).toBeGreaterThan(10)
+  // safeTransferFrom(address,address,uint256,uint256,bytes) selector
+  expect(data.slice(0, 10)).toBe('0xf242432a')
+  // args round-trip: [from, to, id, value, data]
+  expect(decodeFunctionData({ abi: writeParameters.abi, data })).toStrictEqual({
+    functionName: 'safeTransferFrom',
+    args: [accounts[0], accounts[1], 123n, 1n, '0x'],
+  })
 })
