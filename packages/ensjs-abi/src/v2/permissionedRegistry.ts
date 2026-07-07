@@ -250,3 +250,19 @@ export const permissionedRegistryUnregisterSnippet = [
     stateMutability: 'nonpayable',
   },
 ] as const
+
+export const permissionedRegistrySafeTransferFromSnippet = [
+  {
+    type: 'function',
+    name: 'safeTransferFrom',
+    inputs: [
+      { name: 'from', type: 'address' },
+      { name: 'to', type: 'address' },
+      { name: 'id', type: 'uint256' },
+      { name: 'value', type: 'uint256' },
+      { name: 'data', type: 'bytes' },
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+] as const
