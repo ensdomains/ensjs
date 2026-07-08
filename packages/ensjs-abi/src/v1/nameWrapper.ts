@@ -370,6 +370,39 @@ export const nameWrapperWrapSnippet = [
   },
 ] as const
 
+export const nameWrapperWrapEth2ldSnippet = [
+  ...nameWrapperErrors,
+  {
+    inputs: [
+      {
+        name: 'label',
+        type: 'string',
+      },
+      {
+        name: 'wrappedOwner',
+        type: 'address',
+      },
+      {
+        name: 'ownerControlledFuses',
+        type: 'uint16',
+      },
+      {
+        name: 'resolver',
+        type: 'address',
+      },
+    ],
+    name: 'wrapETH2LD',
+    outputs: [
+      {
+        name: 'tokenId',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 export const nameWrapperUnwrapSnippet = [
   ...nameWrapperErrors,
   {

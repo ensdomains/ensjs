@@ -142,6 +142,84 @@ export const baseRegistrarReclaimSnippet = [
   },
 ] as const
 
+export const baseRegistrarRegisterSnippet = [
+  {
+    inputs: [
+      {
+        name: 'id',
+        type: 'uint256',
+      },
+      {
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        name: 'duration',
+        type: 'uint256',
+      },
+    ],
+    name: 'register',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const baseRegistrarAddControllerSnippet = [
+  {
+    inputs: [
+      {
+        name: 'controller',
+        type: 'address',
+      },
+    ],
+    name: 'addController',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const baseRegistrarOwnerSnippet = [
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+export const baseRegistrarControllersSnippet = [
+  {
+    inputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'controllers',
+    outputs: [
+      {
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 export const baseRegistrarSafeTransferFromSnippet = [
   ...erc721SafeTransferFromSnippet,
 ] as const
