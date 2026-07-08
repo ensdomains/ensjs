@@ -42,11 +42,15 @@ export {
   universalResolverReverseWithGatewaysSnippet,
 } from '@ensdomains/ensjs-abi/universalResolver'
 export {
+  baseRegistrarAddControllerSnippet,
   baseRegistrarAvailableSnippet,
+  baseRegistrarControllersSnippet,
   baseRegistrarGracePeriodSnippet,
   baseRegistrarNameExpiresSnippet,
   baseRegistrarOwnerOfSnippet,
+  baseRegistrarOwnerSnippet,
   baseRegistrarReclaimSnippet,
+  baseRegistrarRegisterSnippet,
   baseRegistrarSafeTransferFromSnippet,
   baseRegistrarSafeTransferFromWithDataSnippet,
 } from '@ensdomains/ensjs-abi/v1/baseRegistrar'
@@ -76,6 +80,7 @@ export {
   nameWrapperSetSubnodeRecordSnippet,
   nameWrapperUnwrapEth2ldSnippet,
   nameWrapperUnwrapSnippet,
+  nameWrapperWrapEth2ldSnippet,
   nameWrapperWrapSnippet,
 } from '@ensdomains/ensjs-abi/v1/nameWrapper'
 export {
