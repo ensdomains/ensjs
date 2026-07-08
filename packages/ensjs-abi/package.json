@@ -75,6 +75,10 @@
       "types": "./dist/v1/bulkRenewal.d.ts",
       "default": "./dist/v1/bulkRenewal.js"
     },
+    "./v1/ethRenewer": {
+      "types": "./dist/v1/ethRenewer.d.ts",
+      "default": "./dist/v1/ethRenewer.js"
+    },
     "./v2": {
       "types": "./dist/v2/index.d.ts",
       "default": "./dist/v2/index.js"
@@ -82,10 +86,6 @@
     "./v2/ethRegistrar": {
       "types": "./dist/v2/ethRegistrar.d.ts",
       "default": "./dist/v2/ethRegistrar.js"
-    },
-    "./v2/ethRenewerV1": {
-      "types": "./dist/v2/ethRenewerV1.d.ts",
-      "default": "./dist/v2/ethRenewerV1.js"
     },
     "./v2/userRegistry": {
       "types": "./dist/v2/userRegistry.d.ts",

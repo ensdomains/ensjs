@@ -1,4 +1,4 @@
-import { ethRenewerV1RenewSnippet } from '@ensdomains/ensjs-abi/v2/ethRenewerV1'
+import { ethRenewerV1RenewSnippet } from '@ensdomains/ensjs-abi/v1/ethRenewer'
 import type {
   Account,
   Address,

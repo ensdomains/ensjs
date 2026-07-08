@@ -1,6 +1,5 @@
 export * from './enhancedAccessControl.js'
 export * from './ethRegistrar.js'
-export * from './ethRenewerV1.js'
 export * from './lockedMigrationController.js'
 export * from './migrationHelper.js'
 export * from './permissionedRegistry.js'
