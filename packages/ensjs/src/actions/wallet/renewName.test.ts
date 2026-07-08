@@ -1,5 +1,6 @@
 import { type Address, encodeFunctionData, zeroHash } from 'viem'
 import { beforeAll, expect, it } from 'vitest'
+import { getChainContractAddress } from '../../clients/shared.js'
 import {
   deploymentAddresses,
   walletClient,
@@ -23,27 +24,63 @@ it('renewNameWriteParameters rejects non-eth-2ld names', () => {
         name: 'foo.bar.eth',
         duration: 31_536_000n,
         paymentToken,
+        contract: 'ensEthRenewerV1',
       },
     ),
   ).toThrow()
 })
 
-it('renewNameWriteParameters encodes renew calldata for a 2ld name', () => {
-  const writeParameters = renewNameWriteParameters(
+it.each(['ensEthRegistrar', 'ensEthRenewerV1'] as const)(
+  'renewNameWriteParameters encodes renew calldata for a 2ld name via %s',
+  (contract) => {
+    const writeParameters = renewNameWriteParameters(
+      clientWithOverrides(walletClient, { account: accounts[0] }),
+      {
+        name: 'example.eth',
+        duration: 31_536_000n,
+        paymentToken,
+        referrer: zeroHash,
+        contract,
+      },
+    )
+    const data = encodeFunctionData({
+      abi: writeParameters.abi,
+      functionName: writeParameters.functionName,
+      args: writeParameters.args,
+    })
+
+    expect(data).toMatch(/^0x[0-9a-f]+$/i)
+    expect(data.length).toBeGreaterThan(10)
+  },
+)
+
+it('renewNameWriteParameters routes to the ETHRegistrar for v2 names', () => {
+  const { address } = renewNameWriteParameters(
     clientWithOverrides(walletClient, { account: accounts[0] }),
     {
       name: 'example.eth',
       duration: 31_536_000n,
       paymentToken,
-      referrer: zeroHash,
+      contract: 'ensEthRegistrar',
     },
   )
-  const data = encodeFunctionData({
-    abi: writeParameters.abi,
-    functionName: writeParameters.functionName,
-    args: writeParameters.args,
-  })
+  expect(address).toBe(deploymentAddresses.ETHRegistrar)
+})
 
-  expect(data).toMatch(/^0x[0-9a-f]+$/i)
-  expect(data.length).toBeGreaterThan(10)
+it('renewNameWriteParameters routes to the ETHRenewerV1 for v1 names', () => {
+  const { address } = renewNameWriteParameters(
+    clientWithOverrides(walletClient, { account: accounts[0] }),
+    {
+      name: 'example.eth',
+      duration: 31_536_000n,
+      paymentToken,
+      contract: 'ensEthRenewerV1',
+    },
+  )
+  expect(address).toBe(
+    getChainContractAddress({
+      chain: walletClient.chain,
+      contract: 'ensEthRenewerV1',
+    }),
+  )
 })

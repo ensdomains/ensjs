@@ -1,4 +1,5 @@
 import { ethRenewerV1RenewSnippet } from '@ensdomains/ensjs-abi/v1/ethRenewer'
+import { ethRegistrarRenewSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type {
   Account,
   Address,
@@ -26,9 +27,12 @@ import {
 } from '../../utils/clientWithOverrides.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 
-// ================================
-// Write parameters
-// ================================
+// The two renewers share one `renew(label,duration,paymentToken,referrer)` ABI —
+// only the target contract differs: `ensEthRegistrar` renews names registered on
+// v2, `ensEthRenewerV1` renews unmigrated legacy (v1) names. The caller supplies
+// which contract to use (from an indexer, or an on-chain owner lookup) — this
+// action does no detection, it just builds the calldata.
+type RenewerContract = 'ensEthRegistrar' | 'ensEthRenewerV1'
 
 export type RenewNameWriteParametersParameters = {
   /** Full 2LD .eth name to renew (e.g. example.eth) */
@@ -41,6 +45,11 @@ export type RenewNameWriteParametersParameters = {
    * Referrer id (bytes32). Defaults to zero bytes32 when omitted.
    */
   referrer?: Hex
+  /**
+   * Renewer contract to use: `ensEthRegistrar` for names registered on v2,
+   * `ensEthRenewerV1` for unmigrated legacy (v1) names.
+   */
+  contract: RenewerContract
 }
 
 export type RenewNameWriteParametersReturnType = ReturnType<
@@ -51,16 +60,21 @@ export type RenewNameWriteParametersErrorType =
   | UnsupportedNameTypeError
   | GetChainContractAddressErrorType
 
+// ================================
+// Write parameters
+// ================================
+
 export const renewNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ensEthRenewerV1', account>,
+  client: RequireClientContracts<chain, RenewerContract, account>,
   {
     name,
     duration,
     paymentToken,
     referrer = zeroHash,
+    contract,
   }: RenewNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -73,20 +87,37 @@ export const renewNameWriteParameters = <
       details: 'Only 2ld-eth renewals are supported',
     })
 
+  if (contract !== 'ensEthRegistrar' && contract !== 'ensEthRenewerV1')
+    throw new Error(`Unknown contract: ${contract}`)
+
   const [label] = name.split('.')
 
-  return {
+  const address = getChainContractAddress({
+    chain: client.chain,
+    contract,
+  })
+
+  const baseParams = {
+    address,
+    functionName: 'renew',
+    args: [label, duration, paymentToken, referrer] as const,
     chain: client.chain,
     account: client.account,
-    value: 0n,
-    address: getChainContractAddress({
-      chain: client.chain,
-      contract: 'ensEthRenewerV1',
-    }),
-    abi: ethRenewerV1RenewSnippet,
-    functionName: 'renew',
-    args: [label, duration, paymentToken, referrer],
-  } as const satisfies WriteContractParameters
+  } as const
+
+  if (contract === 'ensEthRenewerV1') {
+    return {
+      ...baseParams,
+      abi: ethRenewerV1RenewSnippet,
+    } as const satisfies WriteContractParameters<
+      typeof ethRenewerV1RenewSnippet
+    >
+  }
+
+  return {
+    ...baseParams,
+    abi: ethRegistrarRenewSnippet,
+  } as const satisfies WriteContractParameters<typeof ethRegistrarRenewSnippet>
 }
 
 // ================================
@@ -96,7 +127,7 @@ export const renewNameWriteParameters = <
 export type RenewNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensEthRenewerV1'> | undefined,
+  chainOverride extends ChainWithContracts<RenewerContract> | undefined,
 > = Prettify<
   RenewNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -110,18 +141,23 @@ export type RenewNameErrorType =
   | WriteContractErrorType
 
 /**
- * Renews an unmigrated legacy (ENSv1) .eth name via `ETHRenewerV1`, using ERC-20
- * payment (ENS Sepolia / extended chains with `ensEthRenewerV1`).
+ * Renews a `.eth` 2LD via the given renewer contract: the v2 `ETHRegistrar`
+ * (`contract: 'ensEthRegistrar'`) for names registered on v2, or `ETHRenewerV1`
+ * (`contract: 'ensEthRenewerV1'`) for unmigrated legacy (v1) names. Both expose
+ * the same `renew(label,duration,paymentToken,referrer)` ERC-20 interface, so
+ * `contract` only selects the target address — resolve it from your data source
+ * (indexer) or an on-chain owner lookup ({@link getOwner}).
  *
- * Legacy `ETHRegistrarController`s were revoked at the v2 migration cutover, so a
- * v1 name that has not yet migrated cannot be renewed through them —
- * `ETHRenewerV1` renews it and syncs the underlying BaseRegistrar. It only
- * renews RESERVED (pre-migration) or in-grace names; an active, not-yet-migrated
- * v1 name reverts `NameNotRenewable` (gate with {@link isRenewable} first). Use
- * `renewName` from `@ensdomains/ensjs/wallet/v2` for names registered on v2.
+ * Legacy `ETHRegistrarController`s were revoked at the v2 migration cutover, so an
+ * unmigrated v1 name can only be renewed through `ETHRenewerV1`, which renews it
+ * and syncs the underlying v1 BaseRegistrar. It renews a name while it still holds
+ * its pre-migration `RESERVED` slot (throughout the name's active life), or — once
+ * that slot has lapsed to `AVAILABLE` — while it is still unclaimed and within the
+ * v2 grace window; a name that was never reserved, has already migrated to v2, or
+ * has lapsed past grace reverts `NameNotRenewable`.
  *
- * Renews a single name — `ETHRenewerV1.renew` has no batch entrypoint and the
- * contract is not `Multicallable`, so there is no on-chain bulk-renewal path.
+ * Renews a single name — neither renewer is `Multicallable`, so there is no
+ * on-chain bulk-renewal path.
  *
  * @param client - {@link Client}
  * @param options - {@link RenewNameParameters}
@@ -142,20 +178,22 @@ export type RenewNameErrorType =
  *   name: 'example.eth',
  *   duration: 31536000n, // 1 year
  *   paymentToken: usdcAddress,
+ *   contract: 'ensEthRegistrar',
  * })
  * // 0x...
  */
 export async function renewName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensEthRenewerV1'> | undefined,
+  chainOverride extends ChainWithContracts<RenewerContract> | undefined,
 >(
-  client: RequireClientContracts<chain, 'ensEthRenewerV1', account>,
+  client: RequireClientContracts<chain, RenewerContract, account>,
   {
     name,
     duration,
     paymentToken,
     referrer,
+    contract,
     ...txArgs
   }: RenewNameParameters<chain, account, chainOverride>,
 ): Promise<RenewNameReturnType> {
@@ -163,7 +201,7 @@ export async function renewName<
 
   const writeParameters = renewNameWriteParameters(
     clientWithOverrides(client, txArgs),
-    { name, duration, paymentToken, referrer },
+    { name, duration, paymentToken, referrer, contract },
   )
   const writeContractAction = getAction(client, writeContract, 'writeContract')
   return writeContractAction({
