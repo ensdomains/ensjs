@@ -105,6 +105,9 @@ export const renewNameWriteParameters = <
     account: client.account,
   } as const
 
+  // The two renewers currently share an identical `renew` ABI (and revert set),
+  // but they are distinct contracts that may diverge — so each keeps its own
+  // snippet rather than borrowing the other's, matching `contract` to its ABI.
   if (contract === 'ensEthRenewerV1') {
     return {
       ...baseParams,
