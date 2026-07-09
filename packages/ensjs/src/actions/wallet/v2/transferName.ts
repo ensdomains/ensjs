@@ -1,13 +1,13 @@
-import { permissionedRegistrySafeTransferFromSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
-import type {
-  Account,
-  Address,
-  Chain,
-  Client,
-  Hash,
-  Transport,
-  WriteContractErrorType,
-  WriteContractParameters,
+import {
+  type Account,
+  type Address,
+  type Chain,
+  type Client,
+  erc1155Abi,
+  type Hash,
+  type Transport,
+  type WriteContractErrorType,
+  type WriteContractParameters,
 } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
@@ -58,14 +58,12 @@ export const transferNameWriteParameters = <
 
   return {
     address: registryAddress,
-    abi: permissionedRegistrySafeTransferFromSnippet,
+    abi: erc1155Abi,
     functionName: 'safeTransferFrom',
     args: [client.account.address, newOwnerAddress, tokenId, 1n, '0x'],
     chain: client.chain,
     account: client.account,
-  } as const satisfies WriteContractParameters<
-    typeof permissionedRegistrySafeTransferFromSnippet
-  >
+  } as const satisfies WriteContractParameters<typeof erc1155Abi>
 }
 
 // ================================
