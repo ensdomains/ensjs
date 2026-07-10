@@ -250,4 +250,3 @@ export const permissionedRegistryUnregisterSnippet = [
     stateMutability: 'nonpayable',
   },
 ] as const
-
