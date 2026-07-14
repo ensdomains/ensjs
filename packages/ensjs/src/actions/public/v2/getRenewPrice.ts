@@ -7,7 +7,7 @@ import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 export type GetRenewPriceParameters = {
   /**
    * Address of the renewer contract. Either the v2 `ETHRegistrar` (for names registered
-   * on v2) or the `ETHRenewerV1` (for names migrated from v1). Both expose the same
+   * on v2) or the `ETHRenewerV1` (for unmigrated v1 names). Both expose the same
    * `IETHRenewer` interface.
    */
   renewerAddress: Address

@@ -29,11 +29,11 @@ export {
   registerNameMutationOptions,
 } from './registerName.js'
 export {
-  type RenewNamesMutationKey,
-  type RenewNamesOptions,
-  renewNamesMutationKey,
-  renewNamesMutationOptions,
-} from './renewNames.js'
+  type RenewNameMutationKey,
+  type RenewNameOptions,
+  renewNameMutationKey,
+  renewNameMutationOptions,
+} from './renewName.js'
 export {
   type SetAbiRecordMutationKey,
   type SetAbiRecordOptions,
