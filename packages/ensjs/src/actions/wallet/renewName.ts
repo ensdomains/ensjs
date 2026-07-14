@@ -1,4 +1,3 @@
-import { ethRenewerV1RenewSnippet } from '@ensdomains/ensjs-abi/v1/ethRenewer'
 import { ethRegistrarRenewSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type {
   Account,
@@ -97,28 +96,14 @@ export const renewNameWriteParameters = <
     contract,
   })
 
-  const baseParams = {
+  // Both renewers share an identical `renew` ABI, so a single snippet works for
+  // either contract.
+  return {
     address,
     functionName: 'renew',
     args: [label, duration, paymentToken, referrer] as const,
     chain: client.chain,
     account: client.account,
-  } as const
-
-  // The two renewers currently share an identical `renew` ABI (and revert set),
-  // but they are distinct contracts that may diverge — so each keeps its own
-  // snippet rather than borrowing the other's, matching `contract` to its ABI.
-  if (contract === 'ensEthRenewerV1') {
-    return {
-      ...baseParams,
-      abi: ethRenewerV1RenewSnippet,
-    } as const satisfies WriteContractParameters<
-      typeof ethRenewerV1RenewSnippet
-    >
-  }
-
-  return {
-    ...baseParams,
     abi: ethRegistrarRenewSnippet,
   } as const satisfies WriteContractParameters<typeof ethRegistrarRenewSnippet>
 }
