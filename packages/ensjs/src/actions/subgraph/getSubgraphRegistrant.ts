@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import { type Address, getAddress, labelhash } from 'viem'
+import { type Address, getAddress, namehash } from 'viem'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getNameType } from '../../utils/name/getNameType.js'
@@ -16,18 +16,22 @@ export type GetSubgraphRegistrantErrorType = UnsupportedNameTypeError | Error
 
 const query = gql`
   query getSubgraphRegistrant($id: String!) {
-    registration(id: $id) {
-      registrant {
-        id
+    domain(id: $id) {
+      registration {
+        registrant {
+          id
+        }
       }
     }
   }
 `
 
 type SubgraphResult = {
-  registration?: {
-    registrant: {
-      id: Address
+  domain?: {
+    registration?: {
+      registrant: {
+        id: Address
+      }
     }
   }
 }
@@ -55,7 +59,6 @@ const getSubgraphRegistrant = async <_chain extends ChainWithSubgraph>(
   client: { chain: _chain },
   { name }: GetSubgraphRegistrantParameters,
 ): Promise<GetSubgraphRegistrantReturnType> => {
-  const labels = name.split('.')
   const nameType = getNameType(name)
   if (nameType !== 'eth-2ld')
     throw new UnsupportedNameTypeError({
@@ -67,11 +70,11 @@ const getSubgraphRegistrant = async <_chain extends ChainWithSubgraph>(
   const subgraphClient = createSubgraphClient(client)
 
   const result = await subgraphClient.request<SubgraphResult>(query, {
-    id: labelhash(labels[0]),
+    id: namehash(name),
   })
 
-  if (result?.registration?.registrant?.id)
-    return getAddress(result.registration.registrant.id)
+  if (result?.domain?.registration?.registrant?.id)
+    return getAddress(result.domain.registration.registrant.id)
   return null
 }
 
