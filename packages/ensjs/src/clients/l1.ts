@@ -236,7 +236,7 @@ export const ensL1Subgraphs = {
   },
   [supportedL1Chains.sepolia]: {
     ens: {
-      url: 'https://api.sepolia.ensnode.io/subgraph',
+      url: 'https://v1-graphql.ens.dev/subgraph',
     },
   },
 } as const satisfies Record<SupportedL1ChainId, EnsSubgraph>
