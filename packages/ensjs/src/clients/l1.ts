@@ -172,43 +172,43 @@ export const ensL1Contracts = {
       address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     ensPermissionedResolverImpl: {
-      address: '0xdcE5205A553573FFd47629327DDdf36186022FfA',
+      address: '0x9EAe5C2730a7dD16BDD1DeE6421a1B91e3B0365e',
     },
     ensRegistry: {
-      address: '0xDEDB92913A25abE1f7BCDD85D8A344a43B398B67',
+      address: '0xBDC85dD5b15D7ecb354cd7cb6f2c50b4f2c4F0E2',
     },
     ensVerifiableFactory: {
-      address: '0xD2a632D8a8b67c2c4398c255CbD7aF8dd7236198',
+      address: '0x10dC6333CDFe1FCEf624c6e0a8221b91804Cd7ef',
     },
     ensEthRegistrar: {
-      address: '0x8c2E866B439358c41AE05De9cbE8A00BFEFafFcA',
+      address: '0xa88553F454b77203B0D036A05c894d555EAAa2Cc',
     },
     ensEthRenewerV1: {
-      address: '0xB359d7d04F750E9C008A5a47Bd2b64134bD180F9',
+      address: '0x4ad56feb5Fc7B8298db06E88fd5CBc41D64602Fa',
     },
     usdc: {
-      address: '0xBA11ebdB3f9a2c5946D8629517f06364E53A2E10',
+      address: '0x768F42455A2D082E23ceeF7d51e5787C82d67a39',
     },
     dai: {
-      address: '0x2922bCD677Af690fCD1eCC699519e4bfaBc73fF8',
+      address: '0x5472C5725A00B7bA11F0794A79D08ade6F4683bD',
     },
     ensUserRegistryImpl: {
-      address: '0x0F99e7Ea74903AfCB7224d0354fD7428A6f92917',
+      address: '0x624a25d67B59D587752EbEc8DdeD8827dAe52050',
     },
     ensStandardRentPriceOracle: {
-      address: '0xe19D37839F42F7d2694D8C5712f412C66A218161',
+      address: '0x8914b66260EB8C4fff795650c3AE8Cd335958987',
     },
     ensHcaFactory: {
-      address: '0x358680728dEDb552adaA9f5eb5d4395B291Cf943',
+      address: '0x900FF7cF617Ef9D802178B4ef480491e3A782672',
     },
     ensLockedMigrationController: {
-      address: '0xF91c34ED840889Ed96F806f882fD50506A336Edb',
+      address: '0x5c39E36a69A9897F08954c71aCB1F36E0Bd4f409',
     },
     ensUnlockedMigrationController: {
-      address: '0x056138Ef5660F7113a3B0ADC08ac3683310e7FBC',
+      address: '0x2FCf83232b93bD29C59dB18AaA1D4b62e9f9FC73',
     },
     ensMigrationHelper: {
-      address: '0x11Cfa7E034DaFB7439cC1CC8b6e547F5C82ad021',
+      address: '0x1D8c7aA9862F9b823309Ad87A4864Fb27C575e85',
     },
   },
 } as const satisfies Record<
