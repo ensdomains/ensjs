@@ -15,4 +15,15 @@ describe('getAvailable', () => {
     expect(typeof result).toBe('boolean')
     expect(result).toBe(true)
   })
+  it('normalises the label before hashing, so a non-normalised name checks the canonical id', () => {
+    // 😠️ carries a U+FE0F variation selector that ENSIP-15 normalisation
+    // strips. Before the fix, the raw label hashed to a different tokenId than
+    // the canonical 😠.eth, so `available` was checked against the wrong id.
+    // Both forms must now produce identical availability calldata.
+    const withVariationSelector = getAvailable.encode(publicClient, {
+      name: '😠️.eth',
+    })
+    const normalised = getAvailable.encode(publicClient, { name: '😠.eth' })
+    expect(withVariationSelector.data).toEqual(normalised.data)
+  })
 })
