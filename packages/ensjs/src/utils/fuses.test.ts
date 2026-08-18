@@ -11,6 +11,7 @@ import {
   UnnamedParentFuses,
   UserSettableFuseKeys,
   UserSettableFuses,
+  checkPccBurned,
   decodeFuses,
   encodeFuses,
 } from './fuses.js'
@@ -721,5 +722,24 @@ describe('decodeFuses', () => {
         }),
       }),
     )
+  })
+})
+
+describe('checkPccBurned', () => {
+  it('returns true when PARENT_CANNOT_CONTROL is burned (set)', () => {
+    expect(checkPccBurned(ParentFuses.PARENT_CANNOT_CONTROL)).toBe(true)
+  })
+  it('returns true when PCC is burned alongside other parent fuses', () => {
+    expect(
+      checkPccBurned(
+        ParentFuses.PARENT_CANNOT_CONTROL | ParentFuses.CAN_EXTEND_EXPIRY,
+      ),
+    ).toBe(true)
+  })
+  it('returns false when no fuses are burned', () => {
+    expect(checkPccBurned(0n)).toBe(false)
+  })
+  it('returns false when a different parent fuse is burned but PCC is not', () => {
+    expect(checkPccBurned(ParentFuses.CAN_EXTEND_EXPIRY)).toBe(false)
   })
 })
