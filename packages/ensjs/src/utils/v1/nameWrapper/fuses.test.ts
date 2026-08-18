@@ -584,6 +584,14 @@ describe('encodeFuses', () => {
 })
 
 describe('decodeFuses', () => {
+  it('decodes the upper unnamed parent fuses that were previously dropped', () => {
+    // bit 25 (0x2000000) is a valid parent-controlled unnamed fuse; before the
+    // fix decodeFuses omitted it (UnnamedParentFuseKeys stopped at 0x1000000)
+    const decoded = decodeFuses(0x2000000)
+    expect(decoded.parent.unnamed['0x2000000']).toBe(true)
+    expect(decoded.parent.unnamed['0x1000000']).toBe(false)
+    expect(decoded.parent.unnamed['0x80000000']).toBe(false)
+  })
   it('decodes parent fuses', () => {
     expect(decodeFuses(0x50000)).toMatchInlineSnapshot(`
       {
@@ -615,10 +623,17 @@ describe('decodeFuses', () => {
           "unnamed": {
             "0x100000": false,
             "0x1000000": false,
+            "0x10000000": false,
             "0x200000": false,
+            "0x2000000": false,
+            "0x20000000": false,
             "0x400000": false,
+            "0x4000000": false,
+            "0x40000000": false,
             "0x80000": false,
             "0x800000": false,
+            "0x8000000": false,
+            "0x80000000": false,
           },
         },
       }
@@ -655,10 +670,17 @@ describe('decodeFuses', () => {
           "unnamed": {
             "0x100000": false,
             "0x1000000": false,
+            "0x10000000": false,
             "0x200000": false,
+            "0x2000000": false,
+            "0x20000000": false,
             "0x400000": false,
+            "0x4000000": false,
+            "0x40000000": false,
             "0x80000": false,
             "0x800000": false,
+            "0x8000000": false,
+            "0x80000000": false,
           },
         },
       }
@@ -666,43 +688,50 @@ describe('decodeFuses', () => {
   })
   it('decodes unnamed fuses', () => {
     expect(decodeFuses(32769)).toMatchInlineSnapshot(`
-    {
-      "child": {
-        "CANNOT_APPROVE": false,
-        "CANNOT_BURN_FUSES": false,
-        "CANNOT_CREATE_SUBDOMAIN": false,
-        "CANNOT_SET_RESOLVER": false,
-        "CANNOT_SET_TTL": false,
-        "CANNOT_TRANSFER": false,
-        "CANNOT_UNWRAP": true,
-        "CAN_DO_EVERYTHING": false,
-        "unnamed": {
-          "0x100": false,
-          "0x1000": false,
-          "0x200": false,
-          "0x2000": false,
-          "0x400": false,
-          "0x4000": false,
-          "0x80": false,
-          "0x800": false,
-          "0x8000": true,
+      {
+        "child": {
+          "CANNOT_APPROVE": false,
+          "CANNOT_BURN_FUSES": false,
+          "CANNOT_CREATE_SUBDOMAIN": false,
+          "CANNOT_SET_RESOLVER": false,
+          "CANNOT_SET_TTL": false,
+          "CANNOT_TRANSFER": false,
+          "CANNOT_UNWRAP": true,
+          "CAN_DO_EVERYTHING": false,
+          "unnamed": {
+            "0x100": false,
+            "0x1000": false,
+            "0x200": false,
+            "0x2000": false,
+            "0x400": false,
+            "0x4000": false,
+            "0x80": false,
+            "0x800": false,
+            "0x8000": true,
+          },
         },
-      },
-      "parent": {
-        "CAN_EXTEND_EXPIRY": false,
-        "IS_DOT_ETH": false,
-        "PARENT_CANNOT_CONTROL": false,
-        "unnamed": {
-          "0x100000": false,
-          "0x1000000": false,
-          "0x200000": false,
-          "0x400000": false,
-          "0x80000": false,
-          "0x800000": false,
+        "parent": {
+          "CAN_EXTEND_EXPIRY": false,
+          "IS_DOT_ETH": false,
+          "PARENT_CANNOT_CONTROL": false,
+          "unnamed": {
+            "0x100000": false,
+            "0x1000000": false,
+            "0x10000000": false,
+            "0x200000": false,
+            "0x2000000": false,
+            "0x20000000": false,
+            "0x400000": false,
+            "0x4000000": false,
+            "0x40000000": false,
+            "0x80000": false,
+            "0x800000": false,
+            "0x8000000": false,
+            "0x80000000": false,
+          },
         },
-      },
-    }
-  `)
+      }
+    `)
   })
   it('decodes CAN_DO_EVERYTHING as false when fuses are set', () => {
     expect(decodeFuses(1)).toEqual(
