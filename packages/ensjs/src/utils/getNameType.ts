@@ -4,7 +4,7 @@ export const getNameType = (name: string): NameType => {
   const labels = name.split('.')
   const isDotEth = labels[labels.length - 1] === 'eth'
 
-  if (labels.length === 0) return 'root'
+  if (name === '') return 'root'
   if (labels.length === 1) {
     if (isDotEth) return 'eth-tld'
     return 'tld'
