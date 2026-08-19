@@ -35,6 +35,8 @@ export type GetExpiryParameters = Prettify<{
   name: string
   /** Optional specific contract to use to get expiry */
   contract?: ContractOption
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }>
 
 export type GetExpiryReturnType = Prettify<{

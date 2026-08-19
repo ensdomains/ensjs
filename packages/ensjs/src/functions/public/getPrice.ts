@@ -22,6 +22,8 @@ export type GetPriceParameters = {
   nameOrNames: string | string[]
   /** Duration in seconds to get price for */
   duration: bigint | number
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }
 
 export type GetPriceReturnType = {

@@ -19,6 +19,8 @@ export type GetContentHashRecordParameters = Prettify<
   InternalGetContentHashParameters & {
     /** Batch gateway URLs to use for resolving CCIP-read requests. */
     gatewayUrls?: string[]
+    /** Block number to execute the read at, for historical reads */
+    blockNumber?: bigint
   }
 >
 

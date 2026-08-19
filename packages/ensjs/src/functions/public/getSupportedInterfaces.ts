@@ -19,6 +19,8 @@ export type GetSupportedInterfacesParameters<
 > = {
   address: Address
   interfaces: TInterfaces
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }
 
 export type GetSupportedInterfacesReturnType<

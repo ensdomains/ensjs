@@ -19,6 +19,8 @@ import { getNameType } from '../../utils/getNameType.js'
 export type GetAvailableParameters = {
   /** Name to check availability for, only compatible for eth 2ld */
   name: string
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }
 
 export type GetAvailableReturnType = boolean
