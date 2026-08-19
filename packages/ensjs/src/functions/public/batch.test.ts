@@ -2,6 +2,7 @@ import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
 import { addEnsContracts } from '../../contracts/addEnsContracts.js'
+import { FunctionNotBatchableError } from '../../errors/public.js'
 import {
   deploymentAddresses,
   publicClient,
@@ -64,5 +65,18 @@ describe('batch', () => {
         "nick@ens.domains",
       ]
     `)
+  })
+  it('should throw FunctionNotBatchableError when an item requests a blockNumber', async () => {
+    await expect(
+      batch(
+        publicClient,
+        getText.batch({
+          name: 'with-profile.eth',
+          key: 'description',
+          blockNumber: 1n,
+        }),
+        getAddressRecord.batch({ name: 'with-profile.eth' }),
+      ),
+    ).rejects.toThrow(FunctionNotBatchableError)
   })
 })

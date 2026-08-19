@@ -32,6 +32,9 @@ const encode = (
   const rawDataArr: SimpleTransactionRequest[] = items.map(
     ({ args, encode: encodeRef }, i: number) => {
       if (!encodeRef) throw new FunctionNotBatchableError({ functionIndex: i })
+      if ((args[0] as { blockNumber?: bigint } | undefined)?.blockNumber) {
+        throw new FunctionNotBatchableError({ functionIndex: i })
+      }
       return encodeRef(client, ...args)
     },
   )
