@@ -24,4 +24,10 @@ export {
   type ImportDnsNameReturnType,
   importDnsName,
 } from './actions/dns/importDnsName.js'
+export {
+  type IsDnsPublicSuffixErrorType,
+  type IsDnsPublicSuffixParameters,
+  type IsDnsPublicSuffixReturnType,
+  isDnsPublicSuffix,
+} from './actions/dns/isDnsPublicSuffix.js'
 export type { Endpoint } from './actions/dns/types.js'

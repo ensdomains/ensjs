@@ -121,3 +121,18 @@ export const dnsRegistrarProveAndClaimWithResolverSnippet = [
     type: 'function',
   },
 ] as const
+
+export const dnsRegistrarSuffixesSnippet = [
+  {
+    inputs: [],
+    name: 'suffixes',
+    outputs: [
+      {
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const

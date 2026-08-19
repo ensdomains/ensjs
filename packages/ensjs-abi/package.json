@@ -47,6 +47,10 @@
       "types": "./dist/dnsRegistrar.d.ts",
       "default": "./dist/dnsRegistrar.js"
     },
+    "./publicSuffixList": {
+      "types": "./dist/publicSuffixList.d.ts",
+      "default": "./dist/publicSuffixList.js"
+    },
     "./dnssecImpl": {
       "types": "./dist/dnssecImpl.d.ts",
       "default": "./dist/dnssecImpl.js"
