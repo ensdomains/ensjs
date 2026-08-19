@@ -54,7 +54,7 @@ export type ImportDnsNameDataParameters = BaseImportDnsNameDataParameters &
 
 export type ImportDnsNameDataReturnType = SimpleTransactionRequest
 
-type ImportDnsNameContracts = 'ensDnsRegistrar' | 'ensPublicResolver'
+type ImportDnsNameContracts = 'ensLegacyDnsRegistrar' | 'ensPublicResolver'
 
 export type ImportDnsNameParameters<
   TChain extends Chain,
@@ -81,7 +81,7 @@ export const makeFunctionData = (
   const hexEncodedName = toHex(packetToBytes(name))
   const dnsRegistrarAddress = getChainContractAddress({
     chain,
-    contract: 'ensDnsRegistrar',
+    contract: 'ensLegacyDnsRegistrar',
   })
 
   if (!address) {

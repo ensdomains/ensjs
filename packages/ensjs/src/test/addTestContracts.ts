@@ -84,9 +84,6 @@ export const localhost = {
     ensBaseRegistrarImplementation: {
       address: deploymentAddresses.BaseRegistrarImplementation,
     },
-    ensDnsRegistrar: {
-      address: deploymentAddresses.DNSRegistrar,
-    },
     ensEthRegistrarController: {
       address: deploymentAddresses.ETHRegistrarController,
     },
@@ -101,9 +98,6 @@ export const localhost = {
     },
     ensBulkRenewal: {
       address: deploymentAddresses.StaticBulkRenewal,
-    },
-    ensDnssecImpl: {
-      address: deploymentAddresses.DNSSECImpl,
     },
     ensLegacyDnsRegistrar: {
       address: deploymentAddresses.DNSRegistrar,

@@ -58,7 +58,7 @@ const encodeProofs = (
  * })
  */
 export async function getDnsImportData<_chain extends Chain>(
-  client: RequireClientContracts<_chain, 'ensDnssecImpl'>,
+  client: RequireClientContracts<_chain, 'ensLegacyDnssecImpl'>,
   {
     name,
     endpoint = 'https://cloudflare-dns.com/dns-query',
@@ -84,7 +84,7 @@ export async function getDnsImportData<_chain extends Chain>(
     abi: dnssecImplVerifyRrSetSnippet,
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ensDnssecImpl',
+      contract: 'ensLegacyDnssecImpl',
     }),
     functionName: 'verifyRRSet',
     args: [rrsets],
