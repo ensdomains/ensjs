@@ -41,7 +41,9 @@ export type UseWriteEnsRecordsReturnType<
     WriteEnsRecordsData,
     WriteEnsRecordsErrorType,
     WriteEnsRecordsVariables<config>,
-    context
+    context,
+    WriteEnsRecordsMutate<config, context>,
+    WriteEnsRecordsMutateAsync<config, context>
   > & {
     writeEnsRecords: WriteEnsRecordsMutate<config, context>
     writeEnsRecordsAsync: WriteEnsRecordsMutateAsync<config, context>
@@ -67,6 +69,8 @@ export const useWriteEnsRecords = <
   type Return = UseWriteEnsRecordsReturnType<config, context>
   return {
     ...result,
+    mutate: mutate as Return['mutate'],
+    mutateAsync: mutateAsync as Return['mutateAsync'],
     writeEnsRecords: mutate as Return['writeEnsRecords'],
     writeEnsRecordsAsync: mutateAsync as Return['writeEnsRecordsAsync'],
   }

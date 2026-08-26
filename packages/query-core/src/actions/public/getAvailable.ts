@@ -7,7 +7,7 @@ import {
   type GetAvailableParameters as ensjs_GetAvailableParameters,
   type GetAvailableReturnType as ensjs_GetAvailableReturnType,
   getAvailable as ensjs_getAvailable,
-} from '@ensdomains/ensjs/public'
+} from '@ensdomains/ensjs/public/v1'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'

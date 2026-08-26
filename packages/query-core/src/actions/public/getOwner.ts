@@ -7,7 +7,7 @@ import {
   type GetOwnerParameters as ensjs_GetOwnerParameters,
   type GetOwnerReturnType as ensjs_GetOwnerReturnType,
   getOwner as ensjs_getOwner,
-} from '@ensdomains/ensjs/public'
+} from '@ensdomains/ensjs/public/v1'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'

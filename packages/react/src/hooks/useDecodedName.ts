@@ -1,4 +1,5 @@
 import { useChainId, useConfig } from 'wagmi'
+import { type UseQueryReturnType, useQuery } from 'wagmi/query'
 import {
   type GetDecodedNameData,
   type GetDecodedNameErrorType,
@@ -11,7 +12,6 @@ import type { ConfigWithEns } from '../types/config.js'
 import type { ConfigParameter, QueryParameter } from '../types/properties.js'
 import type { ResolvedRegister } from '../types/register.js'
 import type { Compute } from '../types/utils.js'
-import { type UseQueryReturnType, useQuery } from './useQuery.js'
 
 export type UseDecodedNameParameters<
   config extends ConfigWithEns = ConfigWithEns,

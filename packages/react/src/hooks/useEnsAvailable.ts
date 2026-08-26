@@ -1,5 +1,17 @@
 import { useChainId, useConfig } from 'wagmi'
-import { type UseQueryReturnType, useQuery } from './useQuery.js'
+import { type UseQueryReturnType, useQuery } from 'wagmi/query'
+import {
+  type GetEnsAvailableData,
+  type GetEnsAvailableErrorType,
+  type GetEnsAvailableOptions,
+  type GetEnsAvailableQueryFnData,
+  type GetEnsAvailableQueryKey,
+  getEnsAvailableQueryOptions,
+} from '../query/getEnsAvailable.js'
+import type { ConfigWithEns } from '../types/config.js'
+import type { ConfigParameter, QueryParameter } from '../types/properties.js'
+import type { ResolvedRegister } from '../types/register.js'
+import type { Compute } from '../types/utils.js'
 
 export type UseEnsAvailableParameters<
   config extends ConfigWithEns = ConfigWithEns,

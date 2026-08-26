@@ -46,7 +46,6 @@ export function getSupportedInterfaces<
     client,
     ensjs_getSupportedInterfaces<typeof client.chain, interfaces>,
     // TODO: Add getSupportedInterfaces to the client decorators
-    // @ts-expect-error - Not yet added to decorator
     'getSupportedInterfaces',
   )
   return action(rest)
