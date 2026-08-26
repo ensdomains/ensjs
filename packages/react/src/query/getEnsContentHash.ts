@@ -43,7 +43,12 @@ export type GetEnsContentHashQueryKey<config extends ConfigWithEns> =
 export const getEnsContentHashQueryOptions = <config extends ConfigWithEns>(
   config: config,
   options: GetEnsContentHashOptions<config> = {},
-) => {
+): QueryOptions<
+  GetEnsContentHashQueryFnData,
+  GetEnsContentHashErrorType,
+  GetEnsContentHashData,
+  GetEnsContentHashQueryKey<config>
+> & { queryKey: GetEnsContentHashQueryKey<config> } => {
   return {
     async queryFn({ queryKey }) {
       const { name, ...rest } = queryKey[1]

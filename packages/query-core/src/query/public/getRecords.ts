@@ -39,7 +39,12 @@ export function getRecordsQueryOptions<
 >(
   config: RequireConfigContracts<chains, 'ensUniversalResolver' | 'multicall3'>,
   options: GetRecordsOptions<ExcludeTE<typeof config>> = {},
-) {
+): QueryOptions<
+  GetRecordsQueryFnData<texts, coins, contentHash, abi>,
+  GetRecordsErrorType,
+  GetRecordsData,
+  GetRecordsQueryKey<ExcludeTE<typeof config>>
+> & { queryKey: GetRecordsQueryKey<ExcludeTE<typeof config>> } {
   ASSERT_NO_TYPE_ERROR(config)
 
   return {
@@ -56,7 +61,7 @@ export function getRecordsQueryOptions<
     GetRecordsQueryFnData<texts, coins, contentHash, abi>,
     GetRecordsErrorType,
     GetRecordsData,
-    GetRecordsQueryKey<typeof config>
+    GetRecordsQueryKey<ExcludeTE<typeof config>>
   >
 }
 

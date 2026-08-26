@@ -34,8 +34,9 @@
     "@ensdomains/buffer": "^0.1.1",
     "@ensdomains/ens-test-env": "^1.0.1",
     "@ensdomains/ensjs": "workspace:*",
+    "@tanstack/react-query": "^5.54.0",
     "@wagmi/core": "^3",
-    "viem": "2.29.0",
+    "viem": "^2.47.10",
     "wagmi": "^3"
   },
   "peerDependencies": {

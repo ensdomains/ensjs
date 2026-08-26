@@ -1,13 +1,13 @@
-import type { ChainWithEns } from '@ensdomains/ensjs/contracts'
+import type { ChainWithEns } from '@ensdomains/ensjs/chain'
 import {
-  encodeSetRecordsData,
   type SetRecordsErrorType as ensjs_WriteEnsRecordsErrorType,
   type SetRecordsParameters as ensjs_WriteEnsRecordsParameters,
   type SetRecordsReturnType as ensjs_WriteEnsRecordsReturnType,
+  setRecordsWriteParameters,
 } from '@ensdomains/ensjs/wallet'
 import type { MutateOptions, MutationOptions } from '@tanstack/react-query'
-import type { Account } from 'viem'
-import { type SendTransactionParameters, sendTransaction } from 'wagmi/actions'
+import type { Abi, Account, Chain, Client, Transport } from 'viem'
+import { type WriteContractParameters, writeContract } from 'wagmi/actions'
 import type { ConfigWithEns } from '../types/config.js'
 import type {
   ChainIdParameter,
@@ -43,22 +43,30 @@ export const writeEnsRecords = async <
   }: WriteEnsRecordsParameters<config, chains>,
 ): Promise<WriteEnsRecordsReturnType> => {
   const client = config.getClient({ chainId: transactionParameters.chainId })
-  const data = encodeSetRecordsData(client, {
-    name,
-    resolverAddress,
-    clearRecords,
-    contentHash,
-    texts,
-    coins,
-    abi,
-  })
+  const writeParameters = await setRecordsWriteParameters(
+    client as Client<Transport, Chain, Account>,
+    {
+      name,
+      resolverAddress,
+      clearRecords,
+      contentHash,
+      texts,
+      coins,
+      abi,
+    },
+  )
 
   const parameters = {
-    ...data,
+    ...writeParameters,
     ...transactionParameters,
-  } as unknown as SendTransactionParameters<config>
+  } as unknown as WriteContractParameters<
+    Abi,
+    string,
+    readonly unknown[],
+    config
+  >
 
-  return sendTransaction(config, parameters)
+  return writeContract(config, parameters)
 }
 
 export type WriteEnsRecordsData = Compute<WriteEnsRecordsReturnType>

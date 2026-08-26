@@ -1,4 +1,4 @@
-import type { ChainWithEns } from '@ensdomains/ensjs/contracts'
+import type { ChainWithEns } from '@ensdomains/ensjs/chain'
 import type { ChainFormatters } from 'viem'
 import type { ConfigWithEns } from './config.js'
 import type { IsNarrowable, Merge } from './utils.js'

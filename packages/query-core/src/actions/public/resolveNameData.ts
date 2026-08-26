@@ -39,7 +39,6 @@ export function resolveNameData<
     client,
     ensjs_resolveNameData<typeof client.chain, data>,
     // TODO: Add resolveNameData to the client decorators
-    // @ts-expect-error - Not yet added to decorator
     'resolveNameData',
   )
   return action(rest)

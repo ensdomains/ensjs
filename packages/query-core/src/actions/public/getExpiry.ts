@@ -7,7 +7,7 @@ import {
   type GetExpiryParameters as ensjs_GetExpiryParameters,
   type GetExpiryReturnType as ensjs_GetExpiryReturnType,
   getExpiry as ensjs_getExpiry,
-} from '@ensdomains/ensjs/public'
+} from '@ensdomains/ensjs/public/v1'
 import type { Config } from '@wagmi/core'
 import type { ChainIdParameter } from '@wagmi/core/internal'
 import type { Chain, Prettify } from 'viem'
