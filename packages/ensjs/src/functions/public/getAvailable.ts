@@ -15,6 +15,7 @@ import {
   generateFunction,
 } from '../../utils/generateFunction.js'
 import { getNameType } from '../../utils/getNameType.js'
+import { normalise } from '../../utils/normalise.js'
 
 export type GetAvailableParameters = {
   /** Name to check availability for, only compatible for eth 2ld */
@@ -44,7 +45,13 @@ const encode = (
     data: encodeFunctionData({
       abi: baseRegistrarAvailableSnippet,
       functionName: 'available',
-      args: [BigInt(labelhash(labels[0]))],
+      // Normalise the label first (ENSIP-15). Without this, a non-normalised
+      // label (e.g. an emoji carrying a FE0F variation selector, or mixed
+      // case) hashes to a different tokenId than the canonical registered
+      // name, so `available` is checked against the wrong id and returns a
+      // wrong result. `normalise` also throws on genuinely invalid names
+      // rather than reporting them as available.
+      args: [BigInt(labelhash(normalise(labels[0])))],
     }),
   }
 }
