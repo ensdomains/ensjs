@@ -1,9 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { numberToHex } from 'viem'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   deploymentAddresses,
   publicClient,
 } from '../../test/addTestContracts.js'
 import getOwner from './getOwner.js'
+
+type RequestArguments = {
+  method: string
+  params?: readonly unknown[]
+}
 
 describe('getOwner', () => {
   it('should return correct ownership level and values for a wrapped .eth name', async () => {
@@ -83,6 +89,32 @@ describe('getOwner', () => {
           "ownershipLevel": "nameWrapper",
         }
       `)
+    })
+  })
+
+  describe('blockNumber', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should thread blockNumber through to the underlying eth_call', async () => {
+      const blockNumber = await publicClient.getBlockNumber()
+      const requestSpy = vi.spyOn(publicClient, 'request') as unknown as {
+        mock: { calls: [RequestArguments][] }
+      }
+
+      const result = await getOwner(publicClient, {
+        name: 'test123.eth',
+        blockNumber,
+      })
+      expect(result).toBeTruthy()
+
+      const ethCallInvocation = requestSpy.mock.calls.find(
+        ([{ method }]) => method === 'eth_call',
+      )
+      expect(ethCallInvocation).toBeDefined()
+      const [{ params }] = ethCallInvocation!
+      expect(params?.[1]).toBe(numberToHex(blockNumber))
     })
   })
 })

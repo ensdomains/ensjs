@@ -24,6 +24,8 @@ export type GetOwnerParameters<
   name: string
   /** Optional specific contract to get ownership value from */
   contract?: TContract
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }
 
 type BaseGetOwnerReturnType = {

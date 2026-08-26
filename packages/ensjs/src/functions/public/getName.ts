@@ -64,6 +64,8 @@ export type GetNameParameters = {
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
+  /** Block number to execute the read at, for historical reads. Only pins on-chain reads - does not pin CCIP-read/offchain gateway data (e.g. wildcard-resolved names), since viem's `call` action does not forward `blockNumber` through its offchain-lookup retry. */
+  blockNumber?: bigint
   // biome-ignore lint/complexity/noBannedTypes: empty object represents no additional parameters in discriminated union
 } & (GetNameCoinTypeParameters | GetNameChainIdParameters | {})
 

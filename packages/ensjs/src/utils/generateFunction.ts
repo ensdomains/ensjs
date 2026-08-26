@@ -69,7 +69,8 @@ export const generateFunction = <
 }) => {
   const single = (async (client, ...args) => {
     const { passthrough, ...encodedData } = encode(client, ...args)
-    const result = await call(client, encodedData)
+    const { blockNumber } = (args[0] as { blockNumber?: bigint }) ?? {}
+    const result = await call(client, { ...encodedData, blockNumber })
       .then((ret) => ret.data)
       .catch((e) => {
         if (!(e instanceof BaseError)) throw e

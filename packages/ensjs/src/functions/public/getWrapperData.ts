@@ -27,6 +27,8 @@ import { namehash } from '../../utils/normalise.js'
 export type GetWrapperDataParameters = {
   /** Name to get wrapper data for */
   name: string
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }
 
 export type GetWrapperDataReturnType = Prettify<{

@@ -24,6 +24,8 @@ import { packetToBytes } from '../../utils/hexEncodedName.js'
 export type GetResolverParameters = {
   /** Name to get resolver for */
   name: string
+  /** Block number to execute the read at, for historical reads */
+  blockNumber?: bigint
 }
 
 export type GetResolverReturnType = Address | null
