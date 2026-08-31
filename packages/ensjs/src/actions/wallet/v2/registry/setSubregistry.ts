@@ -94,7 +94,7 @@ export type SetSubregistryErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { setSubregistry } from '@ensdomains/ensjs/wallet'
+ * import { setSubregistry } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,

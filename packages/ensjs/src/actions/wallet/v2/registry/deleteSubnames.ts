@@ -71,7 +71,7 @@ export type DeleteSubnamesErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { deleteSubnames } from '@ensdomains/ensjs/wallet'
+ * import { deleteSubnames } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,

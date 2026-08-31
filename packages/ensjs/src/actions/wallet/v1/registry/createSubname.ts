@@ -293,7 +293,7 @@ export type CreateSubnameErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { createSubname } from '@ensdomains/ensjs/wallet'
+ * import { createSubname } from '@ensdomains/ensjs/wallet/v1'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

@@ -119,7 +119,7 @@ export type RevokeRolesErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { revokeRoles } from '@ensdomains/ensjs/wallet'
+ * import { revokeRoles } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

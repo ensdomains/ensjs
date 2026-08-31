@@ -33,7 +33,7 @@ export type IsRenewableErrorType = ReadContractErrorType | TypeError
  * @returns `true` if the label is currently renewable. {@link IsRenewableReturnType}
  *
  * @example
- * import { isRenewable } from '@ensdomains/ensjs/public/v2'
+ * import { isRenewable } from '@ensdomains/ensjs/public'
  *
  * const renewable = await isRenewable(client, {
  *   renewerAddress: '0x...',

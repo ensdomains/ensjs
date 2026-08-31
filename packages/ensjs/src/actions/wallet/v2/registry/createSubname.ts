@@ -42,11 +42,11 @@ export type CreateSubnameWriteParametersParameters = {
   expires?: bigint
 }
 
-export type CreateSubnameV2WriteParametersReturnType = ReturnType<
-  typeof createSubnameV2WriteParameters
+export type CreateSubnameWriteParametersReturnType = ReturnType<
+  typeof createSubnameWriteParameters
 >
 
-export const createSubnameV2WriteParameters = <
+export const createSubnameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
@@ -89,7 +89,7 @@ export const createSubnameV2WriteParameters = <
 // Action
 // ================================
 
-export type CreateSubnameV2Parameters<
+export type CreateSubnameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
@@ -98,28 +98,28 @@ export type CreateSubnameV2Parameters<
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type CreateSubnameV2ReturnType = Hash
+export type CreateSubnameReturnType = Hash
 
-export type CreateSubnameV2ErrorType =
+export type CreateSubnameErrorType =
   | ClientWithOverridesErrorType
   | WriteContractErrorType
 
 /**
  * Creates a subname in a UserRegistry using the register function (V2).
  * @param client - {@link Client}
- * @param parameters - {@link CreateSubnameV2Parameters}
- * @returns Transaction hash. {@link CreateSubnameV2ReturnType}
+ * @param parameters - {@link CreateSubnameParameters}
+ * @returns Transaction hash. {@link CreateSubnameReturnType}
  *
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { createSubnameV2 } from '@ensdomains/ensjs/wallet'
+ * import { createSubname } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })
- * const hash = await createSubnameV2(wallet, {
+ * const hash = await createSubname(wallet, {
  *   registryAddress: '0x...', // parent registry
  *   label: 'mysubname',
  *   owner: '0x...',
@@ -130,7 +130,7 @@ export type CreateSubnameV2ErrorType =
  * })
  * // 0x...
  */
-export async function createSubnameV2<
+export async function createSubname<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
@@ -145,11 +145,11 @@ export async function createSubnameV2<
     roleBitmap,
     expires,
     ...txArgs
-  }: CreateSubnameV2Parameters<chain, account, chainOverride>,
-): Promise<CreateSubnameV2ReturnType> {
+  }: CreateSubnameParameters<chain, account, chainOverride>,
+): Promise<CreateSubnameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const writeParameters = createSubnameV2WriteParameters(
+  const writeParameters = createSubnameWriteParameters(
     clientWithOverrides(client, txArgs),
     {
       registryAddress,

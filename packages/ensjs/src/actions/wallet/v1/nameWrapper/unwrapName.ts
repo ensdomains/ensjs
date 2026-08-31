@@ -149,7 +149,7 @@ export type UnwrapNameErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { unwrapName } from '@ensdomains/ensjs/wallet'
+ * import { unwrapName } from '@ensdomains/ensjs/wallet/v1'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

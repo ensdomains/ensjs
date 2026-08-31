@@ -50,7 +50,7 @@ export type GetWrapperDataErrorType =
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getWrapperData } from '@ensdomains/ensjs/public'
+ * import { getWrapperData } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

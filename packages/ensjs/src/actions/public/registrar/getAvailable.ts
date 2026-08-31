@@ -55,7 +55,7 @@ export type GetAvailableErrorType =
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getAvailable } from '@ensdomains/ensjs/public/v2'
+ * import { getAvailable } from '@ensdomains/ensjs/public'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

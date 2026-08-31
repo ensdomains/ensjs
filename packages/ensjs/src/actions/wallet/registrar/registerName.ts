@@ -130,7 +130,7 @@ export type RegisterNameErrorType =
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getPrice } from '@ensdomains/ensjs/public/v1'
+ * import { getPrice } from '@ensdomains/ensjs/wallet'
  * import { randomSecret } from '@ensdomains/ensjs/utils'
  * import { commitName, registerName } from '@ensdomains/ensjs/wallet'
  *

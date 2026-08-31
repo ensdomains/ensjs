@@ -89,7 +89,7 @@ export type DeleteAliasErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { deleteAlias } from '@ensdomains/ensjs/wallet'
+ * import { deleteAlias } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,
