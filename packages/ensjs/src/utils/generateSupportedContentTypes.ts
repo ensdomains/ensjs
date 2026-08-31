@@ -1,4 +1,4 @@
-import type { AbiEncodeAs } from './coders/encodeAbi.js'
+import type { AbiEncodeAs } from './resolver/encodeAbi.js'
 
 const abiEncodeAsMap: { [key in AbiEncodeAs]: bigint } = {
   json: 1n,

@@ -15,7 +15,7 @@ import {
   DnsResponseStatus,
 } from '../../utils/dns/misc.js'
 import { getNameType } from '../../utils/name/getNameType.js'
-import { getAddressRecord } from '../public/getAddressRecord.js'
+import { getAddressRecord } from '../public/resolver/getAddressRecord.js'
 import type { Endpoint } from './types.js'
 
 export type GetDnsOffchainDataParameters = {
