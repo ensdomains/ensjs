@@ -7,7 +7,7 @@ import {
   type SetRecordsParameters as ensjs_SetRecordsParameters,
   type SetRecordsReturnType as ensjs_SetRecordsReturnType,
   setRecords as ensjs_setRecords,
-} from '@ensdomains/ensjs/wallet'
+} from '@ensdomains/ensjs/wallet/v1'
 import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,

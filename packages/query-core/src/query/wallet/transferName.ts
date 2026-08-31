@@ -2,7 +2,7 @@ import {
   ASSERT_NO_TYPE_ERROR,
   type ExcludeTE,
 } from '@ensdomains/ensjs/internal'
-import type { TransferNameSupportedContract } from '@ensdomains/ensjs/wallet'
+import type { TransferNameSupportedContract } from '@ensdomains/ensjs/wallet/v1'
 import type { MutationOptions } from '@tanstack/query-core'
 import type { Config } from '@wagmi/core'
 import type {

@@ -8,7 +8,7 @@ import {
   type TransferNameReturnType as ensjs_TransferNameReturnType,
   transferName as ensjs_transferName,
   type TransferNameSupportedContract,
-} from '@ensdomains/ensjs/wallet'
+} from '@ensdomains/ensjs/wallet/v1'
 import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,
