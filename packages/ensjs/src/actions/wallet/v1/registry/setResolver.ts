@@ -128,7 +128,7 @@ export type SetResolverErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { setResolver } from '@ensdomains/ensjs/wallet'
+ * import { setResolver } from '@ensdomains/ensjs/wallet/v1'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

@@ -58,7 +58,7 @@ export type GetExpiryErrorType =
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getExpiry } from '@ensdomains/ensjs/public'
+ * import { getExpiry } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

@@ -35,7 +35,7 @@ export type GetSubregistryHistoryErrorType = GetLogsErrorType
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { getSubregistryHistory } from '@ensdomains/ensjs/public'
+ * import { getSubregistryHistory } from '@ensdomains/ensjs/public/v2'
  *
  * const client = createPublicClient({
  *   chain: mainnet,

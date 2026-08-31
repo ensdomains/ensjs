@@ -119,7 +119,7 @@ export type SetRecordsErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { setRecords } from '@ensdomains/ensjs/wallet'
+ * import { setRecords } from '@ensdomains/ensjs/wallet/v1'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

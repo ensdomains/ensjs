@@ -137,7 +137,7 @@ export type DeployVerifiableProxyErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { deployVerifiableProxy } from '@ensdomains/ensjs/wallet'
+ * import { deployVerifiableProxy } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

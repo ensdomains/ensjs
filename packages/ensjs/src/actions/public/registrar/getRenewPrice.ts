@@ -39,7 +39,7 @@ export type GetRenewPriceErrorType = ReadContractErrorType | TypeError
  * @returns Renewal price in `paymentToken` units. {@link GetRenewPriceReturnType}
  *
  * @example
- * import { getRenewPrice } from '@ensdomains/ensjs/public/v2'
+ * import { getRenewPrice } from '@ensdomains/ensjs/public'
  *
  * const price = await getRenewPrice(client, {
  *   renewerAddress: '0x...',
