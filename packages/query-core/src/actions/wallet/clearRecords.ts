@@ -7,7 +7,7 @@ import {
   type ClearRecordsParameters as ensjs_ClearRecordsParameters,
   type ClearRecordsReturnType as ensjs_ClearRecordsReturnType,
   clearRecords as ensjs_clearRecords,
-} from '@ensdomains/ensjs/wallet'
+} from '@ensdomains/ensjs/wallet/v1'
 import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,

@@ -94,9 +94,11 @@ packages/
 - `v2/registry/` - V2 registry utilities (labelToCanonicalId)
 - `v2/roles/` - Role encoding/decoding
 
-**Exports** (`src/exports/`): Public API surface
-- `public.ts` - Public client actions
-- `wallet.ts` - Wallet client actions
+**Exports** (`src/exports/`): Public API surface. Each barrel maps 1:1 onto the action
+folder it covers, so adding an action means adding one line to exactly one barrel:
+- `public.ts` / `wallet.ts` - version-agnostic actions only (`resolver/`, `registrar/`, `erc165/`)
+- `public/v1.ts` / `wallet/v1.ts` - everything under `actions/*/v1/`
+- `public/v2.ts` / `wallet/v2.ts` - everything under `actions/*/v2/`
 - `chain.ts` - Chain configurations
 
 ### Action Pattern
