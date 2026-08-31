@@ -113,7 +113,7 @@ export type CreateSubnameV2ErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { createSubnameV2 } from '@ensdomains/ensjs/wallet'
+ * import { createSubnameV2 } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,

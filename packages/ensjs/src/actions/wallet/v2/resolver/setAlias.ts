@@ -92,7 +92,7 @@ export type SetAliasErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { setAlias } from '@ensdomains/ensjs/wallet'
+ * import { setAlias } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,

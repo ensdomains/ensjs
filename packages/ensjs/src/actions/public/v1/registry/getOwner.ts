@@ -94,7 +94,7 @@ export type GetOwnerErrorType =
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { getOwner } from '@ensdomains/ensjs/public'
+ * import { getOwner } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),

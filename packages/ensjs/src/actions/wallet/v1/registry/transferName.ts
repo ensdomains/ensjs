@@ -261,7 +261,7 @@ export type TransferNameErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { transferName } from '@ensdomains/ensjs/wallet'
+ * import { transferName } from '@ensdomains/ensjs/wallet/v1'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),

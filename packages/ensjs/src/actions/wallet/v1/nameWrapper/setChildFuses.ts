@@ -110,7 +110,7 @@ export type SetChildFusesErrorType =
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { setChildFuses } from '@ensdomains/ensjs/wallet'
+ * import { setChildFuses } from '@ensdomains/ensjs/wallet/v1'
  *
  * const wallet = createWalletClient({
  *   chain: addEnsContracts(mainnet),
