@@ -99,6 +99,9 @@ describe('decodeContentHash', () => {
   it('returns null when empty bytes', () => {
     expect(decodeContentHash('0x')).toBeNull()
   })
+  it('throws for unrecognised codec', () => {
+    expect(() => decodeContentHash('0xdeadbeef')).toThrow()
+  })
 })
 describe('isValidContentHash', () => {
   it('returns true for valid content hash', () => {
@@ -110,6 +113,12 @@ describe('isValidContentHash', () => {
   })
   it('returns false for invalid content hash', () => {
     expect(isValidContentHash('0x1234')).toBe(false)
+  })
+  it('returns false for empty content hash', () => {
+    expect(isValidContentHash('0x')).toBe(false)
+  })
+  it('returns false for unrecognised codec', () => {
+    expect(isValidContentHash('0xdeadbeef')).toBe(false)
   })
 })
 describe('getProtocolType', () => {

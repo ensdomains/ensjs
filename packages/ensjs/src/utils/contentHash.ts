@@ -100,8 +100,12 @@ export type IsValidContentHashErrorType = ErrorType | GetDisplayCodecErrorType
 
 export function isValidContentHash(encoded: unknown) {
   if (typeof encoded !== 'string') return false
-  const codec = getCodec(encoded)
-  return Boolean(codec && isHex(encoded))
+  try {
+    const codec = getCodec(encoded)
+    return Boolean(codec && isHex(encoded))
+  } catch {
+    return false
+  }
 }
 
 // ================================
