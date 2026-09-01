@@ -87,6 +87,14 @@ export function decodeContentHash(encoded: Hex): DecodedContentHash | null {
   if (!encoded || encoded === '0x') {
     return null
   }
+  // NB: intentionally left throwing - decodeContentHashResult()'s
+  // `strict` option relies on this propagating so it can choose whether
+  // to surface or swallow it (see getContentHash.ts and its test
+  // 'throws when strict is true and decoding fails'). Callers that want a
+  // safe, never-throwing read (isValidContentHash, the getRecords.ts
+  // multicall path, the subgraph ContenthashChanged mapper) guard for it
+  // themselves instead of this function silently downgrading every caller
+  // to non-strict.
   const decoded = decode(encoded)
   const protocolType = getDisplayCodec(encoded)
   return { protocolType, decoded }
@@ -100,8 +108,12 @@ export type IsValidContentHashErrorType = ErrorType | GetDisplayCodecErrorType
 
 export function isValidContentHash(encoded: unknown) {
   if (typeof encoded !== 'string') return false
-  const codec = getCodec(encoded)
-  return Boolean(codec && isHex(encoded))
+  try {
+    const codec = getCodec(encoded)
+    return Boolean(codec && isHex(encoded))
+  } catch {
+    return false
+  }
 }
 
 // ================================
