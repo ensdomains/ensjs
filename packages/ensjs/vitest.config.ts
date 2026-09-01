@@ -22,6 +22,7 @@ const pureLogicTests = [
   'src/actions/dns/getDnsOwner.test.ts',
   'src/actions/public/getNames.test.ts',
   'src/actions/public/resolveNameData.test.ts',
+  'src/actions/wallet/v2/verifiableFactory/**/*.test.ts',
 ]
 
 export default defineConfig({

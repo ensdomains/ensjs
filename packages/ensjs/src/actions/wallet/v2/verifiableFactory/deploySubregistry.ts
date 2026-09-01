@@ -13,7 +13,7 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { encodeFunctionData, keccak256, stringToBytes } from 'viem'
+import { encodeFunctionData } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
@@ -25,6 +25,7 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../../utils/clientWithOverrides.js'
+import { generateDefaultSalt } from '../../../../utils/verifiableFactory/generateDefaultSalt.js'
 
 // ================================
 // Constants
@@ -33,7 +34,6 @@ import {
 const DEFAULT_ROLE_BITMAP = BigInt(
   '0x1111111111111111111111111111111111111111111111111111111111111111',
 )
-const DEFAULT_SALT = BigInt(keccak256(stringToBytes(new Date().toISOString())))
 
 // ================================
 // Write parameters
@@ -50,8 +50,8 @@ export type DeploySubregistryWriteParametersParameters = {
   roleBitmap?: bigint
   /**
    * The salt for proxy deployment.
-   * If omitted, a timestamp-based salt is generated via
-   * `keccak256(stringToBytes(new Date().toISOString()))`.
+   * If omitted, a fresh cryptographically random salt is generated on
+   * every call via `crypto.getRandomValues`.
    */
   salt?: bigint
 }
@@ -73,7 +73,7 @@ export const deploySubregistryWriteParameters = <
     implAddress,
     adminAddress,
     roleBitmap = DEFAULT_ROLE_BITMAP,
-    salt = DEFAULT_SALT,
+    salt = generateDefaultSalt(),
   }: DeploySubregistryWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
