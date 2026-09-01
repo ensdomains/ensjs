@@ -1,4 +1,8 @@
-export { createSubgraphClient } from './actions/subgraph/client.js'
+export {
+  createSubgraphClient,
+  type SubgraphClient,
+  type SubgraphVariables,
+} from './actions/subgraph/client.js'
 export type {
   AbiChanged,
   AddrChanged,

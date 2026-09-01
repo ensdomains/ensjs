@@ -1,5 +1,5 @@
-import { gql } from 'graphql-request'
 import type { Address, Hex } from 'viem'
+import { gql } from './gql.js'
 
 export const domainDetailsWithoutParentFragment = gql`
   fragment DomainDetailsWithoutParent on Domain {

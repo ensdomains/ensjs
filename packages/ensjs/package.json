@@ -136,8 +136,6 @@
     "@ensdomains/content-hash": "3.1.0-rc.1",
     "@ensdomains/ensjs-abi": "workspace:*",
     "dns-packet": "^5.3.1",
-    "graphql": "^16.11.0",
-    "graphql-request": "7.2.0",
     "ts-pattern": "^5.4.0"
   },
   "devDependencies": {
@@ -149,6 +147,7 @@
     "@types/node": "^22.15.14",
     "@types/pako": "^2.0.3",
     "@vitest/coverage-v8": "^3.2.6",
+    "graphql": "^16.11.0",
     "pako": "^2.1.0",
     "typedoc": "^0.24.8",
     "typedoc-plugin-markdown": "^4.0.0-next.16",
@@ -156,7 +155,13 @@
     "vitest": "^3.2.6"
   },
   "peerDependencies": {
+    "graphql": "^16.0.0 || ^17.0.0",
     "viem": "^2.9.2"
+  },
+  "peerDependenciesMeta": {
+    "graphql": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22"

@@ -137,4 +137,4 @@ export const actionName = async (
 - `@adraffy/ens-normalize` - Name normalization
 - `@ensdomains/address-encoder` - Address encoding
 - `@ensdomains/content-hash` - Content hash encoding
-- `graphql-request` - Subgraph queries
+- `graphql` (optional peer dependency `^16.0.0 || ^17.0.0`) - Parsing/printing subgraph queries; only needed by the `/subgraph` entrypoint, whose client is otherwise plain `fetch`

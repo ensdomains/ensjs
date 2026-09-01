@@ -1,10 +1,10 @@
-import type { GraphQLClient } from 'graphql-request'
-import { gql } from 'graphql-request'
 import type { Address, Hex } from 'viem'
 import { namehash } from 'viem/ens'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import type { DateWithValue } from '../../types/index.js'
+import type { SubgraphClient } from './client.js'
 import { createSubgraphClient } from './client.js'
+import { gql } from './gql.js'
 
 export type GetSubgraphRecordsParameters = {
   /** Name to get records for */
@@ -82,7 +82,7 @@ type GetResolverResultReturnType = {
 } | null
 
 const getCustomResolverResult = async (
-  subgraphClient: GraphQLClient,
+  subgraphClient: SubgraphClient,
   {
     id,
     resolverAddress,
@@ -107,7 +107,7 @@ const getCustomResolverResult = async (
 }
 
 const getInheritedResolverResult = async (
-  subgraphClient: GraphQLClient,
+  subgraphClient: SubgraphClient,
   {
     id,
   }: {
