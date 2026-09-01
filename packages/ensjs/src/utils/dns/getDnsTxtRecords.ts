@@ -28,7 +28,7 @@ export const getDnsTxtRecords = async ({
   endpoint = 'https://cloudflare-dns.com/dns-query',
 }: GetDnsTxtRecordsParameters): Promise<GetDnsTxtRecordsReturnType> => {
   const response: DnsResponse = await fetch(
-    `${endpoint}?name=${name}.&type=TXT&do=1`,
+    `${endpoint}?name=${encodeURIComponent(name)}.&type=TXT&do=1`,
     {
       method: 'GET',
       headers: {
