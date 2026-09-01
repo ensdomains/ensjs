@@ -1,8 +1,18 @@
+import { proxyInitializeSnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
+import { decodeFunctionData, type Hex } from 'viem'
 import { expect, it, vi } from 'vitest'
 import {
   deployVerifiableProxy,
   deployVerifiableProxyWriteParameters,
 } from './deployVerifiableProxy.js'
+
+const decodedRoleBitmap = (callData: Hex): bigint => {
+  const { args } = decodeFunctionData({
+    abi: proxyInitializeSnippet,
+    data: callData,
+  })
+  return args[1]
+}
 
 const fakeClient = {
   chain: { id: 1 },
@@ -35,16 +45,14 @@ it('still honors an explicitly provided salt', () => {
 
 it('writeParameters layer honors a custom roleBitmap', () => {
   const customBitmap = 0x1n
-  const defaultBitmapParams = deployVerifiableProxyWriteParameters(fakeClient, {
-    factoryAddress: '0x24e32c34effb021cc360b6a4e1de2850dcc59956',
-    implAddress: '0xc3ae19b222d527d3cdda617953ab878a35527e54',
-  })
   const customBitmapParams = deployVerifiableProxyWriteParameters(fakeClient, {
     factoryAddress: '0x24e32c34effb021cc360b6a4e1de2850dcc59956',
     implAddress: '0xc3ae19b222d527d3cdda617953ab878a35527e54',
     roleBitmap: customBitmap,
   })
-  expect(customBitmapParams.args[2]).not.toEqual(defaultBitmapParams.args[2])
+  expect(decodedRoleBitmap(customBitmapParams.args[2] as Hex)).toEqual(
+    customBitmap,
+  )
 })
 
 it('forwards a custom roleBitmap from the action through to the transaction (regression: it was previously dropped, silently granting full permissions instead)', async () => {
@@ -58,23 +66,11 @@ it('forwards a custom roleBitmap from the action through to the transaction (reg
     roleBitmap: customBitmap,
   } as any)
 
-  const sentCallData = writeContractSpy.mock.calls[0][0].args[2]
-  const expectedWithDefaultBitmap = deployVerifiableProxyWriteParameters(
-    fakeClient,
-    {
-      factoryAddress: '0x24e32c34effb021cc360b6a4e1de2850dcc59956',
-      implAddress: '0xc3ae19b222d527d3cdda617953ab878a35527e54',
-    },
-  ).args[2]
-  const expectedWithCustomBitmap = deployVerifiableProxyWriteParameters(
-    fakeClient,
-    {
-      factoryAddress: '0x24e32c34effb021cc360b6a4e1de2850dcc59956',
-      implAddress: '0xc3ae19b222d527d3cdda617953ab878a35527e54',
-      roleBitmap: customBitmap,
-    },
-  ).args[2]
+  const sentCallData = writeContractSpy.mock.calls[0][0].args[2] as Hex
 
-  expect(sentCallData).toEqual(expectedWithCustomBitmap)
-  expect(sentCallData).not.toEqual(expectedWithDefaultBitmap)
+  // Decode the actual on-chain calldata and assert the roleBitmap that was
+  // requested is the one that lands in the transaction - not merely "some
+  // value different from the default", which would also pass for an
+  // incorrectly-encoded bitmap.
+  expect(decodedRoleBitmap(sentCallData)).toEqual(customBitmap)
 })
