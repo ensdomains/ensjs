@@ -1,4 +1,3 @@
-import { gql } from 'graphql-request'
 import { namehash } from 'viem/ens'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import {
@@ -7,6 +6,7 @@ import {
   isEncodedLabelhash,
 } from '../../utils/name/labels.js'
 import { createSubgraphClient } from './client.js'
+import { gql } from './gql.js'
 
 export type GetDecodedNameParameters = {
   /** Name with unknown labels */

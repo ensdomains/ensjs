@@ -1,6 +1,11 @@
 import { namehash } from 'viem/ens'
-import { describe, expect, it } from 'vitest'
-import { requestMiddleware, responseMiddleware } from './client.js'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { SubgraphRequestError } from '../../errors/subgraph.js'
+import {
+  createSubgraphClient,
+  hashInvalidNames,
+  injectIdSelections,
+} from './client.js'
 
 const queryWithoutId = `
 query getNames($id: ID!, $expiryDate: Int) {
@@ -31,14 +36,6 @@ query getNames($id: ID!, $expiryDate: Int) {
     }
   }
 `
-
-const mockRequest = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ query: queryWithoutId }),
-}
 
 const mockResponse = {
   data: {
@@ -148,22 +145,131 @@ const mockResponse = {
   status: 200,
 }
 
-describe('requestMiddleware', () => {
+describe('injectIdSelections', () => {
   it('should add id to a SelectionSet if name is present and id is not', () => {
-    const result = requestMiddleware(mockRequest as any)
-    const body = (result as any).body as string
-    expect(body.match(/domain.*id.*id.*domains.*id.*id/)?.length).toBe(1)
+    const result = injectIdSelections(queryWithoutId).replace(/\s+/g, ' ')
+    expect(result).toContain('parent { name id }')
+  })
+
+  it('should not add id to a SelectionSet that already selects it', () => {
+    const query = 'query { domain { id name } }'
+    const result = injectIdSelections(query).replace(/\s+/g, ' ')
+    expect(result).toContain('domain { id name }')
+  })
+
+  it('should leave a SelectionSet without name alone', () => {
+    const query = 'query { domain { labelhash createdAt } }'
+    const result = injectIdSelections(query).replace(/\s+/g, ' ')
+    expect(result).toContain('domain { labelhash createdAt }')
   })
 })
 
-describe('responseMiddleware', () => {
+describe('hashInvalidNames', () => {
   it('should replace name with the namehash when there is an invalid name and id combo', () => {
     const response = { ...mockResponse }
-    responseMiddleware(response as any, {} as any)
+    hashInvalidNames(response.data)
     expect(response.data.account.domains[0].name).toBe(
       namehash(
         '0xb54c7c79c89d571f1fbf4c67f524e336a04441eeee4d76f156e835da99a46ddb',
       ),
+    )
+  })
+})
+
+describe('createSubgraphClient', () => {
+  const client = createSubgraphClient({
+    chain: { subgraphs: { ens: { url: 'http://localhost:8000/subgraph' } } },
+  })
+
+  const stubFetch = (body: string, status = 200) => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(body, {
+          status,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    return fetchMock
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('should post the query and variables, with ids injected', async () => {
+    const fetchMock = stubFetch(JSON.stringify({ data: { domain: null } }))
+
+    await client.request(
+      'query getDomain($id: String!) { domain(id: $id) { name } }',
+      {
+        id: '0x123',
+      },
+    )
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ]
+    expect(url).toBe('http://localhost:8000/subgraph')
+    expect(init.method).toBe('POST')
+    expect(new Headers(init.headers).get('Content-Type')).toBe(
+      'application/json',
+    )
+
+    const body = JSON.parse(init.body as string)
+    expect(body.variables).toEqual({ id: '0x123' })
+    expect(body.query.replace(/\s+/g, ' ')).toContain(
+      'domain(id: $id) { name id }',
+    )
+  })
+
+  it('should return the data payload, with invalid names hashed', async () => {
+    stubFetch(
+      JSON.stringify({
+        data: {
+          domain: {
+            id: '0x0000000000000000000000000000000000000000000000000000000000000001',
+            name: 'test.eth',
+          },
+        },
+      }),
+    )
+
+    const result = await client.request<{
+      domain: { name: string; invalidName?: boolean }
+    }>('query { domain { id name } }')
+
+    expect(result.domain.name).toBe(namehash('test.eth'))
+    expect(result.domain.invalidName).toBe(true)
+  })
+
+  it('should throw when the response carries GraphQL errors', async () => {
+    stubFetch(
+      JSON.stringify({
+        errors: [{ message: 'Field "nope" not found', path: ['domain'] }],
+      }),
+    )
+
+    await expect(client.request('query { domain { nope } }')).rejects.toThrow(
+      SubgraphRequestError,
+    )
+  })
+
+  it('should throw when the response status is not ok', async () => {
+    stubFetch(JSON.stringify({ data: null }), 502)
+
+    await expect(client.request('query { domain { name } }')).rejects.toThrow(
+      /status 502/,
+    )
+  })
+
+  it('should throw when the response is not JSON', async () => {
+    stubFetch('<html>bad gateway</html>', 200)
+
+    await expect(client.request('query { domain { name } }')).rejects.toThrow(
+      /not valid JSON/,
     )
   })
 })

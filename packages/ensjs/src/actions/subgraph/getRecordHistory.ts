@@ -1,9 +1,9 @@
-import { gql } from 'graphql-request'
 import { namehash } from 'viem'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import { createSubgraphClient } from './client.js'
 import type { ResolverEvent } from './events.js'
 import type { ReturnResolverEvent } from './getNameHistory.js'
+import { gql } from './gql.js'
 import { decodeResolverEvents } from './utils.js'
 
 type SubgraphResult = {

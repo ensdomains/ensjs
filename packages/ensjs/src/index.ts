@@ -25,6 +25,8 @@ export {
   FilterKeyRequiredError,
   InvalidFilterKeyError,
   InvalidOrderByError,
+  type SubgraphGraphQLError,
+  SubgraphRequestError,
 } from './errors/subgraph.js'
 export {
   CampaignReferenceTooLargeError,

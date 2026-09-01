@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { gql } from 'graphql-request'
+
 import type { Address } from 'viem'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import {
@@ -20,6 +20,7 @@ import {
   type SubgraphDomain,
   wrappedDomainDetailsFragment,
 } from './fragments.js'
+import { gql } from './gql.js'
 import { makeNameObject, type Name } from './utils.js'
 
 export type GetNamesForAddressParameters = {

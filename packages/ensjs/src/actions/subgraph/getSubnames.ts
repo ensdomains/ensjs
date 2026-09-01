@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { gql } from 'graphql-request'
+
 import { namehash } from 'viem/ens'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
@@ -16,6 +16,7 @@ import {
   type SubgraphDomain,
   wrappedDomainDetailsFragment,
 } from './fragments.js'
+import { gql } from './gql.js'
 import { makeNameObject, type Name } from './utils.js'
 
 export type GetSubnamesParameters = {

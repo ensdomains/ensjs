@@ -1,7 +1,10 @@
 import { defineConfig } from 'vitest/config'
 
 // Shared excludes for all projects.
-const baseExclude = ['data/**/*', 'src/actions/subgraph/**/*.test.ts']
+// The subgraph action tests need a live ENSNode instance, so they stay out of
+// both projects. `client.test.ts` next to them is pure logic (query rewriting,
+// name hashing, a stubbed fetch) and runs in the parallel project below.
+const baseExclude = ['data/**/*', 'src/actions/subgraph/get*.test.ts']
 
 // Pure-logic tests: encoders/coders, name utils, fuses/roles, content hash,
 // formatting, CCIP helpers, and a couple of actions that only exercise encoding
@@ -15,6 +18,7 @@ const baseExclude = ['data/**/*', 'src/actions/subgraph/**/*.test.ts']
 // sequentially, in one project (fileParallelism: false).
 const pureLogicTests = [
   'src/utils/**/*.test.ts',
+  'src/actions/subgraph/client.test.ts',
   'src/actions/dns/getDnsOwner.test.ts',
   'src/actions/public/getNames.test.ts',
   'src/actions/public/resolveNameData.test.ts',

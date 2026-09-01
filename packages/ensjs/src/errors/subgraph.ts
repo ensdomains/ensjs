@@ -69,3 +69,44 @@ export class InvalidOrderByError extends BaseError {
     this.supportedOrderBys = supportedOrderBys
   }
 }
+
+export type SubgraphGraphQLError = {
+  message: string
+  locations?: { line: number; column: number }[]
+  path?: (string | number)[]
+  extensions?: Record<string, unknown>
+}
+
+export class SubgraphRequestError extends BaseError {
+  status: number
+
+  errors: SubgraphGraphQLError[]
+
+  override name = 'SubgraphRequestError'
+
+  constructor({
+    status,
+    errors = [],
+    details,
+  }: {
+    status: number
+    errors?: SubgraphGraphQLError[]
+    details?: string
+  }) {
+    super(
+      errors.length
+        ? 'Subgraph query returned errors'
+        : `Subgraph request failed with status ${status}`,
+      {
+        metaMessages: errors.length
+          ? errors.map(({ message, path }) =>
+              path?.length ? `- ${path.join('.')}: ${message}` : `- ${message}`,
+            )
+          : undefined,
+        details,
+      },
+    )
+    this.status = status
+    this.errors = errors
+  }
+}

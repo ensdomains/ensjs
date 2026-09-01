@@ -1,9 +1,9 @@
-import { gql } from 'graphql-request'
 import { type Address, getAddress, namehash } from 'viem'
 import type { ChainWithSubgraph } from '../../clients/l1.js'
 import { UnsupportedNameTypeError } from '../../errors/general.js'
 import { getNameType } from '../../utils/name/getNameType.js'
 import { createSubgraphClient } from './client.js'
+import { gql } from './gql.js'
 
 export type GetSubgraphRegistrantParameters = {
   /** Name to get registrant for */
