@@ -97,4 +97,26 @@ describe('decodeContenthashResult', () => {
       Version: viem@2.47.10]
     `)
   })
+
+  // Distinct from the case above: the outer ABI decode succeeds (well-formed
+  // `bytes` return data), but the codec inside those bytes is unrecognised.
+  // This exercises decodeContentHash's own throw, propagated through
+  // decodeContentHashResult - not decodeFunctionResult's.
+  it('returns null when strict is false and the content hash codec is unrecognised', () => {
+    const encoded = encodeFunctionResult({
+      abi: publicResolverContenthashSnippet,
+      functionName: 'contenthash',
+      result: '0xdeadbeef',
+    })
+    expect(decodeContentHashResult(encoded, { strict: false })).toBeNull()
+  })
+
+  it('throws when strict is true and the content hash codec is unrecognised', () => {
+    const encoded = encodeFunctionResult({
+      abi: publicResolverContenthashSnippet,
+      functionName: 'contenthash',
+      result: '0xdeadbeef',
+    })
+    expect(() => decodeContentHashResult(encoded, { strict: true })).toThrow()
+  })
 })
