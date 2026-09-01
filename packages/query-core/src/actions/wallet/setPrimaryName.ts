@@ -7,7 +7,7 @@ import {
   type SetPrimaryNameParameters as ensjs_SetPrimaryNameParameters,
   type SetPrimaryNameReturnType as ensjs_SetPrimaryNameReturnType,
   setPrimaryName as ensjs_setPrimaryName,
-} from '@ensdomains/ensjs/wallet'
+} from '@ensdomains/ensjs/wallet/v1'
 import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,

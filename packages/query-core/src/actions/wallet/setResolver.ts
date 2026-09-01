@@ -7,7 +7,7 @@ import {
   type SetResolverParameters as ensjs_SetResolverParameters,
   type SetResolverReturnType as ensjs_SetResolverReturnType,
   setResolver as ensjs_setResolver,
-} from '@ensdomains/ensjs/wallet'
+} from '@ensdomains/ensjs/wallet/v1'
 import { type Config, getConnectorClient, type SelectChains } from '@wagmi/core'
 import type {
   ChainIdParameter,

@@ -48,6 +48,10 @@
       "types": "./dist/exports/wallet.d.ts",
       "default": "./dist/exports/wallet.js"
     },
+    "./wallet/v1": {
+      "types": "./dist/exports/wallet/v1.d.ts",
+      "default": "./dist/exports/wallet/v1.js"
+    },
     "./wallet/v2": {
       "types": "./dist/exports/wallet/v2.d.ts",
       "default": "./dist/exports/wallet/v2.js"
@@ -73,14 +77,29 @@
       "public": [
         "./dist/exports/public.d.ts"
       ],
+      "public/v1": [
+        "./dist/exports/public/v1.d.ts"
+      ],
+      "public/v2": [
+        "./dist/exports/public/v2.d.ts"
+      ],
       "subgraph": [
         "./dist/subgraph.d.ts"
       ],
       "utils": [
         "./dist/utils/index.d.ts"
       ],
+      "utils/v2": [
+        "./dist/utils/v2/index.d.ts"
+      ],
       "wallet": [
         "./dist/exports/wallet.d.ts"
+      ],
+      "wallet/v1": [
+        "./dist/exports/wallet/v1.d.ts"
+      ],
+      "wallet/v2": [
+        "./dist/exports/wallet/v2.d.ts"
       ],
       "chain": [
         "./dist/exports/chain.d.ts"

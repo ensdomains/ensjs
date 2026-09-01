@@ -7,8 +7,11 @@ import type { ReturnResolverEvent } from '../../subgraph.js'
 import type { DateWithValue } from '../../types/index.js'
 import { decodeContentHash } from '../../utils/contentHash.js'
 import { truncateFormat } from '../../utils/format.js'
-import { type DecodedFuses, decodeFuses } from '../../utils/fuses.js'
 import { decryptName } from '../../utils/name/labels.js'
+import {
+  type DecodedFuses,
+  decodeFuses,
+} from '../../utils/v1/nameWrapper/fuses.js'
 import type { ResolverEvent } from './events.js'
 import type { SubgraphDomain } from './fragments.js'
 

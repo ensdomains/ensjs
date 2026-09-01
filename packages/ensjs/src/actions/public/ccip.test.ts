@@ -2,7 +2,7 @@ import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
 import { addEnsL1Contracts } from '../../index.js'
-import { getRecords } from './getRecords.js'
+import { getRecords } from './resolver/getRecords.js'
 
 vi.setConfig({
   testTimeout: 30000,

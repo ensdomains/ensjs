@@ -8,8 +8,8 @@ import {
   waitForTransaction,
   walletClient,
 } from '../../test/addTestContracts.js'
-import { getResolver } from '../public/getResolver.js'
-import { getOwner } from '../public/v1/getOwner.js'
+import { getResolver } from '../public/resolver/getResolver.js'
+import { getOwner } from '../public/v1/registry/getOwner.js'
 import {
   type GetDnsImportDataReturnType,
   getDnsImportData,

@@ -4,7 +4,7 @@ import {
   type SetRecordsParameters as ensjs_WriteEnsRecordsParameters,
   type SetRecordsReturnType as ensjs_WriteEnsRecordsReturnType,
   setRecordsWriteParameters,
-} from '@ensdomains/ensjs/wallet'
+} from '@ensdomains/ensjs/wallet/v1'
 import type { MutateOptions, MutationOptions } from '@tanstack/react-query'
 import type { Abi, Account, Chain, Client, Transport } from 'viem'
 import { type WriteContractParameters, writeContract } from 'wagmi/actions'
