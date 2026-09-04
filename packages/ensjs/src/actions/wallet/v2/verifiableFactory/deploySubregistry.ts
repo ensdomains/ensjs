@@ -80,10 +80,11 @@ export const deploySubregistryWriteParameters = <
 
   const finalAdminAddress = adminAddress ?? client.account.address
 
+  // `UserRegistry.initialize(Grant[] grants)` since contracts-v2 post-audit-2.
   const callData = encodeFunctionData({
     abi: subregistryInitializeSnippet,
     functionName: 'initialize',
-    args: [finalAdminAddress, roleBitmap],
+    args: [[{ account: finalAdminAddress, roleBitmap }]],
   })
 
   return {

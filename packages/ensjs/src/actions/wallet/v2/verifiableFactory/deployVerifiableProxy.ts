@@ -1,5 +1,5 @@
 import {
-  proxyInitializeSnippet,
+  eacGrantInitializeSnippet,
   verifiableFactoryDeployProxySnippet,
 } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import type {
@@ -47,8 +47,10 @@ export type DeployVerifiableProxyWriteParametersParameters = {
   implAddress: Address
   /**
    * The initialization calldata.
-   * If omitted, defaults to
-   * `initialize(client.account.address, DEFAULT_ROLE_BITMAP)`.
+   * If omitted, defaults to the `IEACGrantInitializable` form
+   * `initialize([{ account: client.account.address, roleBitmap }])`, which is
+   * what `UserRegistry` proxies take. `PermissionedResolver` proxies take
+   * `initialize(grants, calls)`; use `deployPermissionedResolver` for those.
    */
   callData?: Hex
   /**
@@ -90,9 +92,9 @@ export const deployVerifiableProxyWriteParameters = <
   const finalCallData =
     callData ??
     encodeFunctionData({
-      abi: proxyInitializeSnippet,
+      abi: eacGrantInitializeSnippet,
       functionName: 'initialize',
-      args: [client.account.address, roleBitmap],
+      args: [[{ account: client.account.address, roleBitmap }]],
     })
 
   return {
