@@ -1,8 +1,6 @@
 import {
-  permissionedResolverAuthorizeAddrRolesSnippet,
-  permissionedResolverAuthorizeNameRolesSnippet,
-  permissionedResolverAuthorizeTextRolesSnippet,
   permissionedResolverGrantRootRolesSnippet,
+  permissionedResolverGrantSetterRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Account,
@@ -10,14 +8,11 @@ import type {
   Chain,
   Client,
   Hash,
-  Hex,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { toHex } from 'viem'
 import { writeContract } from 'viem/actions'
-import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import type {
   Prettify,
@@ -28,6 +23,10 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../../utils/clientWithOverrides.js'
+import {
+  encodeResolverSetterScope,
+  type ResolverSetterScope,
+} from '../../../../utils/v2/roles/resolverResource.js'
 import {
   encodeResolverRoleBitmap,
   type ResolverRole,
@@ -43,47 +42,25 @@ type BaseParameters = {
 }
 
 export type GrantResolverRolesRootParameters = BaseParameters & {
-  /** Grant roles globally (any name, any record type) */
+  /** Grant roles on the root resource: every name, every record of that type */
   scope: 'root'
   /** The resolver roles to grant */
   roles: ResolverRole[]
 }
 
-export type GrantResolverRolesNameParameters = BaseParameters & {
+export type GrantResolverRolesSetterParameters = BaseParameters & {
   /**
-   * Grant roles scoped to a specific name.
-   * Use `name: ""` for any name (equivalent to root).
+   * Grant one setter's role for a single argument (a coin type, a text key,
+   * ...) across every name on the resolver. The role is implied by the setter.
    */
-  scope: 'name'
-  /** The name to grant roles for (dotted format, e.g. "myname.eth") */
-  name: string
-  /** The resolver roles to grant */
-  roles: ResolverRole[]
-}
-
-export type GrantResolverRolesTextParameters = BaseParameters & {
-  /** Grant ROLE_SET_TEXT scoped to a specific text key on a name */
-  scope: 'text'
-  /** The name to grant roles for (dotted format, use "" for any name) */
-  name: string
-  /** The specific text key to grant ROLE_SET_TEXT for */
-  key: string
-}
-
-export type GrantResolverRolesAddrParameters = BaseParameters & {
-  /** Grant ROLE_SET_ADDR scoped to a specific coin type on a name */
-  scope: 'addr'
-  /** The name to grant roles for (dotted format, use "" for any name) */
-  name: string
-  /** The specific coin type to grant ROLE_SET_ADDR for (e.g., 60n for ETH) */
-  coinType: bigint
+  scope: 'setter'
+  /** The setter argument to scope the role to */
+  setter: ResolverSetterScope
 }
 
 export type GrantResolverRolesBaseParameters =
   | GrantResolverRolesRootParameters
-  | GrantResolverRolesNameParameters
-  | GrantResolverRolesTextParameters
-  | GrantResolverRolesAddrParameters
+  | GrantResolverRolesSetterParameters
 
 export type GrantResolverRolesReturnType = Hash
 
@@ -92,10 +69,6 @@ export type GrantResolverRolesErrorType =
   | ClientWithOverridesErrorType
 
 // ─── Write parameters ────────────────────────────────────────────────
-
-function dnsEncode(name: string): Hex {
-  return toHex(packetToBytes(name))
-}
 
 export const grantResolverRolesWriteParameters = <
   chain extends Chain,
@@ -121,38 +94,12 @@ export const grantResolverRolesWriteParameters = <
         args: [encodeResolverRoleBitmap(params.roles), params.targetAccount],
       } as const
 
-    case 'name':
+    case 'setter':
       return {
         ...base,
-        abi: permissionedResolverAuthorizeNameRolesSnippet,
-        functionName: 'authorizeNameRoles',
-        args: [
-          dnsEncode(params.name),
-          encodeResolverRoleBitmap(params.roles),
-          params.targetAccount,
-          true,
-        ],
-      } as const
-
-    case 'text':
-      return {
-        ...base,
-        abi: permissionedResolverAuthorizeTextRolesSnippet,
-        functionName: 'authorizeTextRoles',
-        args: [dnsEncode(params.name), params.key, params.targetAccount, true],
-      } as const
-
-    case 'addr':
-      return {
-        ...base,
-        abi: permissionedResolverAuthorizeAddrRolesSnippet,
-        functionName: 'authorizeAddrRoles',
-        args: [
-          dnsEncode(params.name),
-          params.coinType,
-          params.targetAccount,
-          true,
-        ],
+        abi: permissionedResolverGrantSetterRolesSnippet,
+        functionName: 'grantSetterRoles',
+        args: [encodeResolverSetterScope(params.setter), params.targetAccount],
       } as const
   }
 }
@@ -169,21 +116,19 @@ export type GrantResolverRolesParameters<
 >
 
 /**
- * Grant roles on a PermissionedResolver.
+ * Grant roles on a PermissionedResolver (V2).
  *
- * The `scope` parameter determines the granularity of the grant:
+ * Roles are never scoped to a name; a resolver is already per account. The
+ * `scope` parameter picks between:
  *
- * - **`'root'`**: Grant roles globally (any name, any record type).
- *   The caller must hold the admin variant of each role.
+ * - **`'root'`**: grant roles on the root resource, covering every name and
+ *   every record of those types. The caller must hold the admin variant of
+ *   each role on root.
  *
- * - **`'name'`**: Grant roles scoped to a specific name.
- *   Use `name: ""` for any name (equivalent to root scope).
- *
- * - **`'text'`**: Grant `ROLE_SET_TEXT` for a specific text key on a name.
- *   The caller must have `ROLE_SET_TEXT` admin on the name's resource.
- *
- * - **`'addr'`**: Grant `ROLE_SET_ADDR` for a specific coin type on a name.
- *   The caller must have `ROLE_SET_ADDR` admin on the name's resource.
+ * - **`'setter'`**: grant one setter's role for a single argument (`setAddress`
+ *   for one coin type, `setText` for one text key, `setData`, `setABI`,
+ *   `setInterface`) across every name. The caller must hold that role's admin
+ *   variant on root or on the argument's resource.
  *
  * @param client - Wallet client
  * @param parameters - {@link GrantResolverRolesParameters}
@@ -195,37 +140,25 @@ export type GrantResolverRolesParameters<
  *   resolverAddress: '0x...',
  *   targetAccount: '0xOTHER',
  *   scope: 'root',
- *   roles: ['ROLE_SET_TEXT', 'ROLE_SET_ADDR'],
+ *   roles: ['ROLE_SET_TEXT', 'ROLE_SET_ADDRESS'],
  * })
  *
  * @example
- * // Grant roles scoped to a specific name
+ * // Grant ROLE_SET_TEXT for the `avatar` key only
  * const hash = await grantResolverRoles(walletClient, {
  *   resolverAddress: '0x...',
  *   targetAccount: '0xOTHER',
- *   scope: 'name',
- *   name: 'myname.eth',
- *   roles: ['ROLE_SET_TEXT'],
+ *   scope: 'setter',
+ *   setter: { kind: 'text', key: 'avatar' },
  * })
  *
  * @example
- * // Grant ROLE_SET_TEXT for a specific text key
+ * // Grant ROLE_SET_ADDRESS for coin type 60 only
  * const hash = await grantResolverRoles(walletClient, {
  *   resolverAddress: '0x...',
  *   targetAccount: '0xOTHER',
- *   scope: 'text',
- *   name: 'myname.eth',
- *   key: 'avatar',
- * })
- *
- * @example
- * // Grant ROLE_SET_ADDR for a specific coin type
- * const hash = await grantResolverRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   targetAccount: '0xOTHER',
- *   scope: 'addr',
- *   name: 'myname.eth',
- *   coinType: 60n,
+ *   scope: 'setter',
+ *   setter: { kind: 'address', coinType: 60n },
  * })
  */
 export async function grantResolverRoles<
@@ -240,44 +173,10 @@ export async function grantResolverRoles<
 
   const { scope, resolverAddress, targetAccount, ...txArgs } = params
 
-  let scopeParams: GrantResolverRolesBaseParameters
-  switch (scope) {
-    case 'root':
-      scopeParams = {
-        scope: 'root' as const,
-        resolverAddress,
-        targetAccount,
-        roles: params.roles,
-      }
-      break
-    case 'name':
-      scopeParams = {
-        scope: 'name' as const,
-        resolverAddress,
-        targetAccount,
-        name: params.name,
-        roles: params.roles,
-      }
-      break
-    case 'text':
-      scopeParams = {
-        scope: 'text' as const,
-        resolverAddress,
-        targetAccount,
-        name: params.name,
-        key: params.key,
-      }
-      break
-    case 'addr':
-      scopeParams = {
-        scope: 'addr' as const,
-        resolverAddress,
-        targetAccount,
-        name: params.name,
-        coinType: params.coinType,
-      }
-      break
-  }
+  const scopeParams: GrantResolverRolesBaseParameters =
+    scope === 'root'
+      ? { scope, resolverAddress, targetAccount, roles: params.roles }
+      : { scope, resolverAddress, targetAccount, setter: params.setter }
 
   const writeParameters = grantResolverRolesWriteParameters(
     clientWithOverrides(client, txArgs),

@@ -116,16 +116,17 @@ export {
   permissionedRegistryUnregisterSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 export {
-  permissionedResolverAliasSnippet,
-  permissionedResolverAuthorizeAddrRolesSnippet,
-  permissionedResolverAuthorizeDataRolesSnippet,
-  permissionedResolverAuthorizeNameRolesSnippet,
-  permissionedResolverAuthorizeTextRolesSnippet,
   permissionedResolverGrantRootRolesSnippet,
+  permissionedResolverGrantSetterRolesSnippet,
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
+  permissionedResolverInitializeSnippet,
+  permissionedResolverLinkToNodeSnippet,
+  permissionedResolverLinkToRecordSnippet,
+  permissionedResolverMulticallSnippet,
   permissionedResolverRevokeRolesSnippet,
   permissionedResolverRevokeRootRolesSnippet,
   permissionedResolverRolesSnippet,
+  permissionedResolverSettersSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 export { getChainContractAddress } from './getChainContractAddress.js'

@@ -1,4 +1,4 @@
-import { permissionedResolverAliasSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
+import { permissionedResolverLinkToNodeSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
   Account,
   Address,
@@ -9,9 +9,9 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
+import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
-import { packetToBytes } from 'viem/ens'
-import { getAction, toHex } from 'viem/utils'
+import { getAction } from 'viem/utils'
 import type {
   Prettify,
   WriteTransactionParameters,
@@ -21,45 +21,47 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../../utils/clientWithOverrides.js'
+import { dnsEncodeName } from '../../../../utils/v2/resolver/recordParameters.js'
 
 // ================================
 // Write parameters
 // ================================
 
-export type SetAliasWriteParametersParameters = {
-  /** The source name to alias from */
-  fromName: string
-  /** The target name to alias to */
-  toName: string
+export type LinkToNodeWriteParametersParameters = {
+  /** The name that should start serving the target's records */
+  sourceName: string
+  /** The name whose current record the source should use */
+  targetName: string
   /** The resolver address */
   resolverAddress: Address
 }
 
-export type SetAliasWriteParametersReturnType = ReturnType<
-  typeof setAliasWriteParameters
+export type LinkToNodeWriteParametersReturnType = ReturnType<
+  typeof linkToNodeWriteParameters
 >
 
-export const setAliasWriteParameters = <
+export const linkToNodeWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
   client: Client<Transport, chain, account>,
-  { fromName, toName, resolverAddress }: SetAliasWriteParametersParameters,
+  {
+    sourceName,
+    targetName,
+    resolverAddress,
+  }: LinkToNodeWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const fromNameEncoded = toHex(packetToBytes(fromName))
-  const toNameEncoded = toHex(packetToBytes(toName))
-
   return {
     address: resolverAddress,
-    abi: permissionedResolverAliasSnippet,
-    functionName: 'setAlias',
-    args: [fromNameEncoded, toNameEncoded],
+    abi: permissionedResolverLinkToNodeSnippet,
+    functionName: 'linkToNode',
+    args: [dnsEncodeName(sourceName), namehash(targetName)],
     chain: client.chain,
     account: client.account,
   } as const satisfies WriteContractParameters<
-    typeof permissionedResolverAliasSnippet
+    typeof permissionedResolverLinkToNodeSnippet
   >
 }
 
@@ -67,66 +69,67 @@ export const setAliasWriteParameters = <
 // Action
 // ================================
 
-export type SetAliasParameters<
+export type LinkToNodeParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
 > = Prettify<
-  SetAliasWriteParametersParameters &
+  LinkToNodeWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
 >
 
-export type SetAliasReturnType = Hash
+export type LinkToNodeReturnType = Hash
 
-export type SetAliasErrorType =
+export type LinkToNodeErrorType =
   | ClientWithOverridesErrorType
   | WriteContractErrorType
+  | NamehashErrorType
 
 /**
- * Sets an alias from one name to another in the resolver (V2).
+ * Links a name to the record another name currently uses on a
+ * PermissionedResolver (V2), so both names serve the same records.
+ *
+ * Requires `ROLE_LINK` on the resolver's root resource. Reverts with
+ * `InvalidRecord` if the target name has no record on this resolver yet.
  *
  * @param client - {@link Client}
- * @param parameters - {@link SetAliasParameters}
- * @returns Transaction hash. {@link SetAliasReturnType}
+ * @param parameters - {@link LinkToNodeParameters}
+ * @returns Transaction hash. {@link LinkToNodeReturnType}
  *
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { setAlias } from '@ensdomains/ensjs/wallet/v2'
+ * import { linkToNode } from '@ensdomains/ensjs/wallet/v2'
  *
  * const wallet = createWalletClient({
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })
- * const hash = await setAlias(wallet, {
- *   fromName: 'alias.eth',
- *   toName: 'target.eth',
+ * const hash = await linkToNode(wallet, {
+ *   sourceName: 'alias.eth',
+ *   targetName: 'target.eth',
  *   resolverAddress: '0x...',
  * })
  * // 0x...
  */
-export async function setAlias<
+export async function linkToNode<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
 >(
   client: Client<Transport, chain, account>,
   {
-    fromName,
-    toName,
+    sourceName,
+    targetName,
     resolverAddress,
     ...txArgs
-  }: SetAliasParameters<chain, account, chainOverride>,
-): Promise<SetAliasReturnType> {
+  }: LinkToNodeParameters<chain, account, chainOverride>,
+): Promise<LinkToNodeReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
-  const writeParameters = setAliasWriteParameters(
+  const writeParameters = linkToNodeWriteParameters(
     clientWithOverrides(client, txArgs),
-    {
-      fromName,
-      toName,
-      resolverAddress,
-    },
+    { sourceName, targetName, resolverAddress },
   )
 
   const writeContractAction = getAction(client, writeContract, 'writeContract')

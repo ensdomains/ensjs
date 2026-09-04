@@ -18,6 +18,10 @@ const baseExclude = ['data/**/*', 'src/actions/subgraph/get*.test.ts']
 // sequentially, in one project (fileParallelism: false).
 const pureLogicTests = [
   'src/utils/**/*.test.ts',
+  // PermissionedResolver (V2) write-parameter encoders, no chain access.
+  'src/actions/wallet/v2/resolver/linkRecords.test.ts',
+  'src/actions/wallet/v2/resolver/setRecords.test.ts',
+  'src/actions/wallet/v2/resolver/resolverRolesWriteParameters.test.ts',
   'src/actions/subgraph/client.test.ts',
   'src/actions/dns/getDnsOwner.test.ts',
   'src/actions/public/getNames.test.ts',

@@ -86,16 +86,21 @@ export const proxyDeployedEventSnippet = [
   },
 ] as const
 
-export const subregistryInitializeSnippet = [
+/**
+ * `IEACGrantInitializable.initialize(Grant[] grants)`: the initializer of
+ * `UserRegistry` proxies since contracts-v2 `post-audit-2` (PR #405). Each
+ * grant is `{ account, roleBitmap }` applied on the root resource.
+ */
+export const eacGrantInitializeSnippet = [
   {
     inputs: [
       {
-        name: 'admin',
-        type: 'address',
-      },
-      {
-        name: 'roleBitmap',
-        type: 'uint256',
+        name: 'grants',
+        type: 'tuple[]',
+        components: [
+          { name: 'account', type: 'address' },
+          { name: 'roleBitmap', type: 'uint256' },
+        ],
       },
     ],
     name: 'initialize',
@@ -105,6 +110,14 @@ export const subregistryInitializeSnippet = [
   },
 ] as const
 
+/** Alias of {@link eacGrantInitializeSnippet} for subregistry (`UserRegistry`) proxies. */
+export const subregistryInitializeSnippet = eacGrantInitializeSnippet
+
+/**
+ * @deprecated The `initialize(address admin, uint256 roleBitmap)` form was
+ * removed in contracts-v2 `post-audit-2`. Use {@link eacGrantInitializeSnippet}
+ * for registries and `permissionedResolverInitializeSnippet` for resolvers.
+ */
 export const proxyInitializeSnippet = [
   {
     inputs: [
