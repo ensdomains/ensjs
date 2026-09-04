@@ -156,8 +156,12 @@ export const ensL1Contracts = {
     ensNameWrapper: {
       address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
     },
+    // The V1 PublicResolver. Only V1 actions read this key (dns/importDnsName,
+    // wallet/v1/{setPrimaryName,createSubname,wrapName}), and they pass it as a
+    // resolver for the V1 registry — so it must implement the legacy `addr`
+    // interface. The V2 public resolver does not, and belongs under its own key.
     ensPublicResolver: {
-      address: '0x5239A812ec9A62F46dbb5de8f346C8eFe7553A9f',
+      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
     },
     ensLegacyRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
