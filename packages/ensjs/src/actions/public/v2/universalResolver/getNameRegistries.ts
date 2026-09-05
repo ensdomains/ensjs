@@ -1,4 +1,4 @@
-import { universalResolverFindRegistriesSnippet } from '@ensdomains/ensjs-abi/universalResolver'
+import { universalHelperFindRegistriesSnippet } from '@ensdomains/ensjs-abi/v2/universalHelper'
 import type {
   Address,
   Chain,
@@ -35,7 +35,7 @@ export type GetNameRegistriesErrorType =
  * @returns Array of registry addresses. {@link GetNameRegistriesReturnType}
  */
 export async function getNameRegistries<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<chain, 'ensUniversalHelper'>,
   { name, address }: GetNameRegistriesParameters,
 ): Promise<GetNameRegistriesReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -44,14 +44,14 @@ export async function getNameRegistries<chain extends Chain>(
     address ??
     getChainContractAddress({
       chain: client.chain,
-      contract: 'ensUniversalResolver',
+      contract: 'ensUniversalHelper',
     })
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
   return readContractAction({
     address: contractAddress,
-    abi: universalResolverFindRegistriesSnippet,
+    abi: universalHelperFindRegistriesSnippet,
     functionName: 'findRegistries',
     args: [toHex(packetToBytes(name))],
   })

@@ -1,4 +1,4 @@
-import { universalResolverV2FindOwnerSnippet } from '@ensdomains/ensjs-abi/universalResolver'
+import { universalHelperFindExactOwnerSnippet } from '@ensdomains/ensjs-abi/v2/universalHelper'
 import type {
   Address,
   Chain,
@@ -29,27 +29,31 @@ export type GetOwnerErrorType =
 
 /**
  * Find the owner for a V2 name of any depth.
+ *
+ * Reads `findExactOwner` on the UniversalHelper: the owner of exactly this
+ * name. Its sibling `findNearestOwner` walks up to the closest owned ancestor
+ * instead, which would report every unregistered name as owned.
  * @param client - {@link Client}
  * @param parameters - {@link GetOwnerParameters}
  * @returns The owner address, or the zero address if unowned or not found. {@link GetOwnerReturnType}
  */
 export async function getOwner<chain extends Chain>(
-  client: RequireClientContracts<chain, 'ensUniversalResolver'>,
+  client: RequireClientContracts<chain, 'ensUniversalHelper'>,
   { name }: GetOwnerParameters,
 ): Promise<GetOwnerReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const contractAddress = getChainContractAddress({
     chain: client.chain,
-    contract: 'ensUniversalResolver',
+    contract: 'ensUniversalHelper',
   })
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
   return readContractAction({
     address: contractAddress,
-    abi: universalResolverV2FindOwnerSnippet,
-    functionName: 'findOwner',
+    abi: universalHelperFindExactOwnerSnippet,
+    functionName: 'findExactOwner',
     args: [toHex(packetToBytes(name))],
   })
 }
