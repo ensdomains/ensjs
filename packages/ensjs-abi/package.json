@@ -127,6 +127,10 @@
       "types": "./dist/v2/unlockedMigrationController.d.ts",
       "default": "./dist/v2/unlockedMigrationController.js"
     },
+    "./v2/universalHelper": {
+      "types": "./dist/v2/universalHelper.d.ts",
+      "default": "./dist/v2/universalHelper.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [

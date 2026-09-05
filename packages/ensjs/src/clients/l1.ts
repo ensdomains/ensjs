@@ -58,6 +58,10 @@ export const supportedL1Contracts = [
 
   // UR
   'ensUniversalResolver',
+  // Registry-walking views (findExactOwner / findRegistries /
+  // findParentRegistry). These used to be on the UR, which now only keeps
+  // `findResolver`.
+  'ensUniversalHelper',
 ] as const
 
 export type SupportedL1Contract = (typeof supportedL1Contracts)[number]
@@ -96,6 +100,9 @@ export const ensL1Contracts = {
     },
     ensUniversalResolver: {
       address: '0x5a9236e72a66D3e08B83dcf489B4d850792B6009',
+    },
+    ensUniversalHelper: {
+      address: zeroAddress,
     },
     ensPermissionedResolverImpl: {
       address: zeroAddress,
@@ -170,6 +177,9 @@ export const ensL1Contracts = {
     },
     ensUniversalResolver: {
       address: '0xd26f2040D083Af1cD2962ba303F4BEa0c4faf142',
+    },
+    ensUniversalHelper: {
+      address: '0x1d4cd7545d456f3b6A7E4380182279AFcFa887b6',
     },
     ensPermissionedResolverImpl: {
       address: '0xa9d3814AB151BF6E37A427432795371a8361614e',
