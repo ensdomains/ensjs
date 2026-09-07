@@ -1,4 +1,4 @@
-import { subregistryInitializeSnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
+import { permissionedResolverInitializeSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type { Address } from 'viem'
 import { encodeFunctionData, namehash } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
@@ -39,9 +39,9 @@ beforeAll(async () => {
     factoryAddress: deploymentAddresses.VerifiableFactory,
     implAddress: deploymentAddresses.PermissionedResolverImpl,
     callData: encodeFunctionData({
-      abi: subregistryInitializeSnippet,
+      abi: permissionedResolverInitializeSnippet,
       functionName: 'initialize',
-      args: [accounts[0], ADMIN_ROLES],
+      args: [[{ account: accounts[0], roleBitmap: ADMIN_ROLES }], []],
     }),
     account: accounts[0],
   })

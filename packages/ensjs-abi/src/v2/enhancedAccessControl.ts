@@ -1,3 +1,16 @@
+/**
+ * `Grant` — one `(account, roleBitmap)` pair, as declared by
+ * `contracts-v2` `src/access-control/interfaces/IEACGrantInitializable.sol`.
+ *
+ * Every `EnhancedAccessControl` proxy is initialized from a *list* of these,
+ * not from a single admin + bitmap. Shared by `UserRegistry.initialize` and
+ * `PermissionedResolver.initialize`, so it lives here rather than in either.
+ */
+export const eacGrantComponents = [
+  { name: 'account', type: 'address' },
+  { name: 'roleBitmap', type: 'uint256' },
+] as const
+
 export const eacRolesChangedEventSnippet = [
   {
     inputs: [
@@ -86,6 +99,29 @@ export const eacErrors = [
       { name: 'roleBitmap', type: 'uint256' },
       { name: 'account', type: 'address' },
     ],
+  },
+] as const
+
+/**
+ * `IEACGrantInitializable.initialize(Grant[])` — interface selector
+ * `0x37cb53a8`. This is the initializer a bare `EnhancedAccessControl` proxy
+ * (e.g. `UserRegistry`) takes; `PermissionedResolver` extends it with a
+ * trailing `bytes[] calls` batch.
+ */
+export const eacGrantInitializeSnippet = [
+  ...eacErrors,
+  {
+    inputs: [
+      {
+        name: 'grants',
+        type: 'tuple[]',
+        components: eacGrantComponents,
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
 ] as const
 

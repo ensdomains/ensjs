@@ -1,5 +1,5 @@
 import { publicResolverTextSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
-import { subregistryInitializeSnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
+import { permissionedResolverInitializeSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import { encodeFunctionData, namehash } from 'viem'
 import { expect, it } from 'vitest'
 import {
@@ -22,9 +22,17 @@ it('should allow a name to be cleared v2', async () => {
     factoryAddress: deploymentAddresses.VerifiableFactory,
     implAddress: deploymentAddresses.PermissionedResolverImpl,
     callData: encodeFunctionData({
-      abi: subregistryInitializeSnippet,
+      abi: permissionedResolverInitializeSnippet,
       functionName: 'initialize',
-      args: [accounts[1], RESOLVER_ROLE_SET_TEXT | RESOLVER_ROLE_CLEAR],
+      args: [
+        [
+          {
+            account: accounts[1],
+            roleBitmap: RESOLVER_ROLE_SET_TEXT | RESOLVER_ROLE_CLEAR,
+          },
+        ],
+        [],
+      ],
     }),
     account: accounts[0],
   })

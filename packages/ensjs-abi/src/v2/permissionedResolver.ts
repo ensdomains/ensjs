@@ -1,3 +1,32 @@
+import { eacGrantComponents } from './enhancedAccessControl.js'
+
+/**
+ * `PermissionedResolver.initialize(Grant[] grants, bytes[] calls)` — selector
+ * `0x33cc44a0`. Grants each `(account, roleBitmap)` pair on the root resource,
+ * then runs `calls` through `multicall` so a proxy can be deployed with its
+ * initial records already written.
+ *
+ * NOT `initialize(address,uint256,bytes[])` — that older shape predates
+ * `IEACGrantInitializable` and no longer exists on the deployed implementation,
+ * where it hits the fallback and reverts with empty data.
+ */
+export const permissionedResolverInitializeSnippet = [
+  {
+    inputs: [
+      {
+        name: 'grants',
+        type: 'tuple[]',
+        components: eacGrantComponents,
+      },
+      { name: 'calls', type: 'bytes[]' },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 export const permissionedResolverAliasSnippet = [
   {
     name: 'setAlias',

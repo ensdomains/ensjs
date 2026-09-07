@@ -48,7 +48,11 @@ export type DeployVerifiableProxyWriteParametersParameters = {
   /**
    * The initialization calldata.
    * If omitted, defaults to
-   * `initialize(client.account.address, DEFAULT_ROLE_BITMAP)`.
+   * `initialize([{ account: client.account.address, roleBitmap }])`.
+   *
+   * A `PermissionedResolver` proxy needs its own initializer (it takes a
+   * trailing `bytes[] calls`), so pass explicit `callData` encoded with
+   * `permissionedResolverInitializeSnippet` for those.
    */
   callData?: Hex
   /**
@@ -92,7 +96,7 @@ export const deployVerifiableProxyWriteParameters = <
     encodeFunctionData({
       abi: proxyInitializeSnippet,
       functionName: 'initialize',
-      args: [client.account.address, roleBitmap],
+      args: [[{ account: client.account.address, roleBitmap }]],
     })
 
   return {
@@ -159,6 +163,7 @@ export async function deployVerifiableProxy<
     factoryAddress,
     implAddress,
     callData,
+    roleBitmap,
     salt,
     ...txArgs
   }: DeployVerifiableProxyParameters<chain, account, chainOverride>,
@@ -171,6 +176,7 @@ export async function deployVerifiableProxy<
       factoryAddress,
       implAddress,
       callData,
+      roleBitmap,
       salt,
     },
   )
