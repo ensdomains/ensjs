@@ -83,7 +83,7 @@ export const deploySubregistryWriteParameters = <
   const callData = encodeFunctionData({
     abi: subregistryInitializeSnippet,
     functionName: 'initialize',
-    args: [finalAdminAddress, roleBitmap],
+    args: [[{ account: finalAdminAddress, roleBitmap }]],
   })
 
   return {
