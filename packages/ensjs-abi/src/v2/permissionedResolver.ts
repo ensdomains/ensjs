@@ -27,6 +27,131 @@ export const permissionedResolverInitializeSnippet = [
   },
 ] as const
 
+/**
+ * Record setters.
+ *
+ * Every one takes the DNS-encoded `name` (`bytes`) — NOT the `bytes32 node` the
+ * v1 `PublicResolver` setters take. The resolver derives the record id from the
+ * name itself, so passing a namehash here hits the fallback and reverts with
+ * empty data. Use `toHex(packetToBytes(name))` from `viem/ens` to encode.
+ *
+ * `setAddr` is also renamed to `setAddress`; the other setters keep their v1
+ * names but still change selector because of the first argument:
+ *
+ *   setAddress    0xb4436dde  (v1 setAddr        0x8b95dd71)
+ *   setText       0xc7279f88  (v1 setText        0x10f13a8c)
+ *   setContenthash 0xc5d7badd (v1 setContenthash 0x304e6ade)
+ *   setABI        0xd26f550e  (v1 setABI         0x623195b0)
+ *
+ * See contracts-v2 `src/resolver/PermissionedResolver.sol`.
+ */
+export const permissionedResolverSetAddressSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'coinType', type: 'uint256' },
+      { name: 'addressBytes', type: 'bytes' },
+    ],
+    name: 'setAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverSetTextSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'key', type: 'string' },
+      { name: 'value', type: 'string' },
+    ],
+    name: 'setText',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverSetContenthashSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'hash', type: 'bytes' },
+    ],
+    name: 'setContenthash',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverSetAbiSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'contentType', type: 'uint256' },
+      { name: 'data', type: 'bytes' },
+    ],
+    name: 'setABI',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverSetDataSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'key', type: 'string' },
+      { name: 'value', type: 'bytes' },
+    ],
+    name: 'setData',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverSetNameSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'primaryName', type: 'string' },
+    ],
+    name: 'setName',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+export const permissionedResolverSetInterfaceSnippet = [
+  {
+    inputs: [
+      { name: 'name', type: 'bytes' },
+      { name: 'interfaceId', type: 'bytes4' },
+      { name: 'implementer', type: 'address' },
+    ],
+    name: 'setInterface',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
+/** `multicall(bytes[])` — batches the setters above into one call. */
+export const permissionedResolverMulticallSnippet = [
+  {
+    inputs: [{ name: 'data', type: 'bytes[]' }],
+    name: 'multicall',
+    outputs: [{ name: 'results', type: 'bytes[]' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 export const permissionedResolverAliasSnippet = [
   {
     name: 'setAlias',
