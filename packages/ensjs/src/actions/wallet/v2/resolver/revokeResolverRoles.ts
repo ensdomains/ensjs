@@ -1,7 +1,5 @@
 import {
-  permissionedResolverAuthorizeAddrRolesSnippet,
-  permissionedResolverAuthorizeNameRolesSnippet,
-  permissionedResolverAuthorizeTextRolesSnippet,
+  permissionedResolverRevokeRolesSnippet,
   permissionedResolverRevokeRootRolesSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type {
@@ -10,14 +8,11 @@ import type {
   Chain,
   Client,
   Hash,
-  Hex,
   Transport,
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { toHex } from 'viem'
 import { writeContract } from 'viem/actions'
-import { packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import type {
   Prettify,
@@ -28,6 +23,11 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../../utils/clientWithOverrides.js'
+import {
+  computeResolverResource,
+  type ResolverSetterScope,
+  resolverSetterScopeRole,
+} from '../../../../utils/v2/roles/resolverResource.js'
 import {
   encodeResolverRoleBitmap,
   type ResolverRole,
@@ -43,44 +43,32 @@ type BaseParameters = {
 }
 
 export type RevokeResolverRolesRootParameters = BaseParameters & {
-  /** Revoke roles globally (any name, any record type) */
+  /** Revoke roles held on the root resource */
   scope: 'root'
   /** The resolver roles to revoke */
   roles: ResolverRole[]
 }
 
-export type RevokeResolverRolesNameParameters = BaseParameters & {
-  /** Revoke roles scoped to a specific name */
-  scope: 'name'
-  /** The name to revoke roles for (dotted format, e.g. "myname.eth") */
-  name: string
+export type RevokeResolverRolesSetterParameters = BaseParameters & {
+  /** Revoke the setter's role for a single argument */
+  scope: 'setter'
+  /** The setter argument the role was scoped to */
+  setter: ResolverSetterScope
+}
+
+export type RevokeResolverRolesResourceParameters = BaseParameters & {
+  /** Revoke roles on a raw EAC resource (for resources read from events) */
+  scope: 'resource'
+  /** The EAC resource the roles are held on */
+  resource: bigint
   /** The resolver roles to revoke */
   roles: ResolverRole[]
 }
 
-export type RevokeResolverRolesTextParameters = BaseParameters & {
-  /** Revoke ROLE_SET_TEXT scoped to a specific text key on a name */
-  scope: 'text'
-  /** The name to revoke roles for (dotted format) */
-  name: string
-  /** The specific text key to revoke ROLE_SET_TEXT for */
-  key: string
-}
-
-export type RevokeResolverRolesAddrParameters = BaseParameters & {
-  /** Revoke ROLE_SET_ADDR scoped to a specific coin type on a name */
-  scope: 'addr'
-  /** The name to revoke roles for (dotted format) */
-  name: string
-  /** The specific coin type to revoke ROLE_SET_ADDR for (e.g., 60n for ETH) */
-  coinType: bigint
-}
-
 export type RevokeResolverRolesBaseParameters =
   | RevokeResolverRolesRootParameters
-  | RevokeResolverRolesNameParameters
-  | RevokeResolverRolesTextParameters
-  | RevokeResolverRolesAddrParameters
+  | RevokeResolverRolesSetterParameters
+  | RevokeResolverRolesResourceParameters
 
 export type RevokeResolverRolesReturnType = Hash
 
@@ -89,10 +77,6 @@ export type RevokeResolverRolesErrorType =
   | ClientWithOverridesErrorType
 
 // ─── Write parameters ────────────────────────────────────────────────
-
-function dnsEncode(name: string): Hex {
-  return toHex(packetToBytes(name))
-}
 
 export const revokeResolverRolesWriteParameters = <
   chain extends Chain,
@@ -118,37 +102,27 @@ export const revokeResolverRolesWriteParameters = <
         args: [encodeResolverRoleBitmap(params.roles), params.targetAccount],
       } as const
 
-    case 'name':
+    case 'setter':
       return {
         ...base,
-        abi: permissionedResolverAuthorizeNameRolesSnippet,
-        functionName: 'authorizeNameRoles',
+        abi: permissionedResolverRevokeRolesSnippet,
+        functionName: 'revokeRoles',
         args: [
-          dnsEncode(params.name),
-          encodeResolverRoleBitmap(params.roles),
+          computeResolverResource(params.setter),
+          encodeResolverRoleBitmap([resolverSetterScopeRole(params.setter)]),
           params.targetAccount,
-          false,
         ],
       } as const
 
-    case 'text':
+    case 'resource':
       return {
         ...base,
-        abi: permissionedResolverAuthorizeTextRolesSnippet,
-        functionName: 'authorizeTextRoles',
-        args: [dnsEncode(params.name), params.key, params.targetAccount, false],
-      } as const
-
-    case 'addr':
-      return {
-        ...base,
-        abi: permissionedResolverAuthorizeAddrRolesSnippet,
-        functionName: 'authorizeAddrRoles',
+        abi: permissionedResolverRevokeRolesSnippet,
+        functionName: 'revokeRoles',
         args: [
-          dnsEncode(params.name),
-          params.coinType,
+          params.resource,
+          encodeResolverRoleBitmap(params.roles),
           params.targetAccount,
-          false,
         ],
       } as const
   }
@@ -166,21 +140,16 @@ export type RevokeResolverRolesParameters<
 >
 
 /**
- * Revoke roles on a PermissionedResolver.
+ * Revoke roles on a PermissionedResolver (V2).
  *
- * The `scope` parameter determines the granularity of the revocation:
+ * - **`'root'`**: revoke roles held on the root resource.
+ * - **`'setter'`**: revoke the setter's role for one argument (mirror of the
+ *   `'setter'` grant); the resource is computed from the argument.
+ * - **`'resource'`**: revoke roles on a raw EAC resource, for callers that
+ *   read the resource from `EACRolesChanged` events.
  *
- * - **`'root'`**: Revoke roles globally (any name, any record type).
- *   The caller must hold the admin variant of each role.
- *
- * - **`'name'`**: Revoke roles scoped to a specific name.
- *   Computes the resource ID internally from the name.
- *
- * - **`'text'`**: Revoke `ROLE_SET_TEXT` for a specific text key on a name.
- *   Computes the resource ID internally from the name and key.
- *
- * - **`'addr'`**: Revoke `ROLE_SET_ADDR` for a specific coin type on a name.
- *   Computes the resource ID internally from the name and coin type.
+ * The caller must hold the admin variant of each role on root or on the
+ * resource.
  *
  * @param client - Wallet client
  * @param parameters - {@link RevokeResolverRolesParameters}
@@ -192,37 +161,16 @@ export type RevokeResolverRolesParameters<
  *   resolverAddress: '0x...',
  *   targetAccount: '0xOTHER',
  *   scope: 'root',
- *   roles: ['ROLE_SET_ALIAS'],
+ *   roles: ['ROLE_LINK'],
  * })
  *
  * @example
- * // Revoke roles scoped to a specific name
+ * // Revoke ROLE_SET_TEXT for the `avatar` key
  * const hash = await revokeResolverRoles(walletClient, {
  *   resolverAddress: '0x...',
  *   targetAccount: '0xOTHER',
- *   scope: 'name',
- *   name: 'myname.eth',
- *   roles: ['ROLE_SET_TEXT'],
- * })
- *
- * @example
- * // Revoke ROLE_SET_TEXT for a specific text key
- * const hash = await revokeResolverRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   targetAccount: '0xOTHER',
- *   scope: 'text',
- *   name: 'myname.eth',
- *   key: 'avatar',
- * })
- *
- * @example
- * // Revoke ROLE_SET_ADDR for a specific coin type
- * const hash = await revokeResolverRoles(walletClient, {
- *   resolverAddress: '0x...',
- *   targetAccount: '0xOTHER',
- *   scope: 'addr',
- *   name: 'myname.eth',
- *   coinType: 60n,
+ *   scope: 'setter',
+ *   setter: { kind: 'text', key: 'avatar' },
  * })
  */
 export async function revokeResolverRoles<
@@ -241,37 +189,27 @@ export async function revokeResolverRoles<
   switch (scope) {
     case 'root':
       scopeParams = {
-        scope: 'root' as const,
+        scope,
         resolverAddress,
         targetAccount,
         roles: params.roles,
       }
       break
-    case 'name':
+    case 'setter':
       scopeParams = {
-        scope: 'name' as const,
+        scope,
         resolverAddress,
         targetAccount,
-        name: params.name,
+        setter: params.setter,
+      }
+      break
+    case 'resource':
+      scopeParams = {
+        scope,
+        resolverAddress,
+        targetAccount,
+        resource: params.resource,
         roles: params.roles,
-      }
-      break
-    case 'text':
-      scopeParams = {
-        scope: 'text' as const,
-        resolverAddress,
-        targetAccount,
-        name: params.name,
-        key: params.key,
-      }
-      break
-    case 'addr':
-      scopeParams = {
-        scope: 'addr' as const,
-        resolverAddress,
-        targetAccount,
-        name: params.name,
-        coinType: params.coinType,
       }
       break
   }

@@ -1,3 +1,4 @@
+import { permissionedResolverInitializeSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import { verifiableFactoryDeployProxySnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import type { Address } from 'viem'
 import { encodeFunctionData, getAddress, keccak256 } from 'viem'
@@ -30,20 +31,9 @@ beforeAll(async () => {
         ),
       ),
       encodeFunctionData({
-        abi: [
-          {
-            type: 'function',
-            inputs: [
-              { name: 'admin', type: 'address' },
-              { name: 'roleBitmap', type: 'uint256' },
-            ],
-            name: 'initialize',
-            outputs: [],
-            stateMutability: 'nonpayable',
-          },
-        ],
+        abi: permissionedResolverInitializeSnippet,
         functionName: 'initialize',
-        args: [accounts[0], RESOLVER_ROLES_ALL],
+        args: [[{ account: accounts[0], roleBitmap: RESOLVER_ROLES_ALL }], []],
       }),
     ],
     account: accounts[0],
@@ -122,10 +112,10 @@ describe('hasRoles', () => {
   })
 
   describe('resolver root mode', () => {
-    it('returns true when account has root-level ROLE_SET_ALIAS', async () => {
+    it('returns true when account has root-level ROLE_LINK', async () => {
       const result = await hasRoles(client, {
         resolverAddress: resolverProxyAddress!,
-        roles: ['ROLE_SET_ALIAS'],
+        roles: ['ROLE_LINK'],
         account: accounts[0],
       })
 
@@ -135,7 +125,7 @@ describe('hasRoles', () => {
     it('returns false when account does not have root role', async () => {
       const result = await hasRoles(client, {
         resolverAddress: resolverProxyAddress!,
-        roles: ['ROLE_SET_ALIAS'],
+        roles: ['ROLE_LINK'],
         account: getAddress('0x0000000000000000000000000000000000000001'),
       })
 
@@ -158,10 +148,7 @@ describe('hasRoles', () => {
     it('returns false when account does not have role for resource', async () => {
       const result = await hasRoles(client, {
         resolverAddress: resolverProxyAddress!,
-        resource: computeResolverResource(
-          '0x0000000000000000000000000000000000000000000000000000000000000001',
-          '0x0000000000000000000000000000000000000000000000000000000000000000',
-        ),
+        resource: computeResolverResource({ kind: 'text', key: 'avatar' }),
         roles: ['ROLE_SET_TEXT'],
         account: getAddress('0x0000000000000000000000000000000000000001'),
       })
@@ -172,11 +159,9 @@ describe('hasRoles', () => {
 })
 
 describe('computeResolverResource', () => {
-  it('computes resource from hex inputs', () => {
-    const resource = computeResolverResource(
-      '0x0000000000000000000000000000000000000000000000000000000000000000',
-      '0x0000000000000000000000000000000000000000000000000000000000000000',
-    )
+  it('computes a setter resource', () => {
+    const resource = computeResolverResource({ kind: 'text', key: 'avatar' })
     expect(typeof resource).toBe('bigint')
+    expect(resource).not.toBe(0n)
   })
 })

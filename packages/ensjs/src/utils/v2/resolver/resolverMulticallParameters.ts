@@ -33,7 +33,10 @@ import {
  *
  * See contracts-v2 `src/resolver/PermissionedResolver.sol`.
  */
-const encodeName = (name: string): Hex => toHex(packetToBytes(name))
+/** DNS-encode a dotted name, the form every V2 resolver call takes. */
+export const dnsEncodeName = (name: string): Hex => toHex(packetToBytes(name))
+
+const encodeName = dnsEncodeName
 
 export type SetAddressParametersParameters = {
   /** Name to set the address record for (DNS-encoded internally) */
