@@ -2,15 +2,10 @@ import {
   nameResolverNameSnippet,
   permissionedResolverResolveSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
-import type { Client } from 'viem'
+import { type Client, zeroHash } from 'viem'
 import type { Address } from 'viem/accounts'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
-import {
-  decodeFunctionResult,
-  encodeFunctionData,
-  getAction,
-  padHex,
-} from 'viem/utils'
+import { decodeFunctionResult, encodeFunctionData, getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../../types/internal.js'
 
 /** The DNS-encoded root name: the resolver's default record. */
@@ -62,15 +57,14 @@ export async function getResolverName(
       encodeFunctionData({
         abi: nameResolverNameSnippet,
         functionName: 'name',
-        args: [padHex('0x0', { size: 32 })],
+        args: [zeroHash],
       }),
     ],
   })
 
-  const name = decodeFunctionResult({
+  return decodeFunctionResult({
     abi: nameResolverNameSnippet,
     functionName: 'name',
     data: result,
   })
-  return name || null
 }
