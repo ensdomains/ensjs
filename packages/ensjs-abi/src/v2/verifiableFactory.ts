@@ -117,12 +117,9 @@ export const verifiableFactoryProxyLogicSnippet = [
 
 export const verifiableFactoryVerifyContractSnippet = [
   {
-    inputs: [
-      { name: 'proxy', type: 'address' },
-      { name: 'implementation', type: 'address' },
-    ],
+    inputs: [{ name: 'proxy', type: 'address' }],
     name: 'verifyContract',
-    outputs: [{ name: '', type: 'bool' }],
+    outputs: [{ name: 'implementation', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
   },

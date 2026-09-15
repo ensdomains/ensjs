@@ -7,7 +7,8 @@
  *
  * Note the owner lookup is split in two: `findExactOwner` answers for exactly
  * the name given (zero when it is unowned), while `findNearestOwner` walks up
- * to the closest owned ancestor. The former replaces the UR's old `findOwner`.
+ * to the closest owned ancestor and also returns the byte offset of that
+ * ancestor within `name`. The former replaces the UR's old `findOwner`.
  */
 
 export const universalHelperErrors = [
@@ -34,7 +35,10 @@ export const universalHelperFindNearestOwnerSnippet = [
   {
     inputs: [{ name: 'name', type: 'bytes' }],
     name: 'findNearestOwner',
-    outputs: [{ name: '', type: 'address' }],
+    outputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'offset', type: 'uint256' },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
