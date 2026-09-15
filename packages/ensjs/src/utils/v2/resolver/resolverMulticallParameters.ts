@@ -6,17 +6,27 @@ import {
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import {
   type Address,
+  type BytesToHexErrorType,
   bytesToHex,
   type EncodeFunctionDataParameters,
   type Hex,
+  type ToHexErrorType,
   toHex,
 } from 'viem'
-import { packetToBytes } from 'viem/ens'
+import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
+import type { ErrorType } from '../../../errors/utils.js'
 import type { Prettify } from '../../../types/index.js'
-import { encodeContentHash } from '../../contentHash.js'
-import { getCoderFromCoin } from '../../normalizeCoinId.js'
+import {
+  type EncodeContentHashErrorType,
+  encodeContentHash,
+} from '../../contentHash.js'
+import {
+  type GetCoderFromCoinErrorType,
+  getCoderFromCoin,
+} from '../../normalizeCoinId.js'
 import {
   type AbiEncodeAs,
+  type EncodeAbiErrorType,
   type EncodeAbiParameters,
   encodeAbi,
 } from '../../resolver/encodeAbi.js'
@@ -36,12 +46,20 @@ import {
 /** DNS-encode a dotted name, the form every V2 resolver call takes. */
 export const dnsEncodeName = (name: string): Hex => toHex(packetToBytes(name))
 
+export type DnsEncodeNameErrorType = PacketToBytesErrorType | ToHexErrorType
+
 export type SetAddressParametersParameters = {
   /** Name to set the address record for (DNS-encoded internally) */
   name: string
   coin: string | number
   value: Address | string | null
 }
+
+export type SetAddressParametersErrorType =
+  | GetCoderFromCoinErrorType
+  | BytesToHexErrorType
+  | ErrorType
+  | DnsEncodeNameErrorType
 
 export const setAddressParameters = ({
   name,
@@ -74,6 +92,8 @@ export type SetTextParametersParameters = {
   value: string | null
 }
 
+export type SetTextParametersErrorType = DnsEncodeNameErrorType
+
 export const setTextParameters = ({
   name,
   key,
@@ -92,6 +112,10 @@ export type SetContentHashParametersParameters = {
   name: string
   contentHash: string | null
 }
+
+export type SetContentHashParametersErrorType =
+  | EncodeContentHashErrorType
+  | DnsEncodeNameErrorType
 
 export const setContentHashParameters = ({
   name,
@@ -116,6 +140,10 @@ export type SetAbiParametersParameters<
     name: string
   } & EncodeAbiParameters<encodeAs>
 >
+
+export type SetAbiParametersErrorType =
+  | EncodeAbiErrorType
+  | DnsEncodeNameErrorType
 
 export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
   name,
@@ -152,6 +180,12 @@ export type ResolverMulticallItem =
   | Awaited<ReturnType<typeof setAbiParameters>>
   | ReturnType<typeof setTextParameters>
   | ReturnType<typeof setAddressParameters>
+
+export type ResolverMulticallItemErrorType =
+  | SetContentHashParametersErrorType
+  | SetAbiParametersErrorType
+  | SetTextParametersErrorType
+  | SetAddressParametersErrorType
 
 /**
  * Builds the individual setter calls for a V2 resolver. Each call carries the

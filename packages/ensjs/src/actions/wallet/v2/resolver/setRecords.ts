@@ -19,9 +19,13 @@ import type {
   Prettify,
   WriteTransactionParameters,
 } from '../../../../types/index.js'
-import { clientWithOverrides } from '../../../../utils/clientWithOverrides.js'
+import {
+  type ClientWithOverridesErrorType,
+  clientWithOverrides,
+} from '../../../../utils/clientWithOverrides.js'
 import {
   type RecordOptions,
+  type ResolverMulticallItemErrorType,
   resolverMulticallParameters,
 } from '../../../../utils/v2/resolver/resolverMulticallParameters.js'
 
@@ -42,6 +46,7 @@ export type SetRecordsWriteParametersReturnType = ReturnType<
 
 export type SetRecordsWriteParametersErrorType =
   | NoRecordsSpecifiedError
+  | ResolverMulticallItemErrorType
   | EncodeFunctionDataErrorType
 
 /**
@@ -105,6 +110,7 @@ export type SetRecordsReturnType = WriteContractReturnType
 
 export type SetRecordsErrorType =
   | SetRecordsWriteParametersErrorType
+  | ClientWithOverridesErrorType
   | WriteContractErrorType
 
 /**
