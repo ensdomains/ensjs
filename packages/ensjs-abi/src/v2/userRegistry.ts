@@ -1,3 +1,5 @@
+import { eacGrantInitializeSnippet } from './enhancedAccessControl.js'
+
 // ─── ERC1155 events ────────────────────────────────────────────────
 
 export const approvalForAllEventSnippet = [
@@ -241,18 +243,8 @@ export const userRegistrySetResolverSnippet = [
   },
 ] as const
 
-export const userRegistryInitializeSnippet = [
-  {
-    inputs: [
-      { name: 'admin', type: 'address' },
-      { name: 'roleBitmap', type: 'uint256' },
-    ],
-    name: 'initialize',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-] as const
+/** `UserRegistry.initialize(Grant[] grants)` — selector `0x37cb53a8`. */
+export const userRegistryInitializeSnippet = eacGrantInitializeSnippet
 
 export const userRegistryAllEventsSnippet = [
   ...approvalForAllEventSnippet,

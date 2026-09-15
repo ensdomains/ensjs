@@ -94,7 +94,8 @@ export type HasRolesErrorType = ReadContractErrorType
  * Check root-level roles on a resolver (global, any name/record).
  *
  * **Resolver mode** (pass `resolverAddress` + `resource`):
- * Check roles on a resolver for a specific resource.
+ * Check roles on a resolver for a setter-argument resource (see
+ * `computeResolverResource`). Resolver roles are never scoped to a name.
  *
  * @param client - {@link Client}
  * @param parameters - {@link HasRolesParameters}
@@ -119,17 +120,18 @@ export type HasRolesErrorType = ReadContractErrorType
  *
  * @example
  * // Resolver root mode - check global resolver roles
- * const canSetAlias = await hasRoles(client, {
+ * const canLink = await hasRoles(client, {
  *   resolverAddress: '0x...',
- *   roles: ['ROLE_SET_ALIAS'],
+ *   roles: ['ROLE_LINK'],
  *   account: '0x...',
  * })
  *
  * @example
- * // Resolver mode - check resolver roles for a specific resource
- * const canSetText = await hasRoles(client, {
+ * // Resolver mode - check a role scoped to one setter argument. The contract
+ * // ORs root roles into the check, so this also passes for root holders.
+ * const canSetAvatar = await hasRoles(client, {
  *   resolverAddress: '0x...',
- *   resource: computeResolverResource(namehash('myname.eth'), '0x0000000000000000000000000000000000000000000000000000000000000000'),
+ *   resource: computeResolverResource({ kind: 'text', key: 'avatar' }),
  *   roles: ['ROLE_SET_TEXT'],
  *   account: '0x...',
  * })

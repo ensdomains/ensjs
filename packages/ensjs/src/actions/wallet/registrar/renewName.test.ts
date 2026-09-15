@@ -1,4 +1,10 @@
-import { type Address, encodeFunctionData, zeroHash } from 'viem'
+import {
+  type Address,
+  decodeFunctionData,
+  encodeFunctionData,
+  toFunctionSelector,
+  zeroHash,
+} from 'viem'
 import { beforeAll, expect, it } from 'vitest'
 import { getChainContractAddress } from '../../../clients/shared.js'
 import {
@@ -49,8 +55,17 @@ it.each(['ensEthRegistrar', 'ensEthRenewerV1'] as const)(
       args: writeParameters.args,
     })
 
-    expect(data).toMatch(/^0x[0-9a-f]+$/i)
-    expect(data.length).toBeGreaterThan(10)
+    // Both renewers take `renew(RenewData,IERC20)`; the flat
+    // `renew(string,uint64,address,bytes32)` is gone from the deployed ABI.
+    expect(data.slice(0, 10)).toBe(
+      toFunctionSelector('renew((string,uint64,bytes32),address)'),
+    )
+    expect(decodeFunctionData({ abi: writeParameters.abi, data }).args).toEqual(
+      [
+        { label: 'example', duration: 31_536_000n, referrer: zeroHash },
+        paymentToken,
+      ],
+    )
   },
 )
 

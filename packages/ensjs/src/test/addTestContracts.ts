@@ -78,6 +78,15 @@ export const localhost = {
       // UniversalResolver lacks.
       address: deploymentAddresses.UpgradableUniversalResolverProxy,
     },
+    ensUniversalHelper: {
+      // The devnet predates the split of the registry-walking views out of the
+      // UR into a standalone UniversalHelper, so it has no such contract and
+      // these reads still answer on the UR proxy. `findRegistries` and
+      // `findParentRegistry` therefore work here unchanged; `findExactOwner`
+      // does not exist yet on the devnet (it is still named `findOwner`), so
+      // `getOwner` fails against the devnet until it ships the new contracts.
+      address: deploymentAddresses.UpgradableUniversalResolverProxy,
+    },
     multicall3: {
       address: deploymentAddresses.Multicall,
     },

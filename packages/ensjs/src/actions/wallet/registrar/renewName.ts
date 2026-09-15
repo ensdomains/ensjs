@@ -29,7 +29,7 @@ import {
 } from '../../../utils/clientWithOverrides.js'
 import { getNameType } from '../../../utils/name/getNameType.js'
 
-// The two renewers share one `renew(label,duration,paymentToken,referrer)` ABI —
+// The two renewers share one `renew((label,duration,referrer),paymentToken)` ABI —
 // only the target contract differs: `ensEthRegistrar` renews names registered on
 // v2, `ensEthRenewerV1` renews unmigrated legacy (v1) names. The caller supplies
 // which contract to use (from an indexer, or an on-chain owner lookup) — this
@@ -104,7 +104,7 @@ export const renewNameWriteParameters = <
   return {
     address,
     functionName: 'renew',
-    args: [label, duration, paymentToken, referrer] as const,
+    args: [{ label, duration, referrer }, paymentToken] as const,
     chain: client.chain,
     account: client.account,
     abi: ethRegistrarRenewSnippet,
@@ -135,7 +135,7 @@ export type RenewNameErrorType =
  * Renews a `.eth` 2LD via the given renewer contract: the v2 `ETHRegistrar`
  * (`contract: 'ensEthRegistrar'`) for names registered on v2, or `ETHRenewerV1`
  * (`contract: 'ensEthRenewerV1'`) for unmigrated legacy (v1) names. Both expose
- * the same `renew(label,duration,paymentToken,referrer)` ERC-20 interface, so
+ * the same `renew((label,duration,referrer),paymentToken)` ERC-20 interface, so
  * `contract` only selects the target address — resolve it from your data source
  * (indexer) or an on-chain owner lookup ({@link getOwner}).
  *
@@ -147,8 +147,8 @@ export type RenewNameErrorType =
  * v2 grace window; a name that was never reserved, has already migrated to v2, or
  * has lapsed past grace reverts `NameNotRenewable`.
  *
- * Renews a single name — neither renewer is `Multicallable`, so there is no
- * on-chain bulk-renewal path.
+ * Renews a single name. Both renewers also expose
+ * `renewBatch(RenewData[],paymentToken)`, which this action does not wrap.
  *
  * @param client - {@link Client}
  * @param options - {@link RenewNameParameters}

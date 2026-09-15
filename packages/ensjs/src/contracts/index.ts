@@ -116,14 +116,12 @@ export {
   permissionedRegistryUnregisterSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 export {
-  permissionedResolverAliasSnippet,
-  permissionedResolverAuthorizeAddrRolesSnippet,
-  permissionedResolverAuthorizeDataRolesSnippet,
-  permissionedResolverAuthorizeNameRolesSnippet,
-  permissionedResolverAuthorizeTextRolesSnippet,
   permissionedResolverGrantRootRolesSnippet,
+  permissionedResolverGrantSetterRolesSnippet,
   permissionedResolverHasRolesSnippet,
   permissionedResolverHasRootRolesSnippet,
+  permissionedResolverLinkToNodeSnippet,
+  permissionedResolverLinkToRecordSnippet,
   permissionedResolverRevokeRolesSnippet,
   permissionedResolverRevokeRootRolesSnippet,
   permissionedResolverRolesSnippet,
