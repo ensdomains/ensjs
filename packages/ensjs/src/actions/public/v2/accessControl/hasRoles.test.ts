@@ -11,6 +11,9 @@ import {
 } from '../../../../test/addTestContracts.js'
 import { computeResolverResource, hasRoles } from './hasRoles.js'
 
+// The resolver proxy is initialized with `initialize(Grant[], bytes[])`, so
+// this needs a devnet built from contracts-v2 `post-audit-2`. The image pinned
+// in compose.yml still ships the pre-refactor implementation, which reverts.
 const RESOLVER_ROLES_ALL =
   0x1111111111111111111111111111111111111111111111111111111111111111n
 
