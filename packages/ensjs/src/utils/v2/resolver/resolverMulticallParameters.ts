@@ -36,8 +36,6 @@ import {
 /** DNS-encode a dotted name, the form every V2 resolver call takes. */
 export const dnsEncodeName = (name: string): Hex => toHex(packetToBytes(name))
 
-const encodeName = dnsEncodeName
-
 export type SetAddressParametersParameters = {
   /** Name to set the address record for (DNS-encoded internally) */
   name: string
@@ -63,7 +61,7 @@ export const setAddressParameters = ({
   return {
     abi: permissionedResolverSetAddressSnippet,
     functionName: 'setAddress',
-    args: [encodeName(name), BigInt(inputCoinType), encodedAddress],
+    args: [dnsEncodeName(name), BigInt(inputCoinType), encodedAddress],
   } as const satisfies EncodeFunctionDataParameters<
     typeof permissionedResolverSetAddressSnippet
   >
@@ -84,7 +82,7 @@ export const setTextParameters = ({
   ({
     abi: permissionedResolverSetTextSnippet,
     functionName: 'setText',
-    args: [encodeName(name), key, value ?? ''],
+    args: [dnsEncodeName(name), key, value ?? ''],
   }) as const satisfies EncodeFunctionDataParameters<
     typeof permissionedResolverSetTextSnippet
   >
@@ -103,7 +101,7 @@ export const setContentHashParameters = ({
     abi: permissionedResolverSetContenthashSnippet,
     functionName: 'setContenthash',
     args: [
-      encodeName(name),
+      dnsEncodeName(name),
       contentHash ? encodeContentHash(contentHash) : '0x',
     ],
   }) as const satisfies EncodeFunctionDataParameters<
@@ -132,7 +130,7 @@ export const setAbiParameters = async <encodeAs extends AbiEncodeAs>({
   return {
     abi: permissionedResolverSetAbiSnippet,
     functionName: 'setABI',
-    args: [encodeName(name), BigInt(contentType), encodedData],
+    args: [dnsEncodeName(name), BigInt(contentType), encodedData],
   } as const satisfies EncodeFunctionDataParameters<
     typeof permissionedResolverSetAbiSnippet
   >

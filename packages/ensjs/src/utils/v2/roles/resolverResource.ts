@@ -6,7 +6,13 @@ import {
   permissionedResolverSetTextSnippet,
 } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import type { Hex } from 'viem'
-import { encodeFunctionData, keccak256, stringToHex, toHex } from 'viem'
+import {
+  encodeFunctionData,
+  keccak256,
+  stringToHex,
+  toHex,
+  zeroAddress,
+} from 'viem'
 import type { ResolverSetterRole } from './resolverRoles.js'
 
 /** The EAC resource that covers every name on a resolver. */
@@ -104,11 +110,7 @@ export function encodeResolverSetterScope(scope: ResolverSetterScope): Hex {
       return encodeFunctionData({
         abi: permissionedResolverSetInterfaceSnippet,
         functionName: 'setInterface',
-        args: [
-          ROOT_DNS_NAME,
-          scope.interfaceId,
-          '0x0000000000000000000000000000000000000000',
-        ],
+        args: [ROOT_DNS_NAME, scope.interfaceId, zeroAddress],
       })
   }
 }
