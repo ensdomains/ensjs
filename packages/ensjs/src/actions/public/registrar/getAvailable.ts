@@ -1,6 +1,6 @@
-import { universalResolverV2FindParentRegistrySnippet } from '@ensdomains/ensjs-abi/universalResolver'
 import { ethRegistrarAvailableSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import { permissionedRegistryGetStatusSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
+import { universalHelperFindParentRegistrySnippet } from '@ensdomains/ensjs-abi/v2/universalHelper'
 import type {
   Chain,
   GetChainContractAddressErrorType,
@@ -43,7 +43,7 @@ export type GetAvailableErrorType =
  * For `eth-2ld` names, availability is read from the `.eth` registrar via
  * `isAvailable`, which accounts for grace periods and premium decay.
  *
- * For `eth-subname` names, the Universal Resolver V2's `findParentRegistry`
+ * For `eth-subname` names, the UniversalHelper's `findParentRegistry`
  * is used to traverse the registry tree and locate the parent registry, then
  * the leaf label's status is checked against it.
  *
@@ -66,13 +66,13 @@ export type GetAvailableErrorType =
  * const a = await getAvailable(client, { name: 'ens.eth' })
  * // false
  *
- * // eth-subname with auto-traversal via Universal Resolver
+ * // eth-subname with auto-traversal via the UniversalHelper
  * const b = await getAvailable(client, { name: 'sub.ens.eth' })
  */
 export async function getAvailable<chain extends Chain>(
   client: RequireClientContracts<
     chain,
-    'ensEthRegistrar' | 'ensUniversalResolver'
+    'ensEthRegistrar' | 'ensUniversalHelper'
   >,
   { name }: GetAvailableParameters,
 ): Promise<GetAvailableReturnType> {
@@ -105,17 +105,17 @@ export async function getAvailable<chain extends Chain>(
     })
   }
 
-  // eth-subname: use the Universal Resolver to find the parent registry, then
+  // eth-subname: use the UniversalHelper to find the parent registry, then
   // check the leaf label's status. A missing parent registry means the name is
-  // available. The configured `ensUniversalResolver` exposes `findParentRegistry`
+  // available. The configured `ensUniversalHelper` exposes `findParentRegistry`
   // for both v1 and v2 names.
-  const universalResolverAddress = getChainContractAddress({
+  const universalHelperAddress = getChainContractAddress({
     chain: client.chain,
-    contract: 'ensUniversalResolver',
+    contract: 'ensUniversalHelper',
   })
   const parentRegistry = await readContractAction({
-    address: universalResolverAddress,
-    abi: universalResolverV2FindParentRegistrySnippet,
+    address: universalHelperAddress,
+    abi: universalHelperFindParentRegistrySnippet,
     functionName: 'findParentRegistry',
     args: [toHex(packetToBytes(name))],
   })
