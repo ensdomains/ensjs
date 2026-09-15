@@ -292,10 +292,16 @@ export const ethRegistrarRenewSnippet = [
   ...ethRegistrarRenewErrors,
   {
     inputs: [
-      { name: 'label', type: 'string' },
-      { name: 'duration', type: 'uint64' },
+      {
+        name: 'rd',
+        type: 'tuple',
+        components: [
+          { name: 'label', type: 'string' },
+          { name: 'duration', type: 'uint64' },
+          { name: 'referrer', type: 'bytes32' },
+        ],
+      },
       { name: 'paymentToken', type: 'address' },
-      { name: 'referrer', type: 'bytes32' },
     ],
     name: 'renew',
     outputs: [],
