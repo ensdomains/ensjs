@@ -14,7 +14,7 @@ import type {
   WriteContractErrorType,
   WriteContractParameters,
 } from 'viem'
-import { encodeFunctionData, keccak256, stringToBytes } from 'viem'
+import { encodeFunctionData } from 'viem'
 import { writeContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import type {
@@ -26,6 +26,7 @@ import {
   type ClientWithOverridesErrorType,
   clientWithOverrides,
 } from '../../../../utils/clientWithOverrides.js'
+import { randomProxySalt } from '../../../../utils/v2/verifiableFactory/randomProxySalt.js'
 
 // ================================
 // Constants
@@ -34,7 +35,6 @@ import {
 const DEFAULT_ROLE_BITMAP = BigInt(
   '0x1111111111111111111111111111111111111111111111111111111111111111',
 )
-const DEFAULT_SALT = BigInt(keccak256(stringToBytes(new Date().toISOString())))
 
 // ================================
 // Write parameters
@@ -63,8 +63,13 @@ export type DeployVerifiableProxyWriteParametersParameters = {
   roleBitmap?: bigint
   /**
    * The salt for proxy deployment.
-   * If omitted, a timestamp-based salt is generated via
-   * `keccak256(stringToBytes(new Date().toISOString()))`.
+   * If omitted, a random 256-bit salt is drawn on every call, so each call
+   * encodes a different deploy. Pass one when the same deploy has to be built
+   * more than once (e.g. for a gas estimate and then the send).
+   *
+   * The factory derives the proxy address from `(msg.sender, salt)`, so an
+   * account reusing a salt targets an address it already occupies and the
+   * deploy reverts.
    */
   salt?: bigint
 }
@@ -86,7 +91,7 @@ export const deployVerifiableProxyWriteParameters = <
     implAddress,
     callData,
     roleBitmap = DEFAULT_ROLE_BITMAP,
-    salt = DEFAULT_SALT,
+    salt = randomProxySalt(),
   }: DeployVerifiableProxyWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
