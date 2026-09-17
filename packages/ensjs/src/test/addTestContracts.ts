@@ -1,11 +1,15 @@
+import { proxyDeployedEventSnippet } from '@ensdomains/ensjs-abi/v2/verifiableFactory'
 import {
   type Account,
+  type Address,
   createPublicClient,
   createTestClient,
   createWalletClient,
   type Hash,
   http,
+  isAddressEqual,
   type PublicClient,
+  parseEventLogs,
   type TestClient,
   type TransactionReceipt,
   TransactionReceiptNotFoundError,
@@ -14,50 +18,51 @@ import {
 import { localhost as _localhost } from 'viem/chains'
 
 /**
- * Devnet contract addresses.
- * Parsed from: docker logs ens-test-env-devnet-1
+ * Devnet contract addresses, as served by the devnet at
+ * `http://localhost:8000/deployments` for the image pinned in compose.yml.
  */
 export const deploymentAddresses = {
   // ENS v1
   LegacyENSRegistry: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
   ENSRegistry: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
-  BaseRegistrarImplementation: '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
-  Root: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
-  DNSSECImpl: '0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9',
-  DNSRegistrar: '0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9',
-  ReverseRegistrar: '0x82e01223d51Eb87e16A03E24687EDF0F294da6f1',
-  DefaultReverseRegistrar: '0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07',
-  NameWrapper: '0x7969c5eD335650692Bc04293B07F5BF2e7A673C0',
-  LegacyETHRegistrarController: '0xf953b3A269d80e3eB0F2947630Da976B896A8C5b',
-  WrappedETHRegistrarController: '0x253553366Da8546fC250F225fe3d25d0C782303b',
-  ETHRegistrarController: '0x922D6956C99E12DFeB3224DEA977D0939758A1Fe',
-  StaticBulkRenewal: '0xAA292E8611aDF267e563f334Ee42320aC96D0463',
-  LegacyPublicResolver: '0x5067457698Fd6Fa1C6964e416b3f42713513B3dD',
-  PublicResolver: '0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d',
-  UniversalResolver: '0x4b6aB5F819A515382B0dEB6935D793817bB4af28',
+  BaseRegistrarImplementation: '0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e',
+  Root: '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
+  DNSSECImpl: '0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00',
+  DNSRegistrar: '0x18E317A7D70d8fBf8e6E893616b52390EbBdb629',
+  ReverseRegistrar: '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f',
+  DefaultReverseRegistrar: '0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690',
+  NameWrapper: '0x09635F643e140090A9A8Dcd712eD6285858ceBef',
+  LegacyETHRegistrarController: '0x986aaa537b8cc170761FDAC6aC4fc7F9d8a20A8C',
+  WrappedETHRegistrarController: '0x67d269191c92Caf3cD7723F116c85e6E9bf55933',
+  ETHRegistrarController: '0x9E545E3C0baAB3E08CdfD552C960A1050f373042',
+  StaticBulkRenewal: '0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8',
+  LegacyPublicResolver: '0xD49a0e9A4CD5979aE36840f542D2d7f02C4817Be',
+  PublicResolver: '0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6',
+  UniversalResolver: '0xe8D2A1E88c91DCd5433208d4152Cc4F399a7e91d',
   Multicall: '0xcA11bde05977b3631167028862bE2a173976CA11',
 
   // ENS v2
-  ETHRegistry: '0x4c5859f0F772848b2D91F1D83E2Fe57935348029',
-  RootRegistry: '0x610178dA211FEF7D417bC0e6FeD39F05609AD788',
+  ETHRegistry: '0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f',
+  RootRegistry: '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
   // ENSv1 mirror resolver. Reserved v1 names point at this on v2 so the
   // Universal Resolver can resolve unmigrated v1 names (matches sepolia
   // pre-migration).
   ENSV1Resolver: '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
-  UniversalResolverV2: '0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb',
-  UpgradableUniversalResolverProxy:
-    '0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901',
-  ETHRegistrar: '0x0355B7B8cb128fA5692729Ab3AAa199C1753f726',
-  VerifiableFactory: '0x7a2088a1bFc9d81c55368AE168C2C02570cB814F',
-  PermissionedResolverImpl: '0xFD471836031dc5108809D173A067e8486B9047A3',
-  UserRegistryImpl: '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2',
-  OwnedResolver: '0x59b670e9fA9D0A427751Af201D676719a970857b',
-  BatchRegistrar: '0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5',
-  MigrationHelper: '0xCace1b78160AE76398F486c8a18044da0d66d86D',
-  StandardRentPriceOracle: '0x21dF544947ba3E8b3c32561399E88B52Dc8b2823',
-  USDC: '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f',
-  DAI: '0xe915cebbc1570a74177b6c589fed1e8f53117559',
-  HCAFactory: '0x358680728dedb552adaa9f5eb5d4395b291cf943',
+  UniversalResolverV2: '0x5067457698Fd6Fa1C6964e416b3f42713513B3dD',
+  UniversalHelper: '0x51A1ceB83B83F1985a81C295d1fF28Afef186E02',
+  ETHRegistrar: '0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B',
+  VerifiableFactory: '0x998abeb3E57409262aE5b751f60747921B33613E',
+  PermissionedResolverImpl: '0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d',
+  UserRegistryImpl: '0x36b58F5C1969B7b6591D752ea6F5486D069010AB',
+  OwnedResolver: '0xc6e7DF5E7b4f2A278906862b61205850344D4e7d',
+  BatchRegistrar: '0xC9a43158891282A2B1475592D5719c001986Aaec',
+  MigrationHelper: '0xc582Bc0317dbb0908203541971a358c44b1F3766',
+  StandardRentPriceOracle: '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD',
+  // MockUSDC / MockDAI on the devnet.
+  USDC: '0xf5059a5D33d5853360D16C683c16e67980206f36',
+  DAI: '0x95401dc811bb5740090279Ba06cfA8fcF6113778',
+  // StandaloneHCAFactory on the devnet.
+  HCAFactory: '0x8198f5d8F8CfFE8f9C413d98a0A55aEB8ab9FbB7',
 } as const
 
 export const localhost = {
@@ -72,20 +77,17 @@ export const localhost = {
       address: deploymentAddresses.ENSRegistry,
     },
     ensUniversalResolver: {
-      // The devnet's Universal Resolver is the UpgradableUniversalResolverProxy,
-      // which fronts UniversalResolverV2. It resolves both v1 and v2 names and
-      // exposes the v2-only methods (e.g. findParentRegistry) that the bare v1
-      // UniversalResolver lacks.
-      address: deploymentAddresses.UpgradableUniversalResolverProxy,
+      // On real networks this is the UpgradableUniversalResolverProxy, which
+      // fronts UniversalResolverV2. A local devnet deploys no top proxy (every
+      // universalResolver deploy step returns early on `tags.local`), so point
+      // at UniversalResolverV2 itself, as the devnet's own setup does. It
+      // resolves both v1 and v2 names.
+      address: deploymentAddresses.UniversalResolverV2,
     },
     ensUniversalHelper: {
-      // The devnet predates the split of the registry-walking views out of the
-      // UR into a standalone UniversalHelper, so it has no such contract and
-      // these reads still answer on the UR proxy. `findRegistries` and
-      // `findParentRegistry` therefore work here unchanged; `findExactOwner`
-      // does not exist yet on the devnet (it is still named `findOwner`), so
-      // `getOwner` fails against the devnet until it ships the new contracts.
-      address: deploymentAddresses.UpgradableUniversalResolverProxy,
+      // The registry-walking views (findExactOwner / findRegistries /
+      // findParentRegistry), split out of the UR.
+      address: deploymentAddresses.UniversalHelper,
     },
     multicall3: {
       address: deploymentAddresses.Multicall,
@@ -184,22 +186,44 @@ export const walletClient: WalletClient<
   transport,
 })
 
-export const waitForTransaction = async (hash: Hash) =>
-  new Promise<TransactionReceipt>((resolveFn, reject) => {
-    publicClient
-      .getTransactionReceipt({ hash })
-      .then(resolveFn)
-      .catch((e) => {
-        if (e instanceof TransactionReceiptNotFoundError) {
-          setTimeout(() => {
-            waitForTransaction(hash).then((receipt) => {
-              if (receipt.status !== 'success')
-                reject(new Error('transaction unsuccessful'))
-              resolveFn(receipt)
-            })
-          }, 100)
-        } else {
-          reject(e)
-        }
-      })
+/**
+ * Polls until the transaction is mined, and throws if it reverted.
+ *
+ * The devnet mines asynchronously, so a receipt is rarely there on the first
+ * read. A flat loop keeps a revert found on any attempt a rejection; the
+ * earlier recursive version dropped it past the first retry and hung instead.
+ */
+export const waitForTransaction = async (
+  hash: Hash,
+): Promise<TransactionReceipt> => {
+  for (;;) {
+    try {
+      const receipt = await publicClient.getTransactionReceipt({ hash })
+      if (receipt.status !== 'success')
+        throw new Error('transaction unsuccessful')
+      return receipt
+    } catch (e) {
+      if (!(e instanceof TransactionReceiptNotFoundError)) throw e
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+  }
+}
+
+/**
+ * The proxy a `VerifiableFactory.deployProxy` transaction created, read from
+ * the factory's `ProxyDeployed` event rather than a fixed log index, which
+ * shifts with whatever the proxy's initializer emits.
+ */
+export const getDeployedProxyAddress = (
+  receipt: TransactionReceipt,
+): Address => {
+  const [deployed] = parseEventLogs({
+    abi: proxyDeployedEventSnippet,
+    eventName: 'ProxyDeployed',
+    logs: receipt.logs.filter((log) =>
+      isAddressEqual(log.address, deploymentAddresses.VerifiableFactory),
+    ),
   })
+  if (!deployed) throw new Error('no ProxyDeployed event in receipt')
+  return deployed.args.proxyAddress
+}

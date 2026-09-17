@@ -120,7 +120,9 @@ describe('eth 2ld', () => {
 
 describe('other', () => {
   beforeEach(async () => {
-    await approve()
+    // Wait for it to be mined: the devnet mines asynchronously, and a wrap sent
+    // while this is still pending can be left unmined.
+    await waitForTransaction(await approve())
   })
   it('should return a wrap name transaction and succeed', async () => {
     const tx = await wrapName(walletClient, {

@@ -4,6 +4,7 @@ import { encodeFunctionData } from 'viem'
 import { beforeAll, describe, expect, it } from 'vitest'
 import {
   deploymentAddresses,
+  getDeployedProxyAddress,
   publicClient,
   waitForTransaction,
   walletClient,
@@ -18,8 +19,6 @@ import { hasRoles } from '../../../public/v2/accessControl/hasRoles.js'
 import { deployVerifiableProxy } from '../verifiableFactory/deployVerifiableProxy.js'
 import { grantResolverRoles } from './grantResolverRoles.js'
 import { revokeResolverRoles } from './revokeResolverRoles.js'
-
-// Needs the post-audit-2 PermissionedResolverImpl on the devnet.
 
 const ADMIN_ROLES =
   RESOLVER_ROLE_SET_TEXT_ADMIN |
@@ -43,8 +42,7 @@ beforeAll(async () => {
     account: accounts[0],
   })
   const proxyReceipt = await waitForTransaction(proxyDeployTx)
-  resolverProxyAddress =
-    `0x${proxyReceipt.logs[3].topics[2]?.slice(26)}` as Address
+  resolverProxyAddress = getDeployedProxyAddress(proxyReceipt)
 })
 
 describe('revokeResolverRoles', () => {

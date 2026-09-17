@@ -6,14 +6,12 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import {
   publicClient as client,
   deploymentAddresses,
+  getDeployedProxyAddress,
   waitForTransaction,
   walletClient,
 } from '../../../../test/addTestContracts.js'
 import { computeResolverResource, hasRoles } from './hasRoles.js'
 
-// The resolver proxy is initialized with `initialize(Grant[], bytes[])`, so
-// this needs a devnet built from contracts-v2 `post-audit-2`. The image pinned
-// in compose.yml still ships the pre-refactor implementation, which reverts.
 const RESOLVER_ROLES_ALL =
   0x1111111111111111111111111111111111111111111111111111111111111111n
 
@@ -42,7 +40,7 @@ beforeAll(async () => {
     account: accounts[0],
   })
   const proxyReceipt = await waitForTransaction(proxyDeployTx)
-  resolverProxyAddress = `0x${proxyReceipt.logs[3]?.topics[2]?.slice(26)}`
+  resolverProxyAddress = getDeployedProxyAddress(proxyReceipt)
 })
 
 describe('hasRoles', () => {

@@ -10,9 +10,9 @@ const paymentToken = deploymentAddresses.USDC
 // Per-second base rates from StandardRentPriceOracle.getBaseRates(), indexed
 // by `label length - 1`. Lengths 1-2 are zero (oracle rejects sub-3-char labels);
 // lengths beyond the table clamp to the tail entry (5+ chars).
-const BASE_RATE_PER_SEC_3CHAR = 20_280_377n
-const BASE_RATE_PER_SEC_4CHAR = 5_070_095n
-const BASE_RATE_PER_SEC_5CHAR = 253_505n
+const BASE_RATE_PER_SEC_3CHAR = 20_294_267n
+const BASE_RATE_PER_SEC_4CHAR = 5_073_567n
+const BASE_RATE_PER_SEC_5CHAR = 253_679n
 
 // USDC payment token ratio (numer / denom) from getPaymentTokenRatio()
 const RATIO_NUMER = 1n
