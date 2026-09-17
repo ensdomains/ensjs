@@ -11,7 +11,7 @@ describe('getNameRegistries', () => {
     try {
       registries = await getNameRegistries(client, {
         name: 'test.eth',
-        address: deploymentAddresses.UniversalResolverV2,
+        address: deploymentAddresses.UniversalHelper,
       })
     } catch (e) {
       if (

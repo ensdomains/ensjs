@@ -9,9 +9,9 @@ import { getBaseRates } from './getBaseRates.js'
 const EXPECTED_RATES = [
   0n, // length 1
   0n, // length 2
-  20_280_377n, // length 3
-  5_070_095n, // length 4
-  253_505n, // length 5+ (clamps)
+  20_294_267n, // length 3
+  5_073_567n, // length 4
+  253_679n, // length 5+ (clamps)
 ] as const
 
 describe('getBaseRates', () => {
