@@ -102,6 +102,16 @@ async function setupClients(l1Url: string) {
 
 // Register names using LegacyETHRegistrarController (unwrapped names)
 // Note: This may cause ensindexer to crash but unit tests don't need it
+/**
+ * Gas limit for the registration calls.
+ *
+ * `eth_estimateGas` occasionally comes back a few thousand gas short for
+ * these, and the transaction then dies with an out-of-gas error partway
+ * through — an intermittent seeding failure. The registrations cost well under
+ * this, so a fixed limit just removes the estimate from the path.
+ */
+const REGISTER_GAS = 1_000_000n
+
 async function registerUnwrappedName(
   walletClient: WalletClient,
   publicClient: PublicClient,
@@ -222,6 +232,7 @@ async function registerUnwrappedName(
     functionName: 'registerWithConfig',
     args: [label, owner, BigInt(duration), secret, resolver, owner],
     value: price,
+    gas: REGISTER_GAS,
   })
 
   return registerTx
@@ -368,6 +379,7 @@ async function registerWrappedName(
     functionName: 'register',
     args: [params],
     value: price,
+    gas: REGISTER_GAS,
   })
 
   await waitForTransaction(publicClient, registerTx)
