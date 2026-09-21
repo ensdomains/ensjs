@@ -165,9 +165,19 @@ export const decodeResolverEvents = (resolverEvents: ResolverEvent[]) => {
         }
       }
       case 'ContenthashChanged': {
-        const { decoded: contentHash, protocolType } = decodeContentHash(
-          event.hash,
-        ) || { protocolType: null, decoded: null }
+        // decodeContentHash throws for bytes it doesn't recognise as a known
+        // codec - subgraph event data is as unvalidated as onchain data, so
+        // this must degrade to "undecoded" rather than crash the mapper
+        let decodedContentHash: ReturnType<typeof decodeContentHash>
+        try {
+          decodedContentHash = decodeContentHash(event.hash)
+        } catch {
+          decodedContentHash = null
+        }
+        const { decoded: contentHash, protocolType } = decodedContentHash || {
+          protocolType: null,
+          decoded: null,
+        }
         return {
           ...event,
           decoded: contentHash !== null,

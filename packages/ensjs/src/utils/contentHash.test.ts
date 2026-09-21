@@ -99,6 +99,13 @@ describe('decodeContentHash', () => {
   it('returns null when empty bytes', () => {
     expect(decodeContentHash('0x')).toBeNull()
   })
+  it('throws for bytes with no recognisable codec (callers that want a safe read use isValidContentHash or a try/catch, e.g. decodeContentHashResult with strict: false)', () => {
+    // onchain content hash records are unvalidated - a resolver can store
+    // arbitrary bytes. decodeContentHash itself still throws here, matching
+    // its pre-existing contract; decodeContentHashResult's `strict` option
+    // relies on this to decide whether to surface or swallow the error.
+    expect(() => decodeContentHash('0xdeadbeef')).toThrow()
+  })
 })
 describe('isValidContentHash', () => {
   it('returns true for valid content hash', () => {
@@ -110,6 +117,12 @@ describe('isValidContentHash', () => {
   })
   it('returns false for invalid content hash', () => {
     expect(isValidContentHash('0x1234')).toBe(false)
+  })
+  it('returns false instead of throwing for an unset (empty) content hash', () => {
+    expect(isValidContentHash('0x')).toBe(false)
+  })
+  it('returns false instead of throwing for bytes with no recognisable codec', () => {
+    expect(isValidContentHash('0xdeadbeef')).toBe(false)
   })
 })
 describe('getProtocolType', () => {
