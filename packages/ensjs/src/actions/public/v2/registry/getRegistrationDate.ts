@@ -1,13 +1,11 @@
-import { permissionedRegistryGetTokenIdSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
 import {
   type Address,
   type Chain,
   type GetBlockErrorType,
   type GetLogsErrorType,
   labelhash,
-  type ReadContractErrorType,
 } from 'viem'
-import { getBlock, getLogs, readContract } from 'viem/actions'
+import { getBlock, getLogs } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
 import type { RequireClientContracts } from '../../../../clients/shared.js'
 import { getChainContractAddress } from '../../../../clients/shared.js'
@@ -28,7 +26,6 @@ export type GetRegistrationDateReturnType = bigint | null
 
 export type GetRegistrationDateErrorType =
   | GetChainContractAddressErrorType
-  | ReadContractErrorType
   | GetLogsErrorType
   | GetBlockErrorType
 
@@ -56,7 +53,6 @@ export async function getRegistrationDate<chain extends Chain>(
   ASSERT_NO_TYPE_ERROR(client)
 
   const getLogsAction = getAction(client, getLogs, 'getLogs')
-  const readContractAction = getAction(client, readContract, 'readContract')
 
   const registry =
     registryAddress ??
@@ -65,17 +61,14 @@ export async function getRegistrationDate<chain extends Chain>(
       contract: 'ensRegistry',
     })
 
-  const tokenId = await readContractAction({
-    address: registry,
-    abi: permissionedRegistryGetTokenIdSnippet,
-    functionName: 'getTokenId',
-    args: [BigInt(labelhash(label))],
-  })
-
+  // Matched on `labelHash`, not `tokenId`: a token id carries a version in its
+  // low bits which increments when a name is re-registered, so the id the
+  // registry reports today does not match the one its own registration event
+  // was emitted with. `labelHash` is indexed and version-free.
   const logs = await getLogsAction({
     address: registry,
     event: LABEL_REGISTERED_EVENT,
-    args: { tokenId },
+    args: { labelHash: labelhash(label) },
     fromBlock: fromBlock ?? 0n,
     toBlock: toBlock ?? undefined,
   })
