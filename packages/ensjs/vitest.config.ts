@@ -27,6 +27,8 @@ const pureLogicTests = [
   'src/actions/dns/getDnsOwner.test.ts',
   'src/actions/public/getNames.test.ts',
   'src/actions/public/resolveNameData.test.ts',
+  // Log-filter shape only; the client is mocked.
+  'src/actions/public/v2/registry/getRegistrationDateFilter.test.ts',
 ]
 
 export default defineConfig({
