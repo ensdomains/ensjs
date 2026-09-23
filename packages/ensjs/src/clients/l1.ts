@@ -40,6 +40,9 @@ export const supportedL1Contracts = [
   'ensLegacyRegistry',
   'ensReverseRegistrar',
   'ensDefaultReverseResolver',
+  'ensDefaultReverseRegistrar',
+  'ensDefaultReverseRegistrarAdapter',
+  'ensReverseRegistrarAdapter',
   'ensEthRenewerV1',
 
   // v2
@@ -96,6 +99,15 @@ export const ensL1Contracts = {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
     ensDefaultReverseResolver: {
+      address: zeroAddress,
+    },
+    ensDefaultReverseRegistrar: {
+      address: zeroAddress,
+    },
+    ensDefaultReverseRegistrarAdapter: {
+      address: zeroAddress,
+    },
+    ensReverseRegistrarAdapter: {
       address: zeroAddress,
     },
     ensUniversalResolver: {
@@ -178,6 +190,21 @@ export const ensL1Contracts = {
     },
     ensDefaultReverseResolver: {
       address: '0x7cD0016F722f34394110738eEc10265b00c6C7d9',
+    },
+    // ENSIP-19 `default.reverse`: sets the primary name per coin type.
+    ensDefaultReverseRegistrar: {
+      address: '0x4F382928805ba0e23B30cFB75fC9E848e82DFD47',
+    },
+    // HCA forwarders for the two reverse registrars. Each resolves the calling
+    // account's owner through `ensHcaFactory`, and its wrapped registrar is
+    // readable on-chain: the default adapter's DEFAULT_REVERSE_REGISTRAR is
+    // `ensDefaultReverseRegistrar`, and the other adapter's REVERSE_REGISTRAR
+    // is `ensReverseRegistrar`.
+    ensDefaultReverseRegistrarAdapter: {
+      address: '0x4F32A1c62E202922d4d6307126F43218DB9dA6f5',
+    },
+    ensReverseRegistrarAdapter: {
+      address: '0x39993148CAA6a20aE1F08E1b2427966E97f85aaB',
     },
     ensUniversalResolver: {
       address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
