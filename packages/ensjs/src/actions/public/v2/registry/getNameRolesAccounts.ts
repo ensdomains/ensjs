@@ -14,19 +14,22 @@ import { getLogs, readContract } from 'viem/actions'
 import { getAction } from 'viem/utils'
 import { ASSERT_NO_TYPE_ERROR } from '../../../../types/internal.js'
 import { registryRoles } from '../../../../utils/v2/index.js'
-import {
-  decodeRoleCounts,
-  type RoleName,
-} from '../../../../utils/v2/roles/decodeRoleCounts.js'
+import { decodeRoleCounts } from '../../../../utils/v2/roles/decodeRoleCounts.js'
 
 export type GetNameRolesAccountsParameters = {
   registryAddress: Address
   label: string
 } & Pick<GetLogsParameters, 'fromBlock' | 'toBlock'>
 
+/**
+ * The decoded roles come from `registryRoles`, whose keys already include the
+ * `_ADMIN` variants — the same type `getNameRolesForAccount` returns. The
+ * previous `RoleName<readonly string[]>` instantiated the generic with its own
+ * constraint, which widens to `string` and left callers casting.
+ */
 export type GetNameRolesAccountsReturnType = Map<
   Address,
-  RoleName<readonly string[]>[]
+  Array<keyof typeof registryRoles>
 >
 
 export type GetNameRolesAccountsErrorType = GetLogsErrorType
@@ -69,7 +72,7 @@ export async function getNameRoleAccounts(
     },
   })
 
-  const roles = new Map<Address, RoleName<readonly string[]>[]>()
+  const roles: GetNameRolesAccountsReturnType = new Map()
 
   for (const log of logs) {
     if (log.args.account && log.args.account !== zeroAddress) {
@@ -79,8 +82,8 @@ export async function getNameRoleAccounts(
 
         roles.set(
           log.args.account,
-          Object.keys(counts).filter(
-            (key) => counts[key as keyof typeof counts] === 1,
+          (Object.keys(counts) as Array<keyof typeof counts>).filter(
+            (key) => counts[key] === 1,
           ),
         )
       }
