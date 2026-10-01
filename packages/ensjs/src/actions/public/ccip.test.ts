@@ -17,7 +17,7 @@ describe('CCIP', () => {
   describe('getRecords', () => {
     it('should return records from a ccip-read name with incompliant resolver', async () => {
       const result = await getRecords(mainnetPublicClient, {
-        name: 'alisha.beam.eco',
+        name: 'taytems.xyz',
         texts: ['email', 'description'],
         contentHash: true,
         coins: ['ltc', '60'],
@@ -28,11 +28,11 @@ describe('CCIP', () => {
             {
               "coinType": 60,
               "symbol": "eth",
-              "value": "0x3A8C8D374AD15fE43E6239F6C694bff9Ee4CBbbf",
+              "value": "0x8e8Db5CcEF88cca9d624701Db544989C996E3216",
             },
           ],
           "contentHash": null,
-          "resolverAddress": "0x244fE34a508E16E12A221332f63E3a741C759D76",
+          "resolverAddress": "0xF142B308cF687d4358410a4cB885513b30A42025",
           "texts": [],
         }
       `)
