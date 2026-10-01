@@ -201,55 +201,55 @@ export const ensL1Contracts = {
     // `ensDefaultReverseRegistrar`, and the other adapter's REVERSE_REGISTRAR
     // is `ensReverseRegistrar`.
     ensDefaultReverseRegistrarAdapter: {
-      address: '0x4F32A1c62E202922d4d6307126F43218DB9dA6f5',
+      address: '0x36f97328e843e37520cbF530e9402791c2754066',
     },
     ensReverseRegistrarAdapter: {
-      address: '0x39993148CAA6a20aE1F08E1b2427966E97f85aaB',
+      address: '0x56Bce5E727FAa9D237341Bb5B9E8a03D5919779d',
     },
     ensUniversalResolver: {
       address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
     },
     ensUniversalHelper: {
-      address: '0x33f571aa8A160a21b877cF6E0Fb8806692b97DF5',
+      address: '0xd453e5Bdb62CC3beA84341B1e306319C8Ffd7DFe',
     },
     ensPermissionedResolverImpl: {
-      address: '0x14F09Fd05d4585759e54844DC9B00147131Cf243',
+      address: '0x115eb53F0c60696633855F90b138178Fb40b2b2C',
     },
     ensRegistry: {
-      address: '0x657eA849311d3D5823348ddEd7C2AaAFb3EDE09E',
+      address: '0xD4eBcbBdF463C9c45784603Db0dDD499BC44A8B4',
     },
     ensVerifiableFactory: {
-      address: '0x9e726Eb570beb6BCEb495AB8cdA7df517d4e841C',
+      address: '0xDa70306C98E97eCe36F997a21368e53298572991',
     },
     ensEthRegistrar: {
-      address: '0xAbe76F6C8DFcEd81AA5A2bB8034202A7136b94ca',
+      address: '0xf633e7FC17e2bbE0D0965D18ec1821dcB754a3d3',
     },
     ensEthRenewerV1: {
-      address: '0xd06e726e9bD8ac0f33A2a45F4Cc28fe10d656a36',
+      address: '0xf2ece44980778966b8a0FccB3A9E339440f6e045',
     },
     usdc: {
-      address: '0x16f95D91DBa7dA3Aca778Ec053dF0FF6C6A8aA8e',
+      address: '0x240b0316Df57887DBBE58b586508b19e633a14aa',
     },
     dai: {
-      address: '0x278053aCc97888E63Ec81c80FEC641Bf0Bf19664',
+      address: '0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b',
     },
     ensUserRegistryImpl: {
-      address: '0xA80338aAA8D23831cEa25E858D1774534aBb0263',
+      address: '0x9BD8a88719068D09ecee662f36C0E3856708366a',
     },
     ensStandardRentPriceOracle: {
-      address: '0x9B0b9C65BDAf9794Ff7697E4dCFb1f50581072BB',
+      address: '0x8196665D4ca7488B6474a9EC8E7d2719FB42263A',
     },
     ensHcaFactory: {
-      address: '0xB7CFeCEeD32DBa66c507b3c002dAD510b8399928',
+      address: '0x6Bad0176236e97b346B5Dd13BCc8325B931EE8ab',
     },
     ensLockedMigrationController: {
-      address: '0xab1B57C6eE5E91e6090595c0AF14CB9B8bc7773f',
+      address: '0x6029a063d69b09D23c52a754a90E4FE43aDac3A8',
     },
     ensUnlockedMigrationController: {
-      address: '0x7ed171bb143a905F56105e4eA146543Ecb122F55',
+      address: '0x2a35B94DF22cc7354570be2284655E2CDC0e64A2',
     },
     ensMigrationHelper: {
-      address: '0x58d12d60471b98F191856e4C2d56886e9c3eA573',
+      address: '0xA8F86EE5cdD28703bd876F3a8c10B1DE70f36899',
     },
   },
 } as const satisfies Record<
