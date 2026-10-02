@@ -97,4 +97,22 @@ describe('decodeContenthashResult', () => {
       Version: viem@2.47.10]
     `)
   })
+
+  it('returns null when strict is false and codec is unrecognised', () => {
+    const encoded = encodeFunctionResult({
+      abi: publicResolverContenthashSnippet,
+      functionName: 'contenthash',
+      result: '0xdeadbeef',
+    })
+    expect(decodeContentHashResult(encoded, { strict: false })).toBeNull()
+  })
+
+  it('throws when strict is true and codec is unrecognised', () => {
+    const encoded = encodeFunctionResult({
+      abi: publicResolverContenthashSnippet,
+      functionName: 'contenthash',
+      result: '0xdeadbeef',
+    })
+    expect(() => decodeContentHashResult(encoded, { strict: true })).toThrow()
+  })
 })

@@ -165,9 +165,16 @@ export const decodeResolverEvents = (resolverEvents: ResolverEvent[]) => {
         }
       }
       case 'ContenthashChanged': {
-        const { decoded: contentHash, protocolType } = decodeContentHash(
-          event.hash,
-        ) || { protocolType: null, decoded: null }
+        let decodedContentHash: ReturnType<typeof decodeContentHash>
+        try {
+          decodedContentHash = decodeContentHash(event.hash)
+        } catch {
+          decodedContentHash = null
+        }
+        const { decoded: contentHash, protocolType } = decodedContentHash || {
+          protocolType: null,
+          decoded: null,
+        }
         return {
           ...event,
           decoded: contentHash !== null,

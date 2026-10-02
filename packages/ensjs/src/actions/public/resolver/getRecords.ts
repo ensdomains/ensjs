@@ -211,12 +211,20 @@ const createCalls = <
             shouldDecodeFromPrimitiveTypes: shouldDecodeFromPrimitiveTypes
             data: Hex
           }) => {
-            const result = shouldDecodeFromPrimitiveTypes
-              ? decodeContentHashResultFromPrimitiveTypes({ decodedData: data })
-              : decodeContentHashResult(data, { strict: false })
-            if (!result) return
+            try {
+              const result = shouldDecodeFromPrimitiveTypes
+                ? decodeContentHashResultFromPrimitiveTypes({
+                    decodedData: data,
+                  })
+                : decodeContentHashResult(data, { strict: false })
+              if (!result) return
 
-            currentResult.contentHash = result
+              currentResult.contentHash = result
+            } catch (e) {
+              console.error(e)
+              // Don't panic if coming across an unrecognised content hash codec
+              return
+            }
           },
         },
       ] as const)
