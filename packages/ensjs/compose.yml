@@ -1,6 +1,6 @@
 services:
   devnet:
-    image: ghcr.io/ensdomains/contracts-v2:migration-resilience-and-verification-583eae8
+    image: ghcr.io/ensdomains/contracts-v2:post-audit-2
     command: ./script/runDevnet.ts --testNames
     pull_policy: always
     ports:
