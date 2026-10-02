@@ -1,7 +1,7 @@
 import type { Kind, SelectionNode, SelectionSetNode } from 'graphql'
 import { parse, print, visit } from 'graphql/language/index.js'
 import { namehash } from 'viem/ens'
-import type { ChainWithSubgraph } from '../../clients/l1.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import {
   type SubgraphGraphQLError,
   SubgraphRequestError,

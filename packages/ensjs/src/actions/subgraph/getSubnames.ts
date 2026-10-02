@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { namehash } from 'viem/ens'
-import type { ChainWithSubgraph } from '../../clients/l1.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import { InvalidOrderByError } from '../../errors/subgraph.js'
 import { EMPTY_ADDRESS } from '../../utils/consts.js'
 import { createSubgraphClient } from './client.js'

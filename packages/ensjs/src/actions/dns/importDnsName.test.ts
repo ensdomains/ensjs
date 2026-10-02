@@ -1,6 +1,6 @@
 import { type Address, type Hex, parseAbi, parseEther } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest'
-import { getChainContractAddress } from '../../clients/shared.js'
+import { getChainContractAddress } from '../../clients/chain.js'
 import {
   deploymentAddresses,
   publicClient,

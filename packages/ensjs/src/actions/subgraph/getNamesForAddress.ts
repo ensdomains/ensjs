@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import type { Address } from 'viem'
-import type { ChainWithSubgraph } from '../../clients/l1.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import {
   FilterKeyRequiredError,
   InvalidFilterKeyError,

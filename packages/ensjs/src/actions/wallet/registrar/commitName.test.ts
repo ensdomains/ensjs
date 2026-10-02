@@ -1,7 +1,7 @@
 import { ethRegistrarCommitmentsSnippet } from '@ensdomains/ensjs-abi/v2/ethRegistrar'
 import type { Address, Hex } from 'viem'
 import { afterEach, beforeAll, beforeEach, expect, it } from 'vitest'
-import { getChainContractAddress } from '../../../clients/shared.js'
+import { getChainContractAddress } from '../../../clients/chain.js'
 import {
   publicClient,
   testClient,

@@ -10,7 +10,7 @@ import {
 } from 'viem'
 import { multicall } from 'viem/actions'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../../clients/shared.js'
+import type { RequireClientContracts } from '../../../clients/chain.js'
 import type { ErrorType } from '../../../errors/utils.js'
 import type {
   DecodedAddr,

@@ -11,8 +11,8 @@ import {
 } from 'viem'
 import { readContract } from 'viem/actions'
 import { getAction, trim } from 'viem/utils'
-import type { RequireClientContracts } from '../../../../clients/shared.js'
-import { getChainContractAddress } from '../../../../clients/shared.js'
+import type { RequireClientContracts } from '../../../../clients/chain.js'
+import { getChainContractAddress } from '../../../../clients/chain.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../../types/internal.js'
 import {
   type BytesToPacketErrorType,

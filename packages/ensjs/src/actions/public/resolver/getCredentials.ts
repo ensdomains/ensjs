@@ -1,5 +1,5 @@
 import type { Chain } from 'viem'
-import type { RequireClientContracts } from '../../../clients/shared.js'
+import type { RequireClientContracts } from '../../../clients/chain.js'
 import type { ErrorType } from '../../../errors/utils.js'
 import type { Prettify } from '../../../types/index.js'
 import {

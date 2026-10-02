@@ -15,8 +15,8 @@ import { getAction } from 'viem/utils'
 import type {
   ChainWithContracts,
   RequireClientContracts,
-} from '../../../../clients/shared.js'
-import { getChainContractAddress } from '../../../../clients/shared.js'
+} from '../../../../clients/chain.js'
+import { getChainContractAddress } from '../../../../clients/chain.js'
 import type { ErrorType } from '../../../../errors/utils.js'
 import type {
   Prettify,

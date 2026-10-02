@@ -12,8 +12,8 @@ import { type NamehashErrorType, namehash } from 'viem'
 import { writeContract } from 'viem/actions'
 import { labelhash } from 'viem/ens'
 import { getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../../../clients/shared.js'
-import { getChainContractAddress } from '../../../../clients/shared.js'
+import type { RequireClientContracts } from '../../../../clients/chain.js'
+import { getChainContractAddress } from '../../../../clients/chain.js'
 import type {
   Prettify,
   WriteTransactionParameters,
