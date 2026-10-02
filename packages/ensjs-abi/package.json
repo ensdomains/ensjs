@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs-abi",
-  "version": "5.0.0-alpha.1",
+  "version": "5.0.0",
   "description": "ENS ABI snippets for contract interaction",
   "type": "module",
   "main": "./dist/index.js",
