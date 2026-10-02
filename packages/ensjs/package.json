@@ -125,7 +125,7 @@
     "lint": "biome check",
     "check:types": "tsc --noEmit",
     "build": "tsc --project tsconfig.build.json",
-    "prepublish": "pnpm build && cp ../../README.md ../../LICENSE ./",
+    "prepack": "pnpm build && cp ../../README.md ../../LICENSE ./",
     "ver": "node ./scripts/updateVersion.ts",
     "generateDocs": "node ./scripts/generateDocs.ts",
     "rcBranchVersion": "node ./scripts/rcBranchVersion.ts"
