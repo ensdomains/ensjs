@@ -91,7 +91,7 @@ jobs:
     needs: select-mode
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # git tags + GitHub releases
       id-token: write # npm trusted publishing (OIDC)
     steps:
       - uses: actions/checkout@v7
@@ -111,5 +111,9 @@ jobs:
       - name: Build packages
         run: pnpm -r build
 
+      # `pnpm release` stages the packages, then `changeset git-tag` reports the new tags
+      # so the action can push them and create GitHub releases.
       - name: Stage packages
-        run: pnpm stage publish -r --access public --provenance --no-git-checks
+        uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+        with:
+          script: pnpm release

@@ -6,7 +6,7 @@
     "publish:local:ensjs": "yalc publish packages/ensjs --push --up",
     "chgset:version": "changeset version && node packages/ensjs/scripts/syncVersion.ts && pnpm install",
     "chgset:run": "changeset",
-    "release": "changeset publish",
+    "release": "pnpm stage publish -r --access public --provenance --no-git-checks && changeset git-tag",
     "chgset": "pnpm chgset:run && pnpm chgset:version",
     "lint": "pnpm -r lint"
   },
