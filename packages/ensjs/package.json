@@ -155,10 +155,14 @@
     "vitest": "^3.2.6"
   },
   "peerDependencies": {
+    "@ensdomains/dnsprovejs": "^0.5.4 || ^1.0.0",
     "graphql": "^16.0.0 || ^17.0.0",
     "viem": "^2.9.2"
   },
   "peerDependenciesMeta": {
+    "@ensdomains/dnsprovejs": {
+      "optional": true
+    },
     "graphql": {
       "optional": true
     }
