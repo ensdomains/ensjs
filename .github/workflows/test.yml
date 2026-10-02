@@ -8,14 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
@@ -33,21 +33,21 @@ jobs:
         run: pnpm -F @ensdomains/ensjs test --run
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
