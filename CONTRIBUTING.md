@@ -234,7 +234,7 @@ Conventions:
 - Import ABIs from `@ensdomains/ensjs-abi/...`, **not** by hand-rolling them inside the
   action file.
 - If the action requires specific contracts on the chain, type the `client` parameter with
-  `RequireClientContracts<…>` (see `clients/shared.ts`) so misconfigured chains fail at
+  `RequireClientContracts<…>` (see `clients/chain.ts`) so misconfigured chains fail at
   compile time instead of runtime.
 - Keep parameter and return types `Prettify`-wrapped where it helps DX.
 - Every public type, parameter, and return value should be exported so downstream apps can
@@ -339,7 +339,7 @@ Run with `pnpm -F @ensdomains/ensjs test`. The local environment must be running
 
 ## Adding or updating a contract address
 
-Chain-pinned ENS addresses live in `packages/ensjs/src/clients/l1.ts`:
+Chain-pinned ENS addresses live in `packages/ensjs/src/clients/chain.ts`:
 
 1. Add the contract name to the `supportedL1Contracts` tuple.
 2. Add the address under each chain entry in `ensL1Contracts` (use `zeroAddress` if it

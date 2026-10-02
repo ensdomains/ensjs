@@ -1,2 +1,1 @@
-export * from '../clients/l1.js'
-export * from '../clients/shared.js'
+export * from '../clients/chain.js'

@@ -1,5 +1,5 @@
 import { type Address, type Chain, isAddress } from 'viem'
-import type { RequireClientContracts } from '../../clients/shared.js'
+import type { RequireClientContracts } from '../../clients/chain.js'
 import {
   DnsDnssecVerificationFailedError,
   DnsDnssecWildcardExpansionError,

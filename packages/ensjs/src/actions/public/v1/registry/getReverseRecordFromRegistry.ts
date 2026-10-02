@@ -13,7 +13,7 @@ import { getAction } from 'viem/utils'
 import {
   getChainContractAddress,
   type RequireClientContracts,
-} from '../../../../clients/shared.js'
+} from '../../../../clients/chain.js'
 import type { ErrorType } from '../../../../errors/utils.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../../types/internal.js'
 

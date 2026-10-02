@@ -14,7 +14,7 @@ import {
   type ChainWithContracts,
   getChainContractAddress,
   type RequireClientContracts,
-} from '../../../clients/shared.js'
+} from '../../../clients/chain.js'
 import { UnsupportedNameTypeError } from '../../../errors/general.js'
 import type {
   Prettify,

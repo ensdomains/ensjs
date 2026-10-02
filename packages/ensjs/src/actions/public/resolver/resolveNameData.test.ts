@@ -23,7 +23,7 @@ import {
 import { mainnet } from 'viem/chains'
 import { hexToBytes } from 'viem/utils'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
-import type { ChainWithContracts } from '../../../clients/shared.js'
+import type { ChainWithContracts } from '../../../clients/chain.js'
 import { addEnsL1Contracts } from '../../../index.js'
 import {
   getAddressParameters,

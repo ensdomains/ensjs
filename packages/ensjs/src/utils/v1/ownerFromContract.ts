@@ -8,7 +8,7 @@ import {
   labelhash,
   type ReadContractParameters,
 } from 'viem'
-import type { RequireChainContracts } from '../../clients/l1.js'
+import type { RequireChainContracts } from '../../clients/chain.js'
 import { InvalidContractTypeError } from '../../errors/general.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../types/internal.js'
 

@@ -5,7 +5,7 @@ import {
   ensL1Contracts,
   type SupportedL1ChainId,
   supportedL1Chains,
-} from '../clients/l1.js'
+} from '../clients/chain.js'
 import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
 
 /**

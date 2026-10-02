@@ -2,8 +2,8 @@ import { permissionedRegistryGetResourceSnippet } from '@ensdomains/ensjs-abi/v2
 import { type Address, type Chain, labelhash } from 'viem'
 import { type ReadContractErrorType, readContract } from 'viem/actions'
 import { type GetChainContractAddressErrorType, getAction } from 'viem/utils'
-import type { RequireClientContracts } from '../../../../clients/shared.js'
-import { getChainContractAddress } from '../../../../clients/shared.js'
+import type { RequireClientContracts } from '../../../../clients/chain.js'
+import { getChainContractAddress } from '../../../../clients/chain.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../../types/internal.js'
 
 export type GetResourceParameters = {

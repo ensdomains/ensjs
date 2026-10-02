@@ -17,8 +17,8 @@ import { sendTransaction } from 'viem/actions'
 import type {
   ChainWithContracts,
   RequireClientContracts,
-} from '../../../../clients/shared.js'
-import { getChainContractAddress } from '../../../../clients/shared.js'
+} from '../../../../clients/chain.js'
+import { getChainContractAddress } from '../../../../clients/chain.js'
 import { BaseError } from '../../../../errors/base.js'
 import {
   InvalidContractTypeError,

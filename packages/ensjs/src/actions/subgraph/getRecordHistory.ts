@@ -1,5 +1,5 @@
 import { namehash } from 'viem'
-import type { ChainWithSubgraph } from '../../clients/l1.js'
+import type { ChainWithSubgraph } from '../../clients/chain.js'
 import { createSubgraphClient } from './client.js'
 import type { ResolverEvent } from './events.js'
 import type { ReturnResolverEvent } from './getNameHistory.js'

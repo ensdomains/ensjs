@@ -79,9 +79,9 @@ packages/
   exist, `renewName` already spans both via its discriminator, and every registration
   action asserts `nameType === 'eth-2ld'`, so no `eth` in the name either.
 
-**Clients** (`src/clients/`): Factory functions for L1/L2 chain support
-- `l1.ts` - Mainnet client
-- `l2.ts` - L2 chain clients
+**Clients** (`src/clients/chain.ts`): supported chains, per-chain contract addresses and
+subgraph URLs, `extendChainWithEns`, and the `Require*Contracts` / `getChainContractAddress`
+type helpers
 - Supported chains: mainnet (1), sepolia (11155111)
 
 **Contracts** (`src/contracts/`): ABIs and chain-specific addresses for 20+ ENS contracts

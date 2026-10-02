@@ -11,7 +11,7 @@ import {
   type MockedFunction,
   vi,
 } from 'vitest'
-import type { ChainWithContracts } from '../../../../clients/shared.js'
+import type { ChainWithContracts } from '../../../../clients/chain.js'
 import { addEnsL1Contracts } from '../../../../index.js'
 import {
   deploymentAddresses,

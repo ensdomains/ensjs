@@ -6,7 +6,7 @@ import {
   zeroHash,
 } from 'viem'
 import { beforeAll, expect, it } from 'vitest'
-import { getChainContractAddress } from '../../../clients/shared.js'
+import { getChainContractAddress } from '../../../clients/chain.js'
 import {
   deploymentAddresses,
   walletClient,
