@@ -3,3 +3,13 @@ packages:
   - examples/*
 minimumReleaseAge: 1440
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - undici-types@6.21.0
+strictPeerDependencies: false
+linkWorkspacePackages: deep
+autoInstallPeers: false
+# Keeps pnpm-lock.yaml a single YAML document so GitHub's dependency graph
+# (Dependabot) can read it. CI pins pnpm via `packageManager` anyway.
+pmOnFail: ignore
+allowBuilds:
+  esbuild: false

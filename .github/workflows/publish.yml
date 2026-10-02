@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 defaults:
   run:
@@ -12,50 +13,107 @@ defaults:
 env:
   FORCE_COLOR: true
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
-  changelog:
-    name: PR or Release
+  select-mode:
+    name: Select mode
     if: ${{ github.repository_owner == 'ensdomains' }}
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.select-mode.outputs.mode }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Select Changesets mode
+        id: select-mode
+        uses: changesets/action/select-mode@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+
+  version:
+    name: Version PR
+    if: needs.select-mode.outputs.mode == 'version'
+    needs: select-mode
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/checkout@v4
-      - name: Enable corepack
-        run: corepack enable pnpm
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
         with:
-          cache: 'pnpm'
-          node-version: 22
-          registry-url: 'https://registry.npmjs.org'
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build Packages
+      - name: Version packages
+        uses: changesets/action/version@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+        with:
+          script: pnpm chgset:version
+          commit-message: "chore: release"
+          pr-title: "[ci] release"
+
+  # Nothing goes live until a maintainer approves with `pnpm stage approve` (2FA).
+  # Staged versions still count as unpublished, so only stage on the release PR merge
+  # (or a manual run), not on every push while they wait for approval.
+  stage:
+    name: Stage for npm
+    if: >-
+      needs.select-mode.outputs.mode == 'publish' && (
+        github.event_name == 'workflow_dispatch' ||
+        contains(github.event.head_commit.message, 'changeset-release/') ||
+        startsWith(github.event.head_commit.message, '[ci] release') ||
+        startsWith(github.event.head_commit.message, 'chore: release')
+      )
+    needs: select-mode
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # git tags + GitHub releases
+      id-token: write # npm trusted publishing (OIDC)
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
         run: pnpm -r build
 
-      - name: Fix npmrc
-        run: npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
+      # `pnpm release` stages the packages, then `changeset git-tag` reports the new tags
+      # so the action can push them and create GitHub releases.
+      - name: Stage packages
+        uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          # Note: pnpm install after versioning is necessary to refresh lockfile
-          version: pnpm chgset:version
-          publish: pnpm release
-          commit: "chore: release"
-          title: "[ci] release"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Needs access to publish to npm
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          script: pnpm release

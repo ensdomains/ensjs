@@ -1,11 +1,15 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config@3.0.3/schema.json",
-	"changelog": [
-		"@changesets/changelog-github",
-		{ "repo": "ensdomains/ensjs-v3" }
-	],
+	"changelog": ["@changesets/changelog-github", { "repo": "ensdomains/ensjs" }],
 	"commit": false,
-	"fixed": [],
+	"fixed": [
+		[
+			"@ensdomains/ensjs",
+			"@ensdomains/ensjs-abi",
+			"@ensdomains/ensjs-react",
+			"@ensdomains/ensjs-query-core"
+		]
+	],
 	"linked": [],
 	"access": "public",
 	"baseBranch": "main",
