@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs-query-core",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "ENS javascript extension library for @wagmi/core",
   "type": "module",
   "module": "./dist/esm/exports/index.js",
@@ -76,7 +76,7 @@
   },
   "peerDependencies": {
     "@tanstack/query-core": ">=5.0.0",
-    "@ensdomains/ensjs": "^5.0.0",
+    "@ensdomains/ensjs": "^5.0.1",
     "viem": "^2.9.2",
     "@wagmi/core": "^2.17.2"
   },

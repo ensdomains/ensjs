@@ -1,5 +1,9 @@
 # @ensdomains/ensjs-abi
 
+## 5.0.1
+
+No changes in this release.
+
 ## 5.0.0
 
 ### Major Changes

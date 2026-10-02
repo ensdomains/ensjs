@@ -1,5 +1,23 @@
 # @ensdomains/ensjs
 
+## 5.0.1
+
+### Patch Changes
+
+- [#362](https://github.com/ensdomains/ensjs/pull/362) [`583768f`](https://github.com/ensdomains/ensjs/commit/583768f1fb9d3acab8b19412358955dc13c17686) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - Bump `@ensdomains/address-encoder` to `1.1.4`, adding support for SUI (coin type 784) address records.
+
+- [#294](https://github.com/ensdomains/ensjs/pull/294) [`0cb1a0b`](https://github.com/ensdomains/ensjs/commit/0cb1a0b239a72f5930cc1927d8b063a1dfa7dc11) Thanks [@madisoncarter1234](https://github.com/madisoncarter1234)! - Fix `checkPccBurned` returning the inverse result: it now returns `true` only when the `PARENT_CANNOT_CONTROL` fuse is burned.
+
+- [#375](https://github.com/ensdomains/ensjs/pull/375) [`890c439`](https://github.com/ensdomains/ensjs/commit/890c4396dc9a24dbc63a25d9d45f00f1c28a3cf9) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - Unrecognised content hash bytes no longer throw: `isValidContentHash` returns `false`, `getRecords` skips the content hash instead of failing the whole call, and subgraph `ContenthashChanged` events are returned as undecoded.
+
+- [#364](https://github.com/ensdomains/ensjs/pull/364) [`b634a3e`](https://github.com/ensdomains/ensjs/commit/b634a3e5b7de820df30a4cde5e27a1f58060e371) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - Fix `decodeFuses` omitting the unnamed parent fuses `0x2000000` through `0x80000000`, which caused burned fuses in that range to be reported as not burned.
+
+- [#369](https://github.com/ensdomains/ensjs/pull/369) [`f153465`](https://github.com/ensdomains/ensjs/commit/f153465effa88e5221d8177b982143938fee6ba7) Thanks [@zoneguest](https://github.com/zoneguest)! - Declare `@ensdomains/dnsprovejs` as an optional peer dependency (`^0.5.4 || ^1.0.0`). `getDnsImportData` loads it at runtime, but 5.0.0 didn't declare it, so it could be missing or resolve to 0.5.1–0.5.3, whose DNS-over-HTTPS requests modern resolvers reject. Install it alongside ensjs if you use `getDnsImportData`.
+
+- [#365](https://github.com/ensdomains/ensjs/pull/365) [`9575b44`](https://github.com/ensdomains/ensjs/commit/9575b440c4a1b46f17879bd7cef6798e648db396) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - Fix `getNameType('')` returning `'tld'` instead of `'root'`.
+- Updated dependencies []:
+  - @ensdomains/ensjs-abi@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
