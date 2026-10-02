@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs-query-core",
-  "version": "0.0.1",
+  "version": "5.0.0",
   "description": "ENS javascript extension library for @wagmi/core",
   "type": "module",
   "module": "./dist/esm/exports/index.js",
