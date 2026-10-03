@@ -127,22 +127,23 @@ export type RegisterNameErrorType =
  * @returns Transaction hash. {@link RegisterNameReturnType}
  *
  * @example
- * import { createPublicClient, createWalletClient, http, custom } from 'viem'
- * import { mainnet } from 'viem/chains'
+ * import { createPublicClient, createWalletClient, erc20Abi, http, custom } from 'viem'
+ * import { sepolia } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { getChainContractAddress } from '@ensdomains/ensjs/chain'
  * import { getRegisterPrice } from '@ensdomains/ensjs/public'
  * import { randomSecret } from '@ensdomains/ensjs/utils'
  * import { commitName, registerName } from '@ensdomains/ensjs/wallet'
  *
- * const mainnetWithEns = addEnsContracts(mainnet)
+ * const sepoliaWithEns = addEnsContracts(sepolia)
  * const publicClient = createPublicClient({
- *   chain: mainnetWithEns,
+ *   chain: sepoliaWithEns,
  *   transport: http(),
  * })
  * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
  *   account,
- *   chain: mainnetWithEns,
+ *   chain: sepoliaWithEns,
  *   transport: custom(window.ethereum),
  * })
  * const secret = randomSecret()
@@ -157,13 +158,23 @@ export type RegisterNameErrorType =
  * await publicClient.waitForTransactionReceipt({ hash: commitmentHash }) // wait for commitment to finalise
  * await new Promise((resolve) => setTimeout(resolve, 60 * 1_000)) // wait for commitment to be valid
  *
- * // Registration is paid in an ERC-20 token (USDC by default). Approve the
- * // registrar to spend `base + premium` before registering.
+ * // Registration is paid in an ERC-20 token (USDC by default), so approve
+ * // the registrar to spend the price first
+ * const usdc = getChainContractAddress({ chain: sepoliaWithEns, contract: 'usdc' })
+ * const registrar = getChainContractAddress({ chain: sepoliaWithEns, contract: 'ensEthRegistrar' })
  * const { base, premium } = await getRegisterPrice(publicClient, {
  *   label: params.label,
  *   duration: BigInt(params.duration),
- *   paymentToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
+ *   paymentToken: usdc,
  * })
+ * const approveHash = await wallet.writeContract({
+ *   address: usdc,
+ *   abi: erc20Abi,
+ *   functionName: 'approve',
+ *   args: [registrar, base + premium],
+ * })
+ * await publicClient.waitForTransactionReceipt({ hash: approveHash })
+ *
  * const hash = await registerName(wallet, params)
  * // 0x...
  */

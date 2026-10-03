@@ -8,7 +8,7 @@
 
 > **renewName**\<`chain`, `account`, `chainOverride`\>(`client`, `options`): `Promise`\<`` `0x${string}` ``\>
 
-Defined in: packages/ensjs/src/actions/wallet/registrar/renewName.ts:178
+Defined in: packages/ensjs/src/actions/wallet/registrar/renewName.ts:180
 
 Renews a `.eth` 2LD via the given renewer contract: the v2 `ETHRegistrar`
 (`contract: 'ensEthRegistrar'`) for names registered on v2, or `ETHRenewerV1`
@@ -95,21 +95,23 @@ Transaction hash. RenewNameReturnType
 
 ```ts
 import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+import { sepolia } from 'viem/chains'
 import { addEnsContracts } from '@ensdomains/ensjs'
 import { renewName } from '@ensdomains/ensjs/wallet'
 
 const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
 const wallet = createWalletClient({
   account,
-  chain: addEnsContracts(mainnet),
+  chain: addEnsContracts(sepolia),
   transport: custom(window.ethereum),
 })
 
+// The renewer must be approved to spend the renewal price in `paymentToken`
+// first (see `getRenewPrice`)
 const hash = await renewName(wallet, {
   name: 'example.eth',
   duration: 31536000n, // 1 year
-  paymentToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
+  paymentToken: '0x240b0316Df57887DBBE58b586508b19e633a14aa', // USDC (Sepolia)
   contract: 'ensEthRegistrar',
 })
 // 0x...

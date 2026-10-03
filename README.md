@@ -83,8 +83,8 @@ everything you don't import.
 | `@ensdomains/ensjs/dns` | DNS helpers (`getDnsOwner`, `importDnsName`, `getDnsImportData`, …) |
 | `@ensdomains/ensjs/utils` | Coders (`getAddress`, `getText`, `getAbi`, `getContentHash`), name utils |
 | `@ensdomains/ensjs/utils/v2` | v2 utils (role encoding, resolver resources, canonical IDs) |
-| `@ensdomains/ensjs/contracts` | Re-exports of ABI snippets and `getChainContractAddress` |
-| `@ensdomains/ensjs/chain` | Chain types and helpers (`ChainWithEns`, `extendChainWithEns`) |
+| `@ensdomains/ensjs/contracts` | Re-exports of ABI snippets |
+| `@ensdomains/ensjs/chain` | Chain types and helpers (`ChainWithEns`, `extendChainWithEns`, `getChainContractAddress`) |
 
 ABIs themselves are published as a standalone package and can be imported directly:
 

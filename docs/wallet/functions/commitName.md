@@ -96,7 +96,7 @@ Transaction hash. CommitNameReturnType
 
 ```ts
 import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+import { sepolia } from 'viem/chains'
 import { addEnsContracts } from '@ensdomains/ensjs'
 import { commitName } from '@ensdomains/ensjs/wallet'
 import { randomSecret } from '@ensdomains/ensjs/utils'
@@ -104,7 +104,7 @@ import { randomSecret } from '@ensdomains/ensjs/utils'
 const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
 const wallet = createWalletClient({
   account,
-  chain: addEnsContracts(mainnet),
+  chain: addEnsContracts(sepolia),
   transport: custom(window.ethereum),
 })
 const secret = randomSecret()

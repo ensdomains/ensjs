@@ -8,7 +8,7 @@
 
 > **addEnsContracts**\<`chain`\>(`chain`): `ChainWithEns`\<`chain`\>
 
-Defined in: packages/ensjs/src/contracts/addEnsContracts.ts:25
+Defined in: packages/ensjs/src/contracts/addEnsContracts.ts:26
 
 Adds ENS contract addresses to the viem chain
 
