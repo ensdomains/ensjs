@@ -43,17 +43,17 @@ dependencies:
 
 ## Getting started
 
-`addEnsL1Contracts` extends a viem chain with all ENS contract addresses and subgraph URLs,
+`addEnsContracts` extends a viem chain with all ENS contract addresses and subgraph URLs,
 so you can use it with any viem `createPublicClient` / `createWalletClient`.
 
 ```ts
 import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getAddressRecord, getRecords } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 
@@ -72,7 +72,7 @@ everything you don't import.
 
 | Import | Contents |
 | --- | --- |
-| `@ensdomains/ensjs` | `addEnsL1Contracts`, error classes |
+| `@ensdomains/ensjs` | `addEnsContracts`, error classes |
 | `@ensdomains/ensjs/public` | Shared read actions (resolution, records, reverse, price, availability) |
 | `@ensdomains/ensjs/public/v1` | v1-specific reads |
 | `@ensdomains/ensjs/public/v2` | v2-specific reads |

@@ -47,11 +47,11 @@ Array of booleans matching the input array GetSupportedInterfacesReturnType
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getSupportedInterfaces } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 const result = await getSupportedInterfaces(client, {

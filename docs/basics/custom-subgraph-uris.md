@@ -6,11 +6,11 @@ self-hosted ENSNode instance, override it on the chain you pass to the client.
 ```ts
 import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getSubgraphRecords } from '@ensdomains/ensjs/subgraph'
 
 const chain = {
-  ...addEnsL1Contracts(mainnet),
+  ...addEnsContracts(mainnet),
   subgraphs: {
     ens: {
       url: 'http://localhost:42069/subgraph',

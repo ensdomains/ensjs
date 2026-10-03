@@ -40,11 +40,11 @@ Address of the subregistry, or the zero address if none is set. GetNameRegistryA
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getNameRegistryAddress } from '@ensdomains/ensjs/public/v2'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 

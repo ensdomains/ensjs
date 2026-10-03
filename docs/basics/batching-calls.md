@@ -7,11 +7,11 @@ configured on the client. Enable viem's multicall batching and concurrent reads 
 ```ts
 import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getAddressRecord, getTextRecord } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
   batch: { multicall: true },
 })

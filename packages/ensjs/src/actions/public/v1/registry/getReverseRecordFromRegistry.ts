@@ -48,11 +48,11 @@ export type GetReverseRecordFromRegistryErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsL1Contracts } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { getReverseRecordFromRegistry } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
- *   chain: addEnsL1Contracts(mainnet),
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getReverseRecordFromRegistry(client, { address: '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5' })

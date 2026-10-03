@@ -6,7 +6,7 @@ If you'd rather call actions as methods on the client, add the ones you need wit
 ```ts
 import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import {
   type GetAddressRecordParameters,
   type GetTextRecordParameters,
@@ -15,7 +15,7 @@ import {
 } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 }).extend((client) => ({
   getAddressRecord: (parameters: GetAddressRecordParameters) =>

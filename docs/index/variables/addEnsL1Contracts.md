@@ -4,11 +4,11 @@
 
 [@ensdomains/ensjs](../../api.md) / [index](../api.md) / addEnsL1Contracts
 
-# Function: addEnsL1Contracts()
+# ~~Variable: addEnsL1Contracts~~
 
-> **addEnsL1Contracts**\<`chain`\>(`chain`): `ChainWithEns`\<`chain`\>
+> `const` **addEnsL1Contracts**: \<`chain`\>(`chain`) => `ChainWithEns`\<`chain`\> = `addEnsContracts`
 
-Defined in: packages/ensjs/src/contracts/addEnsL1Contracts.ts:25
+Defined in: packages/ensjs/src/contracts/addEnsContracts.ts:49
 
 Adds ENS contract addresses to the viem chain
 
@@ -18,13 +18,13 @@ Adds ENS contract addresses to the viem chain
 
 `chain` *extends* `AnySupportedL1Chain`
 
+The viem Chain object to add the ENS contracts to
+
 ## Parameters
 
 ### chain
 
 `chain`
-
-The viem Chain object to add the ENS contracts to
 
 ## Returns
 
@@ -35,10 +35,14 @@ The viem Chain object to add the ENS contracts to
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 
 const clientWithEns = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 ```
+
+## Deprecated
+
+Use [addEnsContracts](../functions/addEnsContracts.md) instead.

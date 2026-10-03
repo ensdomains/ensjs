@@ -40,11 +40,11 @@ export type GetContentHashRecordErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsL1Contracts } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { getContentHashRecord } from '@ensdomains/ensjs/public'
  *
  * const client = createPublicClient({
- *   chain: addEnsL1Contracts(mainnet),
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getContentHashRecord(client, { name: 'ens.eth' })

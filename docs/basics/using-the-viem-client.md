@@ -1,16 +1,16 @@
 # Using the Viem Client
 
 ENSjs actions are plain functions that take a viem `Client` as their first argument. Wrap the viem `Chain` in
-`addEnsL1Contracts()` to add the ENS contract addresses and subgraph URL, then pass the client to any action.
+`addEnsContracts()` to add the ENS contract addresses and subgraph URL, then pass the client to any action.
 
 ```ts
 import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getAddressRecord } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 
@@ -22,13 +22,13 @@ Write actions work the same way with a wallet client that has an `account`:
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { setTextRecord } from '@ensdomains/ensjs/wallet'
 
 const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
 const wallet = createWalletClient({
   account,
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: custom(window.ethereum),
 })
 

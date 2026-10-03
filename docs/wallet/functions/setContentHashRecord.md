@@ -67,13 +67,13 @@ Transaction hash. SetContentHashRecordReturnType
 ```ts
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { setContentHashRecord } from '@ensdomains/ensjs/wallet'
 
 const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
 const wallet = createWalletClient({
   account,
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: custom(window.ethereum),
 })
 const hash = await setContentHashRecord(wallet, {

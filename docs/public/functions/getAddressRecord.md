@@ -81,11 +81,11 @@ Coin value object, or `null` if not found. GetAddressRecordReturnType
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getAddressRecord } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 const result = await getAddressRecord(client, { name: 'ens.eth', coin: 'ETH' })

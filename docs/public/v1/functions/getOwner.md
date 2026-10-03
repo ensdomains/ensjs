@@ -47,11 +47,11 @@ Owner data object, or `null` if no owners exist. GetOwnerReturnType
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getOwner } from '@ensdomains/ensjs/public/v1'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 const result = await getOwner(client, { name: 'ens.eth' })

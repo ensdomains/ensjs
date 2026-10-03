@@ -129,12 +129,12 @@ export type RegisterNameErrorType =
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsL1Contracts } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { getRegisterPrice } from '@ensdomains/ensjs/public'
  * import { randomSecret } from '@ensdomains/ensjs/utils'
  * import { commitName, registerName } from '@ensdomains/ensjs/wallet'
  *
- * const mainnetWithEns = addEnsL1Contracts(mainnet)
+ * const mainnetWithEns = addEnsContracts(mainnet)
  * const publicClient = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),

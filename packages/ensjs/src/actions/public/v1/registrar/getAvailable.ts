@@ -41,11 +41,11 @@ export type GetAvailableErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsL1Contracts } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { getAvailable } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
- *   chain: addEnsL1Contracts(mainnet),
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getAvailable(client, { name: 'ens.eth' })

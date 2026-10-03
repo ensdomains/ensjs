@@ -1,6 +1,9 @@
 /** @module index */
 
-export { addEnsL1Contracts } from './contracts/addEnsL1Contracts.js'
+export {
+  addEnsContracts,
+  addEnsL1Contracts,
+} from './contracts/addEnsContracts.js'
 export { BaseError } from './errors/base.js'
 export { NoChainError, UnsupportedChainError } from './errors/contracts.js'
 export {

@@ -15,14 +15,14 @@ import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsL1Contracts } from '@ensdomains/ensjs'
+ * import { addEnsContracts } from '@ensdomains/ensjs'
  *
  * const clientWithEns = createPublicClient({
- *   chain: addEnsL1Contracts(mainnet),
+ *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
  */
-export const addEnsL1Contracts = <const chain extends AnySupportedL1Chain>(
+export const addEnsContracts = <const chain extends AnySupportedL1Chain>(
   chain: chain,
 ) => {
   if (!chain) throw new NoChainError()
@@ -44,3 +44,6 @@ export const addEnsL1Contracts = <const chain extends AnySupportedL1Chain>(
     },
   } as unknown as ChainWithEns<chain>
 }
+
+/** @deprecated Use {@link addEnsContracts} instead. */
+export const addEnsL1Contracts = addEnsContracts

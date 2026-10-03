@@ -6,6 +6,10 @@
 
 # index
 
+## Variables
+
+- [~~addEnsL1Contracts~~](variables/addEnsL1Contracts.md)
+
 ## Functions
 
-- [addEnsL1Contracts](functions/addEnsL1Contracts.md)
+- [addEnsContracts](functions/addEnsContracts.md)

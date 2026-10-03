@@ -43,11 +43,11 @@ Resolver address and extra data, or null. GetDnsOffchainDataReturnType
 ```ts
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getDnsOffchainData } from '@ensdomains/ensjs/dns'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 const data = await getDnsOffchainData(client, {
