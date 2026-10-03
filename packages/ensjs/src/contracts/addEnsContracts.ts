@@ -3,6 +3,7 @@ import {
   type AnySupportedL1Chain,
   type ChainWithEns,
   ensL1Contracts,
+  ensL1Subgraphs,
   type SupportedL1ChainId,
   supportedL1Chains,
 } from '../clients/chain.js'
@@ -39,9 +40,7 @@ export const addEnsContracts = <const chain extends AnySupportedL1Chain>(
       ...chain.contracts,
       ...ensL1Contracts[chain.id as SupportedL1ChainId],
     },
-    subgraphs: {
-      ...ensL1Contracts[chain.id as SupportedL1ChainId],
-    },
+    subgraphs: ensL1Subgraphs[chain.id as SupportedL1ChainId],
   } as unknown as ChainWithEns<chain>
 }
 
