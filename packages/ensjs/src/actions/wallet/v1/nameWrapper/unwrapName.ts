@@ -151,7 +151,9 @@ export type UnwrapNameErrorType =
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { unwrapName } from '@ensdomains/ensjs/wallet/v1'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })

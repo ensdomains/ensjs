@@ -3,7 +3,7 @@ import { encodeFunctionData, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
 import { expect, it, vi } from 'vitest'
 import { getChainContractAddress } from '../clients/chain.js'
-import { addEnsL1Contracts } from '../index.js'
+import { addEnsContracts } from '../index.js'
 import { createHttpServer } from '../test/createHttpServer.js'
 import { ccipRequest } from './ccipRequest.js'
 
@@ -16,7 +16,7 @@ const handler = vi.fn<RequestListener>().mockImplementation((_, res) => {
 
 it('uses viemCcipRequest for standard request', async () => {
   const { url } = await createHttpServer(handler)
-  const chain = addEnsL1Contracts(mainnet)
+  const chain = addEnsContracts(mainnet)
   const result = await ccipRequest(chain)({
     sender: '0x8464135c8F25Da09e49BC8782676a84730C318bC',
     urls: [url],
@@ -28,7 +28,7 @@ it('uses viemCcipRequest for standard request', async () => {
 })
 it('uses viemCcipRequest for universalresolver request that is not matching signature', async () => {
   const { url } = await createHttpServer(handler)
-  const chain = addEnsL1Contracts(mainnet)
+  const chain = addEnsContracts(mainnet)
   const result = await ccipRequest(chain)({
     sender: getChainContractAddress({
       chain,
@@ -46,7 +46,7 @@ it('uses ccipBatchRequest for universalresolver request that is matching signatu
     'function query((address,string[],bytes)[]) returns (bool[],bytes[])',
   ])
   const { url } = await createHttpServer(handler)
-  const chain = addEnsL1Contracts(mainnet)
+  const chain = addEnsContracts(mainnet)
   const data = encodeFunctionData({
     abi,
     args: [

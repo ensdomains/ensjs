@@ -97,7 +97,9 @@ export type SetTextRecordErrorType =
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { setTextRecord } from '@ensdomains/ensjs/wallet'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })

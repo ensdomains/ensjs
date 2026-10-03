@@ -1,3 +1,5 @@
+/** @module subgraph */
+
 export {
   createSubgraphClient,
   type SubgraphClient,

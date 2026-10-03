@@ -33,21 +33,27 @@ Supported chains: `mainnet` (1) and `sepolia` (11155111).
 pnpm add @ensdomains/ensjs viem
 ```
 
-You'll also need `viem` ≥ 2.9.2 as a peer dependency.
+You'll also need `viem` ≥ 2.9.2 as a peer dependency. Some features need optional peer
+dependencies:
+
+| Package | Needed for |
+| --- | --- |
+| `graphql` | `@ensdomains/ensjs/subgraph` |
+| `@ensdomains/dnsprovejs` (`^0.5.4 \|\| ^1.0.0`) | `getDnsImportData` from `@ensdomains/ensjs/dns` |
 
 ## Getting started
 
-`addEnsL1Contracts` extends a viem chain with all ENS contract addresses and subgraph URLs,
+`addEnsContracts` extends a viem chain with all ENS contract addresses and subgraph URLs,
 so you can use it with any viem `createPublicClient` / `createWalletClient`.
 
 ```ts
 import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { addEnsContracts } from '@ensdomains/ensjs'
 import { getAddressRecord, getRecords } from '@ensdomains/ensjs/public'
 
 const client = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http(),
 })
 
@@ -66,18 +72,19 @@ everything you don't import.
 
 | Import | Contents |
 | --- | --- |
-| `@ensdomains/ensjs` | `addEnsL1Contracts`, error classes |
+| `@ensdomains/ensjs` | `addEnsContracts`, error classes |
 | `@ensdomains/ensjs/public` | Shared read actions (resolution, records, reverse, price, availability) |
 | `@ensdomains/ensjs/public/v1` | v1-specific reads |
 | `@ensdomains/ensjs/public/v2` | v2-specific reads |
-| `@ensdomains/ensjs/wallet` | Shared write actions (register, renew, set records, wrap, transfer, …) |
+| `@ensdomains/ensjs/wallet` | Shared write actions (commit, register, renew, set individual records) |
+| `@ensdomains/ensjs/wallet/v1` | v1-specific writes (wrap/unwrap, fuses, subnames, transfer, `setRecords`, primary name) |
 | `@ensdomains/ensjs/wallet/v2` | v2-specific writes |
 | `@ensdomains/ensjs/subgraph` | Subgraph client + queries (`getSubnames`, `getNamesForAddress`, history, …) |
 | `@ensdomains/ensjs/dns` | DNS helpers (`getDnsOwner`, `importDnsName`, `getDnsImportData`, …) |
 | `@ensdomains/ensjs/utils` | Coders (`getAddress`, `getText`, `getAbi`, `getContentHash`), name utils |
 | `@ensdomains/ensjs/utils/v2` | v2 utils (role encoding, resolver resources, canonical IDs) |
-| `@ensdomains/ensjs/contracts` | Re-exports of ABI snippets and `getChainContractAddress` |
-| `@ensdomains/ensjs/chain` | Chain types and helpers (`ChainWithEns`, `extendChainWithEns`) |
+| `@ensdomains/ensjs/contracts` | Re-exports of ABI snippets |
+| `@ensdomains/ensjs/chain` | Chain types and helpers (`ChainWithEns`, `extendChainWithEns`, `getChainContractAddress`) |
 
 ABIs themselves are published as a standalone package and can be imported directly:
 
@@ -116,18 +123,15 @@ pnpm -F @ensdomains/ensjs-abi build
 # Lint (Biome)
 pnpm lint
 
+# Type check
+pnpm -F @ensdomains/ensjs check:types
+
 # Test the main package
 pnpm -F @ensdomains/ensjs test
 pnpm -F @ensdomains/ensjs test:watch
-pnpm -F @ensdomains/ensjs test src/actions/public/getRecords.test.ts
+pnpm -F @ensdomains/ensjs test src/actions/public/resolver/getRecords.test.ts
 
-# Local test environment with deployed ENS contracts
-pnpm -F @ensdomains/ensjs denv
-
-# Just the local anvil node (no contract deployment scripts)
-pnpm -F @ensdomains/ensjs anvil
-
-# Generate the markdown docs site
+# Generate the markdown docs
 pnpm -F @ensdomains/ensjs generateDocs
 
 # Versioning (changesets)
@@ -135,7 +139,16 @@ pnpm chgset:run
 pnpm chgset:version
 ```
 
-Node ≥ 22 is required for the main packages (≥ 18 for `query-core`). Tooling: pnpm 10,
+Tests run against a local devnet with the ENS contracts deployed and test names seeded
+(`ghcr.io/ensdomains/contracts-v2`), so Docker needs to be running. `test` starts the devnet
+via `packages/ensjs/compose.yml` and stops it afterwards. If one is already running on
+`localhost:8545`, it's reused:
+
+```sh
+docker compose -f packages/ensjs/compose.yml up -d devnet
+```
+
+Node ≥ 22 is required for the main packages (≥ 18 for `query-core`). Tooling: pnpm 12,
 TypeScript strict mode, Biome for formatting and linting, Vitest for tests.
 
 ## Contributing
@@ -146,7 +159,8 @@ repo.
 
 ## Docs
 
-Per-action markdown docs live under [`docs/`](./docs). A hosted docs site is in progress.
+Guides and the API reference live under [`docs/`](./docs/README.md). The API reference is
+generated from the source JSDoc with `pnpm -F @ensdomains/ensjs generateDocs`.
 
 ## License
 

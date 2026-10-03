@@ -1,3 +1,5 @@
+/** @module dns */
+
 export {
   type GetDnsImportDataErrorType,
   type GetDnsImportDataParameters,

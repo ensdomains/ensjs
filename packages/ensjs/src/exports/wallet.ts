@@ -1,3 +1,5 @@
+/** @module wallet */
+
 export * from '../actions/wallet/registrar/commitName.js'
 export * from '../actions/wallet/registrar/registerName.js'
 export * from '../actions/wallet/registrar/renewName.js'

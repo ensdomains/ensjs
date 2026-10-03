@@ -1,3 +1,5 @@
+/** @module public */
+
 export * from '../actions/public/erc165/getSupportedInterfaces.js'
 export * from '../actions/public/registrar/applyDiscount.js'
 export * from '../actions/public/registrar/getAvailable.js'

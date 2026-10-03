@@ -1,3 +1,5 @@
+/** @module wallet/v1 */
+
 export * from '../../actions/wallet/v1/nameWrapper/setChildFuses.js'
 export * from '../../actions/wallet/v1/nameWrapper/setFuses.js'
 export * from '../../actions/wallet/v1/nameWrapper/unwrapName.js'

@@ -127,22 +127,21 @@ export type SetAbiRecordErrorType =
  * @returns Transaction hash. {@link SetAbiRecordReturnType}
  *
  * @example
- * import abi from '../abi.json'
- * import { createWalletClient, custom } from 'viem'
+ * import { createWalletClient, custom, erc20Abi } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { encodeAbi } from '@ensdomains/ensjs/utils'
  * import { setAbiRecord } from '@ensdomains/ensjs/wallet'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
- *
- * const encodedAbi = await encodeAbi({ encodeAs: 'json', abi })
  * const hash = await setAbiRecord(wallet, {
  *   name: 'ens.eth',
- *   encodedAbi,
+ *   encodeAs: 'json',
+ *   data: erc20Abi,
  *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
  * // 0x...

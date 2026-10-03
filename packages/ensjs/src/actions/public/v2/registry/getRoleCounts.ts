@@ -26,19 +26,19 @@ export type GetRoleCountsErrorType = ReadContractErrorType
  * Gets the registry's role counts for a name's label.
  * @param client - {@link Client}
  * @param parameters - {@link GetRoleCountsParameters}
- * @returns Resolver address, or null if none is found. {@link GetRoleCountsReturnType}
+ * @returns Decoded and raw role counts. {@link GetRoleCountsReturnType}
  *
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
  * import { addEnsContracts } from '@ensdomains/ensjs'
- * import { GetRoleCounts } from '@ensdomains/ensjs/public/v2'
+ * import { getRoleCounts } from '@ensdomains/ensjs/public/v2'
  *
  * const client = createPublicClient({
  *   chain: addEnsContracts(mainnet),
  *   transport: http(),
  * })
- * const result = await getRoleCounts(client, { resolverAddress: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2', label: 'raffy' })
+ * const result = await getRoleCounts(client, { registryAddress: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2', label: 'raffy' })
  */
 export async function getRoleCounts(
   client: Client,

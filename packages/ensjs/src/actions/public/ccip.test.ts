@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { describe, expect, it, vi } from 'vitest'
-import { addEnsL1Contracts } from '../../index.js'
+import { addEnsContracts } from '../../index.js'
 import { getRecords } from './resolver/getRecords.js'
 
 vi.setConfig({
@@ -9,7 +9,7 @@ vi.setConfig({
 })
 
 const mainnetPublicClient = createPublicClient({
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
   transport: http('https://mainnet.gateway.tenderly.co/4imxc4hQfRjxrVB2kWKvTo'),
 })
 
