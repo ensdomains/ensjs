@@ -157,18 +157,20 @@ export type RenewNameErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { renewName } from '@ensdomains/ensjs/wallet'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
- *   chain: addEnsContracts(mainnet),
+ *   account,
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  *
  * const hash = await renewName(wallet, {
  *   name: 'example.eth',
  *   duration: 31536000n, // 1 year
- *   paymentToken: usdcAddress,
+ *   paymentToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
  *   contract: 'ensEthRegistrar',
  * })
  * // 0x...

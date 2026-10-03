@@ -93,11 +93,11 @@ export type GetOwnerErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { getOwner } from '@ensdomains/ensjs/public/v1'
  *
  * const client = createPublicClient({
- *   chain: addEnsContracts(mainnet),
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getOwner(client, { name: 'ens.eth' })

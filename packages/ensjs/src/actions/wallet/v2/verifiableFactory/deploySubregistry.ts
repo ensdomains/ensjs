@@ -132,11 +132,13 @@ export type DeploySubregistryErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { deploySubregistry } from '@ensdomains/ensjs/wallet/v2'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
- *   chain: addEnsContracts(mainnet),
+ *   account,
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await deploySubregistry(wallet, {

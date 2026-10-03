@@ -39,13 +39,20 @@ export type GetRenewPriceErrorType = ReadContractErrorType | TypeError
  * @returns Renewal price in `paymentToken` units. {@link GetRenewPriceReturnType}
  *
  * @example
+ * import { createPublicClient, http } from 'viem'
+ * import { mainnet } from 'viem/chains'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { getRenewPrice } from '@ensdomains/ensjs/public'
  *
+ * const client = createPublicClient({
+ *   chain: addEnsL1Contracts(mainnet),
+ *   transport: http(),
+ * })
  * const price = await getRenewPrice(client, {
  *   renewerAddress: '0x...',
  *   label: 'example',
  *   duration: 31536000n,
- *   paymentToken: usdcAddress,
+ *   paymentToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
  * })
  */
 export async function getRenewPrice(

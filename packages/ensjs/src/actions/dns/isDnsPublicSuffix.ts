@@ -38,11 +38,11 @@ export type IsDnsPublicSuffixErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { isDnsPublicSuffix } from '@ensdomains/ensjs/dns'
  *
  * const client = createPublicClient({
- *   chain: addEnsContracts(mainnet),
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: http(),
  * })
  * const claimable = await isDnsPublicSuffix(client, { name: 'xyz' })

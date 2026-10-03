@@ -140,11 +140,11 @@ const getOrderByFilter = ({
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { getNamesForAddress } from '@ensdomains/ensjs/subgraph'
  *
  * const client = createPublicClient({
- *   chain: addEnsContracts(mainnet),
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getNamesForAddress(client, { address: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7' })

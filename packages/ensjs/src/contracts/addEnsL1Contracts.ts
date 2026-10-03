@@ -15,10 +15,10 @@ import { NoChainError, UnsupportedChainError } from '../errors/contracts.js'
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  *
  * const clientWithEns = createPublicClient({
- *   chain: addEnsContracts(mainnet),
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: http(),
  * })
  */

@@ -111,18 +111,20 @@ export type CommitNameErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { commitName } from '@ensdomains/ensjs/wallet'
  * import { randomSecret } from '@ensdomains/ensjs/utils'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
- *   chain: addEnsContracts(mainnet),
+ *   account,
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const secret = randomSecret()
  * const hash = await commitName(wallet, {
- *   name: 'example.eth',
- *   owner: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
+ *   label: 'example',
+ *   owner: account,
  *   duration: 31536000, // 1 year
  *   secret,
  * })

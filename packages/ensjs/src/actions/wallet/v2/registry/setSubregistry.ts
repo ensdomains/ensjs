@@ -96,7 +96,9 @@ export type SetSubregistryErrorType =
  * import { mainnet } from 'viem/chains'
  * import { setSubregistry } from '@ensdomains/ensjs/wallet/v2'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })

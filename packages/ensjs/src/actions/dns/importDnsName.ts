@@ -128,15 +128,17 @@ export const makeFunctionData = (
  * @example
  * import { createPublicClient, createWalletClient, http, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { getDnsImportData, importDnsName } from '@ensdomains/ensjs/dns'
  *
- * const mainnetWithEns = addEnsContracts(mainnet)
+ * const mainnetWithEns = addEnsL1Contracts(mainnet)
  * const client = createPublicClient({
  *   chain: mainnetWithEns,
  *   transport: http(),
  * })
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: mainnetWithEns,
  *   transport: custom(window.ethereum),
  * })

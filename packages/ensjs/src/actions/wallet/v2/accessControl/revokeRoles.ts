@@ -118,16 +118,18 @@ export type RevokeRolesErrorType =
  * @example
  * import { createWalletClient, custom } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { revokeRoles } from '@ensdomains/ensjs/wallet/v2'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
- *   chain: addEnsContracts(mainnet),
+ *   account,
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await revokeRoles(wallet, {
  *   registryAddress: '0x...',
- *   roles: ['OWNER'],
+ *   roles: ['ROLE_SET_RESOLVER'],
  *   account: '0x...',
  *   resource: 1n,
  * })
@@ -137,7 +139,7 @@ export type RevokeRolesErrorType =
  * // Revoke root roles (resource = 0)
  * const hash = await revokeRoles(wallet, {
  *   registryAddress: '0x...',
- *   roles: ['OWNER'],
+ *   roles: ['ROLE_SET_RESOLVER'],
  *   account: '0x...',
  *   resource: 0n,
  * })

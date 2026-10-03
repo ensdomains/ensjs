@@ -42,11 +42,11 @@ export type GetTextRecordErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { getTextRecord } from '@ensdomains/ensjs/public'
  *
  * const client = createPublicClient({
- *   chain: addEnsContracts(mainnet),
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: http(),
  * })
  * const result = await getTextRecord(client, { name: 'ens.eth', key: 'com.twitter' })

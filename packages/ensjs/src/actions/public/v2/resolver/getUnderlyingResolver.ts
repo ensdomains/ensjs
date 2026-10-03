@@ -27,14 +27,17 @@ export type GetUnderlyingResolverErrorType =
  * @example
  * import { createPublicClient, http } from 'viem'
  * import { mainnet } from 'viem/chains'
- * import { addEnsContracts } from '@ensdomains/ensjs'
+ * import { addEnsL1Contracts } from '@ensdomains/ensjs'
  * import { getUnderlyingAddress } from '@ensdomains/ensjs/public/v2'
  *
  * const client = createPublicClient({
- *   chain: addEnsContracts(mainnet),
+ *   chain: addEnsL1Contracts(mainnet),
  *   transport: http(),
  * })
- * const result = await getUnderlyingAddress(client, { resolverAddress: '0x123' })
+ * const result = await getUnderlyingAddress(client, {
+ *   resolverAddress: '0x...',
+ *   name: 'ens.eth',
+ * })
  * // ['0x352d7aA7a8bd0F6f31635BE5ceCb6Cebb6929A15', false]
  */
 export async function getUnderlyingAddress(
