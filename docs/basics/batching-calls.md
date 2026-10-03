@@ -1,68 +1,26 @@
 # Batching Calls
 
-Batching is built-in to viem for most situations, but ENSjs also has native batching if you want to be sure that calls are batched.
-Only public methods support call batching at this point. On the `EnsPublicClient`, batching can be accessed via `ensBatch` to avoid
-colliding with viem's native batching. If using batch outside of the client though, it can be accessed with `batch`.
-
-## Using `EnsPublicClient`
+ENSjs read actions go through viem's `readContract` and `multicall` actions, so they use whatever batching is
+configured on the client. Enable viem's multicall batching and concurrent reads are aggregated into a single
+`eth_call`:
 
 ```ts
-import { http } from 'viem'
+import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { createEnsPublicClient } from '@ensdomains/ensjs'
+import { addEnsL1Contracts } from '@ensdomains/ensjs'
 import { getAddressRecord, getTextRecord } from '@ensdomains/ensjs/public'
 
-const client = createEnsPublicClient({
-  chain: mainnet,
+const client = createPublicClient({
+  chain: addEnsL1Contracts(mainnet),
   transport: http(),
+  batch: { multicall: true },
 })
 
-const [ethAddress, twitterUsername] = client.ensBatch(
-  getAddressRecord.batch({ name: 'ens.eth' }),
-  getTextRecord.batch({ name: 'ens.eth', key: 'com.twitter' }),
-)
-/* 
-  [
-    {
-      id: 60,
-      name: 'ETH',
-      value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7'
-    },
-    'ensdomains'
-  ]
-*/
+const [ethAddress, twitterUsername] = await Promise.all([
+  getAddressRecord(client, { name: 'ens.eth' }),
+  getTextRecord(client, { name: 'ens.eth', key: 'com.twitter' }),
+])
 ```
 
-## Using Viem Client
-
-```ts
-import { http, createClient } from 'viem'
-import { mainnet } from 'viem/chains'
-import { addEnsContracts } from '@ensdomains/ensjs'
-import {
-  batch,
-  getAddressRecord,
-  getTextRecord,
-} from '@ensdomains/ensjs/public'
-
-const client = createClient({
-  chain: addEnsContracts(mainnet),
-  transport: http(),
-})
-
-const [ethAddress, twitterUsername] = batch(
-  client,
-  getAddressRecord.batch({ name: 'ens.eth' }),
-  getTextRecord.batch({ name: 'ens.eth', key: 'com.twitter' }),
-)
-/* 
-  [
-    {
-      id: 60,
-      name: 'ETH',
-      value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7'
-    },
-    'ensdomains'
-  ]
-*/
-```
+If you need several records for the same name, `getRecords()` fetches them in a single call regardless of the
+client's batching configuration.

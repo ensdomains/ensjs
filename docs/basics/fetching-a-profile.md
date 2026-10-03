@@ -1,32 +1,36 @@
 # Fetching a Profile
 
-An ENS profile, meaning all associated records for an ENS name, can be easily fetched using subgraph data with `getSubgraphRecords()` and `getRecords()`.
-When using subgraph data, it's also recommended to provide fallback records for wildcard/CCIP names, and any other situations which aren't indexed by the subgraph.
+An ENS profile, meaning all associated records for an ENS name, can be fetched by combining subgraph data from
+`getSubgraphRecords()` with `getRecords()`. The subgraph tells you which record keys are set; `getRecords()` reads
+their values from the resolver.
+
+The subgraph doesn't index wildcard/CCIP names (or anything else resolved offchain), so it's recommended to always
+include a set of fallback keys.
 
 ```ts
-import { http } from 'viem'
+import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { createEnsPublicClient } from '@ensdomains/ensjs'
+import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { getRecords } from '@ensdomains/ensjs/public'
+import { getSubgraphRecords } from '@ensdomains/ensjs/subgraph'
 
-const client = createEnsPublicClient({
-  chain: mainnet,
+const client = createPublicClient({
+  chain: addEnsL1Contracts(mainnet),
   transport: http(),
 })
 
-const subgraphRecords = client.getSubgraphRecords({ name: 'ens.eth' })
+const subgraphRecords = await getSubgraphRecords(client, { name: 'ens.eth' })
 
-const records = client.getRecords({
+const records = await getRecords(client, {
   name: 'ens.eth',
-  records: {
-    coins: [...(subgraphRecords?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
-    texts: [
-      ...(subgraphRecords?.texts || []),
-      'avatar',
-      'email',
-      'description',
-    ],
-    contentHash: true,
-    abi: true,
-  },
+  coins: [...(subgraphRecords?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
+  texts: [
+    ...(subgraphRecords?.texts || []),
+    'avatar',
+    'email',
+    'description',
+  ],
+  contentHash: true,
+  abi: true,
 })
 ```

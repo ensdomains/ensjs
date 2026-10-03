@@ -1,18 +1,41 @@
 # Using the Viem Client
 
-If you're only using parts of ENSjs, or want to control exactly what functions are being imported, you can use ENSjs methods with the viem `Client`.
-Just wrap the viem `Chain` in the `addEnsContracts()` function, which adds all the required addresses to the chain.
+ENSjs actions are plain functions that take a viem `Client` as their first argument. Wrap the viem `Chain` in
+`addEnsL1Contracts()` to add the ENS contract addresses and subgraph URL, then pass the client to any action.
 
 ```ts
-import { http, createClient } from 'viem'
+import { http, createPublicClient } from 'viem'
 import { mainnet } from 'viem/chains'
-import { addEnsContracts } from '@ensdomains/ensjs'
+import { addEnsL1Contracts } from '@ensdomains/ensjs'
 import { getAddressRecord } from '@ensdomains/ensjs/public'
 
-const client = createClient({
-  chain: addEnsContracts(mainnet),
+const client = createPublicClient({
+  chain: addEnsL1Contracts(mainnet),
   transport: http(),
 })
 
-const ethAddress = getAddressRecord(client, { name: 'ens.eth' })
+const ethAddress = await getAddressRecord(client, { name: 'ens.eth' })
+```
+
+Write actions work the same way with a wallet client that has an `account`:
+
+```ts
+import { createWalletClient, custom } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { setTextRecord } from '@ensdomains/ensjs/wallet'
+
+const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+const wallet = createWalletClient({
+  account,
+  chain: addEnsL1Contracts(mainnet),
+  transport: custom(window.ethereum),
+})
+
+const hash = await setTextRecord(wallet, {
+  name: 'ens.eth',
+  key: 'com.twitter',
+  value: 'ensdomains',
+  resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+})
 ```

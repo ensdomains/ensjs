@@ -1,29 +1,27 @@
 # Custom Subgraph URIs
 
-If you want to use a custom subgraph endpoint for the chain you are using, such as a local hosted graph-node, you can easily do so by editing the output of `addEnsContracts()`.
-Keep in mind though that you can only use custom URIs if not using the default exported ENS clients.
+Subgraph actions read the endpoint from `chain.subgraphs.ens.url`. To use a different endpoint, such as a
+self-hosted ENSNode instance, override it on the chain you pass to the client.
 
 ```ts
-import { http, createClient } from "viem";
-import { mainnet } from "viem/chains";
-import { addEnsContracts } from "@ensdomains/ensjs";
-import { getSubgraphRecords } from "@ensdomains/ensjs/subgraph";
-
-const mainnetWithEns = addEnsContracts(mainnet);
+import { http, createPublicClient } from 'viem'
+import { mainnet } from 'viem/chains'
+import { addEnsL1Contracts } from '@ensdomains/ensjs'
+import { getSubgraphRecords } from '@ensdomains/ensjs/subgraph'
 
 const chain = {
-  ...mainnetWithEns,
+  ...addEnsL1Contracts(mainnet),
   subgraphs: {
     ens: {
-      url: "http://localhost:42069/subgraph",
+      url: 'http://localhost:42069/subgraph',
     },
   },
-};
+}
 
-const client = createClient({
+const client = createPublicClient({
   chain,
   transport: http(),
-});
+})
 
-const subgraphRecords = await getSubgraphRecords(client, { name: "ens.eth" });
+const subgraphRecords = await getSubgraphRecords(client, { name: 'ens.eth' })
 ```
