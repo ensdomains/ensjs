@@ -133,9 +133,6 @@ export const localhost = {
     },
 
     // v2
-    ethRegistrar: {
-      address: deploymentAddresses.ETHRegistrar,
-    },
     usdc: {
       address: deploymentAddresses.USDC,
     },

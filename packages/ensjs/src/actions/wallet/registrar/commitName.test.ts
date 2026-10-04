@@ -50,7 +50,7 @@ it('should return a commit transaction and succeed', async () => {
     functionName: 'commitmentAt',
     address: getChainContractAddress({
       chain: publicClient.chain,
-      contract: 'ethRegistrar',
+      contract: 'ensEthRegistrar',
     }),
     args: [makeL2Commitment(params)],
   })

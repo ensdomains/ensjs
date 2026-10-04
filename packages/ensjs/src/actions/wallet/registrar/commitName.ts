@@ -56,7 +56,7 @@ export const commitNameWriteParameters = <
   chain extends Chain,
   account extends Account,
 >(
-  client: RequireClientContracts<chain, 'ethRegistrar', account>,
+  client: RequireClientContracts<chain, 'ensEthRegistrar', account>,
   args: CommitNameWriteParametersParameters,
 ) => {
   ASSERT_NO_TYPE_ERROR(client)
@@ -72,7 +72,7 @@ export const commitNameWriteParameters = <
   return {
     address: getChainContractAddress({
       chain: client.chain,
-      contract: 'ethRegistrar',
+      contract: 'ensEthRegistrar',
     }),
     abi: ethRegistrarCommitSnippet,
     functionName: 'commit',
@@ -89,7 +89,7 @@ export const commitNameWriteParameters = <
 export type CommitNameParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ethRegistrar'> | undefined,
+  chainOverride extends ChainWithContracts<'ensEthRegistrar'> | undefined,
 > = Prettify<
   CommitNameWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -131,9 +131,9 @@ export type CommitNameErrorType =
 export async function commitName<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ethRegistrar'> | undefined,
+  chainOverride extends ChainWithContracts<'ensEthRegistrar'> | undefined,
 >(
-  client: RequireClientContracts<chain, 'ethRegistrar', account>,
+  client: RequireClientContracts<chain, 'ensEthRegistrar', account>,
   {
     label,
     owner,
