@@ -197,8 +197,10 @@ export type DeleteSubnameErrorType =
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { deleteSubname } from '@ensdomains/ensjs/wallet/v1'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
- *   chain: mainnetWithEns,
+ *   account,
+ *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await deleteSubname(wallet, {

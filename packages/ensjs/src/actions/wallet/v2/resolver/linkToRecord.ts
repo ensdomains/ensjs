@@ -106,7 +106,9 @@ export type LinkToRecordErrorType =
  * import { mainnet } from 'viem/chains'
  * import { linkToRecord } from '@ensdomains/ensjs/wallet/v2'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: mainnet,
  *   transport: custom(window.ethereum),
  * })

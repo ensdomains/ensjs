@@ -1,3 +1,5 @@
+/** @module public/v1 */
+
 export * from '../../actions/public/v1/nameWrapper/getWrapperData.js'
 export * from '../../actions/public/v1/nameWrapper/getWrapperName.js'
 export * from '../../actions/public/v1/registrar/getAvailable.js'

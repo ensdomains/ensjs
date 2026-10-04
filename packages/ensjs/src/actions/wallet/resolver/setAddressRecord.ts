@@ -130,7 +130,9 @@ export type SetAddressRecordErrorType =
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { setAddressRecord } from '@ensdomains/ensjs/wallet'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })

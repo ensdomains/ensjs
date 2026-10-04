@@ -10,13 +10,13 @@ import {
   vi,
 } from 'vitest'
 import type { ChainWithContracts } from '../../../clients/chain.js'
-import { addEnsL1Contracts } from '../../../index.js'
+import { addEnsContracts } from '../../../index.js'
 import { getNames } from './getNames.js'
 
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
 const mockClient = {
   readContract: mockReadContract,
-  chain: addEnsL1Contracts(mainnet),
+  chain: addEnsContracts(mainnet),
 } as unknown as Client<
   Transport,
   ChainWithContracts<'ensDefaultReverseResolver'>

@@ -126,7 +126,9 @@ export type SetRecordsErrorType =
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { setRecords } from '@ensdomains/ensjs/wallet/v2'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: addEnsContracts(sepolia),
  *   transport: custom(window.ethereum),
  * })

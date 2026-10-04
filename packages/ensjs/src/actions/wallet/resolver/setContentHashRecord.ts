@@ -97,13 +97,16 @@ export type SetContentHashRecordErrorType =
  * import { addEnsContracts } from '@ensdomains/ensjs'
  * import { setContentHashRecord } from '@ensdomains/ensjs/wallet'
  *
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: addEnsContracts(mainnet),
  *   transport: custom(window.ethereum),
  * })
  * const hash = await setContentHashRecord(wallet, {
  *   name: 'ens.eth',
  *   contentHash: 'ipns://k51qzi5uqu5djdczd6zw0grmo23j2vkj9uzvujencg15s5rlkq0ss4ivll8wqw',
+ *   resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
  * })
  * // 0x...
  */

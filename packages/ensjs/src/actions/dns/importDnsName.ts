@@ -136,7 +136,9 @@ export const makeFunctionData = (
  *   chain: mainnetWithEns,
  *   transport: http(),
  * })
+ * const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
  * const wallet = createWalletClient({
+ *   account,
  *   chain: mainnetWithEns,
  *   transport: custom(window.ethereum),
  * })

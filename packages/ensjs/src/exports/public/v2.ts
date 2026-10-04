@@ -1,3 +1,5 @@
+/** @module public/v2 */
+
 export * from '../../actions/public/v2/accessControl/hasRoles.js'
 export * from '../../actions/public/v2/registry/getExpiry.js'
 export * from '../../actions/public/v2/registry/getNameRegistryAddress.js'

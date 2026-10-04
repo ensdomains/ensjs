@@ -1,3 +1,5 @@
+/** @module wallet/v2 */
+
 export * from '../../actions/wallet/v2/accessControl/grantRoles.js'
 export * from '../../actions/wallet/v2/accessControl/revokeRoles.js'
 export * from '../../actions/wallet/v2/registry/createSubname.js'
