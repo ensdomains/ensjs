@@ -15,6 +15,7 @@ import {
 import type { ErrorType } from '../../errors/utils.js'
 import type { DecodedAbi, Prettify } from '../../types/index.js'
 import { inflateFromHex } from '../deflate.js'
+import { MAX_ABI_CBOR_BYTES, validateAbiCbor } from './validateAbiCbor.js'
 
 /** @deprecated */
 export type GetAbiParameters = {
@@ -101,6 +102,10 @@ export async function decodeAbiResultFromPrimitiveTypes({
   const contentType = Number(bigintContentType)
   if (!contentType) return null
 
+  // Check before converting the hex string or importing the optional decoder.
+  if (contentType === 4 && encodedAbiData.length > MAX_ABI_CBOR_BYTES * 2 + 2)
+    throw new Error('CBOR ABI is too large')
+
   if (
     encodedAbiData === '0x' ||
     encodedAbiData === '0x0' ||
@@ -129,12 +134,11 @@ export async function decodeAbiResultFromPrimitiveTypes({
     }
     // CBOR
     case 4: {
+      const bytes = hexToBytes(encodedAbiData)
+      validateAbiCbor(bytes)
       const { cborDecode } = await import('@ensdomains/address-encoder/utils')
       // may throw Error
-      abiData = await cborDecode(
-        // may throw HexToBytesErrorType
-        hexToBytes(encodedAbiData).buffer,
-      )
+      abiData = cborDecode(bytes.buffer)
       decoded = true
       break
     }
