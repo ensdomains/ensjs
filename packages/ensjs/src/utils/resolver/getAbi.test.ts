@@ -1,7 +1,6 @@
 import { publicResolverAbiSnippet } from '@ensdomains/ensjs-abi/v1/publicResolver'
 import { encodeFunctionResult, type Hex, stringToHex } from 'viem'
 import { describe, expect, it } from 'vitest'
-import { runAbiDecode } from '../../test/runAbiDecode.js'
 import {
   decodeAbiResult,
   decodeAbiResultFromPrimitiveTypes,
@@ -115,34 +114,35 @@ describe('decodeAbiResultFromPrimitiveTypes', () => {
 })
 describe('decodeAbiResult', () => {
   it.each(['0xbf', '0x9f', '0x5f40ff', '0x7f60ff', '0x9f61c2ff'] as Hex[])(
-    'rejects unsafe CBOR %s without blocking the caller',
-    (data) => {
-      expect(runAbiDecode({ mode: 'raw', contentType: '4', data })).toEqual({
-        result: null,
+    'rejects unsafe CBOR %s',
+    async (data) => {
+      const encoded = encodeFunctionResult({
+        abi: publicResolverAbiSnippet,
+        functionName: 'ABI',
+        result: [4n, data],
       })
-      expect(
-        runAbiDecode({ mode: 'raw', contentType: '4', data, strict: true })
-          .error,
-      ).toBeTypeOf('string')
+      await expect(
+        decodeAbiResult(encoded, { strict: false }),
+      ).resolves.toBeNull()
+      await expect(decodeAbiResult(encoded, { strict: true })).rejects.toThrow()
     },
-    15000,
   )
 
-  it('rejects oversized CBOR before allocating the decoded array', () => {
+  it('rejects oversized CBOR before allocating the decoded array', async () => {
     // A declared array length of 2^32 - 1 with no elements.
-    expect(
-      runAbiDecode({ mode: 'raw', contentType: '4', data: '0x9affffffff' }),
-    ).toEqual({ result: null })
+    await expect(
+      decodeAbiResultFromPrimitiveTypes({
+        decodedData: [4n, '0x9affffffff'],
+      }),
+    ).rejects.toThrow()
   })
 
-  it('rejects excessive CBOR nesting', () => {
-    expect(
-      runAbiDecode({
-        mode: 'raw',
-        contentType: '4',
-        data: `0x${'81'.repeat(100)}80`,
+  it('rejects excessive CBOR nesting', async () => {
+    await expect(
+      decodeAbiResultFromPrimitiveTypes({
+        decodedData: [4n, `0x${'81'.repeat(100)}80`],
       }),
-    ).toEqual({ result: null })
+    ).rejects.toThrow()
   })
 
   it('preserves valid CBOR ABI data', async () => {

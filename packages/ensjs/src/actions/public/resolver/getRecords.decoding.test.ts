@@ -1,39 +1,92 @@
-import type { Hex } from 'viem'
+import {
+  publicResolverAbiSnippet,
+  publicResolverTextSnippet,
+} from '@ensdomains/ensjs-abi/v1/publicResolver'
+import { createPublicClient, encodeFunctionResult, type Hex, http } from 'viem'
+import { mainnet } from 'viem/chains'
 import { describe, expect, it } from 'vitest'
-import { runAbiDecode } from '../../../test/runAbiDecode.js'
+import { addEnsContracts } from '../../../index.js'
+import { getRecords } from './getRecords.js'
+
+const resolverAddress = '0x1234567890123456789012345678901234567890'
+const resolverPaths = [
+  { path: 'direct resolver', resolver: { address: resolverAddress } },
+  { path: 'universal resolver', resolver: undefined },
+] as const
+
+// Stub resolver responses while exercising the real record decoding and aggregation.
+const createClient = (decodedData: readonly [bigint, Hex]) =>
+  Object.assign(
+    createPublicClient({ chain: addEnsContracts(mainnet), transport: http() }),
+    {
+      multicall: async () => [
+        { status: 'success', result: 'Avatar survives' },
+        { status: 'success', result: decodedData },
+      ],
+      resolveNameData: async () => ({
+        resolverAddress,
+        resolvedData: [
+          {
+            success: true,
+            returnData: encodeFunctionResult({
+              abi: publicResolverTextSnippet,
+              functionName: 'text',
+              result: 'Avatar survives',
+            }),
+          },
+          {
+            success: true,
+            returnData: encodeFunctionResult({
+              abi: publicResolverAbiSnippet,
+              functionName: 'ABI',
+              result: decodedData,
+            }),
+          },
+        ],
+      }),
+    },
+  )
 
 describe('getRecords ABI failure handling', () => {
-  it.each(['records-primitive', 'records-raw'] as const)(
-    'preserves text records when ABI decoding fails through %s',
-    (mode) => {
+  it.each(resolverPaths)(
+    'preserves text records when ABI decoding fails through $path',
+    async ({ resolver }) => {
       for (const [contentType, data] of [
-        ['1', '0x1234'],
-        ['4', '0xbf'],
-        ['4', '0x9affffffff'],
-      ] as const satisfies readonly (readonly [string, Hex])[]) {
-        expect(runAbiDecode({ mode, contentType, data })).toEqual({
-          result: {
-            resolverAddress: '0x1234567890123456789012345678901234567890',
-            texts: [{ key: 'avatar', value: 'Avatar survives' }],
-            abi: null,
-          },
+        [1n, '0x1234'],
+        [4n, '0xbf'],
+        [4n, '0x9affffffff'],
+      ] as const) {
+        await expect(
+          getRecords(createClient([contentType, data]), {
+            name: 'gift.eth',
+            texts: ['avatar'],
+            abi: true,
+            resolver,
+          }),
+        ).resolves.toEqual({
+          resolverAddress,
+          texts: [{ key: 'avatar', value: 'Avatar survives' }],
+          abi: null,
         })
       }
     },
-    20000,
   )
 
-  it.each(['records-primitive', 'records-raw'] as const)(
-    'preserves valid ABI records through %s',
-    (mode) => {
-      expect(runAbiDecode({ mode, contentType: '4', data: '0x81a0' })).toEqual({
-        result: {
-          resolverAddress: '0x1234567890123456789012345678901234567890',
-          texts: [{ key: 'avatar', value: 'Avatar survives' }],
-          abi: { contentType: 4, decoded: true, abi: [{}] },
-        },
+  it.each(resolverPaths)(
+    'preserves valid ABI records through $path',
+    async ({ resolver }) => {
+      await expect(
+        getRecords(createClient([4n, '0x81a0']), {
+          name: 'gift.eth',
+          texts: ['avatar'],
+          abi: true,
+          resolver,
+        }),
+      ).resolves.toEqual({
+        resolverAddress,
+        texts: [{ key: 'avatar', value: 'Avatar survives' }],
+        abi: { contentType: 4, decoded: true, abi: [{}] },
       })
     },
-    10000,
   )
 })
