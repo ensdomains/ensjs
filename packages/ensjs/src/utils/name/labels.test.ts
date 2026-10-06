@@ -1,6 +1,7 @@
 import { labelhash } from 'viem'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  checkIsDecrypted,
   decodeLabelhash,
   encodeLabelhash,
   isEncodedLabelhash,
@@ -59,6 +60,23 @@ describe('decodeLabelhash()', () => {
       - Supplied label: [9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb65]
 
       Details: Expected encoded labelhash to have a length of 66
+
+      Version: @ensdomains/ensjs@1.0.0-mock.0]
+    `)
+  })
+  it('throws error when decoded content is not valid hex', () => {
+    // 64 chars between the brackets, correct length, but not hex - this is
+    // the shape that let a crafted label reach GraphQL query interpolation
+    // unvalidated (getDecodedName.ts) before this fix
+    const nonHexPayload = `[${'z", labelname_not: null }) { labelname } evil: __typename #'.padEnd(64, ' ')}]`
+    expect(() =>
+      decodeLabelhash(nonHexPayload),
+    ).toThrowErrorMatchingInlineSnapshot(`
+      [InvalidEncodedLabelError: Invalid encoded label
+
+      - Supplied label: [z", labelname_not: null }) { labelname } evil: __typename #     ]
+
+      Details: Expected encoded labelhash to contain a valid hex string
 
       Version: @ensdomains/ensjs@1.0.0-mock.0]
     `)
@@ -159,5 +177,32 @@ describe('saveName()', () => {
       'ensjs:labels',
       JSON.stringify({ [labelhash('eth')]: 'eth' }),
     )
+  })
+})
+
+describe('checkIsDecrypted()', () => {
+  it('returns true for a plain string', () => {
+    expect(checkIsDecrypted('test.eth')).toBe(true)
+  })
+  it('returns false for a string containing an encoded label', () => {
+    expect(
+      checkIsDecrypted(
+        '[9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658].eth',
+      ),
+    ).toBe(false)
+  })
+  it('returns true for an array of plain labels', () => {
+    expect(checkIsDecrypted(['test', 'eth'])).toBe(true)
+  })
+  it('returns false for an array containing an encoded label', () => {
+    // Array.prototype.includes does exact-element equality, not substring
+    // matching, so this previously fell through to `true` regardless of
+    // content
+    expect(
+      checkIsDecrypted([
+        '[9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658]',
+        'eth',
+      ]),
+    ).toBe(false)
   })
 })
