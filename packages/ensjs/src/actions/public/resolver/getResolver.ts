@@ -27,6 +27,8 @@ const COMPOSITE_RESOLVER_INTERFACE_ID = '0xeea330f9'
 export type GetResolverParameters = {
   /** Name to get resolver for */
   name: string
+  /** Block number to read at */
+  blockNumber?: bigint
 }
 
 export type GetResolverReturnType = Address | null
@@ -66,7 +68,7 @@ export type GetResolverErrorType =
  */
 export async function getResolver<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
-  { name }: GetResolverParameters,
+  { name, blockNumber }: GetResolverParameters,
 ): Promise<GetResolverReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -80,6 +82,7 @@ export async function getResolver<chain extends Chain>(
     abi: universalResolverFindResolverSnippet,
     functionName: 'findResolver',
     args: [encodedName],
+    blockNumber,
   })
 
   if (resolver === zeroAddress) return null
@@ -91,6 +94,7 @@ export async function getResolver<chain extends Chain>(
     abi: erc165SupportsInterfaceSnippet,
     functionName: 'supportsInterface',
     args: [COMPOSITE_RESOLVER_INTERFACE_ID],
+    blockNumber,
   }).catch(() => false)
 
   if (!isComposite) return resolver
@@ -100,6 +104,7 @@ export async function getResolver<chain extends Chain>(
     abi: compositeResolverGetResolver,
     functionName: 'getResolver',
     args: [encodedName],
+    blockNumber,
   })
 
   return underlyingResolver === zeroAddress ? null : underlyingResolver

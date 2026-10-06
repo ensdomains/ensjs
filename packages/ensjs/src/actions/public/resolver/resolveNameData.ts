@@ -34,6 +34,8 @@ export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   data: data
   strict?: boolean
   gatewayUrls?: string[]
+  /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+  blockNumber?: bigint
 }
 
 type Result = { success: boolean; returnData: Hex }
@@ -63,7 +65,13 @@ export async function resolveNameData<
   data extends Hex | Hex[],
 >(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
-  { name, data, strict, gatewayUrls }: ResolveNameDataParameters<data>,
+  {
+    name,
+    data,
+    strict,
+    gatewayUrls,
+    blockNumber,
+  }: ResolveNameDataParameters<data>,
 ): Promise<ResolveNameDataReturnType<data>> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -76,6 +84,7 @@ export async function resolveNameData<
       contract: 'ensUniversalResolver',
     }),
     functionName: 'resolve',
+    blockNumber,
   } as const
 
   try {

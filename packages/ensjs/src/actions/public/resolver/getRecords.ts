@@ -85,6 +85,8 @@ export type GetRecordsParameters<
   }
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
+  /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+  blockNumber?: bigint
 
   /** Don't throw on invalid coinTypes */
   ignoreInvalidCoinTypes?: boolean
@@ -349,6 +351,7 @@ export async function getRecords<
     contentHash,
     abi,
     gatewayUrls,
+    blockNumber,
     ignoreInvalidCoinTypes,
   }: GetRecordsParameters<texts, coins, contentHash, abi>,
 ): Promise<GetRecordsReturnType<texts, coins, contentHash, abi>> {
@@ -371,6 +374,7 @@ export async function getRecords<
         address: resolver.address,
         ...c.parameters,
       })),
+      blockNumber,
     })
     currentResult.resolverAddress = resolver.address
     await Promise.all(
@@ -395,6 +399,7 @@ export async function getRecords<
       name,
       data: calls.map((c) => encodeFunctionData<Abi>(c?.parameters)),
       gatewayUrls,
+      blockNumber,
     })
     if (!result)
       return currentResult as GetRecordsReturnType<

@@ -49,6 +49,8 @@ export type GetNameParameters = {
   strict?: boolean
   /** Batch gateway URLs to use for resolving CCIP-read requests. */
   gatewayUrls?: string[]
+  /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+  blockNumber?: bigint
 } & (GetNameCoinTypeParameters | GetNameChainIdParameters)
 
 export type GetNameReturnType = {
@@ -102,6 +104,7 @@ export async function getName<chain extends Chain>(
     chainId,
     coinType,
     allowMismatch,
+    blockNumber,
   }: GetNameParameters,
 ): Promise<GetNameReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
@@ -115,6 +118,7 @@ export async function getName<chain extends Chain>(
     abi: universalResolverReverseSnippet,
     functionName: 'reverseWithGateways',
     args: [address, chainId ? evmChainIdToCoinType(chainId) : coinType || 60n],
+    blockNumber,
   } as const
 
   let unnormalisedName: string | null = null

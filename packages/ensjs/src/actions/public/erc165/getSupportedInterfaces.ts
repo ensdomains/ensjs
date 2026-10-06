@@ -10,6 +10,8 @@ export type GetSupportedInterfacesParameters<
 > = {
   address: Address
   interfaces: interfaces
+  /** Block number to read at */
+  blockNumber?: bigint
 }
 
 export type GetSupportedInterfacesReturnType<
@@ -47,7 +49,11 @@ export async function getSupportedInterfaces<
   const interfaces extends readonly Hex[],
 >(
   client: RequireClientContracts<chain, 'multicall3'>,
-  { address, interfaces }: GetSupportedInterfacesParameters<interfaces>,
+  {
+    address,
+    interfaces,
+    blockNumber,
+  }: GetSupportedInterfacesParameters<interfaces>,
 ): Promise<GetSupportedInterfacesReturnType<interfaces>> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -60,6 +66,7 @@ export async function getSupportedInterfaces<
       functionName: 'supportsInterface',
       args: [interfaceId],
     })),
+    blockNumber,
   })
 
   return result.map(

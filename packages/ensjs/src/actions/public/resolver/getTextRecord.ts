@@ -22,6 +22,8 @@ export type GetTextRecordParameters = Prettify<
     DecodeTextResultParameters & {
       /** Batch gateway URLs to use for resolving CCIP-read requests. */
       gatewayUrls?: string[]
+      /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+      blockNumber?: bigint
     }
 >
 
@@ -54,7 +56,7 @@ export type GetTextRecordErrorType =
  */
 export async function getTextRecord<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
-  { gatewayUrls, strict, ...parameters }: GetTextRecordParameters,
+  { gatewayUrls, strict, blockNumber, ...parameters }: GetTextRecordParameters,
 ): Promise<GetTextRecordReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -68,6 +70,7 @@ export async function getTextRecord<chain extends Chain>(
     data: encodeFunctionData(getTextParameters(parameters)),
     gatewayUrls,
     strict,
+    blockNumber,
   })
   if (!result) return null
   return decodeTextResult(result.resolvedData, { strict })
