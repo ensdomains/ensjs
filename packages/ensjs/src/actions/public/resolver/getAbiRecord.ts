@@ -22,6 +22,8 @@ export type GetAbiRecordParameters = Prettify<
     DecodeAbiResultParameters & {
       /** Batch gateway URLs to use for resolving CCIP-read requests. */
       gatewayUrls?: string[]
+      /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+      blockNumber?: bigint
     }
 >
 
@@ -54,7 +56,13 @@ export type GetAbiRecordErrorType =
  */
 export async function getAbiRecord<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
-  { gatewayUrls, name, supportedContentTypes, strict }: GetAbiRecordParameters,
+  {
+    gatewayUrls,
+    name,
+    supportedContentTypes,
+    strict,
+    blockNumber,
+  }: GetAbiRecordParameters,
 ): Promise<GetAbiRecordReturnType> {
   const resolveNameDataAction = getAction(
     client as ExcludeTE<typeof client>,
@@ -66,6 +74,7 @@ export async function getAbiRecord<chain extends Chain>(
     data: encodeFunctionData(getAbiParameters({ name, supportedContentTypes })),
     gatewayUrls,
     strict,
+    blockNumber,
   })
   if (!result) return null
   return decodeAbiResult(result.resolvedData, { strict })

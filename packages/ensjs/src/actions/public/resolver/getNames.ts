@@ -17,6 +17,8 @@ import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 export type GetNamesParameters = {
   /** Addresses to get primary names for */
   addresses: readonly Address[]
+  /** Block number to read at */
+  blockNumber?: bigint
 }
 
 export type GetNamesReturnType = (string | null)[]
@@ -61,7 +63,7 @@ export type GetNamesErrorType =
  */
 export async function getNames<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensDefaultReverseResolver'>,
-  { addresses }: GetNamesParameters,
+  { addresses, blockNumber }: GetNamesParameters,
 ): Promise<GetNamesReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
@@ -78,6 +80,7 @@ export async function getNames<chain extends Chain>(
     abi: defaultReverseResolverResolveNamesSnippet,
     functionName: 'resolveNames',
     args: [addresses],
+    blockNumber,
   })
 
   return names.map((name) => (name === '' ? null : name))

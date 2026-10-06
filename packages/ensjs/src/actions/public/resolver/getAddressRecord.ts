@@ -24,6 +24,8 @@ export type GetAddressRecordParameters<
     DecodeAddressResultParameters<coin> & {
       /** Batch gateway URLs to use for resolving CCIP-read requests. */
       gatewayUrls?: string[]
+      /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+      blockNumber?: bigint
     }
 >
 
@@ -67,6 +69,7 @@ export async function getAddressRecord<
     name,
     bypassFormat,
     coin,
+    blockNumber,
   }: GetAddressRecordParameters<coin>,
 ): Promise<GetAddressRecordReturnType<coin>> {
   const resolveNameDataAction = getAction(
@@ -81,6 +84,7 @@ export async function getAddressRecord<
     ),
     gatewayUrls,
     strict,
+    blockNumber,
   })
   if (!result) return null
   return decodeAddressResult(result.resolvedData, { strict, coin })

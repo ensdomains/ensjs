@@ -20,6 +20,8 @@ export type GetContentHashRecordParameters = Prettify<
   GetContentHashParameters & {
     /** Batch gateway URLs to use for resolving CCIP-read requests. */
     gatewayUrls?: string[]
+    /** Block number to read at. CCIP-read (offchain) responses are not pinned to this block. */
+    blockNumber?: bigint
   }
 >
 
@@ -52,7 +54,7 @@ export type GetContentHashRecordErrorType =
  */
 export async function getContentHashRecord<chain extends Chain>(
   client: RequireClientContracts<chain, 'ensUniversalResolver'>,
-  { gatewayUrls, name, strict }: GetContentHashRecordParameters,
+  { gatewayUrls, name, strict, blockNumber }: GetContentHashRecordParameters,
 ): Promise<GetContentHashRecordReturnType> {
   const resolveNameDataAction = getAction(
     client as ExcludeTE<typeof client>,
@@ -64,6 +66,7 @@ export async function getContentHashRecord<chain extends Chain>(
     data: encodeFunctionData(getContentHashParameters({ name })),
     gatewayUrls,
     strict,
+    blockNumber,
   })
   if (!result) return null
   return decodeContentHashResult(result.resolvedData, { strict })

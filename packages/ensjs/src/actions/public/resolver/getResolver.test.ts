@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest'
+import { numberToHex } from 'viem'
+import { describe, expect, it, vi } from 'vitest'
 import {
   deploymentAddresses,
   publicClient,
@@ -14,5 +15,30 @@ describe('getResolver', () => {
     // resolver; getResolver unwraps the composite mirror to the final, writable
     // v1 resolver.
     expect(result).toBe(deploymentAddresses.LegacyPublicResolver)
+  })
+
+  it('should run every read at the given blockNumber', async () => {
+    const blockNumber = await publicClient.getBlockNumber()
+    const requestSpy = vi.spyOn(publicClient, 'request')
+
+    const result = await getResolver(publicClient, {
+      name: 'with-profile.eth',
+      blockNumber,
+    })
+    expect(result).toBe(deploymentAddresses.LegacyPublicResolver)
+
+    const ethCalls = (
+      requestSpy.mock.calls as unknown as [
+        { method: string; params: unknown[] },
+      ][]
+    )
+      .map(([args]) => args)
+      .filter(({ method }) => method === 'eth_call')
+    // findResolver, supportsInterface and getResolver
+    expect(ethCalls).toHaveLength(3)
+    for (const { params } of ethCalls)
+      expect(params[1]).toBe(numberToHex(blockNumber))
+
+    requestSpy.mockRestore()
   })
 })
