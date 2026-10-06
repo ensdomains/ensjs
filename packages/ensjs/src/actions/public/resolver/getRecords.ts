@@ -244,14 +244,18 @@ const createCalls = <
               ? readonly [bigint, Hex]
               : Hex
           }) => {
-            const result = shouldDecodeFromPrimitiveTypes
-              ? await decodeAbiResultFromPrimitiveTypes({
-                  decodedData: data as readonly [bigint, Hex],
-                })
-              : await decodeAbiResult(data as Hex, { strict: false })
-            if (!result) return
+            try {
+              const result = shouldDecodeFromPrimitiveTypes
+                ? await decodeAbiResultFromPrimitiveTypes({
+                    decodedData: data as readonly [bigint, Hex],
+                  })
+                : await decodeAbiResult(data as Hex, { strict: false })
+              if (!result) return
 
-            currentResult.abi = result
+              currentResult.abi = result
+            } catch {
+              // ABI is optional. Preserve the other records if it is malformed.
+            }
           },
         },
       ] as const)
