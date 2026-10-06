@@ -1,6 +1,6 @@
 {
   "name": "@ensdomains/ensjs",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "ENS javascript library for contract interaction",
   "type": "module",
   "module": "./dist/index.js",

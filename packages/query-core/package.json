@@ -76,7 +76,7 @@
   },
   "peerDependencies": {
     "@tanstack/query-core": ">=5.0.0",
-    "@ensdomains/ensjs": "^5.1.0",
+    "@ensdomains/ensjs": "^5.2.0",
     "viem": "^2.9.2",
     "@wagmi/core": "^2.17.2"
   },
