@@ -1,5 +1,19 @@
 # @ensdomains/ensjs
 
+## 5.1.0
+
+### Minor Changes
+
+- [#395](https://github.com/ensdomains/ensjs/pull/395) [`7afeee0`](https://github.com/ensdomains/ensjs/commit/7afeee0f663a747aa72d16fe4c29bff349619f6a) Thanks [@v1rtl](https://github.com/v1rtl)! - Rename `addEnsL1Contracts` to `addEnsContracts`. `addEnsL1Contracts` is still exported as a deprecated alias.
+
+### Patch Changes
+
+- [#395](https://github.com/ensdomains/ensjs/pull/395) [`d4ff853`](https://github.com/ensdomains/ensjs/commit/d4ff853df06d7f6d641940009d0e517b0a33c899) Thanks [@v1rtl](https://github.com/v1rtl)! - Fix `addEnsContracts` setting `chain.subgraphs` to the contract map instead of the ENS subgraph URL, which made subgraph actions fail with chains built by it.
+
+- [#399](https://github.com/ensdomains/ensjs/pull/399) [`252bc72`](https://github.com/ensdomains/ensjs/commit/252bc727f729fa8841e8125a011dd6323f572b62) Thanks [@bigint](https://github.com/bigint)! - Validate CBOR ABI records with byte, nesting, and item limits before decoding to prevent malformed records from hanging callers. Preserve other profile records when optional ABI decoding fails, including the direct resolver multicall path.
+
+- [#396](https://github.com/ensdomains/ensjs/pull/396) [`38ba18f`](https://github.com/ensdomains/ensjs/commit/38ba18f3d0a7b50f4c9f0c0c32a409205f2ac272) Thanks [@v1rtl](https://github.com/v1rtl)! - Fix `commitName` and `registerName` looking up the registrar as `ethRegistrar` instead of `ensEthRegistrar`, which made them throw on chains from `addEnsContracts`/`extendChainWithEns`.
+
 ## 5.0.1
 
 ### Patch Changes
