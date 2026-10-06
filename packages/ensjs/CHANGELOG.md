@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.0
+
+### Minor Changes
+
+- [#400](https://github.com/ensdomains/ensjs/pull/400) [`bc21429`](https://github.com/ensdomains/ensjs/commit/bc214296fafc7ccb1ec75d1d4575f3b97150c1df) Thanks [@v1rtl](https://github.com/v1rtl)! - Add an optional `blockNumber` parameter to `getResolver`, `getName`, `getNames`, `getRecords`, `getTextRecord`, `getAddressRecord`, `getContentHashRecord`, `getAbiRecord` and `getSupportedInterfaces` for historical reads. CCIP-read (offchain) responses are not pinned to the block, since viem's offchain-lookup retry does not forward `blockNumber`.
+
 ## 5.1.0
 
 ### Minor Changes
