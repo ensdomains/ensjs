@@ -5,6 +5,10 @@ export const defaultReverseResolverResolveNamesSnippet = [
         name: 'addrs',
         type: 'address[]',
       },
+      {
+        name: 'perPage',
+        type: 'uint8',
+      },
     ],
     name: 'resolveNames',
     outputs: [

@@ -15,7 +15,9 @@ const mainnetPublicClient = createPublicClient({
 
 describe('CCIP', () => {
   describe('getRecords', () => {
-    it('should return records from a ccip-read name with incompliant resolver', async () => {
+    // Disabled: the mainnet DNSSEC oracle doesn't trust the root KSK-2024
+    // rolled in on 2026-10-11, so this DNS name no longer resolves.
+    it.skip('should return records from a ccip-read name with incompliant resolver', async () => {
       const result = await getRecords(mainnetPublicClient, {
         name: 'taytems.xyz',
         texts: ['email', 'description'],
