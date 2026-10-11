@@ -1,5 +1,11 @@
 # @ensdomains/ensjs-abi
 
+## 5.0.2
+
+### Patch Changes
+
+- [#402](https://github.com/ensdomains/ensjs/pull/402) [`1f593c4`](https://github.com/ensdomains/ensjs/commit/1f593c47bcf240976b489c2b11a6adb095a09605) Thanks [@v1rtl](https://github.com/v1rtl)! - Fix `getNames`. It called `resolveNames(address[])`, which the deployed DefaultReverseResolvers don't have; they take `resolveNames(address[], uint8 perPage)`. `defaultReverseResolverResolveNamesSnippet` now matches the deployed signature. Sepolia's `ensDefaultReverseResolver` now points at the official resolver (`0x9DC6…`) instead of a redeploy that returned empty names.
+
 ## 5.0.1
 
 No changes in this release.
