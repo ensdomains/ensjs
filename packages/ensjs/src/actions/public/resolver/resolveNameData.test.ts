@@ -146,7 +146,7 @@ it('works with multicall', async () => {
   })
 
   expect(data?.resolverAddress?.toLowerCase()).toEqual(
-    '0x5a9236e72a66d3e08b83dcf489b4d850792b6009',
+    '0xcffd2ae680cd110d28739a70922636b5937b022b',
   )
 
   expect(data?.resolvedData).toEqual(

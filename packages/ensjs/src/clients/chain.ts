@@ -5,7 +5,6 @@ import {
   type Client,
   type Transport,
   getChainContractAddress as viem_getChainContractAddress,
-  zeroAddress,
 } from 'viem'
 // biome-ignore lint/suspicious/noShadowRestrictedNames: error type with typed message
 import type { StringConcatenationOrder, TypeError } from '../types/internal.js'
@@ -102,38 +101,44 @@ export const ensL1Contracts = {
     ensReverseRegistrar: {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
+    // Predates `resolveNames`, so getNames reverts on mainnet until a newer
+    // DefaultReverseResolver, like sepolia's, is deployed.
     ensDefaultReverseResolver: {
-      address: zeroAddress,
+      address: '0xA7d635c8de9a58a228AA69353a1699C7Cc240DCF',
     },
     ensDefaultReverseRegistrar: {
-      address: zeroAddress,
+      address: '0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9',
     },
     ensDefaultReverseRegistrarAdapter: {
-      address: zeroAddress,
+      address: '0xd86E32499eCAFe9c181dd7410f93A1a9bB61ef0d',
     },
     ensReverseRegistrarAdapter: {
-      address: zeroAddress,
+      address: '0x349151735790269a9C14668B58D7C83b5ecb9607',
     },
+    // The ManagedUniversalResolverProxy, upgradable to UniversalResolverV2
+    // (which resolves both v1 and v2 names) without a DAO vote. The public
+    // UpgradableUniversalResolverProxy used on sepolia keeps serving URv1 on
+    // mainnet until the DAO points it here.
     ensUniversalResolver: {
-      address: '0x5a9236e72a66D3e08B83dcf489B4d850792B6009',
+      address: '0xcFFd2Ae680CD110D28739a70922636B5937b022B',
     },
     ensUniversalHelper: {
-      address: zeroAddress,
+      address: '0x0dbfa10849A549B247dc18bF7529362E9Ec49000',
     },
     ensPermissionedResolverImpl: {
-      address: zeroAddress,
+      address: '0x565b0F456a04Ac9b48758190e90030623Cff57C5',
     },
     ensRegistry: {
-      address: zeroAddress,
+      address: '0xf60aba43E1f7F3DAB1186Ff03B561401C9Df85E2',
     },
     ensVerifiableFactory: {
-      address: zeroAddress,
+      address: '0x77510ba162dfeA3d8989E3f0928a691B345730D2',
     },
     ensEthRegistrar: {
-      address: zeroAddress,
+      address: '0xdD86aEA86697e9c6d4E50fA210242dd5ef5B02E8',
     },
     ensEthRenewerV1: {
-      address: zeroAddress,
+      address: '0xE038B778b1fbF47A84018820626afc908c9C62B1',
     },
     usdc: {
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -142,22 +147,22 @@ export const ensL1Contracts = {
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     ensUserRegistryImpl: {
-      address: zeroAddress,
+      address: '0x75FF9AdBcFcE2469B097AC68f6Ae650EaE1351Bb',
     },
     ensStandardRentPriceOracle: {
-      address: zeroAddress,
+      address: '0x76F29609A363a8A1a2a6abe2e859C0F8916Af469',
     },
     ensHcaFactory: {
-      address: zeroAddress,
+      address: '0x742bf21897a78e2C98cC5f5C5473A370a081e561',
     },
     ensLockedMigrationController: {
-      address: zeroAddress,
+      address: '0x4D5179122a3B811766a409c93466a37704792e17',
     },
     ensUnlockedMigrationController: {
-      address: zeroAddress,
+      address: '0xaB821Ca676CF2e0790Fa273526a165CFa86aEB64',
     },
     ensMigrationHelper: {
-      address: zeroAddress,
+      address: '0x985252a593484F87098BdeCD45F926C49e9f50E2',
     },
   },
   [supportedL1Chains.sepolia]: {
