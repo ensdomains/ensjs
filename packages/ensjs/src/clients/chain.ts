@@ -101,8 +101,6 @@ export const ensL1Contracts = {
     ensReverseRegistrar: {
       address: '0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb',
     },
-    // Predates `resolveNames`, so getNames reverts on mainnet until a newer
-    // DefaultReverseResolver, like sepolia's, is deployed.
     ensDefaultReverseResolver: {
       address: '0xA7d635c8de9a58a228AA69353a1699C7Cc240DCF',
     },
@@ -198,7 +196,7 @@ export const ensL1Contracts = {
       address: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
     },
     ensDefaultReverseResolver: {
-      address: '0x7cD0016F722f34394110738eEc10265b00c6C7d9',
+      address: '0x9DC60e7BD81cCc96774C55214fF389D42Ae5E9Ac',
     },
     // ENSIP-19 `default.reverse`: sets the primary name per coin type.
     ensDefaultReverseRegistrar: {

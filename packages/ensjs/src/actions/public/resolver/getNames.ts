@@ -79,7 +79,9 @@ export async function getNames<chain extends Chain>(
     address: resolverAddress,
     abi: defaultReverseResolverResolveNamesSnippet,
     functionName: 'resolveNames',
-    args: [addresses],
+    // `perPage` only matters to resolvers that page through OffchainLookup;
+    // the DefaultReverseResolver ignores it.
+    args: [addresses, 255],
     blockNumber,
   })
 

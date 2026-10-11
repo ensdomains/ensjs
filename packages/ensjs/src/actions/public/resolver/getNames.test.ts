@@ -49,7 +49,7 @@ describe('getNames', () => {
       expect.objectContaining({
         abi: defaultReverseResolverResolveNamesSnippet,
         functionName: 'resolveNames',
-        args: [[addressA, addressB]],
+        args: [[addressA, addressB], 255],
       }),
     )
   })
