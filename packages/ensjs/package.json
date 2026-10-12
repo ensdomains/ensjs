@@ -146,13 +146,13 @@
     "@types/dns-packet": "^5.6.5",
     "@types/node": "^22.15.14",
     "@types/pako": "^2.0.3",
-    "@vitest/coverage-v8": "^3.2.6",
+    "@vitest/coverage-v8": "^4.1.11",
     "graphql": "^16.11.0",
     "pako": "^2.1.0",
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^4.11.0",
     "viem": "^2.47.10",
-    "vitest": "^3.2.6"
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "@ensdomains/dnsprovejs": "^0.5.4 || ^1.0.0",
