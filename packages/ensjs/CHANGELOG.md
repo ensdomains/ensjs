@@ -1,5 +1,19 @@
 # @ensdomains/ensjs
 
+## 5.2.0
+
+### Minor Changes
+
+- [#402](https://github.com/ensdomains/ensjs/pull/402) [`cd12e11`](https://github.com/ensdomains/ensjs/commit/cd12e11dcaf481e4ebe7669ea95263f076b5d0bd) Thanks [@v1rtl](https://github.com/v1rtl)! - Add the ENSv2 mainnet contract addresses, which were all `zeroAddress`, plus the mainnet `ensDefaultReverseRegistrar` and `ensDefaultReverseResolver`. Mainnet `ensUniversalResolver` now points at the ManagedUniversalResolverProxy, which can be upgraded to UniversalResolverV2 without a DAO vote.
+
+- [#400](https://github.com/ensdomains/ensjs/pull/400) [`bc21429`](https://github.com/ensdomains/ensjs/commit/bc214296fafc7ccb1ec75d1d4575f3b97150c1df) Thanks [@v1rtl](https://github.com/v1rtl)! - Add an optional `blockNumber` parameter to `getResolver`, `getName`, `getNames`, `getRecords`, `getTextRecord`, `getAddressRecord`, `getContentHashRecord`, `getAbiRecord` and `getSupportedInterfaces` for historical reads. CCIP-read (offchain) responses are not pinned to the block, since viem's offchain-lookup retry does not forward `blockNumber`.
+
+### Patch Changes
+
+- [#402](https://github.com/ensdomains/ensjs/pull/402) [`1f593c4`](https://github.com/ensdomains/ensjs/commit/1f593c47bcf240976b489c2b11a6adb095a09605) Thanks [@v1rtl](https://github.com/v1rtl)! - Fix `getNames`. It called `resolveNames(address[])`, which the deployed DefaultReverseResolvers don't have; they take `resolveNames(address[], uint8 perPage)`. `defaultReverseResolverResolveNamesSnippet` now matches the deployed signature. Sepolia's `ensDefaultReverseResolver` now points at the official resolver (`0x9DC6…`) instead of a redeploy that returned empty names.
+- Updated dependencies [[`1f593c4`](https://github.com/ensdomains/ensjs/commit/1f593c47bcf240976b489c2b11a6adb095a09605)]:
+  - @ensdomains/ensjs-abi@5.0.2
+
 ## 5.1.0
 
 ### Minor Changes
