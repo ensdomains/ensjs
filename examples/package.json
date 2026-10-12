@@ -1,14 +1,15 @@
 {
-  "name": "basic",
+  "name": "examples",
   "private": true,
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "start": "node src/index.ts"
+    "v1": "node v1.ts",
+    "v2": "node v2.ts",
+    "universal": "node universal.ts"
   },
   "dependencies": {
     "@ensdomains/ensjs": "workspace:*",
-    "typescript": "^5.6.2",
     "viem": "^2.30.6"
   }
 }
