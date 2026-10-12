@@ -65,12 +65,11 @@ export default defineConfig({
           include: ['src/**/*.test.ts'],
           exclude: [...baseExclude, ...pureLogicTests],
           fileParallelism: false,
-          // `fileParallelism: false` does not, by itself, prevent the forks pool
-          // from spawning multiple workers in v3 — which breaks global
-          // evm_snapshot/evm_revert IDs across files. Pin a single fork so these
-          // run strictly one-at-a-time against the shared devnet.
+          // Pin a single worker so these run strictly one-at-a-time against the
+          // shared devnet; concurrent files break global evm_snapshot/evm_revert
+          // IDs.
           pool: 'forks',
-          poolOptions: { forks: { singleFork: true } },
+          maxWorkers: 1,
         },
       },
     ],
