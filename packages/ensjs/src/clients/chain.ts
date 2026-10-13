@@ -121,7 +121,7 @@ export const ensL1Contracts = {
       address: '0xcFFd2Ae680CD110D28739a70922636B5937b022B',
     },
     ensUniversalHelper: {
-      address: '0x0dbfa10849A549B247dc18bF7529362E9Ec49000',
+      address: '0x3797C3FcC1C4F4952D115Cf2D1B9F94E28581108',
     },
     ensPermissionedResolverImpl: {
       address: '0x565b0F456a04Ac9b48758190e90030623Cff57C5',
@@ -133,10 +133,10 @@ export const ensL1Contracts = {
       address: '0x77510ba162dfeA3d8989E3f0928a691B345730D2',
     },
     ensEthRegistrar: {
-      address: '0xdD86aEA86697e9c6d4E50fA210242dd5ef5B02E8',
+      address: '0xD6D8369e55c94Ae8AFA714E6cF7AB5bE54D5CC81',
     },
     ensEthRenewerV1: {
-      address: '0xE038B778b1fbF47A84018820626afc908c9C62B1',
+      address: '0x56c447F308F463A01121C41E72b0E7e7557fCb68',
     },
     usdc: {
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -154,13 +154,13 @@ export const ensL1Contracts = {
       address: '0x742bf21897a78e2C98cC5f5C5473A370a081e561',
     },
     ensLockedMigrationController: {
-      address: '0x4D5179122a3B811766a409c93466a37704792e17',
+      address: '0xa19d4d49230200b3e81290A87dd12ea916aF7BE6',
     },
     ensUnlockedMigrationController: {
       address: '0xaB821Ca676CF2e0790Fa273526a165CFa86aEB64',
     },
     ensMigrationHelper: {
-      address: '0x985252a593484F87098BdeCD45F926C49e9f50E2',
+      address: '0x3760C796fd928D54AFAEE61174A0F8f37649Fbd4',
     },
   },
   [supportedL1Chains.sepolia]: {
