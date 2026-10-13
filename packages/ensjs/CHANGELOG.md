@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.1
+
+### Patch Changes
+
+- [#407](https://github.com/ensdomains/ensjs/pull/407) [`cff4ebf`](https://github.com/ensdomains/ensjs/commit/cff4ebf0decc417f9c7bfcfa8a20e2a66bc5ff36) Thanks [@v1rtl](https://github.com/v1rtl)! - Update the mainnet `ensUniversalHelper`, `ensEthRegistrar`, `ensEthRenewerV1`, `ensLockedMigrationController` and `ensMigrationHelper` addresses to their ENSv2 redeployments. The previous addresses pointed at superseded instances, and only the new `ensEthRenewerV1` holds `ROLE_RENEW` on the ETH registry.
+
 ## 5.2.0
 
 ### Minor Changes
