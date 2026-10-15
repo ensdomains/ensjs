@@ -35,8 +35,4 @@ export default defineConfig({
     { text: 'GitHub', link: 'https://github.com/ensdomains/ensjs', external: true },
   ],
   socials: [{ icon: 'github', link: 'https://github.com/ensdomains/ensjs' }],
-  editLink: {
-    link: 'https://github.com/ensdomains/ensjs/edit/main/packages/docs/src/pages/:path',
-    text: 'Suggest changes to this page',
-  },
 })

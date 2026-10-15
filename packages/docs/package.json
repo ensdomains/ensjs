@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "react": "~19.3.0",
-    "react-dom": "~19.3.0"
+    "react-dom": "~19.3.0",
+    "react-server-dom-webpack": "~19.3.0"
   },
   "devDependencies": {
     "@types/node": "^22",
