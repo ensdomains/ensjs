@@ -16,7 +16,9 @@ const main = async () => {
         'src/exports/wallet/v2.ts',
       ],
       plugin: ['typedoc-plugin-markdown'],
-      outputs: [{ name: 'markdown', path: '../../packages/docs/src/pages/reference' }],
+      outputs: [
+        { name: 'markdown', path: '../../packages/docs/src/pages/reference' },
+      ],
       cleanOutputDir: false,
       entryFileName: 'api.md',
       readme: 'none',
