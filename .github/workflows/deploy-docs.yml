@@ -1,0 +1,82 @@
+name: Deploy Docs to Swarm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-docs
+
+jobs:
+  deploy:
+    if: >-
+      startsWith(github.event.release.tag_name, '@ensdomains/ensjs@') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: swarm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            packages
+            patches
+
+      - name: Setup pnpm and Node.js
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build ensjs-abi and ensjs
+        run: pnpm -F @ensdomains/ensjs-abi -F @ensdomains/ensjs build
+
+      - name: Generate and build docs
+        run: |
+          pnpm -F @ensdomains/ensjs generateDocs
+          pnpm -F @ensdomains/ensjs-docs build
+
+      - name: Pack static assets
+        working-directory: packages/docs
+        run: pnpm exec omnipin pack dist/public --tar --name ensjs-docs --dist "$RUNNER_TEMP"
+
+      - name: Install hoverfly
+        working-directory: ${{ runner.temp }}
+        env:
+          HOVERFLY_VERSION: v0.2.0
+        run: |
+          curl -fsSL "https://github.com/omnipin/hoverfly/releases/download/$HOVERFLY_VERSION/hoverfly-$HOVERFLY_VERSION-x86_64-unknown-linux-gnu.tar.gz" \
+            | tar -xz --strip-components=1
+          # The release's bundled seed goes stale; main refreshes it hourly.
+          curl -fsSL -o peers.json https://raw.githubusercontent.com/omnipin/hoverfly/main/peers.seed.json
+
+      - name: Upload to Swarm
+        id: upload
+        working-directory: ${{ runner.temp }}
+        env:
+          SWARM_KEY: ${{ secrets.SWARM_KEY }}
+          SWARM_BATCH: ${{ secrets.SWARM_BATCH }}
+        run: |
+          set -o pipefail
+          ./hoverfly vanity-overlay --key "$SWARM_KEY" --max-attempts 100000
+          ./hoverfly upload --batch "$SWARM_BATCH" --key "$SWARM_KEY" --error-document index.html ensjs-docs.tar | tee upload.log
+          root=$(grep -oP 'manifest root: \K[0-9a-f]{64}' upload.log)
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+          echo "Swarm root: \`$root\` ($(grep -oP 'subdomain:\s+\K\S+' upload.log))" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Propose ensjs.ens.eth contenthash update to the Safe
+        working-directory: packages/docs
+        env:
+          OMNIPIN_PK: ${{ secrets.OMNIPIN_PK }}
+          DOCS_SAFE: ${{ vars.DOCS_SAFE }}
+          ROOT: ${{ steps.upload.outputs.root }}
+        run: pnpm exec omnipin ens "$ROOT" ensjs.ens.eth --safe "$DOCS_SAFE"

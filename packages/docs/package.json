@@ -21,6 +21,7 @@
     "typescript": "^5",
     "vite": "^8",
     "vocs": "latest",
-    "waku": "1.0.0-rc.2"
+    "waku": "1.0.0-rc.2",
+    "omnipin": "^3.1.3"
   }
 }
