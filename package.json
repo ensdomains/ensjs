@@ -8,6 +8,9 @@
     "chgset:run": "changeset",
     "release": "pnpm stage publish -r --access public --provenance --no-git-checks && changeset git-tag",
     "chgset": "pnpm chgset:run && pnpm chgset:version",
+    "build:docs": "pnpm -F @ensdomains/ensjs-abi -F @ensdomains/ensjs build && pnpm -F @ensdomains/ensjs generateDocs && pnpm -F @ensdomains/ensjs-docs build",
+    "docs:dev": "pnpm -F @ensdomains/ensjs-docs dev",
+    "generate:docs": "pnpm -F @ensdomains/ensjs generateDocs",
     "lint": "pnpm -r lint"
   },
   "devDependencies": {

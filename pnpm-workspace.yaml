@@ -5,6 +5,7 @@ minimumReleaseAge: 1440
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - undici-types@6.21.0
+  - semver@6.3.1
 strictPeerDependencies: false
 linkWorkspacePackages: deep
 autoInstallPeers: false
@@ -12,4 +13,6 @@ autoInstallPeers: false
 # (Dependabot) can read it. CI pins pnpm via `packageManager` anyway.
 pmOnFail: ignore
 allowBuilds:
+  es5-ext: false
   esbuild: false
+  vue-demi: false
