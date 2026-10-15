@@ -67,8 +67,8 @@ jobs:
           SWARM_BATCH: ${{ secrets.SWARM_BATCH }}
         run: |
           set -o pipefail
-          ./hoverfly vanity-overlay --key "$SWARM_KEY" --max-attempts 100000
-          ./hoverfly upload --batch "$SWARM_BATCH" --key "$SWARM_KEY" --error-document index.html ensjs-docs.tar | tee upload.log
+          ./hoverfly vanity-overlay --key "$SWARM_KEY" --max-attempts 500000 --target-po 8 --min-coverage 0.10
+          ./hoverfly upload --batch "$SWARM_BATCH" --key "$SWARM_KEY" --error-document index.html --timeout 120 ensjs-docs.tar | tee upload.log
           root=$(grep -oP 'manifest root: \K[0-9a-f]{64}' upload.log)
           echo "root=$root" >> "$GITHUB_OUTPUT"
           echo "Swarm root: \`$root\` ($(grep -oP 'subdomain:\s+\K\S+' upload.log))" >> "$GITHUB_STEP_SUMMARY"
