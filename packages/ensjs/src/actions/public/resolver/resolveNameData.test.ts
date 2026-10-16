@@ -14,14 +14,14 @@ import {
   encodeErrorResult,
   encodeFunctionData,
   encodeFunctionResult,
-  type Hex,
   namehash,
   type PublicClient,
   type Transport,
+  toHex,
   zeroAddress,
 } from 'viem'
 import { mainnet } from 'viem/chains'
-import { hexToBytes } from 'viem/utils'
+import { packetToBytes } from 'viem/ens'
 import { beforeEach, expect, it, type MockedFunction, vi } from 'vitest'
 import type { ChainWithContracts } from '../../../clients/chain.js'
 import { addEnsContracts } from '../../../index.js'
@@ -29,7 +29,6 @@ import {
   getAddressParameters,
   getTextParameters,
 } from '../../../utils/index.js'
-import { bytesToPacket } from '../../../utils/name/hexEncodedName.js'
 import { resolveNameData } from './resolveNameData.js'
 
 const mockReadContract = vi.fn() as MockedFunction<PublicClient['readContract']>
@@ -48,9 +47,12 @@ it('encodes labels larger than 255 bytes', async () => {
     data: '0x',
   }).catch(() => {})
   const [{ args }] = mockReadContract.mock.calls[0]
-  const name = bytesToPacket(hexToBytes(args?.[0] as Hex))
-  expect(name).toMatchInlineSnapshot(
-    `"[5b7e0e47a96f32a88b4f14ca177982790807c40e1a105742ba0fc1babe1ef826].eth"`,
+  expect(args?.[0]).toBe(
+    toHex(
+      packetToBytes(
+        '[5b7e0e47a96f32a88b4f14ca177982790807c40e1a105742ba0fc1babe1ef826].eth',
+      ),
+    ),
   )
 })
 

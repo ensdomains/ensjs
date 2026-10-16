@@ -112,6 +112,16 @@ export class InvalidLabelhashError extends BaseError {
   }
 }
 
+export class InvalidDnsEncodedNameError extends BaseError {
+  override name = 'InvalidDnsEncodedNameError'
+
+  constructor({ bytes }: { bytes: string }) {
+    super('Invalid DNS-encoded name', {
+      metaMessages: [`- Supplied bytes: ${bytes}`],
+    })
+  }
+}
+
 export class NameWithEmptyLabelsError extends BaseError {
   override name = 'NameWithEmptyLabelsError'
 
