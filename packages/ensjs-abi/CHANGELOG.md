@@ -1,5 +1,11 @@
 # @ensdomains/ensjs-abi
 
+## 5.0.3
+
+### Patch Changes
+
+- [#415](https://github.com/ensdomains/ensjs/pull/415) [`489dc2c`](https://github.com/ensdomains/ensjs/commit/489dc2c5c159e7f791569391d4cb580c8c6dc397) Thanks [@Chakravarthy7102](https://github.com/Chakravarthy7102)! - Add `getIsEmancipated` to `public/v2`, and `permissionedRegistryIsEmancipatedSnippet` and `permissionedRegistryUnsafeTransferSnippet` for `PermissionedRegistry.isEmancipated()` and `unsafeTransfer(address,uint256,bytes)`.
+
 ## 5.0.2
 
 ### Patch Changes
