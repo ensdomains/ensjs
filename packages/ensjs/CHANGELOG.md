@@ -1,5 +1,15 @@
 # @ensdomains/ensjs
 
+## 5.2.2
+
+### Patch Changes
+
+- [#417](https://github.com/ensdomains/ensjs/pull/417) [`b48ec00`](https://github.com/ensdomains/ensjs/commit/b48ec002cc86d7e8e892b78d9076b457e674c133) Thanks [@v1rtl](https://github.com/v1rtl)! - `bytesToPacket` now returns labels it can't represent as text (ones containing `.`, `[`, `]` or invalid UTF-8) as encoded labelhashes, so the decoded name always namehashes to the node the bytes encode. A label like `8436.eth` no longer decodes to `8436.eth.eth` ([#222](https://github.com/ensdomains/ensjs/issues/222)). It also keeps a leading byte order mark, and throws `InvalidDnsEncodedNameError` on truncated, unterminated or trailing-data input instead of returning a wrong name. `getWrapperName` inherits both fixes.
+
+- [#415](https://github.com/ensdomains/ensjs/pull/415) [`489dc2c`](https://github.com/ensdomains/ensjs/commit/489dc2c5c159e7f791569391d4cb580c8c6dc397) Thanks [@Chakravarthy7102](https://github.com/Chakravarthy7102)! - Add `getIsEmancipated` to `public/v2`, and `permissionedRegistryIsEmancipatedSnippet` and `permissionedRegistryUnsafeTransferSnippet` for `PermissionedRegistry.isEmancipated()` and `unsafeTransfer(address,uint256,bytes)`.
+- Updated dependencies [[`489dc2c`](https://github.com/ensdomains/ensjs/commit/489dc2c5c159e7f791569391d4cb580c8c6dc397)]:
+  - @ensdomains/ensjs-abi@5.0.3
+
 ## 5.2.1
 
 ### Patch Changes
