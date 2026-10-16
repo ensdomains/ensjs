@@ -32,7 +32,7 @@ export type GetIsEmancipatedErrorType = ReadContractErrorType
  * })
  * const result = await getIsEmancipated(client, { registryAddress: '0xf60aba43E1f7F3DAB1186Ff03B561401C9Df85E2' })
  */
-export async function getIsEmancipated(
+export function getIsEmancipated(
   client: Client,
   { registryAddress }: GetIsEmancipatedParameters,
 ): Promise<GetIsEmancipatedReturnType> {
