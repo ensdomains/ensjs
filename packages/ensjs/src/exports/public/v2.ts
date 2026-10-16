@@ -2,6 +2,7 @@
 
 export * from '../../actions/public/v2/accessControl/hasRoles.js'
 export * from '../../actions/public/v2/registry/getExpiry.js'
+export * from '../../actions/public/v2/registry/getIsEmancipated.js'
 export * from '../../actions/public/v2/registry/getNameRegistryAddress.js'
 export * from '../../actions/public/v2/registry/getNameRolesAccounts.js'
 export * from '../../actions/public/v2/registry/getNameRolesForAccount.js'
