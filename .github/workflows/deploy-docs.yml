@@ -28,14 +28,11 @@ jobs:
             patches
 
       - name: Setup pnpm and Node.js
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-      - uses: actions/setup-node@v7
+        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
         with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          runtime: node@24
+          cache: true
+          require-lockfile: true
 
       - name: Build ensjs-abi and ensjs
         run: pnpm -F @ensdomains/ensjs-abi -F @ensdomains/ensjs build
