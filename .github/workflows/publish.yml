@@ -108,8 +108,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Skip the private docs site: it isn't published, and its build needs `generateDocs`
+      # output (deploy-docs.yml builds it once the release is out).
       - name: Build packages
-        run: pnpm -r build
+        run: pnpm -r --filter '!@ensdomains/ensjs-docs' build
 
       # `pnpm release` stages the packages, then `changeset git-tag` reports the new tags
       # so the action can push them and create GitHub releases.
