@@ -43,6 +43,7 @@ export {
   FusesRestrictionNotAllowedError,
   FusesValueRequiredError,
   InvalidContentHashError,
+  InvalidDnsEncodedNameError,
   InvalidEncodedLabelError,
   InvalidLabelhashError,
   NameWithEmptyLabelsError,
