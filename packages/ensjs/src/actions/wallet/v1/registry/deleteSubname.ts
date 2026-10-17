@@ -73,7 +73,7 @@ export const deleteSubnameWriteParameters = <
 >(
   client: RequireClientContracts<
     chain,
-    'ensRegistry' | 'ensNameWrapper',
+    'ensLegacyRegistry' | 'ensNameWrapper',
     account
   >,
   { name, contract, asOwner }: DeleteSubnameWriteParametersParameters,
@@ -93,7 +93,7 @@ export const deleteSubnameWriteParameters = <
       const baseParams = {
         address: getChainContractAddress({
           chain: client.chain,
-          contract: 'ensRegistry',
+          contract: 'ensLegacyRegistry',
         }),
         chain: client.chain,
         account: client.account,
@@ -171,7 +171,7 @@ export type DeleteSubnameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensRegistry' | 'ensNameWrapper'>
+    | ChainWithContracts<'ensLegacyRegistry' | 'ensNameWrapper'>
     | undefined,
 > = Prettify<
   DeleteSubnameWriteParametersParameters &
@@ -213,12 +213,12 @@ export async function deleteSubname<
   chain extends Chain,
   account extends Account,
   chainOverride extends
-    | ChainWithContracts<'ensRegistry' | 'ensNameWrapper'>
+    | ChainWithContracts<'ensLegacyRegistry' | 'ensNameWrapper'>
     | undefined,
 >(
   client: RequireClientContracts<
     chain,
-    'ensRegistry' | 'ensNameWrapper',
+    'ensLegacyRegistry' | 'ensNameWrapper',
     account
   >,
   {

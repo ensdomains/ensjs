@@ -47,7 +47,7 @@ it("should return a transaction for setting another address' name and succeed", 
     functionName: 'setApprovalForAll',
     address: getChainContractAddress({
       client: walletClient,
-      contract: 'ensRegistry',
+      contract: 'ensLegacyRegistry',
     }),
     args: [accounts[2], true],
     account: accounts[1],

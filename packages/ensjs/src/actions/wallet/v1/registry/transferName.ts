@@ -88,7 +88,7 @@ export const transferNameWriteParameters = <
 >(
   client: RequireClientContracts<
     chain,
-    'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
+    'ensLegacyRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account
   >,
   {
@@ -113,7 +113,7 @@ export const transferNameWriteParameters = <
       const baseParams = {
         address: getChainContractAddress({
           chain: client.chain,
-          contract: 'ensRegistry',
+          contract: 'ensLegacyRegistry',
         }),
         chain: client.chain,
         account: client.account,
@@ -237,7 +237,7 @@ export type TransferNameParameters<
   chain extends Chain,
   account extends Account,
   chainOverride extends ChainWithContracts<
-    'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
+    'ensLegacyRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 > = Prettify<
   TransferNameWriteParametersParameters<contract> &
@@ -281,12 +281,12 @@ export async function transferName<
   chain extends Chain,
   account extends Account,
   chainOverride extends ChainWithContracts<
-    'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
+    'ensLegacyRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation'
   >,
 >(
   client: RequireClientContracts<
     chain,
-    'ensRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
+    'ensLegacyRegistry' | 'ensNameWrapper' | 'ensBaseRegistrarImplementation',
     account
   >,
   {

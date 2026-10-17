@@ -56,7 +56,7 @@ export const setResolverWriteParameters = <
 >(
   client: RequireClientContracts<
     chain,
-    'ensNameWrapper' | 'ensRegistry',
+    'ensNameWrapper' | 'ensLegacyRegistry',
     account
   >,
   { name, contract, resolverAddress }: SetResolverWriteParametersParameters,
@@ -68,7 +68,8 @@ export const setResolverWriteParameters = <
 
   const address = getChainContractAddress({
     chain: client.chain,
-    contract: contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensRegistry',
+    contract:
+      contract === 'nameWrapper' ? 'ensNameWrapper' : 'ensLegacyRegistry',
   })
 
   const args = [namehash(name), resolverAddress] as const
@@ -105,7 +106,9 @@ export const setResolverWriteParameters = <
 export type SetResolverParameters<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensNameWrapper' | 'ensRegistry'>,
+  chainOverride extends ChainWithContracts<
+    'ensNameWrapper' | 'ensLegacyRegistry'
+  >,
 > = Prettify<
   SetResolverWriteParametersParameters &
     WriteTransactionParameters<chain, account, chainOverride>
@@ -146,11 +149,13 @@ export type SetResolverErrorType =
 export async function setResolver<
   chain extends Chain,
   account extends Account,
-  chainOverride extends ChainWithContracts<'ensNameWrapper' | 'ensRegistry'>,
+  chainOverride extends ChainWithContracts<
+    'ensNameWrapper' | 'ensLegacyRegistry'
+  >,
 >(
   client: RequireClientContracts<
     chain,
-    'ensNameWrapper' | 'ensRegistry',
+    'ensNameWrapper' | 'ensLegacyRegistry',
     account
   >,
   {
