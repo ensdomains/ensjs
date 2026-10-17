@@ -88,7 +88,7 @@ it('should error if unknown contract', async () => {
 //     functionName: 'setApprovalForAll',
 //     address: getChainContractAddress({
 //       client: walletClient,
-//       contract: 'ensRegistry',
+//       contract: 'ensLegacyRegistry',
 //     }),
 //     args: [accounts[2], true],
 //     account: accounts[1],

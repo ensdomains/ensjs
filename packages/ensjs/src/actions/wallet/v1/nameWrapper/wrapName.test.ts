@@ -33,7 +33,7 @@ const approve = async () => {
     abi: registrySetApprovalForAllSnippet,
     address: getChainContractAddress({
       client: walletClient,
-      contract: 'ensRegistry',
+      contract: 'ensLegacyRegistry',
     }),
     functionName: 'setApprovalForAll',
     args: [

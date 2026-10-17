@@ -36,7 +36,7 @@ const getOwner = async (name: string) => {
     functionName: 'owner',
     address: getChainContractAddress({
       client: publicClient,
-      contract: 'ensRegistry',
+      contract: 'ensLegacyRegistry',
     }),
     args: [namehash(name)],
   })
@@ -60,7 +60,7 @@ const getResolver = async (name: string) => {
     functionName: 'resolver',
     address: getChainContractAddress({
       client: publicClient,
-      contract: 'ensRegistry',
+      contract: 'ensLegacyRegistry',
     }),
     args: [namehash(name)],
   })
