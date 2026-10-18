@@ -140,7 +140,7 @@ export const makeCreateSubnameFunctionData = <
 >(
   wallet: RequireClientContracts<
     chain,
-    'ensPublicResolver' | 'ensNameWrapper',
+    'ensPublicResolver' | 'ensNameWrapper' | 'ensLegacyRegistry',
     account
   >,
   {
@@ -176,7 +176,7 @@ export const makeCreateSubnameFunctionData = <
       return {
         to: getChainContractAddress({
           chain: wallet.chain,
-          contract: 'ensRegistry',
+          contract: 'ensLegacyRegistry',
         }),
         data: encodeFunctionData({
           abi: registrySetSubnodeRecordSnippet,
@@ -269,7 +269,9 @@ export type CreateSubnameParameters<
   chain extends Chain,
   account extends Account | undefined,
   chainOverride extends
-    | ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
+    | ChainWithContracts<
+        'ensPublicResolver' | 'ensNameWrapper' | 'ensLegacyRegistry'
+      >
     | undefined,
 > = Prettify<
   MakeCreateSubnameFunctionDataParameters &
@@ -312,12 +314,16 @@ export async function createSubname<
   chain extends Chain,
   account extends Account | undefined,
   chainOverride extends
-    | ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>
-    | undefined = ChainWithContracts<'ensPublicResolver' | 'ensNameWrapper'>,
+    | ChainWithContracts<
+        'ensPublicResolver' | 'ensNameWrapper' | 'ensLegacyRegistry'
+      >
+    | undefined = ChainWithContracts<
+    'ensPublicResolver' | 'ensNameWrapper' | 'ensLegacyRegistry'
+  >,
 >(
   wallet: RequireClientContracts<
     chain,
-    'ensNameWrapper' | 'ensPublicResolver',
+    'ensNameWrapper' | 'ensPublicResolver' | 'ensLegacyRegistry',
     account
   >,
   {
