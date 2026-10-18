@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.3
+
+### Patch Changes
+
+- [#421](https://github.com/ensdomains/ensjs/pull/421) [`0b11947`](https://github.com/ensdomains/ensjs/commit/0b119470a5dc5ac88f3008b6836abf1f730b010b) Thanks [@Malak67](https://github.com/Malak67)! - Send the v1 `createSubname`, `deleteSubname`, `setResolver` and `transferName` registry calls to `ensLegacyRegistry`. They targeted `ensRegistry`, which is the ENSv2 .eth registry, so writes on unwrapped v1 names reverted.
+
 ## 5.2.2
 
 ### Patch Changes
