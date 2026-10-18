@@ -74,7 +74,7 @@ export const localhost = {
       address: deploymentAddresses.ENSRegistry,
     },
     ensRegistry: {
-      address: deploymentAddresses.ENSRegistry,
+      address: deploymentAddresses.ETHRegistry,
     },
     ensUniversalResolver: {
       // On real networks this is the UpgradableUniversalResolverProxy, which

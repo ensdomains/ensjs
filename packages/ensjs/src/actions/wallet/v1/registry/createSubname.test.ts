@@ -48,7 +48,7 @@ it('should allow creating a subname on the registry', async () => {
     functionName: 'owner',
     address: getChainContractAddress({
       client: publicClient,
-      contract: 'ensRegistry',
+      contract: 'ensLegacyRegistry',
     }),
     args: [namehash('test.test123.eth')],
   })
