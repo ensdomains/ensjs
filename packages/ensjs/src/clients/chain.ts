@@ -121,7 +121,7 @@ export const ensL1Contracts = {
       address: '0xcFFd2Ae680CD110D28739a70922636B5937b022B',
     },
     ensUniversalHelper: {
-      address: '0x3797C3FcC1C4F4952D115Cf2D1B9F94E28581108',
+      address: '0x46AE127D14683Ac74eF151e46ae2117A1A25C676',
     },
     ensPermissionedResolverImpl: {
       address: '0x565b0F456a04Ac9b48758190e90030623Cff57C5',
@@ -154,13 +154,13 @@ export const ensL1Contracts = {
       address: '0x742bf21897a78e2C98cC5f5C5473A370a081e561',
     },
     ensLockedMigrationController: {
-      address: '0xa19d4d49230200b3e81290A87dd12ea916aF7BE6',
+      address: '0xc46Bf3B6C7eBcFFd4EcfC3b012a1726a2463694d',
     },
     ensUnlockedMigrationController: {
       address: '0xaB821Ca676CF2e0790Fa273526a165CFa86aEB64',
     },
     ensMigrationHelper: {
-      address: '0x3760C796fd928D54AFAEE61174A0F8f37649Fbd4',
+      address: '0x0b92006fa187B4c98d0A7Dfc9d3b918b6D243485',
     },
   },
   [supportedL1Chains.sepolia]: {
