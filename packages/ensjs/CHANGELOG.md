@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.4
+
+### Patch Changes
+
+- [#423](https://github.com/ensdomains/ensjs/pull/423) [`1c5087f`](https://github.com/ensdomains/ensjs/commit/1c5087fe08ee4af662632e606b59bd37737c7fc1) Thanks [@v1rtl](https://github.com/v1rtl)! - Update mainnet addresses for `ensUniversalHelper`, `ensLockedMigrationController`, and `ensMigrationHelper` to match the latest ENSv2 mainnet deployment.
+
 ## 5.2.3
 
 ### Patch Changes
