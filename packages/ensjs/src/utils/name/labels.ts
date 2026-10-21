@@ -1,4 +1,4 @@
-import { type Hex, type LabelhashErrorType, labelhash } from 'viem'
+import { type Hex, isHex, type LabelhashErrorType, labelhash } from 'viem'
 import {
   InvalidEncodedLabelError,
   InvalidLabelhashError,
@@ -33,7 +33,15 @@ export function decodeLabelhash(hash: string): Hex {
       details: 'Expected encoded labelhash to have a length of 66',
     })
 
-  return `0x${hash.slice(1, -1)}`
+  const decoded = `0x${hash.slice(1, -1)}`
+
+  if (!isHex(decoded))
+    throw new InvalidEncodedLabelError({
+      label: hash,
+      details: 'Expected encoded labelhash to contain a valid hex string',
+    })
+
+  return decoded
 }
 
 // ================================
@@ -145,6 +153,7 @@ export function checkLabel(hash: string): string {
 // ================================
 
 export function checkIsDecrypted(string: string | string[]) {
+  if (Array.isArray(string)) return !string.some((s) => s.includes('['))
   return !string?.includes('[')
 }
 
