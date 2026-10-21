@@ -3,10 +3,8 @@ const MAX_DEPTH = 64
 const MAX_ITEMS = 100000
 
 /**
- * Validate untrusted CBOR before calling address-encoder's synchronous decoder.
- * Its current release can loop at EOF or inside indefinite strings. A promise
- * timeout cannot interrupt that loop, so bound the input and validate every
- * container and string before handing it to the decoder.
+ * Bound untrusted CBOR before calling the synchronous decoder. A promise timeout
+ * cannot interrupt decoding, so validate byte, nesting, and item limits first.
  */
 export function validateAbiCbor(data: Uint8Array): void {
   if (data.length > MAX_ABI_CBOR_BYTES) throw new Error('CBOR ABI is too large')
@@ -59,8 +57,7 @@ export function validateAbiCbor(data: Uint8Array): void {
     switch (major) {
       case 2:
       case 3:
-        // These forms do not terminate in address-encoder 1.1.4, even when the
-        // CBOR is valid. Keep rejecting them until the upstream fix is released.
+        // cborg does not support indefinite byte or text strings.
         if (argument < 0) throw new Error('Unsupported indefinite CBOR string')
         requireBytes(argument)
         if (major === 3)

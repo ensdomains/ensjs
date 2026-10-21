@@ -136,9 +136,9 @@ export async function decodeAbiResultFromPrimitiveTypes({
     case 4: {
       const bytes = hexToBytes(encodedAbiData)
       validateAbiCbor(bytes)
-      const { cborDecode } = await import('@ensdomains/address-encoder/utils')
+      const { decode } = await import('cborg')
       // may throw Error
-      abiData = cborDecode(bytes.buffer)
+      abiData = decode(bytes)
       decoded = true
       break
     }

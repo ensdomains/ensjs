@@ -3,8 +3,8 @@
  * This script registers the minimal set of names needed for tests to pass
  */
 
-import { cborEncode } from '@ensdomains/address-encoder/utils'
 import { permissionedRegistryGetStatusSnippet } from '@ensdomains/ensjs-abi/v2/permissionedRegistry'
+import { encode as cborEncode } from 'cborg'
 import pako from 'pako'
 import {
   type Address,
