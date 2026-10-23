@@ -190,6 +190,19 @@ export const userRegistrySetSubregistrySnippet = [
   },
 ] as const
 
+export const userRegistrySetParentSnippet = [
+  {
+    inputs: [
+      { name: 'parent', type: 'address' },
+      { name: 'label', type: 'string' },
+    ],
+    name: 'setParent',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const
+
 export const userRegistryRegisterSnippet = [
   {
     inputs: [

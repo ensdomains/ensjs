@@ -24,6 +24,8 @@ const pureLogicTests = [
   'src/actions/wallet/v2/resolver/resolverRolesWriteParameters.test.ts',
   // VerifiableFactory deploy write-parameter encoders; no chain access.
   'src/actions/wallet/v2/verifiableFactory/deployProxyWriteParameters.test.ts',
+  // Registry setParent write-parameter encoder; no chain access.
+  'src/actions/wallet/v2/registry/setParent.test.ts',
   'src/actions/subgraph/client.test.ts',
   'src/actions/dns/getDnsOwner.test.ts',
   'src/actions/public/getNames.test.ts',
