@@ -83,9 +83,7 @@ export type SetParentErrorType =
   | WriteContractErrorType
 
 /**
- * Sets a registry's canonical parent (`setParent`), which names the registry
- * when more than one name points at it. Requires `ROLE_SET_PARENT` on the
- * registry.
+ * Sets the canonical parent of a registry.
  * @param client - {@link Client}
  * @param parameters - {@link SetParentParameters}
  * @returns Transaction hash. {@link SetParentReturnType}
@@ -108,7 +106,7 @@ export type SetParentErrorType =
  * })
  * // 0x...
  */
-export function setParent<
+export async function setParent<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
