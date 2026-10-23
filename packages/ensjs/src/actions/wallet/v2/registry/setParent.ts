@@ -108,7 +108,7 @@ export type SetParentErrorType =
  * })
  * // 0x...
  */
-export async function setParent<
+export function setParent<
   chain extends Chain,
   account extends Account,
   chainOverride extends Chain | undefined,
