@@ -1,5 +1,11 @@
 # @ensdomains/ensjs-abi
 
+## 5.0.4
+
+### Patch Changes
+
+- [#427](https://github.com/ensdomains/ensjs/pull/427) [`b04dba5`](https://github.com/ensdomains/ensjs/commit/b04dba5c208f9ffd6b330073926a1c87ee9ca4c0) Thanks [@Malak67](https://github.com/Malak67)! - Add `setParent` to `wallet/v2`, and `userRegistrySetParentSnippet` for `setParent(address,string)`, to set a registry's canonical parent after deploying it.
+
 ## 5.0.3
 
 ### Patch Changes
