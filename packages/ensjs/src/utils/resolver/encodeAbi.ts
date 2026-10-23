@@ -124,9 +124,9 @@ export const encodeAbi = async <
     case 'cbor': {
       contentType = 4
       if (data) {
-        const { cborEncode } = await import('@ensdomains/address-encoder/utils')
+        const { encode } = await import('cborg')
         // may throw BytesToHexErrorType
-        encodedData = bytesToHex(new Uint8Array(cborEncode(data)))
+        encodedData = bytesToHex(encode(data))
       }
       break
     }
