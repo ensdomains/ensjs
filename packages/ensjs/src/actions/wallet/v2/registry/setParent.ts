@@ -131,7 +131,7 @@ export async function setParent<
   )
 
   const writeContractAction = getAction(client, writeContract, 'writeContract')
-  return writeContractAction({
+  return await writeContractAction({
     ...writeParameters,
     ...txArgs,
   } as WriteContractParameters)
