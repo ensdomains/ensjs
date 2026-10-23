@@ -1,5 +1,15 @@
 # @ensdomains/ensjs
 
+## 5.2.5
+
+### Patch Changes
+
+- [#427](https://github.com/ensdomains/ensjs/pull/427) [`b04dba5`](https://github.com/ensdomains/ensjs/commit/b04dba5c208f9ffd6b330073926a1c87ee9ca4c0) Thanks [@Malak67](https://github.com/Malak67)! - Add `setParent` to `wallet/v2`, and `userRegistrySetParentSnippet` for `setParent(address,string)`, to set a registry's canonical parent after deploying it.
+
+- [#426](https://github.com/ensdomains/ensjs/pull/426) [`885dca3`](https://github.com/ensdomains/ensjs/commit/885dca3d530fc0359bceb1db8e0931e7f3936e25) Thanks [@bigint](https://github.com/bigint)! - Upgrade address-encoder to 2.0.1 and use cborg directly for ABI encoding and decoding, retaining the byte, nesting, and item limits and optional-record failure handling.
+- Updated dependencies [[`b04dba5`](https://github.com/ensdomains/ensjs/commit/b04dba5c208f9ffd6b330073926a1c87ee9ca4c0)]:
+  - @ensdomains/ensjs-abi@5.0.4
+
 ## 5.2.4
 
 ### Patch Changes
