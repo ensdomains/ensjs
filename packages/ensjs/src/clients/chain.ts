@@ -154,13 +154,13 @@ export const ensL1Contracts = {
       address: '0x742bf21897a78e2C98cC5f5C5473A370a081e561',
     },
     ensLockedMigrationController: {
-      address: '0xc46Bf3B6C7eBcFFd4EcfC3b012a1726a2463694d',
+      address: '0x811814c098378488F916AFa89f43b36baa5425ad',
     },
     ensUnlockedMigrationController: {
       address: '0xaB821Ca676CF2e0790Fa273526a165CFa86aEB64',
     },
     ensMigrationHelper: {
-      address: '0x0b92006fa187B4c98d0A7Dfc9d3b918b6D243485',
+      address: '0xf1aA81aE63a04AEbd6c257A3F2C490aaD8b4B136',
     },
   },
   [supportedL1Chains.sepolia]: {
