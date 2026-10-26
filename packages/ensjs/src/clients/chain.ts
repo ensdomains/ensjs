@@ -145,7 +145,7 @@ export const ensL1Contracts = {
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     ensUserRegistryImpl: {
-      address: '0x75FF9AdBcFcE2469B097AC68f6Ae650EaE1351Bb',
+      address: '0xFAA23592ACA10A6d8875b18eA86954e8EB6d8d72',
     },
     ensStandardRentPriceOracle: {
       address: '0x76F29609A363a8A1a2a6abe2e859C0F8916Af469',
@@ -154,13 +154,13 @@ export const ensL1Contracts = {
       address: '0x742bf21897a78e2C98cC5f5C5473A370a081e561',
     },
     ensLockedMigrationController: {
-      address: '0x811814c098378488F916AFa89f43b36baa5425ad',
+      address: '0x3ceA18620883a69ED349B23328A3B6302598e51A',
     },
     ensUnlockedMigrationController: {
       address: '0xaB821Ca676CF2e0790Fa273526a165CFa86aEB64',
     },
     ensMigrationHelper: {
-      address: '0xf1aA81aE63a04AEbd6c257A3F2C490aaD8b4B136',
+      address: '0x6c8452AFc6043b5aF32eb345A8135108906F07ee',
     },
   },
   [supportedL1Chains.sepolia]: {
