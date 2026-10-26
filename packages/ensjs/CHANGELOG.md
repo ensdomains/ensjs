@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.6
+
+### Patch Changes
+
+- [#430](https://github.com/ensdomains/ensjs/pull/430) [`2db53bb`](https://github.com/ensdomains/ensjs/commit/2db53bb9963bc594237a3512e1ebe5727f7b7119) Thanks [@v1rtl](https://github.com/v1rtl)! - Point mainnet `ensLockedMigrationController` and `ensMigrationHelper` at the contracts redeployed on 2026-10-23, replacing the archived ones.
+
 ## 5.2.5
 
 ### Patch Changes
