@@ -113,12 +113,15 @@ export const ensL1Contracts = {
     ensReverseRegistrarAdapter: {
       address: '0x349151735790269a9C14668B58D7C83b5ecb9607',
     },
-    // The ManagedUniversalResolverProxy, upgradable to UniversalResolverV2
-    // (which resolves both v1 and v2 names) without a DAO vote. The public
-    // UpgradableUniversalResolverProxy used on sepolia keeps serving URv1 on
-    // mainnet until the DAO points it here.
+    // Temporarily the UniversalResolverV2 implementation itself. The mainnet
+    // ManagedUniversalResolverProxy (0xcFFd2Ae680CD110D28739a70922636B5937b022B)
+    // still delegates to a v1 resolver until the security council points it
+    // here, and a v1 resolver's `findResolver` reports the `.eth`
+    // ENSV2Resolver mirror at the TLD for every v2 name (offset > 0), which
+    // reads as an inherited resolver. Move back to the long-lived top proxy,
+    // 0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe, once that upgrade lands.
     ensUniversalResolver: {
-      address: '0xcFFd2Ae680CD110D28739a70922636B5937b022B',
+      address: '0x06Fdd07F007ADaC667177b46aB2EB9A75132Cfd5',
     },
     ensUniversalHelper: {
       address: '0x46AE127D14683Ac74eF151e46ae2117A1A25C676',
