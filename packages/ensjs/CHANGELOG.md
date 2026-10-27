@@ -1,5 +1,13 @@
 # @ensdomains/ensjs
 
+## 5.2.7
+
+### Patch Changes
+
+- [#434](https://github.com/ensdomains/ensjs/pull/434) [`cab3541`](https://github.com/ensdomains/ensjs/commit/cab35411f3862a28561556941e756813af5e1409) Thanks [@v1rtl](https://github.com/v1rtl)! - Point mainnet `ensUniversalResolver` at the UniversalResolverV2 implementation until the security council upgrades the ManagedUniversalResolverProxy. A v1 resolver reports the `.eth` ENSV2Resolver mirror at the TLD for v2 names, so `findResolver` reads a name's own resolver as inherited; the v2 resolver returns it at the leaf.
+
+- [#432](https://github.com/ensdomains/ensjs/pull/432) [`61a7960`](https://github.com/ensdomains/ensjs/commit/61a79601a85e711d383bddb9ecd6830db0b253e5) Thanks [@v1rtl](https://github.com/v1rtl)! - Point mainnet `ensUserRegistryImpl`, `ensLockedMigrationController` and `ensMigrationHelper` at the contracts redeployed on 2026-10-26.
+
 ## 5.2.6
 
 ### Patch Changes
