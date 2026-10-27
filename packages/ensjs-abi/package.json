@@ -15,6 +15,10 @@
       "types": "./dist/erc165.d.ts",
       "default": "./dist/erc165.js"
     },
+    "./erc7996": {
+      "types": "./dist/erc7996.d.ts",
+      "default": "./dist/erc7996.js"
+    },
     "./registry": {
       "types": "./dist/registry.d.ts",
       "default": "./dist/registry.js"
@@ -42,6 +46,10 @@
     "./compositeResolver": {
       "types": "./dist/compositeResolver.d.ts",
       "default": "./dist/compositeResolver.js"
+    },
+    "./extendedResolver": {
+      "types": "./dist/extendedResolver.d.ts",
+      "default": "./dist/extendedResolver.js"
     },
     "./dnsRegistrar": {
       "types": "./dist/dnsRegistrar.d.ts",

@@ -1,5 +1,7 @@
 import { compositeResolverGetResolver } from '@ensdomains/ensjs-abi/compositeResolver'
 import { erc165SupportsInterfaceSnippet } from '@ensdomains/ensjs-abi/erc165'
+import { erc7996SupportsFeatureSnippet } from '@ensdomains/ensjs-abi/erc7996'
+import { extendedResolverResolveSnippet } from '@ensdomains/ensjs-abi/extendedResolver'
 import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
 import {
   universalResolverFindResolverSnippet,
@@ -16,7 +18,6 @@ import {
   encodeFunctionData,
   type GetChainContractAddressErrorType,
   type Hex,
-  parseAbi,
   type ReadContractErrorType,
   type ToHexErrorType,
   toHex,
@@ -60,10 +61,6 @@ export type ResolveNameDataErrorType =
   | ToHexErrorType
   | PacketToBytesErrorType
 
-const extendedResolverAbi = parseAbi([
-  'function resolve(bytes name, bytes data) view returns (bytes)',
-  'function supportsFeature(bytes4 feature) view returns (bool)',
-])
 const COMPOSITE_RESOLVER_INTERFACE_ID = '0xeea330f9'
 const EXTENDED_RESOLVER_INTERFACE_ID = '0x9061b923'
 const ERC7996_INTERFACE_ID = '0x582de3e7'
@@ -146,7 +143,7 @@ const getBatchResolver = async (
     isErc7996 &&
     (await readContract(client, {
       address: target,
-      abi: extendedResolverAbi,
+      abi: erc7996SupportsFeatureSnippet,
       functionName: 'supportsFeature',
       args: [RESOLVE_MULTICALL_FEATURE],
       blockNumber,
@@ -214,7 +211,7 @@ const resolveMulticall = async (
       'readContract',
     )({
       address: batchResolver.target,
-      abi: extendedResolverAbi,
+      abi: extendedResolverResolveSnippet,
       functionName: 'resolve',
       args: [dnsName, multicallData],
       blockNumber,
