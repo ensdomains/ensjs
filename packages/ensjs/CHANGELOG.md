@@ -1,5 +1,15 @@
 # @ensdomains/ensjs
 
+## 5.2.8
+
+### Patch Changes
+
+- [#436](https://github.com/ensdomains/ensjs/pull/436) [`f9cf0c0`](https://github.com/ensdomains/ensjs/commit/f9cf0c0331001c56be5ebfc6c7a3e1844d109347) Thanks [@v1rtl](https://github.com/v1rtl)! - `resolveNameData` (and so `getRecords`) asks a CCIP-Read resolver for every record in one gateway request. The UniversalResolver splits a multicall into one request per record unless the resolver advertises ERC-7996 `RESOLVE_MULTICALL`, so for an offchain name that does not, the batch is sent straight to the ENSIP-10 resolver behind any composite resolver, falling back to the UniversalResolver when it is rejected. Onchain names are read with the same single call as before.
+
+- [#435](https://github.com/ensdomains/ensjs/pull/435) [`55d7ace`](https://github.com/ensdomains/ensjs/commit/55d7ace6606bd704f038c6107f2d9b441d53208c) Thanks [@v1rtl](https://github.com/v1rtl)! - Point mainnet `ensUniversalResolver` at the long-lived top proxy `0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe`, matching Sepolia. The security council upgrade now routes it through the ManagedUniversalResolverProxy to UniversalResolverV2.
+- Updated dependencies [[`97354a4`](https://github.com/ensdomains/ensjs/commit/97354a4a3be44f79646da8a13be0ec312033df15)]:
+  - @ensdomains/ensjs-abi@5.0.5
+
 ## 5.2.7
 
 ### Patch Changes

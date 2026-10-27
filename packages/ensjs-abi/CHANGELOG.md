@@ -1,5 +1,11 @@
 # @ensdomains/ensjs-abi
 
+## 5.0.5
+
+### Patch Changes
+
+- [#436](https://github.com/ensdomains/ensjs/pull/436) [`97354a4`](https://github.com/ensdomains/ensjs/commit/97354a4a3be44f79646da8a13be0ec312033df15) Thanks [@v1rtl](https://github.com/v1rtl)! - Add `erc7996SupportsFeatureSnippet` (ERC-7996 `supportsFeature(bytes4)`).
+
 ## 5.0.4
 
 ### Patch Changes
