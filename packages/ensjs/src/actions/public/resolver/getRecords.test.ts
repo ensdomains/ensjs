@@ -74,7 +74,7 @@ describe('getRecords()', () => {
             "value": "0x8c4Eb6988A199DAbcae0Ce31052b3f3aC591787e",
           },
         ],
-        "resolverAddress": "0x1da022710dF5002339274AaDEe8D58218e9D6AB5",
+        "resolverAddress": "0x394D8EB4a4fDF599384DeAb25F31d111d755c398",
         "texts": [],
       }
     `)

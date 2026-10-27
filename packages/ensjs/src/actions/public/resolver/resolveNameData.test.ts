@@ -164,8 +164,12 @@ it('works with multicall', async () => {
     data: calls,
   })
 
-  expect(data?.resolverAddress?.toLowerCase()).toEqual(
-    '0xcffd2ae680cd110d28739a70922636b5937b022b',
+  // The mocked universal resolver reports itself as the resolver.
+  expect(data?.resolverAddress).toEqual(
+    getChainContractAddress({
+      chain: mockClient.chain,
+      contract: 'ensUniversalResolver',
+    }),
   )
 
   expect(data?.resolvedData).toEqual(
@@ -299,17 +303,18 @@ describe('a CCIP-Read name', () => {
     }) as Client<Transport, ChainWithContracts<'ensUniversalResolver'>>
     return { client, universalResolverCalls, resolverCalls }
   }
-  const expected = {
-    resolvedData: results.map((returnData) => ({ success: true, returnData })),
-    resolverAddress: MIRROR,
-  }
+  const resolvedData = results.map((returnData) => ({
+    success: true,
+    returnData,
+  }))
 
   it('asks the resolver behind the mirror once instead of per record', async () => {
     const { client, universalResolverCalls, resolverCalls } = clientWith()
 
+    // Reported as `getResolver` does: the resolver the records came from.
     await expect(
       resolveNameData(client, { name, data: calls }),
-    ).resolves.toEqual(expected)
+    ).resolves.toEqual({ resolvedData, resolverAddress: RESOLVER })
     // Only the CCIP-free probe reached the universal resolver.
     expect(universalResolverCalls).toHaveLength(1)
     expect(resolverCalls).toHaveLength(1)
@@ -339,7 +344,7 @@ describe('a CCIP-Read name', () => {
 
       await expect(
         resolveNameData(client, { name, data: calls }),
-      ).resolves.toEqual(expected)
+      ).resolves.toEqual({ resolvedData, resolverAddress: MIRROR })
       expect(universalResolverCalls).toHaveLength(2)
       expect(resolverCalls).toHaveLength(resolverCallCount)
     },

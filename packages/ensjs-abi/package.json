@@ -47,10 +47,6 @@
       "types": "./dist/compositeResolver.d.ts",
       "default": "./dist/compositeResolver.js"
     },
-    "./extendedResolver": {
-      "types": "./dist/extendedResolver.d.ts",
-      "default": "./dist/extendedResolver.js"
-    },
     "./dnsRegistrar": {
       "types": "./dist/dnsRegistrar.d.ts",
       "default": "./dist/dnsRegistrar.js"
