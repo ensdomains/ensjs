@@ -1,17 +1,24 @@
+import { erc165SupportsInterfaceSnippet } from '@ensdomains/ensjs-abi/erc165'
+import { erc7996SupportsFeatureSnippet } from '@ensdomains/ensjs-abi/erc7996'
 import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
 import {
   universalResolverResolveSnippet,
   universalResolverResolveWithGatewaysSnippet,
 } from '@ensdomains/ensjs-abi/universalResolver'
+import { permissionedResolverResolveSnippet } from '@ensdomains/ensjs-abi/v2/permissionedResolver'
 import {
   type Address,
   type Chain,
+  type Client,
+  createClient,
+  custom,
   decodeFunctionResult,
   encodeFunctionData,
   type GetChainContractAddressErrorType,
   type Hex,
   type ReadContractErrorType,
   type ToHexErrorType,
+  type Transport,
   toHex,
   zeroAddress,
 } from 'viem'
@@ -19,15 +26,18 @@ import { readContract } from 'viem/actions'
 import { type PacketToBytesErrorType, packetToBytes } from 'viem/ens'
 import { getAction } from 'viem/utils'
 import {
+  type ChainWithContracts,
   getChainContractAddress,
   type RequireClientContracts,
 } from '../../../clients/chain.js'
 import { ASSERT_NO_TYPE_ERROR } from '../../../types/internal.js'
 import { isNullUniversalResolverError } from '../../../utils/errors/isNullUniversalResolverError.js'
+import { isOffchainLookupError } from '../../../utils/errors/isOffchainLookupError.js'
 import {
   type GetNameWithSizedLabelsErrorType,
   getNameWithSizedLabels,
 } from '../../../utils/name/getNameWithSizedLabels.js'
+import { getResolver } from './getResolver.js'
 
 export type ResolveNameDataParameters<data extends Hex | Hex[]> = {
   name: string
@@ -52,6 +62,119 @@ export type ResolveNameDataErrorType =
   | GetChainContractAddressErrorType
   | ToHexErrorType
   | PacketToBytesErrorType
+
+const EXTENDED_RESOLVER_INTERFACE_ID = '0x9061b923'
+const ERC7996_INTERFACE_ID = '0x582de3e7'
+const RESOLVE_MULTICALL_FEATURE = '0x96b62db8'
+
+const decodeResults = (data: Hex): ResultArray =>
+  decodeFunctionResult({ abi: multicallSnippet, data }).map(
+    (returnData): Result => ({
+      success: returnData !== '0x' && (returnData.length - 2) % 64 === 0,
+      returnData,
+    }),
+  )
+
+/**
+ * The resolver to send a whole `resolve(name, multicall)` to, or null where the
+ * universal resolver already does: it forwards the batch whole only to a
+ * resolver advertising ERC-7996 `RESOLVE_MULTICALL`, and splits it per record
+ * (one gateway request each) for any other ENSIP-10 resolver.
+ */
+const getMulticallResolver = async (
+  client: Client<Transport, ChainWithContracts<'ensUniversalResolver'>>,
+  { name, blockNumber }: { name: string; blockNumber?: bigint },
+): Promise<Address | null> => {
+  const resolver = await getAction(
+    client,
+    getResolver,
+    'getResolver',
+  )({ name, blockNumber })
+  if (!resolver) return null
+
+  const readContractAction = getAction(client, readContract, 'readContract')
+  const supportsInterface = (interfaceId: Hex) =>
+    readContractAction({
+      address: resolver,
+      abi: erc165SupportsInterfaceSnippet,
+      functionName: 'supportsInterface',
+      args: [interfaceId],
+      blockNumber,
+    }).catch(() => false)
+  const [isExtended, isErc7996] = await Promise.all([
+    supportsInterface(EXTENDED_RESOLVER_INTERFACE_ID),
+    supportsInterface(ERC7996_INTERFACE_ID),
+  ])
+  if (!isExtended) return null
+  if (!isErc7996) return resolver
+
+  const batchesAlready = await readContractAction({
+    address: resolver,
+    abi: erc7996SupportsFeatureSnippet,
+    functionName: 'supportsFeature',
+    args: [RESOLVE_MULTICALL_FEATURE],
+    blockNumber,
+  }).catch(() => false)
+  return batchesAlready ? null : resolver
+}
+
+/**
+ * Reads a multicall in one gateway request where the resolver can answer it
+ * whole, or returns null to leave it to the universal resolver. Probing without
+ * CCIP-Read first means an onchain name costs the same single call as before.
+ */
+const resolveMulticall = async (
+  client: Client<Transport, ChainWithContracts<'ensUniversalResolver'>>,
+  {
+    name,
+    multicallData,
+    blockNumber,
+  }: { name: string; multicallData: Hex; blockNumber?: bigint },
+) => {
+  const dnsName = toHex(packetToBytes(name))
+  // The same transport, without the client's CCIP-Read handling.
+  const withoutCcipRead = createClient({
+    chain: client.chain,
+    transport: custom({ request: client.request }, { retryCount: 0 }),
+    ccipRead: false,
+  })
+  const onchain = await readContract(withoutCcipRead, {
+    address: getChainContractAddress({
+      chain: client.chain,
+      contract: 'ensUniversalResolver',
+    }),
+    abi: universalResolverResolveSnippet,
+    functionName: 'resolve',
+    args: [dnsName, multicallData],
+    blockNumber,
+  }).catch((error: unknown) => {
+    if (isOffchainLookupError(error)) return null
+    throw error
+  })
+  if (onchain) {
+    const [resolvedData, resolverAddress] = onchain
+    if (resolverAddress === zeroAddress) return null
+    return { resolvedData: decodeResults(resolvedData), resolverAddress }
+  }
+
+  const resolver = await getMulticallResolver(client, { name, blockNumber })
+  if (!resolver) return null
+  const resolvedData = await getAction(
+    client,
+    readContract,
+    'readContract',
+  )({
+    address: resolver,
+    abi: permissionedResolverResolveSnippet,
+    functionName: 'resolve',
+    args: [dnsName, multicallData],
+    blockNumber,
+  })
+  return {
+    resolvedData: decodeResults(resolvedData),
+    resolverAddress: resolver,
+  }
+}
 
 /**
  * Resolves name and data with the universal resolver.
@@ -86,6 +209,22 @@ export async function resolveNameData<
     functionName: 'resolve',
     blockNumber,
   } as const
+
+  // A gateway answers each record of a split batch separately and rate-limits
+  // per client; ask once where the resolver can answer the whole batch.
+  if (Array.isArray(data) && data.length > 1 && !gatewayUrls) {
+    const batched = await resolveMulticall(client, {
+      name: nameWithSizedLabels,
+      multicallData: encodeFunctionData({
+        abi: multicallSnippet,
+        functionName: 'multicall',
+        args: [data as Hex[]],
+      }),
+      blockNumber,
+    }).catch(() => null)
+    if (batched?.resolvedData.length === data.length)
+      return batched as ResolveNameDataReturnType<data>
+  }
 
   try {
     const [resolvedData, resolverAddress] = await (() => {
@@ -131,15 +270,7 @@ export async function resolveNameData<
     if (resolverAddress === zeroAddress) return null
     if (Array.isArray(data)) {
       return {
-        resolvedData: decodeFunctionResult({
-          abi: multicallSnippet,
-          data: resolvedData,
-        }).map((returnData): Result => {
-          if (returnData === '0x') {
-            return { success: false, returnData: returnData }
-          }
-          return { success: (returnData.length - 2) % 64 === 0, returnData }
-        }) as ResultArray,
+        resolvedData: decodeResults(resolvedData),
         resolverAddress,
       } as ResolveNameDataReturnType<data>
     }

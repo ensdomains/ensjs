@@ -15,6 +15,10 @@
       "types": "./dist/erc165.d.ts",
       "default": "./dist/erc165.js"
     },
+    "./erc7996": {
+      "types": "./dist/erc7996.d.ts",
+      "default": "./dist/erc7996.js"
+    },
     "./registry": {
       "types": "./dist/registry.d.ts",
       "default": "./dist/registry.js"
