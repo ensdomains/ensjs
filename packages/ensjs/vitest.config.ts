@@ -28,8 +28,8 @@ const pureLogicTests = [
   'src/actions/wallet/v2/registry/setParent.test.ts',
   'src/actions/subgraph/client.test.ts',
   'src/actions/dns/getDnsOwner.test.ts',
-  'src/actions/public/getNames.test.ts',
-  'src/actions/public/resolveNameData.test.ts',
+  'src/actions/public/resolver/getNames.test.ts',
+  'src/actions/public/resolver/resolveNameData.test.ts',
   // Log-filter shape only; the client is mocked.
   'src/actions/public/v2/registry/getRegistrationDateFilter.test.ts',
 ]
