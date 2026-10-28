@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.9
+
+### Patch Changes
+
+- [#438](https://github.com/ensdomains/ensjs/pull/438) [`fcb2052`](https://github.com/ensdomains/ensjs/commit/fcb2052813ed0b8829b9cc0ee6e8c0ff036cf452) Thanks [@Malak67](https://github.com/Malak67)! - Point mainnet `ensUserRegistryImpl` at the redeployed UserRegistry whose `canUpgradeFrom` rejects every upgrade.
+
 ## 5.2.8
 
 ### Patch Changes
