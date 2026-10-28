@@ -141,7 +141,7 @@ export const ensL1Contracts = {
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     ensUserRegistryImpl: {
-      address: '0xFAA23592ACA10A6d8875b18eA86954e8EB6d8d72',
+      address: '0xC927bCaA77cd7bE283518760896Be0CF3Cfbe08d',
     },
     ensStandardRentPriceOracle: {
       address: '0x76F29609A363a8A1a2a6abe2e859C0F8916Af469',
