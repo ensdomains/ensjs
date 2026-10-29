@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.10
+
+### Patch Changes
+
+- [#440](https://github.com/ensdomains/ensjs/pull/440) [`3641a9f`](https://github.com/ensdomains/ensjs/commit/3641a9fe9b0065f75ffdae3edac16a53afd6a051) Thanks [@Malak67](https://github.com/Malak67)! - `resolveNameData` (and so `getRecords`) sends the batch straight to an offchain name's ENSIP-10 resolver even when it advertises ERC-7996 `RESOLVE_MULTICALL`. The mainnet UniversalResolver still splits the batch per record for such a resolver, so `getRecords` made one gateway request per record.
+
 ## 5.2.9
 
 ### Patch Changes
