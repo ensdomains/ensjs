@@ -1,5 +1,4 @@
 import { erc165SupportsInterfaceSnippet } from '@ensdomains/ensjs-abi/erc165'
-import { erc7996SupportsFeatureSnippet } from '@ensdomains/ensjs-abi/erc7996'
 import { multicallSnippet } from '@ensdomains/ensjs-abi/multicall'
 import {
   universalResolverResolveSnippet,
@@ -64,8 +63,6 @@ export type ResolveNameDataErrorType =
   | PacketToBytesErrorType
 
 const EXTENDED_RESOLVER_INTERFACE_ID = '0x9061b923'
-const ERC7996_INTERFACE_ID = '0x582de3e7'
-const RESOLVE_MULTICALL_FEATURE = '0x96b62db8'
 
 const decodeResults = (data: Hex): ResultArray =>
   decodeFunctionResult({ abi: multicallSnippet, data }).map(
@@ -76,10 +73,9 @@ const decodeResults = (data: Hex): ResultArray =>
   )
 
 /**
- * The resolver to send a whole `resolve(name, multicall)` to, or null where the
- * universal resolver already does: it forwards the batch whole only to a
- * resolver advertising ERC-7996 `RESOLVE_MULTICALL`, and splits it per record
- * (one gateway request each) for any other ENSIP-10 resolver.
+ * The ENSIP-10 resolver to send a whole `resolve(name, multicall)` to, or null.
+ * The universal resolver splits a batch per record (one gateway request each),
+ * even for a resolver advertising ERC-7996 `RESOLVE_MULTICALL`.
  */
 const getMulticallResolver = async (
   client: Client<Transport, ChainWithContracts<'ensUniversalResolver'>>,
@@ -92,30 +88,18 @@ const getMulticallResolver = async (
   )({ name, blockNumber })
   if (!resolver) return null
 
-  const readContractAction = getAction(client, readContract, 'readContract')
-  const supportsInterface = (interfaceId: Hex) =>
-    readContractAction({
-      address: resolver,
-      abi: erc165SupportsInterfaceSnippet,
-      functionName: 'supportsInterface',
-      args: [interfaceId],
-      blockNumber,
-    }).catch(() => false)
-  const [isExtended, isErc7996] = await Promise.all([
-    supportsInterface(EXTENDED_RESOLVER_INTERFACE_ID),
-    supportsInterface(ERC7996_INTERFACE_ID),
-  ])
-  if (!isExtended) return null
-  if (!isErc7996) return resolver
-
-  const batchesAlready = await readContractAction({
+  const isExtended = await getAction(
+    client,
+    readContract,
+    'readContract',
+  )({
     address: resolver,
-    abi: erc7996SupportsFeatureSnippet,
-    functionName: 'supportsFeature',
-    args: [RESOLVE_MULTICALL_FEATURE],
+    abi: erc165SupportsInterfaceSnippet,
+    functionName: 'supportsInterface',
+    args: [EXTENDED_RESOLVER_INTERFACE_ID],
     blockNumber,
   }).catch(() => false)
-  return batchesAlready ? null : resolver
+  return isExtended ? resolver : null
 }
 
 /**
