@@ -308,37 +308,40 @@ describe('a CCIP-Read name', () => {
     returnData,
   }))
 
-  it('asks the resolver behind the mirror once instead of per record', async () => {
-    const { client, universalResolverCalls, resolverCalls } = clientWith()
+  // The mainnet universal resolver splits the batch per record even for a
+  // resolver advertising ERC-7996 RESOLVE_MULTICALL.
+  it.each([
+    { label: 'does not advertise', batchesAlready: false },
+    { label: 'advertises', batchesAlready: true },
+  ])(
+    'asks the resolver once when it $label RESOLVE_MULTICALL',
+    async ({ batchesAlready }) => {
+      const { client, universalResolverCalls, resolverCalls } = clientWith({
+        batchesAlready,
+      })
 
-    // Reported as `getResolver` does: the resolver the records came from.
-    await expect(
-      resolveNameData(client, { name, data: calls }),
-    ).resolves.toEqual({ resolvedData, resolverAddress: RESOLVER })
-    // Only the CCIP-free probe reached the universal resolver.
-    expect(universalResolverCalls).toHaveLength(1)
-    expect(resolverCalls).toHaveLength(1)
-  })
+      // Reported as `getResolver` does: the resolver the records came from.
+      await expect(
+        resolveNameData(client, { name, data: calls }),
+      ).resolves.toEqual({ resolvedData, resolverAddress: RESOLVER })
+      // Only the CCIP-free probe reached the universal resolver.
+      expect(universalResolverCalls).toHaveLength(1)
+      expect(resolverCalls).toHaveLength(1)
+    },
+  )
 
   it.each([
     {
-      label: 'advertises ERC-7996 RESOLVE_MULTICALL',
-      options: { batchesAlready: true },
-      resolverCallCount: 0,
-    },
-    {
       label: 'rejects the batch',
       options: { batch: async () => Promise.reject(revert('0x')) },
-      resolverCallCount: 1,
     },
     {
       label: 'answers the batch with nothing',
       options: { batch: async () => '0x' as Hex },
-      resolverCallCount: 1,
     },
   ])(
     'leaves the batch to the universal resolver when the resolver $label',
-    async ({ options, resolverCallCount }) => {
+    async ({ options }) => {
       const { client, universalResolverCalls, resolverCalls } =
         clientWith(options)
 
@@ -346,7 +349,7 @@ describe('a CCIP-Read name', () => {
         resolveNameData(client, { name, data: calls }),
       ).resolves.toEqual({ resolvedData, resolverAddress: MIRROR })
       expect(universalResolverCalls).toHaveLength(2)
-      expect(resolverCalls).toHaveLength(resolverCallCount)
+      expect(resolverCalls).toHaveLength(1)
     },
   )
 })
