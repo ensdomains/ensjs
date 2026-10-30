@@ -95,4 +95,33 @@ describe('getRoleCounts', () => {
       ROLE_WAS_RESERVED: 0,
     })
   })
+
+  it('returns the registry-wide counts at the root when no label is passed', async () => {
+    const result = await getRoleCounts(client, {
+      registryAddress: deploymentAddresses.ETHRegistry,
+    })
+
+    expect(result.decoded).toEqual({
+      ROLE_CAN_TRANSFER_ADMIN: 0,
+      ROLE_REGISTER_RESERVED: 2,
+      ROLE_REGISTER_RESERVED_ADMIN: 1,
+      ROLE_REGISTRAR: 5,
+      ROLE_REGISTRAR_ADMIN: 1,
+      ROLE_RENEW: 5,
+      ROLE_RENEW_ADMIN: 1,
+      ROLE_SET_PARENT: 1,
+      ROLE_SET_PARENT_ADMIN: 1,
+      ROLE_SET_RESOLVER: 0,
+      ROLE_SET_RESOLVER_ADMIN: 0,
+      ROLE_SET_SUBREGISTRY: 0,
+      ROLE_SET_SUBREGISTRY_ADMIN: 0,
+      ROLE_SET_URI: 2,
+      ROLE_SET_URI_ADMIN: 1,
+      ROLE_UNREGISTER: 0,
+      ROLE_UNREGISTER_ADMIN: 0,
+      ROLE_UPGRADE: 0,
+      ROLE_UPGRADE_ADMIN: 0,
+      ROLE_WAS_RESERVED: 0,
+    })
+  })
 })
