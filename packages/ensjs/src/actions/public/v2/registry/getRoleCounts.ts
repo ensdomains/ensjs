@@ -10,10 +10,17 @@ import {
   registryRoles,
 } from '../../../../utils/v2/index.js'
 
-export type GetRoleCountsParameters = {
-  registryAddress: Address
-  label: string
-}
+export type GetRoleCountsParameters =
+  | {
+      /** The registry address */
+      registryAddress: Address
+      /** The label to count roles for */
+      label: string
+    }
+  | {
+      /** The registry address; without a label, counts its registry-wide (root) roles */
+      registryAddress: Address
+    }
 
 export type GetRoleCountsReturnType = {
   decoded: DecodeRoleCountsReturnType<typeof registryRoles>
@@ -23,7 +30,8 @@ export type GetRoleCountsReturnType = {
 export type GetRoleCountsErrorType = ReadContractErrorType
 
 /**
- * Gets the registry's role counts for a name's label.
+ * Gets the registry's role counts for a name's label, or for the registry root
+ * (resource 0) when no label is passed.
  * @param client - {@link Client}
  * @param parameters - {@link GetRoleCountsParameters}
  * @returns Decoded and raw role counts. {@link GetRoleCountsReturnType}
@@ -39,20 +47,26 @@ export type GetRoleCountsErrorType = ReadContractErrorType
  *   transport: http(),
  * })
  * const result = await getRoleCounts(client, { registryAddress: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2', label: 'raffy' })
+ *
+ * @example
+ * // Registry-wide roles at the root resource
+ * const root = await getRoleCounts(client, { registryAddress: '0x0f3eb298470639a96bd548cea4a648bc80b2cee2' })
  */
 export async function getRoleCounts(
   client: Client,
-  { registryAddress, label }: GetRoleCountsParameters,
+  params: GetRoleCountsParameters,
 ): Promise<GetRoleCountsReturnType> {
   ASSERT_NO_TYPE_ERROR(client)
 
   const readContractAction = getAction(client, readContract, 'readContract')
 
+  const resource = 'label' in params ? BigInt(labelhash(params.label)) : 0n
+
   const roleBitmap = await readContractAction({
-    address: registryAddress,
+    address: params.registryAddress,
     abi: permissionedRegistryRoleCountSnippet,
     functionName: 'roleCount',
-    args: [BigInt(labelhash(label))],
+    args: [resource],
   })
 
   return {
