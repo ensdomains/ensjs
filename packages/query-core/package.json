@@ -68,17 +68,17 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.9.3",
     "@ensdomains/ensjs": "workspace:*",
-    "@tanstack/query-core": "^5.0.0",
-    "@wagmi/core": "^2.17.2",
-    "viem": "^2.47.10"
+    "@tanstack/query-core": "^5.105.1",
+    "@wagmi/core": "^2.22.1",
+    "typescript": "^5.9.3",
+    "viem": "^2.57.14"
   },
   "peerDependencies": {
-    "@tanstack/query-core": ">=5.0.0",
     "@ensdomains/ensjs": "^5.2.11",
-    "viem": "^2.9.2",
-    "@wagmi/core": "^2.17.2"
+    "@tanstack/query-core": ">=5.0.0",
+    "@wagmi/core": "^2.17.2",
+    "viem": "^2.9.2"
   },
   "engines": {
     "node": ">=18"
