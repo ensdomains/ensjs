@@ -29,7 +29,11 @@ export type GetRecordKeysParameters = {
   resolverAddress: Address
   /** The name to get record keys for */
   name: string
-} & Partial<Pick<GetLogsParameters, 'fromBlock' | 'toBlock'>>
+  /** First block to read logs from (default 0); a key last written before it is left out */
+  fromBlock?: GetLogsParameters['fromBlock']
+  /** Last block to read logs from; the record is still the current one, so this is not a past-state lookup */
+  toBlock?: GetLogsParameters['toBlock']
+}
 
 export type GetRecordKeysReturnType = {
   /** Text keys with a non-empty value */
