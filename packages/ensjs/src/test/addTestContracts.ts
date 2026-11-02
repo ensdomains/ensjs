@@ -66,7 +66,11 @@ export const deploymentAddresses = {
 } as const
 
 export const localhost = {
-  ..._localhost,
+  // Spreading all of `_localhost` drags in viem's unexported
+  // `ChainTransactionReplacement` type, which breaks declaration emit.
+  name: _localhost.name,
+  nativeCurrency: _localhost.nativeCurrency,
+  rpcUrls: _localhost.rpcUrls,
   id: 31337,
   contracts: {
     // v1

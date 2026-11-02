@@ -94,7 +94,7 @@ describe('decodeContenthashResult', () => {
       Params: (bytes)
       Data:   0x1234 (2 bytes)
 
-      Version: viem@2.57.4]
+      Version: viem@2.57.14]
     `)
   })
 

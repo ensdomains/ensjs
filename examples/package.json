@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "@ensdomains/ensjs": "workspace:*",
-    "viem": "^2.30.6"
+    "viem": "^2.57.14"
   }
 }
