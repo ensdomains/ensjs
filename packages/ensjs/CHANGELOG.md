@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.12
+
+### Patch Changes
+
+- [#445](https://github.com/ensdomains/ensjs/pull/445) [`8719576`](https://github.com/ensdomains/ensjs/commit/8719576d85d8b2e407a855635576d5c1c35e059e) Thanks [@Malak67](https://github.com/Malak67)! - Add `getRecordKeys` (`@ensdomains/ensjs/public/v2`): the text keys and coin types a permissioned resolver holds for a name, read from its events. Covers names the resolver answers as a wildcard, which have no registry entry of their own.
+
 ## 5.2.11
 
 ### Patch Changes
