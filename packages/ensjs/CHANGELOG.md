@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.2.11
+
+### Patch Changes
+
+- [#442](https://github.com/ensdomains/ensjs/pull/442) [`ba17d0e`](https://github.com/ensdomains/ensjs/commit/ba17d0e5f0b3822963be9643bba3598dcbacb07b) Thanks [@Malak67](https://github.com/Malak67)! - `getRoleCounts` reads a registry's registry-wide role counts at the root resource when no `label` is passed, matching `hasRoles`' registry root mode.
+
 ## 5.2.10
 
 ### Patch Changes
