@@ -47,6 +47,24 @@ const arweave = {
     '0x90b2ca05cacdf63edf2e0bb4eb5711dd38b0723aca5f3c4ab62ceeb7c1110740833d4894',
 } as const
 
+const adnl = {
+  decoded: '61bd855da6c07e8d1c807e880c2a9a6272011cfc2b34b2e9de32cd37ff6f4ae5',
+  encoded:
+    '0x90b2da0561bd855da6c07e8d1c807e880c2a9a6272011cfc2b34b2e9de32cd37ff6f4ae5',
+} as const
+
+const tonstorage = {
+  decoded: 'ffeeddccbbaa00998877665544332211ffeeddccbbaa00998877665544332211',
+  encoded:
+    '0x90b2de05ffeeddccbbaa00998877665544332211ffeeddccbbaa00998877665544332211',
+} as const
+
+const tonstorageLeadingZero = {
+  decoded: '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff',
+  encoded:
+    '0x90b2de0500112233445566778899aabbccddeeff00112233445566778899aabbccddeeff',
+} as const
+
 const typeArray = [
   {
     type: 'ipfs',
@@ -76,6 +94,14 @@ const typeArray = [
     type: 'ar',
     ...arweave,
   },
+  {
+    type: 'adnl',
+    ...adnl,
+  },
+  {
+    type: 'tonstorage',
+    ...tonstorage,
+  },
 ] as const
 
 const displayArray = typeArray.map((item) => ({
@@ -98,6 +124,12 @@ describe('decodeContentHash', () => {
   })
   it('returns null when empty bytes', () => {
     expect(decodeContentHash('0x')).toBeNull()
+  })
+  it('preserves leading zero bytes in TON Storage BagIDs', () => {
+    expect(decodeContentHash(tonstorageLeadingZero.encoded)).toEqual({
+      protocolType: 'tonstorage',
+      decoded: tonstorageLeadingZero.decoded,
+    })
   })
   it('throws for unrecognised codec', () => {
     expect(() => decodeContentHash('0xdeadbeef')).toThrow()
@@ -144,5 +176,21 @@ describe('encodeContentHash', () => {
   })
   it('fails to encode onion3 with invalid length', () => {
     expect(() => encodeContentHash('onion3://123')).toThrow()
+  })
+  it('normalizes uppercase TON Storage BagIDs', () => {
+    expect(
+      encodeContentHash(`tonstorage://${tonstorage.decoded.toUpperCase()}`),
+    ).toEqual(tonstorage.encoded)
+  })
+  it('preserves leading zero bytes in TON Storage BagIDs', () => {
+    expect(
+      encodeContentHash(`tonstorage://${tonstorageLeadingZero.decoded}`),
+    ).toEqual(tonstorageLeadingZero.encoded)
+  })
+  it('fails to encode an incorrectly sized TON Storage BagID', () => {
+    expect(() => encodeContentHash('tonstorage://deadbeef')).toThrow()
+  })
+  it('fails to encode a non-hexadecimal TON Storage BagID', () => {
+    expect(() => encodeContentHash(`tonstorage://${'g'.repeat(64)}`)).toThrow()
   })
 })
