@@ -30,11 +30,9 @@ pnpm -F @ensdomains/ensjs test:watch
 # Run a single test file
 pnpm -F @ensdomains/ensjs test src/actions/public/getRecords.test.ts
 
-# Start test environment (with ENS contracts)
-pnpm -F @ensdomains/ensjs denv
-
-# Start local anvil only (no ENSnode, no scripts)
-pnpm -F @ensdomains/ensjs anvil
+# Start test environment (Docker devnet with ENS contracts)
+docker compose -f packages/ensjs/compose.yml up -d devnet
+# `pnpm -F @ensdomains/ensjs test` also starts/stops this automatically
 
 # Generate documentation
 pnpm -F @ensdomains/ensjs generateDocs
