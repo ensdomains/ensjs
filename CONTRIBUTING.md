@@ -8,8 +8,10 @@ addresses.
 
 - Monorepo managed with **pnpm** workspaces (`pnpm-workspace.yaml`).
 - **Biome** for formatting and linting (`pnpm lint`).
-- **Vitest** for tests, run against a local Anvil node with deployed ENS contracts
-  (`pnpm -F @ensdomains/ensjs denv` to start the test environment).
+- **Vitest** for tests, run against a local Docker devnet with the ENS contracts
+  deployed (`ghcr.io/ensdomains/contracts-v2` via `packages/ensjs/compose.yml`).
+  `pnpm -F @ensdomains/ensjs test` starts the devnet automatically; to start it
+  yourself: `docker compose -f packages/ensjs/compose.yml up -d devnet`.
 - **Changesets** for versioning — every user-visible change to a published package needs a
   changeset (`pnpm chgset:run`).
 
@@ -332,8 +334,13 @@ describe('getOwner', () => {
 })
 ```
 
-Run with `pnpm -F @ensdomains/ensjs test`. The local environment must be running
-(`pnpm -F @ensdomains/ensjs denv`) for tests that hit deployed contracts.
+Run with `pnpm -F @ensdomains/ensjs test`. That command starts the Docker
+devnet via `packages/ensjs/compose.yml` when needed (or reuses one already on
+`localhost:8545`). To start it yourself:
+
+```sh
+docker compose -f packages/ensjs/compose.yml up -d devnet
+```
 
 ---
 
