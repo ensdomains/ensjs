@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.3.0
+
+### Minor Changes
+
+- [#449](https://github.com/ensdomains/ensjs/pull/449) [`4e61bf6`](https://github.com/ensdomains/ensjs/commit/4e61bf690dcc9970bd4dd7a74d6106e2d5dd19af) Thanks [@TONresistor](https://github.com/TONresistor)! - Add ADNL and TON Storage contenthash protocols.
+
 ## 5.2.12
 
 ### Patch Changes
