@@ -132,7 +132,7 @@
   "dependencies": {
     "@adraffy/ens-normalize": "1.10.1",
     "@ensdomains/address-encoder": "2.0.1",
-    "@ensdomains/content-hash": "3.1.0-rc.1",
+    "@ensdomains/content-hash": "3.2.0",
     "@ensdomains/ensjs-abi": "workspace:*",
     "cborg": "^6.2.1",
     "dns-packet": "^5.6.1",
