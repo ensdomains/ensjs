@@ -141,7 +141,7 @@ export const ensL1Contracts = {
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     ensUserRegistryImpl: {
-      address: '0xC927bCaA77cd7bE283518760896Be0CF3Cfbe08d',
+      address: '0x86013382F943C6214E1433d1e64936F4000925CB',
     },
     ensStandardRentPriceOracle: {
       address: '0x76F29609A363a8A1a2a6abe2e859C0F8916Af469',
@@ -237,7 +237,7 @@ export const ensL1Contracts = {
       address: '0xF6faC8A58a0BE13b9197f27C41B73162Fe32572b',
     },
     ensUserRegistryImpl: {
-      address: '0x9BD8a88719068D09ecee662f36C0E3856708366a',
+      address: '0x0822d199699f0a9D378617817a1439663234a126',
     },
     ensStandardRentPriceOracle: {
       address: '0x8196665D4ca7488B6474a9EC8E7d2719FB42263A',
