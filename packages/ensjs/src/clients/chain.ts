@@ -93,7 +93,7 @@ export const ensL1Contracts = {
       address: '0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401',
     },
     ensPublicResolver: {
-      address: '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63',
+      address: '0xF29100983E058B709F3D539b0c765937B804AC15',
     },
     ensLegacyRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
@@ -183,7 +183,7 @@ export const ensL1Contracts = {
     // resolver for the V1 registry — so it must implement the legacy `addr`
     // interface. The V2 public resolver does not, and belongs under its own key.
     ensPublicResolver: {
-      address: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
+      address: '0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5',
     },
     ensLegacyRegistry: {
       address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
