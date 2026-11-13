@@ -275,7 +275,7 @@ export type ChainWithSubgraph = { subgraphs: EnsSubgraph }
 export const ensL1Subgraphs = {
   [supportedL1Chains.mainnet]: {
     ens: {
-      url: 'https://api.alpha.blue.ensnode.io/subgraph',
+      url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
     },
   },
   [supportedL1Chains.sepolia]: {
