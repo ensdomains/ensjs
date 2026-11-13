@@ -1,5 +1,11 @@
 # @ensdomains/ensjs
 
+## 5.3.1
+
+### Patch Changes
+
+- [#452](https://github.com/ensdomains/ensjs/pull/452) [`ef845f8`](https://github.com/ensdomains/ensjs/commit/ef845f8755f30dac6fd410214b9f2cc47eb1cb75) Thanks [@Malak67](https://github.com/Malak67)! - Point `ensUserRegistryImpl` at the current UserRegistry implementation: `0x86013382F943C6214E1433d1e64936F4000925CB` on mainnet and `0x0822d199699f0a9D378617817a1439663234a126` on Sepolia.
+
 ## 5.3.0
 
 ### Minor Changes
