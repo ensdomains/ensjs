@@ -1,5 +1,11 @@
 # @ensdomains/ensjs-abi
 
+## 5.0.6
+
+### Patch Changes
+
+- [#456](https://github.com/ensdomains/ensjs/pull/456) [`b2c4e1d`](https://github.com/ensdomains/ensjs/commit/b2c4e1d2729d533deed54cc684580f869777b597) Thanks [@v1rtl](https://github.com/v1rtl)! - Add `v2/defaultReverseRegistrarAdapter` (`setName`, `setNameWithHCA`) and `v2/reverseRegistrarAdapter` (`claim`, `claimWithHCA`) snippets, with the adapters' custom errors.
+
 ## 5.0.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @ensdomains/ensjs
 
+## 5.3.2
+
+### Patch Changes
+
+- [#455](https://github.com/ensdomains/ensjs/pull/455) [`0ecb1a3`](https://github.com/ensdomains/ensjs/commit/0ecb1a33a18a71e97e07daad9059cc090bb1dd2f) Thanks [@gomesalexandre](https://github.com/gomesalexandre)! - Fix `getName` sending coin type `0x80000001` instead of `60` for `chainId: 1`, which returned `null` for mainnet primary names. `chainId: 0` and `coinType: 0` are no longer treated as missing and replaced with `60`.
+- Updated dependencies [[`b2c4e1d`](https://github.com/ensdomains/ensjs/commit/b2c4e1d2729d533deed54cc684580f869777b597)]:
+  - @ensdomains/ensjs-abi@5.0.6
+
 ## 5.3.1
 
 ### Patch Changes
