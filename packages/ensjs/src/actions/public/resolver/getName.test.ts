@@ -9,6 +9,7 @@ import {
   type Hex,
   type PublicClient,
   type Transport,
+  zeroAddress,
 } from 'viem'
 import { mainnet } from 'viem/chains'
 import { packetToBytes } from 'viem/ens'
@@ -80,6 +81,21 @@ describe('getName', () => {
       address: '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0',
     })
     expect(result).toBeNull()
+  })
+  it.each([
+    [{}, 60n],
+    [{ chainId: 1 }, 60n],
+    [{ chainId: 0 }, 0x80000000n],
+    [{ chainId: 10 }, 0x8000000an],
+    [{ coinType: 0 }, 0n],
+    [{ coinType: 0x80000001 }, 0x80000001n],
+  ] as const)('reverses %o with coin type %s', async (options, expected) => {
+    mockReadContract.mockResolvedValue(['', zeroAddress, zeroAddress])
+    await getName(mockClient, {
+      address: '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0',
+      ...options,
+    })
+    expect(mockReadContract.mock.calls[0][0].args?.[1]).toBe(expected)
   })
   it('should return null for a name with no forward resolution when allowMismatch is false', async () => {
     const tx = await setPrimaryName(walletClient, {

@@ -110,6 +110,14 @@ export async function getName<chain extends Chain>(
   ASSERT_NO_TYPE_ERROR(client)
   const readContractAction = getAction(client, readContract, 'readContract')
 
+  // ENSIP-19: mainnet uses coin type 60 (`addr.reverse`), not 0x80000001.
+  const reverseCoinType =
+    chainId === undefined
+      ? BigInt(coinType ?? 60)
+      : chainId === 1
+        ? 60n
+        : BigInt(evmChainIdToCoinType(chainId))
+
   const parameters = {
     address: getChainContractAddress({
       chain: client.chain,
@@ -117,7 +125,7 @@ export async function getName<chain extends Chain>(
     }),
     abi: universalResolverReverseSnippet,
     functionName: 'reverseWithGateways',
-    args: [address, chainId ? evmChainIdToCoinType(chainId) : coinType || 60n],
+    args: [address, reverseCoinType],
     blockNumber,
   } as const
 
