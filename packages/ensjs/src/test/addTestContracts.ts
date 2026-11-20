@@ -149,6 +149,9 @@ export const localhost = {
     ensUserRegistryImpl: {
       address: deploymentAddresses.UserRegistryImpl,
     },
+    ensUserRegistryFactory: {
+      address: deploymentAddresses.VerifiableFactory,
+    },
     ensStandardRentPriceOracle: {
       address: deploymentAddresses.StandardRentPriceOracle,
     },
