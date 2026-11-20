@@ -56,6 +56,7 @@ export const supportedL1Contracts = [
   'ensRegistry',
   'ensPermissionedResolverImpl',
   'ensUserRegistryImpl',
+  'ensUserRegistryFactory',
   'ensStandardRentPriceOracle',
   'ensHcaFactory',
   'ensLockedMigrationController',
@@ -141,7 +142,10 @@ export const ensL1Contracts = {
       address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     },
     ensUserRegistryImpl: {
-      address: '0x86013382F943C6214E1433d1e64936F4000925CB',
+      address: '0x3269b830b61b3186Dc6d2f57Cab118E2FBC3E2df',
+    },
+    ensUserRegistryFactory: {
+      address: '0x6B9BCAAd92b05ED24D3e01950048B73E8633053F',
     },
     ensStandardRentPriceOracle: {
       address: '0x76F29609A363a8A1a2a6abe2e859C0F8916Af469',
@@ -238,6 +242,9 @@ export const ensL1Contracts = {
     },
     ensUserRegistryImpl: {
       address: '0x0822d199699f0a9D378617817a1439663234a126',
+    },
+    ensUserRegistryFactory: {
+      address: '0xDa70306C98E97eCe36F997a21368e53298572991',
     },
     ensStandardRentPriceOracle: {
       address: '0x8196665D4ca7488B6474a9EC8E7d2719FB42263A',
