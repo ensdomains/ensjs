@@ -55,14 +55,20 @@ const getDecodedName = async (
 
   const subgraphClient = createSubgraphClient(client)
 
+  // labelhash values are passed as GraphQL variables, never interpolated
+  // into the query string, so a crafted label can't inject additional
+  // query syntax
+  const variables: Record<string, unknown> = { id: namehash(name) }
   let labelsQuery = ''
+  let labelsQueryVariables = ''
   for (let i = 0; i < labels.length; i += 1) {
     const label = labels[i]
     if (isEncodedLabelhash(label)) {
+      const variableName = `labelhash${i}`
+      variables[variableName] = decodeLabelhash(label).toLowerCase()
+      labelsQueryVariables += `, $${variableName}: Bytes`
       labelsQuery += gql`
-        labels${i}: domains(first: 1, where: { labelhash: "${decodeLabelhash(
-          label,
-        ).toLowerCase()}", labelName_not: null }) {
+        labels${i}: domains(first: 1, where: { labelhash: $${variableName}, labelName_not: null }) {
           labelName
         }
       `
@@ -70,7 +76,7 @@ const getDecodedName = async (
   }
 
   const decodedNameQuery = gql`
-    query decodedName($id: String!) {
+    query decodedName($id: String!${labelsQueryVariables}) {
       namehashLookup: domain(id: $id) {
         name
       }
@@ -80,9 +86,7 @@ const getDecodedName = async (
 
   const decodedNameResult = await subgraphClient.request<SubgraphResult>(
     decodedNameQuery,
-    {
-      id: namehash(name),
-    },
+    variables,
   )
   if (!decodedNameResult) return null
 
